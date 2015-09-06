@@ -1,0 +1,14 @@
+Package: fmesher
+Type: Package
+Title: Triangle Meshes and Geometry
+Version: 0.0.1
+Date: 2015-09-06
+Author: Finn Lindgren <finn.lindgren@gmail.com>
+Maintainer: Finn Lindgren <finn.lindgren@gmail.com>
+Description: Functions that generate planar and spherical triangle meshes for finite element calculations, and functions for lines and polygons.
+Depends: Matrix, sp, spam
+Suggests: INLA, testthat
+Additional_repositories: http://www.math.ntnu.no/inla/R/stable
+License: GPL (>=3)
+Copyright: The R package and code, and the main programs, were written by and are Copyright by Finn Lindgren, and are redistributable under the GNU Public License, version 3 or later.  
+NeedsCompilation: no
