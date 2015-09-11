@@ -85,6 +85,7 @@ setMethodS3(
 ##' .. content for \details{} ..
 ##' @title A
 ##' @param type
+##' @param datum long,lat,rotation
 ##' @param xlim
 ##' @param ylim
 ##' @param scale
@@ -92,6 +93,7 @@ setMethodS3(
 ##' @author Finn Lindgren
 ##' @export
 globeproj <- function(type=NULL,
+                      datum=NULL,
                       xlim=NULL,
                       ylim=NULL,
                       scale=NULL)
@@ -105,31 +107,38 @@ globeproj <- function(type=NULL,
   if (identical(type, "lambert")) {
     type <- "orthocyl"
     if (is.null(scale)) scale <- c(1, 1)
+    if (is.null(datum)) datum <- c(0, 0, 0)
   } else if (identical(type, "gall-peters")) {
     type <- "orthocyl"
     if (is.null(scale)) scale <- c(1, 1)
     scale <- scale * c(1*cos(pi/4), 1/cos(pi/4))
+    if (is.null(datum)) datum <- c(0, 0, 0)
   }
 
   if (identical(type, "longlat")) {
+    if (is.null(datum)) datum <- c(0, 0, 0)
     if (is.null(scale)) scale <- c(1,1)
     if (is.null(xlim)) xlim <- c(-180,180)*scale[1]
     if (is.null(ylim)) ylim <- c(-90,90)*scale[2]
   } else if (identical(type, "orthocyl")) {
+    if (is.null(datum)) datum <- c(0, 0, 0)
     if (is.null(scale)) scale <- c(1, 1)
     if (is.null(xlim)) xlim <- c(-pi,pi)*scale[1]
     if (is.null(ylim)) ylim <- c(-1,1)*scale[2]
   } else if (identical(type, "mollweide")) {
+    if (is.null(datum)) datum <- c(0, 0, 0)
     if (is.null(scale)) scale <- c(1,1)/sqrt(2)
     if (is.null(xlim)) xlim <- c(-2,2)*sqrt(2)*scale[1]
     if (is.null(ylim)) ylim <- c(-1,1)*sqrt(2)*scale[2]
   } else if (identical(type, "hammer")) {
+    if (is.null(datum)) datum <- c(0, 0, 0)
     if (is.null(scale)) scale <- c(1,1)/sqrt(2)
     if (is.null(xlim)) xlim <- c(-2,2)*sqrt(2)*scale[1]
     if (is.null(ylim)) ylim <- c(-1,1)*sqrt(2)*scale[2]
   }
 
   x <- structure(list(name=name, type=type,
+                      datum=datum,
                       xlim=xlim, ylim=ylim, scale=scale),
                  class="globeproj")
   .validobject(x)
@@ -328,6 +337,49 @@ setMethodS3(
     })
 
 
+rotmat321 <- function(rot)
+{
+  cs <- cos(rot[1])
+  sn <- sin(rot[1])
+  R <- matrix(c(cs, -sn, 0,
+                sn, cs, 0,
+                0, 0, 1), 3, 3)
+  cs <- cos(rot[2])
+  sn <- sin(rot[2])
+  R <- R %*% matrix(c(cs, 0, -sn,
+                      0, 1, 0,
+                      sn, 0, cs), 3, 3)
+  cs <- cos(rot[3])
+  sn <- sin(rot[3])
+  R <- R %*% matrix(c(1, 0, 0,
+                      0, cs, -sn,
+                      0, sn, cs,
+                      0, 0, 1), 3, 3)
+  R
+}
+
+rotmat123 <- function(rot)
+{
+  cs <- cos(rot[3])
+  sn <- sin(rot[3])
+  R <- matrix(c(1, 0, 0,
+                0, cs, -sn,
+                0, sn, cs,
+                0, 0, 1), 3, 3)
+  cs <- cos(rot[2])
+  sn <- sin(rot[2])
+  R <- R %*% matrix(c(cs, 0, -sn,
+                      0, 1, 0,
+                      sn, 0, cs), 3, 3)
+  cs <- cos(rot[1])
+  sn <- sin(rot[1])
+  R <- R %*% matrix(c(cs, -sn, 0,
+                      sn, cs, 0,
+                      0, 0, 1), 3, 3)
+  R
+}
+
+
 ##' .. content for \description{} (no empty lines) ..
 ##'
 ##' .. content for \details{} ..
@@ -351,9 +403,23 @@ setMethodS3(
       if (!is(x, "globeproj")) {
         stop("'x' must be a 'globeproj'")
       }
-      sphere.input <- (ncol(loc) == 3)
       if (inverse) {
-        loc <- loc %*% diag(1/scale, 2)
+        ## Convert coordinates to standardised scale
+        loc <- loc %*% diag(1/x$scale, 2)
+      } else {
+        if(ncol(loc) == 2) {
+          ## Standardise (long,lat) to Cartesian coordinates.
+          loc <-
+            cbind(x=cos(loc[,1]*pi/180)*cos(loc[,2]*pi/180),
+                  y=sin(loc[,1]*pi/180)*cos(loc[,2]*pi/180),
+                  z=sin(loc[,2]*pi/180))
+        }
+        ## Transform to oblique orientation
+        ## 1) Rotate -datum[1] around (0,0,1)
+        ## 2) Rotate -datum[2] around (0,1,0)
+        ## 3) Rotate -datum[3] around (1,0,0)
+        loc <- loc %*% rotmat321(-x$datum*pi/180)
+
       }
       if (identical(x$type, "longlat")) {
         if (inverse) {
@@ -362,13 +428,9 @@ setMethodS3(
                   y=sin(loc[,1]*pi/180)*cos(loc[,2]*pi/180),
                   z=sin(loc[,2]*pi/180))
         } else {
-          if (sphere.input) {
-            proj <-
-              cbind(x=atan2(loc[,2], loc[,1])*180/pi,
-                    y=asin(pmax(-1, pmin(+1, loc[,3])))*180/pi)
-          } else {
-            proj <- cbind(x=loc[,1], y=loc[,2])
-          }
+          proj <-
+            cbind(x=atan2(loc[,2], loc[,1])*180/pi,
+                  y=asin(pmax(-1, pmin(+1, loc[,3])))*180/pi)
         }
       } else if (identical(x$type, "orthocyl")) {
         if (inverse) {
@@ -379,14 +441,9 @@ setMethodS3(
                   z=loc[,2]
                   )
         } else {
-          if (sphere.input) {
-            proj <-
-              cbind(x=atan2(loc[,2], loc[,1]),
-                    y=loc[,3])
-          } else {
-            proj <-
-              cbind(x=loc[,1]*pi/180, y=sin(loc[,2]*pi/180))
-          }
+          proj <-
+            cbind(x=atan2(loc[,2], loc[,1]),
+                  y=loc[,3])
         }
       } else if (identical(x$type, "mollweide")) {
         if (inverse) {
@@ -403,13 +460,8 @@ setMethodS3(
                              z=sin.lat
                              )
         } else {
-          if (sphere.input) {
-            lon <- atan2(loc[,2], loc[,1])
-            z <- pmin(1, pmax(-1, loc[,3]))
-          } else {
-            lon <- loc[,1]*pi/180
-            z <- sin(loc[,2]*pi/180)
-          }
+          lon <- atan2(loc[,2], loc[,1])
+          z <- pmin(1, pmax(-1, loc[,3]))
           sin.theta <- z
           cos.theta <- sqrt(pmax(0, 1-sin.theta^2))
           ## NR-solver for sin.theta.
@@ -445,16 +497,9 @@ setMethodS3(
                              z=sin.lat
                              )
         } else {
-          if (sphere.input) {
-            lon <- atan2(loc[,2], loc[,1])
-            sin.lat <- pmin(1, pmax(-1, loc[,3]))
-            cos.lat <- sqrt(pmax(0, 1-sin.lat^2))
-          } else {
-            lon <- loc[,1]*pi/180
-            lat <- loc[,2]*pi/180
-            sin.lat <- sin(lat)
-            cos.lat <- cos(lat)
-          }
+          lon <- atan2(loc[,2], loc[,1])
+          sin.lat <- pmin(1, pmax(-1, loc[,3]))
+          cos.lat <- sqrt(pmax(0, 1-sin.lat^2))
           cos.lon2 <- cos(lon/2)
           sin.lon2 <- sin(lon/2)
           scale <- sqrt(2)/sqrt(1 + cos.lat*cos.lon2)
@@ -462,7 +507,13 @@ setMethodS3(
                         y=sin.lat * scale)
         }
       }
-      if (!inverse) {
+      if (inverse) {
+        ## Transform back from oblique orientation
+        ## 1) Rotate datum[3] around (1,0,0)
+        ## 2) Rotate datum[2] around (0,1,0)
+        ## 3) Rotate datum[1] around (0,0,1)
+        loc <- loc %*% rotmat123(x$datum*pi/180)
+      } else {
         proj <- cbind(x=proj[,1] * x$scale[1], y=proj[,2] * x$scale[2])
       }
       proj
