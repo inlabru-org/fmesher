@@ -85,7 +85,7 @@ setMethodS3(
 ##' .. content for \details{} ..
 ##' @title A
 ##' @param type
-##' @param datum long,lat,rotation
+##' @param orient long,lat,rotation
 ##' @param xlim
 ##' @param ylim
 ##' @param scale
@@ -93,7 +93,7 @@ setMethodS3(
 ##' @author Finn Lindgren
 ##' @export
 globeproj <- function(type=NULL,
-                      datum=NULL,
+                      orient=NULL,
                       xlim=NULL,
                       ylim=NULL,
                       scale=NULL)
@@ -107,44 +107,147 @@ globeproj <- function(type=NULL,
   if (identical(type, "lambert")) {
     type <- "orthocyl"
     if (is.null(scale)) scale <- c(1, 1)
-    if (is.null(datum)) datum <- c(0, 0, 0)
+    if (is.null(orient)) orient <- c(0, 0, 0)
   } else if (identical(type, "gall-peters")) {
     type <- "orthocyl"
     if (is.null(scale)) scale <- c(1, 1)
     scale <- scale * c(1*cos(pi/4), 1/cos(pi/4))
-    if (is.null(datum)) datum <- c(0, 0, 0)
+    if (is.null(orient)) orient <- c(0, 0, 0)
   }
 
   if (identical(type, "longlat")) {
-    if (is.null(datum)) datum <- c(0, 0, 0)
+    if (is.null(orient)) orient <- c(0, 0, 0)
     if (is.null(scale)) scale <- c(1,1)
     if (is.null(xlim)) xlim <- c(-180,180)*scale[1]
     if (is.null(ylim)) ylim <- c(-90,90)*scale[2]
   } else if (identical(type, "orthocyl")) {
-    if (is.null(datum)) datum <- c(0, 0, 0)
+    if (is.null(orient)) orient <- c(0, 0, 0)
     if (is.null(scale)) scale <- c(1, 1)
     if (is.null(xlim)) xlim <- c(-pi,pi)*scale[1]
     if (is.null(ylim)) ylim <- c(-1,1)*scale[2]
   } else if (identical(type, "mollweide")) {
-    if (is.null(datum)) datum <- c(0, 0, 0)
+    if (is.null(orient)) orient <- c(0, 0, 0)
     if (is.null(scale)) scale <- c(1,1)/sqrt(2)
     if (is.null(xlim)) xlim <- c(-2,2)*sqrt(2)*scale[1]
     if (is.null(ylim)) ylim <- c(-1,1)*sqrt(2)*scale[2]
   } else if (identical(type, "hammer")) {
-    if (is.null(datum)) datum <- c(0, 0, 0)
+    if (is.null(orient)) orient <- c(0, 0, 0)
     if (is.null(scale)) scale <- c(1,1)/sqrt(2)
     if (is.null(xlim)) xlim <- c(-2,2)*sqrt(2)*scale[1]
     if (is.null(ylim)) ylim <- c(-1,1)*sqrt(2)*scale[2]
   }
 
   x <- structure(list(name=name, type=type,
-                      datum=datum,
+                      orient=orient,
                       xlim=xlim, ylim=ylim, scale=scale),
                  class="globeproj")
   .validobject(x)
   x
 }
 
+
+
+
+
+.clip <- function(x, coords) {
+        ## Clip and generate a list of Line objects
+        thelines <- list()
+        ## Rudimentary cutting:
+        toolong <-
+          which(c(TRUE,
+                  diff(coords[,1])^2/diff(x$xlim)
+                  + diff(coords[,2])^2/diff(x$ylim)
+                  > 0.1^2,
+                  TRUE))
+        start <- toolong[-length(toolong)]
+        ending <- toolong[-1] - 1
+        for (i in seq_along(start)) {
+          coords1 <- coords[start[i]:ending[i],1]
+          coords2 <- coords[start[i]:ending[i],2]
+          thelines <-
+            c(thelines,
+              list(sp::Line(cbind(coords1, coords2))))
+        }
+        thelines
+      }
+
+
+## data(worldLL)
+## plot(worldLL, x, add=TRUE)
+##' @method plot PolySet
+##' @export plot.PolySet
+plot.PolySet <- function(shape, x, add=FALSE, ...)
+{
+  coords <- project(x, cbind(shape$X, shape$Y))
+  proj <-
+    sp::SpatialLines(list(sp::Lines(
+        unlist(lapply(unique(shape$PID),
+                      function(k) {
+                        .clip(x, coords[sum(shape$PID < k) +
+                                          shape$POS[shape$PID == k],,drop=FALSE])
+                      }),
+               recursive=FALSE),
+        ID="shape")))
+  if (add) {
+    plot(proj, add=TRUE, ...)
+  } else {
+    plot(proj, ...)
+  }
+  invisible(proj)
+}
+
+
+##' .. content for \description{} (no empty lines) ..
+##'
+##' .. content for \details{} ..
+##' @title A
+##' @param x
+##' @param add
+##' @param do.plot
+##' @param ...
+##' @return A
+##' @author Finn Lindgren
+##' @method outline globeproj
+##' @export outline
+##' @export outline.globeproj
+##' @rdname outline
+##' @name outline.globeproj
+setMethodS3(
+    "outline", "globeproj",
+    function(x, add=FALSE, do.plot=TRUE,
+             ...)
+    {
+      thebox <-
+        sp::SpatialPolygons(list(sp::Polygons(
+            list(sp::Polygon(
+                cbind(c(x$xlim[1], x$xlim[1],
+                        x$xlim[2], x$xlim[2], x$xlim[1]),
+                      c(x$ylim[1], x$ylim[2],
+                        x$ylim[2], x$ylim[1], x$ylim[1])))),
+            ID="box"
+            )))
+      if (x$type %in% c("longlat", "orthocyl")) {
+        theoutline <- thebox
+      } else if (x$type %in% c("mollweide", "hammer")) {
+        angle <- seq(0, 2*pi, length=361)
+        circle <- cbind(cos(angle), -sin(angle))
+        theboundary <-
+          sp::SpatialPolygons(list(sp::Polygons(
+              list(sp::Polygon(
+                  cbind(circle[,1]*2*sqrt(2)*x$scale[1],
+                        circle[,2]*sqrt(2)*x$scale[2]))),
+              ID="boundary")))
+        theoutline <- rgeos::gIntersection(theboundary, thebox)
+      }
+      if (do.plot) {
+        if (add) {
+          plot(theoutline, add=TRUE, ...)
+        } else {
+          plot(theoutline, ...)
+        }
+      }
+      invisible(theoutline)
+    })
 
 
 ##' .. content for \description{} (no empty lines) ..
@@ -165,32 +268,34 @@ globeproj <- function(type=NULL,
 ##' @name graticule.globeproj
 setMethodS3(
     "graticule", "globeproj",
-graticule <-     function(x, n=c(24, 12), add=FALSE, do.plot=TRUE,
+    function(x, n=c(24, 12), add=FALSE, do.plot=TRUE,
              ...)
-{
+    {
       ## Graticule
       if (n[1] > 0) {
         graticule1 <- floor(n[1]/2)
         lon <- ((-graticule1):graticule1) * 2/n[1]*180
         lat <- seq( -90,  90, by=2)
         meridians <- expand.grid(lat, lon)[,2:1]
-        ## TODO: Add oblique support, etc
+        ## TODO: Add oblique support (requires cutting), etc
         proj.mer.coords <- project(x, meridians)
         proj.mer.coords1 <- matrix(proj.mer.coords[,1], length(lat),
                                    length(lon))
         proj.mer.coords2 <- matrix(proj.mer.coords[,2], length(lat),
                                    length(lon))
+
         proj.mer <-
-          sp::SpatialLines(
-              list(
-                  sp::Lines(
-                      lapply(seq_along(lon),
-                             function(k) sp::Line(cbind(proj.mer.coords1[,k],
-                                                        proj.mer.coords2[,k]))),
-                      ID="meridians")))
+          sp::SpatialLines(list(sp::Lines(
+              unlist(lapply(seq_along(lon),
+                            function(k) {
+                              .clip(x, cbind(proj.mer.coords1[,k],
+                                            proj.mer.coords2[,k]))
+                            }),
+                     recursive=FALSE),
+              ID="meridians")))
         if (do.plot) {
           if (add) {
-            lines(proj.mer, ...)
+            plot(proj.mer, add=TRUE, ...)
           } else {
             plot(proj.mer, ...)
             add <- TRUE
@@ -209,16 +314,17 @@ graticule <-     function(x, n=c(24, 12), add=FALSE, do.plot=TRUE,
         proj.par.coords2 <- matrix(proj.par.coords[,2], length(lon),
                                    length(lat))
         proj.par <-
-          sp::SpatialLines(
-              list(
-                  sp::Lines(
-                      lapply(seq_along(lat),
-                             function(k) sp::Line(cbind(proj.par.coords1[,k],
-                                                        proj.par.coords2[,k]))),
-                      ID="meridians")))
+          sp::SpatialLines(list(sp::Lines(
+              unlist(lapply(seq_along(lat),
+                            function(k) {
+                              .clip(x, cbind(proj.par.coords1[,k],
+                                            proj.par.coords2[,k]))
+                            }),
+                     recursive=FALSE),
+              ID="parallels")))
         if (do.plot) {
           if (add) {
-            lines(proj.par, ...)
+            plot(proj.par, add=TRUE, ...)
           } else {
             plot(proj.par, ...)
           }
@@ -281,20 +387,24 @@ setMethodS3(
              graticule=c(24, 12),
              tissot=c(12,6),
              asp=1,
+             add=FALSE,
              ...)
     {
-      message("Plot something!")
       if (is.null(xlim)) xlim <- x$xlim
       if (is.null(ylim)) ylim <- x$ylim
-      plot(NA, type="n", xlim=xlim, ylim=ylim, asp=asp, ...)
+      if (!add) {
+        plot.new()
+        plot(NA, type="n", xlim=xlim, ylim=ylim, asp=asp, ...)
+      }
       ## Outline
       if (outline) {
-        message("'outline' option not implemented")
+        outline(x, add=TRUE, ...)
       }
       ## Graticule
       graticule(x, n=graticule, add=TRUE, ...)
       ## Tissot
       tissot(x, n=tissot, add=TRUE, asp=asp, ...)
+      invisible(NULL)
     })
 
 
@@ -346,15 +456,14 @@ rotmat321 <- function(rot)
                 0, 0, 1), 3, 3)
   cs <- cos(rot[2])
   sn <- sin(rot[2])
-  R <- R %*% matrix(c(cs, 0, -sn,
+  R <- R %*% matrix(c(cs, 0, sn,
                       0, 1, 0,
-                      sn, 0, cs), 3, 3)
+                      -sn, 0, cs), 3, 3)
   cs <- cos(rot[3])
   sn <- sin(rot[3])
   R <- R %*% matrix(c(1, 0, 0,
                       0, cs, -sn,
-                      0, sn, cs,
-                      0, 0, 1), 3, 3)
+                      0, sn, cs), 3, 3)
   R
 }
 
@@ -364,13 +473,12 @@ rotmat123 <- function(rot)
   sn <- sin(rot[3])
   R <- matrix(c(1, 0, 0,
                 0, cs, -sn,
-                0, sn, cs,
-                0, 0, 1), 3, 3)
+                0, sn, cs), 3, 3)
   cs <- cos(rot[2])
   sn <- sin(rot[2])
-  R <- R %*% matrix(c(cs, 0, -sn,
+  R <- R %*% matrix(c(cs, 0, sn,
                       0, 1, 0,
-                      sn, 0, cs), 3, 3)
+                      -sn, 0, cs), 3, 3)
   cs <- cos(rot[1])
   sn <- sin(rot[1])
   R <- R %*% matrix(c(cs, -sn, 0,
@@ -415,10 +523,10 @@ setMethodS3(
                   z=sin(loc[,2]*pi/180))
         }
         ## Transform to oblique orientation
-        ## 1) Rotate -datum[1] around (0,0,1)
-        ## 2) Rotate -datum[2] around (0,1,0)
-        ## 3) Rotate -datum[3] around (1,0,0)
-        loc <- loc %*% rotmat321(-x$datum*pi/180)
+        ## 1) Rotate -orient[1] around (0,0,1)
+        ## 2) Rotate +orient[2] around (0,1,0)
+        ## 3) Rotate -orient[3] around (1,0,0)
+        loc <- loc %*% rotmat321(c(-1,1,-1)*x$orient*pi/180)
 
       }
       if (identical(x$type, "longlat")) {
@@ -509,12 +617,19 @@ setMethodS3(
       }
       if (inverse) {
         ## Transform back from oblique orientation
-        ## 1) Rotate datum[3] around (1,0,0)
-        ## 2) Rotate datum[2] around (0,1,0)
-        ## 3) Rotate datum[1] around (0,0,1)
-        loc <- loc %*% rotmat123(x$datum*pi/180)
+        ## 1) Rotate +orient[3] around (1,0,0)
+        ## 2) Rotate -orient[2] around (0,1,0)
+        ## 3) Rotate +orient[1] around (0,0,1)
+        proj <- proj %*% rotmat123(c(1,-1,1)*x$orient*pi/180)
       } else {
         proj <- cbind(x=proj[,1] * x$scale[1], y=proj[,2] * x$scale[2])
       }
       proj
     })
+
+
+
+##proj<-globeproj("moll",orient=c(0,0,45))
+##plot.new()
+##plot(proj,graticule=c(24,12),add=FALSE,asp=1,lty=2,lwd=0.5)
+##plot(worldLL,proj,add=TRUE,lwd=0.5)

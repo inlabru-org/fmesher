@@ -6,7 +6,7 @@ Date: 2015-09-06
 Author: Finn Lindgren <finn.lindgren@gmail.com>
 Maintainer: Finn Lindgren <finn.lindgren@gmail.com>
 Description: Functions that generate planar and spherical triangle meshes for finite element calculations, and functions for lines and polygons.
-Depends: Matrix, sp, spam, INLA, R.methodsS3
+Depends: Matrix, sp, spam, INLA, R.methodsS3, rgeos
 Suggests: testthat
 Additional_repositories: http://www.math.ntnu.no/inla/R/stable
 License: GPL (>=3)
