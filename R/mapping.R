@@ -107,34 +107,37 @@ globeproj <- function(type=NULL,
   if (identical(type, "lambert")) {
     type <- "orthocyl"
     if (is.null(scale)) scale <- c(1, 1)
-    if (is.null(orient)) orient <- c(0, 0, 0)
+    if (is.null(orient)) orient <- c(0, 0, 0, 0)
   } else if (identical(type, "gall-peters")) {
     type <- "orthocyl"
     if (is.null(scale)) scale <- c(1, 1)
     scale <- scale * c(1*cos(pi/4), 1/cos(pi/4))
-    if (is.null(orient)) orient <- c(0, 0, 0)
+    if (is.null(orient)) orient <- c(0, 0, 0, 0)
   }
 
   if (identical(type, "longlat")) {
-    if (is.null(orient)) orient <- c(0, 0, 0)
+    if (is.null(orient)) orient <- c(0, 0, 0, 0)
     if (is.null(scale)) scale <- c(1,1)
     if (is.null(xlim)) xlim <- c(-180,180)*scale[1]
     if (is.null(ylim)) ylim <- c(-90,90)*scale[2]
   } else if (identical(type, "orthocyl")) {
-    if (is.null(orient)) orient <- c(0, 0, 0)
+    if (is.null(orient)) orient <- c(0, 0, 0, 0)
     if (is.null(scale)) scale <- c(1, 1)
     if (is.null(xlim)) xlim <- c(-pi,pi)*scale[1]
     if (is.null(ylim)) ylim <- c(-1,1)*scale[2]
   } else if (identical(type, "mollweide")) {
-    if (is.null(orient)) orient <- c(0, 0, 0)
+    if (is.null(orient)) orient <- c(0, 0, 0, 0)
     if (is.null(scale)) scale <- c(1,1)/sqrt(2)
     if (is.null(xlim)) xlim <- c(-2,2)*sqrt(2)*scale[1]
     if (is.null(ylim)) ylim <- c(-1,1)*sqrt(2)*scale[2]
   } else if (identical(type, "hammer")) {
-    if (is.null(orient)) orient <- c(0, 0, 0)
+    if (is.null(orient)) orient <- c(0, 0, 0, 0)
     if (is.null(scale)) scale <- c(1,1)/sqrt(2)
     if (is.null(xlim)) xlim <- c(-2,2)*sqrt(2)*scale[1]
     if (is.null(ylim)) ylim <- c(-1,1)*sqrt(2)*scale[2]
+  }
+  while (length(orient) < 4) {
+    orient <- c(orient, 0)
   }
 
   x <- structure(list(name=name, type=type,
@@ -447,7 +450,7 @@ setMethodS3(
     })
 
 
-rotmat321 <- function(rot)
+rotmat3213 <- function(rot)
 {
   cs <- cos(rot[1])
   sn <- sin(rot[1])
@@ -464,16 +467,26 @@ rotmat321 <- function(rot)
   R <- R %*% matrix(c(1, 0, 0,
                       0, cs, -sn,
                       0, sn, cs), 3, 3)
+  cs <- cos(rot[4])
+  sn <- sin(rot[4])
+  R <- R %*% matrix(c(cs, -sn, 0,
+                      sn, cs, 0,
+                      0, 0, 1), 3, 3)
   R
 }
 
-rotmat123 <- function(rot)
+rotmat3123 <- function(rot)
 {
+  cs <- cos(rot[4])
+  sn <- sin(rot[4])
+  R <- matrix(c(cs, -sn, 0,
+                sn, cs, 0,
+                0, 0, 1), 3, 3)
   cs <- cos(rot[3])
   sn <- sin(rot[3])
-  R <- matrix(c(1, 0, 0,
-                0, cs, -sn,
-                0, sn, cs), 3, 3)
+  R <- R %*% matrix(c(1, 0, 0,
+                      0, cs, -sn,
+                      0, sn, cs), 3, 3)
   cs <- cos(rot[2])
   sn <- sin(rot[2])
   R <- R %*% matrix(c(cs, 0, sn,
@@ -526,7 +539,8 @@ setMethodS3(
         ## 1) Rotate -orient[1] around (0,0,1)
         ## 2) Rotate +orient[2] around (0,1,0)
         ## 3) Rotate -orient[3] around (1,0,0)
-        loc <- loc %*% rotmat321(c(-1,1,-1)*x$orient*pi/180)
+        ## 3) Rotate -orient[4] around (0,0,1)
+        loc <- loc %*% rotmat3213(c(-1,1,-1,-1)*x$orient*pi/180)
 
       }
       if (identical(x$type, "longlat")) {
@@ -556,11 +570,11 @@ setMethodS3(
       } else if (identical(x$type, "mollweide")) {
         if (inverse) {
           ok <- ((loc[,1]^2/2 + 2*loc[,2]^2) <= 4)
-          cos.theta <- sqrt(pmax(0, 1-loc[ok,2]^2))
-          theta <- atan2(loc[ok,2], cos.theta)
+          cos.theta <- sqrt(pmax(0, 1-loc[ok,2]^2/2))
+          theta <- atan2(loc[ok,2]/sqrt(2), cos.theta)
           sin.lat <- (2*theta+sin(2*theta))/pi
           cos.lat = sqrt(pmax(0, 1-sin.lat^2))
-          lon <- loc[ok,1]*pi/2/(cos.theta+(cos.theta==0))
+          lon <- loc[ok,1]/sqrt(2)*pi/2/(cos.theta+(cos.theta==0))
           lon[cos.theta==0] <- pi/2*sign(theta[cos.theta==0])
           proj <- matrix(NA, nrow(loc), 3)
           proj[ok,] <- cbind(x=cos(lon)*cos.lat,
@@ -617,10 +631,11 @@ setMethodS3(
       }
       if (inverse) {
         ## Transform back from oblique orientation
-        ## 1) Rotate +orient[3] around (1,0,0)
-        ## 2) Rotate -orient[2] around (0,1,0)
-        ## 3) Rotate +orient[1] around (0,0,1)
-        proj <- proj %*% rotmat123(c(1,-1,1)*x$orient*pi/180)
+        ## 1) Rotate +orient[4] around (0,0,1)
+        ## 2) Rotate +orient[3] around (1,0,0)
+        ## 3) Rotate -orient[2] around (0,1,0)
+        ## 4) Rotate +orient[1] around (0,0,1)
+        proj <- proj %*% rotmat3123(c(1,-1,1,1)*x$orient*pi/180)
       } else {
         proj <- cbind(x=proj[,1] * x$scale[1], y=proj[,2] * x$scale[2])
       }
