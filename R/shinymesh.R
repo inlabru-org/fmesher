@@ -35,19 +35,19 @@ meshbuilder.app <- function() {
                 fluidRow(
                     column(6,
                            checkboxInput("assess", label = "Active", value=FALSE),
-                           radioButtons("assessment", label = "Type",
-                                        choices = list("Mesh SD" = "coarse",
-                                                       "SD ratio (mesh/fine)" = "rel",
-                                                       "Fine SD" = "fine"),
-                                        selected = "rel")
+                           uiOutput("overlay.ui")
                            ),
                     column(6,
-                           checkboxInput("sd.bound", label = "SD bound", value=FALSE),
-                           checkboxGroupInput("overlay", label="Overlay",
-                                              choices = list("Mesh" = "mesh",
-                                                             "Fine" = "finemesh",
-                                                             "Correlations" ="corr"),
-                                              selected= "mesh")
+                           checkboxInput("assess.advanced", label = "Advanced", value=FALSE),
+                           uiOutput("assessment.basic.ui")
+                           )
+                ),
+                fluidRow(
+                    column(6,
+                           uiOutput("resolution.ui")
+                           ),
+                    column(6,
+                           uiOutput("assessment.ui")
                            )
                 ),
                 sliderInput(inputId="corr.range", label="Spatial correlation range",
@@ -106,14 +106,14 @@ meshbuilder.app <- function() {
                                         click="meshplot.click"
                                         ),
                              fluidRow(
-                                 column(4,
-                                        tableOutput("meta")
+                                 column(3,
+                                        tableOutput("meshmeta")
                                         ),
-                                 column(4,
-                                        tableOutput("SD.information")
+                                 column(3,
+                                        tableOutput("click.information")
                                         ),
-                                 column(4,
-                                        tableOutput("corr.information")
+                                 column(6,
+                                        tableOutput("field.information")
                                         )
                              ),
                              verbatimTextOutput("loc.click.coordinates")
@@ -310,9 +310,6 @@ meshbuilder.app <- function() {
             bnd
         })
         mesh <- reactive({
-            if (input$panel == "Input") {
-                return(NULL)
-            }
             message("mesh")
             loc1 <- mesh.loc()
             bnd1 <- boundary()
@@ -330,6 +327,7 @@ meshbuilder.app <- function() {
             }
             if (is.null(loc1) && is.null(bnd1)) {
                 out <- NULL
+                metadata$mesh <- NULL
             } else {
                 out <- INLA::inla.mesh.2d(loc=loc1,
                                           boundary=bnd1,
@@ -343,9 +341,47 @@ meshbuilder.app <- function() {
                      min.angle=c(", input$min.angle[2], ", ", input$min.angle[1], "),
                      max.n=c(48000, 16000)
                      cutoff=", input$cutoff, ")\n")
+                el <- sqrt(c(Matrix::rowSums((out$loc[out$graph$tv[,2],] -
+                                              out$loc[out$graph$tv[,1],])^2),
+                             Matrix::rowSums((out$loc[out$graph$tv[,3],] -
+                                              out$loc[out$graph$tv[,2],])^2),
+                             Matrix::rowSums((out$loc[out$graph$tv[,1],] -
+                                              out$loc[out$graph$tv[,3],])^2)))
+                metadata$mesh <- cbind(out$n, min(el), max(el))
+            }
+            metadata$fine <- NULL
+            out
+        })
+        fine <- reactive({
+            if (is.null(mesh())) {
+                out <- NULL
+                metadata$fine <- NULL
+            } else {
+                message("fine")
+                out <- INLA::inla.mesh.2d(loc=mesh()$loc,
+                                          boundary=list(INLA::inla.mesh.boundary(mesh())),
+                                          max.edge=min(mesh.edgelengths())/2,
+                                          min.angle=21,
+                                          max.n=64000,
+                                          cutoff=0)
+                attr(out, "code") <- paste0(
+"fine <- inla.mesh.2d(boundary=list(inla.mesh.boundary(mesh)),\n",
+"                         max.edge=", min(mesh.edgelengths())/2,",
+                         min.angle=21,
+                         max.n=64000,
+                         cutoff=0)\n"
+                    )
+                el <- sqrt(c(Matrix::rowSums((out$loc[out$graph$tv[,2],] -
+                                              out$loc[out$graph$tv[,1],])^2),
+                             Matrix::rowSums((out$loc[out$graph$tv[,3],] -
+                                              out$loc[out$graph$tv[,2],])^2),
+                             Matrix::rowSums((out$loc[out$graph$tv[,1],] -
+                                              out$loc[out$graph$tv[,3],])^2)))
+                metadata$fine <- cbind(out$n, min(el), max(el))
             }
             out
         })
+
         mesh.edgelengths <- reactive({
             m <- mesh()
             if (is.null(m)) {
@@ -356,8 +392,8 @@ meshbuilder.app <- function() {
                        Matrix::rowSums((m$loc[m$graph$tv[,1],] - m$loc[m$graph$tv[,3],])^2)))
             }
         })
-        finemesh.edgelengths <- reactive({
-            m <- finemesh()
+        fine.edgelengths <- reactive({
+            m <- fine()
             if (is.null(m)) {
                 c(NA)
             } else {
@@ -366,27 +402,7 @@ meshbuilder.app <- function() {
                        Matrix::rowSums((m$loc[m$graph$tv[,1],] - m$loc[m$graph$tv[,3],])^2)))
             }
         })
-        finemesh <- reactive({
-            if (!input$assess || is.null(mesh())) {
-                out <- NULL
-            } else {
-                message("finemesh")
-                out <- INLA::inla.mesh.2d(loc=mesh()$loc,
-                                          boundary=list(INLA::inla.mesh.boundary(mesh())),
-                                          max.edge=min(mesh.edgelengths())/2,
-                                          min.angle=21,
-                                          max.n=64000,
-                                          cutoff=0)
-                attr(out, "code") <- paste0(
-"finemesh <- inla.mesh.2d(boundary=list(inla.mesh.boundary(mesh)),\n",
-"                         max.edge=", min(mesh.edgelengths())/2,",
-                         min.angle=21,
-                         max.n=64000,
-                         cutoff=0)\n"
-                    )
-            }
-            out
-        })
+
         mesh.proj <- reactive({
             if (is.null(mesh())) {
                 NULL
@@ -394,20 +410,32 @@ meshbuilder.app <- function() {
                 INLA::inla.mesh.projector(mesh(), dims=c(500, 500))
             }
         })
-        finemesh.proj <- reactive({
-            if (is.null(finemesh())) {
+        fine.proj <- reactive({
+            if (is.null(fine())) {
                 NULL
             } else {
-                INLA::inla.mesh.projector(finemesh(), lattice=mesh.proj()$lattice)
+                INLA::inla.mesh.projector(fine(), lattice=mesh.proj()$lattice)
             }
         })
         mesh.spde <- reactive({
             message("mesh.spde")
-            if ((input$panel == "Input") || !input$assess || is.null(mesh())) {
+            if (is.null(mesh())) {
                 NULL
             } else {
-            message("mesh.spde!")
+                message("mesh.spde!")
                 INLA::inla.spde2.pcmatern(mesh(),
+                                          alpha=input$corr.nu+1,
+                                          prior.range=c(1, 0.5),
+                                          prior.sigma=c(1, 0.5))
+            }
+        })
+        fine.spde <- reactive({
+            message("fine.spde")
+            if (is.null(mesh())) {
+                NULL
+            } else {
+                message("fine.spde!")
+                INLA::inla.spde2.pcmatern(fine(),
                                           alpha=input$corr.nu+1,
                                           prior.range=c(1, 0.5),
                                           prior.sigma=c(1, 0.5))
@@ -415,130 +443,126 @@ meshbuilder.app <- function() {
         })
         mesh.Q <- reactive({
             message("mesh.Q")
-            if (!input$assess || is.null(mesh.spde())) {
+            if (is.null(mesh.spde())) {
                 NULL
             } else {
             message("mesh.Q!")
                 INLA::inla.spde.precision(mesh.spde(), theta=log(c(input$corr.range, 1)))
             }
         })
+        fine.Q <- reactive({
+            message("fine.Q")
+            if (is.null(fine.spde())) {
+                NULL
+            } else {
+            message("fine.Q!")
+                INLA::inla.spde.precision(fine.spde(), theta=log(c(input$corr.range, 1)))
+            }
+        })
         mesh.S <- reactive({
             message("mesh.S")
-            if (!input$assess || is.null(mesh.Q())) {
+            if (is.null(mesh.Q())) {
                 NULL
             } else {
                 message("mesh.S!")
                 INLA::inla.qinv(mesh.Q(), reordering=INLA::inla.reorderings())
             }
         })
-        finemesh.spde <- reactive({
-            message("finemesh.spde")
-            if ((input$panel == "Input") || !input$assess || is.null(finemesh())) {
+        fine.S <- reactive({
+            message("fine.S")
+            if (is.null(fine.Q())) {
                 NULL
             } else {
-                message("finemesh.spde!")
-                INLA::inla.spde2.pcmatern(finemesh(),
-                                          alpha=input$corr.nu+1,
-                                          prior.range=c(1, 0.5),
-                                          prior.sigma=c(1, 0.5))
-            }
-        })
-        finemesh.Q <- reactive({
-            message("finemesh.Q")
-            if (!input$assess || is.null(finemesh.spde())) {
-                NULL
-            } else {
-            message("finemesh.Q!")
-                INLA::inla.spde.precision(finemesh.spde(), theta=log(c(input$corr.range, 1)))
-            }
-        })
-        finemesh.S <- reactive({
-            message("finemesh.S")
-            if (!input$assess || is.null(finemesh.Q())) {
-                NULL
-            } else {
-            message("finemesh.S!")
-                INLA::inla.qinv(finemesh.Q(), reordering=INLA::inla.reorderings())
-            }
-        })
-        observeEvent(c(input$overlay, input$sd.bound), {
-            if (("corr" %in% input$overlay) && input$sd.bound) {
-                updateCheckboxInput(session, "sd.bound", value=FALSE)
+                message("fine.S!")
+                INLA::inla.qinv(fine.Q(), reordering=INLA::inla.reorderings())
             }
         })
         mesh.sd <- reactive({
             message("mesh.sd")
-            if (!input$assess || is.null(mesh.S())) {
+            if (is.null(mesh.S())) {
                 NULL
             } else {
                 message("mesh.sd!")
                 proj <- mesh.proj()
-                if (input$sd.bound) {
-                    INLA::inla.mesh.project(proj, field=diag(mesh.S())^0.5)
-                } else {
-                    v <- Matrix::rowSums(proj$proj$A * (proj$proj$A %*% mesh.S()))
-                    v[!proj$proj$ok] <- NA
-                    matrix(v^0.5, length(proj$x), length(proj$y))
-                }
+                v <- Matrix::rowSums(proj$proj$A * (proj$proj$A %*% mesh.S()))
+                v[!proj$proj$ok] <- NA
+                matrix(v^0.5, length(proj$x), length(proj$y))
             }
         })
-        finemesh.sd <- reactive({
-            message("finemesh.sd")
-            if (!input$assess || is.null(finemesh.S())) {
+        fine.sd <- reactive({
+            message("fine.sd")
+            if (is.null(fine.S())) {
                 NULL
             } else {
-                message("finemesh.sd!")
-                proj <- finemesh.proj()
-                if (input$sd.bound) {
-                    INLA::inla.mesh.project(proj, field=diag(finemesh.S())^0.5)
-                } else {
-                    v <- Matrix::rowSums(proj$proj$A * (proj$proj$A %*% finemesh.S()))
-                    v[!proj$proj$ok] <- NA
-                    matrix(v^0.5, length(proj$x), length(proj$y))
-                }
+                message("fine.sd!")
+                proj <- fine.proj()
+                v <- Matrix::rowSums(proj$proj$A * (proj$proj$A %*% fine.S()))
+                v[!proj$proj$ok] <- NA
+                matrix(v^0.5, length(proj$x), length(proj$y))
+            }
+        })
+        mesh.sd.bound <- reactive({
+            message("mesh.sd.bound")
+            if (is.null(mesh.S())) {
+                NULL
+            } else {
+                message("mesh.sd.bound!")
+                proj <- mesh.proj()
+                INLA::inla.mesh.project(proj, field=diag(mesh.S())^0.5)
+            }
+        })
+        fine.sd.bound <- reactive({
+            message("fine.sd.bound")
+            if (is.null(fine.S())) {
+                NULL
+            } else {
+                message("fine.sd.bound!")
+                proj <- fine.proj()
+                INLA::inla.mesh.project(proj, field=diag(fine.S())^0.5)
             }
         })
         mesh.corr <- reactive({
             message("mesh.corr")
-            message("mesh.corr A")
-            A <- A.click()
-            message("mesh.corr A,s")
-            s <- SD.information()
-            message("mesh.corr, s")
-            message(paste("mesh.corr:", is.null(A), is.null(s)))
-            if (!input$assess || !("corr" %in% input$overlay) ||
-                is.null(mesh.sd()) || is.null(A) || is.null(s)) {
+            if (is.null(mesh.sd()) || is.null(meshplot.A.mesh()) ||
+                is.null(click.information()) || is.null(mesh.proj())) {
                 NULL
             } else {
                 message("mesh.corr!")
+                A <- meshplot.A.mesh()
+                s <- click.information()
                 proj <- mesh.proj()
-                corr <- proj$proj$A %*% as.vector(inla.qsolve(mesh.Q(), t(A$mesh)))
+                print(str(A))
+                print(str(s))
+                print(str(proj))
+                corr <- proj$proj$A %*% as.vector(inla.qsolve(mesh.Q(), t(A)))
                 matrix(corr, length(proj$x), length(proj$y)) / mesh.sd() / s["SD","Mesh"]
             }
         })
-        finemesh.corr <- reactive({
-            message("finemesh.corr")
-            A <- A.click()
-            s <- SD.information()
-            if (!input$assess || !("corr" %in% input$overlay) ||
-                is.null(finemesh.sd()) || is.null(A) || is.null(s)) {
+        fine.corr <- reactive({
+            message("fine.corr")
+            if (is.null(fine.sd()) || is.null(meshplot.A.fine()) ||
+                is.null(click.information) || is.null(fine.proj())) {
                 NULL
             } else {
-                message("finemesh.corr!")
-                proj <- finemesh.proj()
-                corr <- proj$proj$A %*% inla.qsolve(finemesh.Q(), t(A$finemesh))
-                matrix(corr, length(proj$x), length(proj$y)) / finemesh.sd() / s["SD","Fine"]
+                message("fine.corr!")
+                A <- meshplot.A.fine()
+                s <- click.information()
+                proj <- fine.proj()
+                corr <- proj$proj$A %*% inla.qsolve(fine.Q(), t(A))
+                matrix(corr, length(proj$x), length(proj$y)) / fine.sd() / s["SD","Fine"]
             }
         })
 
         update.limits <- observe({
             lim <- 2^ceiling(log2(max(input$offset[2]*1.2,
-                                      max(diff(input.xlim()), diff(input.ylim()))*1)))
+                                      max(diff(limits$input.xlim),
+                                          diff(limits$input.ylim))*1)))
             updateSliderInput(session, "offset",
                               min=lim/100, max=lim, step=lim/100)
 
             lim <- 2^ceiling(log2(max(input$max.edge[2]*1.2,
-                                      max(diff(input.xlim()), diff(input.ylim()))*1)))
+                                      max(diff(limits$input.xlim),
+                                          diff(limits$input.ylim))*1)))
             updateSliderInput(session, "max.edge",
                               min=lim/100, max=lim, step=lim/100)
 
@@ -546,127 +570,265 @@ meshbuilder.app <- function() {
             updateSliderInput(session, "cutoff",
                               min=lim/100, max=lim, step=lim/100)
 
-            if (input$panel == "Display") {
-                lim <- 2^ceiling(log2(max(input$corr.range*1.2,
-                                          input$max.edge[1]*12,
-                                          input$max.edge[2]*1.2)))
-                updateSliderInput(session, "corr.range",
-                                  min=lim/100, max=lim, step=lim/100)
-            }
-})
-        
-        meta <- reactive({
-            if (input$panel != "Display") {
-                m <- matrix(NA, 2, 3)
-            } else {
-                m1 <- mesh()
-                if (is.null(m1)) {
-                    m <- cbind(NA, NA, NA)
-                } else {
-                    m <- rbind(c(m1$n, range(mesh.edgelengths())))
-                }
-                m2 <- finemesh()
-                if (is.null(m2)) {
-                    m <- rbind(m, c(NA, NA, NA))
-                } else {
-                    m <- rbind(m, c(m2$n, range(finemesh.edgelengths())))
-                }
-            }
-            rownames(m) <- c("Mesh", "Fine")
-            colnames(m) <- c("nV", "minE", "maxE")
-            m <- as.data.frame(m)
-            m$nV <- as.integer(m$nV)
-            m
+            lim <- 2^ceiling(log2(max(input$corr.range*1.2,
+                                      input$max.edge[1]*12,
+                                      input$max.edge[2]*1.2)))
+            updateSliderInput(session, "corr.range",
+                              min=lim/100, max=lim, step=lim/100)
         })
+
+        metadata <- reactiveValues(mesh=NULL,
+                                   fine=NULL)
+        meshmeta <- reactive({
+            m1 <- m2 <- NULL
+            if (!is.null(metadata$mesh)) {
+                m1 <- rbind(metadata$mesh)
+                rownames(m1) <- "Mesh"
+            }
+            if (!is.null(metadata$fine)) {
+                m2 <- rbind(metadata$fine)
+                rownames(m2) <- "Fine"
+            }
+            out <- rbind(m1, m2)
+            colnames(out) <- c("nV", "minE", "maxE")
+            out <- as.data.frame(out)
+            out$nV <- as.integer(out$nV)
+            out
+        })
+
+        observeEvent(input$assessment.basic, {
+            if (!is.null(input$assessment.basic)) {
+                if (input$assessment.basic == "sd") {
+                    updateRadioButtons(session, "assessment", selected="sd")
+                    updateRadioButtons(session, "resolution", selected="mesh")
+                } else if (input$assessment.basic == "corr") {
+                    updateRadioButtons(session, "assessment", selected="corr")
+                    updateRadioButtons(session, "resolution", selected="mesh")
+                } else if (input$assessment.basic == "sd.bound") {
+                    updateRadioButtons(session, "assessment", selected="sd.bound")
+                    updateRadioButtons(session, "resolution", selected="mesh")
+                } else if (input$assessment.basic == "deviation.approx") {
+                    updateRadioButtons(session, "assessment", selected="sd/bound")
+                    updateRadioButtons(session, "resolution", selected="mesh")
+                } else if (input$assessment.basic == "deviation") {
+                    updateRadioButtons(session, "assessment", selected="sd")
+                    updateRadioButtons(session, "resolution", selected="rel")
+                }
+            }
+        })
+        observeEvent(c(input$assessment, input$resolution), {
+            if (!is.null(input$assessment) && !is.null(input$resolution)) {
+                val <- "other"
+                if (input$resolution == "mesh") {
+                    if (input$assessment == "sd") {
+                        val <- "sd"
+                    } else if (input$assessment == "corr") {
+                        val <- "corr"
+                    } else if (input$assessment == "sd.bound") {
+                        val <- "sd.bound"
+                    } else if (input$assessment == "sd/bound") {
+                        val <- "deviation.approx"
+                    }
+                } else if (input$resolution == "rel") {
+                    if (input$assessment == "sd") {
+                        val <- "deviation"
+                    }
+                }
+                updateRadioButtons(session, "assessment.basic", selected=val)
+            }
+        })
+
+        output$assessment.basic.ui <- renderUI({
+            sel <- isolate(input$assessment.basic)
+            default <- 1
+            choices <- list("SD" = "sd",
+                            "Correlation" = "corr",
+                            "SD bound" = "sd.bound",
+                            "Approximate SD deviation" = "deviation.approx")
+            if (input$assess.advanced) {
+                choices <- c(choices,
+                             list("SD deviation" = "deviation",
+                                  "Other" = "other"))
+            }
+            if (is.null(sel) || !(sel %in% choices)) {
+                sel <- choices[[default]]
+            }
+            radioButtons("assessment.basic", label = "Display",
+                         choices = choices, selected = sel)
+        })
+        output$assessment.ui <- renderUI({
+            sel <- isolate(input$assessment)
+            default <- 1
+            if (input$assess.advanced) {
+                choices <- list("SD" = "sd",
+                                "Correlation" = "corr",
+                                "SD bound" = "sd.bound",
+                                "SD/bound" = "sd/bound")
+            } else {
+                choices <- list("SD" = "sd",
+                                "Correlation" = "corr",
+                                "SD bound" = "sd.bound",
+                                "SD/bound" = "sd/bound")
+            }
+            if (is.null(sel) || !(sel %in% choices)) {
+                sel <- choices[[default]]
+            }
+            radioButtons("assessment", label = "Quantity",
+                         choices = choices, selected = sel)
+        })
+        output$overlay.ui <- renderUI({
+            if (is.null(input$assess.advanced)) {
+                return(NULL)
+            }
+            sel <- isolate(input$overlay)
+            default <- 2
+            if (input$assess.advanced) {
+                choices <- list("None" = "none",
+                                "Mesh" = "mesh",
+                                "Fine" = "fine")
+            } else {
+                choices <- list("None" = "none",
+                                "Mesh" = "mesh")
+            }
+            if (is.null(sel) || !(sel %in% choices)) {
+                sel <- choices[[default]]
+            }
+            radioButtons("overlay", label="Overlay",
+                         choices = choices, selected = sel)
+        })
+        output$resolution.ui <- renderUI({
+            if (is.null(input$assessment)) {
+                return(NULL)
+            }
+            sel <- isolate(input$resolution)
+            default <- 1
+            if (input$assess.advanced) {
+                choices <- switch(input$assessment,
+                                  "sd" = list("Mesh" = "mesh",
+                                              "Fine" = "fine",
+                                              "Mesh/Fine" = "rel"),
+                                  "sd.bound" = list("Mesh" = "mesh",
+                                                    "Fine" = "fine",
+                                                    "Mesh/Fine" = "rel"),
+                                  "sd/bound" = list("Mesh" = "mesh",
+                                                    "Fine" = "fine",
+                                                    "Mesh/Fine" = "rel"),
+                                  "corr" = list("Mesh" = "mesh",
+                                                "Fine" = "fine",
+                                                "Mesh-Fine" = "rel"),
+                                  )
+            } else {
+                choices <- list("Mesh" = "mesh")
+            }
+            if (is.null(sel) || !(sel %in% choices)) {
+                sel <- choices[[default]]
+            }
+            radioButtons("resolution", label = "Resolution",
+                         choices = choices, selected=sel)
+            })
         
         meshplot.expr <- quote({
             message("meshplot.expr")
-            if (input$panel != "Display") {
-                return()
-            }
+            col <- colorRampPalette(c("blue", "white", "red"))
+            n.col <- 1+64
             if (!input$assess && !is.null(mesh())) {
                 message("meshplot.expr: basic")
-                plot(NA, type="n", xlim=xlim(), ylim=ylim(),
-                     asp=1, main="", xlab="Easting", ylab="Northing")
+                zlim <- c(-1, 1)
+                fields::image.plot(mesh.proj()$x, mesh.proj()$y,
+                                   matrix(0, length(mesh.proj()$x), length(mesh.proj()$y)),
+                                   zlim=zlim, 
+                                   xlim=xlim(), ylim=ylim(),
+                                   col=col(n.col), asp=1, main="",
+                                   xlab="Easting", ylab="Northing")
                 plot(mesh(), add=TRUE)
-            } else if (input$assess && !is.null(finemesh())) {
+            } else if (input$assess) {
                 message("meshplot.expr: assess")
-                co <- mesh.corr()
-                message(paste("meshplot.expr: mesh.corr", is.null(co)))
-                
-                if (("corr" %in% input$overlay) && !is.null(co)) {
-                    message(paste("meshplot.expr: corr", input$assessment))
-                    col <- colorRampPalette(c("blue", "white", "red"))
-                    n.col <- 1+16
-                    c.m <- co
-                    c.f <- finemesh.corr()
-                    c.r <- c.m - c.f
-                    zlim.abs <- c(-1, 1)
-                    zlim.rel <- c(-1, 1) * max(abs(c.r), na.rm=TRUE)
-                    if (input$assessment == "coarse") {
-                        message("meshplot.expr: coarse")
-                        fields::image.plot(mesh.proj()$x, mesh.proj()$y, c.m,
-                                           zlim=zlim.abs,
-                                           col=col(n.col), asp=1, main="",
-                                           xlab="Easting", ylab="Northing")
-                    } else if (input$assessment == "rel") {
-                        message("meshplot.expr: rel")
-                        fields::image.plot(mesh.proj()$x, mesh.proj()$y, c.r,
-                                           zlim=zlim.rel,
-                                           col=col(n.col), asp=1, main="",
-                                           xlab="Easting", ylab="Northing")
-                    } else if (input$assessment == "fine") {
-                        message("meshplot.expr: fine")
-                        fields::image.plot(mesh.proj()$x, mesh.proj()$y, c.f,
-                                           zlim=zlim.abs,
-                                           col=col(n.col), asp=1, main="",
-                                           xlab="Easting", ylab="Northing")
+                message(paste("meshplot.expr: assessment", input$assessment))
+                message(paste("meshplot.expr: resolution", input$resolution))
+                message(paste("meshplot.expr: overlay", input$overlay))
+                zlim.sd <- c(0.5, 1.5)
+                zlim.sd.rel <- c(0.5, 1.5)
+                zlim.corr <- c(-1, 1)
+                zlim.corr.rel <- c(-1, 1)/5
+                zlim.sdbound <- c(1/sqrt(3), 1+(1-1/sqrt(3)))
+                zlim.sdbound.rel <- c(0.5, 1.5)
+                ## sd
+                if (input$assessment %in% c("sd")) {
+                    zlim <- zlim.sd
+                    if (input$resolution %in% c("mesh")) {
+                        val <- mesh.sd()
+                    } else if (input$resolution %in% c("fine")) {
+                        val <- fine.sd()
+                    } else if (input$resolution %in% c("rel")) {
+                        val <- mesh.sd() / fine.sd()
+                        zlim <- zlim.sd.rel
+                    }
+                } else
+                ## corr
+                if (input$assessment %in% c("corr")) {
+                    zlim <- zlim.corr
+                    if (input$resolution %in% c("mesh")) {
+                        val <- mesh.corr()
+                    } else if (input$resolution %in% c("fine")) {
+                        val <- fine.corr()
+                    } else if (input$resolution %in% c("rel")) {
+                        val <- mesh.corr() - fine.corr()
+                        zlim <- zlim.corr.rel
+                    }
+                } else
+                ## sd.bound
+                if (input$assessment %in% c("sd.bound")) {
+                    zlim <- zlim.sd
+                    if (input$resolution %in% c("mesh")) {
+                        val <- mesh.sd.bound()
+                    } else if (input$resolution %in% c("fine")) {
+                        val <- fine.sd.bound()
+                    } else if (input$resolution %in% c("rel")) {
+                        val <- mesh.sd.bound() / fine.sd.bound()
+                        zlim <- zlim.sd.rel
+                    }
+                } else
+                ## sd/bound
+                if (input$assessment %in% c("sd/bound")) {
+                    zlim <- zlim.sdbound
+                    if (input$resolution %in% c("mesh")) {
+                        val <- mesh.sd() / mesh.sd.bound()
+                    } else if (input$resolution %in% c("fine")) {
+                        val <- fine.sd() / fine.sd.bound()
+                    } else if (input$resolution %in% c("rel")) {
+                        val <- (mesh.sd() / mesh.sd.bound()) / (fine.sd() / fine.sd.bound())
+                        zlim <- zlim.sdbound.rel
                     }
                 } else {
-                    message(paste("meshplot.expr: sd", input$assessment))
-                    col <- colorRampPalette(c("blue", "white", "red"))
-                    n.col <- 1+16
-                    sd.m <- mesh.sd()
-                    sd.f <- finemesh.sd()
-                    sd.r <- sd.m / sd.f
-                    zlim.abs <- range(c(range(sd.m, na.rm=TRUE),
-                                        range(sd.f, na.rm=TRUE)))
-                    zlim.abs <- exp(max(abs(log(zlim.abs))))
-                    zlim.abs <- 1 + c(-1,1)*(zlim.abs-1)
-                    zlim.rel <- range(sd.r, na.rm=TRUE)
-                    zlim.rel <- exp(max(abs(log(zlim.rel))))
-                    zlim.rel <- 1 + c(-1,1)*min(2, max(0.1, zlim.rel-1))
-                    zlim.abs <- zlim.rel <- c(0.5, 1.5)
-                    sd.m <- matrix(pmin(1.5, pmax(0.5, as.vector(sd.m))), nrow(sd.m), ncol(sd.m))
-                    sd.f <- matrix(pmin(1.5, pmax(0.5, as.vector(sd.f))), nrow(sd.f), ncol(sd.f))
-                    sd.r <- matrix(pmin(1.5, pmax(0.5, as.vector(sd.r))), nrow(sd.r), ncol(sd.r))
-                    if (input$assessment == "coarse") {
-                        message("meshplot.expr: coarse")
-                        fields::image.plot(mesh.proj()$x, mesh.proj()$y, sd.m,
-                                           zlim=zlim.abs,
-                                           col=col(n.col), asp=1, main="",
-                                           xlab="Easting", ylab="Northing")
-                    } else if (input$assessment == "rel") {
-                        message("meshplot.expr: rel")
-                        fields::image.plot(mesh.proj()$x, mesh.proj()$y, sd.r,
-                                           zlim=zlim.rel,
-                                           col=col(n.col), asp=1, main="",
-                                           xlab="Easting", ylab="Northing")
-                    } else if (input$assessment == "fine") {
-                        message("meshplot.expr: fine")
-                        fields::image.plot(mesh.proj()$x, mesh.proj()$y, sd.f,
-                                           zlim=zlim.abs,
-                                           col=col(n.col), asp=1, main="",
-                                           xlab="Easting", ylab="Northing")
-                    }
+                    val <- NULL
+                    zlim <- c(-1, 1)
+                }
+                if (is.null(val)) {
+                    fields::image.plot(mesh.proj()$x, mesh.proj()$y,
+                                       matrix(0, length(mesh.proj()$x), length(mesh.proj()$y)),
+                                       zlim=zlim,
+                                       xlim=xlim(), ylim=ylim(),
+                                       col=col(n.col), asp=1, main="",
+                                       xlab="Easting", ylab="Northing")
+                } else {
+                    val <- matrix(pmax(zlim[1], pmin(zlim[2], as.vector(val))),
+                                  nrow(val), ncol(val))
+                    fields::image.plot(mesh.proj()$x, mesh.proj()$y, val,
+                                       zlim=zlim,
+                                       xlim=xlim(), ylim=ylim(),
+                                       col=col(n.col), asp=1, main="",
+                                       xlab="Easting", ylab="Northing")
+                }
+                if (!is.null(clicks$meshplot.loc)) {
+                    points(clicks$meshplot.loc, col=2)
                 }
                 if ("mesh" %in% input$overlay) {
                     message("meshplot.expr: mesh overlay")
                     plot(mesh(), add=TRUE)
                 }
-                if ("finemesh" %in% input$overlay) {
+                if ("fine" %in% input$overlay) {
                     message("meshplot.expr: fine overlay")
-                    plot(finemesh(), add=TRUE)
+                    plot(fine(), add=TRUE)
                 }
             }
         })
@@ -697,7 +859,11 @@ meshbuilder.app <- function() {
             r
         })
 
-        input.xlim <- reactive({
+        limits <- reactiveValues(input.xlim=c(0,1),
+                                 input.ylim=c(0,1),
+                                 inputplot.xlim=c(0,1),
+                                 inputplot.ylim=c(0,1))
+        observe({
             lim1 <- userinput.xlim()
             lim2 <- if (length(input$loc.usage) > 0) {
                 if (is.null(loc())) NA else range(coordinates(loc())[,1], na.rm=TRUE)
@@ -710,9 +876,8 @@ meshbuilder.app <- function() {
             } else {
                 r <- range(r, na.rm=TRUE)
             }
-            r
-        })
-        input.ylim <- reactive({
+            limits$input.xlim <- r
+
             lim1 <- userinput.ylim()
             lim2 <- if (length(input$loc.usage) > 0) {
                 if (is.null(loc())) NA else range(coordinates(loc())[,2], na.rm=TRUE)
@@ -725,7 +890,11 @@ meshbuilder.app <- function() {
             } else {
                 r <- range(r, na.rm=TRUE)
             }
-            r
+            limits$input.ylim <- r
+        })
+        observe({
+            limits$inputplot.xlim <- limits$input.xlim + c(-1,1)*input$offset[2]
+            limits$inputplot.ylim <- limits$input.ylim + c(-1,1)*input$offset[2]
         })
 
         xlim <- reactive({
@@ -750,105 +919,196 @@ meshbuilder.app <- function() {
         })
 
         inputplot.expr <- quote({
-            if (input$panel != "Input") {
-                return()
-            }
-            plot(NA, type="n", main="", xlim=input.xlim(), ylim=input.ylim(),
-                 xlab="Easting", ylab="Northing")
+            plot(NA, type="n", main="",
+                 xlim=limits$inputplot.xlim, ylim=limits$inputplot.ylim,
+                 xlab="Easting", ylab="Northing",
+                 asp=1)
             points(mesh.loc(), col=2)
             points(boundary.loc(), col=4)
+            bnd <- boundary()
+            for (k in 1:2) {
+                if (inherits(bnd[[k]], "inla.mesh.segment")) {
+                    lines(boundary()[[k]], col=k, add=TRUE)
+                } else if (inherits(bnd[[k]], "list")) {
+                    lapply(boundary()[[k]], function(x) lines(x, col=k, add=TRUE))
+                }
+            }
         })
 
         output$inputplot <-
             renderPlot(inputplot.expr, quoted=TRUE, height=800, units="px")
 
-        output$meta <- renderTable({meta()}, digits=3, rownames=TRUE)
+        output$meshmeta <- renderTable({meshmeta()}, digits=3, rownames=TRUE)
 
-        clicks <- reactiveValues(loc.click=NULL)
+        clicks <- reactiveValues(meshplot.loc=NULL)
         observeEvent(input$meshplot.click, {
-            message("loc.click")
+            message("meshplot.loc")
             if (is.null(input$meshplot.click)) {
-                clicks$loc.click <- NULL
+                clicks$meshplot.loc <- NULL
             } else {
-                clicks$loc.click <- cbind(input$meshplot.click$x, input$meshplot.click$y)
+                clicks$meshplot.loc <- cbind(input$meshplot.click$x, input$meshplot.click$y)
             }
-            message(paste("loc.click: loc.click =", paste(clicks$loc.click, collapse=", ")))
+            message(paste("meshplot.loc: meshplot.loc =", paste(clicks$meshplot.loc, collapse=", ")))
         })
-        A.click <- reactive({
-            message(paste("A.click:",
-                          paste0("loc.click = ", paste(clicks$loc.click, collapse=", ")),
-                          (input$panel == "Input"), !input$assess,
-                          is.null(mesh()), is.null(finemesh()), (is.null(clicks$loc.click))))
-            if ((input$panel == "Input") || !input$assess ||
-                is.null(mesh()) || is.null(finemesh()) || (is.null(clicks$loc.click))) {
-                NULL
-            } else {
-                message("A.click!")
-                A.mesh <- INLA::inla.spde.make.A(mesh(), clicks$loc.click)
-                if (!(sum(A.mesh) > 0)) {
-                    return(NULL)
+        meshplot.A.mesh <- reactive({
+            message("meshplot.A.mesh")
+            A <- NULL
+            if (input$assess && !is.null(clicks$meshplot.loc) && !is.null(mesh())) {
+                message(paste("meshplot.A.mesh:",
+                              paste0("meshplot.loc = ", paste(clicks$meshplot.loc, collapse=", "))))
+                A <- INLA::inla.spde.make.A(mesh(), clicks$meshplot.loc)
+                if (!(sum(A) > 0)) {
+                    A <- NULL
                 }
-                A.finemesh <- INLA::inla.spde.make.A(finemesh(), clicks$loc.click)
-                if (!(sum(A.finemesh) > 0)) {
-                    return(NULL)
-                }
-                message("A.click!!")
-                list(mesh=A.mesh, finemesh=A.finemesh)
             }
+            A
+        })
+        meshplot.A.fine <- reactive({
+            message("meshplot.A.fine")
+            A <- NULL
+            if (input$assess && !is.null(clicks$meshplot.loc) && !is.null(fine())) {
+                message(paste("meshplot.A.fine:",
+                              paste0("meshplot.loc = ", paste(clicks$meshplot.loc, collapse=", "))))
+                A <- INLA::inla.spde.make.A(fine(), clicks$meshplot.loc)
+                if (!(sum(A) > 0)) {
+                    A <- NULL
+                }
+            }
+            A
+        })
+
+        click.information <- reactive({
+            message("click.information")
+            if (input$assess.advanced) {
+                if (is.null(clicks$meshplot.loc) ||
+                    is.null(meshplot.A.mesh()) ||
+                    is.null(meshplot.A.fine())) {
+                    out <- rbind(cbind(NA, NA, NA), cbind(NA, NA, NA), cbind(NA, NA, NA))
+                } else {
+                    message("click.information!")
+                    A.mesh <- meshplot.A.mesh()
+                    A.fine <- meshplot.A.fine()
+                    sd.bound.mesh <- as.vector(A.mesh %*% diag(mesh.S())^0.5)
+                    sd.bound.fine <- as.vector(A.fine %*% diag(fine.S())^0.5)
+                    sd.mesh <- Matrix::rowSums(A.mesh * (A.mesh %*% mesh.S()))^0.5
+                    sd.fine <- Matrix::rowSums(A.fine * (A.fine %*% fine.S()))^0.5
+                    out <- rbind(cbind(sd.mesh, sd.fine, sd.mesh/sd.fine),
+                                 cbind(sd.bound.mesh,
+                                       sd.bound.fine,
+                                       sd.bound.mesh/sd.bound.fine),
+                                 cbind(sd.mesh/sd.bound.mesh,
+                                       sd.fine/sd.bound.fine,
+                                       sd.mesh/sd.bound.mesh / (sd.fine/sd.bound.fine)))
+                }
+                rownames(out) <- c("SD", "SD bound", "SD/bound")
+                colnames(out) <- c("Mesh", "Fine", "Mesh/Fine")
+                out <- as.data.frame(out)
+            } else {
+                if (is.null(clicks$meshplot.loc) ||
+                    is.null(meshplot.A.mesh())) {
+                    out <- rbind(NA, NA, NA)
+                } else {
+                    message("click.information!")
+                    A.mesh <- meshplot.A.mesh()
+                    sd.bound.mesh <- as.vector(A.mesh %*% diag(mesh.S())^0.5)
+                    sd.mesh <- Matrix::rowSums(A.mesh * (A.mesh %*% mesh.S()))^0.5
+                    out <- rbind(sd.mesh, sd.bound.mesh, sd.mesh/sd.bound.mesh)
+                }
+                rownames(out) <- c("SD", "SD bound", "SD/bound")
+                colnames(out) <- c("Mesh")
+                out <- as.data.frame(out)
+            }
+            out
         })
         SD.information <- reactive({
-            message(paste("SD.information",
-                          !input$assess, is.null(mesh()), is.null(finemesh()),
-                          is.null(A.click())))
-            A <- A.click()
-            if (!input$assess || is.null(mesh()) || is.null(finemesh()) || is.null(A)) {
+            message("SD.information")
+            if (!input$assess) {
                 NULL
             } else {
                 message("SD.information!")
-                if (is.null(A)) {
-                    out <- rbind(cbind(NA, NA, NA), cbind(NA, NA, NA))
+                if (input$assess.advanced) {
+                    out <- matrix(NA, 3,5)
                 } else {
-                    message("SD.information!!")
-                    sd.bound.mesh <- as.vector(A$mesh %*% diag(mesh.S())^0.5)
-                    sd.bound.finemesh <- as.vector(A$finemesh %*% diag(finemesh.S())^0.5)
-                    sd.mesh <- Matrix::rowSums(A$mesh * (A$mesh %*% mesh.S()))^0.5
-                    sd.finemesh <- Matrix::rowSums(A$finemesh * (A$finemesh %*% finemesh.S()))^0.5
-                    out <- rbind(cbind(sd.mesh, sd.mesh/sd.finemesh, sd.finemesh),
-                                 cbind(sd.bound.mesh,
-                                       sd.bound.mesh/sd.bound.finemesh,
-                                       sd.bound.finemesh))
+                    out <- matrix(NA, 1,5)
                 }
-                rownames(out) <- c("SD", "SD bound")
-                colnames(out) <- c("Mesh", "Ratio", "Fine")
+                val <- as.vector(mesh.sd())
+                out[1,1] <- min(val, na.rm=TRUE)
+                out[1,2:4] <- quantile(val, c(0.25, 0.5, 0.75), na.rm=TRUE)
+                out[1,5] <- max(val, na.rm=TRUE)
+                if (input$assess.advanced) {
+                    val <- as.vector(fine.sd())
+                    out[2,1] <- min(val, na.rm=TRUE)
+                    out[2,2:4] <- quantile(val, c(0.25, 0.5, 0.75), na.rm=TRUE)
+                    out[2,5] <- max(val, na.rm=TRUE)
+                    val <- as.vector(mesh.sd() / fine.sd())
+                    out[3,1] <- min(val, na.rm=TRUE)
+                    out[3,2:4] <- quantile(val, c(0.25, 0.5, 0.75), na.rm=TRUE)
+                    out[3,5] <- max(val, na.rm=TRUE)
+                }
+                rnames <- c("SD on Mesh",
+                            "SD on Fine",
+                            "SD relative deviation")
+                if (input$assess.advanced) {
+                    rownames(out) <- rnames
+                } else {
+                    rownames(out) <- rnames[1]
+                }
+                colnames(out) <- c("min", "25%", "50%", "75%", "max")
                 out <- as.data.frame(out)
                 out
             }
         })
         corr.information <- reactive({
-            message(paste("corr.information",
-                          !input$assess, !("corr" %in% input$overlay), is.null(mesh.corr()),
-                          is.null(finemesh.corr())))
-            if (!input$assess || !("corr" %in% input$overlay) || is.null(mesh.corr()) ||
-                is.null(finemesh.corr())) {
+            message("corr.information")
+            if (!input$assess) {
                 NULL
             } else {
                 message("corr.information!")
-                val <- as.vector(mesh.corr() - finemesh.corr())
-                out <- matrix(NA, 1,5)
+                if (input$assess.advanced) {
+                    out <- matrix(NA, 3,5)
+                } else {
+                    out <- matrix(NA, 1,5)
+                }
+                val <- as.vector(mesh.corr())
                 out[1,1] <- min(val, na.rm=TRUE)
                 out[1,2:4] <- quantile(val, c(0.25, 0.5, 0.75), na.rm=TRUE)
                 out[1,5] <- max(val, na.rm=TRUE)
-                rownames(out) <- c("Correlation error")
+                if (input$assess.advanced) {
+                    val <- as.vector(fine.corr())
+                    out[2,1] <- min(val, na.rm=TRUE)
+                    out[2,2:4] <- quantile(val, c(0.25, 0.5, 0.75), na.rm=TRUE)
+                    out[2,5] <- max(val, na.rm=TRUE)
+                    val <- as.vector(mesh.corr() - fine.corr())
+                    out[3,1] <- min(val, na.rm=TRUE)
+                    out[3,2:4] <- quantile(val, c(0.25, 0.5, 0.75), na.rm=TRUE)
+                    out[3,5] <- max(val, na.rm=TRUE)
+                }
+                rnames <- c("Correlation on Mesh",
+                            "Correlation on Fine",
+                            "Correlation deviation")
+                if (input$assess.advanced) {
+                    rownames(out) <- rnames
+                } else {
+                    rownames(out) <- rnames[1]
+                }
                 colnames(out) <- c("min", "25%", "50%", "75%", "max")
                 out <- as.data.frame(out)
                 out
             }
         })
         
-        output$SD.information <- renderTable({SD.information()},
-                                             digits=3, rownames=TRUE)
-        output$corr.information <- renderTable({corr.information()},
-                                               digits=3, rownames=TRUE)
+        output$click.information <- renderTable({
+            if (input$assess) {
+                click.information()
+            }
+        }, digits=3, rownames=TRUE)
+        output$field.information <- renderTable({
+            if (input$assessment == "corr") {
+                corr.information()
+            } else {
+                SD.information()
+            }
+        }, digits=3, rownames=TRUE)
 
         output$code <- renderText({
             out <- "## Generated by meshbuilder()\n\n"
@@ -878,7 +1138,7 @@ meshbuilder.app <- function() {
             if (input$assess) {
                 out <- paste0(out, spacing, spacing,
                               "## Build a fine scale mesh for comparisons:\n",
-                              attr(finemesh(), "code"), "\n")
+                              attr(fine(), "code"), "\n")
             }
             out
         })
@@ -908,7 +1168,7 @@ meshbuilder.app <- function() {
             }
             paste0(xy_str(input$inputplot.hover))
         })
-        output$loc.click.coordinates <- renderText({
+        output$meshplot.loc.coordinates <- renderText({
             xy_str <- function(e) {
                 if (is.null(e)) {
                     "NULL\n"
@@ -916,7 +1176,7 @@ meshbuilder.app <- function() {
                     paste0("x=", e[1,1], ", y=", e[1,2], "\n")
                 }
             }
-            paste0(xy_str(clicks$loc.click))
+            paste0(xy_str(clicks$meshplot.loc))
         })
 
         output$debug <- renderText({
