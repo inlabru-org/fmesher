@@ -35,19 +35,12 @@ meshbuilder.app <- function() {
                 fluidRow(
                     column(6,
                            checkboxInput("assess", label = "Active", value=FALSE),
-                           uiOutput("overlay.ui")
+                           uiOutput("overlay.ui"),
+                           uiOutput("assess.resolution.ui")
                            ),
                     column(6,
                            checkboxInput("assess.advanced", label = "Advanced", value=FALSE),
-                           uiOutput("assessment.basic.ui")
-                           )
-                ),
-                fluidRow(
-                    column(6,
-                           uiOutput("resolution.ui")
-                           ),
-                    column(6,
-                           uiOutput("assessment.ui")
+                           uiOutput("assess.quantity.ui")
                            )
                 ),
                 sliderInput(inputId="corr.range", label="Spatial correlation range",
@@ -480,6 +473,7 @@ meshbuilder.app <- function() {
         mesh.sd <- reactive({
             message("mesh.sd")
             if (is.null(mesh.S())) {
+                message("mesh.sd: NULL")
                 NULL
             } else {
                 message("mesh.sd!")
@@ -501,6 +495,41 @@ meshbuilder.app <- function() {
                 matrix(v^0.5, length(proj$x), length(proj$y))
             }
         })
+        mesh.sd.deviation.approx <- reactive({
+            message("mesh.sd.deviation.approx")
+            if (is.null(mesh.sd()) || is.null(mesh.proj())) {
+                message("mesh.sd.deviation.approx: NULL")
+                NULL
+            } else {
+                val0 <- mesh.sd()
+                proj <- mesh.proj()
+                val <- proj$proj$A %*% (
+                    as.vector(t(proj$proj$A[proj$proj$ok,,drop=FALSE]) %*%
+                              as.vector(val0)[proj$proj$ok]) /
+                    colSums(proj$proj$A[proj$proj$ok,,drop=FALSE]))
+                val[!proj$proj$ok] <- NA
+                matrix(1 + (as.vector(val0)-val),
+                       length(proj$x), length(proj$y))
+            }
+        })
+        fine.sd.deviation.approx <- reactive({
+            message("fine.sd.deviation.approx")
+            if (is.null(fine.sd()) || is.null(fine.proj())) {
+                message("fine.sd.deviation.approx: NULL")
+                NULL
+            } else {
+                val0 <- fine.sd()
+                proj <- fine.proj()
+                val <- proj$proj$A %*% (
+                    as.vector(t(proj$proj$A[proj$proj$ok,,drop=FALSE]) %*%
+                              as.vector(val0)[proj$proj$ok]) /
+                    colSums(proj$proj$A[proj$proj$ok,,drop=FALSE]))
+                val[!proj$proj$ok] <- NA
+                matrix(1 + (as.vector(val0)-val),
+                       length(proj$x), length(proj$y))
+            }
+        })
+
         mesh.sd.bound <- reactive({
             message("mesh.sd.bound")
             if (is.null(mesh.S())) {
@@ -525,6 +554,7 @@ meshbuilder.app <- function() {
             message("mesh.corr")
             if (is.null(mesh.sd()) || is.null(meshplot.A.mesh()) ||
                 is.null(click.information()) || is.null(mesh.proj())) {
+                message("mesh.corr: NULL")
                 NULL
             } else {
                 message("mesh.corr!")
@@ -535,7 +565,9 @@ meshbuilder.app <- function() {
                 print(str(s))
                 print(str(proj))
                 corr <- proj$proj$A %*% as.vector(inla.qsolve(mesh.Q(), t(A)))
-                matrix(corr, length(proj$x), length(proj$y)) / mesh.sd() / s["SD","Mesh"]
+                out <- matrix(corr, length(proj$x), length(proj$y)) / mesh.sd() / s["SD","Mesh"]
+                message("mesh.corr: end")
+                out
             }
         })
         fine.corr <- reactive({
@@ -596,84 +628,35 @@ meshbuilder.app <- function() {
             out
         })
 
-        observeEvent(input$assessment.basic, {
-            if (!is.null(input$assessment.basic)) {
-                if (input$assessment.basic == "sd") {
-                    updateRadioButtons(session, "assessment", selected="sd")
-                    updateRadioButtons(session, "resolution", selected="mesh")
-                } else if (input$assessment.basic == "corr") {
-                    updateRadioButtons(session, "assessment", selected="corr")
-                    updateRadioButtons(session, "resolution", selected="mesh")
-                } else if (input$assessment.basic == "sd.bound") {
-                    updateRadioButtons(session, "assessment", selected="sd.bound")
-                    updateRadioButtons(session, "resolution", selected="mesh")
-                } else if (input$assessment.basic == "deviation.approx") {
-                    updateRadioButtons(session, "assessment", selected="sd/bound")
-                    updateRadioButtons(session, "resolution", selected="mesh")
-                } else if (input$assessment.basic == "deviation") {
-                    updateRadioButtons(session, "assessment", selected="sd")
-                    updateRadioButtons(session, "resolution", selected="rel")
-                }
-            }
-        })
-        observeEvent(c(input$assessment, input$resolution), {
-            if (!is.null(input$assessment) && !is.null(input$resolution)) {
-                val <- "other"
-                if (input$resolution == "mesh") {
-                    if (input$assessment == "sd") {
-                        val <- "sd"
-                    } else if (input$assessment == "corr") {
-                        val <- "corr"
-                    } else if (input$assessment == "sd.bound") {
-                        val <- "sd.bound"
-                    } else if (input$assessment == "sd/bound") {
-                        val <- "deviation.approx"
+        observeEvent(c(input$assess.quantity, input$assess.resolution), {
+            if (!is.null(input$assess.quantity)) {
+                if (input$assess.quantity == "deviation.approx") {
+                    if (input$assess.resolution == "rel") {
+                        updateRadioButtons(session, "assess.resolution", selected="mesh")
                     }
-                } else if (input$resolution == "rel") {
-                    if (input$assessment == "sd") {
-                        val <- "deviation"
-                    }
+                } else
+                if (input$assess.quantity == "deviation") {
+                    updateRadioButtons(session, "assess.quantity", selected="sd")
+                    updateRadioButtons(session, "assess.resolution", selected="rel")
                 }
-                updateRadioButtons(session, "assessment.basic", selected=val)
             }
         })
 
-        output$assessment.basic.ui <- renderUI({
-            sel <- isolate(input$assessment.basic)
+        output$assess.quantity.ui <- renderUI({
+            sel <- isolate(input$assess.quantity)
             default <- 1
             choices <- list("SD" = "sd",
                             "Correlation" = "corr",
+                            "Approximate SD deviation" = "deviation.approx",
                             "SD bound" = "sd.bound",
-                            "Approximate SD deviation" = "deviation.approx")
+                            "SD/bound" = "sd/bound")
             if (input$assess.advanced) {
-                choices <- c(choices,
-                             list("SD deviation" = "deviation",
-                                  "Other" = "other"))
+                choices <- c(choices, list("SD deviation" = "deviation"))
             }
             if (is.null(sel) || !(sel %in% choices)) {
                 sel <- choices[[default]]
             }
-            radioButtons("assessment.basic", label = "Display",
-                         choices = choices, selected = sel)
-        })
-        output$assessment.ui <- renderUI({
-            sel <- isolate(input$assessment)
-            default <- 1
-            if (input$assess.advanced) {
-                choices <- list("SD" = "sd",
-                                "Correlation" = "corr",
-                                "SD bound" = "sd.bound",
-                                "SD/bound" = "sd/bound")
-            } else {
-                choices <- list("SD" = "sd",
-                                "Correlation" = "corr",
-                                "SD bound" = "sd.bound",
-                                "SD/bound" = "sd/bound")
-            }
-            if (is.null(sel) || !(sel %in% choices)) {
-                sel <- choices[[default]]
-            }
-            radioButtons("assessment", label = "Quantity",
+            radioButtons("assess.quantity", label = "Quantity",
                          choices = choices, selected = sel)
         })
         output$overlay.ui <- renderUI({
@@ -696,34 +679,29 @@ meshbuilder.app <- function() {
             radioButtons("overlay", label="Overlay",
                          choices = choices, selected = sel)
         })
-        output$resolution.ui <- renderUI({
-            if (is.null(input$assessment)) {
+        output$assess.resolution.ui <- renderUI({
+            if (is.null(input$assess.quantity)) {
                 return(NULL)
             }
-            sel <- isolate(input$resolution)
+            sel <- isolate(input$assess.resolution)
             default <- 1
             if (input$assess.advanced) {
-                choices <- switch(input$assessment,
-                                  "sd" = list("Mesh" = "mesh",
-                                              "Fine" = "fine",
-                                              "Mesh/Fine" = "rel"),
-                                  "sd.bound" = list("Mesh" = "mesh",
-                                                    "Fine" = "fine",
-                                                    "Mesh/Fine" = "rel"),
-                                  "sd/bound" = list("Mesh" = "mesh",
-                                                    "Fine" = "fine",
-                                                    "Mesh/Fine" = "rel"),
-                                  "corr" = list("Mesh" = "mesh",
-                                                "Fine" = "fine",
-                                                "Mesh-Fine" = "rel"),
-                                  )
+                if (input$assess.quantity == "corr") {
+                    choices <- list("Mesh" = "mesh",
+                                    "Fine" = "fine",
+                                    "Mesh-Fine" = "rel")
+                } else {
+                    choices <- list("Mesh" = "mesh",
+                                    "Fine" = "fine",
+                                    "Mesh/Fine" = "rel")
+                }
             } else {
                 choices <- list("Mesh" = "mesh")
             }
             if (is.null(sel) || !(sel %in% choices)) {
                 sel <- choices[[default]]
             }
-            radioButtons("resolution", label = "Resolution",
+            radioButtons("assess.resolution", label = "Resolution",
                          choices = choices, selected=sel)
             })
         
@@ -743,8 +721,8 @@ meshbuilder.app <- function() {
                 plot(mesh(), add=TRUE)
             } else if (input$assess) {
                 message("meshplot.expr: assess")
-                message(paste("meshplot.expr: assessment", input$assessment))
-                message(paste("meshplot.expr: resolution", input$resolution))
+                message(paste("meshplot.expr: assess.quantity", input$assess.quantity))
+                message(paste("meshplot.expr: assess.resolution", input$assess.resolution))
                 message(paste("meshplot.expr: overlay", input$overlay))
                 zlim.sd <- c(0.5, 1.5)
                 zlim.sd.rel <- c(0.5, 1.5)
@@ -752,50 +730,64 @@ meshbuilder.app <- function() {
                 zlim.corr.rel <- c(-1, 1)/5
                 zlim.sdbound <- c(1/sqrt(3), 1+(1-1/sqrt(3)))
                 zlim.sdbound.rel <- c(0.5, 1.5)
+                ## sd approximate deviation
+                if (input$assess.quantity %in% c("deviation.approx")) {
+                    zlim <- zlim.sd.rel
+                    if (input$assess.resolution %in% c("mesh")) {
+                        val <- mesh.sd.deviation.approx()
+                    } else if (input$assess.resolution %in% c("fine")) {
+                        val <- fine.sd.deviation.approx()
+                    } else if (input$assess.resolution %in% c("rel")) {
+                        val <- mesh.sd.deviation.approx() / fine.sd.deviation.approx()
+                    }
+                } else
                 ## sd
-                if (input$assessment %in% c("sd")) {
+                if (input$assess.quantity %in% c("sd")) {
                     zlim <- zlim.sd
-                    if (input$resolution %in% c("mesh")) {
+                    if (input$assess.resolution %in% c("mesh")) {
                         val <- mesh.sd()
-                    } else if (input$resolution %in% c("fine")) {
+                    } else if (input$assess.resolution %in% c("fine")) {
                         val <- fine.sd()
-                    } else if (input$resolution %in% c("rel")) {
+                    } else if (input$assess.resolution %in% c("rel")) {
                         val <- mesh.sd() / fine.sd()
                         zlim <- zlim.sd.rel
                     }
                 } else
                 ## corr
-                if (input$assessment %in% c("corr")) {
+                if (input$assess.quantity %in% c("corr")) {
                     zlim <- zlim.corr
-                    if (input$resolution %in% c("mesh")) {
+                    if (input$assess.resolution %in% c("mesh")) {
                         val <- mesh.corr()
-                    } else if (input$resolution %in% c("fine")) {
+                    } else if (input$assess.resolution %in% c("fine")) {
                         val <- fine.corr()
-                    } else if (input$resolution %in% c("rel")) {
-                        val <- mesh.corr() - fine.corr()
+                    } else if (input$assess.resolution %in% c("rel")) {
+                        val <- mesh.corr()
+                        if (!is.null(val)) {
+                            val <- val - fine.corr()
+                        }
                         zlim <- zlim.corr.rel
                     }
                 } else
                 ## sd.bound
-                if (input$assessment %in% c("sd.bound")) {
+                if (input$assess.quantity %in% c("sd.bound")) {
                     zlim <- zlim.sd
-                    if (input$resolution %in% c("mesh")) {
+                    if (input$assess.resolution %in% c("mesh")) {
                         val <- mesh.sd.bound()
-                    } else if (input$resolution %in% c("fine")) {
+                    } else if (input$assess.resolution %in% c("fine")) {
                         val <- fine.sd.bound()
-                    } else if (input$resolution %in% c("rel")) {
+                    } else if (input$assess.resolution %in% c("rel")) {
                         val <- mesh.sd.bound() / fine.sd.bound()
                         zlim <- zlim.sd.rel
                     }
                 } else
                 ## sd/bound
-                if (input$assessment %in% c("sd/bound")) {
+                if (input$assess.quantity %in% c("sd/bound")) {
                     zlim <- zlim.sdbound
-                    if (input$resolution %in% c("mesh")) {
+                    if (input$assess.resolution %in% c("mesh")) {
                         val <- mesh.sd() / mesh.sd.bound()
-                    } else if (input$resolution %in% c("fine")) {
+                    } else if (input$assess.resolution %in% c("fine")) {
                         val <- fine.sd() / fine.sd.bound()
-                    } else if (input$resolution %in% c("rel")) {
+                    } else if (input$assess.resolution %in% c("rel")) {
                         val <- (mesh.sd() / mesh.sd.bound()) / (fine.sd() / fine.sd.bound())
                         zlim <- zlim.sdbound.rel
                     }
@@ -1032,18 +1024,20 @@ meshbuilder.app <- function() {
                     out <- matrix(NA, 1,5)
                 }
                 val <- as.vector(mesh.sd())
-                out[1,1] <- min(val, na.rm=TRUE)
-                out[1,2:4] <- quantile(val, c(0.25, 0.5, 0.75), na.rm=TRUE)
-                out[1,5] <- max(val, na.rm=TRUE)
-                if (input$assess.advanced) {
-                    val <- as.vector(fine.sd())
-                    out[2,1] <- min(val, na.rm=TRUE)
-                    out[2,2:4] <- quantile(val, c(0.25, 0.5, 0.75), na.rm=TRUE)
-                    out[2,5] <- max(val, na.rm=TRUE)
-                    val <- as.vector(mesh.sd() / fine.sd())
-                    out[3,1] <- min(val, na.rm=TRUE)
-                    out[3,2:4] <- quantile(val, c(0.25, 0.5, 0.75), na.rm=TRUE)
-                    out[3,5] <- max(val, na.rm=TRUE)
+                if (!is.null(val)) {
+                    out[1,1] <- min(val, na.rm=TRUE)
+                    out[1,2:4] <- quantile(val, c(0.25, 0.5, 0.75), na.rm=TRUE)
+                    out[1,5] <- max(val, na.rm=TRUE)
+                    if (input$assess.advanced) {
+                        val <- as.vector(fine.sd())
+                        out[2,1] <- min(val, na.rm=TRUE)
+                        out[2,2:4] <- quantile(val, c(0.25, 0.5, 0.75), na.rm=TRUE)
+                        out[2,5] <- max(val, na.rm=TRUE)
+                        val <- as.vector(mesh.sd() / fine.sd())
+                        out[3,1] <- min(val, na.rm=TRUE)
+                        out[3,2:4] <- quantile(val, c(0.25, 0.5, 0.75), na.rm=TRUE)
+                        out[3,5] <- max(val, na.rm=TRUE)
+                    }
                 }
                 rnames <- c("SD on Mesh",
                             "SD on Fine",
@@ -1070,18 +1064,20 @@ meshbuilder.app <- function() {
                     out <- matrix(NA, 1,5)
                 }
                 val <- as.vector(mesh.corr())
-                out[1,1] <- min(val, na.rm=TRUE)
-                out[1,2:4] <- quantile(val, c(0.25, 0.5, 0.75), na.rm=TRUE)
-                out[1,5] <- max(val, na.rm=TRUE)
-                if (input$assess.advanced) {
-                    val <- as.vector(fine.corr())
-                    out[2,1] <- min(val, na.rm=TRUE)
-                    out[2,2:4] <- quantile(val, c(0.25, 0.5, 0.75), na.rm=TRUE)
-                    out[2,5] <- max(val, na.rm=TRUE)
-                    val <- as.vector(mesh.corr() - fine.corr())
-                    out[3,1] <- min(val, na.rm=TRUE)
-                    out[3,2:4] <- quantile(val, c(0.25, 0.5, 0.75), na.rm=TRUE)
-                    out[3,5] <- max(val, na.rm=TRUE)
+                if (!is.null(val)) {
+                    out[1,1] <- min(val, na.rm=TRUE)
+                    out[1,2:4] <- quantile(val, c(0.25, 0.5, 0.75), na.rm=TRUE)
+                    out[1,5] <- max(val, na.rm=TRUE)
+                    if (input$assess.advanced) {
+                        val <- as.vector(fine.corr())
+                        out[2,1] <- min(val, na.rm=TRUE)
+                        out[2,2:4] <- quantile(val, c(0.25, 0.5, 0.75), na.rm=TRUE)
+                        out[2,5] <- max(val, na.rm=TRUE)
+                        val <- as.vector(mesh.corr() - fine.corr())
+                        out[3,1] <- min(val, na.rm=TRUE)
+                        out[3,2:4] <- quantile(val, c(0.25, 0.5, 0.75), na.rm=TRUE)
+                        out[3,5] <- max(val, na.rm=TRUE)
+                    }
                 }
                 rnames <- c("Correlation on Mesh",
                             "Correlation on Fine",
@@ -1103,7 +1099,7 @@ meshbuilder.app <- function() {
             }
         }, digits=3, rownames=TRUE)
         output$field.information <- renderTable({
-            if (input$assessment == "corr") {
+            if (input$assess.quantity == "corr") {
                 corr.information()
             } else {
                 SD.information()
