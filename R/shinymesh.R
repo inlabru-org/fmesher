@@ -15,6 +15,36 @@
 ##   You should have received a copy of the GNU General Public License
 ##   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+spatial.object.choices <- function() {
+    valid.classes <- c("matrix",
+                       "inla.mesh.segment",
+                       "SpatialPoints", "SpatialPointsDataFrame",
+                       "SpatialLines", "SpatialLinesDataFrame",
+                       "SpatialPolygons", "SpatialPolygonsDataFrame")
+    obj <- with(globalenv(), ls())
+    ok <- vapply(obj,
+                 function(name) {
+                     cl <- class(globalenv()[[name]])
+                     (length(cl) > 0) && (length(intersect(cl, valid.classes)) > 0)
+                 },
+                 TRUE)
+    obj[ok]
+}
+
+pretty.axis.scales <- function(lim) {
+    maxi <- c(1, 1.5, 2, 3, 4, 6, 8, 10, 15)
+    step <- c(1e-2, 1e-2, 1e-2, 2e-2, 2e-2, 5e-2, 5e-2, 1e-1, 1e-1)
+    mini <- step
+    level <- floor(log10(lim[2]))
+    maxi <- maxi * 10^level
+    mini <- mini * 10^level
+    step <- step * 10^level
+    ## Find smallest k such that lim[2] < maxi[k-1]
+    k <- min(which(lim[2] < maxi[-1]))+1
+
+    list(lim=c(mini[k], maxi[k]), step=step[k])
+}
+
 meshbuilder.app <- function() {
 
     meshbuilder.ui <- fluidPage(
@@ -71,11 +101,15 @@ meshbuilder.app <- function() {
                                         selectInput("boundary.loc.name",
                                                     label="Boundary domain points variable name(s)",
                                                     multiple=TRUE,
-                                                    choices=with(globalenv(), ls())),
+                                                    choices=spatial.object.choices()),
+                                        selectInput("boundary.loc.name.usage",
+                                                    label=NULL,
+                                                    multiple=TRUE,
+                                                    choices=c("points", "domain")),
                                         selectInput("mesh.loc.name",
                                                     label="Mesh vertex seed points variable name(s)",
                                                     multiple=TRUE,
-                                                    choices=with(globalenv(), ls())),
+                                                    choices=spatial.object.choices()),
                                         h4("User defined boundaries"),
                                         selectInput("boundary1.name",
                                                     label="Inner boundary variable name(s)",
@@ -85,14 +119,17 @@ meshbuilder.app <- function() {
                                                     label="Outer boundary variable name(s)",
                                                     multiple=TRUE,
                                                     choices=with(globalenv(), ls())),
-                                        verbatimTextOutput("crs.strings"),
-                                        verbatimTextOutput("input.coordinates")
+                                        hr(),
+                                        textInput("crs.mesh", label="Mesh CRS"),
+                                        verbatimTextOutput("crs.strings")
                                         ),
                                  column(8,
                                         plotOutput("inputplot", height="auto",
                                                    hover="inputplot.hover")
                                         )
-                                 )
+                             ),
+                             hr(),
+                             verbatimTextOutput("input.loc.coordinates")
                              ),
                     tabPanel("Display",
                              plotOutput("meshplot", height="auto",
@@ -109,7 +146,7 @@ meshbuilder.app <- function() {
                                         tableOutput("field.information")
                                         )
                              ),
-                             verbatimTextOutput("loc.click.coordinates")
+                             verbatimTextOutput("meshplot.loc.coordinates")
                              ),
                     tabPanel("Code",
                              verbatimTextOutput("code")
@@ -322,12 +359,19 @@ meshbuilder.app <- function() {
                 out <- NULL
                 metadata$mesh <- NULL
             } else {
+                try(message(paste("crs.mesh               =",
+                                  inla.CRSargs(inla.CRS(input$crs.mesh)))))
+                try(message(paste("CRS(mesh.loc)          =", proj4string(loc1))))
+                try(message(paste("CRS(boundary[[1]]$crs) =", inla.CRSargs(bnd1[[1]]$crs))))
+                try(message(paste("CRS(boundary[[2]]$crs) =", inla.CRSargs(bnd1[[2]]$crs))))
                 out <- INLA::inla.mesh.2d(loc=loc1,
                                           boundary=bnd1,
                                           max.edge=input$max.edge,
                                           min.angle=rev(input$min.angle),
                                           max.n=c(48000, 16000),
-                                          cutoff=input$cutoff)
+                                          cutoff=input$cutoff,
+                                          crs=inla.CRS(input$crs.mesh),
+                                          plot.delay=0)
                 attr(out, "code") <- paste0(
 "mesh <- inla.mesh.2d(", loc.code, bnd.code,
                     "max.edge=c(", input$max.edge[1], ", ", input$max.edge[2], "),
@@ -711,9 +755,15 @@ meshbuilder.app <- function() {
             n.col <- 1+64
             if (!input$assess && !is.null(mesh())) {
                 message("meshplot.expr: basic")
-                zlim <- c(-1, 1)
-                fields::image.plot(mesh.proj()$x, mesh.proj()$y,
-                                   matrix(0, length(mesh.proj()$x), length(mesh.proj()$y)),
+                zlim <- c(0.5, 1.5)
+##                fields::image.plot(mesh.proj()$x, mesh.proj()$y,
+##                                   matrix(0, length(mesh.proj()$x), length(mesh.proj()$y)),
+##                                   zlim=zlim, 
+##                                   xlim=xlim(), ylim=ylim(),
+##                                   col=col(n.col), asp=1, main="",
+##                                   xlab="Easting", ylab="Northing")
+                fields::image.plot(range(mesh.proj()$x), range(mesh.proj()$y),
+                                   matrix(0, 2, 2),
                                    zlim=zlim, 
                                    xlim=xlim(), ylim=ylim(),
                                    col=col(n.col), asp=1, main="",
@@ -1154,7 +1204,7 @@ meshbuilder.app <- function() {
             out
         })
 
-        output$input.coordinates <- renderText({
+        output$input.loc.coordinates <- renderText({
             xy_str <- function(e) {
                 if (is.null(e)) {
                     "NULL\n"
