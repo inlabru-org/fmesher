@@ -31,18 +31,44 @@ spatial.object.choices <- function() {
     obj[ok]
 }
 
-pretty.axis.scales <- function(lim) {
-    maxi <- c(1, 1.5, 2, 3, 4, 6, 8, 10, 15)
-    step <- c(1e-2, 1e-2, 1e-2, 2e-2, 2e-2, 5e-2, 5e-2, 1e-1, 1e-1)
+pretty.axis.info <- function(lim, value=NA) {
+    message(paste("pretty.axis.info <-",
+                  "lim =", paste(lim, collapse=", "),
+                  "val = ", paste(value, collapse=", ")))
+    limits <- range(c(lim, value), na.rm=TRUE)
+    maxi <- c(1.5, 2, 3, 4, 6, 8, 10)
+    cutoff <- maxi * 9/10
+    step <- c(1e-2, 1e-2, 1e-2, 2e-2, 2e-2, 5e-2, 5e-2)
     mini <- step
-    level <- floor(log10(lim[2]))
+    maxi <- c(maxi, maxi*10)
+    step <- c(step, step*10)
+    mini <- c(mini, mini*10)
+    cutoff <- c(cutoff, cutoff*10)
+    level <- floor(log10(limits[2]))
     maxi <- maxi * 10^level
     mini <- mini * 10^level
     step <- step * 10^level
-    ## Find smallest k such that lim[2] < maxi[k-1]
-    k <- min(which(lim[2] < maxi[-1]))+1
+    cutoff <- cutoff * 10^level
+    ## Find smallest k such that limits[2] < maxi[k]
+    k <- min(which(limits[2] < maxi))
+    ## Move to next k if limits[2] > cutoff[k]
+    values <- mini[k] + round((value - mini[k]) / step[k]) * step[k]
+    limits <- range(c(lim, value, values), na.rm=TRUE)
+    while (limits[2] > cutoff[k]) {
+        k <- k+1
+        values <- mini[k] + round((value - mini[k]) / step[k]) * step[k]
+        limits <- range(c(lim, value, value), na.rm=TRUE)
+    }
 
+    message(paste("pretty.axis.info ->",
+                  "lim =", paste(c(mini[k], maxi[k]), collapse=", ")))
     list(lim=c(mini[k], maxi[k]), step=step[k])
+}
+
+pretty.axis.value <- function(axis.info, value) {
+    pmax(axis.info$lim[1], pmin(axis.info$lim[2],
+                                axis.info$lim[1] + round((value - axis.info$lim[1]) /
+                                                         axis.info$step) * axis.info$step))
 }
 
 meshbuilder.app <- function() {
@@ -370,8 +396,7 @@ meshbuilder.app <- function() {
                                           min.angle=rev(input$min.angle),
                                           max.n=c(48000, 16000),
                                           cutoff=input$cutoff,
-                                          crs=inla.CRS(input$crs.mesh),
-                                          plot.delay=0)
+                                          crs=inla.CRS(input$crs.mesh))
                 attr(out, "code") <- paste0(
 "mesh <- inla.mesh.2d(", loc.code, bnd.code,
                     "max.edge=c(", input$max.edge[1], ", ", input$max.edge[2], "),
@@ -629,30 +654,114 @@ meshbuilder.app <- function() {
             }
         })
 
-        update.limits <- observe({
-            lim <- 2^ceiling(log2(max(input$offset[2]*1.2,
-                                      max(diff(limits$input.xlim),
-                                          diff(limits$input.ylim))*1)))
-            updateSliderInput(session, "offset",
-                              min=lim/100, max=lim, step=lim/100)
-
-            lim <- 2^ceiling(log2(max(input$max.edge[2]*1.2,
-                                      max(diff(limits$input.xlim),
-                                          diff(limits$input.ylim))*1)))
-            updateSliderInput(session, "max.edge",
-                              min=lim/100, max=lim, step=lim/100)
-
-            lim <- 2^ceiling(log2(max(input$cutoff*1.2, input$max.edge[1]*1.2)))
-            updateSliderInput(session, "cutoff",
-                              min=lim/100, max=lim, step=lim/100)
-
-            lim <- 2^ceiling(log2(max(input$corr.range*1.2,
-                                      input$max.edge[1]*12,
-                                      input$max.edge[2]*1.2)))
-            updateSliderInput(session, "corr.range",
-                              min=lim/100, max=lim, step=lim/100)
+        axis.infos <- reactiveValues(offset=NULL, max.edge=NULL, cutoff=NULL, corr.range=NULL)
+        axis.update <- reactiveValues(offset=FALSE, max.edge=FALSE, cutoff=FALSE, corr.range=NULL)
+        observeEvent(c(input$offset, limits$input.xlim, limits$input$ylim), {
+            message("Observe offset limit recalculation")
+            val <- input$offset
+            new.info <- pretty.axis.info(range(c(val,
+                                                 diff(limits$input.xlim)/5,
+                                                 diff(limits$input.ylim)/5)),
+                                         val)
+            print(axis.infos$offset$lim)
+            print(new.info$lim)
+            axis.update$offset <- !identical(axis.infos$offset, new.info)
+            message(paste("Update offset", axis.update$offset))
+            if (axis.update$offset) {
+                axis.infos$offset <- new.info
+            }
         })
-
+        observeEvent(c(input$max.edge, limits$input.xlim, limits$input.ylim), {
+            message("Observe max.edge limit recalculation")
+            val <- input$max.edge
+            new.info <- pretty.axis.info(range(c(val,
+                                                 diff(limits$input.xlim)/5,
+                                                 diff(limits$input.ylim)/5)),
+                                         val)
+            axis.update$max.edge <- !identical(axis.infos$max.edge, new.info)
+            if (axis.update$max.edge) {
+                axis.infos$max.edge <- new.info
+            }
+        })
+        observeEvent(c(input$cutoff, input$max.edge), {
+            message("Observe cutoff limit recalculation")
+            val <- min(input$cutoff, input$max.edge[1])
+            new.info <- pretty.axis.info(range(c(val, input$max.edge[1])),
+                                         val)
+            axis.update$cutoff <- !identical(axis.infos$cutoff, new.info)
+            if (axis.update$cutoff) {
+                axis.infos$cutoff <- new.info
+            }
+        })
+        observeEvent(c(input$corr.range, limits$input.xlim, limits$input.ylim), {
+            message("Observe corr.range limit recalculation")
+            val <- input$corr.range
+            new.info <- pretty.axis.info(range(c(val,
+                                                 diff(limits$input.xlim),
+                                                 diff(limits$input.ylim))),
+                                         val)
+            axis.update$corr.range <- !identical(axis.infos$corr.range, new.info)
+            if (axis.update$corr.range) {
+                axis.infos$corr.range <- new.info
+            }
+        })
+        observeEvent(axis.update$offset, {
+            message(paste("Observe offset limit update", axis.update$offset))
+            if (axis.update$offset) {
+                axis.update$offset <- FALSE
+                info <- axis.infos$offset
+                new.val <- pretty.axis.value(info, input$offset)
+                print(paste("Old values", paste(input$offset, collapse=", ")))
+                print(paste("New limits", paste(info$lim, collapse=", ")))
+                print(paste("New values", paste(new.val, collapse=", ")))
+                updateSliderInput(session, "offset",
+                                  min=info$lim[1], max=info$lim[2],
+                                  step=info$step, value=new.val)
+            }
+        }, priority=10)
+        observeEvent(axis.update$max.edge, {
+            message(paste("Observe max.edge limit update", axis.update$max.edge))
+            if (axis.update$max.edge) {
+                axis.update$max.edge <- FALSE
+                info <- axis.infos$max.edge
+                new.val <- pretty.axis.value(info, input$max.edge)
+                print(paste("Old values", paste(input$max.edge, collapse=", ")))
+                print(paste("New limits", paste(info$lim, collapse=", ")))
+                print(paste("New values", paste(new.val, collapse=", ")))
+                updateSliderInput(session, "max.edge",
+                                  min=info$lim[1], max=info$lim[2],
+                                  step=info$step, value=new.val)
+            }
+        }, priority=9)
+        observeEvent(c(axis.update$cutoff, input$cutoff, input$max.edge), {
+            message(paste("Observe cutoff limit update", axis.update$cutoff))
+            if (axis.update$cutoff || (input$cutoff > input$max.edge[1])) {
+                axis.update$cutoff <- FALSE
+                info <- axis.infos$cutoff
+                new.val <- pretty.axis.value(info, min(input$cutoff, input$max.edge[1]))
+                print(paste("Old values", paste(input$cutoff, collapse=", ")))
+                print(paste("New limits", paste(info$lim, collapse=", ")))
+                print(paste("New values", paste(new.val, collapse=", ")))
+                updateSliderInput(session, "cutoff",
+                                  min=info$lim[1], max=info$lim[2],
+                                  step=info$step, value=new.val)
+            }
+        }, priority=8)
+        observeEvent(axis.update$corr.range, {
+            message(paste("Observe corr.range limit update", axis.update$corr.range))
+            if (axis.update$corr.range) {
+                axis.update$corr.range <- FALSE
+                info <- axis.infos$corr.range
+                new.val <- pretty.axis.value(info, input$corr.range)
+                print(paste("Old values", paste(input$corr.range, collapse=", ")))
+                print(paste("New limits", paste(info$lim, collapse=", ")))
+                print(paste("New values", paste(new.val, collapse=", ")))
+                updateSliderInput(session, "corr.range",
+                                  min=info$lim[1], max=info$lim[2],
+                                  step=info$step, value=new.val)
+            }
+        }, priority=7)
+        
         metadata <- reactiveValues(mesh=NULL,
                                    fine=NULL)
         meshmeta <- reactive({
@@ -684,7 +793,7 @@ meshbuilder.app <- function() {
                     updateRadioButtons(session, "assess.resolution", selected="rel")
                 }
             }
-        })
+        }, priority=10)
 
         output$assess.quantity.ui <- renderUI({
             sel <- isolate(input$assess.quantity)
