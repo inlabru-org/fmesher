@@ -31,10 +31,12 @@ spatial.object.choices <- function() {
     obj[ok]
 }
 
-pretty.axis.info <- function(lim, value=NA) {
-    message(paste("pretty.axis.info <-",
-                  "lim =", paste(lim, collapse=", "),
-                  "val = ", paste(value, collapse=", ")))
+pretty.axis.info <- function(lim, value=NA, verbose=FALSE) {
+    if (verbose) {
+        message(paste("pretty.axis.info <-",
+                      "lim =", paste(lim, collapse=", "),
+                      "val = ", paste(value, collapse=", ")))
+    }
     limits <- range(c(lim, value), na.rm=TRUE)
     maxi <- c(1.5, 2, 3, 4, 6, 8, 10)
     cutoff <- maxi * 9/10
@@ -60,8 +62,10 @@ pretty.axis.info <- function(lim, value=NA) {
         limits <- range(c(lim, value, value), na.rm=TRUE)
     }
 
-    message(paste("pretty.axis.info ->",
-                  "lim =", paste(c(mini[k], maxi[k]), collapse=", ")))
+    if (verbose) {
+        message(paste("pretty.axis.info ->",
+                      "lim =", paste(c(mini[k], maxi[k]), collapse=", ")))
+    }
     list(lim=c(mini[k], maxi[k]), step=step[k])
 }
 
@@ -178,6 +182,10 @@ meshbuilder.app <- function() {
                              verbatimTextOutput("code")
                              ),
                     tabPanel("Debug",
+                             checkboxInput("debug.use.trace", label = "Use trace",
+                                           value=FALSE),
+                             checkboxInput("debug.use.plot.delay", label = "Use plot.delay",
+                                           value=FALSE),
                              verbatimTextOutput("debug")
                              ),
                     id="panel",
@@ -366,7 +374,7 @@ meshbuilder.app <- function() {
             bnd
         })
         mesh <- reactive({
-            message("mesh")
+            if (isolate(debug$trace)) message("mesh")
             loc1 <- mesh.loc()
             bnd1 <- boundary()
             if (is.null(loc1)) {
@@ -385,23 +393,28 @@ meshbuilder.app <- function() {
                 out <- NULL
                 metadata$mesh <- NULL
             } else {
-                try(message(paste("crs.mesh               =",
-                                  inla.CRSargs(inla.CRS(input$crs.mesh)))))
-                try(message(paste("CRS(mesh.loc)          =", proj4string(loc1))))
-                try(message(paste("CRS(boundary[[1]]$crs) =", inla.CRSargs(bnd1[[1]]$crs))))
-                try(message(paste("CRS(boundary[[2]]$crs) =", inla.CRSargs(bnd1[[2]]$crs))))
+                if (isolate(debug$trace)) {
+                    try(message(paste("crs.mesh               =",
+                                      inla.CRSargs(inla.CRS(input$crs.mesh)))))
+                    try(message(paste("CRS(mesh.loc)          =", proj4string(loc1))))
+                    try(message(paste("CRS(boundary[[1]]$crs) =", inla.CRSargs(bnd1[[1]]$crs))))
+                    try(message(paste("CRS(boundary[[2]]$crs) =", inla.CRSargs(bnd1[[2]]$crs))))
+                }
                 out <- INLA::inla.mesh.2d(loc=loc1,
                                           boundary=bnd1,
                                           max.edge=input$max.edge,
                                           min.angle=rev(input$min.angle),
                                           max.n=c(48000, 16000),
+                                          max.n.strict=c(128000, 128000),
                                           cutoff=input$cutoff,
-                                          crs=inla.CRS(input$crs.mesh))
+                                          crs=inla.CRS(input$crs.mesh),
+                                          plot.delay=isolate(debug$plot.delay))
                 attr(out, "code") <- paste0(
 "mesh <- inla.mesh.2d(", loc.code, bnd.code,
                     "max.edge=c(", input$max.edge[1], ", ", input$max.edge[2], "),
                      min.angle=c(", input$min.angle[2], ", ", input$min.angle[1], "),
-                     max.n=c(48000, 16000)
+                     max.n=c(48000, 16000),
+                     max.n.strict=c(128000, 128000),
                      cutoff=", input$cutoff, ")\n")
                 el <- sqrt(c(Matrix::rowSums((out$loc[out$graph$tv[,2],] -
                                               out$loc[out$graph$tv[,1],])^2),
@@ -419,12 +432,13 @@ meshbuilder.app <- function() {
                 out <- NULL
                 metadata$fine <- NULL
             } else {
-                message("fine")
+                if (isolate(debug$trace)) message("fine")
                 out <- INLA::inla.mesh.2d(loc=mesh()$loc,
                                           boundary=list(INLA::inla.mesh.boundary(mesh())),
                                           max.edge=min(mesh.edgelengths())/2,
                                           min.angle=21,
                                           max.n=64000,
+                                          max.n.strict=128000,
                                           cutoff=0)
                 attr(out, "code") <- paste0(
 "fine <- inla.mesh.2d(boundary=list(inla.mesh.boundary(mesh)),\n",
@@ -480,11 +494,11 @@ meshbuilder.app <- function() {
             }
         })
         mesh.spde <- reactive({
-            message("mesh.spde")
+            if (isolate(debug$trace)) message("mesh.spde")
             if (is.null(mesh())) {
                 NULL
             } else {
-                message("mesh.spde!")
+                if (isolate(debug$trace)) message("mesh.spde!")
                 INLA::inla.spde2.pcmatern(mesh(),
                                           alpha=input$corr.nu+1,
                                           prior.range=c(1, 0.5),
@@ -492,11 +506,11 @@ meshbuilder.app <- function() {
             }
         })
         fine.spde <- reactive({
-            message("fine.spde")
+            if (isolate(debug$trace)) message("fine.spde")
             if (is.null(mesh())) {
                 NULL
             } else {
-                message("fine.spde!")
+                if (isolate(debug$trace)) message("fine.spde!")
                 INLA::inla.spde2.pcmatern(fine(),
                                           alpha=input$corr.nu+1,
                                           prior.range=c(1, 0.5),
@@ -504,48 +518,48 @@ meshbuilder.app <- function() {
             }
         })
         mesh.Q <- reactive({
-            message("mesh.Q")
+            if (isolate(debug$trace)) message("mesh.Q")
             if (is.null(mesh.spde())) {
                 NULL
             } else {
-            message("mesh.Q!")
+            if (isolate(debug$trace)) message("mesh.Q!")
                 INLA::inla.spde.precision(mesh.spde(), theta=log(c(input$corr.range, 1)))
             }
         })
         fine.Q <- reactive({
-            message("fine.Q")
+            if (isolate(debug$trace)) message("fine.Q")
             if (is.null(fine.spde())) {
                 NULL
             } else {
-            message("fine.Q!")
+            if (isolate(debug$trace)) message("fine.Q!")
                 INLA::inla.spde.precision(fine.spde(), theta=log(c(input$corr.range, 1)))
             }
         })
         mesh.S <- reactive({
-            message("mesh.S")
+            if (isolate(debug$trace)) message("mesh.S")
             if (is.null(mesh.Q())) {
                 NULL
             } else {
-                message("mesh.S!")
+                if (isolate(debug$trace)) message("mesh.S!")
                 INLA::inla.qinv(mesh.Q(), reordering=INLA::inla.reorderings())
             }
         })
         fine.S <- reactive({
-            message("fine.S")
+            if (isolate(debug$trace)) message("fine.S")
             if (is.null(fine.Q())) {
                 NULL
             } else {
-                message("fine.S!")
+                if (isolate(debug$trace)) message("fine.S!")
                 INLA::inla.qinv(fine.Q(), reordering=INLA::inla.reorderings())
             }
         })
         mesh.sd <- reactive({
-            message("mesh.sd")
+            if (isolate(debug$trace)) message("mesh.sd")
             if (is.null(mesh.S())) {
-                message("mesh.sd: NULL")
+                if (isolate(debug$trace)) message("mesh.sd: NULL")
                 NULL
             } else {
-                message("mesh.sd!")
+                if (isolate(debug$trace)) message("mesh.sd!")
                 proj <- mesh.proj()
                 v <- Matrix::rowSums(proj$proj$A * (proj$proj$A %*% mesh.S()))
                 v[!proj$proj$ok] <- NA
@@ -553,11 +567,11 @@ meshbuilder.app <- function() {
             }
         })
         fine.sd <- reactive({
-            message("fine.sd")
+            if (isolate(debug$trace)) message("fine.sd")
             if (is.null(fine.S())) {
                 NULL
             } else {
-                message("fine.sd!")
+                if (isolate(debug$trace)) message("fine.sd!")
                 proj <- fine.proj()
                 v <- Matrix::rowSums(proj$proj$A * (proj$proj$A %*% fine.S()))
                 v[!proj$proj$ok] <- NA
@@ -565,9 +579,9 @@ meshbuilder.app <- function() {
             }
         })
         mesh.sd.deviation.approx <- reactive({
-            message("mesh.sd.deviation.approx")
+            if (isolate(debug$trace)) message("mesh.sd.deviation.approx")
             if (is.null(mesh.sd()) || is.null(mesh.proj())) {
-                message("mesh.sd.deviation.approx: NULL")
+                if (isolate(debug$trace)) message("mesh.sd.deviation.approx: NULL")
                 NULL
             } else {
                 val0 <- mesh.sd()
@@ -582,9 +596,9 @@ meshbuilder.app <- function() {
             }
         })
         fine.sd.deviation.approx <- reactive({
-            message("fine.sd.deviation.approx")
+            if (isolate(debug$trace)) message("fine.sd.deviation.approx")
             if (is.null(fine.sd()) || is.null(fine.proj())) {
-                message("fine.sd.deviation.approx: NULL")
+                if (isolate(debug$trace)) message("fine.sd.deviation.approx: NULL")
                 NULL
             } else {
                 val0 <- fine.sd()
@@ -600,52 +614,54 @@ meshbuilder.app <- function() {
         })
 
         mesh.sd.bound <- reactive({
-            message("mesh.sd.bound")
+            if (isolate(debug$trace)) message("mesh.sd.bound")
             if (is.null(mesh.S())) {
                 NULL
             } else {
-                message("mesh.sd.bound!")
+                if (isolate(debug$trace)) message("mesh.sd.bound!")
                 proj <- mesh.proj()
                 INLA::inla.mesh.project(proj, field=diag(mesh.S())^0.5)
             }
         })
         fine.sd.bound <- reactive({
-            message("fine.sd.bound")
+            if (isolate(debug$trace)) message("fine.sd.bound")
             if (is.null(fine.S())) {
                 NULL
             } else {
-                message("fine.sd.bound!")
+                if (isolate(debug$trace)) message("fine.sd.bound!")
                 proj <- fine.proj()
                 INLA::inla.mesh.project(proj, field=diag(fine.S())^0.5)
             }
         })
         mesh.corr <- reactive({
-            message("mesh.corr")
+            if (isolate(debug$trace)) message("mesh.corr")
             if (is.null(mesh.sd()) || is.null(meshplot.A.mesh()) ||
                 is.null(click.information()) || is.null(mesh.proj())) {
-                message("mesh.corr: NULL")
+                if (isolate(debug$trace)) message("mesh.corr: NULL")
                 NULL
             } else {
-                message("mesh.corr!")
+                if (isolate(debug$trace)) message("mesh.corr!")
                 A <- meshplot.A.mesh()
                 s <- click.information()
                 proj <- mesh.proj()
-                print(str(A))
-                print(str(s))
-                print(str(proj))
+                if (isolate(debug$trace)) {
+                    print(str(A))
+                    print(str(s))
+                    print(str(proj))
+                }
                 corr <- proj$proj$A %*% as.vector(inla.qsolve(mesh.Q(), t(A)))
                 out <- matrix(corr, length(proj$x), length(proj$y)) / mesh.sd() / s["SD","Mesh"]
-                message("mesh.corr: end")
+                if (isolate(debug$trace)) message("mesh.corr: end")
                 out
             }
         })
         fine.corr <- reactive({
-            message("fine.corr")
+            if (isolate(debug$trace)) message("fine.corr")
             if (is.null(fine.sd()) || is.null(meshplot.A.fine()) ||
                 is.null(click.information) || is.null(fine.proj())) {
                 NULL
             } else {
-                message("fine.corr!")
+                if (isolate(debug$trace)) message("fine.corr!")
                 A <- meshplot.A.fine()
                 s <- click.information()
                 proj <- fine.proj()
@@ -655,107 +671,122 @@ meshbuilder.app <- function() {
         })
 
         axis.infos <- reactiveValues(offset=NULL, max.edge=NULL, cutoff=NULL, corr.range=NULL)
-        axis.update <- reactiveValues(offset=FALSE, max.edge=FALSE, cutoff=FALSE, corr.range=NULL)
+        axis.update <- reactiveValues(offset=FALSE, max.edge=FALSE, cutoff=FALSE, corr.range=FALSE)
         observeEvent(c(input$offset, limits$input.xlim, limits$input$ylim), {
-            message("Observe offset limit recalculation")
+            if (isolate(debug$trace)) message("Observe offset limit recalculation")
             val <- input$offset
             new.info <- pretty.axis.info(range(c(val,
                                                  diff(limits$input.xlim)/5,
                                                  diff(limits$input.ylim)/5)),
-                                         val)
-            print(axis.infos$offset$lim)
-            print(new.info$lim)
+                                         val,
+                                         isolate(debug$trace))
+            if (isolate(debug$trace)) {
+                print(axis.infos$offset$lim)
+                print(new.info$lim)
+            }
             axis.update$offset <- !identical(axis.infos$offset, new.info)
-            message(paste("Update offset", axis.update$offset))
+            if (isolate(debug$trace)) message(paste("Update offset", axis.update$offset))
             if (axis.update$offset) {
                 axis.infos$offset <- new.info
             }
         })
         observeEvent(c(input$max.edge, limits$input.xlim, limits$input.ylim), {
-            message("Observe max.edge limit recalculation")
+            if (isolate(debug$trace)) message("Observe max.edge limit recalculation")
             val <- input$max.edge
             new.info <- pretty.axis.info(range(c(val,
                                                  diff(limits$input.xlim)/5,
                                                  diff(limits$input.ylim)/5)),
-                                         val)
+                                         val,
+                                         isolate(debug$trace))
             axis.update$max.edge <- !identical(axis.infos$max.edge, new.info)
             if (axis.update$max.edge) {
                 axis.infos$max.edge <- new.info
             }
         })
         observeEvent(c(input$cutoff, input$max.edge), {
-            message("Observe cutoff limit recalculation")
+            if (isolate(debug$trace)) message("Observe cutoff limit recalculation")
             val <- min(input$cutoff, input$max.edge[1])
             new.info <- pretty.axis.info(range(c(val, input$max.edge[1])),
-                                         val)
+                                         val,
+                                         isolate(debug$trace))
+            new.info$lim[2] <- min(new.info$lim[2], input$max.edge[1])
             axis.update$cutoff <- !identical(axis.infos$cutoff, new.info)
             if (axis.update$cutoff) {
                 axis.infos$cutoff <- new.info
             }
         })
         observeEvent(c(input$corr.range, limits$input.xlim, limits$input.ylim), {
-            message("Observe corr.range limit recalculation")
+            if (isolate(debug$trace)) message("Observe corr.range limit recalculation")
             val <- input$corr.range
             new.info <- pretty.axis.info(range(c(val,
                                                  diff(limits$input.xlim),
                                                  diff(limits$input.ylim))),
-                                         val)
+                                         val,
+                                         isolate(debug$trace))
             axis.update$corr.range <- !identical(axis.infos$corr.range, new.info)
             if (axis.update$corr.range) {
                 axis.infos$corr.range <- new.info
             }
         })
         observeEvent(axis.update$offset, {
-            message(paste("Observe offset limit update", axis.update$offset))
+            if (isolate(debug$trace)) message(paste("Observe offset limit update", axis.update$offset))
             if (axis.update$offset) {
                 axis.update$offset <- FALSE
                 info <- axis.infos$offset
                 new.val <- pretty.axis.value(info, input$offset)
-                print(paste("Old values", paste(input$offset, collapse=", ")))
-                print(paste("New limits", paste(info$lim, collapse=", ")))
-                print(paste("New values", paste(new.val, collapse=", ")))
+                if (isolate(debug$trace)) {
+                    print(paste("Old values", paste(input$offset, collapse=", ")))
+                    print(paste("New limits", paste(info$lim, collapse=", ")))
+                    print(paste("New values", paste(new.val, collapse=", ")))
+                }
                 updateSliderInput(session, "offset",
                                   min=info$lim[1], max=info$lim[2],
                                   step=info$step, value=new.val)
             }
         }, priority=10)
         observeEvent(axis.update$max.edge, {
-            message(paste("Observe max.edge limit update", axis.update$max.edge))
+            if (isolate(debug$trace)) message(paste("Observe max.edge limit update", axis.update$max.edge))
             if (axis.update$max.edge) {
                 axis.update$max.edge <- FALSE
                 info <- axis.infos$max.edge
                 new.val <- pretty.axis.value(info, input$max.edge)
-                print(paste("Old values", paste(input$max.edge, collapse=", ")))
-                print(paste("New limits", paste(info$lim, collapse=", ")))
-                print(paste("New values", paste(new.val, collapse=", ")))
+                if (isolate(debug$trace)) {
+                    print(paste("Old values", paste(input$max.edge, collapse=", ")))
+                    print(paste("New limits", paste(info$lim, collapse=", ")))
+                    print(paste("New values", paste(new.val, collapse=", ")))
+                }
                 updateSliderInput(session, "max.edge",
                                   min=info$lim[1], max=info$lim[2],
                                   step=info$step, value=new.val)
             }
         }, priority=9)
         observeEvent(c(axis.update$cutoff, input$cutoff, input$max.edge), {
-            message(paste("Observe cutoff limit update", axis.update$cutoff))
+            if (isolate(debug$trace)) message(paste("Observe cutoff limit update", axis.update$cutoff))
             if (axis.update$cutoff || (input$cutoff > input$max.edge[1])) {
                 axis.update$cutoff <- FALSE
                 info <- axis.infos$cutoff
                 new.val <- pretty.axis.value(info, min(input$cutoff, input$max.edge[1]))
-                print(paste("Old values", paste(input$cutoff, collapse=", ")))
-                print(paste("New limits", paste(info$lim, collapse=", ")))
-                print(paste("New values", paste(new.val, collapse=", ")))
+                if (isolate(debug$trace)) {
+                    print(paste("Old values", paste(input$cutoff, collapse=", ")))
+                    print(paste("New limits", paste(info$lim, collapse=", ")))
+                    print(paste("New values", paste(new.val, collapse=", ")))
+                }
                 updateSliderInput(session, "cutoff",
                                   min=info$lim[1], max=info$lim[2],
                                   step=info$step, value=new.val)
             }
         }, priority=8)
         observeEvent(axis.update$corr.range, {
-            message(paste("Observe corr.range limit update", axis.update$corr.range))
+            if (isolate(debug$trace)) message(paste("Observe corr.range limit update", axis.update$corr.range))
             if (axis.update$corr.range) {
                 axis.update$corr.range <- FALSE
                 info <- axis.infos$corr.range
                 new.val <- pretty.axis.value(info, input$corr.range)
-                print(paste("Old values", paste(input$corr.range, collapse=", ")))
-                print(paste("New limits", paste(info$lim, collapse=", ")))
-                print(paste("New values", paste(new.val, collapse=", ")))
+                if (isolate(debug$trace)) {
+                    print(paste("Old values", paste(input$corr.range, collapse=", ")))
+                    print(paste("New limits", paste(info$lim, collapse=", ")))
+                    print(paste("New values", paste(new.val, collapse=", ")))
+                }
                 updateSliderInput(session, "corr.range",
                                   min=info$lim[1], max=info$lim[2],
                                   step=info$step, value=new.val)
@@ -859,11 +890,11 @@ meshbuilder.app <- function() {
             })
         
         meshplot.expr <- quote({
-            message("meshplot.expr")
+            if (isolate(debug$trace)) message("meshplot.expr")
             col <- colorRampPalette(c("blue", "white", "red"))
             n.col <- 1+64
             if (!input$assess && !is.null(mesh())) {
-                message("meshplot.expr: basic")
+                if (isolate(debug$trace)) message("meshplot.expr: basic")
                 zlim <- c(0.5, 1.5)
 ##                fields::image.plot(mesh.proj()$x, mesh.proj()$y,
 ##                                   matrix(0, length(mesh.proj()$x), length(mesh.proj()$y)),
@@ -879,10 +910,12 @@ meshbuilder.app <- function() {
                                    xlab="Easting", ylab="Northing")
                 plot(mesh(), add=TRUE)
             } else if (input$assess) {
-                message("meshplot.expr: assess")
-                message(paste("meshplot.expr: assess.quantity", input$assess.quantity))
-                message(paste("meshplot.expr: assess.resolution", input$assess.resolution))
-                message(paste("meshplot.expr: overlay", input$overlay))
+                if (isolate(debug$trace)) {
+                    message("meshplot.expr: assess")
+                    message(paste("meshplot.expr: assess.quantity", input$assess.quantity))
+                    message(paste("meshplot.expr: assess.resolution", input$assess.resolution))
+                    message(paste("meshplot.expr: overlay", input$overlay))
+                }
                 zlim.sd <- c(0.5, 1.5)
                 zlim.sd.rel <- c(0.5, 1.5)
                 zlim.corr <- c(-1, 1)
@@ -974,11 +1007,11 @@ meshbuilder.app <- function() {
                     points(clicks$meshplot.loc, col=2)
                 }
                 if ("mesh" %in% input$overlay) {
-                    message("meshplot.expr: mesh overlay")
+                    if (isolate(debug$trace)) message("meshplot.expr: mesh overlay")
                     plot(mesh(), add=TRUE)
                 }
                 if ("fine" %in% input$overlay) {
-                    message("meshplot.expr: fine overlay")
+                    if (isolate(debug$trace)) message("meshplot.expr: fine overlay")
                     plot(fine(), add=TRUE)
                 }
             }
@@ -1093,20 +1126,23 @@ meshbuilder.app <- function() {
 
         clicks <- reactiveValues(meshplot.loc=NULL)
         observeEvent(input$meshplot.click, {
-            message("meshplot.loc")
+            if (isolate(debug$trace)) message("meshplot.loc")
             if (is.null(input$meshplot.click)) {
                 clicks$meshplot.loc <- NULL
             } else {
                 clicks$meshplot.loc <- cbind(input$meshplot.click$x, input$meshplot.click$y)
             }
-            message(paste("meshplot.loc: meshplot.loc =", paste(clicks$meshplot.loc, collapse=", ")))
+            if (isolate(debug$trace)) message(paste("meshplot.loc: meshplot.loc =", paste(clicks$meshplot.loc, collapse=", ")))
         })
         meshplot.A.mesh <- reactive({
-            message("meshplot.A.mesh")
+            if (isolate(debug$trace)) message("meshplot.A.mesh")
             A <- NULL
             if (input$assess && !is.null(clicks$meshplot.loc) && !is.null(mesh())) {
-                message(paste("meshplot.A.mesh:",
-                              paste0("meshplot.loc = ", paste(clicks$meshplot.loc, collapse=", "))))
+                if (isolate(debug$trace)) {
+                    message(paste("meshplot.A.mesh:",
+                                  paste0("meshplot.loc = ",
+                                         paste(clicks$meshplot.loc, collapse=", "))))
+                }
                 A <- INLA::inla.spde.make.A(mesh(), clicks$meshplot.loc)
                 if (!(sum(A) > 0)) {
                     A <- NULL
@@ -1115,11 +1151,14 @@ meshbuilder.app <- function() {
             A
         })
         meshplot.A.fine <- reactive({
-            message("meshplot.A.fine")
+            if (isolate(debug$trace)) message("meshplot.A.fine")
             A <- NULL
             if (input$assess && !is.null(clicks$meshplot.loc) && !is.null(fine())) {
-                message(paste("meshplot.A.fine:",
-                              paste0("meshplot.loc = ", paste(clicks$meshplot.loc, collapse=", "))))
+                if (isolate(debug$trace)) {
+                    message(paste("meshplot.A.fine:",
+                                  paste0("meshplot.loc = ",
+                                         paste(clicks$meshplot.loc, collapse=", "))))
+                }
                 A <- INLA::inla.spde.make.A(fine(), clicks$meshplot.loc)
                 if (!(sum(A) > 0)) {
                     A <- NULL
@@ -1129,14 +1168,14 @@ meshbuilder.app <- function() {
         })
 
         click.information <- reactive({
-            message("click.information")
+            if (isolate(debug$trace)) message("click.information")
             if (input$assess.advanced) {
                 if (is.null(clicks$meshplot.loc) ||
                     is.null(meshplot.A.mesh()) ||
                     is.null(meshplot.A.fine())) {
                     out <- rbind(cbind(NA, NA, NA), cbind(NA, NA, NA), cbind(NA, NA, NA))
                 } else {
-                    message("click.information!")
+                    if (isolate(debug$trace)) message("click.information!")
                     A.mesh <- meshplot.A.mesh()
                     A.fine <- meshplot.A.fine()
                     sd.bound.mesh <- as.vector(A.mesh %*% diag(mesh.S())^0.5)
@@ -1159,7 +1198,7 @@ meshbuilder.app <- function() {
                     is.null(meshplot.A.mesh())) {
                     out <- rbind(NA, NA, NA)
                 } else {
-                    message("click.information!")
+                    if (isolate(debug$trace)) message("click.information!")
                     A.mesh <- meshplot.A.mesh()
                     sd.bound.mesh <- as.vector(A.mesh %*% diag(mesh.S())^0.5)
                     sd.mesh <- Matrix::rowSums(A.mesh * (A.mesh %*% mesh.S()))^0.5
@@ -1172,11 +1211,11 @@ meshbuilder.app <- function() {
             out
         })
         SD.information <- reactive({
-            message("SD.information")
+            if (isolate(debug$trace)) message("SD.information")
             if (!input$assess) {
                 NULL
             } else {
-                message("SD.information!")
+                if (isolate(debug$trace)) message("SD.information!")
                 if (input$assess.advanced) {
                     out <- matrix(NA, 3,5)
                 } else {
@@ -1212,11 +1251,11 @@ meshbuilder.app <- function() {
             }
         })
         corr.information <- reactive({
-            message("corr.information")
+            if (isolate(debug$trace)) message("corr.information")
             if (!input$assess) {
                 NULL
             } else {
-                message("corr.information!")
+                if (isolate(debug$trace)) message("corr.information!")
                 if (input$assess.advanced) {
                     out <- matrix(NA, 3,5)
                 } else {
@@ -1334,11 +1373,31 @@ meshbuilder.app <- function() {
             paste0(xy_str(clicks$meshplot.loc))
         })
 
+
+
+
+        debug <- reactiveValues(trace=FALSE, plot.delay=NULL)
+        observe({
+            if (input$debug.use.trace) {
+                debug$trace <- TRUE
+            } else {
+                debug$trace <- FALSE
+            }
+        })
+        observe({
+            if (input$debug.use.plot.delay) {
+                debug$plot.delay <- 0
+            } else {
+                debug$plot.delay <- NULL
+            }
+        })
+        
         output$debug <- renderText({
             out <- paste0(input$boundary.loc.name)
             out <- paste0(out, "\n", input$mesh.loc.name)
             out
         })
+        
 }
 
     shinyApp(ui=meshbuilder.ui, server=meshbuilder.server)
