@@ -15,7 +15,7 @@
 ##   You should have received a copy of the GNU General Public License
 ##   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-spatial.object.choices <- function() {
+spatial.object.choices <- function(only.points=TRUE) {
     valid.classes <- c("matrix",
                        "inla.mesh.segment",
                        "SpatialPoints", "SpatialPointsDataFrame",
@@ -28,7 +28,11 @@ spatial.object.choices <- function() {
                      (length(cl) > 0) && (length(intersect(cl, valid.classes)) > 0)
                  },
                  TRUE)
-    obj[ok]
+    if (only.points) {
+        c("RANDOM", obj[ok])
+    } else {
+        obj[ok]
+    }
 }
 
 pretty.axis.info <- function(lim, value=NA, verbose=FALSE) {
@@ -118,37 +122,35 @@ meshbuilder.app <- function() {
                              fluidRow(
                                  column(4,
                                         h4("Random seed points"),
-                                        checkboxGroupInput(inputId="loc.usage",
-                                                     label="Use random seed points for",
-                                                     choices=list("Domain boundary definitions"="boundary",
-                                                                  "Mesh seed vertices"="mesh"),
-                                                     selected="boundary"),
-                                        sliderInput(inputId="input.loc.n", label="Seed points",
-                                                    value=10, min=1, max=1000),
-                                        actionButton(inputId="update.loc",
-                                                     label="Generate seed points"),
+                                        fluidRow(
+                                            column(8,
+                                                   sliderInput(inputId="input.loc.n",
+                                                               label="Seed points",
+                                                               value=10, min=1, max=1000)),
+                                            column(4,
+                                                   actionButton(inputId="update.loc",
+                                                                label="Generate"))),
                                         h4("User defined points"),
                                         selectInput("boundary.loc.name",
                                                     label="Boundary domain points variable name(s)",
                                                     multiple=TRUE,
-                                                    choices=spatial.object.choices()),
-                                        selectInput("boundary.loc.name.usage",
-                                                    label=NULL,
-                                                    multiple=TRUE,
-                                                    choices=c("points", "domain")),
+                                                    choices=spatial.object.choices(TRUE),
+                                                    selected="RANDOM"),
                                         selectInput("mesh.loc.name",
                                                     label="Mesh vertex seed points variable name(s)",
                                                     multiple=TRUE,
-                                                    choices=spatial.object.choices()),
+                                                    choices=spatial.object.choices(TRUE)),
                                         h4("User defined boundaries"),
                                         selectInput("boundary1.name",
                                                     label="Inner boundary variable name(s)",
                                                     multiple=TRUE,
-                                                    choices=with(globalenv(), ls())),
+                                                    choices=spatial.object.choices(FALSE),
+                                                    selected=c("RANDOM")),
                                         selectInput("boundary2.name",
                                                     label="Outer boundary variable name(s)",
                                                     multiple=TRUE,
-                                                    choices=with(globalenv(), ls())),
+                                                    choices=spatial.object.choices(FALSE),
+                                                    selected=c("RANDOM")),
                                         hr(),
                                         textInput("crs.mesh", label="Mesh CRS"),
                                         verbatimTextOutput("crs.strings")
@@ -237,75 +239,139 @@ meshbuilder.app <- function() {
             )
             out
         })
-        boundary.loc.input <- reactive({
-            out <- lapply(input$boundary.loc.name,
+
+        random.loc.usage <- reactiveValues(boundary=TRUE, mesh=FALSE)
+        observe({
+            message(paste("  input$boundary.loc.name = (",
+                                                    paste(input$boundary.loc.name, collapse=", "),
+                                                    ")", sep=""))
+            message(paste("current$boundary.loc.name = (",
+                                                    paste(current$boundary.loc.name, collapse=", "),
+                                                    ")", sep=""))
+        })
+        observe({
+            message(paste("  input$mesh.loc.name = (",
+                                                    paste(input$mesh.loc.name, collapse=", "),
+                                                    ")", sep=""))
+            message(paste("current$mesh.loc.name = (",
+                                                    paste(current$mesh.loc.name, collapse=", "),
+                                                    ")", sep=""))
+        })
+        observe({
+            random.loc.usage$boundary <- length(intersect(current$boundary.loc.name, "RANDOM")) > 0 
+            if (isolate(debug$trace)) message(paste("random.loc.usage$boundary =",
+                                                    random.loc.usage$boundary))
+        })
+        observe({
+            random.loc.usage$mesh <- length(intersect(current$mesh.loc.name, "RANDOM")) > 0 
+            if (isolate(debug$trace)) message(paste("random.loc.usage$mesh =",
+                                                    random.loc.usage$mesh))
+        })
+        
+        current <- reactiveValues(boundary.loc.name="RANDOM",
+                                  mesh.loc.name=c())
+        observeEvent(input$boundary.loc.name, {
+            input.boundary.loc.name <- setdiff(input$boundary.loc.name, "RANDOM")
+            if (("RANDOM" %in% current$boundary.loc.name) &&
+                ("RANDOM" %in% input$boundary.loc.name) &&
+                (length(input.boundary.loc.name) > 0)) {
+                current$boundary.loc.name <- input.boundary.loc.name
+                updateSelectInput(session, "boundary.loc.name",
+                                  selected=current$boundary.loc.name)
+            } else if (!("RANDOM" %in% current$boundary.loc.name) &&
+                       ("RANDOM" %in% input$boundary.loc.name)) {
+                current$boundary.loc.name <<- "RANDOM"
+                updateSelectInput(session, "boundary.loc.name",
+                                  selected=current$boundary.loc.name)
+            } else {
+                current$boundary.loc.name <- input$boundary.loc.name
+            }
+        })
+        mesh.loc.name.previous <- "RANDOM"
+        observeEvent(input$mesh.loc.name, {
+            input.mesh.loc.name <- setdiff(input$mesh.loc.name, "RANDOM")
+            if (("RANDOM" %in% current$mesh.loc.name) &&
+                ("RANDOM" %in% input$mesh.loc.name) &&
+                (length(input.mesh.loc.name) > 0)) {
+                current$mesh.loc.name <- input.mesh.loc.name
+                updateSelectInput(session, "mesh.loc.name",
+                                  selected=current$mesh.loc.name)
+            } else if (!("RANDOM" %in% mesh.loc.name.previous) &&
+                       ("RANDOM" %in% input$mesh.loc.name)) {
+                current$mesh.loc.name <<- "RANDOM"
+                updateSelectInput(session, "mesh.loc.name",
+                                  selected=current$mesh.loc.name)
+            } else {
+                current$mesh.loc.name <- input$mesh.loc.name
+            }
+        })
+        convert.globalenv.loc.to.SpatialPoints <- function(names) {
+            out <- lapply(names,
                           function(name) {
+                              code.prefix <- ""
+                              code.suffix <- ""
                               if (length(intersect(class(globalenv()[[name]]),
-                                                   c("SpatialPoints", "SpatialPointsDataFrame",
-                                                     "SpatialLines", "SpatialLinesDataFrame",
-                                                     "SpatialPolygons", "SpatialPolygonsDataFrame"))) > 0) {
+                                                   c("SpatialPoints", "SpatialPointsDataFrame"))) > 0) {
                                   coord <- coordinates(globalenv()[[name]])
                                   crs <- CRS(proj4string(globalenv()[[name]]))
+                                  if (inherits(globalenv()[[name]], "SpatialPointsDataFrame")) {
+                                      code.prefix <- "as("
+                                      code.suffix <- ', "SpatialPoints")'
+                                  }
+                              } else if (length(intersect(class(globalenv()[[name]]),
+                                                   c("SpatialLines", "SpatialLinesDataFrame",
+                                                     "SpatialPolygons", "SpatialPolygonsDataFrame"))) > 0) {
+                                  tmp <- as.inla.mesh.segment(globalenv()[[name]])
+                                  coord <- tmp$loc
+                                  crs <- CRS(proj4string(globalenv()[[name]]))
+                                  code.prefix <- "as(as("
+                                  code.suffix <- ', "SpatialLines"), "SpatialPoints")'
                               } else {
                                   coord <- as.matrix(globalenv()[[name]])
                                   crs <- CRS()
+                                  code.prefix <- "SpatialPoints(as.matrix("
+                                  code.suffix <- "), CRS())"
                               }
-                              SpatialPoints(coord, crs)
+                              out <- SpatialPoints(coord, crs)
+                              attr(out, "code") <- paste0(code.prefix, name, code.suffix)
+                              out
                           })
-            names(out) <- input$boundary.loc.name
+            names(out) <- names
             if (length(out) > 0) {
-                out
+                out <- out
             } else {
-                NULL
+                out <- NULL
             }
+            out
+        }
+        boundary.loc.input <- reactive({
+            names <- setdiff(current$boundary.loc.name, "RANDOM")
+            convert.globalenv.loc.to.SpatialPoints(names)
         })
         mesh.loc.input <- reactive({
-            out <- lapply(input$mesh.loc.name,
-                          function(name) {
-                              if (length(intersect(class(globalenv()[[name]]),
-                                                   c("SpatialPoints", "SpatialPointsDataFrame",
-                                                     "SpatialLines", "SpatialLinesDataFrame",
-                                                     "SpatialPolygons", "SpatialPolygonsDataFrame"))) > 0) {
-                                  coord <- coordinates(globalenv()[[name]])
-                                  crs <- CRS(proj4string(globalenv()[[name]]))
-                              } else {
-                                  coord <- as.matrix(globalenv()[[name]])
-                                  crs <- CRS()
-                              }
-                              SpatialPoints(coord, crs)
-                          })
-            names(out) <- input$mesh.loc.name
-            if (length(out) > 0) {
-                out
-            } else {
-                NULL
-            }
+            names <- setdiff(current$mesh.loc.name, "RANDOM")
+            convert.globalenv.loc.to.SpatialPoints(names)
         })
 
-        boundary.loc <- reactive({
+        combine.input.loc <- function(sp, use.loc) {
             out <- NULL
             code <- ""
-            sp <- boundary.loc.input()
-            num <- length(sp) + ("boundary" %in% input$loc.usage)
+            num <- length(sp) + (use.loc)
             if (num > 0) {
-                code <- "boundary.loc <- "
                 if (num == 1) {
                     glue <- ""
                 } else {
                     glue <- "rbind("
                 }
-                if (length(sp) == 1) {
-                    name <- input$boundary.loc.name[1]
-                    out <- sp[[name]]
-                    code <- paste0(code, glue, name)
-                    glue <- ", "
-                } else  if (length(sp) > 1) {
-                    out <- do.call(rbind, lapply(input$boundary.loc.name,
-                                                 function(name) sp[[name]]))
-                    code <- paste0(code, glue, paste0(input$boundary.loc.name, collapse=", "))
-                    glue <- ", "
+                names <- names(sp)
+                if (length(sp) >= 1) {
+                    out <- do.call(rbind, lapply(names, function(name) sp[[name]]))
+                    code <- paste0(code, glue, paste0(lapply(sp, function(x) {
+                        attr(x, "code")
+                    }), collapse=",\n    "))
+                    glue <- ",    \n"
                 }
-                if ("boundary" %in% input$loc.usage) {
+                if (use.loc) {
                     if (is.null(out)) {
                         out <- loc()
                     } else {
@@ -319,42 +385,20 @@ meshbuilder.app <- function() {
                 attr(out, "code") <- paste0(code, "\n")
             }
             out
+        }
+        boundary.loc <- reactive({
+            sp <- boundary.loc.input()
+            out <- combine.input.loc(sp, random.loc.usage$boundary)
+            if (!is.null(out)) {
+                attr(out, "code") <- paste0("boundary.loc <- ", attr(out, "code"))
+            }
+            out
         })
         mesh.loc <- reactive({
-            out <- NULL
-            code <- ""
             sp <- mesh.loc.input()
-            num <- length(sp) + ("mesh" %in% input$loc.usage)
-            if (num > 0) {
-                code <- "mesh.loc <- "
-                if (num == 1) {
-                    glue <- ""
-                } else {
-                    glue <- "rbind("
-                }
-                if (length(sp) == 1) {
-                    name <- input$mesh.loc.name[1]
-                    out <- sp[[name]]
-                    code <- paste0(code, glue, name)
-                    glue <- ", "
-                } else  if (length(sp) > 1) {
-                    out <- do.call(rbind, lapply(input$mesh.loc.name,
-                                                 function(name) sp[[name]]))
-                    code <- paste0(code, glue, paste0(input$mesh.loc.name, collapse=", "))
-                    glue <- ", "
-                }
-                if ("mesh" %in% input$loc.usage) {
-                    if (is.null(out)) {
-                        out <- loc()
-                    } else {
-                        out <- rbind(out, loc())
-                    }
-                    code <- paste0(code, glue, "loc")
-                }
-                if (num > 1) {
-                    code <- paste0(code, ")")
-                }
-                attr(out, "code") <- paste0(code, "\n")
+            out <- combine.input.loc(sp, random.loc.usage$mesh)
+            if (!is.null(out)) {
+                attr(out, "code") <- paste0("mesh.loc <- ", attr(out, "code"))
             }
             out
         })
@@ -1021,8 +1065,20 @@ meshbuilder.app <- function() {
             renderPlot(meshplot.expr, quoted=TRUE, height=1000, units="px")
 
         userinput.xlim <- reactive({
-            lim1 <- if (is.null(boundary.loc.input())) NA else range(coordinates(boundary.loc.input())[,1], na.rm=TRUE)
-            lim2 <- if (is.null(mesh.loc.input())) NA else range(coordinates(mesh.loc.input())[,1], na.rm=TRUE)
+            lim1 <- if (is.null(boundary.loc.input())) {
+                        NA
+                    } else {
+                        range(unlist(lapply(boundary.loc.input(),
+                                            function(x) range(coordinates(x)[,1], na.rm=TRUE))),
+                              na.rm=TRUE)
+                    }
+            lim2 <- if (is.null(mesh.loc.input()))  {
+                        NA
+                    } else {
+                        range(unlist(lapply(mesh.loc.input(),
+                                            function(x) range(coordinates(x)[,1], na.rm=TRUE))),
+                              na.rm=TRUE)
+                    }
             r <- c(lim1, lim2)
             if (all(is.na(r))) {
                 r <- c(0, 1)
@@ -1032,8 +1088,20 @@ meshbuilder.app <- function() {
             r
         })
         userinput.ylim <- reactive({
-            lim1 <- if (is.null(boundary.loc.input())) NA else range(coordinates(boundary.loc.input())[,2], na.rm=TRUE)
-            lim2 <- if (is.null(mesh.loc.input())) NA else range(coordinates(mesh.loc.input())[,2], na.rm=TRUE)
+            lim1 <- if (is.null(boundary.loc.input())) {
+                        NA
+                    } else {
+                        range(unlist(lapply(boundary.loc.input(),
+                                            function(x) range(coordinates(x)[,2], na.rm=TRUE))),
+                              na.rm=TRUE)
+                    }
+            lim2 <- if (is.null(mesh.loc.input()))  {
+                        NA
+                    } else {
+                        range(unlist(lapply(mesh.loc.input(),
+                                            function(x) range(coordinates(x)[,2], na.rm=TRUE))),
+                              na.rm=TRUE)
+                    }
             r <- c(lim1, lim2)
             if (all(is.na(r))) {
                 r <- c(0, 1)
@@ -1049,7 +1117,7 @@ meshbuilder.app <- function() {
                                  inputplot.ylim=c(0,1))
         observe({
             lim1 <- userinput.xlim()
-            lim2 <- if (length(input$loc.usage) > 0) {
+            lim2 <- if (random.loc.usage$boundary || random.loc.usage$mesh) {
                 if (is.null(loc())) NA else range(coordinates(loc())[,1], na.rm=TRUE)
             } else {
                 NA
@@ -1063,7 +1131,7 @@ meshbuilder.app <- function() {
             limits$input.xlim <- r
 
             lim1 <- userinput.ylim()
-            lim2 <- if (length(input$loc.usage) > 0) {
+            lim2 <- if (random.loc.usage$boundary || random.loc.usage$mesh) {
                 if (is.null(loc())) NA else range(coordinates(loc())[,2], na.rm=TRUE)
             } else {
                 NA
@@ -1307,7 +1375,7 @@ meshbuilder.app <- function() {
         output$code <- renderText({
             out <- "## Generated by meshbuilder()\n\n"
             spacing <- ""
-            if (length(input$loc.usage) > 0) {
+            if (random.loc.usage$boundary || random.loc.usage$mesh) {
                 out <- paste0(out,
                               "## Prepare seed points:\n",
                               attr(loc(), "code"))
@@ -1393,8 +1461,8 @@ meshbuilder.app <- function() {
         })
         
         output$debug <- renderText({
-            out <- paste0(input$boundary.loc.name)
-            out <- paste0(out, "\n", input$mesh.loc.name)
+            out <- paste0(current$boundary.loc.name)
+            out <- paste0(out, "\n", current$mesh.loc.name)
             out
         })
         
