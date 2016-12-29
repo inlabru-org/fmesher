@@ -15,24 +15,103 @@
 ##   You should have received a copy of the GNU General Public License
 ##   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-spatial.object.choices <- function(only.points=TRUE) {
-    valid.classes <- c("matrix",
-                       "inla.mesh.segment",
-                       "SpatialPoints", "SpatialPointsDataFrame",
-                       "SpatialLines", "SpatialLinesDataFrame",
-                       "SpatialPolygons", "SpatialPolygonsDataFrame")
+spatial.object.classes <- function(points) {
+    if (points) {
+        c("matrix",
+          "inla.mesh",
+          "inla.mesh.segment",
+          "SpatialPoints", "SpatialPointsDataFrame",
+          "SpatialLines", "SpatialLinesDataFrame",
+          "SpatialPolygons", "SpatialPolygonsDataFrame")
+    } else {
+        c("inla.mesh",
+          "inla.mesh.segment",
+          "SpatialLines", "SpatialLinesDataFrame",
+          "SpatialPolygons", "SpatialPolygonsDataFrame")
+    }
+}
+
+spatial.object.choices <- function(points=TRUE) {
     obj <- with(globalenv(), ls())
+    classes <- spatial.object.classes(points)
     ok <- vapply(obj,
                  function(name) {
                      cl <- class(globalenv()[[name]])
-                     (length(cl) > 0) && (length(intersect(cl, valid.classes)) > 0)
+                     (length(cl) > 0) && (length(intersect(cl, classes)) > 0)
                  },
                  TRUE)
-    if (only.points) {
+    if (points) {
         c("RANDOM", obj[ok])
     } else {
         obj[ok]
     }
+}
+
+spatial.object.code <- function(sp, name) {
+    gsub("%%%", name, attr(sp, "code"))
+}
+spatial.object.to.SpatialPoints <- function(sp) {
+    code <- "%%%"
+    if (length(intersect(class(sp),
+                         c("SpatialPoints", "SpatialPointsDataFrame"))) > 0) {
+        coord <- coordinates(sp)
+        crs <- CRS(proj4string(sp))
+        if (inherits(sp, "SpatialPointsDataFrame")) {
+            code <- 'as(%%%, "SpatialPoints")'
+        }
+    } else if (length(intersect(class(sp),
+                                c("SpatialLines", "SpatialLinesDataFrame"))) > 0) {
+        tmp <- as.inla.mesh.segment(sp)
+        coord <- tmp$loc
+        crs <- CRS(proj4string(sp))
+        if (inherits(sp, "SpatialLinesDataFrame")) {
+            code <- 'as(%%%, "SpatialLines")'
+        }
+        code <- paste0('as(', code, ', "SpatialPoints")')
+    } else if (length(intersect(class(sp),
+                                c("SpatialPolygons", "SpatialPolygonsDataFrame"))) > 0) {
+        tmp <- as.inla.mesh.segment(sp)
+        coord <- tmp$loc
+        crs <- CRS(proj4string(sp))
+        if (inherits(sp, "SpatialPolygonsDataFrame")) {
+            code <- 'as(%%%, "SpatialPolygons")'
+        }
+        code <- paste0('as(', code, ', "SpatialPoints")')
+    } else if (inherits(sp, "inla.mesh.segment") || inherits(sp, "inla.mesh")) {
+        coord <- sp$loc
+        crs <- inla.CRS(sp$crs)
+        code <- "SpatialPoints(%%%$loc, %%%$crs)"
+    } else {
+        coord <- as.matrix(sp)
+        crs <- CRS()
+        code <- "SpatialPoints(as.matrix(%%%), CRS())"
+    }
+    out <- SpatialPoints(coord, crs)
+    attr(out, "code") <- code
+    out
+}
+
+spatial.object.to.segments <- function(sp) {
+    code <- "%%%"
+    if (length(intersect(class(sp),
+                         c("SpatialLines", "SpatialLinesDataFrame",
+                           "SpatialPolygons", "SpatialPolygonsDataFrame"))) > 0) {
+        out <- as.inla.mesh.segment(sp)
+        code <- "as.inla.mesh.segment(%%%)"
+    } else if (inherits(sp, "inla.mesh")) {
+        out <- do.call(inla.mesh.segment, inla.mesh.boundary(sp))
+        code <- "do.call(inla.mesh.segment, inla.mesh.boundary(%%%))"
+    } else if (inherits(sp, "inla.mesh.segment")) {
+        out <- sp
+        code <- "%%%"
+    } else {
+        message(paste0("Don't know how to convert (",
+                       paste(class(sp), collapse=", "),
+                       ") to inla.mesh.segment"))
+        return(NULL)
+    }
+    attr(out, "code") <- code
+    out
 }
 
 pretty.axis.info <- function(lim, value=NA, verbose=FALSE) {
@@ -145,12 +224,12 @@ meshbuilder.app <- function() {
                                                     label="Inner boundary variable name(s)",
                                                     multiple=TRUE,
                                                     choices=spatial.object.choices(FALSE),
-                                                    selected=c("RANDOM")),
+                                                    selected=c()),
                                         selectInput("boundary2.name",
                                                     label="Outer boundary variable name(s)",
                                                     multiple=TRUE,
                                                     choices=spatial.object.choices(FALSE),
-                                                    selected=c("RANDOM")),
+                                                    selected=c()),
                                         hr(),
                                         textInput("crs.mesh", label="Mesh CRS"),
                                         verbatimTextOutput("crs.strings")
@@ -270,25 +349,26 @@ meshbuilder.app <- function() {
         
         current <- reactiveValues(boundary.loc.name="RANDOM",
                                   mesh.loc.name=c())
-        observeEvent(input$boundary.loc.name, {
-            input.boundary.loc.name <- setdiff(input$boundary.loc.name, "RANDOM")
+        observeEvent(list(input$boundary.loc.name, length(input$boundary.loc.name)), {
+            tmp <- input$boundary.loc.name
+            input.boundary.loc.name <- setdiff(tmp, "RANDOM")
             if (("RANDOM" %in% current$boundary.loc.name) &&
-                ("RANDOM" %in% input$boundary.loc.name) &&
+                ("RANDOM" %in% tmp) &&
                 (length(input.boundary.loc.name) > 0)) {
                 current$boundary.loc.name <- input.boundary.loc.name
                 updateSelectInput(session, "boundary.loc.name",
                                   selected=current$boundary.loc.name)
             } else if (!("RANDOM" %in% current$boundary.loc.name) &&
-                       ("RANDOM" %in% input$boundary.loc.name)) {
-                current$boundary.loc.name <<- "RANDOM"
+                       ("RANDOM" %in% tmp)) {
+                current$boundary.loc.name <- "RANDOM"
                 updateSelectInput(session, "boundary.loc.name",
                                   selected=current$boundary.loc.name)
             } else {
-                current$boundary.loc.name <- input$boundary.loc.name
+                current$boundary.loc.name <- tmp
             }
         })
         mesh.loc.name.previous <- "RANDOM"
-        observeEvent(input$mesh.loc.name, {
+        observeEvent(list(input$mesh.loc.name, length(input$mesh.loc.name)), {
             input.mesh.loc.name <- setdiff(input$mesh.loc.name, "RANDOM")
             if (("RANDOM" %in% current$mesh.loc.name) &&
                 ("RANDOM" %in% input$mesh.loc.name) &&
@@ -298,42 +378,33 @@ meshbuilder.app <- function() {
                                   selected=current$mesh.loc.name)
             } else if (!("RANDOM" %in% mesh.loc.name.previous) &&
                        ("RANDOM" %in% input$mesh.loc.name)) {
-                current$mesh.loc.name <<- "RANDOM"
+                current$mesh.loc.name <- "RANDOM"
                 updateSelectInput(session, "mesh.loc.name",
                                   selected=current$mesh.loc.name)
             } else {
                 current$mesh.loc.name <- input$mesh.loc.name
             }
         })
-        convert.globalenv.loc.to.SpatialPoints <- function(names) {
+        convert.globalenv.to.SpatialPoints <- function(names) {
             out <- lapply(names,
                           function(name) {
-                              code.prefix <- ""
-                              code.suffix <- ""
-                              if (length(intersect(class(globalenv()[[name]]),
-                                                   c("SpatialPoints", "SpatialPointsDataFrame"))) > 0) {
-                                  coord <- coordinates(globalenv()[[name]])
-                                  crs <- CRS(proj4string(globalenv()[[name]]))
-                                  if (inherits(globalenv()[[name]], "SpatialPointsDataFrame")) {
-                                      code.prefix <- "as("
-                                      code.suffix <- ', "SpatialPoints")'
-                                  }
-                              } else if (length(intersect(class(globalenv()[[name]]),
-                                                   c("SpatialLines", "SpatialLinesDataFrame",
-                                                     "SpatialPolygons", "SpatialPolygonsDataFrame"))) > 0) {
-                                  tmp <- as.inla.mesh.segment(globalenv()[[name]])
-                                  coord <- tmp$loc
-                                  crs <- CRS(proj4string(globalenv()[[name]]))
-                                  code.prefix <- "as(as("
-                                  code.suffix <- ', "SpatialLines"), "SpatialPoints")'
-                              } else {
-                                  coord <- as.matrix(globalenv()[[name]])
-                                  crs <- CRS()
-                                  code.prefix <- "SpatialPoints(as.matrix("
-                                  code.suffix <- "), CRS())"
-                              }
-                              out <- SpatialPoints(coord, crs)
-                              attr(out, "code") <- paste0(code.prefix, name, code.suffix)
+                              out <- spatial.object.to.SpatialPoints(globalenv()[[name]])
+                              attr(out, "code") <- spatial.object.code(out, name)
+                              out
+                          })
+            names(out) <- names
+            if (length(out) > 0) {
+                out <- out
+            } else {
+                out <- NULL
+            }
+            out
+        }
+        convert.globalenv.to.segments <- function(names) {
+            out <- lapply(names,
+                          function(name) {
+                              out <- spatial.object.to.segments(globalenv()[[name]])
+                              attr(out, "code") <- spatial.object.code(out, name)
                               out
                           })
             names(out) <- names
@@ -346,11 +417,41 @@ meshbuilder.app <- function() {
         }
         boundary.loc.input <- reactive({
             names <- setdiff(current$boundary.loc.name, "RANDOM")
-            convert.globalenv.loc.to.SpatialPoints(names)
+            convert.globalenv.to.SpatialPoints(names)
         })
         mesh.loc.input <- reactive({
             names <- setdiff(current$mesh.loc.name, "RANDOM")
-            convert.globalenv.loc.to.SpatialPoints(names)
+            convert.globalenv.to.SpatialPoints(names)
+        })
+        boundary.loc.to.boundary.auto <- function(loc, offset) {
+            if (is.null(loc)) {
+                out <- NULL
+            } else {
+                out <- INLA::inla.nonconvex.hull(coordinates(loc), offset)
+                attr(out, "code") <-
+                    paste0("inla.nonconvex.hull(coordinates(boundary.loc), ",
+                           offset, ")")
+                out <- list(out)
+            }
+            out
+        }
+        boundary1.auto <- reactive({
+            loc0 <- boundary.loc()
+            offset0 <- input$offset[1] 
+            boundary.loc.to.boundary.auto(loc0, offset0)
+        })
+        boundary2.auto <- reactive({
+            loc0 <- boundary.loc()
+            offset0 <- input$offset[2] 
+            boundary.loc.to.boundary.auto(loc0, offset0)
+        })
+        boundary1.input <- reactive({
+            names <- input$boundary1.name
+            convert.globalenv.to.segments(names)
+        })
+        boundary2.input <- reactive({
+            names <- input$boundary2.name
+            convert.globalenv.to.segments(names)
         })
 
         combine.input.loc <- function(sp, use.loc) {
@@ -402,18 +503,49 @@ meshbuilder.app <- function() {
             }
             out
         })
+        combine.boundaries <- function(bnd1, bnd2) {
+            bnd <- list()
+            code <- "NULL"
+            if (is.null(bnd1)) {
+                n1 <- 0
+            } else {
+                stopifnot(inherits(bnd1, "list"))
+                n1 <- length(bnd1)
+            }
+            if (is.null(bnd2)) {
+                n2 <- 0
+            } else {
+                stopifnot(inherits(bnd2, "list"))
+                n2 <- length(bnd2)
+            }
+            if (n1+n2 == 1) {
+                if (n1 == 1) {
+                    bnd <- bnd1[[1]]
+                    code <- attr(bnd1[[1]], "code")
+                } else {
+                    bnd <- bnd2[[1]]
+                    code <- attr(bnd2[[1]], "code")
+                }
+            } else if (n1+n2 > 1) {
+                bnd <- c(bnd1, bnd2)
+                code <- paste0("list(",
+                               paste(lapply(bnd, function(x) { attr(x, "code") }),
+                                     collapse=",\n    "),
+                               ")")
+            }
+            attr(bnd, "code") <- code
+            bnd
+        }
         boundary <- reactive({
-            loc1 <- boundary.loc()
-            if (is.null(loc1)) {
+            bnd1 <- combine.boundaries(boundary1.auto(), boundary1.input())
+            bnd2 <- combine.boundaries(boundary2.auto(), boundary2.input())
+            if (length(bnd1) + length(bnd2) == 0) {
                 bnd <- NULL
             } else {
-                bnd <- list(
-                    INLA::inla.nonconvex.hull(coordinates(loc1), input$offset[1]),
-                    INLA::inla.nonconvex.hull(coordinates(loc1), input$offset[2]))
+                bnd <- list(bnd1, bnd2)
                 attr(bnd, "code") <- paste0(
-                    "boundary <- list(inla.nonconvex.hull(coordinates(boundary.loc), ", input$offset[1], "),\n",
-                    "                 inla.nonconvex.hull(coordinates(boundary.loc), ", input$offset[2], "))\n"
-                )
+                    "boundary <- list(", attr(bnd1, "code"), ",\n    ",
+                    attr(bnd2, "code"), ")")
             }
             bnd
         })
@@ -1079,7 +1211,21 @@ meshbuilder.app <- function() {
                                             function(x) range(coordinates(x)[,1], na.rm=TRUE))),
                               na.rm=TRUE)
                     }
-            r <- c(lim1, lim2)
+            lim3 <- if (length(input$boundary1.name) == 0)  {
+                        NA
+                    } else {
+                        range(unlist(lapply(boundary1.input(),
+                                            function(x) range(x$loc[,1], na.rm=TRUE))),
+                              na.rm=TRUE)
+                    }
+            lim4 <- if (length(input$boundary2.name) == 0)  {
+                        NA
+                    } else {
+                        range(unlist(lapply(boundary2.input(),
+                                            function(x) range(x$loc[,1], na.rm=TRUE))),
+                              na.rm=TRUE)
+                    }
+            r <- c(lim1, lim2, lim3, lim4)
             if (all(is.na(r))) {
                 r <- c(0, 1)
             } else {
@@ -1102,7 +1248,21 @@ meshbuilder.app <- function() {
                                             function(x) range(coordinates(x)[,2], na.rm=TRUE))),
                               na.rm=TRUE)
                     }
-            r <- c(lim1, lim2)
+            lim3 <- if (length(input$boundary1.name) == 0)  {
+                        NA
+                    } else {
+                        range(unlist(lapply(boundary1.input(),
+                                            function(x) range(x$loc[,2], na.rm=TRUE))),
+                              na.rm=TRUE)
+                    }
+            lim4 <- if (length(input$boundary2.name) == 0)  {
+                        NA
+                    } else {
+                        range(unlist(lapply(boundary2.input(),
+                                            function(x) range(x$loc[,2], na.rm=TRUE))),
+                              na.rm=TRUE)
+                    }
+            r <- c(lim1, lim2, lim3, lim4)
             if (all(is.na(r))) {
                 r <- c(0, 1)
             } else {
@@ -1200,7 +1360,8 @@ meshbuilder.app <- function() {
             } else {
                 clicks$meshplot.loc <- cbind(input$meshplot.click$x, input$meshplot.click$y)
             }
-            if (isolate(debug$trace)) message(paste("meshplot.loc: meshplot.loc =", paste(clicks$meshplot.loc, collapse=", ")))
+            if (isolate(debug$trace)) message(paste("meshplot.loc: meshplot.loc =",
+                                                    paste(clicks$meshplot.loc, collapse=", ")))
         })
         meshplot.A.mesh <- reactive({
             if (isolate(debug$trace)) message("meshplot.A.mesh")
@@ -1415,6 +1576,14 @@ meshbuilder.app <- function() {
             if (!is.null(sp) && !is.na(proj4string(sp))) {
                 crs <- c(crs, proj4string(sp))
             }
+            sp <- boundary1.input()
+            if (!is.null(sp) && (length(sp) > 0)) {
+                crs <- c(crs, vapply(sp, function(x) { inla.CRSargs(x$crs) }, ""))
+            }
+            sp <- boundary2.input()
+            if (!is.null(sp) && (length(sp) > 0)) {
+                crs <- c(crs, vapply(sp, function(x) { inla.CRSargs(x$crs) }, ""))
+            }
             crs <- unique(crs)
             out <- paste0(crs, collapse="\n")
             out
@@ -1461,8 +1630,17 @@ meshbuilder.app <- function() {
         })
         
         output$debug <- renderText({
-            out <- paste0(current$boundary.loc.name)
-            out <- paste0(out, "\n", current$mesh.loc.name)
+            out <- paste0("boundary.loc.name: ", current$boundary.loc.name)
+            out <- paste0(out, "\n",
+                          "mesh.loc.name: ", current$mesh.loc.name)
+            out <- paste0(out, "\n",
+                          "input$boundary.loc.name: ", input$boundary.loc.name)
+            out <- paste0(out, "\n",
+                          "input$mesh.loc.name: ", input$mesh.loc.name)
+            out <- paste0(out, "\n",
+                          "boundary1.name: ", input$boundary1.name)
+            out <- paste0(out, "\n",
+                          "boundary2.name: ", input$boundary2.name)
             out
         })
         
