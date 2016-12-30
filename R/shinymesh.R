@@ -612,7 +612,7 @@ meshbuilder.app <- function() {
             } else {
                 if (isolate(debug$trace)) message("fine")
                 out <- INLA::inla.mesh.2d(loc=mesh()$loc,
-                                          boundary=INLA::inla.mesh.segment(INLA::inla.mesh.boundary(mesh())),
+                                          boundary=do.call(INLA::inla.mesh.segment, INLA::inla.mesh.boundary(mesh())),
                                           max.edge=min(mesh.edgelengths())/2,
                                           min.angle=21,
                                           max.n=64000,
@@ -620,7 +620,7 @@ meshbuilder.app <- function() {
                                           cutoff=0)
                 attr(out, "code") <- paste0(
                     "fine <- inla.mesh.2d(loc=mesh$loc,
-                         boundary=inla.mesh.segment(inla.mesh.boundary(mesh)),
+                         boundary=do.call(inla.mesh.segment, inla.mesh.boundary(mesh)),
                          max.edge=", min(mesh.edgelengths())/2,",
                          min.angle=21,
                          max.n=64000,
@@ -1549,8 +1549,8 @@ meshbuilder.app <- function() {
             if (!is.null(boundary())) {
                 out <- paste0(out, spacing,
                               "## Build boundary information:\n",
-                              "## (fmesher supports SpatialPolygons, but this\n",
-                              "##  app is not (yet) intelligent enough for that.)\n",
+                              "## (fmesher supports SpatialPolygons, but this",
+                              " app is not (yet) intelligent enough for that.)\n",
                               attr(boundary.loc(), "code"),
                               attr(boundary(), "code"))
                 spacing <- "\n"
@@ -1565,12 +1565,18 @@ meshbuilder.app <- function() {
                           "plot(mesh)\n"
                           )
             if (input$assess) {
-                out <- paste0(out, spacing, spacing,
-                              "## Build a fine scale mesh for comparisons:\n",
-                              attr(fine(), "code"), "\n")
-                out <- paste0(out, spacing,
-                              "## Further assessment code is not generated",
-                              " in this version of meshbuilder()\n")
+                if (input$assess.advanced) {
+                    out <- paste0(out, spacing, spacing,
+                                  "## Build a fine scale mesh for comparisons:\n",
+                                  attr(fine(), "code"), "\n")
+                    out <- paste0(out, spacing,
+                                  "## Further assessment code is not generated",
+                                  " in this version of meshbuilder()\n")
+                } else {
+                    out <- paste0(out, spacing,
+                                  "## Assessment code is not generated",
+                                  " in this version of meshbuilder()\n")
+                }
             }
             out
         })
