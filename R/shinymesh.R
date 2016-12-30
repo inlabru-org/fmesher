@@ -231,7 +231,7 @@ meshbuilder.app <- function() {
                                                     choices=spatial.object.choices(FALSE),
                                                     selected=c()),
                                         hr(),
-                                        textInput("crs.mesh", label="Mesh CRS"),
+                                        textInput("crs.mesh", label="Mesh CRS (experimental feature)"),
                                         verbatimTextOutput("crs.strings")
                                         ),
                                  column(8,
@@ -583,15 +583,17 @@ meshbuilder.app <- function() {
                                           max.n=c(48000, 16000),
                                           max.n.strict=c(128000, 128000),
                                           cutoff=input$cutoff,
+                                          offset=input$offset,
                                           crs=inla.CRS(input$crs.mesh),
                                           plot.delay=isolate(debug$plot.delay))
                 attr(out, "code") <- paste0(
 "mesh <- inla.mesh.2d(", loc.code, bnd.code,
                     "max.edge=c(", input$max.edge[1], ", ", input$max.edge[2], "),
                      min.angle=c(", input$min.angle[2], ", ", input$min.angle[1], "),
-                     max.n=c(48000, 16000),
-                     max.n.strict=c(128000, 128000),
-                     cutoff=", input$cutoff, ")\n")
+                     max.n=c(48000, 16000), ## Safeguard against large meshes.
+                     max.n.strict=c(128000, 128000), ## Don't build a huge mesh!
+                     cutoff=", input$cutoff, ", ## Filter away adjacent points.
+                     offset=c(", paste0(input$offset, collapse=", "), ")) ## Offset for extra boundaries, if needed.\n")
                 el <- sqrt(c(Matrix::rowSums((out$loc[out$graph$tv[,2],] -
                                               out$loc[out$graph$tv[,1],])^2),
                              Matrix::rowSums((out$loc[out$graph$tv[,3],] -
@@ -610,17 +612,19 @@ meshbuilder.app <- function() {
             } else {
                 if (isolate(debug$trace)) message("fine")
                 out <- INLA::inla.mesh.2d(loc=mesh()$loc,
-                                          boundary=list(INLA::inla.mesh.boundary(mesh())),
+                                          boundary=INLA::inla.mesh.segment(INLA::inla.mesh.boundary(mesh())),
                                           max.edge=min(mesh.edgelengths())/2,
                                           min.angle=21,
                                           max.n=64000,
                                           max.n.strict=128000,
                                           cutoff=0)
                 attr(out, "code") <- paste0(
-"fine <- inla.mesh.2d(boundary=list(inla.mesh.boundary(mesh)),\n",
-"                         max.edge=", min(mesh.edgelengths())/2,",
+                    "fine <- inla.mesh.2d(loc=mesh$loc,
+                         boundary=inla.mesh.segment(inla.mesh.boundary(mesh)),
+                         max.edge=", min(mesh.edgelengths())/2,",
                          min.angle=21,
                          max.n=64000,
+                         max.n.strict=128000,
                          cutoff=0)\n"
                     )
                 el <- sqrt(c(Matrix::rowSums((out$loc[out$graph$tv[,2],] -
@@ -1545,6 +1549,8 @@ meshbuilder.app <- function() {
             if (!is.null(boundary())) {
                 out <- paste0(out, spacing,
                               "## Build boundary information:\n",
+                              "## (fmesher supports SpatialPolygons, but this\n",
+                              "##  app is not (yet) intelligent enough for that.)\n",
                               attr(boundary.loc(), "code"),
                               attr(boundary(), "code"))
                 spacing <- "\n"
@@ -1562,6 +1568,9 @@ meshbuilder.app <- function() {
                 out <- paste0(out, spacing, spacing,
                               "## Build a fine scale mesh for comparisons:\n",
                               attr(fine(), "code"), "\n")
+                out <- paste0(out, spacing,
+                              "## Further assessment code is not generated",
+                              " in this version of meshbuilder()\n")
             }
             out
         })
