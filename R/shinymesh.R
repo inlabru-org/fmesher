@@ -327,20 +327,24 @@ meshbuilder.app <- function() {
 
         random.loc.usage <- reactiveValues(boundary=TRUE, mesh=FALSE)
         observe({
-            message(paste("  input$boundary.loc.name = (",
-                                                    paste(input$boundary.loc.name, collapse=", "),
-                                                    ")", sep=""))
-            message(paste("current$boundary.loc.name = (",
-                                                    paste(current$boundary.loc.name, collapse=", "),
-                                                    ")", sep=""))
+            if (isolate(debug$trace)) {
+                message(paste("  input$boundary.loc.name = (",
+                              paste(input$boundary.loc.name, collapse=", "),
+                              ")", sep=""))
+                message(paste("current$boundary.loc.name = (",
+                              paste(current$boundary.loc.name, collapse=", "),
+                              ")", sep=""))
+            }
         })
         observe({
-            message(paste("  input$mesh.loc.name = (",
-                                                    paste(input$mesh.loc.name, collapse=", "),
-                                                    ")", sep=""))
-            message(paste("current$mesh.loc.name = (",
-                                                    paste(current$mesh.loc.name, collapse=", "),
-                                                    ")", sep=""))
+            if (isolate(debug$trace)) {
+                message(paste("  input$mesh.loc.name = (",
+                              paste(input$mesh.loc.name, collapse=", "),
+                              ")", sep=""))
+                message(paste("current$mesh.loc.name = (",
+                              paste(current$mesh.loc.name, collapse=", "),
+                              ")", sep=""))
+            }
         })
         observe({
             random.loc.usage$boundary <- length(intersect(current$boundary.loc.name, "RANDOM")) > 0 
@@ -550,8 +554,9 @@ meshbuilder.app <- function() {
             } else {
                 bnd <- list(bnd1, bnd2)
                 attr(bnd, "code") <- paste0(
-                    "boundary <- list(", attr(bnd1, "code"), ",\n    ",
-                    attr(bnd2, "code"), ")")
+                    "boundary <- list(\n",
+                    attr(bnd1, "code"), ",\n    ",
+                    attr(bnd2, "code"), ")\n")
             }
             bnd
         })
@@ -905,8 +910,8 @@ meshbuilder.app <- function() {
             if (isolate(debug$trace)) message("Observe corr.range limit recalculation")
             val <- input$corr.range
             new.info <- pretty.axis.info(range(c(val,
-                                                 diff(limits$input.xlim),
-                                                 diff(limits$input.ylim))),
+                                                 diff(limits$input.xlim)/5,
+                                                 diff(limits$input.ylim)/5)),
                                          val,
                                          isolate(debug$trace))
             axis.update$corr.range <- !identical(axis.infos$corr.range, new.info)
@@ -1574,12 +1579,12 @@ meshbuilder.app <- function() {
                 if (input$assess.advanced) {
                     out <- paste0(out, spacing, spacing,
                                   "## Build a fine scale mesh for comparisons:\n",
-                                  attr(fine(), "code"), "\n")
+                                  attr(fine(), "code"))
                     out <- paste0(out, spacing,
                                   "## Further assessment code is not generated",
                                   " in this version of meshbuilder()\n")
                 } else {
-                    out <- paste0(out, spacing,
+                    out <- paste0(out, spacing, spacing,
                                   "## Assessment code is not generated",
                                   " in this version of meshbuilder()\n")
                 }
