@@ -211,7 +211,7 @@ meshbuilder.app <- function() {
                                             column(8,
                                                    sliderInput(inputId="input.loc.n",
                                                                label="Seed points",
-                                                               value=10, min=1, max=1000)),
+                                                               value=10, min=0, max=1000)),
                                             column(4,
                                                    actionButton(inputId="update.loc",
                                                                 label="Generate"))),
@@ -311,17 +311,59 @@ meshbuilder.app <- function() {
             }
         })
         loc <- reactive({
-            set.seed(loc.seed())
-            out <- SpatialPoints(matrix(runif(2*input$input.loc.n) *
-                                        c(diff(userinput.xlim()), diff(userinput.ylim())) +
-                                        c(userinput.xlim()[1], userinput.ylim()[1]),
-                                        input$input.loc.n, 2, byrow=TRUE),
-                                 input.loc.crs())
-            attr(out, "code") <- paste0(
-                "set.seed(", loc.seed(), ")\n",
-                "loc <- SpatialPoints(matrix(runif(2*", input$input.loc.n, "), ",
-                input$input.loc.n, ", 2, byrow=TRUE))\n"
-            )
+            if (input$input.loc.n > 0) {
+                set.seed(loc.seed())
+                out <- SpatialPoints(matrix(runif(2*input$input.loc.n) *
+                                            c(diff(userinput.xlim()), diff(userinput.ylim())) +
+                                            c(userinput.xlim()[1], userinput.ylim()[1]),
+                                            input$input.loc.n, 2, byrow=TRUE),
+                                     input.loc.crs())
+                attr(out, "code") <- paste0(
+                    "set.seed(", loc.seed(), ")\n",
+                    "loc <- SpatialPoints(matrix(runif(2*", input$input.loc.n, "), ",
+                    input$input.loc.n, ", 2, byrow=TRUE))\n"
+                )
+            } else {
+                ## Fill in with inbetween points
+                seq.to.points <- function(loc, delta, scale=c(1, 1), offset=c(0, 0)) {
+                    do.call(rbind,
+                            lapply(seq_len(nrow(loc)-1),
+                                   function(k) {
+                                       loc1 <- loc[k,]
+                                       loc2 <- loc[k+1,]
+                                       if (any(is.na(loc1)) || any(is.na(loc2))) {
+                                           NULL
+                                       } else {
+                                           n <- ceiling(sum((loc2 - loc1)^2)^0.5 / delta) + 1
+                                           s <- seq(0, 1, length=n)
+                                           cbind((loc1[1]*(1-s) + s*loc2[1]) * scale[1] + offset[1],
+                                           (loc1[2]*(1-s) + s*loc2[2]) * scale[2] + offset[2])
+                                       }
+                                   })
+                            )
+                }
+
+                ## Make "BRU" text:
+                m <- 20
+                seq.B <- rbind(c(0, 50), c(0, 0), c(25, 0), c(40, 15), c(40, 35), c(25, 50), c(0, 50),
+                               c(0,100), c(20, 100), c(35, 85), c(35, 65), c(20, 50))/100
+                seq.R <- rbind(c(0, 0), c(0,100), c(20, 100), c(35, 85), c(35, 65), c(20, 50),
+                               c(0, 50), c(50, 0))/100
+                seq.U <- rbind(c(0, 100), c(0, 15), c(15, 0), c(35, 0), c(50, 15), c(50, 100))/100
+
+                delta <- 0.01
+                scale <- c(2, 2)
+                out <- rbind(seq.to.points(seq.B, delta, scale, offset=c(0, 0)*2),
+                             seq.to.points(seq.R, delta, scale, offset=c(0.6, 0)*2),
+                             seq.to.points(seq.U, delta, scale, offset=c(1.2, 0)*2))
+
+                out <- SpatialPoints(matrix(as.vector(t(out)) *
+                                            c(diff(userinput.xlim()), diff(userinput.ylim())) +
+                                            c(userinput.xlim()[1], userinput.ylim()[1]),
+                                            nrow(out), 2, byrow=TRUE),
+                                     input.loc.crs())
+                attr(out, "code") <- paste0("loc <- MAGIC\n")
+            }
             out
         })
 
