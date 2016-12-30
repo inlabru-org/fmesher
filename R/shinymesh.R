@@ -79,8 +79,14 @@ spatial.object.to.SpatialPoints <- function(sp) {
         code <- paste0('as(', code, ', "SpatialPoints")')
     } else if (inherits(sp, "inla.mesh.segment") || inherits(sp, "inla.mesh")) {
         coord <- sp$loc
-        crs <- inla.CRS(sp$crs)
-        code <- "SpatialPoints(%%%$loc, %%%$crs)"
+        if (is.null(sp$crs)) {
+            crs <- CRS()
+            crs.code <- ""
+        } else {
+            crs <- inla.CRS(sp$crs)
+            crs.code <- ", %%%$crs"
+        }
+        code <- paste0("SpatialPoints(%%%$loc", crs.code, ")")
     } else {
         coord <- as.matrix(sp)
         crs <- CRS()
