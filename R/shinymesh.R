@@ -90,7 +90,7 @@ spatial.object.to.SpatialPoints <- function(sp) {
     } else {
         coord <- as.matrix(sp)
         crs <- CRS()
-        code <- "SpatialPoints(as.matrix(%%%), CRS())"
+        code <- "SpatialPoints(as.matrix(%%%))"
     }
     out <- SpatialPoints(coord, crs)
     attr(out, "code") <- code
