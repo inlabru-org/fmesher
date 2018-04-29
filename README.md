@@ -6,10 +6,9 @@
 
 ### How do I get set up? ###
 
-```
-#!R
+```{r }
 
-devtools::install_bitbucket("finnlindgren/fmesher@default")
+devtools::install_github("finnlindgren/fmesher")
 ```
 
 ### Who do I talk to? ###
