@@ -3,16 +3,26 @@
 \name{tissot.globeproj}
 \alias{tissot.globeproj}
 \title{A}
+\usage{
+\method{tissot}{globeproj}(x, n = c(12, 6), add = FALSE, do.plot = TRUE, ...)
+}
+\arguments{
+\item{x}{A \link{globeproj} object}
+
+\item{n}{The number of Tissot indicatrices (n-long, n-lat) to compute}
+
+\item{add}{logical; If TRUE, add to existing plot}
+
+\item{do.plot}{logical; If TRUE, do plotting}
+
+\item{\dots}{Additional parameters passed on to other methods}
+}
 \value{
 A
 }
 \description{
-.. content for \description{} (no empty lines) ..
-}
-\details{
-.. content for \details{} ..
+A
 }
 \author{
 Finn Lindgren
 }
-

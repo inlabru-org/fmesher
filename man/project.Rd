@@ -4,18 +4,23 @@
 \alias{project.globeproj}
 \title{A}
 \usage{
-\method{project}{globeproj}(x, ...)
+\method{project}{globeproj}(x, loc, inverse = FALSE, ...)
+}
+\arguments{
+\item{x}{A \link{globeproj} object}
+
+\item{loc}{Coordinates to be mapped.}
+
+\item{inverse}{logical}
+
+\item{\dots}{Additional parameters passed on to other methods}
 }
 \value{
 B
 }
 \description{
-.. content for \description{} (no empty lines) ..
-}
-\details{
-.. content for \details{} ..
+A
 }
 \author{
 Finn Lindgren
 }
-

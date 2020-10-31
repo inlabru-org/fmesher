@@ -15,15 +15,12 @@
 ##   You should have received a copy of the GNU General Public License
 ##   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-##' .. content for \description{} (no empty lines) ..
-##'
-##' .. content for \details{} ..
 ##' @title A
-##' @param x A \link{globeproj} object.
-##' @param ... Not used.
-##' @return A vector of names of avaliable projection types.
+##' @param x A [globeproj] object.
+##' @param \dots Not used.
+##' @return A vector of names of avaliable projection types; "longlat",
+##' "mollweide", "hammer", "orthocyl", "lambert", "gall-peters"
 ##' @author Finn Lindgren
-##' @name types
 .globeproj.types <-
   function(x, ...) {
     c("longlat",
@@ -80,15 +77,12 @@ setMethodS3(
 }
 
 
-##' .. content for \description{} (no empty lines) ..
-##'
-##' .. content for \details{} ..
 ##' @title A
-##' @param type
+##' @param type Projection type, see [.globeproj.types()]
 ##' @param orient long,lat,rotation
-##' @param xlim
-##' @param ylim
-##' @param scale
+##' @param xlim x-axis limits
+##' @param ylim y-axis limits
+##' @param scale x- and y- scaling factors
 ##' @return B
 ##' @author Finn Lindgren
 ##' @export
@@ -175,39 +169,44 @@ globeproj <- function(type=NULL,
       }
 
 
-## data(worldLL)
-## plot(worldLL, x, add=TRUE)
-##' @method plot PolySet
-##' @export plot.PolySet
-plot.PolySet <- function(shape, x, add=FALSE, ...)
+#' @title Plot a projected PolySet
+#' @param x A PolySet (see `PBSmapping`)
+#' @param projection a `globeproj` objcet
+#' @param add logical; If TRUE, add to existing plot
+#' @export plot_PolySet
+#' @examples
+#' \dontrun{
+#' data(worldLL, package = "PBSmapping")
+#' plot_PolySet(worldLL, globeproj("longlat"), add = FALSE)
+#' }
+
+plot_PolySet <- function(x, projection, add = FALSE, ...)
 {
-  coords <- project(x, cbind(shape$X, shape$Y))
+  coords <- project(projection, cbind(x$X, x$Y))
   proj <-
     sp::SpatialLines(list(sp::Lines(
-        unlist(lapply(unique(shape$PID),
+        unlist(lapply(unique(x$PID),
                       function(k) {
-                        .clip(x, coords[sum(shape$PID < k) +
-                                          shape$POS[shape$PID == k],,drop=FALSE])
+                        .clip(projection,
+                              coords[sum(x$PID < k) +
+                                       x$POS[x$PID == k], , drop = FALSE])
                       }),
                recursive=FALSE),
         ID="shape")))
   if (add) {
-    plot(proj, add=TRUE, ...)
+    sp::plot(proj, add = TRUE, ...)
   } else {
-    plot(proj, ...)
+    sp::plot(proj, ...)
   }
   invisible(proj)
 }
 
 
-##' .. content for \description{} (no empty lines) ..
-##'
-##' .. content for \details{} ..
 ##' @title A
-##' @param x
-##' @param add
-##' @param do.plot
-##' @param ...
+##' @param x A [globeproj] object
+##' @param add logical; If TRUE, add to existing plot
+##' @param do.plot logical; If try, do plotting
+##' @param \dots Additional arameters passed to other methods
 ##' @return A
 ##' @author Finn Lindgren
 ##' @method outline globeproj
@@ -244,24 +243,21 @@ setMethodS3(
       }
       if (do.plot) {
         if (add) {
-          plot(theoutline, add=TRUE, ...)
+          sp::plot(theoutline, add=TRUE, ...)
         } else {
-          plot(theoutline, ...)
+          sp::plot(theoutline, ...)
         }
       }
       invisible(theoutline)
     })
 
 
-##' .. content for \description{} (no empty lines) ..
-##'
-##' .. content for \details{} ..
 ##' @title A
-##' @param x
-##' @param n
-##' @param add
-##' @param do.plot
-##' @param ...
+##' @param x A [globeproj] object
+##' @param n The number of graticules (n-long, n-lat) to compute
+##' @param add logical; If TRUE, add to existing plot
+##' @param do.plot logical; If TRUE, do plotting
+##' @param \dots Additional parameters passed on to other methods
 ##' @return A
 ##' @author Finn Lindgren
 ##' @method graticule globeproj
@@ -298,9 +294,9 @@ setMethodS3(
               ID="meridians")))
         if (do.plot) {
           if (add) {
-            plot(proj.mer, add=TRUE, ...)
+            sp::plot(proj.mer, add=TRUE, ...)
           } else {
-            plot(proj.mer, ...)
+            sp::plot(proj.mer, ...)
             add <- TRUE
           }
         }
@@ -327,9 +323,9 @@ setMethodS3(
               ID="parallels")))
         if (do.plot) {
           if (add) {
-            plot(proj.par, add=TRUE, ...)
+            sp::plot(proj.par, add=TRUE, ...)
           } else {
-            plot(proj.par, ...)
+            sp::plot(proj.par, ...)
           }
         }
       } else {
@@ -339,15 +335,12 @@ setMethodS3(
     })
 
 
-##' .. content for \description{} (no empty lines) ..
-##'
-##' .. content for \details{} ..
 ##' @title A
-##' @param x
-##' @param n
-##' @param add
-##' @param do.plot
-##' @param ...
+##' @param x A [globeproj] object
+##' @param n The number of Tissot indicatrices (n-long, n-lat) to compute
+##' @param add logical; If TRUE, add to existing plot
+##' @param do.plot logical; If TRUE, do plotting
+##' @param \dots Additional parameters passed on to other methods
 ##' @return A
 ##' @author Finn Lindgren
 ##' @method tissot globeproj
@@ -367,48 +360,47 @@ setMethodS3(
 
 
 
-##' .. content for \description{} (no empty lines) ..
-##'
-##' .. content for \details{} ..
-##' @title The title
-##' @param x The object
-##' @param outline
-##' @param graticule
-##' @param tissot
-##' @param ...
-##' @return Nothing
-##' @author Finn Lindgren
-##' @usage \method{plot}{globeproj}(x, ...)
-##' @rdname plot.globeproj
-##' @name plot.globeproj
-##' @method plot globeproj
-##' @export plot.globeproj
-setMethodS3(
-    "plot", "globeproj",
-    function(x, xlim=NULL, ylim=NULL,
-             outline=TRUE,
-             graticule=c(24, 12),
-             tissot=c(12,6),
-             asp=1,
-             add=FALSE,
-             ...)
-    {
-      if (is.null(xlim)) xlim <- x$xlim
-      if (is.null(ylim)) ylim <- x$ylim
-      if (!add) {
-        plot.new()
-        plot(NA, type="n", xlim=xlim, ylim=ylim, asp=asp, ...)
-      }
-      ## Outline
-      if (outline) {
-        outline(x, add=TRUE, ...)
-      }
-      ## Graticule
-      graticule(x, n=graticule, add=TRUE, ...)
-      ## Tissot
-      tissot(x, n=tissot, add=TRUE, asp=asp, ...)
-      invisible(NULL)
-    })
+#' @title Plot a globeproj object
+#' @param x A [globeproj] object
+#' @param xlim,ylim The x- and y-axis limits
+#' @param outline logical
+#' @param graticule The number of graticules (n-long, n-lat) to compute
+#' @param tissot The number of Tissot indicatrices (n-long, n-lat) to compute
+#' @param asp the aspect ratio. Default = 1
+#' @param add logical; If `TRUE`, add to existing plot. Default: `FALSE`
+#' @param \dots Additional parameters passed on to other methods
+#' @return Nothing
+#' @author Finn Lindgren
+#' @export
+#' @examples
+#' proj <- globeproj("moll", orient=c(0,0,45))
+#' plot_globeproj(proj,graticule=c(24,12),add=FALSE,asp=1,lty=2,lwd=0.5)
+
+plot_globeproj <-
+  function(x, xlim=NULL, ylim=NULL,
+           outline=TRUE,
+           graticule=c(24, 12),
+           tissot=c(12,6),
+           asp=1,
+           add=FALSE,
+           ...)
+  {
+    if (is.null(xlim)) xlim <- x$xlim
+    if (is.null(ylim)) ylim <- x$ylim
+    if (!add) {
+      plot.new()
+      plot(NA, type="n", xlim=xlim, ylim=ylim, asp=asp, ...)
+    }
+    ## Outline
+    if (outline) {
+      outline(x, add=TRUE, ...)
+    }
+    ## Graticule
+    graticule(x, n=graticule, add=TRUE, ...)
+    ## Tissot
+    tissot(x, n=tissot, add=TRUE, asp=asp, ...)
+    invisible(NULL)
+  }
 
 
 
@@ -416,14 +408,13 @@ setMethodS3(
 ##' Calculates projection axis limits
 ##'
 ##' @title Projection axis limits
-##' @param x
+##' @param x A [globeproj] object
 ##' @param loc Coordinates to be mapped.
-##' @param ...
+##' @param \dots Additional parameters passed on to other methods
 ##' @return A list:
 ##' \item{xlim }{X axis limits in the map domain}
 ##' \item{ylim }{Y axis limits in the map domain}
 ##' @author Finn Lindgren
-##' @usage \method{limits}{globeproj}(x, ...)
 ##' @rdname limits
 ##' @name limits.globeproj
 ##' @method limits globeproj
@@ -501,22 +492,19 @@ rotmat3123 <- function(rot)
 }
 
 
-##' .. content for \description{} (no empty lines) ..
-##'
-##' .. content for \details{} ..
-##' @title A
-##' @param x
-##' @param loc
-##' @param inverse
-##' @return B
-##' @author Finn Lindgren
-##'
-##' @usage \method{project}{globeproj}(x, ...)
-##' @rdname project
-##' @name project.globeproj
-##' @method project globeproj
-##' @export project
-##' @export project.globeproj
+#' @title A
+#' @param x A [globeproj] object
+#' @param loc Coordinates to be mapped.
+#' @param inverse logical
+#' @param \dots Additional parameters passed on to other methods
+#' @return B
+#' @author Finn Lindgren
+#'
+#' @rdname project
+#' @name project.globeproj
+#' @method project globeproj
+#' @export project
+#' @export project.globeproj
 setMethodS3(
     "project", "globeproj",
     function(x, loc, inverse=FALSE, ...)
@@ -641,10 +629,3 @@ setMethodS3(
       }
       proj
     })
-
-
-
-##proj<-globeproj("moll",orient=c(0,0,45))
-##plot.new()
-##plot(proj,graticule=c(24,12),add=FALSE,asp=1,lty=2,lwd=0.5)
-##plot(worldLL,proj,add=TRUE,lwd=0.5)

@@ -4,10 +4,14 @@
 \alias{limits.globeproj}
 \title{Projection axis limits}
 \usage{
-\method{limits}{globeproj}(x, ...)
+\method{limits}{globeproj}(x, loc = NULL, ...)
 }
 \arguments{
+\item{x}{A \link{globeproj} object}
+
 \item{loc}{Coordinates to be mapped.}
+
+\item{\dots}{Additional parameters passed on to other methods}
 }
 \value{
 A list:
@@ -20,4 +24,3 @@ Calculates projection axis limits
 \author{
 Finn Lindgren
 }
-

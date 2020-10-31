@@ -4,22 +4,25 @@
 \alias{globeproj}
 \title{A}
 \usage{
-globeproj(type = NULL, orient = NULL, xlim = NULL, ylim = NULL,
-  scale = NULL)
+globeproj(type = NULL, orient = NULL, xlim = NULL, ylim = NULL, scale = NULL)
 }
 \arguments{
+\item{type}{Projection type, see \code{\link[=.globeproj.types]{.globeproj.types()}}}
+
 \item{orient}{long,lat,rotation}
+
+\item{xlim}{x-axis limits}
+
+\item{ylim}{y-axis limits}
+
+\item{scale}{x- and y- scaling factors}
 }
 \value{
 B
 }
 \description{
-.. content for \description{} (no empty lines) ..
-}
-\details{
-.. content for \details{} ..
+A
 }
 \author{
 Finn Lindgren
 }
-
