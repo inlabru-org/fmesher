@@ -5,6 +5,8 @@
 
 <!-- badges: start -->
 
+[![R build
+status](https://github.com/finnlindgren/fmesher/workflows/R-CMD-check/badge.svg)](https://github.com/finnlindgren/fmesher/actions)
 <!-- badges: end -->
 
 fmesher: Triangle Meshes and Other Geometry Tools
