@@ -12,6 +12,8 @@ plot_PolySet(x, projection, add = FALSE, ...)
 \item{projection}{a \code{globeproj} objcet}
 
 \item{add}{logical; If TRUE, add to existing plot}
+
+\item{\dots}{Additional parameters passed on to \code{sp::plot}}
 }
 \description{
 Plot a projected PolySet

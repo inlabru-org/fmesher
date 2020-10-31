@@ -2,6 +2,7 @@
 % Please edit documentation in R/mapping.R
 \name{outline.globeproj}
 \alias{outline.globeproj}
+\alias{outline}
 \title{A}
 \usage{
 \method{outline}{globeproj}(x, add = FALSE, do.plot = TRUE, ...)
@@ -13,7 +14,7 @@
 
 \item{do.plot}{logical; If try, do plotting}
 
-\item{\dots}{Additional arameters passed to other methods}
+\item{\dots}{Additional parameters passed to other methods}
 }
 \value{
 A

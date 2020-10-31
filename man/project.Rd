@@ -2,6 +2,7 @@
 % Please edit documentation in R/mapping.R
 \name{project.globeproj}
 \alias{project.globeproj}
+\alias{project}
 \title{A}
 \usage{
 \method{project}{globeproj}(x, loc, inverse = FALSE, ...)
