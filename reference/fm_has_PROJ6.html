@@ -122,11 +122,11 @@
 
     <pre class="usage"><span class='fu'>fm_has_PROJ6</span><span class='op'>(</span><span class='op'>)</span>
 
-<span class='fu'>fm_not_for_PROJ6</span><span class='op'>(</span><span class='va'>fun</span><span class='op'>)</span>
+<span class='fu'>fm_not_for_PROJ6</span><span class='op'>(</span>fun <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
 
-<span class='fu'>fm_not_for_PROJ4</span><span class='op'>(</span><span class='va'>fun</span><span class='op'>)</span>
+<span class='fu'>fm_not_for_PROJ4</span><span class='op'>(</span>fun <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
 
-<span class='fu'>fm_fallback_PROJ6</span><span class='op'>(</span><span class='va'>fun</span><span class='op'>)</span>
+<span class='fu'>fm_fallback_PROJ6</span><span class='op'>(</span>fun <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
 
 <span class='fu'>fm_requires_PROJ6</span><span class='op'>(</span>fun <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
@@ -151,7 +151,7 @@ features even though PROJ6 is available</p>
 <p><code>fm_not_for_PROJ4</code> is called to give an error when
 calling methods that are only available for PROJ6</p>
 <p><code>fm_fallback_PROJ6</code> is called to warn about falling back
-to using old PROJ4 methods when a RPOJ6 method hasn't been implemented</p>
+to using old PROJ4 methods when a PROJ6 method hasn't been implemented</p>
 <p><code>fm_requires_PROJ6</code> is called to give an error when PROJ6
 is required but not available</p>
 
