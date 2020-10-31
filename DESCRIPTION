@@ -1,7 +1,7 @@
 Package: fmesher
 Type: Package
 Title: Triangle Meshes and Other Geometry Tools
-Version: 0.0.3.9000
+Version: 0.0.5
 Author: Finn Lindgren <finn.lindgren@gmail.com>
 Maintainer: Finn Lindgren <finn.lindgren@gmail.com>
 Description: Functions that generate planar and spherical triangle meshes for
