@@ -2,6 +2,7 @@
 % Please edit documentation in R/mapping.R
 \name{tissot.globeproj}
 \alias{tissot.globeproj}
+\alias{tissot}
 \title{A}
 \usage{
 \method{tissot}{globeproj}(x, n = c(12, 6), add = FALSE, do.plot = TRUE, ...)

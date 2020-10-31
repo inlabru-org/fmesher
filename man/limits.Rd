@@ -2,6 +2,7 @@
 % Please edit documentation in R/mapping.R
 \name{limits.globeproj}
 \alias{limits.globeproj}
+\alias{limits}
 \title{Projection axis limits}
 \usage{
 \method{limits}{globeproj}(x, loc = NULL, ...)

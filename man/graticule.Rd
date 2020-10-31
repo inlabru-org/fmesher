@@ -2,6 +2,7 @@
 % Please edit documentation in R/mapping.R
 \name{graticule.globeproj}
 \alias{graticule.globeproj}
+\alias{graticule}
 \title{A}
 \usage{
 \method{graticule}{globeproj}(x, n = c(24, 12), add = FALSE, do.plot = TRUE, ...)

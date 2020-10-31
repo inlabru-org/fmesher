@@ -1,7 +1,27 @@
-get_call_stack <- function(...) {
+fn_caller_name <- function(which = 0L, override = NULL) {
+  if (is.null(override)) {
+    which <- -abs(which) - 1L
+    if (abs(which) > sys.nframe()) {
+      name <- ""
+    } else {
+      fun <- sys.call(which)
+      if (is.null(fun)) {
+        name <- ""
+      } else {
+        name <- as.character(fun)[[1]]
+      }
+    }
+  } else {
+    name <- override
+  }
+  name
+}
+
+fn_call_stack <- function(start = 0L, ...) {
   stack <- sys.calls()
   stack <- lapply(as.list(stack),
-                  function(x) as.character(deparse(x)))[-length(stack)]
+                  function(x) as.character(deparse(x)))[
+                    seq_len(max(0, length(stack) - (abs(start) + 1L)))]
   if (length(stack) > 0) {
     msg <-
       paste0(
@@ -31,7 +51,7 @@ get_call_stack <- function(...) {
           collapse = "\n")
       )
   } else {
-    msg <- paste0("Call stack is empty")
+    msg <- paste0("Call stack: Empty")
   }
   msg
 }

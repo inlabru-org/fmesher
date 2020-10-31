@@ -1,0 +1,52 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# fmesher: 
+
+<!-- badges: start -->
+[![R build status](https://github.com/finnlindgren/fmesher/workflows/R-CMD-check/badge.svg)](https://github.com/finnlindgren/fmesher/actions)
+<!-- badges: end -->
+
+fmesher: Triangle Meshes and Other Geometry Tools
+
+## Installation
+
+You can install the latest stable release of fmesher from
+[GitHub](https://github.com/):
+
+``` r
+# install.packages("remotes")
+remotes::install_github("finnlindgren/fmesher", ref = "stable")
+```
+
+And the development version with:
+
+``` r
+# install.packages("remotes")
+remotes::install_github("finnlindgren/fmesher")
+```
+
+## Example
+
+```{r example}
+library(fmesher)
+rgdal::set_rgdal_show_exportToProj4_warnings(FALSE)
+
+# longlat for a spherical version of the Earth
+cat(sp::wkt(fm_CRS("longlat_globe")))
+
+# longlat for a sphere of radius 1m
+cat(sp::wkt(fm_CRS("longlat_norm")))
+```
