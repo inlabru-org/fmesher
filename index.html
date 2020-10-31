@@ -73,28 +73,69 @@
   <div class="contents col-md-9">
 <div id="fmesher" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#fmesher" class="anchor"></a>fmesher</h1></div>
-<div id="what-is-this-repository-for" class="section level3">
-<h3 class="hasAnchor">
-<a href="#what-is-this-repository-for" class="anchor"></a>What is this repository for?</h3>
-<ul>
-<li>fmesher is a work in progress R package aiming to create a standalone package of the mesh and SPDE/GMRF finite element code currently part of the <a href="http://r-inla.org/">INLA package</a>
-</li>
-</ul>
+<a href="#fmesher" class="anchor"></a>fmesher:</h1></div>
+<!-- badges: start -->
+
+<p>fmesher: Triangle Meshes and Other Geometry Tools</p>
+<div id="installation" class="section level2">
+<h2 class="hasAnchor">
+<a href="#installation" class="anchor"></a>Installation</h2>
+<p>You can install the latest stable release of fmesher from <a href="https://github.com/">GitHub</a>:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit">
+<span class="co"># install.packages("remotes")</span>
+<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"finnlindgren/fmesher"</span>, ref <span class="op">=</span> <span class="st">"stable"</span><span class="op">)</span></pre></div>
+<p>And the development version with:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit">
+<span class="co"># install.packages("remotes")</span>
+<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"finnlindgren/fmesher"</span><span class="op">)</span></pre></div>
 </div>
-<div id="how-do-i-get-set-up" class="section level3">
-<h3 class="hasAnchor">
-<a href="#how-do-i-get-set-up" class="anchor"></a>How do I get set up?</h3>
-<p>```{r }</p>
-<p>devtools::install_github(“finnlindgren/fmesher”) ```</p>
-</div>
-<div id="who-do-i-talk-to" class="section level3">
-<h3 class="hasAnchor">
-<a href="#who-do-i-talk-to" class="anchor"></a>Who do I talk to?</h3>
-<ul>
-<li>Finn Lindgren <a href="mailto:finn.lindgren@gmail.com" class="email">finn.lindgren@gmail.com</a>
-</li>
-</ul>
+<div id="example" class="section level2">
+<h2 class="hasAnchor">
+<a href="#example" class="anchor"></a>Example</h2>
+<div class="sourceCode" id="cb3"><pre class="downlit">
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://finnlindgren.github.io/fmesher/">fmesher</a></span><span class="op">)</span>
+<span class="co">#&gt; Loading required package: Matrix</span>
+<span class="fu">rgdal</span><span class="fu">::</span><span class="fu"><a href="http://rgdal.r-forge.r-project.org/reference/showWKT.html">set_rgdal_show_exportToProj4_warnings</a></span><span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span>
+
+<span class="co"># longlat for a spherical version of the Earth</span>
+<span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="fu">sp</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/sp/man/is.projected.html">wkt</a></span><span class="op">(</span><span class="fu"><a href="reference/fm_CRS.html">fm_CRS</a></span><span class="op">(</span><span class="st">"longlat_globe"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; GEOGCRS["unknown",</span>
+<span class="co">#&gt;     DATUM["Unknown based on Normal Sphere (r=6370997) ellipsoid",</span>
+<span class="co">#&gt;         ELLIPSOID["Normal Sphere (r=6370997)",6370997,0,</span>
+<span class="co">#&gt;             LENGTHUNIT["metre",1,</span>
+<span class="co">#&gt;                 ID["EPSG",9001]]]],</span>
+<span class="co">#&gt;     PRIMEM["Greenwich",0,</span>
+<span class="co">#&gt;         ANGLEUNIT["degree",0.0174532925199433],</span>
+<span class="co">#&gt;         ID["EPSG",8901]],</span>
+<span class="co">#&gt;     CS[ellipsoidal,2],</span>
+<span class="co">#&gt;         AXIS["longitude",east,</span>
+<span class="co">#&gt;             ORDER[1],</span>
+<span class="co">#&gt;             ANGLEUNIT["degree",0.0174532925199433,</span>
+<span class="co">#&gt;                 ID["EPSG",9122]]],</span>
+<span class="co">#&gt;         AXIS["latitude",north,</span>
+<span class="co">#&gt;             ORDER[2],</span>
+<span class="co">#&gt;             ANGLEUNIT["degree",0.0174532925199433,</span>
+<span class="co">#&gt;                 ID["EPSG",9122]]]]</span>
+
+<span class="co"># longlat for a sphere of radius 1m</span>
+<span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="fu">sp</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/sp/man/is.projected.html">wkt</a></span><span class="op">(</span><span class="fu"><a href="reference/fm_CRS.html">fm_CRS</a></span><span class="op">(</span><span class="st">"longlat_norm"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; GEOGCRS["unknown",</span>
+<span class="co">#&gt;     DATUM["unknown",</span>
+<span class="co">#&gt;         ELLIPSOID["unknown",1,0,</span>
+<span class="co">#&gt;             LENGTHUNIT["metre",1,</span>
+<span class="co">#&gt;                 ID["EPSG",9001]]]],</span>
+<span class="co">#&gt;     PRIMEM["Reference meridian",0,</span>
+<span class="co">#&gt;         ANGLEUNIT["degree",0.0174532925199433,</span>
+<span class="co">#&gt;             ID["EPSG",9122]]],</span>
+<span class="co">#&gt;     CS[ellipsoidal,2],</span>
+<span class="co">#&gt;         AXIS["longitude",east,</span>
+<span class="co">#&gt;             ORDER[1],</span>
+<span class="co">#&gt;             ANGLEUNIT["degree",0.0174532925199433,</span>
+<span class="co">#&gt;                 ID["EPSG",9122]]],</span>
+<span class="co">#&gt;         AXIS["latitude",north,</span>
+<span class="co">#&gt;             ORDER[2],</span>
+<span class="co">#&gt;             ANGLEUNIT["degree",0.0174532925199433,</span>
+<span class="co">#&gt;                 ID["EPSG",9122]]]]</span></pre></div>
 </div>
 </div>
   </div>
@@ -122,7 +163,13 @@
 </ul>
 </div>
 
-  </div>
+  <div class="dev-status">
+<h2>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://github.com/finnlindgren/fmesher/actions"><img src="https://github.com/finnlindgren/fmesher/workflows/R-CMD-check/badge.svg" alt="R build status"></a></li>
+</ul>
+</div>
+</div>
 </div>
 
 
