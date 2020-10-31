@@ -3,16 +3,24 @@
 \name{outline.globeproj}
 \alias{outline.globeproj}
 \title{A}
+\usage{
+\method{outline}{globeproj}(x, add = FALSE, do.plot = TRUE, ...)
+}
+\arguments{
+\item{x}{A \link{globeproj} object}
+
+\item{add}{logical; If TRUE, add to existing plot}
+
+\item{do.plot}{logical; If try, do plotting}
+
+\item{\dots}{Additional arameters passed to other methods}
+}
 \value{
 A
 }
 \description{
-.. content for \description{} (no empty lines) ..
-}
-\details{
-.. content for \details{} ..
+A
 }
 \author{
 Finn Lindgren
 }
-

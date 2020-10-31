@@ -1,28 +1,36 @@
 Package: fmesher
 Type: Package
-Title: Triangle Meshes and Geometry
-Version: 0.0.2
-Date: 2016-11-15
+Title: Triangle Meshes and Other Geometry Tools
+Version: 0.0.3.9000
 Author: Finn Lindgren <finn.lindgren@gmail.com>
 Maintainer: Finn Lindgren <finn.lindgren@gmail.com>
 Description: Functions that generate planar and spherical triangle meshes for
     finite element calculations, and functions for lines and polygons. Experimental
     package that will take over these features from the INLA package.
 Depends:
-    Matrix,
-    sp,
-    INLA,
-    R.methodsS3,
-    rgeos
+    Matrix
 Suggests:
-    testthat,
+    INLA,
+    testthat
 Imports:
+    graphics,
+    grDevices,
     fields,
-    shiny
-Additional_repositories: http://www.math.ntnu.no/inla/R/testing
+    methods,
+    rgeos,
+    rgdal,
+    R.methodsS3,
+    sp,
+    stats,
+    utils
+Additional_repositories: https://inla.r-inla-download.org/R/testing
+URL: https://finnlindgren.github.io/fmesher/
+BugReports: https://github.com/finnlindgren/fmesher/issues
 License: GPL (>=3)
 Copyright: The R package and code, and the main programs, were written by and
     are Copyright by Finn Lindgren, and are redistributable under the GNU Public
     License, version 3 or later.
 NeedsCompilation: no
-RoxygenNote: 5.0.1
+RoxygenNote: 7.1.1
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
