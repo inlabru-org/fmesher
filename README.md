@@ -1,16 +1,75 @@
-# fmesher #
 
-### What is this repository for? ###
+<!-- README.md is generated from README.Rmd. Please edit that file -->
 
-* fmesher is a work in progress R package aiming to create a standalone package of the mesh and SPDE/GMRF finite element code currently part of the [INLA package](http://r-inla.org/)
+# fmesher:
 
-### How do I get set up? ###
+<!-- badges: start -->
 
-```{r }
+<!-- badges: end -->
 
-devtools::install_github("finnlindgren/fmesher")
+fmesher: Triangle Meshes and Other Geometry Tools
+
+## Installation
+
+You can install the latest stable release of fmesher from
+[GitHub](https://github.com/):
+
+``` r
+# install.packages("remotes")
+remotes::install_github("finnlindgren/fmesher", ref = "stable")
 ```
 
-### Who do I talk to? ###
+And the development version with:
 
-* Finn Lindgren <finn.lindgren@gmail.com>
+``` r
+# install.packages("remotes")
+remotes::install_github("finnlindgren/fmesher")
+```
+
+## Example
+
+``` r
+library(fmesher)
+#> Loading required package: Matrix
+rgdal::set_rgdal_show_exportToProj4_warnings(FALSE)
+
+# longlat for a spherical version of the Earth
+cat(sp::wkt(fm_CRS("longlat_globe")))
+#> GEOGCRS["unknown",
+#>     DATUM["Unknown based on Normal Sphere (r=6370997) ellipsoid",
+#>         ELLIPSOID["Normal Sphere (r=6370997)",6370997,0,
+#>             LENGTHUNIT["metre",1,
+#>                 ID["EPSG",9001]]]],
+#>     PRIMEM["Greenwich",0,
+#>         ANGLEUNIT["degree",0.0174532925199433],
+#>         ID["EPSG",8901]],
+#>     CS[ellipsoidal,2],
+#>         AXIS["longitude",east,
+#>             ORDER[1],
+#>             ANGLEUNIT["degree",0.0174532925199433,
+#>                 ID["EPSG",9122]]],
+#>         AXIS["latitude",north,
+#>             ORDER[2],
+#>             ANGLEUNIT["degree",0.0174532925199433,
+#>                 ID["EPSG",9122]]]]
+
+# longlat for a sphere of radius 1m
+cat(sp::wkt(fm_CRS("longlat_norm")))
+#> GEOGCRS["unknown",
+#>     DATUM["unknown",
+#>         ELLIPSOID["unknown",1,0,
+#>             LENGTHUNIT["metre",1,
+#>                 ID["EPSG",9001]]]],
+#>     PRIMEM["Reference meridian",0,
+#>         ANGLEUNIT["degree",0.0174532925199433,
+#>             ID["EPSG",9122]]],
+#>     CS[ellipsoidal,2],
+#>         AXIS["longitude",east,
+#>             ORDER[1],
+#>             ANGLEUNIT["degree",0.0174532925199433,
+#>                 ID["EPSG",9122]]],
+#>         AXIS["latitude",north,
+#>             ORDER[2],
+#>             ANGLEUNIT["degree",0.0174532925199433,
+#>                 ID["EPSG",9122]]]]
+```
