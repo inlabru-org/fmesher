@@ -7,5 +7,5 @@
 #' @import Matrix
 
 .onLoad <- function(libname, pkgname) {
-    options(list("Matrix.quiet"=TRUE))
+  options(list("Matrix.quiet" = TRUE))
 }

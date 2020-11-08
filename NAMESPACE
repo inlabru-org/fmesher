@@ -3,6 +3,7 @@
 S3method(fm_spTransform,SpatialPoints)
 S3method(fm_spTransform,SpatialPointsDataFrame)
 S3method(fm_spTransform,default)
+S3method(fm_spTransform,inla.mesh)
 S3method(fm_spTransform,inla.mesh.lattice)
 S3method(fm_spTransform,inla.mesh.segment)
 S3method(graticule,globeproj)

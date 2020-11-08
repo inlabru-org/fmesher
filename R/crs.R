@@ -1555,9 +1555,9 @@ fm_spTransform.SpatialPoints <- function(x, CRSobj, passthrough = FALSE, ...) {
 #' @export
 #' @rdname fm_spTransform
 fm_spTransform.SpatialPointsDataFrame <- function(x,
-                                                    CRSobj,
-                                                    passthrough = FALSE,
-                                                    ...) {
+                                                  CRSobj,
+                                                  passthrough = FALSE,
+                                                  ...) {
   fm_requires_PROJ6()
 
   ok1 <- (!missing(CRSobj) && !is.null(CRSobj) &&
@@ -1615,6 +1615,8 @@ fm_crs_detect_manifold <- function(crs) {
   manifold
 }
 
+#' @export
+#' @rdname fm_spTransform
 fm_spTransform.inla.mesh <- function(x, CRSobj, passthrough = FALSE, ...) {
   x$loc <- fm_spTransform(x$loc, x$crs, CRSobj, passthrough = passthrough)
   x$manifold <- fm_crs_detect_manifold(CRSobj)
