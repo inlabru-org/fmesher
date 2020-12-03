@@ -23,4 +23,5 @@ Plot a projected PolySet
 data(worldLL, package = "PBSmapping")
 plot_PolySet(worldLL, globeproj("longlat"), add = FALSE)
 }
+
 }
