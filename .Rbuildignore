@@ -6,3 +6,4 @@ _config.yml
 ^pkgdown$
 ^\.github$
 ^README\.Rmd$
+^codecov\.yml$

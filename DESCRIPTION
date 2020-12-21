@@ -11,7 +11,8 @@ Depends:
     Matrix
 Suggests:
     INLA,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    covr
 Imports:
     graphics,
     grDevices,
