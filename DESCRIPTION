@@ -11,7 +11,7 @@ Depends:
     Matrix
 Suggests:
     INLA,
-    testthat
+    testthat (>= 3.0.0)
 Imports:
     graphics,
     grDevices,
@@ -22,7 +22,8 @@ Imports:
     R.methodsS3,
     sp,
     stats,
-    utils
+    utils,
+    withr
 Additional_repositories: https://inla.r-inla-download.org/R/testing
 URL: https://inlabru-org.github.io/fmesher/
 BugReports: https://github.com/inlabru-org/fmesher/issues
@@ -34,3 +35,5 @@ NeedsCompilation: no
 RoxygenNote: 7.1.1
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
+Config/testthat/edition: 3
+Config/testthat/parallel: true
