@@ -6,7 +6,7 @@
 <!-- badges: start -->
 
 [![R build
-status](https://github.com/finnlindgren/fmesher/workflows/R-CMD-check/badge.svg)](https://github.com/finnlindgren/fmesher/actions)
+status](https://github.com/inlabru-org/fmesher/workflows/R-CMD-check/badge.svg)](https://github.com/inlabru-org/fmesher/actions)
 <!-- badges: end -->
 
 fmesher: Triangle Meshes and Other Geometry Tools
@@ -18,14 +18,14 @@ You can install the latest stable release of fmesher from
 
 ``` r
 # install.packages("remotes")
-remotes::install_github("finnlindgren/fmesher", ref = "stable")
+remotes::install_github("inlabru-org/fmesher", ref = "stable")
 ```
 
 And the development version with:
 
 ``` r
 # install.packages("remotes")
-remotes::install_github("finnlindgren/fmesher")
+remotes::install_github("inlabru-org/fmesher")
 ```
 
 ## Example
