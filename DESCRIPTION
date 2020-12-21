@@ -24,8 +24,8 @@ Imports:
     stats,
     utils
 Additional_repositories: https://inla.r-inla-download.org/R/testing
-URL: https://finnlindgren.github.io/fmesher/
-BugReports: https://github.com/finnlindgren/fmesher/issues
+URL: https://inlabru-org.github.io/fmesher/
+BugReports: https://github.com/inlabru-org/fmesher/issues
 License: GPL (>=3)
 Copyright: The R package and code, and the main programs, were written by and
     are Copyright by Finn Lindgren, and are redistributable under the GNU Public
