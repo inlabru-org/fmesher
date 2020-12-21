@@ -74,4 +74,28 @@ cat(sp::wkt(fm_CRS("longlat_norm")))
 #>             ORDER[2],
 #>             ANGLEUNIT["degree",0.0174532925199433,
 #>                 ID["EPSG",9122]]]]
+
+# A sphere of radius 1m
+cat(sp::wkt(fm_CRS("sphere")))
+#> GEODCRS["unknown",
+#>     DATUM["unknown",
+#>         ELLIPSOID["unknown",1,0,
+#>             LENGTHUNIT["metre",1,
+#>                 ID["EPSG",9001]]]],
+#>     PRIMEM["Reference meridian",0,
+#>         ANGLEUNIT["degree",0.0174532925199433,
+#>             ID["EPSG",9122]]],
+#>     CS[Cartesian,3],
+#>         AXIS["(X)",geocentricX,
+#>             ORDER[1],
+#>             LENGTHUNIT["metre",1,
+#>                 ID["EPSG",9001]]],
+#>         AXIS["(Y)",geocentricY,
+#>             ORDER[2],
+#>             LENGTHUNIT["metre",1,
+#>                 ID["EPSG",9001]]],
+#>         AXIS["(Z)",geocentricZ,
+#>             ORDER[3],
+#>             LENGTHUNIT["metre",1,
+#>                 ID["EPSG",9001]]]]
 ```
