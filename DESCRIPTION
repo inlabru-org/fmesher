@@ -24,7 +24,8 @@ Imports:
     sp,
     stats,
     utils,
-    withr
+    withr,
+    Rcpp
 Additional_repositories: https://inla.r-inla-download.org/R/testing
 URL: https://inlabru-org.github.io/fmesher/
 BugReports: https://github.com/inlabru-org/fmesher/issues
@@ -38,3 +39,5 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 Config/testthat/edition: 3
 Config/testthat/parallel: true
+LinkingTo: 
+    Rcpp
