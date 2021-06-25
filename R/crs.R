@@ -380,12 +380,25 @@ fm_crs_set_ellipsoid_radius <- function(crs, radius) {
 #' @examples
 #'
 #' if (require(rgdal)) {
-#'   crs1 <- fm_CRS("longlat_globe")
-#'   crs2 <- fm_CRS("lambert_globe")
-#'   crs3 <- fm_CRS("mollweide_norm")
-#'   crs4 <- fm_CRS("hammer_globe")
-#'   crs5 <- fm_CRS("sphere")
-#'   crs6 <- fm_CRS("globe")
+#'   if (fm_has_PROJ6()) {
+#'     crs1 <- fm_CRS("longlat_globe")
+#'     crs2 <- fm_CRS("lambert_globe")
+#'     crs3 <- fm_CRS("mollweide_norm")
+#'     crs4 <- fm_CRS("hammer_globe")
+#'     crs5 <- fm_CRS("sphere")
+#'     crs6 <- fm_CRS("globe")
+#'   } else {
+#'     # Old definitions for pre-PROJ6:
+#'     # Old radius-1 projections have a added "_norm" in the PROJ6 version of
+#'     # the fm_CRS() predefined projections. They are detected and converted
+#'     # to the new versions when RPOJ6 is available.
+#'     crs1 <- fm_CRS("longlat") # PROJ6: longlat_norm
+#'     crs2 <- fm_CRS("lambert") # PROJ6: lambert_norm
+#'     crs3 <- fm_CRS("mollweide") # PROJ6: mollweide_norm
+#'     crs4 <- fm_CRS("hammer") # PROJ6: hammer_norm
+#'     crs5 <- fm_CRS("sphere")
+#'     crs6 <- fm_CRS("globe")
+#'   }
 #' }
 #' @export
 #' @rdname fm_CRS
@@ -710,7 +723,7 @@ fm_list_as_CRS <- function(x, ...) {
 #' @keywords internal
 #' @examples
 #'
-#' if (require(rgdal)) {
+#' if (require(rgdal) && !fm_has_PROJ6()) {
 #'   crs0 <- fm_CRS("longlat")
 #'   p4s <- fm_CRSargs(crs0)
 #'   lst <- fm_CRSargs_as_list(p4s)
@@ -1251,7 +1264,7 @@ fm_crs_bounds_check <- function(x, bounds) {
     )
     > 0)
   } else {
-    ok <- rep(TRUE, nrow(x))
+    rep(TRUE, nrow(x))
   }
 }
 
@@ -1310,7 +1323,7 @@ fm_identical_CRS <- function(crs0, crs1, crsonly = FALSE) {
 #' @param \dots
 #' Potential additional arguments
 #' @seealso [fm_CRS()]
-#'
+#' @export
 fm_spTransform <- function(x, ...) {
   UseMethod("fm_spTransform")
 }
@@ -1760,7 +1773,7 @@ fm_as_inla_mesh_segment.SpatialLines <-
   function(sp, join = TRUE, grp = NULL, ...) {
     crs <- fm_sp_get_crs(sp)
     segm <- list()
-    for (k in 1:length(sp@lines)) {
+    for (k in seq_len(length(sp@lines))) {
       segm[[k]] <- fm_as_inla_mesh_segment(sp@lines[[k]],
         join = TRUE,
         crs = crs, ...
@@ -1768,7 +1781,7 @@ fm_as_inla_mesh_segment.SpatialLines <-
     }
     if (join) {
       if (missing(grp)) {
-        grp <- 1:length(segm)
+        grp <- seq_len(length(segm))
       }
       segm <- fm_internal_sp2segment_join(segm, grp = grp, closed = FALSE)
     }
@@ -1784,12 +1797,12 @@ fm_as_inla_mesh_segment.SpatialPolygons <-
   function(sp, join = TRUE, grp = NULL, ...) {
     crs <- fm_sp_get_crs(sp)
     segm <- list()
-    for (k in 1:length(sp@polygons)) {
+    for (k in seq_len(length(sp@polygons))) {
       segm[[k]] <- fm_as_inla_mesh_segment(sp@polygons[[k]], join = TRUE, crs = crs)
     }
     if (join) {
       if (missing(grp)) {
-        grp <- 1:length(segm)
+        grp <- seq_len(length(segm))
       }
       segm <- fm_internal_sp2segment_join(segm, grp = grp)
     }
