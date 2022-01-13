@@ -9,3 +9,8 @@
 .onLoad <- function(libname, pkgname) {
   options(list("Matrix.quiet" = TRUE))
 }
+
+
+.onUnload <- function(libpath) {
+  library.dynam.unload("fmesher", libpath)
+}

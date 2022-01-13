@@ -33,11 +33,13 @@ License: GPL (>=3)
 Copyright: The R package and code, and the main programs, were written by and
     are Copyright by Finn Lindgren, and are redistributable under the GNU Public
     License, version 3 or later.
-NeedsCompilation: no
-RoxygenNote: 7.1.1
+NeedsCompilation: yes
+RoxygenNote: 7.1.2
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 Config/testthat/edition: 3
 Config/testthat/parallel: true
 LinkingTo: 
+    RcppEigen,
     Rcpp
+SystemRequirements: GNU GSL
