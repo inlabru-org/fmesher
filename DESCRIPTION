@@ -2,12 +2,20 @@ Package: fmesher
 Type: Package
 Title: Triangle Meshes and Other Geometry Tools
 Version: 0.0.7.9001
-Author: Finn Lindgren <finn.lindgren@gmail.com>
-Maintainer: Finn Lindgren <finn.lindgren@gmail.com>
+Authors@R: c(
+  person("Finn", "Lindgren", email = "finn.lindgren@gmail.com",
+         role = c("aut", "cre", "cph"),
+         comment = c(ORCID = "0000-0002-5833-2011",
+                     "Finn Lindgren wrote the main code")),
+  person("Seaton", "Andy", email = "andy.e.seaton@gmail.com",
+         role = c("ctb", "cph"),
+         comment = "Andy Seaton developed sf support")
+  )
 Description: Functions that generate planar and spherical triangle meshes for
     finite element calculations, and functions for lines and polygons. Experimental
     package that will take over these features from the INLA package.
 Depends:
+    methods,
     Matrix
 Suggests:
     INLA,
@@ -21,7 +29,8 @@ Imports:
     rgeos,
     rgdal,
     R.methodsS3,
-    sp,
+    sf,
+    sp (>= 1.4-5),
     stats,
     utils,
     withr,
@@ -43,3 +52,5 @@ LinkingTo:
     RcppEigen,
     Rcpp
 SystemRequirements: GNU GSL
+VignetteBuilder: knitr
+BuildVignettes: true

@@ -87,6 +87,80 @@ fm_requires_PROJ6 <- function(fun = NULL) {
 }
 
 
+#' @rdname fm_as
+#' @export
+fm_as_sf_crs <- function(x) {
+  if (inherits(x, "crs")) {
+    x
+  } else if (inherits(x, "CRS")) {
+    sf::st_crs(x)
+  } else if (is.null(x)) {
+    sf::st_crs(x)
+  } else {
+    warning(paste0("Unsupported source crs class ",
+                   paste(class(x), sep = ",")),
+            immediate. = TRUE)
+    x
+  }
+}
+#' @rdname fm_as
+#' @export
+fm_as_sp_crs <- function(x) {
+  if (inherits(x, "CRS")) {
+    x
+  } else if (inherits(x, "crs")) {
+    if (is.na(x)) {
+      NULL
+    } else {
+      fm_CRS(SRS_string = x$wkt)
+    }
+  } else if (is.null(x)) {
+    NULL
+  } else {
+    warning(paste0("Unsupported source crs class ",
+                   paste(class(x), sep = ",")),
+            immediate. = TRUE)
+    x
+  }
+}
+
+#' Generic method for extracting crs objects
+#' @rdname fm_get_crs
+#' @export
+fm_get_crs <- function(...) {
+  UseMethod("fm_get_crs")
+}
+
+#' @rdname fm_get_crs
+#' @export
+fm_get_crs.Spatial <- function(...) {
+  fm_sp_get_crs(...)
+}
+
+#' @rdname fm_get_crs
+#' @export
+fm_get_crs.sf <- function(...) {
+  fm_sf_get_crs(...)
+}
+
+#' @rdname fm_get_crs
+#' @export
+fm_get_crs.sfc <- function(...) {
+  fm_sf_get_crs(...)
+}
+
+#' @rdname fm_get_crs
+#' @export
+fm_get_crs.inla.mesh <- function(x, ...) {
+  x[["crs"]]
+}
+
+#' @rdname fm_get_crs
+#' @export
+fm_get_crs.inla.mesh.segment <- function(x, ...) {
+  x[["crs"]]
+}
+
 
 #' @title Extract CRS information
 #' @description Wrapper for CRS(projargs) (PROJ4) and CRS(wkt) for
@@ -116,6 +190,19 @@ fm_sp_get_crs <- function(x) {
     crs <- sp::CRS(proj4string(x))
   }
   crs
+}
+
+#! For now just add fm_sf version of this
+# Is there any need for fm_has_PROJ6() stuff
+# for sf objects?
+
+# Given sf or sfc object, return
+# crs as wkt
+fm_sf_get_crs <- function(x) {
+  if (is.null(x)) {
+    return(NULL)
+  }
+  sf::st_crs(x)$wkt
 }
 
 fm_crs_is_null <- function(crs) {
@@ -402,6 +489,8 @@ fm_crs_set_ellipsoid_radius <- function(crs, radius) {
 #' }
 #' @export
 #' @rdname fm_CRS
+
+#! sp code in this function
 
 fm_CRS <- function(projargs = NULL, doCheckCRSArgs = TRUE,
                    args = NULL, oblique = NULL,
@@ -734,6 +823,23 @@ fm_list_as_CRS <- function(x, ...) {
 #'   print(fm_CRSargs(crs1))
 #'   print(fm_CRSargs(crs2))
 #' }
+
+#! An equivalent function to fm_CRSargs for sf object
+# would have something like:
+#
+# if (inherits(x, "crs")){
+#   x$input
+# }
+#
+# which returns equivalent of CRSargs(x)
+#
+# Note:  sf crs object class is lower case "crs"
+#        sp crs object class is upper case "CRS"
+#
+# Decision to make about at which point the sf vs sp code bifurcates
+# could write separate fm_ functions for "crs" class
+# or have single functions that check sp vs sf
+
 fm_CRSargs <- function(x, ...) {
   fm_not_for_PROJ6()
 
@@ -951,6 +1057,13 @@ fm_wkt_set_lengthunit <- function(wkt, unit, params = NULL) {
 #' @return For `fm_crs_get_wkt`, WKT2 string.
 #' @export
 #' @rdname fm_crs_wkt
+
+#! equivalent to comment(crs)
+# would be crs$wkt for sf crs class
+#
+# Note: maybe sensible way structure code is to use
+# wkt as much as possible and then to always convert
+# crs objects to this structure as it is package independent?
 
 fm_crs_get_wkt <- function(crs) {
   fm_requires_PROJ6()
@@ -1255,6 +1368,8 @@ fm_crs_bounds <- function(crs, warn.unknown = FALSE) {
 }
 
 ## TRUE/FALSE for points inside/outside projection domain.
+
+#! sp code here
 fm_crs_bounds_check <- function(x, bounds) {
   stopifnot(inherits(x, "matrix"))
   if (all(is.finite(bounds$xlim)) && all(is.finite(bounds$ylim))) {
@@ -1269,7 +1384,7 @@ fm_crs_bounds_check <- function(x, bounds) {
 }
 
 
-
+#! show() for "CRS" and "crs" class appear identical
 fm_internal_update_crs <- function(crs, newcrs, mismatch.allowed) {
   if (is.null(crs)) {
     newcrs
@@ -1284,7 +1399,7 @@ fm_internal_update_crs <- function(crs, newcrs, mismatch.allowed) {
 }
 
 
-#' @title Chack if two CRS objects are identical
+#' @title Check if two CRS objects are identical
 #' @param crs0,crs1 Two `sp::CRS` or `inla.CRS` objects to be compared.
 #' @param crsonly logical. If `TRUE` and any of `crs0` and `crs1` are `inla.CRS`
 #' objects, extract and compare only the `sp::CRS` objects. Default: `FALSE`
@@ -1327,6 +1442,11 @@ fm_identical_CRS <- function(crs0, crs1, crsonly = FALSE) {
 fm_spTransform <- function(x, ...) {
   UseMethod("fm_spTransform")
 }
+
+#! Can either write fm_sfTransform method or just add
+# to this method?
+# Lots of sp code in here, mainly spTransform which has equivalent
+# sf::st_transform()
 
 #' @details The default method handles low level transformation of raw
 #' coordinates.
@@ -1392,6 +1512,9 @@ fm_spTransform.default <- function(x, crs0, crs1, passthrough = FALSE, ...) {
         crs1oblique <- NULL
       }
       x <- sp::SpatialPoints(x[ok, , drop = FALSE], proj4string = crs0crs)
+      #! equivalent is st_as_sf(coords = x, crs = ...)
+      # Note: st_as_sf has wkt argument which might make the "use wkt as much as possible"
+      # idea work quite well
       if (do_work_on_sphere) {
         if (!onsphere_0) {
           if (sphere_radius_0 != 1) {
@@ -1710,7 +1833,7 @@ fm_internal_sp2segment_join <- function(inp, grp = NULL, closed = TRUE) {
 
 
 fm_as_inla_mesh_segment <-
-  function(sp, ...) {
+  function(...) {
     UseMethod("fm_as_inla_mesh_segment")
   }
 
@@ -1721,126 +1844,11 @@ fm_sp2segment <-
 
 
 
-fm_as_inla_mesh_segment.SpatialPoints <-
-  function(sp, reverse = FALSE, grp = NULL, is.bnd = TRUE, ...) {
-    crs <- fm_sp_get_crs(sp)
-    loc <- coordinates(sp)
-
-    n <- dim(loc)[1L]
-    if (reverse) {
-      idx <- seq(n, 1L, length = n)
-    } else {
-      idx <- seq_len(n)
-    }
-    INLA::inla.mesh.segment(
-      loc = loc, idx = idx, grp = grp, is.bnd = is.bnd,
-      crs = crs
-    )
-  }
-
-fm_as_inla_mesh_segment.SpatialPointsDataFrame <-
-  function(sp, ...) {
-    fm_as_inla_mesh_segment.SpatialLines(sp, ...)
-  }
 
 
 
-fm_as_inla_mesh_segment.Line <-
-  function(sp, reverse = FALSE, crs = NULL, ...) {
-    loc <- sp@coords
-    n <- dim(loc)[1L]
-    if (reverse) {
-      idx <- seq(n, 1L, length = n)
-    } else {
-      idx <- seq_len(n)
-    }
-    INLA::inla.mesh.segment(loc = loc, idx = idx, is.bnd = FALSE, crs = crs)
-  }
 
-fm_as_inla_mesh_segment.Lines <-
-  function(sp, join = TRUE, crs = NULL, ...) {
-    segm <- as.list(lapply(
-      sp@Lines,
-      function(x) fm_as_inla_mesh_segment(x, crs = crs, ...)
-    ))
-    if (join) {
-      segm <- fm_internal_sp2segment_join(segm, grp = NULL, closed = FALSE)
-    }
-    segm
-  }
 
-fm_as_inla_mesh_segment.SpatialLines <-
-  function(sp, join = TRUE, grp = NULL, ...) {
-    crs <- fm_sp_get_crs(sp)
-    segm <- list()
-    for (k in seq_len(length(sp@lines))) {
-      segm[[k]] <- fm_as_inla_mesh_segment(sp@lines[[k]],
-        join = TRUE,
-        crs = crs, ...
-      )
-    }
-    if (join) {
-      if (missing(grp)) {
-        grp <- seq_len(length(segm))
-      }
-      segm <- fm_internal_sp2segment_join(segm, grp = grp, closed = FALSE)
-    }
-    segm
-  }
 
-fm_as_inla_mesh_segment.SpatialLinesDataFrame <-
-  function(sp, ...) {
-    fm_as_inla_mesh_segment.SpatialLines(sp, ...)
-  }
 
-fm_as_inla_mesh_segment.SpatialPolygons <-
-  function(sp, join = TRUE, grp = NULL, ...) {
-    crs <- fm_sp_get_crs(sp)
-    segm <- list()
-    for (k in seq_len(length(sp@polygons))) {
-      segm[[k]] <- fm_as_inla_mesh_segment(sp@polygons[[k]], join = TRUE, crs = crs)
-    }
-    if (join) {
-      if (missing(grp)) {
-        grp <- seq_len(length(segm))
-      }
-      segm <- fm_internal_sp2segment_join(segm, grp = grp)
-    }
-    segm
-  }
 
-fm_as_inla_mesh_segment.SpatialPolygonsDataFrame <-
-  function(sp, ...) {
-    fm_as_inla_mesh_segment.SpatialPolygons(sp, ...)
-  }
-
-fm_as_inla_mesh_segment.Polygons <-
-  function(sp, join = TRUE, crs = NULL, ...) {
-    segm <- as.list(lapply(
-      sp@Polygons,
-      function(x) fm_as_inla_mesh_segment(x, crs = crs)
-    ))
-    if (join) {
-      segm <- fm_internal_sp2segment_join(segm, grp = NULL)
-    }
-    segm
-  }
-
-fm_as_inla_mesh_segment.Polygon <-
-  function(sp, crs = NULL, ...) {
-    loc <- sp@coords[-dim(sp@coords)[1L], , drop = FALSE]
-    n <- dim(loc)[1L]
-    if (sp@hole) {
-      if (sp@ringDir == 1) {
-        idx <- c(1L:n, 1L)
-      } else {
-        idx <- c(1L, seq(n, 1L, length.out = n))
-      }
-    } else
-    if (sp@ringDir == 1) {
-      idx <- c(1L, seq(n, 1L, length.out = n))
-    } else {
-      idx <- c(1L:n, 1L)
-    }
-    INLA::inla.mesh.segment(loc = loc, idx = idx, is.bnd = TRUE, crs = crs)
-  }
