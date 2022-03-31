@@ -7,3 +7,4 @@ _config.yml
 ^\.github$
 ^README\.Rmd$
 ^codecov\.yml$
+^misc$
