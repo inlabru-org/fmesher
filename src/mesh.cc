@@ -7,12 +7,12 @@
 #include <ctime>
 #include <cerrno>
 
-#include "predicates.hh"
-#include "x11utils.hh"
-#include "meshc.hh"
-#include "mesh.hh"
+#include "predicates.h"
+#include "x11utils.h"
+#include "meshc.h"
+#include "mesh.h"
 
-#include "fmesher_debuglog.hh"
+#include "fmesher_debuglog.h"
 
 
 using std::cout;

@@ -6,8 +6,8 @@
 #include <cmath>
 #include <vector>
 
-#include "predicates.hh"
-#include "meshc.hh"
+#include "predicates.h"
+#include "meshc.h"
 
 #define WHEREAMI __FILE__ << "(" << __LINE__ << ")\t"
 

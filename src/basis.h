@@ -10,7 +10,7 @@
 #include <list>
 #include <string>
 
-#include "vector.hh"
+#include "vector.h"
 
 #ifndef NOT_IMPLEMENTED
 #define NOT_IMPLEMENTED (std::cout					\

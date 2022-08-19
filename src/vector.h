@@ -905,6 +905,6 @@ namespace fmesh {
 
 } /* namespace fmesh */
 
-#include "vector.tcc"
+#include "vector_t.h"
 
 #endif

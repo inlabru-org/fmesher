@@ -6,8 +6,8 @@
 #include <sstream>
 #include <cmath>
 
-#include "vector.hh"
-#include "ioutils.hh"
+#include "vector.h"
+#include "ioutils.h"
 
 #define WHEREAMI __FILE__ << "(" << __LINE__ << ")\t"
 

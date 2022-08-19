@@ -13,9 +13,9 @@
 #include <string>
 
 #ifdef FMESHER_WITH_X
-#include "x11utils.hh"
+#include "x11utils.h"
 #endif
-#include "vector.hh"
+#include "vector.h"
 
 #define MESH_EPSILON 1e-15
 

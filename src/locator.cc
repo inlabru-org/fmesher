@@ -5,7 +5,7 @@
 #include <sstream>
 #include <cmath>
 
-#include "locator.hh"
+#include "locator.h"
 
 #define WHEREAMI __FILE__ << "(" << __LINE__ << ")\t"
 

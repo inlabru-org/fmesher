@@ -12,9 +12,9 @@
 #include <string>
 #include <cmath>
 
-#include "vector.hh"
-#include "mesh.hh"
-#include "trees.hh"
+#include "vector.h"
+#include "mesh.h"
+#include "trees.h"
 
 #ifndef WHEREAMI
 #define WHEREAMI __FILE__ << "(" << __LINE__ << ")\t"
@@ -221,6 +221,6 @@ namespace fmesh {
 
 } /* namespace fmesh */
 
-#include "locator.tcc"
+#include "locator_t.h"
 
 #endif

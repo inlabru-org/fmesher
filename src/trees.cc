@@ -5,7 +5,7 @@
 //#include <sstream>
 //#include <cmath>
 
-#include "trees.hh"
+#include "trees.h"
 
 #define WHEREAMI __FILE__ << "(" << __LINE__ << ")\t"
 

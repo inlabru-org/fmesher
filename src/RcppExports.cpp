@@ -34,7 +34,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // C_qinv
-Eigen::SparseMatrix<double> C_qinv(SEXP AA);
+Rcpp::List C_qinv(SEXP AA);
 RcppExport SEXP _fmesher_C_qinv(SEXP AASEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;

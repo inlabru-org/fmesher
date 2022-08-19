@@ -9,8 +9,8 @@
 #include "gsl/gsl_sf_legendre.h"
 #endif
 
-#include "vector.hh"
-#include "ioutils.hh"
+#include "vector.h"
+#include "ioutils.h"
 
 #define WHEREAMI __FILE__ << "(" << __LINE__ << ")\t"
 

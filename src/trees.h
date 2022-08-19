@@ -878,6 +878,6 @@ namespace fmesh {
 
 } /* namespace fmesh */
 
-#include "trees.tcc"
+#include "trees_t.h"
 
 #endif

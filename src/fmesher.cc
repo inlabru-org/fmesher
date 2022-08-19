@@ -9,7 +9,7 @@
 #include <vector>
 
 #include "fmesher_helpers.h"
-#include "fmesher.hh"
+#include "fmesher.h"
 
 
 using std::ios;
@@ -868,13 +868,13 @@ Rcpp::List fmesher_main(Rcpp::List args_input)
     string matrix_name = string(args_info.collect_arg[i]);
     if (!(matrix_name=="-") & !(matrix_name=="--")) {
       if (!matrices.activate(matrix_name)) {
-	if (!matrices.load(matrix_name).active) {
-	  cout << "Matrix "+matrix_name+" not found." << endl;
-	} else {
-	  cout << "Matrix "+matrix_name+" activated." << endl;
-	}
+        if (!matrices.load(matrix_name).active) {
+          cout << "Matrix "+matrix_name+" not found." << endl;
+        } else {
+          cout << "Matrix "+matrix_name+" activated." << endl;
+        }
       } else {
-	cout << "Matrix "+matrix_name+" active." << endl;
+        cout << "Matrix "+matrix_name+" active." << endl;
       }
     }
     matrices.output(matrix_name);
@@ -896,15 +896,20 @@ Rcpp::List fmesher_main(Rcpp::List args_input)
 //'
 //' @param AA A sparse matrix
 // [[Rcpp::export]]
-Eigen::SparseMatrix<double> C_qinv(SEXP AA)
-{
+Rcpp::List C_qinv(SEXP AA)
+  {
+  //Eigen::SparseMatrix<double> C_qinv(SEXP AA)
   using Eigen::MappedSparseMatrix;
   using Eigen::SparseMatrix;
-//  const MappedSparseMatrix<double> A(Rcpp::as<MappedSparseMatrix<double> >(AA));
+  const MappedSparseMatrix<double> A(Rcpp::as<MappedSparseMatrix<double> >(AA));
 
   QTool<double> Q;
-  Q.Q(Rcpp::as<MappedSparseMatrix<double> >(AA));
+//  Q.Q(Rcpp::as<MappedSparseMatrix<double> >(AA));
+  Q.Q(A);
 
-//  return Rcpp::List::create(Rcpp::Named("Q") = Q.S());
-  return Q.S();
+  Rcpp::List ret;
+  ret["Qinv"] = Q.S();
+  return(ret);
+  //  return Rcpp::List::create(Rcpp::Named("Q") = Q.S());
+//  return Q.S();
 }

@@ -11,13 +11,13 @@
 #include <string>
 #include <vector>
 
-#include "fmesher_debuglog.hh"
+#include "fmesher_debuglog.h"
 #include "cmdline.h"
-#include "mesh.hh"
-#include "meshc.hh"
-#include "ioutils.hh"
-#include "basis.hh"
-#include "locator.hh"
+#include "mesh.h"
+#include "meshc.h"
+#include "ioutils.h"
+#include "basis.h"
+#include "locator.h"
 
 using std::ios;
 using std::ifstream;

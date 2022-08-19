@@ -10,8 +10,8 @@
 #include <cerrno>
 
 #include "xtmpl.h"
-#include "mesh.hh"
-#include "x11utils.hh"
+#include "mesh.h"
+#include "x11utils.h"
 
 #define WHEREAMI __FILE__ << "(" << __LINE__ << ")\t"
 
