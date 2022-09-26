@@ -2,10 +2,13 @@
 % Please edit documentation in R/RcppExports.R
 \name{C_cmdline_test}
 \alias{C_cmdline_test}
-\title{Main}
+\title{Command line test}
 \usage{
 C_cmdline_test(args_input)
 }
+\arguments{
+\item{args_input}{Input argument list}
+}
 \description{
-Main
+Command line test
 }

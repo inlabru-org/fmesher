@@ -15,8 +15,6 @@ using std::ios;
 using std::ifstream;
 using std::ofstream;
 using std::string;
-using std::cin;
-using std::cout;
 using std::endl;
 
 using fmesh::Dart;
@@ -239,7 +237,7 @@ void filter_locations(Matrix<double>& S,
     --v;
     nniter = nnl(S[remap[v]]);
     if (nniter == nnl.end()) {
-      cout << "Internal error: No nearest neighbour found." << endl;
+      FMLOG_("Internal error: No nearest neighbour found." << endl);
     }
     idx(remap[v],0) = idx(nniter->second,0);
     FMLOG("Excluded vertex "

@@ -7,7 +7,7 @@
 C_matrixio_test(args_input)
 }
 \arguments{
-\item{AA}{A sparse matrix}
+\item{args_input}{Input argument list}
 }
 \description{
 Test the matrix I/O system

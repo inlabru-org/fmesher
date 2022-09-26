@@ -14,8 +14,9 @@
 #include "RcppEigen.h"
 
 
-//' Main
+//' Command line test
 //'
+//' @param args_input Input argument list
 // [[Rcpp::export]]
 Rcpp::List C_cmdline_test(Rcpp::StringVector args_input)
 {
@@ -76,6 +77,7 @@ Rcpp::List C_cmdline_test(Rcpp::StringVector args_input)
 
 //' Triangulate
 //'
+//' @param args_input Input argument list
 //' @export
 // [[Rcpp::export]]
 Rcpp::List fmesher_triangulate(Rcpp::List args_input)
@@ -86,7 +88,7 @@ Rcpp::List fmesher_triangulate(Rcpp::List args_input)
 
 //' Test the matrix I/O system
 //'
-//' @param AA A sparse matrix
+//' @param args_input Input argument list
 // [[Rcpp::export]]
 Rcpp::List C_matrixio_test(Rcpp::List args_input)
 {

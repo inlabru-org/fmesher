@@ -16,15 +16,10 @@
 #include "x11utils.h"
 #endif
 #include "vector.h"
+#include "fmesher_debuglog.h"
 
 #define MESH_EPSILON 1e-15
 
-#ifndef NOT_IMPLEMENTED
-#define NOT_IMPLEMENTED (std::cout					\
-			 << __FILE__ << "(" << __LINE__ << ")\t"	\
-			 << "NOT IMPLEMENTED: "				\
-			 << __PRETTY_FUNCTION__ << std::endl);
-#endif
 
 namespace fmesh {
 
@@ -66,7 +61,7 @@ namespace fmesh {
     int X11_v_big_limit_;
 #endif
     int verbose_;
-    
+
   private:
     Mesh& rebuildTT();
 
@@ -90,7 +85,7 @@ namespace fmesh {
     void drawX11triangle(int t, bool fg);
     void redrawX11(std::string str);
 #endif
-    
+
   public:
     Mesh(void) : type_(Mtype_manifold),
 		 use_VT_(false), use_TTi_(true),
@@ -178,12 +173,12 @@ namespace fmesh {
     MOAint VTO() const;
     MOAint3 TTiO() const;
     MOAdouble3 SO() const;
-    
+
     Mesh& S_set(const Matrix3double& S);
-    Mesh& TV_set(const Matrix3int& TV); 
+    Mesh& TV_set(const Matrix3int& TV);
     Mesh& S_append(const Point& s);
     Mesh& S_append(const Matrix3double& S);
-    Mesh& TV_append(const Matrix3int& TV); 
+    Mesh& TV_append(const Matrix3int& TV);
 
     Dart find_path_direction(const Dart& d0, const Point& s,
 			     const int v = -1) const;
@@ -195,7 +190,7 @@ namespace fmesh {
 			const Dart& d0, DartList* trace = NULL) const;
     Dart locate_point(const Dart& d0, const Point& s, const int v = -1) const;
     Dart locate_vertex(const Dart& d0, const int v) const;
-    
+
     Dart swapEdge(const Dart& d);
     Dart splitEdge(const Dart& d, int v);
     Dart splitTriangle(const Dart& d, int v);
@@ -206,12 +201,12 @@ namespace fmesh {
 	if (use_VT_)
 	  VT_.rows(nV());
       }
-      return *this;      
+      return *this;
     };
     Mesh& unlinkEdge(const Dart& d);
-    Mesh& unlinkTriangle(const int t); 
-    Mesh& relocateTriangle(const int t_source, const int t_target); 
-    int removeTriangle(const int t); 
+    Mesh& unlinkTriangle(const int t);
+    Mesh& relocateTriangle(const int t_source, const int t_target);
+    int removeTriangle(const int t);
 
     Mesh& quad_tesselate(const Mesh& M);
     Mesh& make_globe(int subsegments);
@@ -240,7 +235,7 @@ namespace fmesh {
     double triangleLongestEdge(int t) const;
     double triangleShortestEdge(int t) const;
     double edgeEncroached(const Dart& d, const Point& s) const;
-    
+
     /*!
       \brief Compute dart half-space test for a point.
 
@@ -313,7 +308,7 @@ namespace fmesh {
   std::ostream& operator<<(std::ostream& output, const Point& MO);
 
 
-  
+
   /*! \breif Darts */
   class Dart {
     friend std::ostream& operator<<(std::ostream& output, const Dart& d);
@@ -322,7 +317,7 @@ namespace fmesh {
     size_t vi_;
     int edir_;
     int t_;
-    
+
   public:
     Dart(void)
       : M_(NULL), vi_(0), edir_(1), t_(0) {};

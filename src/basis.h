@@ -12,12 +12,6 @@
 
 #include "vector.h"
 
-#ifndef NOT_IMPLEMENTED
-#define NOT_IMPLEMENTED (std::cout					\
-			 << __FILE__ << "(" << __LINE__ << ")\t"	\
-			 << "NOT IMPLEMENTED: "				\
-			 << __PRETTY_FUNCTION__ << std::endl);
-#endif
 
 namespace fmesh {
 

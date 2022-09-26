@@ -3,6 +3,7 @@
 
 #' Main
 #'
+#' @param args_input Input argument list
 fmesher_main <- function(args_input) {
     .Call(`_fmesher_fmesher_main`, args_input)
 }
@@ -14,14 +15,16 @@ C_qinv <- function(AA) {
     .Call(`_fmesher_C_qinv`, AA)
 }
 
-#' Main
+#' Command line test
 #'
+#' @param args_input Input argument list
 C_cmdline_test <- function(args_input) {
     .Call(`_fmesher_C_cmdline_test`, args_input)
 }
 
 #' Triangulate
 #'
+#' @param args_input Input argument list
 #' @export
 fmesher_triangulate <- function(args_input) {
     .Call(`_fmesher_fmesher_triangulate`, args_input)
@@ -29,7 +32,7 @@ fmesher_triangulate <- function(args_input) {
 
 #' Test the matrix I/O system
 #'
-#' @param AA A sparse matrix
+#' @param args_input Input argument list
 C_matrixio_test <- function(args_input) {
     .Call(`_fmesher_C_matrixio_test`, args_input)
 }

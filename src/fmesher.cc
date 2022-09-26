@@ -16,8 +16,6 @@ using std::ios;
 using std::ifstream;
 using std::ofstream;
 using std::string;
-using std::cin;
-using std::cout;
 using std::endl;
 
 using fmesh::Dart;
@@ -62,6 +60,7 @@ MatrixC matrices;
 
 //' Main
 //'
+//' @param args_input Input argument list
 // [[Rcpp::export]]
 Rcpp::List fmesher_main(Rcpp::List args_input)
 {
@@ -211,34 +210,34 @@ Rcpp::List fmesher_main(Rcpp::List args_input)
   }
 
   /*
-  cout << "CET given:\t" << args_info.cet_given << endl;
-  cout << "RCDT given:\t"
+  FMLOG_("CET given:\t" << args_info.cet_given << endl);
+  FMLOG_("RCDT given:\t"
        << args_info.rcdt_given << " "
        << args_info.rcdt_min << " "
        << args_info.rcdt_max << " "
        << args_info.rcdt_arg[0] << " "
-       << endl;
+       << endl);
   if (args_info.boundary_given) {
-    cout << "Boundary given:\t"
+    FMLOG_("Boundary given:\t"
 	 << args_info.boundary_given << " "
 	 << args_info.boundary_arg << " "
 	 << &(args_info.boundary_arg[0]) << " "
       //	 << string(args_info.boundary_arg[0]) << " "
-	 << endl;
+	 << endl);
   }
-  cout << "X11 given:\t"
+  FMLOG_("X11 given:\t"
        << args_info.x11_given << " "
        << args_info.x11_arg << " "
-       << endl;
+       << endl);
 
-  cout << "CET sides:\t" << cet_sides << endl;
-  cout << "CET margin:\t" << cet_margin << endl;
-  cout << "RCDT mininmum angle:\t" << rcdt_min_angle << endl;
-  cout << "RCDT maximum edge length:\t" << rcdt_big_limit << endl;
-  cout << "RCDT maximum edge lengths:\t" << rcdt_big_limits << endl;
-  cout << "RCDT maximum n0:\t" << rcdt_max_n0 << endl;
-  cout << "RCDT maximum n1:\t" << rcdt_max_n1 << endl;
-  cout << "X11 delay factor:\t" << x11_delay_factor << endl;
+  FMLOG_("CET sides:\t" << cet_sides << endl);
+  FMLOG_("CET margin:\t" << cet_margin << endl);
+  FMLOG_("RCDT mininmum angle:\t" << rcdt_min_angle << endl);
+  FMLOG_("RCDT maximum edge length:\t" << rcdt_big_limit << endl);
+  FMLOG_("RCDT maximum edge lengths:\t" << rcdt_big_limits << endl);
+  FMLOG_("RCDT maximum n0:\t" << rcdt_max_n0 << endl);
+  FMLOG_("RCDT maximum n1:\t" << rcdt_max_n1 << endl);
+  FMLOG_("X11 delay factor:\t" << x11_delay_factor << endl);
   */
 
   FMLOG("IOprefix init." << std::endl);
@@ -291,7 +290,7 @@ Rcpp::List fmesher_main(Rcpp::List args_input)
 
   for (size_t i=0; i<input_s0_names.size(); i++) {
     if (!matrices.load(input_s0_names[i]).active) {
-      cout << "Matrix "+input_s0_names[i]+" not found." << endl;
+      FMLOG_("Matrix "+input_s0_names[i]+" not found." << endl);
     }
   }
   FMLOG("s0 input read." << std::endl);
@@ -306,8 +305,8 @@ Rcpp::List fmesher_main(Rcpp::List args_input)
   for (size_t i=0; i<quality_names.size(); i++) {
     if (quality_names[i] != "-")
       if (!matrices.load(quality_names[i]).active) {
-	cout << "Matrix "+quality_names[i]+" not found." << endl;
-	quality_names[i] = "-";
+        FMLOG_("Matrix "+quality_names[i]+" not found." << endl);
+        quality_names[i] = "-";
       }
   }
   FMLOG("quality input read." << std::endl);
@@ -363,7 +362,7 @@ Rcpp::List fmesher_main(Rcpp::List args_input)
   Matrix<int>* TV0 = NULL;
   if (input_tv0_name != "-") {
     if (!matrices.load(input_tv0_name).active) {
-      cout << "Matrix "+input_tv0_name+" not found." << endl;
+      FMLOG_("Matrix "+input_tv0_name+" not found." << endl);
     } else {
       TV0 = &(matrices.DI(input_tv0_name));
     }
@@ -372,10 +371,10 @@ Rcpp::List fmesher_main(Rcpp::List args_input)
 
   for (size_t i=0; i<boundary_names.size(); i++) {
     if (!matrices.load(boundary_names[i]).active) {
-      cout << "Matrix "+boundary_names[i]+" not found." << endl;
+      FMLOG_("Matrix "+boundary_names[i]+" not found." << endl);
     }
     if (!matrices.load(boundarygrp_names[i]).active) {
-      // cout << "Matrix "+boundarygrp_names[i]+" not found. Creating." << endl;
+      // FMLOG_("Matrix "+boundarygrp_names[i]+" not found. Creating." << endl);
       matrices.attach(boundarygrp_names[i],new Matrix<int>(1),true);
       matrices.DI(boundarygrp_names[i])(0,0) = i+1;
     }
@@ -383,10 +382,10 @@ Rcpp::List fmesher_main(Rcpp::List args_input)
 
   for (size_t i=0; i<interior_names.size(); i++) {
     if (!matrices.load(interior_names[i]).active) {
-      cout << "Matrix "+interior_names[i]+" not found." << endl;
+      FMLOG_("Matrix "+interior_names[i]+" not found." << endl);
     }
     if (!matrices.load(interiorgrp_names[i]).active) {
-      cout << "Matrix "+interiorgrp_names[i]+" not found. Creating." << endl;
+      FMLOG_("Matrix "+interiorgrp_names[i]+" not found. Creating." << endl);
       matrices.attach(interiorgrp_names[i],new Matrix<int>(1),true);
       matrices.DI(interiorgrp_names[i])(0,0) = i+1;
     }
@@ -394,13 +393,13 @@ Rcpp::List fmesher_main(Rcpp::List args_input)
 
   for (size_t i=0; i<aniso_names.size(); i++) {
     if (!matrices.load(aniso_names[i]).active) {
-      cout << "Matrix "+aniso_names[i]+" not found." << endl;
+      FMLOG_("Matrix "+aniso_names[i]+" not found." << endl);
     }
   }
 
   for (size_t i=0; i<splitlines_names.size(); i++) {
     if (!matrices.load(splitlines_names[i]).active) {
-      cout << "Matrix "+splitlines_names[i]+" not found." << endl;
+      FMLOG_("Matrix "+splitlines_names[i]+" not found." << endl);
     }
   }
 
@@ -707,7 +706,7 @@ Rcpp::List fmesher_main(Rcpp::List args_input)
     } else {
       string points2mesh_name(args_info.points2mesh_arg);
       if (!matrices.load(points2mesh_name).active) {
-	cout << "Matrix "+points2mesh_name+" not found." << std::endl;
+        FMLOG_("Matrix "+points2mesh_name+" not found." << std::endl);
       }
       Matrix<double>& points2mesh = matrices.DD(points2mesh_name);
       size_t points_n = points2mesh.rows();
@@ -860,12 +859,12 @@ Rcpp::List fmesher_main(Rcpp::List args_input)
     if (!(matrix_name=="-") & !(matrix_name=="--")) {
       if (!matrices.activate(matrix_name)) {
         if (!matrices.load(matrix_name).active) {
-          cout << "Matrix "+matrix_name+" not found." << endl;
+          FMLOG_("Matrix "+matrix_name+" not found." << endl);
         } else {
-          cout << "Matrix "+matrix_name+" activated." << endl;
+          FMLOG_("Matrix "+matrix_name+" activated." << endl);
         }
       } else {
-        cout << "Matrix "+matrix_name+" active." << endl;
+        FMLOG_("Matrix "+matrix_name+" active." << endl);
       }
     }
     matrices.output(matrix_name);

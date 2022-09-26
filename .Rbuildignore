@@ -9,3 +9,4 @@ _config.yml
 ^codecov\.yml$
 ^misc$
 ^src/old$
+^src/cmdline.ggo$

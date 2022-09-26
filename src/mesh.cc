@@ -15,19 +15,18 @@
 #include "fmesher_debuglog.h"
 
 
-using std::cout;
 using std::endl;
 
 namespace fmesh {
 
 
 
-  
+
 
 
   /*
     T-E+V=2
-    
+
     closed 2-manifold triangulation:
     E = T*3/2
     T = 2*V-4
@@ -293,7 +292,7 @@ namespace fmesh {
     };
     return VV;
   }
-    
+
 
 #ifdef FMESHER_WITH_X
   void Mesh::setX11delay(double set_delay)
@@ -347,7 +346,7 @@ namespace fmesh {
     S_append(S);
     return *this;
   }
-  
+
   Mesh& Mesh::TV_set(const Matrix3int& TV)
   {
     TV_.rows(0); /* Avoid possible unnecessary copy. */
@@ -531,8 +530,8 @@ namespace fmesh {
   {
     if (!X11_) return;
     if (verbose_ > 0)
-      std::cout << str << std::endl;
-    
+      FMLOG_(str << std::endl);
+
     X11_->clear();
     for (int v=0;v<(int)nV();v++)
       drawX11point(v,true);
@@ -542,7 +541,7 @@ namespace fmesh {
     X11_->delay();
   }
 #endif /* FMESHER_WITH_X */
-  
+
   Mesh& Mesh::TV_append(const Matrix3int& TV)
   {
     TV_.append(TV);
@@ -578,7 +577,7 @@ namespace fmesh {
 
 
   /*!
-   \brief Calculate the length of an edge. 
+   \brief Calculate the length of an edge.
 
    For planes and triangular manifolds, the edge length is
    \f$L=\|s_1-s_0\|\f$.
@@ -610,7 +609,7 @@ namespace fmesh {
   }
 
   /*!
-    
+
     \see Mesh::edgeLength(const Dart& d)
   */
   double Mesh::edgeLength(const Dart& d) const
@@ -692,8 +691,8 @@ namespace fmesh {
     Heron's formula:
     a,b,c edge lengths
     s = (a+b+c)/2
-    Area = sqrt(s(s-a)(s-b)(s-c)) 
-    
+    Area = sqrt(s(s-a)(s-b)(s-c))
+
     Numerically stable version from
     http://www.eecs.berkeley.edu/~wkahan/Triangle.pdf
     a >= b >= c
@@ -702,7 +701,7 @@ namespace fmesh {
     l'Huilier's Theorem for spherical triangle areas:
     a,b,c edge lengths
     s = (a+b+c)/2
-    tan(E / 4) = sqrt(tan(s / 2) 
+    tan(E / 4) = sqrt(tan(s / 2)
                       tan((s - a) / 2)
 		      tan((s - b) / 2)
 		      tan((s - c) / 2))
@@ -775,18 +774,18 @@ namespace fmesh {
 	area = 2.*std::atan2(sinth,costh);
 	if (area<0)
 	  area += 4.*M_PI;
-	
-	//	cout << WHEREAMI << "Areas: (" << area << "," << area2
-	//	     << ") a2/a1 = " << area2/area << endl;
+
+	//	FMLOG("Areas: (" << area << "," << area2
+	//	     << ") a2/a1 = " << area2/area << endl);
 
 	/*
 	double costh =
 	  1.+Vec::scalar(s0,s1)+Vec::scalar(s1,s2)+Vec::scalar(s2,s0);
 	double sinth = 2.*Vec::volume(s0,s1,s2)/Vec::length(e2);
 	double area2 = 2.*std::atan2(sinth,costh);
-	
-	cout << WHEREAMI << "Areas: (" << area << "," << area2
-	     << ") a2/a1 = " << area2/area << endl;
+
+	FMLOG("Areas: (" << area << "," << area2
+	     << ") a2/a1 = " << area2/area << endl);
 	*/
 
 	/*
@@ -840,7 +839,7 @@ namespace fmesh {
       Vec::sum(n0,s0,s1);
       Vec::accum(n0,s2,1.0);
       Vec::rescale(n0,1.0/Vec::length(n0));
-      
+
       /* Radially project points onto tangent plane. */
       /* s0_ = x0*s0,  (x0*s0-n0)*n0 = 0,  x0 = 1/(s0*n0) */
       Vec::scale(e0, s0, 1.0/Vec::scalar(s0,n0));
@@ -886,9 +885,9 @@ namespace fmesh {
     \f}
     where formulas for \f$a_1\f$ and \f$a_2\f$ are given by index
     permutation.
-    
+
     On the sphere, the normalised flat triangle normal is the circumcenter.
-    
+
     \see Mesh::triangleArea
     \see Mesh::triangleCircumcircleRadius
   */
@@ -1046,7 +1045,7 @@ namespace fmesh {
 
     return beta;
   }
-  
+
   bool Mesh::triangleEdgeLengths(int t, Point& len) const
   {
     if ((t<0) || (t>=(int)nT())) return 0.0;
@@ -1220,7 +1219,7 @@ namespace fmesh {
        3         3
      \endverbatim
      Dart 0-1 --> 3-2
-    
+
   */
   Dart Mesh::swapEdge(const Dart& d)
   {
@@ -1329,7 +1328,7 @@ namespace fmesh {
     }
 
     /* Debug code: */
-    /* 
+    /*
     FMLOG("TT is \n" << TTO());
     rebuildTT();
     FMLOG("TT should be \n" << TTO());
@@ -1348,10 +1347,10 @@ namespace fmesh {
       X11_->delay();
     }
 #endif
-    
+
     return Dart(*this,t0,1,1);
   }
-  
+
   /*!
      \verbatim
      2           2
@@ -1362,7 +1361,7 @@ namespace fmesh {
     \d/         \|/
      0           0
      \endverbatim
-   
+
      Dart 0-2 --> v-2
   */
   Dart Mesh::splitEdge(const Dart& d, int v)
@@ -1566,7 +1565,7 @@ namespace fmesh {
       X11_->delay();
     }
 #endif
-    
+
     return Dart(*this,t1,1,0);
   }
 
@@ -1580,7 +1579,7 @@ namespace fmesh {
      | d/       |/ /
       0          0
      \endverbatim
-   
+
      Dart 0-1 --> v-1
   */
   Dart Mesh::splitTriangle(const Dart& d, int v)
@@ -1623,7 +1622,7 @@ namespace fmesh {
     t1 = nT();
     t2 = nT()+1;
     check_capacity(0,nT()+2);
-    
+
     FMLOG("Capacity (V,T) = ("
 	     << S_.capacity() << "," << TV_.capacity() << "), T-indices = ("
 	     << t0 << "," << t1 << "," << t2 << ")" << endl);
@@ -1706,7 +1705,7 @@ namespace fmesh {
       FMLOG("TTi should be \n" << TTiO());
     }
     */
-    
+
     FMLOG("Triangle split" << endl);
 #ifdef FMESHER_WITH_X
     if (X11_) {
@@ -1738,10 +1737,10 @@ namespace fmesh {
     TT_(dh.t())[dh.vi()] = -1;
     if (use_TTi_)
       TTi_(dh.t())[dh.vi()] = -1;
-    
+
     return *this;
   }
-  
+
   /*!
     Unlink a triangle
    */
@@ -1797,7 +1796,7 @@ namespace fmesh {
       dh.orbit0rev().orbit2();
       TT_(dh.t())[dh.vi()] = t_target;
     }
-    
+
     return *this;
   }
 
@@ -1890,11 +1889,11 @@ namespace fmesh {
 	  vol[1] = Vec::volume(s2,s0,s);
 	  vol[2] = Vec::volume(s0,s1,s);
 	  Vec::rescale(bary,1.0/(bary[0]+bary[1]+bary[2]));
-	  cout << WHEREAMI << "Barycentric:\t" << bary << endl;
+	  FMLOG_("Barycentric:\t" << bary << endl);
 	  Vec::rescale(vol,1.0/Vec::volume(s0,s1,s2));
-	  cout << WHEREAMI << "Unnormalised:\t" << vol << endl;
+	  FMLOG_("Unnormalised:\t" << vol << endl);
 	  Vec::rescale(vol,1.0/(vol[0]+vol[1]+vol[2]));
-	  cout << WHEREAMI << "Normalised:\t" << vol << endl;
+	  FMLOG_("Normalised:\t" << vol << endl);
 	}
       }
       break;
@@ -2022,7 +2021,7 @@ namespace fmesh {
     if (d0.isnull())
       return Dart();
     Dart d(*this, d0.t(), 1, 0);
-    
+
     /* Check if we're starting on a vertex, and call alternative method */
     /* onleft[i] = is triangle vertex i to the left of the line? */
     /* inside[i] = is s1 inside triangle edge i? */
@@ -2119,7 +2118,7 @@ namespace fmesh {
 	     << endl);
 
     if (v1>=(int)nV()) { /* Vertex index out of range */
-      return DartPair(dh,Dart()); 
+      return DartPair(dh,Dart());
     }
 
     Dart d(find_path_direction(dh,s1,v1));
@@ -2331,7 +2330,7 @@ namespace fmesh {
     NOT_IMPLEMENTED;
     // TODO: Implement;
     clear();
-    std::cout << WHEREAMI << "M.nV = " << M.nV() << std::endl;
+    FMLOG_("M.nV = " << M.nV() << std::endl);
     return *this;
   }
 
@@ -2466,7 +2465,7 @@ namespace fmesh {
 	  eij[j][i] = eij[i][j];
 	}
       }
-      
+
       bool b[3];
       b[0] = (TT_[t][0] < 0 ? true : false);
       b[1] = (TT_[t][1] < 0 ? true : false);
@@ -2474,7 +2473,7 @@ namespace fmesh {
 
       double a = triangleArea(t);
       Tareas(t,0) = a;
-      
+
       /* "Flat area" better approximation for use in G-calculation. */
       double fa = Point().cross(e[0],e[1]).length()/2.0;
 
@@ -2506,7 +2505,7 @@ namespace fmesh {
       }
     }
   }
-  
+
 
 
   void crossmultiply(const Point* ax,
@@ -2560,7 +2559,7 @@ namespace fmesh {
       t_gamma = (gamma[tv[0]][0]+gamma[tv[1]][0]+gamma[tv[2]][0])/3.0;
       t_vec.sum(vec_(tv[0]),vec_(tv[1])).accum(vec_(tv[2]),1.0);
       t_vec.rescale(1.0/3.0);
-      
+
       Point H[3];
       Point aH[3];
       switch (type()) {
@@ -2643,7 +2642,7 @@ namespace fmesh {
 
     }
   }
-  
+
 
 
   void Mesh::calcGradientMatrices(SparseMatrix<double>** D) const
@@ -2672,7 +2671,7 @@ namespace fmesh {
 	}
       }
 
-      
+
       /*
 	g0 = e1-e0*(e0*e1)/(e0*e0)
 	|g0| = 2*|T|/|e0|
@@ -2710,9 +2709,9 @@ namespace fmesh {
     D[0] = new SparseMatrix<double>(w*D_[0]);
     D[1] = new SparseMatrix<double>(w*D_[1]);
     D[2] = new SparseMatrix<double>(w*D_[2]);
- 
+
   }
-  
+
 
 
   bool Mesh::save(std::string filename_s,
@@ -2950,7 +2949,7 @@ namespace fmesh {
 	     << d.M()->TT(d.t_)[2]
 	     << ")";
     }
-      
+
     return output;
   }
 

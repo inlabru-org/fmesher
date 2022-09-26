@@ -6,6 +6,9 @@
 \usage{
 fmesher_main(args_input)
 }
+\arguments{
+\item{args_input}{Input argument list}
+}
 \description{
 Main
 }
