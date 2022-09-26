@@ -59,15 +59,6 @@ MatrixC matrices;
 
 #include <Rcpp.h>
 
-//' Triangulate
-//'
-//' @export
-// [[Rcpp::export]]
-Rcpp::List fmesher_triangulate(Rcpp::List args_input)
-{
-
-  return Rcpp::List::create();
-}
 
 //' Main
 //'
@@ -897,19 +888,21 @@ Rcpp::List fmesher_main(Rcpp::List args_input)
 //' @param AA A sparse matrix
 // [[Rcpp::export]]
 Rcpp::List C_qinv(SEXP AA)
-  {
+{
   //Eigen::SparseMatrix<double> C_qinv(SEXP AA)
   using Eigen::MappedSparseMatrix;
   using Eigen::SparseMatrix;
   const MappedSparseMatrix<double> A(Rcpp::as<MappedSparseMatrix<double> >(AA));
 
   QTool<double> Q;
-//  Q.Q(Rcpp::as<MappedSparseMatrix<double> >(AA));
+  //  Q.Q(Rcpp::as<MappedSparseMatrix<double> >(AA));
   Q.Q(A);
 
   Rcpp::List ret;
   ret["Qinv"] = Q.S();
   return(ret);
   //  return Rcpp::List::create(Rcpp::Named("Q") = Q.S());
-//  return Q.S();
+  //  return Q.S();
 }
+
+
