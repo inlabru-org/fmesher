@@ -1,3 +1,4 @@
+#' @importFrom methods as
 fm_as_dgCMatrix <- function(x) {
   if (inherits(x, "dgCMatrix")) {
     x

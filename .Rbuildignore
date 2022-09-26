@@ -8,3 +8,4 @@ _config.yml
 ^README\.Rmd$
 ^codecov\.yml$
 ^misc$
+^src/old$
