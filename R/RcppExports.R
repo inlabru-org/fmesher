@@ -13,23 +13,3 @@ qinv <- function(AA) {
     .Call(`_fmesher_qinv`, AA)
 }
 
-#' Main
-#'
-C_cmdline_test <- function(args_input) {
-    .Call(`_fmesher_C_cmdline_test`, args_input)
-}
-
-#' Triangulate
-#'
-#' @export
-fmesher_triangulate <- function(args_input) {
-    .Call(`_fmesher_fmesher_triangulate`, args_input)
-}
-
-#' Test the matrix I/O system
-#'
-#' @param AA A sparse matrix
-C_matrixio_test <- function(args_input) {
-    .Call(`_fmesher_C_matrixio_test`, args_input)
-}
-
