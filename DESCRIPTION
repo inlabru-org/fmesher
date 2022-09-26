@@ -20,7 +20,8 @@ Depends:
 Suggests:
     INLA,
     testthat (>= 3.0.0),
-    covr
+    covr,
+    knitr
 Imports:
     graphics,
     grDevices,
