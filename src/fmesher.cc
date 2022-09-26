@@ -564,7 +564,7 @@ Rcpp::List fmesher_main(Rcpp::List args_input)
 
       if (!isflat && !issphere) {
 	if (M.nT()==0) {
-	  FMLOG("Points not in the plane or on a sphere, and triangulation empty."
+	  FMLOG_("Points not in the plane or on a sphere, and triangulation empty."
 	       << std::endl);
 	}
 	/* Remove everything outside the boundary segments, if any. */

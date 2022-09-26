@@ -13,7 +13,14 @@
 #include <string>
 
 #ifdef FMESHER_WITH_X
+#ifdef FMESHER_NO_X
+#undef FMESHER_NO_X
+#endif
 #include "x11utils.h"
+#else
+#ifndef FMESHER_NO_X
+#define FMESHER_NO_X
+#endif
 #endif
 #include "vector.h"
 #include "fmesher_debuglog.h"

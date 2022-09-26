@@ -31,7 +31,7 @@
 #endif
 
 #ifndef NOT_IMPLEMENTED
-#define NOT_IMPLEMENTED (Rcpp::Rcout					 \
+#define NOT_IMPLEMENTED (FM_COUT					 \
 << __FILE__ << "(" << __LINE__ << ")\t"	\
 << "NOT IMPLEMENTED: "				              \
 << __PRETTY_FUNCTION__ << std::endl);

@@ -15,11 +15,6 @@
 
 #include "fmesher_debuglog.h"
 
-#ifdef DEBUG
-#define MESH_LOG(msg) FMLOG_(msg)
-#else
-#define MESH_LOG(msg)
-#endif
 
 
 using std::endl;
