@@ -1,0 +1,15 @@
+---
+title: "The fmesher backend library"
+author: "Finn Lindgren"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(fmesher)
+```

@@ -1,3 +1,5 @@
+#ifndef FMESHER_WITH_R
+
 #include <algorithm>
 #include <cmath>
 #include <cstddef>
@@ -44,7 +46,9 @@ using fmesh::TriangleLocator;
 const bool useVT = true;
 const bool useTTi = true;
 bool useX11 = false;
+#ifdef FMESHER_WITH_X
 const bool useX11text = false;
+#endif
 double x11_delay_factor = 1.0;
 double x11_zoom[4];
 
@@ -55,18 +59,10 @@ MatrixC matrices;
 
 
 
-#include <Rcpp.h>
 
 
-//' Main
-//'
-//' @param args_input Input argument list
-// [[Rcpp::export]]
-Rcpp::List fmesher_main(Rcpp::List args_input)
+int main(int argc, char* argv[])
 {
-  int argc = 0;
-  char* argv[0] = {};
-
   gengetopt_args_info args_info;
   struct cmdline_params params;
 
@@ -856,7 +852,7 @@ Rcpp::List fmesher_main(Rcpp::List args_input)
 
   for (size_t i=0; i<args_info.collect_given; i++) {
     string matrix_name = string(args_info.collect_arg[i]);
-    if (!(matrix_name=="-") & !(matrix_name=="--")) {
+    if (!(matrix_name=="-") && !(matrix_name=="--")) {
       if (!matrices.activate(matrix_name)) {
         if (!matrices.load(matrix_name).active) {
           FMLOG_("Matrix "+matrix_name+" not found." << endl);
@@ -874,34 +870,9 @@ Rcpp::List fmesher_main(Rcpp::List args_input)
 
   cmdline_free(&args_info);
 
-  return Rcpp::List::create();
+  return 0;
 }
 
 
 
-#include "qtool.h"
-#include "RcppEigen.h"
-
-//' Compute sparse matrix inverse
-//'
-//' @param AA A sparse matrix
-// [[Rcpp::export]]
-Rcpp::List C_qinv(SEXP AA)
-{
-  //Eigen::SparseMatrix<double> C_qinv(SEXP AA)
-  using Eigen::MappedSparseMatrix;
-  using Eigen::SparseMatrix;
-  const MappedSparseMatrix<double> A(Rcpp::as<MappedSparseMatrix<double> >(AA));
-
-  QTool<double> Q;
-  //  Q.Q(Rcpp::as<MappedSparseMatrix<double> >(AA));
-  Q.Q(A);
-
-  Rcpp::List ret;
-  ret["Qinv"] = Q.S();
-  return(ret);
-  //  return Rcpp::List::create(Rcpp::Named("Q") = Q.S());
-  //  return Q.S();
-}
-
-
+#endif // FMESHER_WITH_R

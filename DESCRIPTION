@@ -21,7 +21,8 @@ Suggests:
     INLA,
     testthat (>= 3.0.0),
     covr,
-    knitr
+    knitr,
+    rmarkdown
 Imports:
     graphics,
     grDevices,

@@ -10,3 +10,5 @@ _config.yml
 ^misc$
 ^src/old$
 ^src/cmdline.ggo$
+^src/cmdline.c$
+^vignettes/articles$

@@ -1,0 +1,17 @@
+template:
+  bootstrap: 5
+
+navbar:
+  components:
+    articles:
+      text: Articles
+      menu:
+      - text: Basic examples
+      - text: Basic use
+        href: articles/basic_use.html
+      - text: ---
+      - text: Point process examples
+      - text: ---
+      - text: Concepts
+      - text: The fmesher backend library
+        href: articles/fmesher_library.html

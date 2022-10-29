@@ -1,8 +1,16 @@
-CXXSTD=CXX14
-PKG_LIBS=-lgsl -lgslcblas -lX11
+CXX_STD=CXX
+PKG_LIBS=-lgsl -lgslcblas
 
-# Note: reenable these warnings before submitting to CRAN!
-PKG_CXXFLAGS=-Wno-ignored-attributes -Wunknown-pragmas
+# Note 1: remove the no-ign-attr and unk-pragmas flags before submitting to CRAN,
+#         and disable the first like of flags, as they are non-portable
+# Note 2: -Wextra causes spurious warnings
+# Note 3: -Wimplicit-fallthrough causes spurious Rcpp/algo.h warnings
+# Note 4: -Wno-ignored-attributes gives spurious warnings in RccpEigen itself
+PKG_CXXFLAGS= \
+  -DEIGEN_PERMANENTLY_DISABLE_STUPID_WARNINGS \
+  -DFMESHER_WITH_R
+#  -Wno-ignored-attributes -Wunknown-pragmas \
+#-Os -Wall -Wsign-compare -Wundef -fdiagnostics-color
 
 #PKG_CFLAGS=-DFMESHER_DEBUG=1 -DFMESHER_WITH_X
 #PKG_CXXFLAGS=-DFMESHER_DEBUG=1 -DFMESHER_WITH_X

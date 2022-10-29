@@ -11,17 +11,6 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// fmesher_main
-Rcpp::List fmesher_main(Rcpp::List args_input);
-RcppExport SEXP _fmesher_fmesher_main(SEXP args_inputSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::List >::type args_input(args_inputSEXP);
-    rcpp_result_gen = Rcpp::wrap(fmesher_main(args_input));
-    return rcpp_result_gen;
-END_RCPP
-}
 // C_qinv
 Rcpp::List C_qinv(SEXP AA);
 RcppExport SEXP _fmesher_C_qinv(SEXP AASEXP) {
@@ -30,17 +19,6 @@ BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type AA(AASEXP);
     rcpp_result_gen = Rcpp::wrap(C_qinv(AA));
-    return rcpp_result_gen;
-END_RCPP
-}
-// C_cmdline_test
-Rcpp::List C_cmdline_test(Rcpp::StringVector args_input);
-RcppExport SEXP _fmesher_C_cmdline_test(SEXP args_inputSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::StringVector >::type args_input(args_inputSEXP);
-    rcpp_result_gen = Rcpp::wrap(C_cmdline_test(args_input));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -68,9 +46,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_fmesher_fmesher_main", (DL_FUNC) &_fmesher_fmesher_main, 1},
     {"_fmesher_C_qinv", (DL_FUNC) &_fmesher_C_qinv, 1},
-    {"_fmesher_C_cmdline_test", (DL_FUNC) &_fmesher_C_cmdline_test, 1},
     {"_fmesher_fmesher_triangulate", (DL_FUNC) &_fmesher_fmesher_triangulate, 1},
     {"_fmesher_C_matrixio_test", (DL_FUNC) &_fmesher_C_matrixio_test, 1},
     {NULL, NULL, 0}

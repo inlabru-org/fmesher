@@ -66,8 +66,8 @@ namespace fmesh {
 #ifdef FMESHER_WITH_X
     Xtmpl (*X11_);
     int X11_v_big_limit_;
-#endif
     int verbose_;
+#endif
 
   private:
     Mesh& rebuildTT();
@@ -96,22 +96,22 @@ namespace fmesh {
   public:
     Mesh(void) : type_(Mtype_manifold),
 		 use_VT_(false), use_TTi_(true),
-		 TV_(), TT_(), VT_(), TTi_(), S_(),
+		 TV_(), TT_(), VT_(), TTi_(), S_()
 #ifdef FMESHER_WITH_X
-		 X11_(NULL), X11_v_big_limit_(0),
-#endif
+		 , X11_(NULL), X11_v_big_limit_(0),
 		 verbose_(0)
-    {};
+#endif
+{};
     Mesh(Mtype manifold_type, size_t Vcapacity,
 	 bool use_VT=true, bool use_TTi=false);
     Mesh(const Mesh& M) : type_(Mtype_manifold),
 			  use_VT_(true), use_TTi_(false),
-			  TV_(), TT_(), VT_(), TTi_(), S_(),
+			  TV_(), TT_(), VT_(), TTi_(), S_()
 #ifdef FMESHER_WITH_X
-			  X11_(NULL), X11_v_big_limit_(0),
-#endif
+			  , X11_(NULL), X11_v_big_limit_(0),
 			  verbose_(0)
-    {
+#endif
+{
       *this = M;
     };
     Mesh& operator=(const Mesh& M);
@@ -289,34 +289,34 @@ namespace fmesh {
     friend std::ostream& operator<<(std::ostream& output, const MOAint& MO);
   private:
     size_t n_;
-    const Matrix1int (&M_);
+    const Matrix1int &M_;
   public:
-    MOAint(const Matrix1int (&M),size_t n) : n_(n), M_(M) {};
+    MOAint(const Matrix1int &M,size_t n) : n_(n), M_(M) {};
   };
 
   class MOAint3 {
     friend std::ostream& operator<<(std::ostream& output, const MOAint3& MO);
   private:
     size_t n_;
-    const Matrix3int (&M_);
+    const Matrix3int &M_;
   public:
-    MOAint3(const Matrix3int (&M),size_t n) : n_(n), M_(M) {};
+    MOAint3(const Matrix3int &M,size_t n) : n_(n), M_(M) {};
   };
 
   class MOAdouble3 {
     friend std::ostream& operator<<(std::ostream& output, const MOAdouble3& MO);
   private:
     size_t n_;
-    const Matrix3double (&M_);
+    const Matrix3double &M_;
   public:
-   MOAdouble3(const Matrix3double (&M),size_t n) : n_(n), M_(M) {};
+   MOAdouble3(const Matrix3double &M,size_t n) : n_(n), M_(M) {};
   };
 
   std::ostream& operator<<(std::ostream& output, const Point& MO);
 
 
 
-  /*! \breif Darts */
+  /*! \brief Darts */
   class Dart {
     friend std::ostream& operator<<(std::ostream& output, const Dart& d);
   private:
