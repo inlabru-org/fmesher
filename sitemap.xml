@@ -1,84 +1,114 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>/404.html</loc>
+    <loc>https://inlabru-org.github.io/fmesher/404.html</loc>
   </url>
   <url>
-    <loc>/authors.html</loc>
+    <loc>https://inlabru-org.github.io/fmesher/articles/basic_use.html</loc>
   </url>
   <url>
-    <loc>/index.html</loc>
+    <loc>https://inlabru-org.github.io/fmesher/articles/fmesher_library.html</loc>
   </url>
   <url>
-    <loc>/news/index.html</loc>
+    <loc>https://inlabru-org.github.io/fmesher/articles/index.html</loc>
   </url>
   <url>
-    <loc>/reference/dot-globeproj.types.html</loc>
+    <loc>https://inlabru-org.github.io/fmesher/authors.html</loc>
   </url>
   <url>
-    <loc>/reference/fm_CRS.html</loc>
+    <loc>https://inlabru-org.github.io/fmesher/index.html</loc>
   </url>
   <url>
-    <loc>/reference/fm_CRSargs.html</loc>
+    <loc>https://inlabru-org.github.io/fmesher/news/index.html</loc>
   </url>
   <url>
-    <loc>/reference/fm_as.html</loc>
+    <loc>https://inlabru-org.github.io/fmesher/reference/C_matrixio_test.html</loc>
   </url>
   <url>
-    <loc>/reference/fm_crs_wkt.html</loc>
+    <loc>https://inlabru-org.github.io/fmesher/reference/C_qinv.html</loc>
   </url>
   <url>
-    <loc>/reference/fm_get_crs.html</loc>
+    <loc>https://inlabru-org.github.io/fmesher/reference/dot-globeproj.types.html</loc>
   </url>
   <url>
-    <loc>/reference/fm_has_PROJ6.html</loc>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fm_CRS_sp.html</loc>
   </url>
   <url>
-    <loc>/reference/fm_identical_CRS.html</loc>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fm_CRSargs.html</loc>
   </url>
   <url>
-    <loc>/reference/fm_safe_inla.html</loc>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fm_as.html</loc>
   </url>
   <url>
-    <loc>/reference/fm_spTransform.html</loc>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fm_crs.html</loc>
   </url>
   <url>
-    <loc>/reference/fm_sp_get_crs.html</loc>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fm_crs_wkt.html</loc>
   </url>
   <url>
-    <loc>/reference/globeproj.html</loc>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fm_has_PROJ6.html</loc>
   </url>
   <url>
-    <loc>/reference/graticule.html</loc>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fm_identical_CRS.html</loc>
   </url>
   <url>
-    <loc>/reference/index.html</loc>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fm_qinv.html</loc>
   </url>
   <url>
-    <loc>/reference/limits.html</loc>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fm_safe_inla.html</loc>
   </url>
   <url>
-    <loc>/reference/local_testthat.html</loc>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fm_spTransform.html</loc>
   </url>
   <url>
-    <loc>/reference/outline.html</loc>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fm_sp_get_crs.html</loc>
   </url>
   <url>
-    <loc>/reference/plot_PolySet.html</loc>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fm_transform.html</loc>
   </url>
   <url>
-    <loc>/reference/plot_globeproj.html</loc>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fmesher_triangulate.html</loc>
   </url>
   <url>
-    <loc>/reference/project.html</loc>
+    <loc>https://inlabru-org.github.io/fmesher/reference/globeproj.html</loc>
   </url>
   <url>
-    <loc>/reference/qinv.html</loc>
+    <loc>https://inlabru-org.github.io/fmesher/reference/graticule.html</loc>
   </url>
   <url>
-    <loc>/reference/tissot.html</loc>
+    <loc>https://inlabru-org.github.io/fmesher/reference/index.html</loc>
   </url>
   <url>
-    <loc>/reference/wkt_tree.html</loc>
+    <loc>https://inlabru-org.github.io/fmesher/reference/limits.html</loc>
+  </url>
+  <url>
+    <loc>https://inlabru-org.github.io/fmesher/reference/local_testthat.html</loc>
+  </url>
+  <url>
+    <loc>https://inlabru-org.github.io/fmesher/reference/outline.html</loc>
+  </url>
+  <url>
+    <loc>https://inlabru-org.github.io/fmesher/reference/plot_PolySet.html</loc>
+  </url>
+  <url>
+    <loc>https://inlabru-org.github.io/fmesher/reference/plot_globeproj.html</loc>
+  </url>
+  <url>
+    <loc>https://inlabru-org.github.io/fmesher/reference/project.html</loc>
+  </url>
+  <url>
+    <loc>https://inlabru-org.github.io/fmesher/reference/st_check_dim.html</loc>
+  </url>
+  <url>
+    <loc>https://inlabru-org.github.io/fmesher/reference/st_check_polygon.html</loc>
+  </url>
+  <url>
+    <loc>https://inlabru-org.github.io/fmesher/reference/st_signed_area.html</loc>
+  </url>
+  <url>
+    <loc>https://inlabru-org.github.io/fmesher/reference/tissot.html</loc>
+  </url>
+  <url>
+    <loc>https://inlabru-org.github.io/fmesher/reference/wkt_tree.html</loc>
   </url>
 </urlset>
