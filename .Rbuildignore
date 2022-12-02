@@ -7,3 +7,8 @@ _config.yml
 ^\.github$
 ^README\.Rmd$
 ^codecov\.yml$
+^misc$
+^src/old$
+^src/cmdline.ggo$
+^src/cmdline.c$
+^vignettes/articles$

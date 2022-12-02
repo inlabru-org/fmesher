@@ -6,8 +6,8 @@
 #include <cmath>
 #include <cstdlib>
 
-#include "predicates.hh"
-#include "fmesher.hh"
+#include "predicates.h"
+#include "fmesher.h"
 
 using std::ios;
 using std::vector;

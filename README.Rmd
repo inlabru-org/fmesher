@@ -44,14 +44,12 @@ remotes::install_github("inlabru-org/fmesher")
 
 ```{r example}
 library(fmesher)
-rgdal::set_rgdal_show_exportToProj4_warnings(FALSE)
-
 # longlat for a spherical version of the Earth
-cat(sp::wkt(fm_CRS("longlat_globe")))
+print(fm_crs("longlat_globe"))
 
 # longlat for a sphere of radius 1m
-cat(sp::wkt(fm_CRS("longlat_norm")))
+print(fm_crs("longlat_norm"))
 
 # A sphere of radius 1m
-cat(sp::wkt(fm_CRS("sphere")))
+print(fm_crs("sphere"))
 ```

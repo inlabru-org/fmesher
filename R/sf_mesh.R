@@ -40,7 +40,7 @@ fm_as_sfc.inla.mesh <- function(x, ...) {
       dim = "XYZ"
     )
   )
-  sf::st_crs(geom) <- fm_as_sf_crs(x$crs)
+  sf::st_crs(geom) <- fm_crs(x$crs)
   geom
 }
 
@@ -53,7 +53,8 @@ fm_as_sfc.inla.mesh <- function(x, ...) {
 fm_as_inla_mesh.sfc_MULTIPOLYGON <- function(x, ...) {
   if (length(x) > 1) {
     warning("More than one MULTIPOLYGON detected, but conversion method only uses one.",
-            immediate. = TRUE)
+      immediate. = TRUE
+    )
   }
   tv <- matrix(seq_len(3 * length(x[[1]])), length(x[[1]]), 3, byrow = TRUE)
   loc <- do.call(
@@ -62,16 +63,18 @@ fm_as_inla_mesh.sfc_MULTIPOLYGON <- function(x, ...) {
       x[[1]],
       function(xx) {
         if ((length(xx) > 1) ||
-            (nrow(xx[[1]]) > 4)) {
+          (nrow(xx[[1]]) > 4)) {
           stop("Invalid geometry; non-triangle detected.")
         }
         xx[[1]][1:3, , drop = FALSE]
       }
     )
   )
-  crs <- fm_as_sp_crs(sf::st_crs(x))
-  mesh <- INLA::inla.mesh.create(loc = loc, tv = tv, ...,
-                                 crs = crs)
+  crs <- fm_CRS(sf::st_crs(x))
+  mesh <- INLA::inla.mesh.create(
+    loc = loc, tv = tv, ...,
+    crs = crs
+  )
   mesh
 }
 
@@ -93,13 +96,13 @@ fm_as_inla_mesh_segment.sfc_POINT <-
     sfc <- x
     crs <- sf::st_crs(sfc)
 
-#    if (st_check_dim(sfc)) {
-#      warning(
-#        "XYZ, XYM and XYZM sfg classes are not fully supported. In general the Z and M coordinates will be ignored"
-#      )
-#    }
+    #    if (st_check_dim(sfc)) {
+    #      warning(
+    #        "XYZ, XYM and XYZM sfg classes are not fully supported. In general the Z and M coordinates will be ignored"
+    #      )
+    #    }
 
-    crs <- fm_as_sp_crs(crs) # required for INLA::inla.mesh.segment
+    crs <- fm_CRS(crs) # required for INLA::inla.mesh.segment
 
     loc <- sf::st_coordinates(sfc)
     coord_names <- intersect(c("X", "Y", "Z"), colnames(loc))
@@ -130,18 +133,18 @@ fm_as_inla_mesh_segment.sfc_POINT <-
 fm_as_inla_mesh_segment.sfc_LINESTRING <-
   function(x, join = TRUE, grp = NULL, reverse = FALSE, ...) {
     sfc <- x
-# Note: Z should be fully supported in what we do with 3D coordinates ourselves.
-# It's when applying st_ methods that the check needs to be done, not when crating
-# objects, as we _do_ support 3D meshes in inla.mesh, and _should_ support those
-# in inlabru.
-#    if (st_check_dim(sfc)) {
-#      warning(
-#        "XYZ, XYM and XYZM sfg classes are not fully supported. In general the Z and M coordinates will be ignored"
-#      )
-#    }
+    # Note: Z should be fully supported in what we do with 3D coordinates ourselves.
+    # It's when applying st_ methods that the check needs to be done, not when crating
+    # objects, as we _do_ support 3D meshes in inla.mesh, and _should_ support those
+    # in inlabru.
+    #    if (st_check_dim(sfc)) {
+    #      warning(
+    #        "XYZ, XYM and XYZM sfg classes are not fully supported. In general the Z and M coordinates will be ignored"
+    #      )
+    #    }
 
     crs <- sf::st_crs(sfc)
-    crs <- fm_as_sp_crs(crs) # required for INLA::inla.mesh.segment
+    crs <- fm_CRS(crs) # required for INLA::inla.mesh.segment
 
     segm <- list()
     if (is.null(grp)) {
@@ -179,7 +182,7 @@ fm_as_inla_mesh_segment.sfc_POLYGON <-
   function(x, join = TRUE, grp = NULL, ...) {
     sfc <- x
     crs <- sf::st_crs(sfc)
-    crs <- fm_as_sp_crs(crs) # required for INLA::inla.mesh.segment
+    crs <- fm_CRS(crs) # required for INLA::inla.mesh.segment
 
     segm <- list()
     if (is.null(grp)) {
@@ -193,21 +196,22 @@ fm_as_inla_mesh_segment.sfc_POLYGON <-
       # If winding directions are correct, all info is already available
       # For 3D, cannot check winding, so must assume correct.
       segm_k <-
-        lapply(unique(Linfo),
-               function(i) {
-                 subset <- which(Linfo == i)
-                 # sfc_POLYGON repeats the initial point
-                 n <- length(subset) - 1
-                 subset <- subset[-(n + 1)]
-                 idx <- c(seq_len(n), 1L)
-                 INLA::inla.mesh.segment(
-                   loc = loc[subset, , drop = FALSE],
-                   idx = idx,
-                   grp = grp[k],
-                   is.bnd = TRUE,
-                   crs = crs
-                 )
-               }
+        lapply(
+          unique(Linfo),
+          function(i) {
+            subset <- which(Linfo == i)
+            # sfc_POLYGON repeats the initial point
+            n <- length(subset) - 1
+            subset <- subset[-(n + 1)]
+            idx <- c(seq_len(n), 1L)
+            INLA::inla.mesh.segment(
+              loc = loc[subset, , drop = FALSE],
+              idx = idx,
+              grp = grp[k],
+              is.bnd = TRUE,
+              crs = crs
+            )
+          }
         )
       segm[[k]] <- fm_internal_sp2segment_join(segm_k)
     }

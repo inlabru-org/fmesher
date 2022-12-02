@@ -12,14 +12,9 @@
 #include <list>
 #include <string>
 
-#include "mesh.hh"
+#include "fmesher_debuglog.h"
+#include "mesh.h"
 
-#ifndef NOT_IMPLEMENTED
-#define NOT_IMPLEMENTED (std::cout				\
-			 << __FILE__ << "(" << __LINE__ << ") "	\
-			 << "NOT IMPLEMENTED: "			\
-			 << __PRETTY_FUNCTION__ << std::endl);
-#endif
 
 namespace fmesh {
 
@@ -39,7 +34,7 @@ namespace fmesh {
   };
   typedef std::list<constrT> constrListT;
 
-  
+
   class MCQdv {
   public:
     Dart d_;
@@ -252,7 +247,7 @@ namespace fmesh {
     /* RCDT triangle quality data structures: */
     MCQskinny skinny_; /*!< Skinny triangles. */
     MCQbig big_; /*!< Big triangles. */
-    double* big_limits_; /*!< Big triangle limits. */
+    // double* big_limits_; /*!< Big triangle limits. Unused; MCQtri has quality_limits_ */
     int max_n0_; /*!< Target number of vertices, overriding skinny triangles. */
     int max_n1_; /*!< Target number of vertices, overriding big triangles. */
     /* State variables: */
@@ -323,13 +318,13 @@ namespace fmesh {
 
   public:
     MeshC() : M_(NULL), boundary_(this), interior_(this),
-	      skinny_(this), big_(this), big_limits_(NULL),
+	      skinny_(this), big_(this), // big_limits_(NULL),
 	      max_n0_(-1), max_n1_(-1),
 	      state_(State_noT), is_pruned_(false),
 	      options_(Option_null) {};
     MeshC(Mesh* M)
       : M_(M), boundary_(this), interior_(this),
-	skinny_(this), big_(this), big_limits_(NULL),
+	skinny_(this), big_(this), // big_limits_(NULL),
 	max_n0_(-1), max_n1_(-1),
 	state_(State_noT), is_pruned_(false),
 	options_(Option_null) {
@@ -381,7 +376,7 @@ namespace fmesh {
       should be appended. Call once with true and once with false
       to extract all segments.
       \param segm Where to append the segments.  Set to NULL if only the
-      number of segments is to be returned. 
+      number of segments is to be returned.
       \param segmgrp Where to append the group metadata for each segment.
       If NULL, the group metadata is discarded.
 
@@ -413,7 +408,7 @@ namespace fmesh {
       \brief Local Optimisation Procedure (LOP)
 
       Perform LOP to make the input triangulation Delaunay.
-      
+
       \param swapable The triangulation part to be LOPed, as a set of
       swappable darts.
      */
@@ -422,7 +417,7 @@ namespace fmesh {
       \brief Local Optimisation Procedure (LOP)
 
       Perform LOP to make the input triangulation Delaunay.
-      
+
       \param t_set The triangulation part to be LOPed, as a set
       triangle indices.
      */
@@ -437,7 +432,7 @@ namespace fmesh {
     bool DT(const vertexListT& v_set);
     /*!
       \brief Build boundary edge constrained Delaunay triangulation (CDT)
-      
+
       The boundary edge constraints define what regions should be
       removed by a later call to PruneExterior.
     */

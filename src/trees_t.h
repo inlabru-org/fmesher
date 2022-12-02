@@ -1,24 +1,16 @@
 #ifndef _FMESH_TREES_T_
 #define _FMESH_TREES_T_ 1
 
-#ifndef WHEREAMI
-#define WHEREAMI __FILE__ << "(" << __LINE__ << ")\t"
-#endif
+#include "fmesher_debuglog.h"
 
 #ifndef LOG_
-#define LOG_(msg) std::cout << WHEREAMI << msg;
+#define LOG_(msg) FMLOG_(msg)
 #endif
 
-#ifndef NOT_IMPLEMENTED
-#define NOT_IMPLEMENTED (std::cout					\
-			 << WHEREAMI	\
-			 << "NOT IMPLEMENTED: "				\
-			 << __PRETTY_FUNCTION__ << std::endl);
-#endif
 
 namespace fmesh {
 
-  
+
   template < class ValueType >
   template < class RefValueType, class TreeRefType >
   typename SBBTree<ValueType>::template Iterator<RefValueType,TreeRefType>
@@ -28,8 +20,8 @@ namespace fmesh {
       i = i.left();
     return i;
   }
-  
-  
+
+
   template < class ValueType >
   template < class RefValueType, class TreeRefType >
   typename SBBTree<ValueType>::template Iterator<RefValueType,TreeRefType>
@@ -65,7 +57,7 @@ namespace fmesh {
       return i.parent();
     }
   }
-  
+
   template < class ValueType >
   template < class RefValueType, class TreeRefType >
   typename SBBTree<ValueType>::template Iterator<RefValueType,TreeRefType>&
@@ -83,8 +75,8 @@ namespace fmesh {
     *this = next();
     return *this;
   }
-  
-  
+
+
 
 
 
@@ -147,7 +139,7 @@ namespace fmesh {
       distribute_breakpoints(i.right(),breakpoint);
     }
   }
-  
+
   template <class T>
   void IntervalTree<T>::distribute_segment(typename tree_type::iterator i,
 					   int segm_idx)
@@ -167,7 +159,7 @@ namespace fmesh {
       distribute_segment(i.right(), segm_idx);
     }
   }
-  
+
   template <class T>
   void IntervalTree<T>::distribute_segments()
   {
@@ -258,7 +250,7 @@ namespace fmesh {
     }
     return *this;
   }
-  
+
   template < class T >
   typename IntervalTree<T>::search_iterator& IntervalTree<T>::search_iterator::operator++() {
     if (!this->is_null()) {
@@ -310,7 +302,7 @@ namespace fmesh {
     }
     return *this;
   }
-  
+
   template < class T, class SubTreeType >
   typename SegmentTree<T,SubTreeType>::search_iterator& SegmentTree<T,SubTreeType>::search_iterator::operator++() {
      if (!this->is_null()) {

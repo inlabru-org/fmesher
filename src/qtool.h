@@ -7,7 +7,7 @@
 #include <string>
 #include <iostream>
 
-
+#include "fmesher_debuglog.h"
 
 
 
@@ -196,50 +196,50 @@ public:
           LcolI0;
           --LcolI0) {
         //      int64_t j = LcolI0.row();
-        //      std::cout << "Processing i = " << i << ", j = " << LcolI0.row() << std::endl;
+        //      FMLOG_("Processing i = " << i << ", j = " << LcolI0.row() << std::endl);
         typename SMatrix::ReverseInnerIterator LcolI(L, i);
         typename SMatrix::ReverseInnerIterator ScolJ(S, LcolI0.row());
         ScolI.valueRef() = 0.0;
         while (LcolI.row() > i) {
           while (ScolJ && (LcolI.row() < ScolJ.row())) {
-            //    std::cout << "SJ[" << ScolJ.row() << ", " << ScolJ.col() << "] move" << std::endl;
+            //    FMLOG_("SJ[" << ScolJ.row() << ", " << ScolJ.col() << "] move" << std::endl);
             --ScolJ;
           }
           if (ScolJ && ( LcolI.row() == ScolJ.row())) {
-            //    std::cout << "LI[" << LcolI.row() << ", " << LcolI.col() << "]"
+            //    FMLOG_("LI[" << LcolI.row() << ", " << LcolI.col() << "]"
             //              << " * "
             //              << "SJ[" << ScolJ.row() << ", " << ScolJ.col() << "] use"
-            //              << std::endl;
+            //              << std::endl);
             ScolI.valueRef() -= LcolI.value() * ScolJ.value();
             --ScolJ;
           }
           --LcolI;
         }
         if (i == LcolI0.row()) {
-          //	std::cout << "LI[" << LcolI.row() << ", " << LcolI.col() << "] use" << std::endl;
+          //	FMLOG_("LI[" << LcolI.row() << ", " << LcolI.col() << "] use" << std::endl);
           ScolI.valueRef() += 1/LcolI.value();
           ScolI.valueRef() /= LcolI.value();
-          //	std::cout << "SI[" << ScolI.row() << ", " << ScolI.col() << "] = "
+          //	FMLOG_("SI[" << ScolI.row() << ", " << ScolI.col() << "] = "
           //		  << ScolI.value()
           //		  << std::endl;
         } else {
-          //	std::cout << "LI[" << LcolI.row() << ", " << LcolI.col() << "] use" << std::endl;
+          //	FMLOG_("LI[" << LcolI.row() << ", " << LcolI.col() << "] use" << std::endl);
           ScolI.valueRef() /= LcolI.value();
-          //	std::cout << "SI[" << ScolI.row() << ", " << ScolI.col() << "] = "
+          //	FMLOG_("SI[" << ScolI.row() << ", " << ScolI.col() << "] = "
           //		  << ScolI.value()
-          //		  << std::endl;
+          //		  << std::endl);
           /* This loop is for when there are nonzero S[k,j] elements
            * between the last nonzero L[k,i] element and S[i,j]
            */
           while (ScolJ.row() > i) {
-            //	  std::cout << "SJ[" << ScolJ.row() << ", " << ScolJ.col() << "] move at end"
-            //		    << std::endl;
+            //	  FMLOG_("SJ[" << ScolJ.row() << ", " << ScolJ.col() << "] move at end"
+            //		    << std::endl);
             --ScolJ;
           }
           ScolJ.valueRef() = ScolI.value();
-          //	std::cout << "SJ[" << ScolJ.row() << ", " << ScolJ.col() << "] = "
+          //	FMLOG_("SJ[" << ScolJ.row() << ", " << ScolJ.col() << "] = "
           //		  << "SI[" << ScolI.row() << ", " << ScolI.col() << "]"
-          //		  << std::endl;
+          //		  << std::endl);
         }
         --ScolI;
       }
