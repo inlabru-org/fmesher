@@ -15,8 +15,7 @@ Description: Functions that generate planar and spherical triangle meshes for
     finite element calculations, and functions for lines and polygons. Experimental
     package that will take over these features from the INLA package.
 Depends:
-    methods,
-    Matrix
+    methods
 Suggests:
     INLA (>= 22.11.28),
     testthat (>= 3.0.0),
@@ -27,6 +26,7 @@ Imports:
     graphics,
     grDevices,
     lifecycle,
+    Matrix,
     rgeos,
     rgdal,
     R.methodsS3,
