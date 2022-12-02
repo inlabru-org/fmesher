@@ -29,7 +29,7 @@ fm_crs_oblique(x)
 
 fm_crs_oblique(x) <- value
 
-print.fm_crs(x, ...)
+\method{print}{fm_crs}(x, ...)
 
 \method{fm_crs}{default}(x, ..., crsonly = FALSE)
 

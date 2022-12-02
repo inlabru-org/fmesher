@@ -4,7 +4,7 @@
 #' @importFrom methods is
 #' @importFrom stats quantile runif
 #' @importFrom utils str
-#' @import Matrix
+#' @import methods
 
 .onLoad <- function(libname, pkgname) {
   options(list("Matrix.quiet" = TRUE))
