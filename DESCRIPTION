@@ -43,7 +43,7 @@ Copyright: The R package and code, and the main programs, were written by and
     are Copyright by Finn Lindgren, and are redistributable under the GNU Public
     License, version 3 or later.
 NeedsCompilation: yes
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.2
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 Config/testthat/edition: 3
