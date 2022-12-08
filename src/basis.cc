@@ -5,8 +5,10 @@
 #include <sstream>
 #include <cmath>
 #include <vector>
+#ifdef FMESHER_WITH_GSL
 #ifndef NO_SPHERICAL_HARMONICS
 #include "gsl/gsl_sf_legendre.h"
+#endif
 #endif
 
 #include "vector.h"
@@ -42,6 +44,7 @@ namespace fmesh {
   {
     Matrix<double> sph(sph_basis_n(max_order,rotationally_symmetric));
 
+#ifdef FMESHER_WITH_GSL
 #ifndef NO_SPHERICAL_HARMONICS
     size_t i, k, m;
     size_t GSL_res_n = gsl_sf_legendre_array_n(max_order);
@@ -89,6 +92,7 @@ namespace fmesh {
    }
 
     delete[] GSL_res_array;
+#endif
 #endif
 
     return sph;

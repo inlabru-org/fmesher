@@ -53,6 +53,5 @@ Config/testthat/parallel: true
 LinkingTo: 
     RcppEigen,
     Rcpp
-SystemRequirements: GNU GSL
 VignetteBuilder: knitr
 BuildVignettes: true
