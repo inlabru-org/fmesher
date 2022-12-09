@@ -14,17 +14,6 @@
 
 #include "fmesher_debuglog.h"
 
-#ifndef LOG_
-#define LOG_(msg) FMLOG_(msg)
-#endif
-#ifndef LOG
-#ifdef DEBUG
-#define LOG(msg) LOG_(msg)
-#else
-#define LOG(msg)
-#endif
-#endif
-
 namespace fmesh {
 
 /* Note: This definition really belongs in ioutils.hh, but is placed
@@ -283,7 +272,7 @@ public:
   const T &operator[](const size_t r) const {
     if (r >= Matrix<T>::rows_) {
       /* ERROR */
-      LOG_("Error: Index out of bounds.")
+      FMLOG_("Error: Index out of bounds.")
     }
     return Matrix<T>::data_[r];
   };
@@ -461,7 +450,7 @@ public:
   const T &operator[](const size_t c) const {
     if (!(c < M_->cols())) {
       /* Range error. */
-      LOG_("Error: Column index out of bounds.")
+      FMLOG_("Error: Column index out of bounds.")
       return zero_;
     }
     ColCIter col;
@@ -573,7 +562,7 @@ public:
   const RowType &operator[](const size_t r) const {
     if (!(r < rows())) {
       /* Range error. */
-      LOG_("Error: Row index out ouf bounds.")
+      FMLOG_("Error: Row index out ouf bounds.")
     }
     return data_[r];
   };

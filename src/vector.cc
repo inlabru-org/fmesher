@@ -9,14 +9,6 @@
 
 #include "fmesher_debuglog.h"
 
-#ifndef VECTOR_LOG
-#ifdef DEBUG
-#define VECTOR_LOG(msg) FMLOG_(msg)
-#else
-#define VECTOR_LOG(msg)
-#endif
-#endif
-
 using std::endl;
 
 namespace fmesh {

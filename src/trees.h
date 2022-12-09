@@ -14,10 +14,6 @@
 
 #include "fmesher_debuglog.h"
 
-#ifndef LOG_
-#define LOG_(msg) FMLOG_(msg)
-#endif
-
 namespace fmesh {
 
 /*! Static Balanced Binary Tree */
@@ -244,7 +240,7 @@ public:
 
     T operator*() const {
       if (this->is_null()) {
-        LOG_("Error: dereferencing a null iterator" << std::endl);
+        FMLOG_("Error: dereferencing a null iterator" << std::endl);
       }
       return *i_;
     };
@@ -270,7 +266,7 @@ public:
 
     T operator*() const {
       if (this->is_null()) {
-        LOG_("Error: dereferencing a null iterator" << std::endl);
+        FMLOG_("Error: dereferencing a null iterator" << std::endl);
       }
       return *i_;
     };
@@ -378,7 +374,7 @@ public:
 
     T operator*() const {
       if (this->is_null()) {
-        LOG_("Error: dereferencing a null iterator" << std::endl);
+        FMLOG_("Error: dereferencing a null iterator" << std::endl);
       }
       return (*i_).second;
     };
@@ -487,14 +483,14 @@ public:
 
     T operator*() const {
       if (this->is_null()) {
-        LOG_("Error: dereferencing a null iterator" << std::endl);
+        FMLOG_("Error: dereferencing a null iterator" << std::endl);
       }
       if (search_mode_ < 0) {
         return (*L_i_);
       } else if (search_mode_ > 0) {
         return (*R_i_);
       } else {
-        LOG_("Error: undefined dereferencing" << std::endl);
+        FMLOG_("Error: undefined dereferencing" << std::endl);
       }
       return (*(new T()));
     };
@@ -594,7 +590,7 @@ private:
     if (i.current() < 0)
       return false;
     const segment_type &segm = (*multi_segment_iter_)[segm_idx];
-    //      LOG_("I=(" << (*i).left_ << "," << (*i).right_ << ")" <<
+    //      FMLOG_("I=(" << (*i).left_ << "," << (*i).right_ << ")" <<
     //	   " S=(" << segm.first << "," << segm.second << ")" << std::endl);
     if ((segm.first <= (*i).left_) && (segm.second >= (*i).right_)) {
       /* Segment completely covers the interval */
@@ -707,10 +703,10 @@ public:
 
     T operator*() const {
       if (this->is_null()) {
-        LOG_("Error: dereferencing a null iterator" << std::endl);
+        FMLOG_("Error: dereferencing a null iterator" << std::endl);
       }
       if (sub_i_.is_null()) {
-        LOG_("Error: unexpected dereferencing of a null iterator" << std::endl);
+        FMLOG_("Error: unexpected dereferencing of a null iterator" << std::endl);
       }
       return (*sub_i_);
     };

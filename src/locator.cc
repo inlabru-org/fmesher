@@ -7,15 +7,6 @@
 
 #include "locator.h"
 
-#ifndef LOG_
-#define LOG_(msg) FMLOG_(msg)
-#endif
-#ifdef DEBUG
-#define LOG(msg) LOG_(msg)
-#else
-#define LOG(msg)
-#endif
-
 namespace fmesh {
 
 TriangleLocator::TriangleLocator(const Mesh *mesh,
@@ -52,7 +43,7 @@ TriangleLocator::~TriangleLocator() { /* Nothing to do. */
 }
 
 int TriangleLocator::locate(const Point &s) const {
-  LOG("Looking for s=" << s << std::endl)
+  FMLOG("Looking for s=" << s << std::endl)
   std::vector<double> loc(dim_.size());
   for (size_t di = 0; di < dim_.size(); ++di) {
     loc[di] = s[dim_[di]];
@@ -60,22 +51,22 @@ int TriangleLocator::locate(const Point &s) const {
   Dart d;
   for (bbox_locator_type::search_iterator si = bbox_locator_.search_begin(loc);
        !si.is_null(); ++si) {
-    LOG("Starting at " << *si << std::endl)
+    FMLOG("Starting at " << *si << std::endl)
     d = mesh_->locate_point(Dart(*mesh_, (*si)), s);
-    LOG("Resulting dart " << d << std::endl)
+    FMLOG("Resulting dart " << d << std::endl)
     if (!d.isnull()) {
       Point b;
       mesh_->barycentric(Dart(*mesh_, d.t()), s, b);
-      LOG("Barycentric coordinates " << b << std::endl)
+      FMLOG("Barycentric coordinates " << b << std::endl)
       if ((b[0] >= -10.0 * MESH_EPSILON) && (b[1] >= -10.0 * MESH_EPSILON) &&
           (b[2] >= -10.0 * MESH_EPSILON))
         return (d.t());
       else {
-        LOG("Mesh::locate_point reported incorrect finding." << std::endl);
+        FMLOG("Mesh::locate_point reported incorrect finding." << std::endl);
       }
     }
   }
-  LOG("Point not found, s=" << s << std::endl)
+  FMLOG("Point not found, s=" << s << std::endl)
   return -1;
 }
 

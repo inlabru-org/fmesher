@@ -17,10 +17,6 @@
 #include "trees.h"
 #include "vector.h"
 
-#ifndef LOG_
-#define LOG_(msg) FMLOG(msg);
-#endif
-
 namespace fmesh {
 
 typedef std::pair<double, double> bbox_side_type;

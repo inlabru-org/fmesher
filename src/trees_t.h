@@ -3,10 +3,6 @@
 
 #include "fmesher_debuglog.h"
 
-#ifndef LOG_
-#define LOG_(msg) FMLOG_(msg)
-#endif
-
 namespace fmesh {
 
 template <class ValueType>
@@ -224,10 +220,10 @@ IntervalTree<T>::search_iterator::search() {
         }
       }
     } else if (search_mode_ < 0) {
-      LOG_("Should not be reached." << std::endl);
+      FMLOG_("Should not be reached." << std::endl);
       NOT_IMPLEMENTED;
     } else { /* (search_mode_ > 0) */
-      LOG_("Should not be reached." << std::endl);
+      FMLOG_("Should not be reached." << std::endl);
       NOT_IMPLEMENTED;
     }
 

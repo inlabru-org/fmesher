@@ -3,10 +3,6 @@
 
 #include "fmesher_debuglog.h"
 
-#ifndef LOG_
-#define LOG_(msg) FMLOG_(msg);
-#endif
-
 namespace fmesh {
 
 template <class T>
@@ -74,7 +70,7 @@ int BBoxLocator<T>::Search_tree_type::Iterator::operator*() const {
       break;
     }
   }
-  LOG_("Error: Invalid insternal search_tree structure.");
+  FMLOG_("Error: Invalid internal search_tree structure.");
   return (-1);
 }
 

@@ -15,10 +15,6 @@
 #include "ioutils.h"
 #include "vector.h"
 
-#ifndef _LOG
-#define _LOG(msg) FMLOG(msg)
-#endif
-
 #define M_2_SQRT_PI 3.5449077018110320546
 
 using std::endl;
@@ -121,23 +117,23 @@ Matrix<double> spherical_bsplines(const Matrix3<double> &S, size_t n_basis,
     control[i](0, i) = 1.0;
   }
 
-  _LOG("degree\t" << degree << endl);
-  _LOG("n_basis\t" << n_basis << endl);
-  _LOG("n_basis+degree+1\t" << n_basis + degree + 1 << endl);
+  FMLOG("degree\t" << degree << endl);
+  FMLOG("n_basis\t" << n_basis << endl);
+  FMLOG("n_basis+degree+1\t" << n_basis + degree + 1 << endl);
 
   for (size_t coord_idx = 0; coord_idx < S.rows(); coord_idx++) {
     s = S[coord_idx][2];
 
-    _LOG("step 1, coord_idx\t" << coord_idx << endl);
+    FMLOG("step 1, coord_idx\t" << coord_idx << endl);
     interval = degree;
     while ((interval + 1 < n_basis) & (s >= knots[interval + 1]))
       interval++;
 
-    _LOG("step 2" << endl);
+    FMLOG("step 2" << endl);
     for (size_t i = 0; i <= degree; i++)
       control_work[i] = control[i + interval - degree];
 
-    _LOG("step 3" << endl);
+    FMLOG("step 3" << endl);
     for (size_t k = 1; k <= degree; k++)
       for (size_t i = degree; i >= k; i--) {
         s1 = (knots[i + interval - k + 1] - s) /
