@@ -221,7 +221,7 @@ int xtmpl_record(const char *filename, const char *channels) {
     }
     return 0;
   } else {
-    fprintf(stderr, "xtmpl_record_start: fail to open file[%s]\n", filename);
+    fprintf(stderr, "xtmpl_record_start: failed to open file[%s]\n", filename);
     return 1;
   }
 }

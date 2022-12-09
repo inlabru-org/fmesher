@@ -2527,7 +2527,7 @@ void Mesh::calcGradientMatrices(SparseMatrix<double> **D) const {
   for (size_t i = 0; i < nV(); i++) {
     weights(i, 0) = 1.0 / weights(i, 0);
   }
-  SparseMatrix<double> w = diag(weights);
+  SparseMatrix<double> w(diag(weights));
   D[0] = new SparseMatrix<double>(w * D_[0]);
   D[1] = new SparseMatrix<double>(w * D_[1]);
   D[2] = new SparseMatrix<double>(w * D_[2]);

@@ -18,8 +18,20 @@ Matrix<T>::Matrix(size_t set_rows, size_t set_cols, const T *vals)
     std::memcpy(data_, vals, sizeof(T) * rows_ * cols_);
   }
 }
-template <class T>
 
+template <class T>
+Matrix<T>::Matrix(const Matrix<T> &from)
+    : data_(NULL), rows_(0), cols_(0), cap_(0) {
+  clear();
+  cols(from.cols_);
+  capacity(from.cap_);
+  rows_ = from.rows_;
+  if (data_) {
+    std::memcpy(data_, from.data_, sizeof(T) * rows_ * cols_);
+  }
+}
+
+template <class T>
 const Matrix<T> &Matrix<T>::operator=(const Matrix<T> &from) {
   clear();
   cols(from.cols_);

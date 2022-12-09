@@ -32,9 +32,10 @@ int sph_basis_n(int kmax, bool rot_sym) {
   }
 }
 
-Matrix<double> spherical_harmonics(const Matrix3<double> &S, size_t max_order,
-                                   bool rotationally_symmetric) {
-  Matrix<double> sph(sph_basis_n(max_order, rotationally_symmetric));
+Matrix<double> *spherical_harmonics(const Matrix3<double> &S, size_t max_order,
+                                    bool rotationally_symmetric) {
+  Matrix<double> *sph =
+      new Matrix<double>(sph_basis_n(max_order, rotationally_symmetric));
 
 #ifdef FMESHER_WITH_GSL
 #ifndef NO_SPHERICAL_HARMONICS
@@ -47,7 +48,7 @@ Matrix<double> spherical_harmonics(const Matrix3<double> &S, size_t max_order,
       gsl_sf_legendre_array(GSL_SF_LEGENDRE_SPHARM, max_order, S[i][2],
                             GSL_res_array);
       for (k = 0; k <= max_order; k++) {
-        sph(i, k) =
+        (*sph)(i, k) =
             M_2_SQRT_PI * GSL_res_array[gsl_sf_legendre_array_index(k, 0)];
       }
     }
@@ -66,16 +67,16 @@ Matrix<double> spherical_harmonics(const Matrix3<double> &S, size_t max_order,
       gsl_sf_legendre_array_e(GSL_SF_LEGENDRE_SPHARM, max_order, S[i][2], -1,
                               GSL_res_array);
       for (k = 0; k <= max_order; k++) {
-        sph(i, Idxs2[k]) =
+        (*sph)(i, Idxs2[k]) =
             M_2_SQRT_PI * GSL_res_array[gsl_sf_legendre_array_index(k, 0)];
       }
       for (m = 1; m <= max_order; m++) {
         scaling_sin = M_2_SQRT_PI * M_SQRT2 * sin(-(m * phi));
         scaling_cos = M_2_SQRT_PI * M_SQRT2 * cos(m * phi);
         for (k = m; k <= max_order; k++) {
-          sph(i, Idxs2[k] - m) =
+          (*sph)(i, Idxs2[k] - m) =
               scaling_sin * GSL_res_array[gsl_sf_legendre_array_index(k, m)];
-          sph(i, Idxs2[k] + m) =
+          (*sph)(i, Idxs2[k] + m) =
               scaling_cos * GSL_res_array[gsl_sf_legendre_array_index(k, m)];
         }
       }
@@ -89,10 +90,10 @@ Matrix<double> spherical_harmonics(const Matrix3<double> &S, size_t max_order,
   return sph;
 }
 
-Matrix<double> spherical_bsplines(const Matrix3<double> &S, size_t n_basis,
-                                  size_t degree,
-                                  bool uniform_knot_angle_spacing) {
-  Matrix<double> basis(n_basis);
+Matrix<double> *spherical_bsplines(const Matrix3<double> &S, size_t n_basis,
+                                   size_t degree,
+                                   bool uniform_knot_angle_spacing) {
+  Matrix<double> *basis = new Matrix<double>(n_basis);
   std::vector<double> knots(n_basis + degree + 1);
   double s, s1, s2;
   std::vector<Matrix<double>> control(n_basis);
@@ -146,7 +147,7 @@ Matrix<double> spherical_bsplines(const Matrix3<double> &S, size_t n_basis,
       }
 
     for (size_t j = 0; j < n_basis; j++)
-      basis(coord_idx, j) = control_work[degree](0, j);
+      (*basis)(coord_idx, j) = control_work[degree](0, j);
   }
 
   return basis;

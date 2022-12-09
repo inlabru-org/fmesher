@@ -216,7 +216,7 @@ public:
         }
         if (i == LcolI0.row()) {
           //	FMLOG_("LI[" << LcolI.row() << ", " << LcolI.col() << "] use" <<
-          //std::endl);
+          // std::endl);
           ScolI.valueRef() += 1 / LcolI.value();
           ScolI.valueRef() /= LcolI.value();
           //	FMLOG_("SI[" << ScolI.row() << ", " << ScolI.col() << "] = "
@@ -224,7 +224,7 @@ public:
           //		  << std::endl;
         } else {
           //	FMLOG_("LI[" << LcolI.row() << ", " << LcolI.col() << "] use" <<
-          //std::endl);
+          // std::endl);
           ScolI.valueRef() /= LcolI.value();
           //	FMLOG_("SI[" << ScolI.row() << ", " << ScolI.col() << "] = "
           //		  << ScolI.value()
@@ -234,7 +234,7 @@ public:
            */
           while (ScolJ.row() > i) {
             //	  FMLOG_("SJ[" << ScolJ.row() << ", " << ScolJ.col() << "] move
-            //at end"
+            // at end"
             //		    << std::endl);
             --ScolJ;
           }

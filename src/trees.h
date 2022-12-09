@@ -706,7 +706,8 @@ public:
         FMLOG_("Error: dereferencing a null iterator" << std::endl);
       }
       if (sub_i_.is_null()) {
-        FMLOG_("Error: unexpected dereferencing of a null iterator" << std::endl);
+        FMLOG_("Error: unexpected dereferencing of a null iterator"
+               << std::endl);
       }
       return (*sub_i_);
     };

@@ -67,6 +67,7 @@ public:
     cols(set_cols);
   };
   Matrix(size_t set_rows, size_t set_cols, const T *vals = NULL);
+  Matrix(const Matrix<T> &from);
   const Matrix<T> &operator=(const Matrix<T> &from);
   ~Matrix() {
     if (data_)
