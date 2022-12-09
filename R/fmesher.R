@@ -1,4 +1,7 @@
 #' @importFrom methods as
+# Explicit import of something from Matrix to appease automated checks:
+#' @importFrom Matrix as.matrix
+
 fm_as_dgCMatrix <- function(x) {
   if (inherits(x, "dgCMatrix")) {
     x
