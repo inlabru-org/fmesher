@@ -1,3 +1,5 @@
+#ifdef FMESHER_WITH_R
+
 #include <algorithm>
 #include <cmath>
 #include <cstddef>
@@ -12,6 +14,51 @@
 #include "RcppEigen.h"
 
 #include "fmesher_helpers.h"
+#include "fmesher.h"
+
+using std::ios;
+using std::ifstream;
+using std::ofstream;
+using std::string;
+using std::endl;
+
+using fmesh::Dart;
+using fmesh::DartPair;
+using fmesh::DartList;
+using fmesh::Int3;
+using fmesh::Int3Raw;
+using fmesh::IOHelper;
+using fmesh::IOHelperM;
+using fmesh::IOHelperSM;
+using fmesh::Matrix;
+using fmesh::Matrix3double;
+using fmesh::MatrixC;
+using fmesh::Mesh;
+using fmesh::MeshC;
+using fmesh::Point;
+using fmesh::PointRaw;
+using fmesh::SparseMatrix;
+using fmesh::Vector3;
+using fmesh::constrMetaT;
+using fmesh::constrT;
+using fmesh::constrListT;
+using fmesh::vertexListT;
+using fmesh::TriangleLocator;
+
+template<class T>
+using EigenMSM = Eigen::MappedSparseMatrix<T>;
+template<class T>
+using EigenSM = Eigen::SparseMatrix<T>;
+
+const bool useVT = true;
+const bool useTTi = true;
+
+
+
+
+
+
+
 
 
 
@@ -24,12 +71,9 @@
 Rcpp::List C_qinv(SEXP AA)
 {
   //Eigen::SparseMatrix<double> C_qinv(SEXP AA)
-  using Eigen::MappedSparseMatrix;
-  using Eigen::SparseMatrix;
-  const MappedSparseMatrix<double> A(Rcpp::as<MappedSparseMatrix<double> >(AA));
+  const EigenMSM<double> A(Rcpp::as<EigenMSM<double> >(AA));
 
   QTool<double> Q;
-  //  Q.Q(Rcpp::as<MappedSparseMatrix<double> >(AA));
   Q.Q(A);
 
   Rcpp::List ret;
@@ -60,9 +104,16 @@ Rcpp::List fmesher_triangulate(Rcpp::List args_input)
 Rcpp::List C_matrixio_test(Rcpp::List args_input)
 {
   //Eigen::SparseMatrix<double> C_qinv(SEXP AA)
-  using Eigen::MappedSparseMatrix;
-  using Eigen::SparseMatrix;
+
+  MatrixC matrices;
+
+//  matrices.R_obj_input(input_matrix_list_from_R);
+//  matrices.R_file_input(input_name_list_from_R);
 
   Rcpp::List ret;
   return(ret);
 }
+
+
+
+#endif
