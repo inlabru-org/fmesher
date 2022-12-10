@@ -58,4 +58,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: coverage-test-failures
-          path: ${{ runner.temp }}/packageasdasd
+          path: ${{ runner.temp }}/package
