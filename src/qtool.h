@@ -13,7 +13,7 @@ template <typename Scalar, template <class> class Ordering = Eigen::AMDOrdering>
 class QTool {
 public:
   typedef Eigen::SparseMatrix<Scalar, Eigen::ColMajor> SMatrix;
-  typedef Eigen::MappedSparseMatrix<Scalar, Eigen::ColMajor> MSMatrix;
+  typedef Eigen::Map<Eigen::SparseMatrix<Scalar, Eigen::ColMajor>> MSMatrix;
   typedef Eigen::SimplicialLLT<SMatrix, Eigen::Lower,
                                Ordering<typename SMatrix::StorageIndex>>
       SCholesky;

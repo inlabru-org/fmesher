@@ -14,6 +14,10 @@
 
 #include "fmesher_debuglog.h"
 
+#ifdef FMESHER_WITH_R
+#include "RcppEigen.h"
+#endif
+
 namespace fmesh {
 
 /* Note: This definition really belongs in ioutils.hh, but is placed
@@ -68,6 +72,12 @@ public:
   };
   Matrix(size_t set_rows, size_t set_cols, const T *vals = NULL);
   Matrix(const Matrix<T> &from);
+#ifdef FMESHER_WITH_R
+  Matrix(const Rcpp::NumericMatrix &from);
+  Matrix(const Rcpp::IntegerMatrix &from);
+  Matrix(const Rcpp::NumericVector &from);
+  Matrix(const Rcpp::IntegerVector &from);
+#endif
   const Matrix<T> &operator=(const Matrix<T> &from);
   ~Matrix() {
     if (data_)
@@ -262,6 +272,12 @@ template <class T> class Matrix1 : public Matrix<T> {
 public:
   typedef T ValueRaw;
   Matrix1() : Matrix<T>(1){};
+#ifdef FMESHER_WITH_R
+  Matrix1(const Rcpp::NumericMatrix &from);
+  Matrix1(const Rcpp::IntegerMatrix &from);
+  Matrix1(const Rcpp::NumericVector &from);
+  Matrix1(const Rcpp::IntegerVector &from);
+#endif
   Matrix1(size_t set_rows, const ValueRaw *vals = NULL)
       : Matrix<T>(set_rows, 1, (T *)vals){};
   Matrix1<T> &clear(void) {
@@ -293,6 +309,10 @@ public:
       }
     }
   };
+#ifdef FMESHER_WITH_R
+  Matrix3(const Rcpp::NumericMatrix &from);
+  Matrix3(const Rcpp::IntegerMatrix &from);
+#endif
   Matrix3(size_t set_rows, const ValueRow *vals)
       : Matrix<T>(set_rows, 3, (T *)vals){};
   Matrix3(size_t set_rows, const ValueRaw *vals = NULL)
@@ -403,13 +423,35 @@ public:
       for (ColCIter col = data_.begin(); col != data_.end(); col++) {
         if ((matrixt == 0) || (row <= col->first)) {
           MT(offset + elem) =
-              SparseMatrixTriplet<T>(row, col->first, col->second);
+            SparseMatrixTriplet<T>(row, col->first, col->second);
           elem++;
         }
       }
     }
     return elem;
   };
+#ifdef FMESHER_WITH_R
+  /*! To list, general, symmetric, or diagonal. */
+  int tolist(int row, std::vector<Eigen::Triplet<T>> &MT,
+             int matrixt = 0) const {
+    int elem = 0;
+    if (matrixt == 2) {
+      ColCIter col;
+      if ((col = data_.find(row)) != data_.end()) {
+        MT.push_back(Eigen::Triplet<T>(row, row, col->second));
+        elem++;
+      }
+    } else {
+      for (ColCIter col = data_.begin(); col != data_.end(); col++) {
+        if ((matrixt == 0) || (row <= col->first)) {
+          MT.push_back(Eigen::Triplet<T>(row, col->first, col->second));
+          elem++;
+        }
+      }
+    }
+    return elem;
+  };
+#endif
   /*! To list, general, symmetric, or diagonal. */
   int tolist(int offset, int row, Matrix1<int> &Tr, Matrix1<int> &Tc,
              Matrix1<T> &Tv, int matrixt = 0) const {
@@ -504,6 +546,9 @@ public:
     }
     //      FMLOG_("SM copy" << std::endl);
   };
+#ifdef FMESHER_WITH_R
+  SparseMatrix(const Eigen::Map<Eigen::SparseMatrix<T>> &from);
+#endif
   const SparseMatrix<T> &operator=(const SparseMatrix<T> &from) {
     cols_ = from.cols_;
     data_ = from.data_;
@@ -604,6 +649,21 @@ public:
     }
     return elem;
   };
+#ifdef FMESHER_WITH_R
+  /*! To list, general, symmetric, or diagonal. */
+  int tolist(std::vector<Eigen::Triplet<T>> &MT, int matrixt = 0) const {
+    int elem = 0;
+    for (size_t row = 0; row < rows(); row++) {
+      elem += (*this).nnz(matrixt);
+    }
+    MT.reserve(elem);
+    int elem_verify = 0;
+    for (size_t row = 0; row < rows(); row++) {
+      elem_verify += data_[row].tolist(row, MT, matrixt);
+    }
+    return elem;
+  };
+#endif
   /*! To list, general, symmetric, or diagonal. */
   int tolist(Matrix1<int> &Tr, Matrix1<int> &Tc, Matrix1<T> &Tv,
              int matrixt = 0) const {
@@ -628,6 +688,23 @@ public:
         operator()(MT[i].r, MT[i].c, MT[i].value);
     }
   };
+#ifdef FMESHER_WITH_R
+  /*! From list, general, symmetric, or diagonal. */
+  void fromlist(const std::vector<Eigen::Triplet<T>> &MT, int matrixt = 0) {
+    if (matrixt == 1) {
+      for (size_t i = 0; i < MT.rows(); i++) {
+        operator()(MT[i].row(), MT[i].col(), MT[i].value());
+        operator()(MT[i].col(), MT[i].row(), MT[i].value());
+      }
+    } else if (matrixt == 2) {
+      for (size_t i = 0; i < MT.rows(); i++)
+        operator()(MT[i].row(), MT[i].row(), MT[i].value());
+    } else {
+      for (size_t i = 0; i < MT.rows(); i++)
+        operator()(MT[i].row(), MT[i].col(), MT[i].value());
+    }
+  };
+#endif
   /*! From list, general or symmetric. */
   void fromlist(const Matrix1<int> &Tr, const Matrix1<int> &Tc,
                 const Matrix1<T> &Tv, int matrixt = 0) {

@@ -30,6 +30,78 @@ Matrix<T>::Matrix(const Matrix<T> &from)
     std::memcpy(data_, from.data_, sizeof(T) * rows_ * cols_);
   }
 }
+#ifdef FMESHER_WITH_R
+template <class T>
+Matrix<T>::Matrix(const Rcpp::NumericMatrix &from)
+  : data_(NULL), rows_(0), cols_(0), cap_(0) {
+  clear();
+  cols(from.ncol());
+  capacity(from.nrow());
+  rows_ = from.nrow();
+  if (data_) {
+    for (size_t col_idx = 0; col_idx < cols_; col_idx++) {
+      Rcpp::NumericMatrix::ConstColumn col = from(Rcpp::_, col_idx);
+      size_t row_idx = 0;
+      for (auto elem = col.cbegin(); elem != col.cend(); elem++) {
+        (*this)(row_idx, col_idx) = (T)(*elem);
+        row_idx++;
+      }
+    }
+  }
+}
+
+template <class T>
+Matrix<T>::Matrix(const Rcpp::IntegerMatrix &from)
+  : data_(NULL), rows_(0), cols_(0), cap_(0) {
+  clear();
+  cols(from.ncol());
+  capacity(from.nrow());
+  rows_ = from.nrow();
+  if (data_) {
+    for (size_t col_idx = 0; col_idx < cols_; col_idx++) {
+      Rcpp::IntegerMatrix::ConstColumn col = from(Rcpp::_, col_idx);
+      size_t row_idx = 0;
+      for (auto elem = col.cbegin(); elem != col.cend(); elem++) {
+        (*this)(row_idx, col_idx) = (T)(*elem);
+        row_idx++;
+      }
+    }
+  }
+}
+
+template <class T>
+Matrix<T>::Matrix(const Rcpp::NumericVector &from)
+  : data_(NULL), rows_(0), cols_(0), cap_(0) {
+  clear();
+  cols(1);
+  capacity(from.length());
+  rows_ = from.length();
+  if (data_) {
+    size_t row_idx = 0;
+    for (auto elem = from.cbegin(); elem != from.cend(); elem++) {
+      (*this)(row_idx, 0) = (T)(*elem);
+      row_idx++;
+    }
+  }
+}
+
+template <class T>
+Matrix<T>::Matrix(const Rcpp::IntegerVector &from)
+  : data_(NULL), rows_(0), cols_(0), cap_(0) {
+  clear();
+  cols(1);
+  capacity(from.length());
+  rows_ = from.length();
+  if (data_) {
+    size_t row_idx = 0;
+    for (auto elem = from.cbegin(); elem != from.cend(); elem++) {
+      (*this)(row_idx, 0) = (T)(*elem);
+      row_idx++;
+    }
+  }
+}
+#endif
+
 
 template <class T>
 const Matrix<T> &Matrix<T>::operator=(const Matrix<T> &from) {
@@ -118,6 +190,54 @@ template <class T> Matrix<T> &Matrix<T>::cols(size_t set_cols) {
     cols_ = set_cols;
   return *this;
 }
+
+
+
+#ifdef FMESHER_WITH_R
+template <class T>
+Matrix1<T>::Matrix1(const Rcpp::NumericMatrix &from) : Matrix<T>(from) {
+  // Check number of columns:
+  if (1 != from.ncol()) {
+    Rcpp::warning("NumericMatrix->Matrix1 conversion: column number mismatch.");
+    clear();
+    *this = Matrix1<T>(Rcpp::NumericVector(from(Rcpp::_, 0)));
+  }
+}
+
+template <class T>
+Matrix1<T>::Matrix1(const Rcpp::IntegerMatrix &from) : Matrix<T>(from) {
+  // Check number of columns:
+  if (1 != from.ncol()) {
+    Rcpp::stop("IntegerMatrix->Matrix1 conversion: column number mismatch.");
+  }
+}
+
+template <class T>
+Matrix1<T>::Matrix1(const Rcpp::NumericVector &from) : Matrix<T>(from) {}
+
+template <class T>
+Matrix1<T>::Matrix1(const Rcpp::IntegerVector &from) : Matrix<T>(from) {}
+
+template <class T>
+Matrix3<T>::Matrix3(const Rcpp::NumericMatrix &from) : Matrix<T>(from) {
+  // Check number of columns:
+  if (3 != from.ncol()) {
+    Rcpp::stop("NumericMatrix->Matrix3 conversion: column number mismatch.");
+  }
+}
+
+template <class T>
+Matrix3<T>::Matrix3(const Rcpp::IntegerMatrix &from) : Matrix<T>(from) {
+  // Check number of columns:
+  if (3 != from.ncol()) {
+    Rcpp::stop("IntegerMatrix->Matrix3 conversion: column number mismatch.");
+  }
+}
+#endif
+
+
+
+
 
 template <class T>
 bool Matrix<T>::save(std::string filename, IOMatrixtype matrixt,
@@ -232,6 +352,30 @@ bool SparseMatrix<T>::load(std::string filename, bool binary) {
   I.close();
   return true;
 }
+
+
+#ifdef FMESHER_WITH_R
+template <class T>
+SparseMatrix<T>::SparseMatrix(const Eigen::Map<Eigen::SparseMatrix<T>> &from)
+  : cols_(from.col()), data_() {
+  NOT_IMPLEMENTED;
+/*  clear();
+  cols(from.ncol());
+  capacity(from.nrow());
+  rows_ = from.nrow();
+  if (data_) {
+    for (size_t col_idx = 0; col_idx < cols_; col_idx++) {
+      Rcpp::NumericMatrix::ConstColumn col = from(Rcpp::_, col_idx);
+      size_t row_idx = 0;
+      for (auto elem = col.cbegin(); elem != col.cend(); elem++) {
+        (*this)(row_idx, col_idx) = (T)(*elem);
+        row_idx++;
+      }
+    }
+  }
+ */
+}
+#endif
 
 template <class T>
 bool SparseMatrix<T>::save_ascii_2009(std::string filename,
