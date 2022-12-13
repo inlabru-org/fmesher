@@ -503,30 +503,33 @@ template <class T> const T fmesh::SparseMatrix<T>::zero_ = T();
 #ifdef FMESHER_WITH_R
 namespace Rcpp {
 
-template<>
-inline SEXP wrap(const fmesh::Matrix<double>& obj) {
-  return Rcpp::NumericMatrix();
+#define __FM_MATRIX_WRAP__(OutType, InType, COLS)              \
+template<>                                                     \
+inline SEXP wrap(const fmesh::InType& obj) {                   \
+  Rcpp::OutType res(obj.rows(), COLS);                         \
+  for (size_t r = 0; r < obj.rows(); r++) {                    \
+    for (size_t c = 0; c < COLS; c++) {                        \
+      res[r + c * COLS] = obj[r][c];                           \
+    }                                                          \
+  }                                                            \
+  return res;                                                  \
 }
-template<>
-inline SEXP wrap(const fmesh::Matrix<int>& obj) {
-  return Rcpp::IntegerMatrix();
+#define __FM_VECTOR_WRAP__(OutType, InType)                    \
+template<>                                                     \
+inline SEXP wrap(const fmesh::InType& obj) {                   \
+  Rcpp::OutType res(obj.rows());                               \
+  for (size_t r = 0; r < obj.rows(); r++) {                    \
+    res[r] = obj[r];                                           \
+  }                                                            \
+  return res;                                                  \
 }
-template<>
-inline SEXP wrap(const fmesh::Matrix3<double>& obj) {
-  return Rcpp::NumericMatrix();
-}
-template<>
-inline SEXP wrap(const fmesh::Matrix3<int>& obj) {
-  return Rcpp::IntegerMatrix();
-}
-template<>
-inline SEXP wrap(const fmesh::Matrix1<double>& obj) {
-  return Rcpp::NumericVector();
-}
-template<>
-inline SEXP wrap(const fmesh::Matrix1<int>& obj) {
-  return Rcpp::IntegerVector();
-}
+__FM_MATRIX_WRAP__(NumericMatrix, Matrix<double>, obj.cols())
+__FM_MATRIX_WRAP__(IntegerMatrix, Matrix<int>, obj.cols())
+__FM_MATRIX_WRAP__(NumericMatrix, Matrix3<double>, 3)
+__FM_MATRIX_WRAP__(IntegerMatrix, Matrix3<int>, 3)
+__FM_VECTOR_WRAP__(NumericVector, Matrix1<double>)
+__FM_VECTOR_WRAP__(IntegerVector, Matrix1<int>)
+
 template<>
 inline SEXP wrap(const fmesh::SparseMatrix<double>& obj) {
   return Rcpp::wrap(obj.EigenSparseMatrix(fmesh::IOMatrixtype_general));
