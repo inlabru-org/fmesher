@@ -355,25 +355,54 @@ bool SparseMatrix<T>::load(std::string filename, bool binary) {
 
 
 #ifdef FMESHER_WITH_R
+
+// Export to R
+template <class T> Eigen::SparseMatrix<T> SparseMatrix<T>::EigenSparseMatrix(IOMatrixtype matrixt) const {
+  typedef Eigen::Triplet<T> Trip;
+  std::vector<Trip> tripletList;
+  tripletList.reserve(nnz());
+  tolist(tripletList, matrixt);
+
+  Eigen::SparseMatrix<T> m(rows(), cols());
+  m.setFromTriplets(tripletList.begin(), tripletList.end());
+
+  return m;
+}
+// Export to R as list(i,j,x,dims)
+template <class T> SEXP SparseMatrix<T>::RcppList(IOMatrixtype matrixt) const {
+  std::vector<int> i;
+  std::vector<int> j;
+  std::vector<T> x;
+  std::vector<int> dims;
+  to_ijx(i, j, x, dims, matrixt);
+
+  Rcpp::List output;
+  output["i"] = i;
+  output["j"] = j;
+  output["x"] = x;
+  output["dims"] = dims;
+
+  return output;
+}
+
+
+
+
+
+
+
+
+
+template<class T> using EigenMSM = Eigen::Map<Eigen::SparseMatrix<T>>;
 template <class T>
-SparseMatrix<T>::SparseMatrix(const Eigen::Map<Eigen::SparseMatrix<T>> &from)
-  : cols_(from.col()), data_() {
-  NOT_IMPLEMENTED;
-/*  clear();
-  cols(from.ncol());
-  capacity(from.nrow());
-  rows_ = from.nrow();
-  if (data_) {
-    for (size_t col_idx = 0; col_idx < cols_; col_idx++) {
-      Rcpp::NumericMatrix::ConstColumn col = from(Rcpp::_, col_idx);
-      size_t row_idx = 0;
-      for (auto elem = col.cbegin(); elem != col.cend(); elem++) {
-        (*this)(row_idx, col_idx) = (T)(*elem);
-        row_idx++;
-      }
+SparseMatrix<T>::SparseMatrix(const EigenMSM<T> &from)
+  : cols_(from.cols()), data_() {
+  rows(from.rows());
+  for (int k=0; k < from.outerSize(); ++k)
+    for (typename EigenMSM<T>::InnerIterator it(from, k); it; ++it)
+    {
+      operator()(it.row(), it.col(), it.value());
     }
-  }
- */
 }
 #endif
 
@@ -470,5 +499,40 @@ template <class T> const T fmesh::SparseMatrixRow<T>::zero_ = T();
 template <class T> const T fmesh::SparseMatrix<T>::zero_ = T();
 
 } /* namespace fmesh */
+
+#ifdef FMESHER_WITH_R
+namespace Rcpp {
+
+template<>
+inline SEXP wrap(const fmesh::Matrix<double>& obj) {
+  return Rcpp::NumericMatrix();
+}
+template<>
+inline SEXP wrap(const fmesh::Matrix<int>& obj) {
+  return Rcpp::IntegerMatrix();
+}
+template<>
+inline SEXP wrap(const fmesh::Matrix3<double>& obj) {
+  return Rcpp::NumericMatrix();
+}
+template<>
+inline SEXP wrap(const fmesh::Matrix3<int>& obj) {
+  return Rcpp::IntegerMatrix();
+}
+template<>
+inline SEXP wrap(const fmesh::Matrix1<double>& obj) {
+  return Rcpp::NumericVector();
+}
+template<>
+inline SEXP wrap(const fmesh::Matrix1<int>& obj) {
+  return Rcpp::IntegerVector();
+}
+template<>
+inline SEXP wrap(const fmesh::SparseMatrix<double>& obj) {
+  return Rcpp::wrap(obj.EigenSparseMatrix(fmesh::IOMatrixtype_general));
+}
+
+} // Namespace Rcpp
+#endif
 
 #endif

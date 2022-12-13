@@ -10,8 +10,10 @@
 #include <string>
 #include <vector>
 
+// Order must be RcppFmesher, Rcpp to allow the Rcpp classes
+// to find the fmesher types
+#include "RcppFmesher.h"
 #include "Rcpp.h"
-#include "RcppEigen.h"
 
 #include "fmesher.h"
 #include "fmesher_helpers.h"
@@ -143,6 +145,9 @@ Rcpp::List C_matrixio_test(Rcpp::List args_input) {
   FMLOG_("Bii3: " << Bii3 << std::endl);
 
   const EigenMSM<double> Ad(Rcpp::as<EigenMSM<double>>(args_input["Ad"]));
+
+  fmesh::SparseMatrix<double> Ad_fm(Ad);
+
 //  const EigenMSM<int> Ai(Rcpp::as<EigenMSM<int>>(args_input["Ai"]));
 
   //  bool is_msm = Rcpp::is<Eigen::SparseMatrix<double>>(args_input["a"]);
@@ -158,7 +163,11 @@ Rcpp::List C_matrixio_test(Rcpp::List args_input) {
   ret["is_integer_vector"] = is_integer_vector;
 //  ret["A"] = A;
   ret["Ad"] = Ad;
-  //  ret["is_msm"] = is_msm;
+  ret["Ad_fm"] = Ad_fm.EigenSparseMatrix();
+  ret["Ad_fm_auto"] = Ad_fm;
+  ret["Ad_fm_ijx"] = Ad_fm.RcppList();
+  ret["Bid3"] = Bid3;
+  ret["Bdi3"] = Bdi3;
   return (ret);
 }
 
