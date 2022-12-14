@@ -54,8 +54,8 @@ template <class T> using EigenMM = Eigen::Map<EigenM<T>>;
 template <class T> using EigenMM1 = Eigen::Map<EigenM1<T>>;
 template <class T> using EigenMSM = Eigen::Map<EigenSM<T>>;
 
-const bool useVT = true;
-const bool useTTi = true;
+// const bool useVT = true;
+// const bool useTTi = true;
 
 #include "qtool.h"
 

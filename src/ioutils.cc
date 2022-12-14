@@ -597,7 +597,7 @@ MatrixC::MatrixC(SEXP from)
             from_list[the_name])), true,
             IOMatrixtype_general);
     } else {
-      Rcpp::S4 something(SEXP(from_list[the_name]));
+      Rcpp::S4 something = (SEXP)from_list[the_name];
       if (something.is("dgCMatrix")) {
         const Eigen::Map<Eigen::SparseMatrix<double>> mat(
             Rcpp::as<Eigen::Map<Eigen::SparseMatrix<double> > >(
