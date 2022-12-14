@@ -8,9 +8,12 @@ C_qinv <- function(AA) {
     .Call(`_fmesher_C_qinv`, AA)
 }
 
-#' Triangulate
+#' @title Triangulate
 #'
-#' @param args_input Input argument list
+#' @description
+#' (currently used for general Rcpp testing)
+#'
+#' @param globe Input argument list
 #' @export
 fmesher_triangulate <- function(globe) {
     .Call(`_fmesher_fmesher_triangulate`, globe)

@@ -7,8 +7,8 @@
 fmesher_triangulate(globe)
 }
 \arguments{
-\item{args_input}{Input argument list}
+\item{globe}{Input argument list}
 }
 \description{
-Triangulate
+(currently used for general Rcpp testing)
 }

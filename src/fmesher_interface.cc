@@ -77,9 +77,12 @@ Rcpp::List C_qinv(SEXP AA) {
   //  return Q.S();
 }
 
-//' Triangulate
+//' @title Triangulate
 //'
-//' @param args_input Input argument list
+//' @description
+//' (currently used for general Rcpp testing)
+//'
+//' @param globe Input argument list
 //' @export
 // [[Rcpp::export]]
 Rcpp::List fmesher_triangulate(Rcpp::IntegerVector globe) {
