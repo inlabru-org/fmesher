@@ -509,7 +509,7 @@ inline SEXP wrap(const fmesh::InType& obj) {                   \
   Rcpp::OutType res(obj.rows(), COLS);                         \
   for (size_t r = 0; r < obj.rows(); r++) {                    \
     for (size_t c = 0; c < COLS; c++) {                        \
-      res[r + c * COLS] = obj[r][c];                           \
+      res(r, c) = obj[r][c];                                   \
     }                                                          \
   }                                                            \
   return res;                                                  \

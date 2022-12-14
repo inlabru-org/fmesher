@@ -4,7 +4,7 @@
 \alias{fmesher_triangulate}
 \title{Triangulate}
 \usage{
-fmesher_triangulate(args_input)
+fmesher_triangulate(globe)
 }
 \arguments{
 \item{args_input}{Input argument list}

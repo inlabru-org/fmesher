@@ -12,3 +12,4 @@ _config.yml
 ^src/cmdline.ggo$
 ^src/cmdline.c$
 ^vignettes/articles$
+^Doxyfile$

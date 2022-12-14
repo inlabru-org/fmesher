@@ -12,8 +12,8 @@ C_qinv <- function(AA) {
 #'
 #' @param args_input Input argument list
 #' @export
-fmesher_triangulate <- function(args_input) {
-    .Call(`_fmesher_fmesher_triangulate`, args_input)
+fmesher_triangulate <- function(globe) {
+    .Call(`_fmesher_fmesher_triangulate`, globe)
 }
 
 #' Test the matrix I/O system

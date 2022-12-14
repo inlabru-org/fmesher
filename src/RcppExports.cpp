@@ -23,13 +23,13 @@ BEGIN_RCPP
 END_RCPP
 }
 // fmesher_triangulate
-Rcpp::List fmesher_triangulate(Rcpp::List args_input);
-RcppExport SEXP _fmesher_fmesher_triangulate(SEXP args_inputSEXP) {
+Rcpp::List fmesher_triangulate(Rcpp::IntegerVector globe);
+RcppExport SEXP _fmesher_fmesher_triangulate(SEXP globeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::List >::type args_input(args_inputSEXP);
-    rcpp_result_gen = Rcpp::wrap(fmesher_triangulate(args_input));
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type globe(globeSEXP);
+    rcpp_result_gen = Rcpp::wrap(fmesher_triangulate(globe));
     return rcpp_result_gen;
 END_RCPP
 }

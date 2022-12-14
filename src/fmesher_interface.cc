@@ -82,9 +82,19 @@ Rcpp::List C_qinv(SEXP AA) {
 //' @param args_input Input argument list
 //' @export
 // [[Rcpp::export]]
-Rcpp::List fmesher_triangulate(Rcpp::List args_input) {
+Rcpp::List fmesher_triangulate(Rcpp::IntegerVector globe) {
+  MatrixC matrices;
+  std::vector<std::string> input_s0_names;
 
-  return Rcpp::List::create();
+  input_s0_names.push_back(string(".globe"));
+  matrices.attach(
+    ".globe",
+    (Matrix<double> *)fmesh::make_globe_points(globe[0], 1.0),
+    true);
+  FMLOG("globe points added." << std::endl);
+
+  matrices.output("-");
+  return Rcpp::wrap(matrices);
 }
 
 //' Test the matrix I/O system
@@ -152,8 +162,12 @@ Rcpp::List C_matrixio_test(Rcpp::List args_input) {
 
   //  bool is_msm = Rcpp::is<Eigen::SparseMatrix<double>>(args_input["a"]);
 
-  //  matrices.R_obj_input(input_matrix_list_from_R);
-  //  matrices.R_file_input(input_name_list_from_R);
+  matrices.attach("Ad_fm", &Ad_fm, false);
+  matrices.output("Ad_fm");
+
+  MatrixC mat2(args_input);
+
+  FMLOG_(mat2.DI("tv"))
 
   Rcpp::List ret;
   ret["is_list"] = is_list;
@@ -168,6 +182,8 @@ Rcpp::List C_matrixio_test(Rcpp::List args_input) {
   ret["Ad_fm_ijx"] = Ad_fm.RcppList();
   ret["Bid3"] = Bid3;
   ret["Bdi3"] = Bdi3;
+  ret["matrices"] = matrices;
+  ret["mat2"] = mat2.output("-");
   return (ret);
 }
 

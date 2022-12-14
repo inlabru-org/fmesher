@@ -10,22 +10,24 @@ template <class T> class Matrix;
 template <class T> class Matrix1;
 template <class T> class Matrix3;
 template <class T> class SparseMatrix;
+class MatrixC;
 }
 
 /* forward declarations */
 namespace Rcpp {
 /* support for wrap */
 
-#define FM_DEFINE_WRAP(__thetype__, __thescalar__)                     \
-  template<> inline SEXP wrap(const fmesh::__thetype__<__thescalar__>& obj);
+#define FM_DEFINE_WRAP(__thetype__)                     \
+  template<> inline SEXP wrap(const fmesh::__thetype__& obj);
 
-FM_DEFINE_WRAP(Matrix, double);
-FM_DEFINE_WRAP(Matrix, int);
-FM_DEFINE_WRAP(Matrix1, double);
-FM_DEFINE_WRAP(Matrix1, int);
-FM_DEFINE_WRAP(Matrix3, double);
-FM_DEFINE_WRAP(Matrix3, int);
-FM_DEFINE_WRAP(SparseMatrix, double);
+FM_DEFINE_WRAP(Matrix<double>);
+FM_DEFINE_WRAP(Matrix<int>);
+FM_DEFINE_WRAP(Matrix1<double>);
+FM_DEFINE_WRAP(Matrix1<int>);
+FM_DEFINE_WRAP(Matrix3<double>);
+FM_DEFINE_WRAP(Matrix3<int>);
+FM_DEFINE_WRAP(SparseMatrix<double>);
+FM_DEFINE_WRAP(MatrixC);
 
 // TODO:
 /* support for as */

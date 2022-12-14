@@ -468,4 +468,15 @@ void MatrixC::input_raw_M(std::istream &input, Matrix<T> &M) const {
 
 } /* namespace fmesh */
 
+#ifdef FMESHER_WITH_R
+namespace Rcpp {
+
+template<>
+inline SEXP wrap(const fmesh::MatrixC& obj) {
+  return obj.Rcpp_wrap();
+}
+
+}
+#endif
+
 #endif
