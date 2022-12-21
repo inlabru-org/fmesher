@@ -38,7 +38,7 @@ fm_not_for_PROJ6 <- function(fun = NULL) {
   ))
 }
 
-#' @describeIn inlabru-deprecated `fm_not_for_PROJ4` is called to give an error when
+#' @describeIn fmesher-deprecated `fm_not_for_PROJ4` is called to give an error when
 #' calling methods that are only available for PROJ6
 
 fm_not_for_PROJ4 <- function(fun = NULL) {
@@ -48,7 +48,7 @@ fm_not_for_PROJ4 <- function(fun = NULL) {
   )
 }
 
-#' @describeIn inlabru-deprecated Called to warn about falling back
+#' @describeIn fmesher-deprecated Called to warn about falling back
 #' to using old PROJ4 methods when a PROJ6 method hasn't been implemented
 
 fm_fallback_PROJ6 <- function(fun = NULL) {
@@ -61,7 +61,7 @@ fm_fallback_PROJ6 <- function(fun = NULL) {
 
 #' @param fun The name of the function that requires PROJ6. Default: NULL,
 #' which uses the name of the calling function.
-#' @describeIn inlabru-deprecated Called to give an error when PROJ6
+#' @describeIn fmesher-deprecated Called to give an error when PROJ6
 #' is required but not available
 
 fm_requires_PROJ6 <- function(fun = NULL) {
@@ -1952,7 +1952,7 @@ fm_transform.inla.mesh.segment <- function(x, crs = fm_crs(x), ..., passthrough 
 
 # fm_spTransform ----
 
-#' @describeIn inlabru-deprecated Handle transformation of various inla objects according to coordinate
+#' @describeIn fmesher-deprecated Handle transformation of various inla objects according to coordinate
 #' reference systems of sp::CRS or INLA::inla.CRS class.
 #'
 #' @param x
@@ -1976,7 +1976,7 @@ fm_spTransform <- function(x, ...) {
   UseMethod("fm_spTransform")
 }
 
-#' @describeIn inlabru-deprecated The default method handles low level transformation of raw
+#' @describeIn fmesher-deprecated The default method handles low level transformation of raw
 #' coordinates.
 #' @export
 fm_spTransform.default <- function(x, crs0 = NULL, crs1 = NULL, passthrough = FALSE, ...) {
@@ -1984,13 +1984,13 @@ fm_spTransform.default <- function(x, crs0 = NULL, crs1 = NULL, passthrough = FA
 }
 
 #' @export
-#' @rdname inlabru-deprecated
+#' @rdname fmesher-deprecated
 fm_spTransform.SpatialPoints <- function(x, CRSobj, passthrough = FALSE, ...) {
   fm_transform(x, crs = CRSobj, passthrough = passthrough)
 }
 
 #' @export
-#' @rdname inlabru-deprecated
+#' @rdname fmesher-deprecated
 fm_spTransform.SpatialPointsDataFrame <- function(x,
                                                   CRSobj,
                                                   passthrough = FALSE,
@@ -1999,19 +1999,19 @@ fm_spTransform.SpatialPointsDataFrame <- function(x,
 }
 
 #' @export
-#' @rdname inlabru-deprecated
+#' @rdname fmesher-deprecated
 fm_spTransform.inla.mesh.lattice <- function(x, CRSobj, passthrough = FALSE, ...) {
   fm_transform(x, crs = CRSobj, passthrough = passthrough)
 }
 
 #' @export
-#' @rdname inlabru-deprecated
+#' @rdname fmesher-deprecated
 fm_spTransform.inla.mesh.segment <- function(x, CRSobj, passthrough = FALSE, ...) {
   fm_transform(x, crs = CRSobj, passthrough = passthrough)
 }
 
 #' @export
-#' @rdname inlabru-deprecated
+#' @rdname fmesher-deprecated
 fm_spTransform.inla.mesh <- function(x, CRSobj, passthrough = FALSE, ...) {
   fm_transform(x, crs = CRSobj, passthrough = passthrough)
 }
