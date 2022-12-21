@@ -154,7 +154,7 @@ fm_safe_inla <- function(multicore = NULL,
     if (is.null(multicore)) {
       multicore <-
         !identical(Sys.getenv("TESTTHAT"), "true") ||
-        interactive()
+          interactive()
     }
     if (!multicore) {
       n.t <- INLA::inla.getOption("num.threads")
@@ -183,8 +183,3 @@ fm_safe_inla <- function(multicore = NULL,
     FALSE
   }
 }
-
-
-
-
-

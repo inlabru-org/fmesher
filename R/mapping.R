@@ -154,12 +154,13 @@ globeproj <- function(type = NULL,
     orient <- c(orient, 0)
   }
 
-  x <- structure(list(
-    name = name, type = type,
-    orient = orient,
-    xlim = xlim, ylim = ylim, scale = scale
-  ),
-  class = "globeproj"
+  x <- structure(
+    list(
+      name = name, type = type,
+      orient = orient,
+      xlim = xlim, ylim = ylim, scale = scale
+    ),
+    class = "globeproj"
   )
   .validobject(x)
   x
@@ -212,17 +213,18 @@ plot_PolySet <- function(x, projection, add = FALSE, ...) {
   coords <- project(projection, cbind(x$X, x$Y))
   proj <-
     sp::SpatialLines(list(sp::Lines(
-      unlist(lapply(
-        unique(x$PID),
-        function(k) {
-          .clip(
-            projection,
-            coords[sum(x$PID < k) +
-              x$POS[x$PID == k], , drop = FALSE]
-          )
-        }
-      ),
-      recursive = FALSE
+      unlist(
+        lapply(
+          unique(x$PID),
+          function(k) {
+            .clip(
+              projection,
+              coords[sum(x$PID < k) +
+                x$POS[x$PID == k], , drop = FALSE]
+            )
+          }
+        ),
+        recursive = FALSE
       ),
       ID = "shape"
     )))
@@ -333,16 +335,17 @@ setMethodS3(
 
       proj.mer <-
         sp::SpatialLines(list(sp::Lines(
-          unlist(lapply(
-            seq_along(lon),
-            function(k) {
-              .clip(x, cbind(
-                proj.mer.coords1[, k],
-                proj.mer.coords2[, k]
-              ))
-            }
-          ),
-          recursive = FALSE
+          unlist(
+            lapply(
+              seq_along(lon),
+              function(k) {
+                .clip(x, cbind(
+                  proj.mer.coords1[, k],
+                  proj.mer.coords2[, k]
+                ))
+              }
+            ),
+            recursive = FALSE
           ),
           ID = "meridians"
         )))
@@ -372,16 +375,17 @@ setMethodS3(
       )
       proj.par <-
         sp::SpatialLines(list(sp::Lines(
-          unlist(lapply(
-            seq_along(lat),
-            function(k) {
-              .clip(x, cbind(
-                proj.par.coords1[, k],
-                proj.par.coords2[, k]
-              ))
-            }
-          ),
-          recursive = FALSE
+          unlist(
+            lapply(
+              seq_along(lat),
+              function(k) {
+                .clip(x, cbind(
+                  proj.par.coords1[, k],
+                  proj.par.coords2[, k]
+                ))
+              }
+            ),
+            recursive = FALSE
           ),
           ID = "parallels"
         )))
