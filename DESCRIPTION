@@ -28,7 +28,6 @@ Imports:
     lifecycle,
     Matrix,
     rgeos,
-    rgdal,
     R.methodsS3,
     sf,
     sp (>= 1.4-5),
