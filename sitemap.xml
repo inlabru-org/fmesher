@@ -46,9 +46,6 @@
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_crs_wkt.html</loc>
   </url>
   <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_has_PROJ6.html</loc>
-  </url>
-  <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_identical_CRS.html</loc>
   </url>
   <url>
@@ -56,12 +53,6 @@
   </url>
   <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_safe_inla.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_spTransform.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_sp_get_crs.html</loc>
   </url>
   <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_transform.html</loc>
