@@ -13,5 +13,6 @@ _config.yml
 ^src/cmdline.c$
 ^vignettes/articles$
 ^Doxyfile$
+^Makefile-inla$
 ^src/Makefile-inla$
 ^src/gitstamp$
