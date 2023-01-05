@@ -77,28 +77,322 @@ Rcpp::List C_qinv(SEXP AA) {
   //  return Q.S();
 }
 
-//' @title Triangulate
+//' @title Globe points
 //'
 //' @description
-//' (currently used for general Rcpp testing)
+//' Create points on a globe
 //'
-//' @param globe Input argument list
+//' @param globe integer; the number of edge subdivision segments, 1 or higher
 //' @export
 // [[Rcpp::export]]
-Rcpp::List fmesher_triangulate(Rcpp::IntegerVector globe) {
+Rcpp::NumericMatrix fmesher_globe_points(Rcpp::IntegerVector globe) {
   MatrixC matrices;
-  std::vector<std::string> input_s0_names;
 
-  input_s0_names.push_back(string(".globe"));
   matrices.attach(
     ".globe",
     (Matrix<double> *)fmesh::make_globe_points(globe[0], 1.0),
     true);
-  FMLOG("globe points added." << std::endl);
+  FMLOG("globe points constructed." << std::endl);
 
-  matrices.output("-");
-  return Rcpp::wrap(matrices);
+  return Rcpp::wrap(matrices.DD(".globe"));
 }
+
+
+
+
+template <typename T>
+bool is_element(const Rcpp::List& list, std::string name) {
+  if (!list.containsElementNamed(name.c_str()))
+    return false;
+
+  if (Rf_isNull(list[name.c_str()]))
+    return false;
+
+  return Rcpp::is<T>(list[name.c_str()]);
+}
+
+
+class Options {
+public:
+  double cutoff;
+  double sphere_tolerance;
+  int cet_sides;
+  double cet_margin;
+  double rcdt_min_angle;
+  double rcdt_max_edge;
+  Matrix<double> quality;
+  int rcdt_max_n0;
+  int rcdt_max_n1;
+  bool rcdt;
+
+public:
+  Options(Rcpp::List& options, size_t rows) :
+    cutoff(1.0e-12),
+    sphere_tolerance(1.0e-7),
+    cet_sides(8),
+    cet_margin(-0.1),
+    rcdt_min_angle(21),
+    rcdt_max_edge(-1.0),
+    quality(1),
+    rcdt_max_n0(-1),
+    rcdt_max_n1(-1),
+    rcdt(true) {
+    if (is_element<Rcpp::NumericVector>(options, "cutoff"))
+      cutoff = options["cutoff"];
+    if (is_element<Rcpp::NumericVector>(options, "sphere_tolerance"))
+      sphere_tolerance = options["sphere_tolerance"];
+    if (is_element<Rcpp::IntegerVector>(options, "cet_sides"))
+      cet_sides = options["cet_sides"];
+    if (is_element<Rcpp::NumericVector>(options, "cet_margin"))
+      cet_margin = options["cet_margin"];
+    if (is_element<Rcpp::NumericVector>(options, "rcdt_min_angle"))
+      rcdt_min_angle = options["rcdt_min_angle"];
+    if (is_element<Rcpp::NumericVector>(options, "rcdt_max_edge"))
+      rcdt_max_edge = options["rcdt_max_edge"];
+    if (is_element<Rcpp::LogicalVector>(options, "rcdt"))
+      rcdt = options["rcdt"];
+
+    /* Construct quality info */
+    if (is_element<Rcpp::NumericVector>(options, "quality")) {
+      quality = Rcpp::as<Rcpp::NumericVector>(options["quality"]);
+      for (int r = quality.rows(); r < rows; r++)
+        quality(r, 0) = rcdt_max_edge;
+      quality.rows(rows); /* Make sure we have the right number of rows */
+    } else {
+      quality.rows(rows);
+      for (int r = 0; r < rows; r++)
+        quality(r, 0) = rcdt_max_edge;
+    }
+
+    if (is_element<Rcpp::IntegerVector>(options, "rcdt_max_n0"))
+      rcdt_max_n0 = options["rcdt_max_n0"];
+    if (is_element<Rcpp::IntegerVector>(options, "rcdt_max_n1"))
+      rcdt_max_n1 = options["rcdt_max_n1"];
+  };
+
+};
+
+
+
+//' @title Refined Constrained Delaunay Triangulation
+//'
+//' @description
+//' (...)
+//'
+//' @param loc numeric matrix; initial points to include
+//' @examples
+//' m <- fmesher_rcdt(list(), matrix(0, 1, 2))
+//' @export
+// [[Rcpp::export]]
+Rcpp::List fmesher_rcdt(Rcpp::List options,
+                        Rcpp::NumericMatrix loc,
+                        Rcpp::Nullable<Rcpp::IntegerMatrix> tv = R_NilValue,
+                        Rcpp::Nullable<Rcpp::IntegerMatrix> boundary = R_NilValue,
+                        Rcpp::Nullable<Rcpp::IntegerMatrix> interior = R_NilValue,
+                        Rcpp::Nullable<Rcpp::IntegerVector> boundary_grp = R_NilValue,
+                        Rcpp::Nullable<Rcpp::IntegerVector> interior_grp = R_NilValue) {
+  const bool useVT = true;
+  const bool useTTi = true;
+
+  MatrixC matrices;
+
+  matrices.attach("loc", new Matrix<double>(loc), true);
+  FMLOG("'loc' points imported." << std::endl);
+
+  Matrix<double>& iS0 = matrices.DD("loc");
+  Matrix<int>* TV0 = NULL;
+  if (!tv.isNull()) {
+    matrices.attach("tv0",
+                    new Matrix<double>(Rcpp::as<Rcpp::IntegerMatrix>(tv)),
+                    true);
+    FMLOG("'tv0' points imported." << std::endl);
+    TV0 = &matrices.DI("tv0");
+  }
+
+  Options rcdt_options(options, iS0.rows());
+
+  /* Prepare boundary/interior edges */
+  matrices.attach("boundary", new Matrix<int>(2), true);
+  matrices.attach("interior", new Matrix<int>(2), true);
+  matrices.attach("boundary_grp", new Matrix<int>(1), true);
+  matrices.attach("interior_grp", new Matrix<int>(1), true);
+  if (!boundary.isNull()) {
+    matrices.DI("boundary") = Rcpp::as<Rcpp::IntegerMatrix>(boundary);
+  }
+  if (!interior.isNull()) {
+    matrices.DI("interior") = Rcpp::as<Rcpp::IntegerMatrix>(interior);
+  }
+  if (!boundary_grp.isNull()) {
+    matrices.DI("boundary_grp") = Rcpp::as<Rcpp::IntegerMatrix>(boundary_grp);
+  } else {
+    matrices.DI("boundary_grp")(0, 0) = 1;
+  }
+  if (!interior_grp.isNull()) {
+    matrices.DI("interior_grp") = Rcpp::as<Rcpp::IntegerMatrix>(interior_grp);
+  } else {
+    matrices.DI("interior_grp")(0, 0) = 1;
+  }
+
+  constrListT cdt_boundary;
+  constrListT cdt_interior;
+  if (!boundary.isNull()) {
+    prepare_cdt_input(matrices.DI("boundary"),
+                      matrices.DI("boundary_grp"),
+                      cdt_boundary);
+  }
+  if (!interior.isNull()) {
+    prepare_cdt_input(matrices.DI("interior"),
+                      matrices.DI("interior_grp"),
+                      cdt_interior);
+  }
+
+  /* Prepare to filter out points at distance not greater than 'cutoff' */
+  matrices.attach("idx", new Matrix<int>(iS0.rows(), 1), true);
+  matrices.output("idx");
+  Matrix<int> &idx = matrices.DI("idx").clear();
+
+  filter_locations(iS0, idx, rcdt_options.cutoff);
+
+  /* Remap vertex input references */
+  if (TV0) {
+    remap_vertex_indices(idx, *TV0);
+  }
+  remap_vertex_indices(idx, cdt_boundary);
+  remap_vertex_indices(idx, cdt_interior);
+
+  /* Initialise mesh structure */
+  Mesh M(Mesh::Mtype_plane, 0, useVT, useTTi);
+  if ((iS0.rows() > 0) && (iS0.cols() < 2)) {
+    /* 1D data. Not implemented */
+    FMLOG("1D data not implemented." << std::endl);
+    return Rcpp::List();
+  }
+
+  if (iS0.rows() > 0) {
+    Matrix3double S0(iS0); /* Make sure we have a Nx3 matrix. */
+    M.S_append(S0);
+  }
+
+  //  double sphere_tolerance = 1e-10;
+  (void)M.auto_type(rcdt_options.sphere_tolerance);
+
+  if (TV0) {
+    M.TV_set(*TV0);
+  }
+
+  matrices.attach(string("s"), &M.S(), false);
+  matrices.attach("tv", &M.TV(), false);
+  matrices.output("s").output("tv");
+
+  MeshC MC(&M);
+  MC.setOptions(MC.getOptions() | MeshC::Option_offcenter_steiner);
+
+  if ((M.type() != Mesh::Mtype_plane) &&
+      (M.type() != Mesh::Mtype_sphere)) {
+    if (M.nT() == 0) {
+      FMLOG_(
+        "Points not in the plane or on a sphere, and triangulation empty."
+        << std::endl);
+    }
+    /* Remove everything outside the boundary segments, if any. */
+    MC.PruneExterior();
+    invalidate_unused_vertex_indices(M, idx);
+    /* Nothing more to do here.  Cannot refine non R2/S2 meshes. */
+  } else {
+    /* If we don't already have a triangulation, we must create one. */
+    if (M.nT() == 0) {
+      MC.CET(rcdt_options.cet_sides, rcdt_options.cet_margin);
+    }
+
+    /* It is more robust to add the constraints before the rest of the
+     nodes are added.  This allows points to fall onto constraint
+     segments, subdividing them as needed. */
+    if (cdt_boundary.size() > 0)
+      MC.CDTBoundary(cdt_boundary);
+    if (cdt_interior.size() > 0)
+      MC.CDTInterior(cdt_interior);
+
+    /* Add the rest of the nodes. */
+    vertexListT vertices;
+    for (size_t v = 0; v < iS0.rows(); v++)
+      vertices.push_back(v);
+
+    MC.DT(vertices);
+
+    /* Remove everything outside the boundary segments, if any. */
+    MC.PruneExterior();
+    invalidate_unused_vertex_indices(M, idx);
+
+    if ((rcdt_options.rcdt) &&
+        (rcdt_options.rcdt_max_edge > 0)) {
+      /* Calculate the RCDT: */
+      MC.RCDT(rcdt_options.rcdt_min_angle,
+              rcdt_options.rcdt_max_edge,
+              rcdt_options.quality.raw(),
+              rcdt_options.quality.rows(),
+              rcdt_options.rcdt_max_n0,
+              rcdt_options.rcdt_max_n1);
+      FMLOG(MC << endl);
+    }
+    /* Done constructing the triangulation. */
+
+    /* Calculate and collect output. */
+
+    matrices.attach("segm.bnd.idx", new Matrix<int>(2), true,
+                    fmesh::IOMatrixtype_general);
+    matrices.attach("segm.bnd.grp", new Matrix<int>(1), true,
+                    fmesh::IOMatrixtype_general);
+    MC.segments(true,
+                &matrices.DI("segm.bnd.idx"),
+                &matrices.DI("segm.bnd.grp"));
+
+    matrices.output("segm.bnd.idx").output("segm.bnd.grp");
+
+    matrices.attach("segm.int.idx", new Matrix<int>(2), true,
+                    fmesh::IOMatrixtype_general);
+    matrices.attach("segm.int.grp", new Matrix<int>(1), true,
+                    fmesh::IOMatrixtype_general);
+    MC.segments(false, &matrices.DI("segm.int.idx"),
+                &matrices.DI("segm.int.grp"));
+
+    matrices.output("segm.int.idx").output("segm.int.grp");
+  }
+
+  matrices.attach("tt", &M.TT(), false);
+  M.useVT(true);
+  matrices.attach("vt", &M.VT(), false);
+  M.useTTi(true);
+  matrices.attach("tti", &M.TTi(), false);
+  matrices.attach("vv", new SparseMatrix<int>(M.VV()), true,
+                  fmesh::IOMatrixtype_symmetric);
+
+  matrices.output("tt").output("tti").output("vt").output("vv");
+
+//  FMLOG("Manifold output." << std::endl);
+//  /* Output the manifold type. */
+//  matrices.attach("manifold", new Matrix<int>(1), true,
+//                  fmesh::IOMatrixtype_general);
+//  Matrix<int> &manifold = matrices.DI("manifold");
+//  manifold(0, 0) = M.type();
+//  matrices.output("manifold");
+
+  Rcpp::List out = Rcpp::wrap(matrices);
+
+  switch (M.type()) {
+  case Mesh::Mtype_manifold:
+    out["manifold"] = "M2";
+    break;
+  case Mesh::Mtype_plane:
+    out["manifold"] = "R2";
+    break;
+  case Mesh::Mtype_sphere:
+    out["manifold"] = "S2";
+    break;
+  }
+
+  return out;
+}
+
 
 //' Test the matrix I/O system
 //'
@@ -122,6 +416,7 @@ Rcpp::List C_matrixio_test(Rcpp::List args_input) {
   Rcpp::IntegerMatrix Bi = Rcpp::as<Rcpp::IntegerMatrix>(args_input["Bi"]);
   Rcpp::NumericVector B1d = Rcpp::as<Rcpp::NumericVector>(args_input["B1d"]);
   Rcpp::IntegerVector B1i = Rcpp::as<Rcpp::IntegerVector>(args_input["B1i"]);
+
 
   fmesh::Matrix<double> Bdd = Bd;
   fmesh::Matrix<int> Bdi(Bd);

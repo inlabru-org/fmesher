@@ -150,6 +150,44 @@ public:
       sphere_radius_ = S_(0).length();
     }
   };
+
+  Mtype determine_type(double sphere_tolerance) {
+    bool issphere = false;
+    bool isflat = false;
+    isflat = (std::fabs((*this).S(0)[2]) < 1.0e-10);
+    double radius = (*this).S(0).length();
+    issphere = (radius > sphere_tolerance);
+    for (size_t i = 1; i < (*this).nV(); i++) {
+      isflat = (isflat && (std::fabs((*this).S(i)[2]) < 1.0e-10));
+      if (issphere) {
+        issphere =
+          (std::fabs((*this).S(i).length() / radius - 1.0) < sphere_tolerance);
+      }
+    }
+    if (isflat) {
+      return Mtype_plane;
+    } else if (issphere) {
+      return Mtype_sphere;
+    } else {
+      return Mtype_manifold;
+    }
+  }
+
+
+  Mtype auto_type(double sphere_tolerance) {
+    Mtype mtype = determine_type(sphere_tolerance);
+    (*this).type(mtype);
+    if (mtype == fmesh::Mesh::Mtype_sphere) {
+      // The radius argument gives a default radius,
+      // used only if there are no points.
+      sphere_radius(1.0);
+    }
+    return mtype;
+  }
+
+
+
+
   size_t nV() const { return S_.rows(); };
   size_t nT() const { return TV_.rows(); };
   const Matrix3int &TV() const { return TV_; };

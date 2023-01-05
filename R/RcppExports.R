@@ -8,15 +8,28 @@ C_qinv <- function(AA) {
     .Call(`_fmesher_C_qinv`, AA)
 }
 
-#' @title Triangulate
+#' @title Globe points
 #'
 #' @description
-#' (currently used for general Rcpp testing)
+#' Create points on a globe
 #'
-#' @param globe Input argument list
+#' @param globe integer; the number of edge subdivision segments, 1 or higher
 #' @export
-fmesher_triangulate <- function(globe) {
-    .Call(`_fmesher_fmesher_triangulate`, globe)
+fmesher_globe_points <- function(globe) {
+    .Call(`_fmesher_fmesher_globe_points`, globe)
+}
+
+#' @title Refined Constrained Delaunay Triangulation
+#'
+#' @description
+#' (...)
+#'
+#' @param loc numeric matrix; initial points to include
+#' @examples
+#' m <- fmesher_rcdt(list(), matrix(0, 1, 2))
+#' @export
+fmesher_rcdt <- function(options, loc, tv = NULL, boundary = NULL, interior = NULL, boundary_grp = NULL, interior_grp = NULL) {
+    .Call(`_fmesher_fmesher_rcdt`, options, loc, tv, boundary, interior, boundary_grp, interior_grp)
 }
 
 #' Test the matrix I/O system

@@ -22,14 +22,31 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// fmesher_triangulate
-Rcpp::List fmesher_triangulate(Rcpp::IntegerVector globe);
-RcppExport SEXP _fmesher_fmesher_triangulate(SEXP globeSEXP) {
+// fmesher_globe_points
+Rcpp::NumericMatrix fmesher_globe_points(Rcpp::IntegerVector globe);
+RcppExport SEXP _fmesher_fmesher_globe_points(SEXP globeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type globe(globeSEXP);
-    rcpp_result_gen = Rcpp::wrap(fmesher_triangulate(globe));
+    rcpp_result_gen = Rcpp::wrap(fmesher_globe_points(globe));
+    return rcpp_result_gen;
+END_RCPP
+}
+// fmesher_rcdt
+Rcpp::List fmesher_rcdt(Rcpp::List options, Rcpp::NumericMatrix loc, Rcpp::Nullable<Rcpp::IntegerMatrix> tv, Rcpp::Nullable<Rcpp::IntegerMatrix> boundary, Rcpp::Nullable<Rcpp::IntegerMatrix> interior, Rcpp::Nullable<Rcpp::IntegerVector> boundary_grp, Rcpp::Nullable<Rcpp::IntegerVector> interior_grp);
+RcppExport SEXP _fmesher_fmesher_rcdt(SEXP optionsSEXP, SEXP locSEXP, SEXP tvSEXP, SEXP boundarySEXP, SEXP interiorSEXP, SEXP boundary_grpSEXP, SEXP interior_grpSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type options(optionsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type loc(locSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::IntegerMatrix> >::type tv(tvSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::IntegerMatrix> >::type boundary(boundarySEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::IntegerMatrix> >::type interior(interiorSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::IntegerVector> >::type boundary_grp(boundary_grpSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::IntegerVector> >::type interior_grp(interior_grpSEXP);
+    rcpp_result_gen = Rcpp::wrap(fmesher_rcdt(options, loc, tv, boundary, interior, boundary_grp, interior_grp));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -47,7 +64,8 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_fmesher_C_qinv", (DL_FUNC) &_fmesher_C_qinv, 1},
-    {"_fmesher_fmesher_triangulate", (DL_FUNC) &_fmesher_fmesher_triangulate, 1},
+    {"_fmesher_fmesher_globe_points", (DL_FUNC) &_fmesher_fmesher_globe_points, 1},
+    {"_fmesher_fmesher_rcdt", (DL_FUNC) &_fmesher_fmesher_rcdt, 7},
     {"_fmesher_C_matrixio_test", (DL_FUNC) &_fmesher_C_matrixio_test, 1},
     {NULL, NULL, 0}
 };
