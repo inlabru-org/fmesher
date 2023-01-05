@@ -61,7 +61,10 @@
     <loc>https://inlabru-org.github.io/fmesher/reference/fmesher-deprecated.html</loc>
   </url>
   <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fmesher_triangulate.html</loc>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fmesher_globe_points.html</loc>
+  </url>
+  <url>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fmesher_rcdt.html</loc>
   </url>
   <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/globeproj.html</loc>

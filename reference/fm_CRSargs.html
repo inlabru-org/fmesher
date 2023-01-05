@@ -16,7 +16,7 @@ see fm_wkt() for a new approach."><!-- mathjax --><script src="https://cdnjs.clo
     
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.7.9004</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.7.9005</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -135,18 +135,14 @@ name/value pairs.</p>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> No replacement available.</span>
 <span class="r-in"><span><span class="va">lst</span> <span class="op">&lt;-</span> <span class="fu">fm_CRSargs_as_list</span><span class="op">(</span><span class="va">p4s</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">crs1</span> <span class="op">&lt;-</span> <span class="fu">fm_list_as_CRS</span><span class="op">(</span><span class="va">lst</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'fm_CRS' should be given a SRS_string for PROJ6 or a known keyword for a</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   predefined string given in projargs. Using 'fm_crs()' workaround.</span>
 <span class="r-in"><span><span class="va">lst</span><span class="op">$</span><span class="va">a</span> <span class="op">&lt;-</span> <span class="fl">2</span></span></span>
 <span class="r-in"><span><span class="va">crs2</span> <span class="op">&lt;-</span> <span class="fu"><a href="fm_CRS_sp.html">fm_CRS</a></span><span class="op">(</span><span class="va">p4s</span>, args <span class="op">=</span> <span class="va">lst</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'fm_CRS' should be given a SRS_string for PROJ6 or a known keyword for a</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   predefined string given in projargs. Using 'fm_crs()' workaround.</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu">fm_CRSargs</span><span class="op">(</span><span class="va">crs0</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "+proj=longlat +R=1 +no_defs"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] NA</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu">fm_CRSargs</span><span class="op">(</span><span class="va">crs1</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "+proj=longlat +R=1 +no_defs"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] NA</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu">fm_CRSargs</span><span class="op">(</span><span class="va">crs2</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "+proj=longlat +R=1 +no_defs"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] NA</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
