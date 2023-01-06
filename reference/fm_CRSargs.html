@@ -135,14 +135,18 @@ name/value pairs.</p>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> No replacement available.</span>
 <span class="r-in"><span><span class="va">lst</span> <span class="op">&lt;-</span> <span class="fu">fm_CRSargs_as_list</span><span class="op">(</span><span class="va">p4s</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">crs1</span> <span class="op">&lt;-</span> <span class="fu">fm_list_as_CRS</span><span class="op">(</span><span class="va">lst</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'fm_CRS' should be given a SRS_string for PROJ6 or a known keyword for a</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   predefined string given in projargs. Using 'fm_crs()' workaround.</span>
 <span class="r-in"><span><span class="va">lst</span><span class="op">$</span><span class="va">a</span> <span class="op">&lt;-</span> <span class="fl">2</span></span></span>
 <span class="r-in"><span><span class="va">crs2</span> <span class="op">&lt;-</span> <span class="fu"><a href="fm_CRS_sp.html">fm_CRS</a></span><span class="op">(</span><span class="va">p4s</span>, args <span class="op">=</span> <span class="va">lst</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'fm_CRS' should be given a SRS_string for PROJ6 or a known keyword for a</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   predefined string given in projargs. Using 'fm_crs()' workaround.</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu">fm_CRSargs</span><span class="op">(</span><span class="va">crs0</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "+proj=longlat +R=1 +no_defs"</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu">fm_CRSargs</span><span class="op">(</span><span class="va">crs1</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "+proj=longlat +R=1 +no_defs"</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu">fm_CRSargs</span><span class="op">(</span><span class="va">crs2</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "+proj=longlat +R=1 +no_defs"</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
