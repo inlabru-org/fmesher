@@ -24,7 +24,15 @@ fmesher_globe_points <- function(globe) {
 #' @description
 #' (...)
 #'
+#' @param options list of triangulation options
 #' @param loc numeric matrix; initial points to include
+#' @param tv 3-column integer matrix with 0-based vertex indices for each triangle
+#' @param boundary 2-column integer matrix with 0-based vertex indices for each
+#' boundary edge constrain
+#' @param interior 2-column integer matrix with 0-based vertex indices for each
+#' interior edge constraint
+#' @param boundary_grp integer vector with group lables
+#' @param interior_grp integer vector with group labels
 #' @examples
 #' m <- fmesher_rcdt(list(), matrix(0, 1, 2))
 #' @export

@@ -75,6 +75,7 @@ local_fm_safe_inla <- function(multicore = FALSE,
 #' @export
 local_fm_testthat_setup <- function(envir = parent.frame()) {
   # Nothing to do yet
+  invisible()
 }
 
 

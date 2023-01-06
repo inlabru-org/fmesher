@@ -15,7 +15,21 @@ fmesher_rcdt(
 )
 }
 \arguments{
+\item{options}{list of triangulation options}
+
 \item{loc}{numeric matrix; initial points to include}
+
+\item{tv}{3-column integer matrix with 0-based vertex indices for each triangle}
+
+\item{boundary}{2-column integer matrix with 0-based vertex indices for each
+boundary edge constrain}
+
+\item{interior}{2-column integer matrix with 0-based vertex indices for each
+interior edge constraint}
+
+\item{boundary_grp}{integer vector with group lables}
+
+\item{interior_grp}{integer vector with group labels}
 }
 \description{
 (...)
