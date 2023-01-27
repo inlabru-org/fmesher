@@ -27,7 +27,6 @@ Imports:
     grDevices,
     lifecycle,
     Matrix,
-    rgeos,
     R.methodsS3,
     sf,
     sp (>= 1.4-5),
