@@ -270,6 +270,7 @@ setMethodS3(
         )),
         ID = "box"
       )))
+    thebox <- sf::st_as_sfc(thebox)
     if (x$type %in% c("longlat", "orthocyl")) {
       theoutline <- thebox
     } else if (x$type %in% c("mollweide", "hammer")) {
@@ -285,8 +286,10 @@ setMethodS3(
           )),
           ID = "boundary"
         )))
-      theoutline <- rgeos::gIntersection(theboundary, thebox)
+      theboundary <- sf::st_as_sfc(theboundary)
+      theoutline <- sf::st_intersection(theboundary, thebox)
     }
+    theoutline <- sf::as_Spatial(theoutline)
     if (do.plot) {
       if (add) {
         sp::plot(theoutline, add = TRUE, ...)

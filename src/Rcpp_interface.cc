@@ -402,6 +402,91 @@ Rcpp::List fmesher_rcdt(Rcpp::List options,
 }
 
 
+
+
+//' @title Barycentric coordinate computation
+//'
+//' @description
+//' (...)
+//'
+//' @param options list of triangulation options
+//' @param loc numeric matrix; initial points to include
+//' @param tv 3-column integer matrix with 0-based vertex indices for each triangle
+//' @param boundary 2-column integer matrix with 0-based vertex indices for each
+//' boundary edge constrain
+//' @param interior 2-column integer matrix with 0-based vertex indices for each
+//' interior edge constraint
+//' @param boundary_grp integer vector with group lables
+//' @param interior_grp integer vector with group labels
+//' @examples
+//' m <- fmesher_rcdt(list(), matrix(0, 1, 2))
+//' @export
+// [[Rcpp::export]]
+Rcpp::List fmesher_bary(Rcpp::NumericMatrix loc,
+                        Rcpp::NumericMatrix mesh_loc,
+                        Rcpp::IntegerMatrix mesh_tv,
+                        Rcpp::List options) {
+  const bool useVT = true;
+  const bool useTTi = true;
+
+  MatrixC matrices;
+
+  matrices.attach("loc", new Matrix<double>(loc), true);
+  FMLOG("'loc' points imported." << std::endl);
+  matrices.attach("mesh_loc", new Matrix<double>(mesh_loc), true);
+  FMLOG("'mesh_loc' points imported." << std::endl);
+  matrices.attach("mesh_tv", new Matrix<int>(mesh_tv), true);
+  FMLOG("'mesh_tv' points imported." << std::endl);
+
+  Matrix<double>& points2mesh = matrices.DD("loc");
+  Matrix<double>& iS0 = matrices.DD("mesh_loc");
+  Matrix<int>& TV0 = matrices.DI("mesh_tv");
+
+  Options rcdt_options(options, iS0.rows());
+
+  /* Initialise mesh structure */
+  Mesh M(Mesh::Mtype_plane, 0, useVT, useTTi);
+  if ((iS0.rows() > 0) && (iS0.cols() < 2)) {
+    /* 1D data. Not implemented */
+    FMLOG("1D data not implemented." << std::endl);
+    return Rcpp::List();
+  }
+
+  if (iS0.rows() > 0) {
+    Matrix3double S0(iS0); /* Make sure we have a Nx3 matrix. */
+    M.S_append(S0);
+  }
+
+  //  double sphere_tolerance = 1e-10;
+  (void)M.auto_type(rcdt_options.sphere_tolerance);
+
+  M.TV_set(TV0);
+
+  FMLOG("barycentric coordinate output." << std::endl);
+  if ((M.type() != Mesh::Mtype_plane) &&
+      (M.type() != Mesh::Mtype_sphere)) {
+    FMLOG_("Cannot calculate points2mesh mapping for non R2/S2 manifolds"
+             << std::endl);
+    return Rcpp::List();
+  }
+
+  size_t points_n = points2mesh.rows();
+  Matrix<int> &points2mesh_t =
+    matrices.attach(string("t"), new Matrix<int>(points_n, 1), true);
+  Matrix<double> &points2mesh_b = matrices.attach(
+    string("bary"), new Matrix<double>(points_n, 3), true);
+  matrices.matrixtype("t", fmesh::IOMatrixtype_general);
+  matrices.matrixtype("bary", fmesh::IOMatrixtype_general);
+  matrices.output("t").output("bary");
+
+  map_points_to_mesh(M, points2mesh, points2mesh_t, points2mesh_b);
+
+  return Rcpp::wrap(matrices);
+}
+
+
+
+
 //' Test the matrix I/O system
 //'
 //' @param args_input Input argument list

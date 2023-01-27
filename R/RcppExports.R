@@ -40,6 +40,27 @@ fmesher_rcdt <- function(options, loc, tv = NULL, boundary = NULL, interior = NU
     .Call(`_fmesher_fmesher_rcdt`, options, loc, tv, boundary, interior, boundary_grp, interior_grp)
 }
 
+#' @title Barycentric coordinate computation
+#'
+#' @description
+#' (...)
+#'
+#' @param options list of triangulation options
+#' @param loc numeric matrix; initial points to include
+#' @param tv 3-column integer matrix with 0-based vertex indices for each triangle
+#' @param boundary 2-column integer matrix with 0-based vertex indices for each
+#' boundary edge constrain
+#' @param interior 2-column integer matrix with 0-based vertex indices for each
+#' interior edge constraint
+#' @param boundary_grp integer vector with group lables
+#' @param interior_grp integer vector with group labels
+#' @examples
+#' m <- fmesher_rcdt(list(), matrix(0, 1, 2))
+#' @export
+fmesher_bary <- function(loc, mesh_loc, mesh_tv, options) {
+    .Call(`_fmesher_fmesher_bary`, loc, mesh_loc, mesh_tv, options)
+}
+
 #' Test the matrix I/O system
 #'
 #' @param args_input Input argument list

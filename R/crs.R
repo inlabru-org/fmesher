@@ -5,8 +5,7 @@
 #' @export
 
 fm_has_PROJ6 <- function() {
-  # TODO: deprecate_warn
-  lifecycle::deprecate_stop("0.0.1",
+  lifecycle::deprecate_warn("0.0.1",
     "fm_has_PROJ6()",
     details = c(
       i = "Since inlabru 2.7.1, fm_has_PROJ6() always returns TRUE",
@@ -102,7 +101,7 @@ fm_as_sp_crs <- function(x, ...) {
 
 fm_sp_get_crs <- function(x) {
   # TODO: deprecate_warn
-  lifecycle::deprecate_stop("2.7.1", "fm_sp_get_crs()", "fm_CRS()")
+  lifecycle::deprecate_warn("2.7.1", "fm_sp_get_crs()", "fm_CRS()")
   fm_CRS(x)
 }
 
@@ -890,9 +889,7 @@ fm_crs.inla.mesh.segment <- function(x, ..., crsonly = FALSE) {
 #' `sp::CRS`, or 2) an existing `CRS` object, or 3) a shortcut
 #' reference string to a predefined projection; run
 #' `names(fm_wkt_predef())` for valid predefined projections.
-#' @param doCheckCRSArgs default TRUE, must be set to FALSE by package
-#' developers including `CRS` in an S4 class definition to avoid
-#' uncontrollable loading of the `rgdal` namespace.
+#' @param doCheckCRSArgs ignored.
 #' @param args An optional list of name/value pairs to add to and/or override
 #' the PROJ4 arguments in `projargs`.  `name=value` is converted to
 #' `"+name=value"`, and `name=NA` is converted to `"+name"`.
@@ -1018,7 +1015,7 @@ fm_CRS.CRS <- function(x, oblique = NULL,
 
 #' @export
 #' @rdname fm_CRS_sp
-fm_CRS.default <- function(projargs = NULL, doCheckCRSArgs = TRUE,
+fm_CRS.default <- function(projargs = NULL, doCheckCRSArgs = NULL,
                            args = NULL, oblique = NULL,
                            SRS_string = NULL,
                            ...) {
@@ -1074,7 +1071,7 @@ fm_CRS.default <- function(projargs = NULL, doCheckCRSArgs = TRUE,
   } else if (inherits(projargs, "CRS")) {
     x <- projargs
   } else {
-    x <- sp::CRS(NA_character_, doCheckCRSArgs = doCheckCRSArgs)
+    x <- sp::CRS(NA_character_)
   }
 
   if (!is.null(oblique)) {
