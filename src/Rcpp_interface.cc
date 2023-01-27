@@ -189,7 +189,7 @@ public:
 //' @param boundary_grp integer vector with group lables
 //' @param interior_grp integer vector with group labels
 //' @examples
-//' m <- fmesher_rcdt(list(), matrix(0, 1, 2))
+//' m <- fmesher_rcdt(list(cet_margin = 1), matrix(0, 1, 2))
 //' @export
 // [[Rcpp::export]]
 Rcpp::List fmesher_rcdt(Rcpp::List options,
@@ -409,17 +409,16 @@ Rcpp::List fmesher_rcdt(Rcpp::List options,
 //' @description
 //' (...)
 //'
+//' @param loc numeric matrix; coordinates of points to locate in the mesh
+//' @param mesh_loc numeric matrix; mesh vertex coordinates
+//' @param mesh_tv 3-column integer matrix with 0-based vertex indices for each triangle
 //' @param options list of triangulation options
-//' @param loc numeric matrix; initial points to include
-//' @param tv 3-column integer matrix with 0-based vertex indices for each triangle
-//' @param boundary 2-column integer matrix with 0-based vertex indices for each
-//' boundary edge constrain
-//' @param interior 2-column integer matrix with 0-based vertex indices for each
-//' interior edge constraint
-//' @param boundary_grp integer vector with group lables
-//' @param interior_grp integer vector with group labels
 //' @examples
-//' m <- fmesher_rcdt(list(), matrix(0, 1, 2))
+//' m <- fmesher_rcdt(list(cet_margin = 1), matrix(0, 1, 2))
+//' b <- fmesher_bary(matrix(c(0.5, 0.5), 1, 2),
+//'                   m$s,
+//'                   m$tv,
+//'                   list())
 //' @export
 // [[Rcpp::export]]
 Rcpp::List fmesher_bary(Rcpp::NumericMatrix loc,

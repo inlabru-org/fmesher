@@ -35,5 +35,5 @@ interior edge constraint}
 (...)
 }
 \examples{
-m <- fmesher_rcdt(list(), matrix(0, 1, 2))
+m <- fmesher_rcdt(list(cet_margin = 1), matrix(0, 1, 2))
 }

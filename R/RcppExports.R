@@ -34,7 +34,7 @@ fmesher_globe_points <- function(globe) {
 #' @param boundary_grp integer vector with group lables
 #' @param interior_grp integer vector with group labels
 #' @examples
-#' m <- fmesher_rcdt(list(), matrix(0, 1, 2))
+#' m <- fmesher_rcdt(list(cet_margin = 1), matrix(0, 1, 2))
 #' @export
 fmesher_rcdt <- function(options, loc, tv = NULL, boundary = NULL, interior = NULL, boundary_grp = NULL, interior_grp = NULL) {
     .Call(`_fmesher_fmesher_rcdt`, options, loc, tv, boundary, interior, boundary_grp, interior_grp)
@@ -45,17 +45,16 @@ fmesher_rcdt <- function(options, loc, tv = NULL, boundary = NULL, interior = NU
 #' @description
 #' (...)
 #'
+#' @param loc numeric matrix; coordinates of points to locate in the mesh
+#' @param mesh_loc numeric matrix; mesh vertex coordinates
+#' @param mesh_tv 3-column integer matrix with 0-based vertex indices for each triangle
 #' @param options list of triangulation options
-#' @param loc numeric matrix; initial points to include
-#' @param tv 3-column integer matrix with 0-based vertex indices for each triangle
-#' @param boundary 2-column integer matrix with 0-based vertex indices for each
-#' boundary edge constrain
-#' @param interior 2-column integer matrix with 0-based vertex indices for each
-#' interior edge constraint
-#' @param boundary_grp integer vector with group lables
-#' @param interior_grp integer vector with group labels
 #' @examples
-#' m <- fmesher_rcdt(list(), matrix(0, 1, 2))
+#' m <- fmesher_rcdt(list(cet_margin = 1), matrix(0, 1, 2))
+#' b <- fmesher_bary(matrix(c(0.5, 0.5), 1, 2),
+#'                   m$s,
+#'                   m$tv,
+#'                   list())
 #' @export
 fmesher_bary <- function(loc, mesh_loc, mesh_tv, options) {
     .Call(`_fmesher_fmesher_bary`, loc, mesh_loc, mesh_tv, options)

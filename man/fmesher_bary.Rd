@@ -7,25 +7,21 @@
 fmesher_bary(loc, mesh_loc, mesh_tv, options)
 }
 \arguments{
-\item{loc}{numeric matrix; initial points to include}
+\item{loc}{numeric matrix; coordinates of points to locate in the mesh}
+
+\item{mesh_loc}{numeric matrix; mesh vertex coordinates}
+
+\item{mesh_tv}{3-column integer matrix with 0-based vertex indices for each triangle}
 
 \item{options}{list of triangulation options}
-
-\item{tv}{3-column integer matrix with 0-based vertex indices for each triangle}
-
-\item{boundary}{2-column integer matrix with 0-based vertex indices for each
-boundary edge constrain}
-
-\item{interior}{2-column integer matrix with 0-based vertex indices for each
-interior edge constraint}
-
-\item{boundary_grp}{integer vector with group lables}
-
-\item{interior_grp}{integer vector with group labels}
 }
 \description{
 (...)
 }
 \examples{
-m <- fmesher_rcdt(list(), matrix(0, 1, 2))
+m <- fmesher_rcdt(list(cet_margin = 1), matrix(0, 1, 2))
+b <- fmesher_bary(matrix(c(0.5, 0.5), 1, 2),
+                  m$s,
+                  m$tv,
+                  list())
 }
