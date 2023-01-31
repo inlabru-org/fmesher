@@ -230,4 +230,31 @@ void split_line_segments_on_triangles(
     Matrix<double> &loc1, Matrix<int> &idx1, Matrix<int> &triangle1,
     Matrix<double> &bary1, Matrix<double> &bary2, Matrix<int> &origin1);
 
+#ifdef FMESHER_WITH_R
+class UserInterruptChecker {
+private:
+  int frequency;
+  int counter;
+public:
+  UserInterruptChecker(int freq) : frequency(freq), counter(0) {};
+  void check() {
+    if (counter % frequency == 0) {
+      Rcpp::checkUserInterrupt();
+    }
+    counter++;
+  };
+};
+
+#define FMESHER_R_INTERRUPT_CHECKER(freq)                      \
+  UserInterruptChecker r_interrupt_check(freq);
+#define FMESHER_R_INTERRUPT_CHECK                              \
+  r_interrupt_check.check();
+
+#endif
+#ifndef FMESHER_WITH_R
+#define FMESHER_R_INTERRUPT_CHECKER(freq)
+#define FMESHER_R_INTERRUPT_CHECK
+#endif
+
+
 #endif

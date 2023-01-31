@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "fmesher_debuglog.h"
+#include "fmesher_helpers.h"
 #include "meshc.h"
 #include "predicates.h"
 
@@ -2036,9 +2037,12 @@ bool MeshC::buildCDT() {
   bool M_useVT = M_->useVT();
   M_->useVT(true);
 
+  FMESHER_R_INTERRUPT_CHECKER(10000);
+
   constrListT::iterator ci_next;
   for (constrListT::iterator ci = constr_boundary_.begin();
        ci != constr_boundary_.end();) {
+    FMESHER_R_INTERRUPT_CHECK;
     FMLOG("Trying to add boundary segment: " << ci->first.first << ","
                                              << ci->first.second << " group="
                                              << ci->second << endl);
@@ -2055,6 +2059,7 @@ bool MeshC::buildCDT() {
   }
   for (constrListT::iterator ci = constr_interior_.begin();
        ci != constr_interior_.end();) {
+    FMESHER_R_INTERRUPT_CHECK;
     FMLOG("Trying to add interior segment: " << ci->first.first << ","
                                              << ci->first.second << " group="
                                              << ci->second << endl);
@@ -2113,8 +2118,11 @@ bool MeshC::buildRCDT() {
 
   Dart dh;
 
+  FMESHER_R_INTERRUPT_CHECKER(10000);
+
   while (!(boundary_.emptyQ() && interior_.emptyQ() && skinny_.emptyQ() &&
            big_.emptyQ())) {
+    FMESHER_R_INTERRUPT_CHECK;
 
     FMLOG("RCDT: (Bo,In,Sk,Bi) = ("
           << boundary_.countQ() << "," << interior_.countQ() << ","
