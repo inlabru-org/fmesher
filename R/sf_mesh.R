@@ -2,7 +2,7 @@
 #' @rdname fm_as
 #' @param ... Arguments passed on to other methods
 #' @export
-fm_as_sfc <- function(x) {
+fm_as_sfc <- function(x, ...) {
   UseMethod("fm_as_sfc")
 }
 
@@ -27,19 +27,33 @@ fm_as_inla_mesh <- function(...) {
 #' @returns * `fm_as_sfc`: An `sfc_MULTIPOLYGON` object
 #' @exportS3Method fm_as_sfc inla.mesh
 #' @export
-fm_as_sfc.inla.mesh <- function(x, ...) {
+fm_as_sfc.inla.mesh <- function(x, ..., multi = FALSE) {
   stopifnot(inherits(x, "inla.mesh"))
-  geom <- sf::st_geometry(
-    sf::st_multipolygon(
+  if (multi) {
+    geom <- sf::st_sfc(
+      sf::st_multipolygon(
+        lapply(
+          seq_len(nrow(x$graph$tv)),
+          function(k) {
+            list(x$loc[x$graph$tv[k, c(1, 2, 3, 1)], , drop = FALSE])
+          }
+        ),
+        dim = "XYZ"
+      )
+    )
+  } else {
+    geom <- sf::st_sfc(
       lapply(
         seq_len(nrow(x$graph$tv)),
         function(k) {
-          list(x$loc[x$graph$tv[k, c(1, 2, 3, 1)], , drop = FALSE])
+          sf::st_polygon(
+            list(x$loc[x$graph$tv[k, c(1, 2, 3, 1)], , drop = FALSE]),
+            dim = "XYZ"
+          )
         }
-      ),
-      dim = "XYZ"
+      )
     )
-  )
+  }
   sf::st_crs(geom) <- fm_crs(x$crs)
   geom
 }
@@ -53,7 +67,7 @@ fm_as_sfc.inla.mesh <- function(x, ...) {
 fm_as_inla_mesh.sfc_MULTIPOLYGON <- function(x, ...) {
   if (length(x) > 1) {
     warning("More than one MULTIPOLYGON detected, but conversion method only uses one.",
-      immediate. = TRUE
+            immediate. = TRUE
     )
   }
   tv <- matrix(seq_len(3 * length(x[[1]])), length(x[[1]]), 3, byrow = TRUE)
@@ -63,7 +77,34 @@ fm_as_inla_mesh.sfc_MULTIPOLYGON <- function(x, ...) {
       x[[1]],
       function(xx) {
         if ((length(xx) > 1) ||
-          (nrow(xx[[1]]) > 4)) {
+            (nrow(xx[[1]]) > 4)) {
+          stop("Invalid geometry; non-triangle detected.")
+        }
+        xx[[1]][1:3, , drop = FALSE]
+      }
+    )
+  )
+  crs <- fm_CRS(sf::st_crs(x))
+  mesh <- INLA::inla.mesh.create(
+    loc = loc, tv = tv, ...,
+    crs = crs
+  )
+  mesh
+}
+
+#' @rdname fm_as
+#' @aliases fm_as_inla_mesh fm_as_inla_mesh.sfc_POLYGON
+#'
+#' @export
+fm_as_inla_mesh.sfc_POLYGON <- function(x, ...) {
+  tv <- matrix(seq_len(3 * NROW(x)), NROW(x), 3, byrow = TRUE)
+  loc <- do.call(
+    rbind,
+    lapply(
+      x,
+      function(xx) {
+        if ((length(xx) > 1) ||
+            (nrow(xx[[1]]) > 4)) {
           stop("Invalid geometry; non-triangle detected.")
         }
         xx[[1]][1:3, , drop = FALSE]
