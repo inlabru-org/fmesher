@@ -95,6 +95,9 @@ fm_sp2segment(sp, ...)
 
 \item{...}{Arguments passed on to other methods}
 
+\item{multi}{logical; if \code{TRUE}, attempt to a \code{sfc_MULTIPOLYGON}, otherwise
+a set of \code{sfc_POLYGON}. Default \code{FALSE}}
+
 \item{reverse}{logical; When TRUE, reverse the order of the input points.
 Default \code{FALSE}}
 
@@ -117,7 +120,7 @@ Default: \code{FALSE}}
 }
 \value{
 \itemize{
-\item \code{fm_as_sfc}: An \code{sfc_MULTIPOLYGON} object
+\item \code{fm_as_sfc}: An \code{sfc_MULTIPOLYGON} or \code{sfc_POLYGON} object
 }
 
 \itemize{

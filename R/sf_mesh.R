@@ -24,7 +24,9 @@ fm_as_inla_mesh <- function(...) {
 #' @aliases fm_as_sfc fm_as_sfc.inla.mesh
 #'
 #' @param x An object to be coerced/transformed/converted into another class
-#' @returns * `fm_as_sfc`: An `sfc_MULTIPOLYGON` object
+#' @param multi logical; if `TRUE`, attempt to a `sfc_MULTIPOLYGON`, otherwise
+#' a set of `sfc_POLYGON`. Default `FALSE`
+#' @returns * `fm_as_sfc`: An `sfc_MULTIPOLYGON` or `sfc_POLYGON` object
 #' @exportS3Method fm_as_sfc inla.mesh
 #' @export
 fm_as_sfc.inla.mesh <- function(x, ..., multi = FALSE) {
