@@ -20,9 +20,12 @@ Suggests:
     INLA (>= 22.11.28),
     testthat (>= 3.0.0),
     covr,
+    ggplot2,
     knitr,
+    rgl,
     rmarkdown
 Imports:
+    dplyr,
     graphics,
     grDevices,
     lifecycle,
