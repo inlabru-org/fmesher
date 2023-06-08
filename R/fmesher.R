@@ -43,33 +43,21 @@ fm_qinv <- function(A) {
 
 
 # Convert loc information to raw matrix coordinates for the mesh
-fm_get_native_loc <- function(mesh, loc, crs = NULL) {
-  # Support INLA <= 22.11.27 by converting globes to spheres
-  # TODO: Handle the > 22.11.27 more efficiently
-
+fm_onto_mesh <- function(mesh, loc, crs = NULL) {
   if (!is.matrix(loc) && !fm_crs_is_null(crs)) {
     warning("loc is non-matrix but crs specified; will be ignored")
   }
-  if (inherits(loc, c("SpatialPoints", "SpatialPointsDataFrame"))) {
-    crs <- fm_crs(loc)
-  } else if (inherits(loc, c("sf", "sfc", "sfg"))) {
+  if (inherits(loc, c("SpatialPoints", "SpatialPointsDataFrame",
+                      "sf", "sfc", "sfg"))) {
     crs <- fm_crs(loc)
   }
   mesh_crs <- fm_crs(mesh)
-  if (fm_crs_is_null(crs)) {
-    crs <- fm_crs(mesh)
-  }
 
-  if (!fm_crs_is_null(mesh_crs)) {
+  loc_needs_normalisation <- FALSE
+  if (!fm_crs_is_null(crs) && !fm_crs_is_null(mesh_crs)) {
     if (fm_crs_is_geocent(mesh_crs)) {
       if (!is.matrix(loc)) {
         if (!fm_identical_CRS(crs, mesh_crs)) {
-          loc <- fm_transform(loc, crs = mesh_crs, crs0 = crs)
-        }
-      } else {
-        if (fm_crs_is_null(crs)) {
-          loc <- loc / rowSums(loc^2)^0.5
-        } else {
           loc <- fm_transform(loc, crs = mesh_crs, crs0 = crs)
         }
       }
@@ -77,7 +65,7 @@ fm_get_native_loc <- function(mesh, loc, crs = NULL) {
       loc <- fm_transform(loc, crs = mesh_crs, crs0 = crs, passthrough = TRUE)
     }
   } else if (identical(mesh$manifold, "S2")) {
-    loc <- loc / rowSums(loc^2)^0.5
+    loc_needs_normalisation <- TRUE
   }
 
   if (inherits(loc, c("SpatialPoints", "SpatialPointsDataFrame"))) {
@@ -87,6 +75,18 @@ fm_get_native_loc <- function(mesh, loc, crs = NULL) {
     c_names <- colnames(loc)
     c_names <- intersect(c_names, c("X", "Y", "Z"))
     loc <- loc[, c_names, drop = FALSE]
+  } else if (!is.matrix(loc)) {
+    warning(
+      paste0(
+        "Unclear if the 'loc' class ('",
+        paste0(class(loc), collapse = "', '"),
+        "') is of a type we know how to handle."
+      ),
+      immediate. = TRUE
+    )
+  }
+  if (loc_needs_normalisation) {
+    loc <- loc / rowSums(loc^2)^0.5 * mean(rowSums(mesh$loc^2)^0.5)
   }
 
   loc
@@ -119,7 +119,14 @@ fm_bary <- function(mesh, loc, crs = NULL) {
       mesh <- fm_transform(mesh, crs = crs.sphere)
     }
   }
-  loc <- fm_get_native_loc(mesh, loc, crs = crs)
+  loc <- fm_onto_mesh(mesh, loc, crs = crs)
+
+  # Avoid sphere accuracy issues by scaling to unit sphere
+  scale <- 1
+  if (identical(mesh$manifold, "S2")) {
+    scale <- 1 / mean(rowSums(mesh$loc^2)^0.5)
+    loc <- loc / rowSums(loc^2)^0.5
+  }
 
   pre_ok_idx <-
     which(rowSums(matrix(is.na(as.vector(loc)),
@@ -127,7 +134,7 @@ fm_bary <- function(mesh, loc, crs = NULL) {
                          ncol = ncol(loc)
     )) == 0)
   result <- fmesher_bary(loc = loc[pre_ok_idx, , drop = FALSE],
-                         mesh_loc = mesh$loc,
+                         mesh_loc = mesh$loc * scale,
                          mesh_tv = mesh$graph$tv - 1L,
                          options = list())
   tri <- rep(NA_integer_, nrow(loc))

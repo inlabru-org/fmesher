@@ -2,20 +2,21 @@
 % Please edit documentation in R/integration.R
 \name{fm_int_inla_mesh}
 \alias{fm_int_inla_mesh}
-\alias{fm_int_inla_mesh.NULL}
+\alias{fm_int_inla_mesh_NULL}
 \alias{fm_int_inla_mesh.sf}
 \alias{fm_int_inla_mesh.sfc_POINT}
+\alias{fm_int_inla_mesh.sfc_MULTIPOINT}
 \alias{fm_int_inla_mesh.sfc_LINESTRING}
+\alias{fm_int_inla_mesh.sfc_MULTILINESTRING}
 \alias{fm_int_inla_mesh.sfc_POLYGON}
 \alias{fm_int_inla_mesh.sfc_MULTIPOLYGON}
-\alias{fm_int_inla_mesh.SpatialPoints}
-\alias{fm_int_inla_mesh.SpatialLines}
-\alias{fm_int_inla_mesh.SpatialPolygons}
+\alias{fm_int_inla_mesh.sfc_GEOMETRY}
+\alias{fm_int_inla_mesh.Spatial}
 \title{Subset integration on a mesh}
 \usage{
 fm_int_inla_mesh(samplers, domain, name = NULL, int.args = NULL, ...)
 
-\method{fm_int_inla_mesh}{`NULL`}(samplers, domain, name = NULL, int.args = NULL, ...)
+fm_int_inla_mesh_NULL(samplers, domain, name = NULL, int.args = NULL, ...)
 
 \method{fm_int_inla_mesh}{sf}(samplers, domain, name = NULL, int.args = NULL, ...)
 
@@ -28,7 +29,25 @@ fm_int_inla_mesh(samplers, domain, name = NULL, int.args = NULL, ...)
   ...
 )
 
+\method{fm_int_inla_mesh}{sfc_MULTIPOINT}(
+  samplers,
+  domain,
+  name = NULL,
+  int.args = NULL,
+  .weight = rep(1, NROW(samplers)),
+  ...
+)
+
 \method{fm_int_inla_mesh}{sfc_LINESTRING}(
+  samplers,
+  domain,
+  name = NULL,
+  int.args = NULL,
+  .weight = rep(1, NROW(samplers)),
+  ...
+)
+
+\method{fm_int_inla_mesh}{sfc_MULTILINESTRING}(
   samplers,
   domain,
   name = NULL,
@@ -55,11 +74,23 @@ fm_int_inla_mesh(samplers, domain, name = NULL, int.args = NULL, ...)
   ...
 )
 
-\method{fm_int_inla_mesh}{SpatialPoints}(samplers, domain, name = NULL, int.args = NULL, ...)
+\method{fm_int_inla_mesh}{sfc_GEOMETRY}(
+  samplers,
+  domain,
+  name = NULL,
+  int.args = NULL,
+  .weight = rep(1, NROW(samplers)),
+  ...
+)
 
-\method{fm_int_inla_mesh}{SpatialLines}(samplers, domain, name = NULL, int.args = NULL, ...)
-
-\method{fm_int_inla_mesh}{SpatialPolygons}(samplers, domain, name = NULL, int.args = NULL, ...)
+\method{fm_int_inla_mesh}{Spatial}(
+  samplers,
+  domain,
+  name = NULL,
+  int.args = NULL,
+  format = NULL,
+  ...
+)
 }
 \arguments{
 \item{samplers}{For single domain \code{fm_int} methods, an object specifying one or more
@@ -74,36 +105,56 @@ of domains}
 \item{name}{For single-domain methods, the variable name to use for the
 integration points. Default 'x'}
 
-\item{int.args}{A list of integration options}
+\item{int.args}{List of arguments passed to line and integration methods.
+\itemize{
+\item \code{method}: "stable" (to aggregate integration weights onto mesh nodes)
+or "direct" (to construct a within triangle/segment integration scheme
+without aggregating onto mesh nodes)
+\item \code{nsub1}, \code{nsub2}: integers controlling the number of internal integration
+points before aggregation. Points per triangle: \code{(nsub2+1)^2}.
+Points per knot segment: \code{nsub1}
+}}
 
 \item{...}{Additional arguments passed on to other methods}
 
 \item{.weight}{Optional weight vector for \verb{sfc_*} integration}
 
+\item{format}{character; determines the output format, as either "sf"
+(default when the sampler is \code{NULL}) or "sp". When \code{NULL}, determined by
+the sampler type.}
+
 \item{.block}{Optional block grouping vector for \verb{sfc_*} integration}
+}
+\value{
+An \code{sf} point object with columns \code{weight} and \code{.block}
 }
 \description{
 Integration methods for spatial samplers on \code{inla.mesh} meshes.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{fm_int_inla_mesh(`NULL`)}: Full domain integration
-
 \item \code{fm_int_inla_mesh(sf)}: \code{sf} integration
 
 \item \code{fm_int_inla_mesh(sfc_POINT)}: \code{sfc_POINT} integration
 
+\item \code{fm_int_inla_mesh(sfc_MULTIPOINT)}: \code{sfc_MULTIPOINT} integration
+
 \item \code{fm_int_inla_mesh(sfc_LINESTRING)}: \code{sfc_LINESTRING} integration
+
+\item \code{fm_int_inla_mesh(sfc_MULTILINESTRING)}: \code{sfc_MULTILINESTRING} integration
 
 \item \code{fm_int_inla_mesh(sfc_POLYGON)}: \code{sfc_POLYGON} integration
 
 \item \code{fm_int_inla_mesh(sfc_MULTIPOLYGON)}: \code{sfc_MULTIPOLYGON} integration
 
-\item \code{fm_int_inla_mesh(SpatialPoints)}: SpatialPoints integration
+\item \code{fm_int_inla_mesh(sfc_GEOMETRY)}: \code{sfc_GEOMERY} integration
 
-\item \code{fm_int_inla_mesh(SpatialLines)}: SpatialLines integration
+\item \code{fm_int_inla_mesh(Spatial)}: \code{Spatial} integration
 
-\item \code{fm_int_inla_mesh(SpatialPolygons)}: SpatialPolygons integration
+}}
+\section{Functions}{
+\itemize{
+\item \code{fm_int_inla_mesh_NULL()}: Full domain integration
 
 }}
 \keyword{internal}

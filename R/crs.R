@@ -100,7 +100,7 @@ fm_as_sp_crs <- function(x, ...) {
 #' @export
 
 fm_sp_get_crs <- function(x) {
-  lifecycle::deprecate_warn("2.7.1", "fm_sp_get_crs()", "fm_CRS()")
+  lifecycle::deprecate_warn("0.0.1", "fm_sp_get_crs()", "fm_CRS()")
   fm_CRS(x)
 }
 
@@ -119,6 +119,7 @@ fm_crs_is_null <- function(crs) {
 #' @title Handling CRS/WKT
 #' @description Get and set CRS object or WKT string properties.
 #' @export
+#' @name fm_crs_wkt
 #' @rdname fm_crs_wkt
 
 fm_wkt_is_geocent <- function(wkt) {
@@ -768,14 +769,17 @@ fm_crs.character <- function(x, ..., crsonly = FALSE) {
   predef <- fm_wkt_predef()
   if (x %in% names(predef)) {
     x <- predef[[x]]
-    # Would like nicer proj4string/input display.
-    # Possible approach: sf::st_crs(as(sf::st_crs(x), "CRS"))
-    # Borrowing from the sf::CRS_from_crs code:
-    y <- sf::st_crs(x, ...)
-    x <- y$proj4string
-    if (is.na(x)) {
-      return(y)
-    }
+  }
+  if (identical(x, "")) {
+    x <- NA_character_
+  }
+  y <- sf::st_crs(x, ...)
+  # Would like nicer proj4string/input display.
+  # Possible approach: sf::st_crs(as(sf::st_crs(x), "CRS"))
+  # Borrowing from the sf::CRS_from_crs code:
+  x <- y$proj4string
+  if (is.na(x) || identical(x, y$input)) {
+    return(y)
   }
   sf::st_crs(x, ...)
 }
@@ -800,7 +804,7 @@ fm_crs.SpatVector <- function(x, ..., crsonly = FALSE) {
   if (is.null(tcrs) || is.na(tcrs) || identical(tcrs, "")) {
     fm_crs()
   } else {
-    sf::st_crs(tcrs, ...)
+    fm_crs(tcrs, ...)
   }
 }
 
@@ -811,7 +815,7 @@ fm_crs.SpatRaster <- function(x, ..., crsonly = FALSE) {
   if (is.null(tcrs) || is.na(tcrs) || identical(tcrs, "")) {
     fm_crs()
   } else {
-    sf::st_crs(tcrs, ...)
+    fm_crs(tcrs, ...)
   }
 }
 
@@ -994,7 +998,7 @@ fm_CRS.inla.mesh.lattice <- function(x, ..., crsonly = FALSE) {
 
 #' @rdname fm_CRS_sp
 #' @export
-fm_CRS.inla.segment <- function(x, ..., crsonly = FALSE) {
+fm_CRS.inla.mesh.segment <- function(x, ..., crsonly = FALSE) {
   fm_CRS(x[["crs"]], ..., crsonly = crsonly)
 }
 
@@ -1258,7 +1262,7 @@ fm_wkt_tree_set_item <- function(x, item_tree, duplicate = 1) {
 #' @export
 #' @rdname fm_CRSargs
 fm_CRS_as_list <- function(x, ...) {
-  fm_CRSargs_as_list(fm_CRSargs(x))
+  fm_CRSargs_as_list(fm_proj4string(x))
 }
 
 
@@ -1273,7 +1277,7 @@ fm_list_as_CRS <- function(x, ...) {
 #' Wrappers for `sp::CRS` and `inla.CRS` objects to handle the
 #' coordinate reference system argument string.
 #' These methods should no longer be used with PROJ6/rgdal3;
-#' see [fm_wkt()] for a new approach.
+#' see [fm_wkt()] and [fm_proj4string()] for a new approach.
 #'
 #' @aliases fm_CRSargs fm_CRS_as_list fm_CRSargs_as_list fm_list_as_CRS
 #' fm_list_as_CRSargs
@@ -1296,26 +1300,18 @@ fm_list_as_CRS <- function(x, ...) {
 #' @examples
 #'
 #' crs0 <- fm_CRS("longlat")
-#' p4s <- fm_CRSargs(crs0)
+#' p4s <- fm_proj4string(crs0)
 #' lst <- fm_CRSargs_as_list(p4s)
 #' crs1 <- fm_list_as_CRS(lst)
 #' lst$a <- 2
 #' crs2 <- fm_CRS(p4s, args = lst)
-#' print(fm_CRSargs(crs0))
-#' print(fm_CRSargs(crs1))
-#' print(fm_CRSargs(crs2))
+#' print(fm_proj4string(crs0))
+#' print(fm_proj4string(crs1))
+#' print(fm_proj4string(crs2))
 fm_CRSargs <- function(x, ...) {
-  # TODO: deprecate_warn
-  lifecycle::deprecate_warn("2.7.1", "fm_CRSargs()", details = "No replacement available.")
+  lifecycle::deprecate_warn("2.7.0.9012", "fm_CRSargs()", "fm_proj4string()")
 
-  crs <- fm_crs(x, crsonly = TRUE)
-  if (is.na(crs)) {
-    return(NA_character_)
-  }
-  if (!identical(substr(crs$input, 1, 6), "+proj=")) {
-    stop("proj4 CRSargs not found in the crs object.")
-  }
-  crs$input
+  fm_proj4string(x)
 }
 
 
@@ -1370,18 +1366,30 @@ fm_CRSargs_as_list <- function(x, ...) {
 
 # fm_wkt ----
 
-#' @return For `fm_wkt`, WKT2 string.
+#' @describeIn fm_crs_wkt Returns a WKT2 string, for any input supported by [fm_crs()].
 #' @export
-#' @rdname fm_crs_wkt
 
 fm_wkt <- function(crs) {
   fm_crs(crs, crsonly = TRUE)$wkt
 }
 
+#' @describeIn fm_crs_wkt Returns a proj4 string, for any input supported by [fm_crs()].
+#' @export
+fm_proj4string <- function(crs) {
+  fm_crs(crs, crsonly = TRUE)$proj4string
+}
+
 #' @export
 #' @rdname fm_crs_wkt
 
-fm_crs_get_wkt <- fm_wkt
+fm_crs_get_wkt <- function(crs) {
+  lifecycle::deprecate_warn(
+    "2.7.0.9012",
+    "fm_crs_get_wkt()",
+    "fm_wkt()"
+  )
+  fm_wkt(crs)
+}
 
 
 fm_rotmat3213 <- function(rot) {
@@ -1604,12 +1612,21 @@ fm_internal_update_crs <- function(crs, newcrs, mismatch.allowed) {
 
 
 #' @title Check if two CRS objects are identical
-#' @param crs0,crs1 Two `sp::CRS` or `inla.CRS` objects to be compared.
-#' @param crsonly logical. If `TRUE` and any of `crs0` and `crs1` are `inla.CRS`
-#' objects, extract and compare only the `sp::CRS` objects. Default: `FALSE`
+#' @param crs0,crs1 Two `sf::crs`, `sp::CRS`, `fm_crs` or `inla.CRS` objects to be compared.
+#' @param crsonly logical. If `TRUE` and any of `crs0` and `crs1` are `fm_crs` or `inla.CRS`
+#' objects, extract and compare only the `sf::crs` or `sp::CRS` aspects. Default: `FALSE`
 #' @export
 #' @keywords internal
-
+#' @seealso [fm_crs()], [fm_CRS()]
+#' @examples
+#'
+#' crs0 <- crs1 <- fm_crs("longlat_globe")
+#' fm_crs_oblique(crs1) <- c(0, 90)
+#' print(c(
+#'   fm_identical_CRS(crs0, crs0),
+#'   fm_identical_CRS(crs0, crs1),
+#'   fm_identical_CRS(crs0, crs1, crsonly = TRUE)
+#' ))
 fm_identical_CRS <- function(crs0, crs1, crsonly = FALSE) {
   if (crsonly) {
     crs0 <- fm_crs(crs0, crsonly = TRUE)
@@ -1922,8 +1939,9 @@ fm_crs_detect_manifold <- function(crs) {
 
 #' @export
 #' @rdname fm_transform
-fm_transform.inla.mesh <- function(x, ...,
+fm_transform.inla.mesh <- function(x,
                                    crs = fm_crs(x),
+                                   ...,
                                    passthrough = FALSE,
                                    crs0 = fm_crs(x)) {
   x$loc <- fm_transform(x$loc, crs = crs, ..., crs0 = x$crs, passthrough = passthrough)

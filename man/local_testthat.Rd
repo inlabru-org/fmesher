@@ -2,12 +2,18 @@
 % Please edit documentation in R/local.R
 \name{local_testthat}
 \alias{local_testthat}
-\alias{local_testthat_assign}
+\alias{local_fm_testthat_assign}
+\alias{local_fm_testthat_tolerances}
 \alias{local_fm_safe_inla}
 \alias{local_fm_testthat_setup}
 \title{Unit test helpers}
 \usage{
-local_testthat_assign(x, values, envir = parent.frame())
+local_fm_testthat_assign(x, values, envir = parent.frame())
+
+local_fm_testthat_tolerances(
+  tolerances = c(1e-04, 0.01, 0.1),
+  envir = parent.frame()
+)
 
 local_fm_safe_inla(multicore = FALSE, quietly = TRUE, envir = parent.frame())
 
@@ -20,6 +26,8 @@ local_fm_testthat_setup(envir = parent.frame())
 
 \item{envir}{environment for exit handlers}
 
+\item{tolerances}{numeric vector of length 3; \verb{[lowtol, midtol, hitol]}}
+
 \item{multicore}{logical; if \code{TRUE}, multiple cores are allowed, and the
 INLA \code{num.threads} option is not checked or altered. Default: \code{FALSE}, multicore
 not allowed (used for examples and unit tests).}
@@ -30,10 +38,17 @@ always printed if the INLA \code{num.threads} option is altered, regardless of t
 }
 \description{
 Local helper functions for package unit tests
+
+Local helper functions for package unit tests
 }
 \section{Functions}{
 \itemize{
-\item \code{local_testthat_assign()}: Assign local variable. Useful for easy cleanup
+\item \code{local_fm_testthat_assign()}: Assign local variable. Useful for easy cleanup
+of global workspace with \code{withr::deferred_run()} when running tests
+interactively.
+
+\item \code{local_fm_testthat_tolerances()}: Assign test tolerances
+Assign local tolerance variables. Useful for easy cleanup
 of global workspace with \code{withr::deferred_run()} when running tests
 interactively.
 

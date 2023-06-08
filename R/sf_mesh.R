@@ -41,7 +41,8 @@ fm_as_sfc.inla.mesh <- function(x, ..., multi = FALSE) {
           }
         ),
         dim = "XYZ"
-      )
+      ),
+      check_ring_dir = TRUE
     )
   } else {
     geom <- sf::st_sfc(
@@ -69,9 +70,12 @@ fm_as_sfc.inla.mesh <- function(x, ..., multi = FALSE) {
 fm_as_inla_mesh.sfc_MULTIPOLYGON <- function(x, ...) {
   if (length(x) > 1) {
     warning("More than one MULTIPOLYGON detected, but conversion method only uses one.",
-            immediate. = TRUE
+      immediate. = TRUE
     )
   }
+  # Ensure correct CCW ring orientation; sf doesn't take into account
+  # that geos has CW as canonical orientation
+  x <- sf::st_sfc(x, check_ring_dir = TRUE)
   tv <- matrix(seq_len(3 * length(x[[1]])), length(x[[1]]), 3, byrow = TRUE)
   loc <- do.call(
     rbind,
@@ -79,7 +83,7 @@ fm_as_inla_mesh.sfc_MULTIPOLYGON <- function(x, ...) {
       x[[1]],
       function(xx) {
         if ((length(xx) > 1) ||
-            (nrow(xx[[1]]) > 4)) {
+          (nrow(xx[[1]]) > 4)) {
           stop("Invalid geometry; non-triangle detected.")
         }
         xx[[1]][1:3, , drop = FALSE]
@@ -99,6 +103,9 @@ fm_as_inla_mesh.sfc_MULTIPOLYGON <- function(x, ...) {
 #'
 #' @export
 fm_as_inla_mesh.sfc_POLYGON <- function(x, ...) {
+  # Ensure correct CCW ring orientation; sf doesn't take into account
+  # that geos has CW as canonical orientation
+  sfc <- sf::st_sfc(x, check_ring_dir = TRUE)
   tv <- matrix(seq_len(3 * NROW(x)), NROW(x), 3, byrow = TRUE)
   loc <- do.call(
     rbind,
@@ -106,7 +113,7 @@ fm_as_inla_mesh.sfc_POLYGON <- function(x, ...) {
       x,
       function(xx) {
         if ((length(xx) > 1) ||
-            (nrow(xx[[1]]) > 4)) {
+          (nrow(xx[[1]]) > 4)) {
           stop("Invalid geometry; non-triangle detected.")
         }
         xx[[1]][1:3, , drop = FALSE]
@@ -223,7 +230,9 @@ fm_as_inla_mesh_segment.sfc_LINESTRING <-
 #' @export
 fm_as_inla_mesh_segment.sfc_POLYGON <-
   function(x, join = TRUE, grp = NULL, ...) {
-    sfc <- x
+    # Ensure correct CCW ring orientation; sf doesn't take into account
+    # that geos has CW as canonical orientation
+    sfc <- sf::st_sfc(x, check_ring_dir = TRUE)
     crs <- sf::st_crs(sfc)
     crs <- fm_CRS(crs) # required for INLA::inla.mesh.segment
 
@@ -234,15 +243,66 @@ fm_as_inla_mesh_segment.sfc_POLYGON <-
     for (k in seq_len(length(sfc))) {
       loc <- sf::st_coordinates(sfc[k])
       coord_names <- intersect(c("X", "Y", "Z"), colnames(loc))
-      Linfo <- loc[, "L2", drop = TRUE]
+      L1info <- loc[, "L1", drop = TRUE]
+      L2info <- loc[, "L2", drop = TRUE]
       loc <- unname(loc[, coord_names, drop = FALSE])
       # If winding directions are correct, all info is already available
       # For 3D, cannot check winding, so must assume correct.
       segm_k <-
         lapply(
-          unique(Linfo),
+          unique(L1info),
           function(i) {
-            subset <- which(Linfo == i)
+            subset <- which(L1info == i)
+            # sfc_POLYGON repeats the initial point within each L1
+            n <- length(subset) - 1
+            subset <- subset[-(n + 1)]
+            idx <- c(seq_len(n), 1L)
+            INLA::inla.mesh.segment(
+              loc = loc[subset, , drop = FALSE],
+              idx = idx,
+              grp = grp[k],
+              is.bnd = TRUE,
+              crs = crs
+            )
+          }
+        )
+      segm[[k]] <- fm_internal_sp2segment_join(segm_k)
+    }
+
+    if (join) {
+      segm <- fm_internal_sp2segment_join(segm, grp = grp)
+    }
+    segm
+  }
+
+#' @rdname fm_as
+#' @export
+fm_as_inla_mesh_segment.sfc_MULTIPOLYGON <-
+  function(x, join = TRUE, grp = NULL, ...) {
+    # Ensure correct CCW ring orientation; sf doesn't take into account
+    # that geos has CW as canonical orientation
+    sfc <- sf::st_sfc(x, check_ring_dir = TRUE)
+    crs <- sf::st_crs(sfc)
+    crs <- fm_CRS(crs) # required for INLA::inla.mesh.segment
+
+    segm <- list()
+    if (is.null(grp)) {
+      grp <- seq_len(length(sfc))
+    }
+    for (k in seq_len(length(sfc))) {
+      loc <- sf::st_coordinates(sfc[k])
+      coord_names <- intersect(c("X", "Y", "Z"), colnames(loc))
+      Linfo <- loc[, c("L1", "L2"), drop = FALSE]
+      loc <- unname(loc[, coord_names, drop = FALSE])
+      # If winding directions are correct, all info is already available
+      # For 3D, cannot check winding, so must assume correct.
+      uniqueLinfo <- unique(Linfo)
+      segm_k <-
+        lapply(
+          seq_len(nrow(uniqueLinfo)),
+          function(i) {
+            subset <- which((Linfo[, 1] == uniqueLinfo[i, 1]) &
+              (Linfo[, 2] == uniqueLinfo[i, 2]))
             # sfc_POLYGON repeats the initial point
             n <- length(subset) - 1
             subset <- subset[-(n + 1)]
@@ -267,10 +327,30 @@ fm_as_inla_mesh_segment.sfc_POLYGON <-
 
 #' @rdname fm_as
 #' @export
+fm_as_inla_mesh_segment.sfc_GEOMETRY <-
+  function(x, grp = NULL, join = TRUE, ...) {
+    if (is.null(grp)) {
+      grp <- seq_len(length(x))
+    }
+    segm <-
+      lapply(
+        seq_along(x),
+        function(k) {
+          fm_as_inla_mesh_segment(x[k], grp = grp[[k]], join = join, ...)
+        }
+      )
+    if (join) {
+      segm <- fm_internal_sp2segment_join(segm, grp = grp)
+    }
+    segm
+  }
+
+#' @rdname fm_as
+#' @export
 fm_as_inla_mesh_segment.sf <-
-  function(x, reverse = FALSE, grp = NULL, is.bnd = TRUE, ...) {
+  function(x, ...) {
     sfc <- sf::st_geometry(x)
-    fm_as_inla_mesh_segment(sfc)
+    fm_as_inla_mesh_segment(sfc, ...)
   }
 
 #' @rdname fm_as
@@ -278,5 +358,5 @@ fm_as_inla_mesh_segment.sf <-
 fm_as_inla_mesh.sf <-
   function(x, ...) {
     sfc <- sf::st_geometry(x)
-    fm_as_inla_mesh(sfc)
+    fm_as_inla_mesh(sfc, ...)
   }

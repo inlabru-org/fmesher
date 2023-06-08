@@ -85,7 +85,7 @@ if no \code{loc} or \code{lattice} is provided.
 
 }}
 \examples{
-if (bru_safe_inla()) {
+if (fm_safe_inla()) {
   n <- 20
   loc <- matrix(runif(n * 2), n, 2)
   mesh <- INLA::inla.mesh.create(loc, refine = list(max.edge = 0.05))
@@ -94,7 +94,7 @@ if (bru_safe_inla()) {
   image(proj$x, proj$y, fm_evaluate(proj, field))
 }
 \donttest{
-if (bru_safe_inla() &&
+if (fm_safe_inla() &&
   require(rgl)) {
   plot(mesh, rgl = TRUE, col = field, draw.edges = FALSE, draw.vertices = FALSE)
 }
