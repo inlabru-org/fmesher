@@ -28,6 +28,7 @@ Imports:
     lifecycle,
     Matrix,
     R.methodsS3,
+    rlang,
     sf,
     sp (>= 1.4-5),
     stats,
