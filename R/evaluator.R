@@ -116,7 +116,7 @@ fm_evaluator_inla_mesh <- function(mesh, loc = NULL, crs = NULL, ...) {
   stopifnot(inherits(mesh, "inla.mesh"))
 
   smorg <- fm_bary(mesh, loc = loc, crs = crs)
-  ti <- matrix(0L, nrow(loc), 1)
+  ti <- matrix(0L, NROW(loc), 1)
   ti[, 1L] <- smorg$t
   b <- smorg$bary
 
@@ -124,7 +124,7 @@ fm_evaluator_inla_mesh <- function(mesh, loc = NULL, crs = NULL, ...) {
 
   ii <- which(ok)
   A <- (Matrix::sparseMatrix(
-    dims = c(nrow(loc), mesh$n),
+    dims = c(NROW(loc), mesh$n),
     i = rep(ii, 3),
     j = as.vector(mesh$graph$tv[ti[ii, 1L], ]),
     x = as.vector(b[ii, ])
