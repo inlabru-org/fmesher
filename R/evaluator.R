@@ -111,7 +111,7 @@ fm_evaluator <- function(...) {
 fm_evaluator_inla_mesh <- function(mesh, loc = NULL, crs = NULL, ...) {
   stopifnot(inherits(mesh, "inla.mesh"))
 
-  smorg <- fm_bary(mesh, loc = loc)
+  smorg <- fm_bary(mesh, loc = loc, crs = crs)
   ti <- matrix(0L, nrow(loc), 1)
   ti[, 1L] <- smorg$t
   b <- smorg$bary
