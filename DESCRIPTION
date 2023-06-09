@@ -17,11 +17,12 @@ Description: Functions that generate planar and spherical triangle meshes for
 Depends:
     methods
 Suggests:
-    INLA (>= 22.11.28),
-    testthat (>= 3.0.0),
     covr,
     ggplot2,
+    INLA (>= 22.11.28),
+    inlabru,
     knitr,
+    testthat (>= 3.0.0),
     rgl,
     rmarkdown
 Imports:
@@ -59,3 +60,5 @@ LinkingTo:
     Rcpp
 VignetteBuilder: knitr
 BuildVignettes: true
+Remotes:
+    inlabru-org/inlabru@feature/fmesher

@@ -166,20 +166,3 @@ test_that("Conversion from Polygons to inla.mesh.segment", {
     )
   }
 })
-
-
-
-# if (FALSE) {
-#  # Testing for fmesher functions using sf objects.
-#  # For testing while editing code.  Eventually these will be the
-#  # basis for proper package tests.  For now should work
-#  # standalone by sourcing the relevant fmesher_*.R scripts directly
-#
-#  library(inlabru)
-#  library(INLA)
-#  library(sf)
-#  source(here::here("R", "fmesher_crs.R"))
-#  source(here::here("R", "sf_utils.R"))
-#  gorillas_sf <- readRDS(here::here("sf", "Data", "gorillas_sf.rds"))
-#
-# }

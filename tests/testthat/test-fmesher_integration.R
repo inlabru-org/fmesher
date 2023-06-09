@@ -80,6 +80,8 @@ test_that("Tensor space integration", {
 
 test_that("conversion of SpatialPolygon to integration points when domain is defined via a mesh", {
   local_fm_safe_inla()
+  skip_if_not_installed("inlabru")
+
   data(gorillas, package = "inlabru", envir = environment())
   ips <- fm_int(gorillas$mesh, gorillas$boundary)
 
@@ -93,6 +95,8 @@ test_that("conversion of SpatialPolygon to integration points when domain is def
 
 test_that("conversion of whole 2D mesh to integration points", {
   local_fm_safe_inla()
+  skip_if_not_installed("inlabru")
+
   data(gorillas, package = "inlabru", envir = environment())
 
   ips <- fm_int(gorillas$mesh, format = "sp")

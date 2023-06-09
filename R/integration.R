@@ -277,7 +277,8 @@ fm_cprod <- function(..., na.rm = NULL, .blockwise = FALSE) {
 #'   plot(ips)
 #'
 #'
-#'   if (require("ggplot2", quietly = TRUE)) {
+#'   if (require("ggplot2", quietly = TRUE) &&
+#'     require("inlabru", quietly = TRUE)) {
 #'     data("gorillas", package = "inlabru")
 #'     #' Integrate on a 2D mesh with polygon boundary subset
 #'     ips <- fm_int(gorillas$mesh, gorillas$boundary)
