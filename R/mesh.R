@@ -18,8 +18,7 @@
 #' @examples
 #' \donttest{
 #' if (require("ggplot2", quietly = TRUE) &&
-#'     require("inlabru", quietly = TRUE) &&
-#'     ) {
+#'     require("inlabru", quietly = TRUE)) {
 #'   data("mrsea", package = "inlabru")
 #'   pxl <- fm_pixels(mrsea$mesh,
 #'     nx = 50, ny = 50, mask = mrsea$boundary,
