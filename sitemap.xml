@@ -46,6 +46,9 @@
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_bary.html</loc>
   </url>
   <url>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fm_centroids.html</loc>
+  </url>
+  <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_contains.html</loc>
   </url>
   <url>
@@ -76,6 +79,12 @@
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_int_multi_sampler.html</loc>
   </url>
   <url>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fm_is_within.html</loc>
+  </url>
+  <url>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fm_pixels.html</loc>
+  </url>
+  <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_qinv.html</loc>
   </url>
   <url>
@@ -85,10 +94,16 @@
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_safe_sp.html</loc>
   </url>
   <url>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fm_store_points.html</loc>
+  </url>
+  <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_transform.html</loc>
   </url>
   <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_vertex_projection.html</loc>
+  </url>
+  <url>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fm_vertices.html</loc>
   </url>
   <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fmesher-deprecated.html</loc>
