@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   fmesher_library: fmesher_library.html
   basic_use: basic_use.html
-last_built: 2023-06-10T21:43Z
+last_built: 2023-06-10T22:16Z
 urls:
   reference: https://inlabru-org.github.io/fmesher/reference
   article: https://inlabru-org.github.io/fmesher/articles
