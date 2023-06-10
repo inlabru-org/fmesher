@@ -123,3 +123,30 @@ fm_try_callstack <- function(expr) {
   }
   invisible(result)
 }
+
+
+
+
+#' @importFrom methods as
+# Explicit import of something from Matrix to appease automated checks:
+#' @importFrom Matrix as.matrix
+
+fm_as_dgCMatrix <- function(x) {
+  if (inherits(x, "dgCMatrix")) {
+    x
+  } else {
+    as(as(as(x, "dMatrix"), "generalMatrix"), "CsparseMatrix")
+  }
+}
+
+fm_as_dgTMatrix <- function(x, unique = TRUE) {
+  if (unique) {
+    as(fm_as_dgCMatrix(x), "TsparseMatrix")
+  } else {
+    if (inherits(x, "dgTMatrix")) {
+      x
+    } else {
+      as(as(as(x, "dMatrix"), "generalMatrix"), "TsparseMatrix")
+    }
+  }
+}
