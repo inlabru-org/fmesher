@@ -16,15 +16,6 @@ Description: Functions that generate planar and spherical triangle meshes for
     package that will take over these features from the INLA package.
 Depends:
     methods
-Suggests:
-    covr,
-    ggplot2,
-    INLA (>= 22.11.28),
-    inlabru,
-    knitr,
-    testthat (>= 3.0.0),
-    rgl,
-    rmarkdown
 Imports:
     dplyr,
     graphics,
@@ -37,11 +28,20 @@ Imports:
     sp (>= 1.4-5),
     stats,
     terra,
-    tidyterra,
     tibble,
     utils,
     withr,
     Rcpp
+Suggests:
+    covr,
+    ggplot2,
+    INLA (>= 22.11.28),
+    inlabru,
+    knitr,
+    testthat (>= 3.0.0),
+    tidyterra,
+    rgl,
+    rmarkdown
 Additional_repositories: https://inla.r-inla-download.org/R/testing
 URL: https://inlabru-org.github.io/fmesher/
 BugReports: https://github.com/inlabru-org/fmesher/issues
