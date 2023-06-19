@@ -24,7 +24,7 @@ Queries whether each input point is within a mesh or not.
 }
 \examples{
 \dontrun{
-if (bru_safe_inla(quietly = TRUE)) {
+if (fm_safe_inla(quietly = TRUE)) {
   # Load Gorilla data
 
   data("gorillas", package = "inlabru")

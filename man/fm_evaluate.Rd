@@ -101,7 +101,7 @@ if (fm_safe_inla()) {
   image(proj$x, proj$y, fm_evaluate(proj, field))
 }
 \donttest{
-if (bru_safe_inla() &&
+if (fm_safe_inla() &&
   require("ggplot2") &&
   fm_safe_sp()) {
   ggplot() + gg(mesh, col = field)
