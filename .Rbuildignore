@@ -16,3 +16,4 @@ _config.yml
 ^Makefile-inla$
 ^src/Makefile-inla$
 ^src/gitstamp$
+^\.lintr$

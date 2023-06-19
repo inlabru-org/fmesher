@@ -35,9 +35,10 @@
 #'   image(proj$x, proj$y, fm_evaluate(proj, field))
 #' }
 #' \donttest{
-#' if (fm_safe_inla() &&
-#'   require(rgl)) {
-#'   plot(mesh, rgl = TRUE, col = field, draw.edges = FALSE, draw.vertices = FALSE)
+#' if (bru_safe_inla() &&
+#'   require("ggplot2") &&
+#'   fm_safe_sp()) {
+#'   ggplot() + gg(mesh, col = field)
 #' }
 #' }
 #'
