@@ -616,4 +616,7 @@ main() {
 }
 #endif
 
+#else
+/* ISO C requires a translation unit to contain at least one declaration [-Wempty-translation-unit] */
+void FMESHER_XTMPL_VOID() {}
 #endif

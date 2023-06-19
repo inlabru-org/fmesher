@@ -48,11 +48,18 @@ public:
   const_iterator const_end() const { return const_iterator(this, -1); };
 
   template <class RefT, class ContainerRefType>
-  class Iterator : public std::iterator<std::bidirectional_iterator_tag, T, int,
-                                        RefT *, RefT &> {
+  class Iterator {
 
     typedef Iterator<RefT, ContainerRefType> self_type;
     typedef SBBTree<T> TreeT;
+
+  public:
+    // iterator traits
+    using iterator_category = std::bidirectional_iterator_tag;
+    using value_type = T;
+    using difference_type = int;
+    using pointer = RefT *;
+    using reference = RefT &;
 
   protected:
     ContainerRefType *tree_;
@@ -149,9 +156,16 @@ public:
 }; // SBBTree
 
 template <class T, class ContainerType>
-class Search_iterator : public std::iterator<std::forward_iterator_tag, int,
-                                             int, const int *, const int &> {
+class Search_iterator {
   typedef Search_iterator<T, ContainerType> self_type;
+
+public:
+  // iterator traits
+  using iterator_category = std::forward_iterator_tag;
+  using value_type = int;
+  using difference_type = int;
+  using pointer = const int *;
+  using reference = const int &;
 
 protected:
   const ContainerType *C_;

@@ -72,8 +72,7 @@ public:
     std::ostream &print(std::ostream &output);
 
     /*! Container for the bbox search result iterator */
-    class Iterator : public std::iterator<std::forward_iterator_tag, T, int,
-                                          const T *, const T &> {
+    class Iterator {
       bool is_null_;
       const Search_tree_type *search_tree_;
       typename I_type::search_iterator I_;
@@ -97,6 +96,13 @@ public:
       }
 
     public:
+      // iterator traits
+      using iterator_category = std::forward_iterator_tag;
+      using value_type = T;
+      using difference_type = int;
+      using pointer = const T*;
+      using reference = const T&;
+
       Iterator(const Search_tree_type *search_tree, const std::vector<T> &loc);
       Iterator();
       ~Iterator();
