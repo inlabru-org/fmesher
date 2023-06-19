@@ -9,8 +9,7 @@ CXX_STD = CXX17
 PKG_CPPFLAGS= \
   -DFMESHER_WITH_R \
   -DNO_SPHERICAL_HARMONICS \
-  -DEIGEN_PERMANENTLY_DISABLE_STUPID_WARNINGS \
-  -Wdeprecated-declarations
+  -DEIGEN_PERMANENTLY_DISABLE_STUPID_WARNINGS
 #  -DFMESHER_WITH_GSL
 # PKG_CXXFLAGS=  -Wno-ignored-attributes -Wunknown-pragmas \
 # -Os -Wall -Wsign-compare -Wundef -fdiagnostics-color
