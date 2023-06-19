@@ -21,7 +21,7 @@ Extracts the vertices of an \code{inla.mesh} object.
 \examples{
 \donttest{
 if (require("ggplot2", quietly = TRUE) &&
-    require("inlabru", quietly = TRUE)) {
+  require("inlabru", quietly = TRUE)) {
   data("mrsea", package = "inlabru")
   vrt <- fm_vertices(mrsea$mesh, format = "sp")
   ggplot() +
