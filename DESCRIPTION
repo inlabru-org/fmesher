@@ -36,7 +36,7 @@ Suggests:
     covr,
     ggplot2,
     INLA (>= 22.11.28),
-    inlabru,
+    inlabru (>= 2.8.0),
     knitr,
     testthat (>= 3.0.0),
     tidyterra,
