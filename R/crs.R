@@ -19,22 +19,10 @@ fm_has_PROJ6 <- function() {
 #' features even though PROJ6 is available
 
 fm_not_for_PROJ6 <- function(fun = NULL) {
-  # TODO: deprecate_warn
-  lifecycle::deprecate_stop("2.7.1",
+  lifecycle::deprecate_stop("0.0.1",
     "fm_not_for_PROJ6()",
     details = c(x = "rgdal/PROJ4 is no longer supported.")
   )
-  fun <- fm_caller_name(1, fun)
-  msg <- paste0(
-    "Call stack:\n",
-    paste0(fm_call_stack(end = 1), collapse = "\n")
-  )
-  stop(paste0(
-    "'",
-    fun,
-    "()' should not be used with PROJ6 and rgdal v3\n",
-    msg
-  ))
 }
 
 #' @describeIn fmesher-deprecated `fm_not_for_PROJ4` is called to give an error when
@@ -66,9 +54,8 @@ fm_fallback_PROJ6 <- function(fun = NULL) {
 fm_requires_PROJ6 <- function(fun = NULL) {
   lifecycle::deprecate_stop("0.0.1",
     "fm_requires_PROJ6()",
-    details = c(x = "Now always returns TRUE. rgdal/PROJ4 is no longer supported.")
+    details = c(x = "rgdal/PROJ4 is no longer supported.")
   )
-  TRUE
 }
 
 
@@ -1311,7 +1298,7 @@ fm_list_as_CRS <- function(x, ...) {
 #' print(fm_proj4string(crs1))
 #' print(fm_proj4string(crs2))
 fm_CRSargs <- function(x, ...) {
-  lifecycle::deprecate_warn("2.7.0.9012", "fm_CRSargs()", "fm_proj4string()")
+  lifecycle::deprecate_warn("0.0.1", "fm_CRSargs()", "fm_proj4string()")
 
   fm_proj4string(x)
 }
@@ -1386,7 +1373,7 @@ fm_proj4string <- function(crs) {
 
 fm_crs_get_wkt <- function(crs) {
   lifecycle::deprecate_warn(
-    "2.7.0.9012",
+    "0.0.1",
     "fm_crs_get_wkt()",
     "fm_wkt()"
   )

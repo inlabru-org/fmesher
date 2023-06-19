@@ -1,5 +1,3 @@
-local_fm_testthat_setup()
-
 test_that("Basic CRS predefinitions", {
   expect_warning(
     {

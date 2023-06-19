@@ -18,7 +18,7 @@
 #' @examples
 #' \donttest{
 #' if (require("ggplot2", quietly = TRUE) &&
-#'     require("inlabru", quietly = TRUE)) {
+#'   require("inlabru", quietly = TRUE)) {
 #'   data("mrsea", package = "inlabru")
 #'   pxl <- fm_pixels(mrsea$mesh,
 #'     nx = 50, ny = 50, mask = mrsea$boundary,
@@ -224,8 +224,10 @@ fm_subdivide <- function(mesh, n = 1) {
 #' @export
 #' @keywords internal
 fm_store_points <- function(loc, crs = NULL, info = NULL, format = NULL) {
-  format <- match.arg(format,
-                      c("sf", "df", "sp"))
+  format <- match.arg(
+    format,
+    c("sf", "df", "sp")
+  )
 
   crs <- fm_crs(crs)
 
@@ -238,13 +240,17 @@ fm_store_points <- function(loc, crs = NULL, info = NULL, format = NULL) {
   if (identical(format, "df")) {
     points <- cbind(points, info)
   } else if (identical(format, "sp")) {
-    points <- sp::SpatialPointsDataFrame(points,
-                                         data = info,
-                                         proj4string = fm_CRS(crs))
+    points <- sp::SpatialPointsDataFrame(
+      points,
+      data = info,
+      proj4string = fm_CRS(crs)
+    )
   } else if (identical(format, "sf")) {
-    points <- sf::st_as_sf(cbind(points, info),
-                        coords = seq_len(ncol(points)),
-                        crs = crs)
+    points <- sf::st_as_sf(
+      cbind(points, info),
+      coords = seq_len(ncol(points)),
+      crs = crs
+    )
   }
 
   points # return
@@ -269,7 +275,7 @@ fm_store_points <- function(loc, crs = NULL, info = NULL, format = NULL) {
 #' @examples
 #' \donttest{
 #' if (require("ggplot2", quietly = TRUE) &&
-#'     require("inlabru", quietly = TRUE)) {
+#'   require("inlabru", quietly = TRUE)) {
 #'   data("mrsea", package = "inlabru")
 #'   vrt <- fm_vertices(mrsea$mesh, format = "sp")
 #'   ggplot() +
@@ -317,17 +323,19 @@ fm_vertices <- function(x, format = NULL) {
 fm_centroids <- function(x, format = NULL) {
   ## Extract triangle centroids
   loc <- (x$loc[x$graph$tv[, 1], , drop = FALSE] +
-            x$loc[x$graph$tv[, 2], , drop = FALSE] +
-            x$loc[x$graph$tv[, 3], , drop = FALSE]) / 3
+    x$loc[x$graph$tv[, 2], , drop = FALSE] +
+    x$loc[x$graph$tv[, 3], , drop = FALSE]) / 3
 
   if (identical(x$manifold, "S2")) {
     loc <- loc / rowSums(loc^2)^0.5 * sum(x$loc[1, ]^2)^0.5
   }
 
-  fm_store_points(loc = loc,
-                  info = data.frame(.triangle = seq_len(nrow(loc))),
-                  crs = fm_crs(x),
-                  format = format)
+  fm_store_points(
+    loc = loc,
+    info = data.frame(.triangle = seq_len(nrow(loc))),
+    crs = fm_crs(x),
+    format = format
+  )
 }
 
 
@@ -337,8 +345,10 @@ fm_onto_mesh <- function(mesh, loc, crs = NULL) {
   if (!is.matrix(loc) && !fm_crs_is_null(crs)) {
     warning("loc is non-matrix but crs specified; will be ignored")
   }
-  if (inherits(loc, c("SpatialPoints", "SpatialPointsDataFrame",
-                      "sf", "sfc", "sfg"))) {
+  if (inherits(loc, c(
+    "SpatialPoints", "SpatialPointsDataFrame",
+    "sf", "sfc", "sfg"
+  ))) {
     crs <- fm_crs(loc)
   }
   mesh_crs <- fm_crs(mesh)
@@ -422,13 +432,15 @@ fm_bary <- function(mesh, loc, crs = NULL) {
 
   pre_ok_idx <-
     which(rowSums(matrix(is.na(as.vector(loc)),
-                         nrow = nrow(loc),
-                         ncol = ncol(loc)
+      nrow = nrow(loc),
+      ncol = ncol(loc)
     )) == 0)
-  result <- fmesher_bary(loc = loc[pre_ok_idx, , drop = FALSE],
-                         mesh_loc = mesh$loc * scale,
-                         mesh_tv = mesh$graph$tv - 1L,
-                         options = list())
+  result <- fmesher_bary(
+    loc = loc[pre_ok_idx, , drop = FALSE],
+    mesh_loc = mesh$loc * scale,
+    mesh_tv = mesh$graph$tv - 1L,
+    options = list()
+  )
   tri <- rep(NA_integer_, nrow(loc))
   bary <- matrix(NA_real_, nrow(loc), 3)
   ok <- result$t >= 0

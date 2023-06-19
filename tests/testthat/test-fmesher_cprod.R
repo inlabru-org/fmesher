@@ -1,5 +1,3 @@
-local_fm_testthat_setup()
-
 # sp sf test
 test_that("fm_cprod(..., na.rm = TRUE) sf output can be generated", {
   local_fm_safe_inla()

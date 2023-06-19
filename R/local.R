@@ -30,7 +30,7 @@ local_fm_testthat_assign <- function(x, values, envir = parent.frame()) {
 #' of global workspace with `withr::deferred_run()` when running tests
 #' interactively.
 local_fm_testthat_tolerances <- function(tolerances = c(1e-4, 1e-2, 1e-1),
-                                          envir = parent.frame()) {
+                                         envir = parent.frame()) {
   local_fm_testthat_assign("lowtol", tolerances[1], envir = envir)
   local_fm_testthat_assign("midtol", tolerances[2], envir = envir)
   local_fm_testthat_assign("hitol", tolerances[3], envir = envir)
@@ -175,7 +175,7 @@ fm_safe_inla <- function(multicore = NULL,
 check_package_version_and_load <-
   function(pkg, minimum_version, quietly = FALSE) {
     version <- tryCatch(utils::packageVersion(pkg),
-                        error = function(e) NA_character_
+      error = function(e) NA_character_
     )
     if (is.na(version)) {
       if (!quietly) {
@@ -243,10 +243,10 @@ fm_safe_sp <- function(quietly = FALSE,
     # Default to 2L to allow future sp to stop supporting
     # get_evolution_status; assume everything is fine if it fails.
     evolution_status <- tryCatch(sp::get_evolution_status(),
-                                 error = function(e) 2L
+      error = function(e) 2L
     )
     rgdal_version <- tryCatch(utils::packageVersion("rgdal"),
-                              error = function(e) NA_character_
+      error = function(e) NA_character_
     )
     if ((evolution_status < 2L) && is.na(rgdal_version)) {
       if (!quietly) {

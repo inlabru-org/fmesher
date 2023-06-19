@@ -1,5 +1,3 @@
-local_fm_testthat_setup()
-
 test_that("Discrete integration", {
   domain <- 2:5
   samplers <- 3:7
@@ -111,7 +109,6 @@ test_that("conversion of whole 2D mesh to integration points", {
   expect_equal(colnames(as.data.frame(ips)), c("weight", ".block", "geometry"))
   expect_equal(sum(ips$weight), 27.64229, tolerance = lowtol)
 })
-
 
 
 test_that("Polygon integration with holes", {

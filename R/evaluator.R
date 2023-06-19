@@ -57,10 +57,13 @@ fm_evaluate <- function(...) {
 #' @export
 #' @rdname fm_evaluate
 fm_evaluate.inla.mesh <- function(mesh, field, ...) {
-  lifecycle::deprecate_stop(
-    "0.0.1",
-    "fm_evaluate(field = ' must not be missing or NULL.')",
-    "fm_evaluator()")
+  if (missing(field) || is.null(field)) {
+    lifecycle::deprecate_stop(
+      "0.0.1",
+      "fm_evaluate(field = ' must not be missing or NULL.')",
+      "fm_evaluator()"
+    )
+  }
 
   proj <- fm_evaluator(mesh, ...)
   fm_evaluate(proj, field = field)
@@ -70,7 +73,13 @@ fm_evaluate.inla.mesh <- function(mesh, field, ...) {
 #' @export
 #' @rdname fm_evaluate
 fm_evaluate.inla.mesh.1d <- function(mesh, field, ...) {
-  stopifnot(!missing(field) && !is.null(field))
+  if (missing(field) || is.null(field)) {
+    lifecycle::deprecate_stop(
+      "0.0.1",
+      "fm_evaluate(field = ' must not be missing or NULL.')",
+      "fm_evaluator()"
+    )
+  }
 
   proj <- fm_evaluator(mesh, ...)
   fm_evaluate(proj, field)
@@ -437,4 +446,3 @@ fm_is_within <- function(x, y, ...) {
 fm_is_within.default <- function(x, y, ...) {
   fm_evaluator(y, loc = x)$proj$ok
 }
-

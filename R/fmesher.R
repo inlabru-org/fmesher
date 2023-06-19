@@ -1,4 +1,3 @@
-
 #' Sparse partial inverse
 #'
 #' @param A A symmetric matrix
