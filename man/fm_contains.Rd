@@ -39,8 +39,8 @@ if (fm_safe_inla() &&
   fm_safe_sp()) {
   # Create a polygon and a mesh
   obj <- sp::SpatialPolygons(
-    list(Polygons(
-      list(Polygon(rbind(
+    list(sp::Polygons(
+      list(sp::Polygon(rbind(
         c(0, 0),
         c(50, 0),
         c(50, 50),
