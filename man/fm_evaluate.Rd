@@ -104,7 +104,8 @@ if (fm_safe_inla()) {
 if (fm_safe_inla() &&
   require("ggplot2") &&
   fm_safe_sp()) {
-  ggplot() + gg(mesh, col = field)
+  ggplot() +
+    gg(mesh, col = field)
 }
 }
 

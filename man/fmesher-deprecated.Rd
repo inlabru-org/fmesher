@@ -93,8 +93,9 @@ is required but not available
 \item \code{fm_sp_get_crs()}: Wrapper for CRS(projargs) (PROJ4) and CRS(wkt) for
 \code{sp::Spatial} objects.
 
-\item \code{fm_spTransform()}: Handle transformation of various inla objects according to coordinate
-reference systems of sp::CRS or INLA::inla.CRS class.
+\item \code{fm_spTransform()}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} (See \code{\link[=fm_transform]{fm_transform()}} instead)
+Handle transformation of various inla objects according to coordinate
+reference systems of \code{sp::CRS} or \code{INLA::inla.CRS} class.
 
 \item \code{fm_spTransform(default)}: The default method handles low level transformation of raw
 coordinates.

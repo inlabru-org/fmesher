@@ -92,13 +92,26 @@ fm_sp_get_crs <- function(x) {
 }
 
 
-#' @describeIn fm_crs Check if an object is or has `NULL` or `NA` CRS information
+#' @describeIn fm_crs Check if a `fm_crs` has `NA` crs information
+#' @export
+is.na.fm_crs <- function(x) {
+  is.na(fm_crs(x, crsonly = TRUE))
+}
+
+#' @describeIn fm_crs Check if a `inla.CRS` has `NA` crs information
+#' @export
+is.na.inla.CRS <- function(x) {
+  is.na(fm_crs(x, crsonly = TRUE))
+}
+
+#' @describeIn fm_crs Check if an object is or has `NULL` or `NA` CRS information.
+#' If not `NULL`, `is.na(fm_crs(x))` is returned. This allows the input to be e.g.
+#' a proj4string or epsg number, since the default [fm_crs()] method passes
+#' its argument on to `sf::st_crs()`.
+#'
 #' @export
 fm_crs_is_null <- function(x) {
-  if (is.null(x)) {
-    return(TRUE)
-  }
-  is.na(fm_crs(x))
+  is.null(x) || is.na(fm_crs(x))
 }
 
 
@@ -1494,11 +1507,15 @@ fm_wkt_tree_projection_type <- function(wt) {
   NULL
 }
 
+#' @describeIn fm_crs_wkt See `fm_wkt_tree_projection_type`
+#' @export
 fm_wkt_projection_type <- function(wkt) {
   wt <- fm_wkt_as_wkt_tree(wkt)
   fm_wkt_tree_projection_type(wt)
 }
 
+#' @describeIn fm_crs_wkt See `fm_wkt_tree_projection_type`
+#' @export
 fm_crs_projection_type <- function(crs) {
   wkt <- fm_wkt(crs)
   fm_wkt_projection_type(wkt)
@@ -1507,6 +1524,12 @@ fm_crs_projection_type <- function(crs) {
 ## +proj=longlat in (-180,180)x(-90,90)
 ## +proj=moll in (-2,2)x(-1,1) scaled by +a and +b, and +units
 ## +proj=lambert in (-pi,pi)x(-1,1) scaled by +a and +b, and +units
+#' @describeIn fm_crs_wkt Returns bounds information for a projection, as
+#' a list with elements `type` ("rectangle" or "ellipse"), `xlim`, `ylim`, and
+#' `polygon`.
+#' @param warn.unknown logical, default `FALSE`. Produce warning if the shape
+#' of the projection bounds is unknown.
+#' @export
 fm_crs_bounds <- function(crs, warn.unknown = FALSE) {
   wkt <- fm_wkt(crs)
   wt <- fm_wkt_as_wkt_tree(wkt)
@@ -1808,7 +1831,7 @@ fm_transform.matrix <- function(x, crs = NULL, ..., passthrough = FALSE, crs0 = 
   x <- fm_transform_raw(
     x,
     from = current_crs,
-    to = crs1
+    to = fm_crs(crs1, crsonly = TRUE)
   )
 
   if (!all(ok)) {
@@ -1918,7 +1941,9 @@ fm_transform.Spatial <- function(x, crs = fm_crs(x), ..., passthrough = FALSE) {
 }
 
 
-
+#' @export
+#' @describeIn fm_crs_wkt Detect if a crs is on "R2" or "S2"
+#' (if `fm_crs_is_geocent(crs)` is `TRUE`)
 fm_crs_detect_manifold <- function(crs) {
   if (fm_crs_is_geocent(crs)) {
     manifold <- "S2"
