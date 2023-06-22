@@ -139,7 +139,15 @@
 <span></span>
 <span><span class="fu">fm_proj4string</span><span class="op">(</span><span class="va">crs</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">fm_crs_get_wkt</span><span class="op">(</span><span class="va">crs</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">fm_crs_get_wkt</span><span class="op">(</span><span class="va">crs</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">fm_wkt_projection_type</span><span class="op">(</span><span class="va">wkt</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">fm_crs_projection_type</span><span class="op">(</span><span class="va">crs</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">fm_crs_bounds</span><span class="op">(</span><span class="va">crs</span>, warn.unknown <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">fm_crs_detect_manifold</span><span class="op">(</span><span class="va">crs</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -177,6 +185,11 @@ supported)</p></dd>
 <code>fm_wkt_unit_params()</code>, Default: NULL, which invokes
 <code>fm_wkt_unit_params()</code></p></dd>
 
+
+<dt>warn.unknown</dt>
+<dd><p>logical, default <code>FALSE</code>. Produce warning if the shape
+of the projection bounds is unknown.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -213,6 +226,13 @@ Note that the length unit for the ellipsoid radius is unchanged.</p>
 <li><p><code>fm_proj4string()</code>: Returns a proj4 string, for any input supported by <code><a href="fm_crs.html">fm_crs()</a></code>.</p></li>
 <li><p><code>fm_crs_get_wkt()</code>: <a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> Use <code>fm_wkt()</code>
 instead.</p></li>
+<li><p><code>fm_wkt_projection_type()</code>: See <code>fm_wkt_tree_projection_type</code></p></li>
+<li><p><code>fm_crs_projection_type()</code>: See <code>fm_wkt_tree_projection_type</code></p></li>
+<li><p><code>fm_crs_bounds()</code>: Returns bounds information for a projection, as
+a list with elements <code>type</code> ("rectangle" or "ellipse"), <code>xlim</code>, <code>ylim</code>, and
+<code>polygon</code>.</p></li>
+<li><p><code>fm_crs_detect_manifold()</code>: Detect if a crs is on "R2" or "S2"
+(if <code>fm_crs_is_geocent(crs)</code> is <code>TRUE</code>)</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

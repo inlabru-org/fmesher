@@ -159,8 +159,9 @@ to using old PROJ4 methods when a PROJ6 method hasn't been implemented</p></li>
 is required but not available</p></li>
 <li><p><code>fm_sp_get_crs()</code>: Wrapper for CRS(projargs) (PROJ4) and CRS(wkt) for
 <code><a href="https://rdrr.io/pkg/sp/man/Spatial-class.html" class="external-link">sp::Spatial</a></code> objects.</p></li>
-<li><p><code>fm_spTransform()</code>: Handle transformation of various inla objects according to coordinate
-reference systems of sp::CRS or INLA::inla.CRS class.</p></li>
+<li><p><code>fm_spTransform()</code>: <a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> (See <code><a href="fm_transform.html">fm_transform()</a></code> instead)
+Handle transformation of various inla objects according to coordinate
+reference systems of <code><a href="https://rdrr.io/pkg/sp/man/CRS-class.html" class="external-link">sp::CRS</a></code> or <code><a href="https://rdrr.io/pkg/INLA/man/inla.CRS.html" class="external-link">INLA::inla.CRS</a></code> class.</p></li>
 <li><p><code>fm_spTransform(default)</code>: The default method handles low level transformation of raw
 coordinates.</p></li>
 </ul></div>
