@@ -2,8 +2,10 @@ test_that("fm_pixels sp vs sf", {
   skip_on_cran()
   local_fm_safe_inla()
 
-  mesh <- INLA::inla.mesh.2d(cbind(0,0), offset = 10, max.edge = 1,
-                             crs = fm_CRS("longlat_globe"))
+  mesh <- INLA::inla.mesh.2d(cbind(0, 0),
+    offset = 10, max.edge = 1,
+    crs = fm_CRS("longlat_globe")
+  )
 
   mydata <- sp::SpatialPointsDataFrame(
     mesh$loc,
@@ -23,5 +25,4 @@ test_that("fm_pixels sp vs sf", {
     sf::st_coordinates(sf::st_as_sf(surface1)),
     sf::st_coordinates(surface2)
   )
-
 })
