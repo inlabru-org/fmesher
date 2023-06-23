@@ -11,47 +11,17 @@ test_that("fm_pixels sp vs sf", {
     proj4string = fm_CRS("longlat_globe")
   )
 
-  fit <- inlabru::bru(
-    ~ 0 +
-      Intercept(1) +
-      field(
-        sp::coordinates,
-        model = INLA::inla.spde2.pcmatern(
-          mesh,
-          prior.range = c(1, 0.01),
-          prior.sigma = c(1, 0.01)
-        )
-      ),
-    inlabru::like(
-      y ~ .,
-      family = "gaussian",
-      data = mydata
-    )
-  )
-
   system.time({
-    set.seed(1234L)
     surface1 <- fm_pixels(mesh, nx = 5, ny = 5, mask = TRUE, format = "sp")
-    density1 <- predict(fit,
-                        surface1,
-                        ~ exp(field_eval(sp::coordinates(.data.)) + Intercept),
-                        n.samples = 10,
-                        seed = 12345L)
   })
 
   system.time({
-    set.seed(1234L)
     surface2 <- fm_pixels(mesh, nx = 5, ny = 5, mask = TRUE, format = "sf")
-    density2 <- predict(fit,
-                        surface2,
-                        ~ exp(field_eval(geometry) + Intercept),
-                        n.samples = 10,
-                        seed = 12345L)
   })
 
   expect_equal(
-    density1$mean,
-    density2$mean
+    sf::st_coordinates(sf::st_as_sf(surface1)),
+    sf::st_coordinates(surface2)
   )
 
 })
