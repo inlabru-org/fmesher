@@ -59,9 +59,15 @@ fm_requires_PROJ6 <- function(fun = NULL) {
 }
 
 
-#' @rdname fm_as
+#' @describeIn fmesher-deprecated Wrapper for [fm_CRS()]
+#' `sp::Spatial` and `sp::CRS` objects.
 #' @export
 fm_as_sp_crs <- function(x, ...) {
+  lifecycle::deprecate_soft(
+    "0.0.1",
+    "fm_as_sp_crs()",
+    "fm_CRS()"
+  )
   fm_CRS(x, ...)
 }
 
@@ -76,12 +82,12 @@ fm_as_sp_crs <- function(x, ...) {
 #' @details This function is a convenience method to workaround PROJ4/PROJ6
 #' differences, and the lack of a crs extraction method for Spatial objects.
 #' For newer code, use [fm_crs()] instead, that returns `crs` objects,
-#' and use [fm_as_sp_crs()] to convert to old style `sp::CRS` objects.
+#' and use [fm_CRS()] to extract/construct/convert to old style `sp::CRS` objects.
 #' @examples
 #' \dontrun{
 #' if (interactive()) {
 #'   s <- sp::SpatialPoints(matrix(1:6, 3, 2), proj4string = fm_CRS("sphere"))
-#'   fm_sp_get_crs(s)
+#'   fm_CRS(s)
 #' }
 #' }
 #' @export
@@ -1302,7 +1308,7 @@ fm_list_as_CRS <- function(x, ...) {
 #' @keywords internal
 #' @examples
 #'
-#' crs0 <- fm_CRS("longlat")
+#' crs0 <- fm_CRS("longlat_norm")
 #' p4s <- fm_proj4string(crs0)
 #' lst <- fm_CRSargs_as_list(p4s)
 #' crs1 <- fm_list_as_CRS(lst)
@@ -1481,6 +1487,9 @@ fm_crs_transform_oblique <- function(x, oblique, to.oblique = TRUE) {
 
 
 
+#' @describeIn fm_crs_wkt Returns "longlat", "lambert", "mollweide", "hammer", "tmerc", or `NULL`
+#' @param wt A parsed wkt tree, see [fm_wkt_as_wkt_tree()]
+#' @export
 fm_wkt_tree_projection_type <- function(wt) {
   axis1 <- fm_wkt_tree_get_item(wt, "AXIS", 1)
   axis2 <- fm_wkt_tree_get_item(wt, "AXIS", 2)
@@ -1491,7 +1500,7 @@ fm_wkt_tree_projection_type <- function(wt) {
   conversion <- fm_wkt_tree_get_item(wt, "CONVERSION")
   if (!is.null(conversion)) {
     method <- fm_wkt_tree_get_item(conversion, "METHOD")
-    if (identical(method[["params"]][[1]], '"Lambert Cylindrical Equal Area (Sherical)"')) {
+    if (identical(method[["params"]][[1]], '"Lambert Cylindrical Equal Area (Spherical)"')) {
       return("lambert")
     }
     if (identical(method[["params"]][[1]], '"Mollweide"')) {
@@ -1582,7 +1591,7 @@ fm_crs_bounds <- function(crs, warn.unknown = FALSE) {
       bounds$ylim[c(1, 1, 2, 2, 1)]
     )
   } else if (bounds$type == "ellipse") {
-    theta <- seq(0, 2 * pi, length = 1000)
+    theta <- seq(0, 2 * pi, length.out = 1000)
     bounds$polygon <- cbind(
       bounds$center[1] + bounds$axis[1] * cos(theta),
       bounds$center[2] + bounds$axis[2] * sin(theta)
