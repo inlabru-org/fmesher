@@ -141,6 +141,8 @@
 <span></span>
 <span><span class="fu">fm_crs_get_wkt</span><span class="op">(</span><span class="va">crs</span><span class="op">)</span></span>
 <span></span>
+<span><span class="fu">fm_wkt_tree_projection_type</span><span class="op">(</span><span class="va">wt</span><span class="op">)</span></span>
+<span></span>
 <span><span class="fu">fm_wkt_projection_type</span><span class="op">(</span><span class="va">wkt</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">fm_crs_projection_type</span><span class="op">(</span><span class="va">crs</span><span class="op">)</span></span>
@@ -186,6 +188,10 @@ supported)</p></dd>
 <code>fm_wkt_unit_params()</code></p></dd>
 
 
+<dt>wt</dt>
+<dd><p>A parsed wkt tree, see <code><a href="wkt_tree.html">fm_wkt_as_wkt_tree()</a></code></p></dd>
+
+
 <dt>warn.unknown</dt>
 <dd><p>logical, default <code>FALSE</code>. Produce warning if the shape
 of the projection bounds is unknown.</p></dd>
@@ -226,6 +232,7 @@ Note that the length unit for the ellipsoid radius is unchanged.</p>
 <li><p><code>fm_proj4string()</code>: Returns a proj4 string, for any input supported by <code><a href="fm_crs.html">fm_crs()</a></code>.</p></li>
 <li><p><code>fm_crs_get_wkt()</code>: <a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> Use <code>fm_wkt()</code>
 instead.</p></li>
+<li><p><code>fm_wkt_tree_projection_type()</code>: Returns "longlat", "lambert", "mollweide", "hammer", "tmerc", or <code>NULL</code></p></li>
 <li><p><code>fm_wkt_projection_type()</code>: See <code>fm_wkt_tree_projection_type</code></p></li>
 <li><p><code>fm_crs_projection_type()</code>: See <code>fm_wkt_tree_projection_type</code></p></li>
 <li><p><code>fm_crs_bounds()</code>: Returns bounds information for a projection, as

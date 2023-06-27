@@ -40,7 +40,13 @@
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_CRSargs.html</loc>
   </url>
   <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_as.html</loc>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fm_as_inla_mesh.html</loc>
+  </url>
+  <url>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fm_as_inla_mesh_segment.html</loc>
+  </url>
+  <url>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fm_as_sfc.html</loc>
   </url>
   <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_bary.html</loc>
