@@ -73,8 +73,6 @@ test_that("fm_transform: geocentric globe transformation, sp involved", {
     )
   points0 <- sf::st_as_sf(points0_sp)
 
-  #  warning(paste0(fm_crs(points0), collapse = "\n"))
-
   points1 <- fm_transform(points0, crs = globe)
   points2 <- fm_transform(points1, crs = longlat_globe)
 
