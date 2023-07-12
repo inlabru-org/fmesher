@@ -47,12 +47,14 @@ using fmesh::TriangleLocator;
 using fmesh::Vector3;
 using fmesh::vertexListT;
 
+#ifdef FMESHER_WITH_EIGEN
 template <class T> using EigenM = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>;
 template <class T> using EigenM1 = Eigen::Matrix<T, Eigen::Dynamic, 1>;
 template <class T> using EigenSM = Eigen::SparseMatrix<T>;
 template <class T> using EigenMM = Eigen::Map<EigenM<T>>;
 template <class T> using EigenMM1 = Eigen::Map<EigenM1<T>>;
 template <class T> using EigenMSM = Eigen::Map<EigenSM<T>>;
+#endif
 
 // const bool useVT = true;
 // const bool useTTi = true;
@@ -64,6 +66,7 @@ template <class T> using EigenMSM = Eigen::Map<EigenSM<T>>;
 //' @param AA A sparse matrix
 // [[Rcpp::export]]
 Rcpp::List C_qinv(SEXP AA) {
+#ifdef FMESHER_WITH_EIGEN
   // Eigen::SparseMatrix<double> C_qinv(SEXP AA)
   const EigenMSM<double> A(Rcpp::as<EigenMSM<double>>(AA));
 
@@ -72,9 +75,13 @@ Rcpp::List C_qinv(SEXP AA) {
 
   Rcpp::List ret;
   ret["Qinv"] = Q.S();
-  return (ret);
+  return ret;
   //  return Rcpp::List::create(Rcpp::Named("Q") = Q.S());
   //  return Q.S();
+#else
+  Rcpp::List ret;
+  return ret;
+#endif
 }
 
 //' @title Globe points
@@ -186,7 +193,7 @@ public:
 //' boundary edge constrain
 //' @param interior 2-column integer matrix with 0-based vertex indices for each
 //' interior edge constraint
-//' @param boundary_grp integer vector with group lables
+//' @param boundary_grp integer vector with group labels
 //' @param interior_grp integer vector with group labels
 //' @examples
 //' m <- fmesher_rcdt(list(cet_margin = 1), matrix(0, 1, 2))
@@ -486,13 +493,25 @@ Rcpp::List fmesher_bary(Rcpp::NumericMatrix loc,
 
 
 
-//' Test the matrix I/O system
+//' @title Test the matrix I/O system
 //'
 //' @param args_input Input argument list
+//' @examples
+//' A <- Matrix::sparseMatrix(i=1:4,j=4:1,x=2:5,dims=c(4,4))
+//' out <- C_matrixio_test(args_input=list(
+//'   A = fm_as_dgTMatrix(A),
+//'   Bd = matrix((11:22)+0.5,4,3),
+//'   Bi = matrix(121L:132L,4,3),
+//'   B1d=as.matrix((31:34)+0.5),
+//'   B1i=as.matrix(41L:44L),
+//'   Ad = fm_sparse_from_R_to_C(A)
+//' ))
+//' Aout <- fm_sparse_from_C_to_R(out[["Ad"]])
+//' A
+//' Aout
+//' @export
 // [[Rcpp::export]]
 Rcpp::List C_matrixio_test(Rcpp::List args_input) {
-  // Eigen::SparseMatrix<double> C_qinv(SEXP AA)
-
   MatrixC matrices;
 
 //  matrices.attach("loc", new Matrix<double>(Rcpp::as<EigenMM<double>>(args_input["loc"])), true);
@@ -521,15 +540,13 @@ Rcpp::List C_matrixio_test(Rcpp::List args_input) {
   FMLOG_("Bii: " << Bii << std::endl);
 
   fmesh::Matrix1<double> Bdd1 = B1d;
-  fmesh::Matrix1<double> Bdd1_ = Rcpp::NumericVector(Bd(Rcpp::_, 1));
-  fmesh::Matrix1<double> Bdd1_0 = Bd;
+  fmesh::Matrix1<double> Bdd_1 = Rcpp::NumericVector(Bd(Rcpp::_, 1));
   fmesh::Matrix1<int> Bdi1(B1d);
   fmesh::Matrix1<double> Bid1(B1i);
   fmesh::Matrix1<int> Bii1(B1i);
 
   FMLOG_("Bdd1: " << Bdd1 << std::endl);
-  FMLOG_("Bdd1_: " << Bdd1_ << std::endl);
-  FMLOG_("Bdd1_0: " << Bdd1_0 << std::endl);
+  FMLOG_("Bdd_1: " << Bdd_1 << std::endl);
   FMLOG_("Bdi1: " << Bdi1 << std::endl);
   FMLOG_("Bid1: " << Bid1 << std::endl);
   FMLOG_("Bii1: " << Bii1 << std::endl);
@@ -544,7 +561,7 @@ Rcpp::List C_matrixio_test(Rcpp::List args_input) {
   FMLOG_("Bid3: " << Bid3 << std::endl);
   FMLOG_("Bii3: " << Bii3 << std::endl);
 
-  const EigenMSM<double> Ad(Rcpp::as<EigenMSM<double>>(args_input["Ad"]));
+  const Rcpp::List Ad(Rcpp::as<Rcpp::List>(args_input["Ad"]));
 
   fmesh::SparseMatrix<double> Ad_fm(Ad);
 
@@ -567,7 +584,9 @@ Rcpp::List C_matrixio_test(Rcpp::List args_input) {
   ret["is_integer_vector"] = is_integer_vector;
 //  ret["A"] = A;
   ret["Ad"] = Ad;
+#ifdef FMESHER_WITH_EIGEN
   ret["Ad_fm"] = Ad_fm.EigenSparseMatrix();
+#endif
   ret["Ad_fm_auto"] = Ad_fm;
   ret["Ad_fm_ijx"] = Ad_fm.RcppList();
   ret["Bid3"] = Bid3;

@@ -1,6 +1,8 @@
 #ifndef QTOOL_H
 #define QTOOL_H
 
+#ifdef FMESHER_WITH_EIGEN
+
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 #include <Eigen/SparseCholesky>
@@ -356,5 +358,7 @@ public:
     result_ = LLt_.solve(b);
   }
 };
+
+#endif
 
 #endif

@@ -412,15 +412,6 @@ fm_onto_mesh <- function(mesh, loc, crs = NULL) {
 #'
 #' @export
 fm_bary <- function(mesh, loc, crs = NULL) {
-  # Support INLA <= 22.11.27 by converting globes to spheres
-  # TODO: Handle the > 22.11.27 more efficiently
-  if (fm_crs_is_geocent(fm_crs(mesh))) {
-    crs.sphere <- fm_crs("sphere")
-    if (!fm_identical_CRS(fm_crs(mesh), crs.sphere)) {
-      ## Convert the mesh to a perfect sphere.
-      mesh <- fm_transform(mesh, crs = crs.sphere)
-    }
-  }
   loc <- fm_onto_mesh(mesh, loc, crs = crs)
 
   # Avoid sphere accuracy issues by scaling to unit sphere

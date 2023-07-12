@@ -31,7 +31,7 @@ fmesher_globe_points <- function(globe) {
 #' boundary edge constrain
 #' @param interior 2-column integer matrix with 0-based vertex indices for each
 #' interior edge constraint
-#' @param boundary_grp integer vector with group lables
+#' @param boundary_grp integer vector with group labels
 #' @param interior_grp integer vector with group labels
 #' @examples
 #' m <- fmesher_rcdt(list(cet_margin = 1), matrix(0, 1, 2))
@@ -60,9 +60,23 @@ fmesher_bary <- function(loc, mesh_loc, mesh_tv, options) {
     .Call(`_fmesher_fmesher_bary`, loc, mesh_loc, mesh_tv, options)
 }
 
-#' Test the matrix I/O system
+#' @title Test the matrix I/O system
 #'
 #' @param args_input Input argument list
+#' @examples
+#' A <- Matrix::sparseMatrix(i=1:4,j=4:1,x=2:5,dims=c(4,4))
+#' out <- C_matrixio_test(args_input=list(
+#'   A = fm_as_dgTMatrix(A),
+#'   Bd = matrix((11:22)+0.5,4,3),
+#'   Bi = matrix(121L:132L,4,3),
+#'   B1d=as.matrix((31:34)+0.5),
+#'   B1i=as.matrix(41L:44L),
+#'   Ad = fm_sparse_from_R_to_C(A)
+#' ))
+#' Aout <- fm_sparse_from_C_to_R(out[["Ad"]])
+#' A
+#' Aout
+#' @export
 C_matrixio_test <- function(args_input) {
     .Call(`_fmesher_C_matrixio_test`, args_input)
 }

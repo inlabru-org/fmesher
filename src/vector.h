@@ -432,6 +432,7 @@ public:
   };
 #ifdef FMESHER_WITH_R
   /*! To list, general, symmetric, or diagonal. */
+#ifdef FMESHER_WITH_EIGEN
   int tolist(int row, std::vector<Eigen::Triplet<T>> &MT,
              IOMatrixtype matrixt = IOMatrixtype_general) const {
     int elem = 0;
@@ -451,6 +452,7 @@ public:
     }
     return elem;
   };
+#endif
   int to_ijx(int row,
              std::vector<int> &i,
              std::vector<int> &j,
@@ -574,7 +576,10 @@ public:
     //      FMLOG_("SM copy" << std::endl);
   };
 #ifdef FMESHER_WITH_R
+  SparseMatrix(SEXP from);
+#ifdef FMESHER_WITH_EIGEN
   SparseMatrix(const Eigen::Map<Eigen::SparseMatrix<T>> &from);
+#endif
 #endif
   const SparseMatrix<T> &operator=(const SparseMatrix<T> &from) {
     cols_ = from.cols_;
@@ -678,6 +683,7 @@ public:
   };
 #ifdef FMESHER_WITH_R
   /*! To list, general, symmetric, or diagonal. */
+#ifdef FMESHER_WITH_EIGEN
   int tolist(std::vector<Eigen::Triplet<T>> &MT, IOMatrixtype matrixt = IOMatrixtype_general) const {
     int elem = nnz(matrixt);
     MT.reserve(elem);
@@ -687,6 +693,7 @@ public:
     }
     return elem;
   };
+#endif
   int to_ijx(std::vector<int> &i,
              std::vector<int> &j,
              std::vector<T> &x,
@@ -705,7 +712,9 @@ public:
     }
     return elem;
   };
+#ifdef FMESHER_WITH_EIGEN
   Eigen::SparseMatrix<T> EigenSparseMatrix(IOMatrixtype matrixt = IOMatrixtype_general) const;
+#endif
   SEXP RcppList(IOMatrixtype matrixt = IOMatrixtype_general) const;
 
 #endif
@@ -733,7 +742,7 @@ public:
         operator()(MT[i].r, MT[i].c, MT[i].value);
     }
   };
-#ifdef FMESHER_WITH_R
+#ifdef FMESHER_WITH_EIGEN
   /*! From list, general, symmetric, or diagonal. */
   void fromlist(const std::vector<Eigen::Triplet<T>> &MT, IOMatrixtype matrixt = IOMatrixtype_general) {
     if (matrixt == IOMatrixtype_symmetric) {
@@ -768,6 +777,38 @@ public:
       }
     }
   };
+
+#ifdef FMESHER_WITH_R
+  /*! From list, general or symmetric. */
+  void fromlist(const Rcpp::IntegerVector &Tr,
+                const Rcpp::IntegerVector &Tc,
+                const Rcpp::NumericVector &Tv,
+                const Rcpp::IntegerVector &dims,
+                IOMatrixtype matrixt = IOMatrixtype_general) {
+    cols(dims[1]);
+    rows(dims[0]);
+    if (matrixt == IOMatrixtype_symmetric) {
+      for (size_t i = 0; i < Tr.size(); i++) {
+        operator()(Tr[i], Tc[i], Tv[i]);
+        operator()(Tc[i], Tr[i], Tv[i]);
+      }
+    } else if (matrixt == IOMatrixtype_diagonal) {
+      for (size_t i = 0; i < Tr.size(); i++) {
+        operator()(Tr[i], Tr[i], Tv[i]);
+      }
+    } else {
+      for (size_t i = 0; i < Tr.size(); i++) {
+        operator()(Tr[i], Tc[i], Tv[i]);
+      }
+    }
+  };
+
+#ifdef FMESHER_WITH_EIGEN
+  template<class TT> using EigenMSM = Eigen::Map<Eigen::SparseMatrix<TT>>;
+  void fromEigen(const EigenMSM<T> &from);
+#endif
+
+#endif
 
   /*! \brief Store the matrix in a file. */
   bool save(std::string filename, IOMatrixtype matrixt = IOMatrixtype_general,

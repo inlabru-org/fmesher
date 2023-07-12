@@ -433,6 +433,8 @@ public:
         output_prefix_("-"), output_file_(""){};
 #ifdef FMESHER_WITH_R
   MatrixC(SEXP from);
+  void attach(SEXP from); // Rccp::List of matrices
+  void attach(std::string name, SEXP from);
 #endif
   ~MatrixC() {
     for (collT::iterator colli = coll_.begin(); colli != coll_.end(); ++colli) {

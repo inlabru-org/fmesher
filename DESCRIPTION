@@ -1,7 +1,7 @@
 Package: fmesher
 Type: Package
 Title: Triangle Meshes and Other Geometry Tools
-Version: 0.0.9.9000
+Version: 0.0.9.9001
 Authors@R: c(
   person("Finn", "Lindgren", email = "finn.lindgren@gmail.com",
          role = c("aut", "cre", "cph"),
@@ -57,8 +57,7 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 Config/testthat/edition: 3
 Config/testthat/parallel: true
-LinkingTo: 
-    RcppEigen,
+LinkingTo:
     Rcpp
 VignetteBuilder: knitr
 BuildVignettes: true

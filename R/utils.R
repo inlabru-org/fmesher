@@ -130,6 +130,8 @@ fm_try_callstack <- function(expr) {
 #' @importFrom methods as
 # Explicit import of something from Matrix to appease automated checks:
 #' @importFrom Matrix as.matrix
+#' @export
+#' @keywords internal
 
 fm_as_dgCMatrix <- function(x) {
   if (inherits(x, "dgCMatrix")) {
@@ -139,6 +141,8 @@ fm_as_dgCMatrix <- function(x) {
   }
 }
 
+#' @export
+#' @keywords internal
 fm_as_dgTMatrix <- function(x, unique = TRUE) {
   if (unique) {
     as(fm_as_dgCMatrix(x), "TsparseMatrix")
@@ -149,4 +153,26 @@ fm_as_dgTMatrix <- function(x, unique = TRUE) {
       as(as(as(x, "dMatrix"), "generalMatrix"), "TsparseMatrix")
     }
   }
+}
+
+#' @export
+#' @keywords internal
+fm_sparse_from_C_to_R <- function(x) {
+  Matrix::sparseMatrix(
+    i = x[["i"]] + 1L,
+    j = x[["j"]] + 1L,
+    x = x[["x"]],
+    dims = x[["dims"]]
+  )
+}
+#' @export
+#' @keywords internal
+fm_sparse_from_R_to_C <- function(x) {
+  x <- fm_as_dgTMatrix(x, unique = TRUE)
+  list(
+    i = slot(x, name = "i"),
+    j = slot(x, name = "j"),
+    x = slot(x, name = "x"),
+    dims = slot(x, name = "Dim")
+  )
 }

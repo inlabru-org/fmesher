@@ -2,8 +2,10 @@
 #define _FMESH_RCPP_FMESHER_ 1
 #ifdef FMESHER_WITH_R
 
-#include "RcppCommon.h"
+#include "Rcpp.h"
+#ifdef FMESHER_WITH_EIGEN
 #include "RcppEigen.h"
+#endif
 
 namespace fmesh {
 template <class T> class Matrix;
@@ -27,6 +29,7 @@ FM_DEFINE_WRAP(Matrix1<int>);
 FM_DEFINE_WRAP(Matrix3<double>);
 FM_DEFINE_WRAP(Matrix3<int>);
 FM_DEFINE_WRAP(SparseMatrix<double>);
+FM_DEFINE_WRAP(SparseMatrix<int>);
 FM_DEFINE_WRAP(MatrixC);
 
 // TODO:

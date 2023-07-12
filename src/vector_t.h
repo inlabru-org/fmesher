@@ -198,9 +198,7 @@ template <class T>
 Matrix1<T>::Matrix1(const Rcpp::NumericMatrix &from) : Matrix<T>(from) {
   // Check number of columns:
   if (1 != from.ncol()) {
-    Rcpp::warning("NumericMatrix->Matrix1 conversion: column number mismatch.");
-    clear();
-    *this = Matrix1<T>(Rcpp::NumericVector(from(Rcpp::_, 0)));
+    Rcpp::stop("NumericMatrix->Matrix1 conversion: column number mismatch.");
   }
 }
 
@@ -357,6 +355,7 @@ bool SparseMatrix<T>::load(std::string filename, bool binary) {
 #ifdef FMESHER_WITH_R
 
 // Export to R
+#ifdef FMESHER_WITH_EIGEN
 template <class T> Eigen::SparseMatrix<T> SparseMatrix<T>::EigenSparseMatrix(IOMatrixtype matrixt) const {
   typedef Eigen::Triplet<T> Trip;
   std::vector<Trip> tripletList;
@@ -368,6 +367,7 @@ template <class T> Eigen::SparseMatrix<T> SparseMatrix<T>::EigenSparseMatrix(IOM
 
   return m;
 }
+#endif
 // Export to R as list(i,j,x,dims)
 template <class T> SEXP SparseMatrix<T>::RcppList(IOMatrixtype matrixt) const {
   std::vector<int> i;
@@ -386,17 +386,47 @@ template <class T> SEXP SparseMatrix<T>::RcppList(IOMatrixtype matrixt) const {
 }
 
 
+template <class T>
+SparseMatrix<T>::SparseMatrix(SEXP from)
+  : cols_(0), data_() {
+  if (Rcpp::is<Rcpp::List>(from)) {
+    Rcpp::List from_list = Rcpp::as<Rcpp::List>(from);
+    Rcpp::IntegerVector Tr = Rcpp::as<Rcpp::IntegerVector>(from_list["i"]);
+    Rcpp::IntegerVector Tc = Rcpp::as<Rcpp::IntegerVector>(from_list["j"]);
+    Rcpp::NumericVector Tv = Rcpp::as<Rcpp::NumericVector>(from_list["x"]);
+    Rcpp::IntegerVector dims = Rcpp::as<Rcpp::IntegerVector>(from_list["dims"]);
 
+    fromlist(Tr, Tc, Tv, dims, IOMatrixtype_general);
+  } else {
+    Rcpp::S4 obj = (SEXP)from;
+    if (obj.is("dgCMatrix")) {
+#ifdef FMESHER_WITH_EIGEN
+      const Eigen::Map<Eigen::SparseMatrix<double>> mat(
+          Rcpp::as<Eigen::Map<Eigen::SparseMatrix<double> > >(
+              from));
+      (*this).fromEigen(mat);
+#else
+      Rcpp::warning("Attempt to convert a 'dgCMatrix' to internal fmesher format, but 'list' or 'dgTMatrix' is required.");
+#endif
+    } else if (obj.is("dgTMatrix")) {
+      Rcpp::IntegerVector Tr = Rcpp::as<Rcpp::IntegerVector>(obj.slot("i"));
+      Rcpp::IntegerVector Tc = Rcpp::as<Rcpp::IntegerVector>(obj.slot("j"));
+      Rcpp::NumericVector Tv = Rcpp::as<Rcpp::NumericVector>(obj.slot("x"));
+      Rcpp::IntegerVector dims = Rcpp::as<Rcpp::IntegerVector>(obj.slot("Dim"));
 
+      fromlist(Tr, Tc, Tv, dims, IOMatrixtype_general);
+    } else {
+      Rcpp::warning("Unsupported SparseMatrix<T>(Rcpp::S4) class.");
+    }
+  }
+}
 
-
-
-
+#ifdef FMESHER_WITH_EIGEN
 
 template<class T> using EigenMSM = Eigen::Map<Eigen::SparseMatrix<T>>;
+
 template <class T>
-SparseMatrix<T>::SparseMatrix(const EigenMSM<T> &from)
-  : cols_(from.cols()), data_() {
+void SparseMatrix<T>::fromEigen(const EigenMSM<T> &from) {
   rows(from.rows());
   for (int k=0; k < from.outerSize(); ++k)
     for (typename EigenMSM<T>::InnerIterator it(from, k); it; ++it)
@@ -404,6 +434,15 @@ SparseMatrix<T>::SparseMatrix(const EigenMSM<T> &from)
       operator()(it.row(), it.col(), it.value());
     }
 }
+
+template <class T>
+SparseMatrix<T>::SparseMatrix(const EigenMSM<T> &from)
+  : cols_(from.cols()), data_() {
+  fromEigen(from);
+}
+
+#endif
+
 #endif
 
 template <class T>
@@ -530,10 +569,14 @@ __FM_MATRIX_WRAP__(IntegerMatrix, Matrix3<int>, 3)
 __FM_VECTOR_WRAP__(NumericVector, Matrix1<double>)
 __FM_VECTOR_WRAP__(IntegerVector, Matrix1<int>)
 
-template<>
-inline SEXP wrap(const fmesh::SparseMatrix<double>& obj) {
-  return Rcpp::wrap(obj.EigenSparseMatrix(fmesh::IOMatrixtype_general));
-}
+  template<>
+  inline SEXP wrap(const fmesh::SparseMatrix<double>& obj) {
+    return Rcpp::wrap(obj.RcppList(fmesh::IOMatrixtype_general));
+  }
+  template<>
+  inline SEXP wrap(const fmesh::SparseMatrix<int>& obj) {
+    return Rcpp::wrap(obj.RcppList(fmesh::IOMatrixtype_general));
+  }
 
 } // Namespace Rcpp
 #endif

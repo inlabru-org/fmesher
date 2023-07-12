@@ -567,49 +567,58 @@ SEXP MatrixC::Rcpp_wrap() const {
 }
 
 
-MatrixC::MatrixC(SEXP from)
-  : output_all_(false), bin_in_(true), bin_out_(true), input_prefix_("-"),
-    output_prefix_("-"), output_file_("") {
+void MatrixC::attach(std::string name, SEXP from) {
   Rcpp::List from_list = Rcpp::as<Rcpp::List>(from);
+  if (Rcpp::is<Rcpp::NumericMatrix>(from)) {
+    (*this).attach(name, new Matrix<double>(
+        Rcpp::as<Rcpp::NumericMatrix>(
+          from)), true,
+          IOMatrixtype_general);
+  } else if (Rcpp::is<Rcpp::IntegerMatrix>(from)) {
+    (*this).attach(name, new Matrix<int>(
+        Rcpp::as<Rcpp::IntegerMatrix>(
+          from)), true,
+          IOMatrixtype_general);
+  } else if (Rcpp::is<Rcpp::NumericVector>(from)) {
+    (*this).attach(name, new Matrix1<double>(
+        Rcpp::as<Rcpp::NumericVector>(
+          from)), true,
+          IOMatrixtype_general);
+  } else if (Rcpp::is<Rcpp::IntegerVector>(from)) {
+    (*this).attach(name, new Matrix1<int>(
+        Rcpp::as<Rcpp::IntegerVector>(
+          from)), true,
+          IOMatrixtype_general);
+  } else {
+    (*this).attach(name,
+     new SparseMatrix<double>(from),
+     true,
+     IOMatrixtype_general);
+  }
+}
+
+
+
+
+void MatrixC::attach(SEXP from) {
+    Rcpp::List from_list = Rcpp::as<Rcpp::List>(from);
   Rcpp::CharacterVector from_names = from_list.names();
   for (auto elem = from_names.begin();
        elem != from_names.end();
        elem++) {
     std::string the_name = Rcpp::as<std::string>(*elem);
-    if (Rcpp::is<Rcpp::NumericMatrix>(from_list[the_name])) {
-      (*this).attach(the_name, new Matrix<double>(
-          Rcpp::as<Rcpp::NumericMatrix>(
-            from_list[the_name])), true,
-            IOMatrixtype_general);
-    } else if (Rcpp::is<Rcpp::IntegerMatrix>(from_list[the_name])) {
-      (*this).attach(the_name, new Matrix<int>(
-          Rcpp::as<Rcpp::IntegerMatrix>(
-            from_list[the_name])), true,
-            IOMatrixtype_general);
-    } else if (Rcpp::is<Rcpp::NumericVector>(from_list[the_name])) {
-      (*this).attach(the_name, new Matrix1<double>(
-          Rcpp::as<Rcpp::NumericVector>(
-            from_list[the_name])), true,
-            IOMatrixtype_general);
-    } else if (Rcpp::is<Rcpp::IntegerVector>(from_list[the_name])) {
-      (*this).attach(the_name, new Matrix1<int>(
-          Rcpp::as<Rcpp::IntegerVector>(
-            from_list[the_name])), true,
-            IOMatrixtype_general);
-    } else {
-      Rcpp::S4 something = (SEXP)from_list[the_name];
-      if (something.is("dgCMatrix")) {
-        const Eigen::Map<Eigen::SparseMatrix<double>> mat(
-            Rcpp::as<Eigen::Map<Eigen::SparseMatrix<double> > >(
-                from_list[the_name]));
-        (*this).attach(the_name, new SparseMatrix<double>(mat), true,
-         IOMatrixtype_general);
-      } else if (something.is("dgTMatrix")) {
-        Rcpp::warning("Attempt to convert a 'dgTMatrix' to internal fmesher format, but 'dgCMatrix' is required.");
-      }
-    }
+    (*this).attach(the_name, from_list[the_name]);
   }
 }
+
+MatrixC::MatrixC(SEXP from)
+  : output_all_(false), bin_in_(true), bin_out_(true), input_prefix_("-"),
+    output_prefix_("-"), output_file_("") {
+  (*this).attach(from);
+}
+
+
+
 #endif
 
 } /* namespace fmesh */

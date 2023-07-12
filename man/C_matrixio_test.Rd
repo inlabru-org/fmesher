@@ -12,3 +12,17 @@ C_matrixio_test(args_input)
 \description{
 Test the matrix I/O system
 }
+\examples{
+A <- Matrix::sparseMatrix(i=1:4,j=4:1,x=2:5,dims=c(4,4))
+out <- C_matrixio_test(args_input=list(
+  A = fm_as_dgTMatrix(A),
+  Bd = matrix((11:22)+0.5,4,3),
+  Bi = matrix(121L:132L,4,3),
+  B1d=as.matrix((31:34)+0.5),
+  B1i=as.matrix(41L:44L),
+  Ad = fm_sparse_from_R_to_C(A)
+))
+Aout <- fm_sparse_from_C_to_R(out[["Ad"]])
+A
+Aout
+}

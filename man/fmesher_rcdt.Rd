@@ -27,7 +27,7 @@ boundary edge constrain}
 \item{interior}{2-column integer matrix with 0-based vertex indices for each
 interior edge constraint}
 
-\item{boundary_grp}{integer vector with group lables}
+\item{boundary_grp}{integer vector with group labels}
 
 \item{interior_grp}{integer vector with group labels}
 }
