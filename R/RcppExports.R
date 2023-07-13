@@ -65,15 +65,38 @@ fmesher_bary <- function(loc, mesh_loc, mesh_tv, options) {
 #' @param args_input Input argument list
 #' @examples
 #' A <- Matrix::sparseMatrix(i=1:4,j=4:1,x=2:5,dims=c(4,4))
+#' out <- C_matrixio_test2(args_input=list(
+#'   A = fm_as_dgTMatrix(A),
+#'   Bd = matrix((11:22)+0.5,4,3),
+#'   Bi = matrix(121L:132L,4,3),
+#'   B1d=as.matrix((31:34)+0.5),
+#'   B1i=as.matrix(41L:44L),
+#'   Ad = fm_as_fmesher_sparse(A)
+#' ))
+#' A1 <- fm_as_dgTMatrix(out[["A"]])
+#' A2 <- fm_as_dgTMatrix(out[["Ad"]])
+#' A
+#' A1
+#' A2
+#' @export
+C_matrixio_test2 <- function(args_input) {
+    .Call(`_fmesher_C_matrixio_test2`, args_input)
+}
+
+#' @title Test the matrix I/O system
+#'
+#' @param args_input Input argument list
+#' @examples
+#' A <- Matrix::sparseMatrix(i=1:4,j=4:1,x=2:5,dims=c(4,4))
 #' out <- C_matrixio_test(args_input=list(
 #'   A = fm_as_dgTMatrix(A),
 #'   Bd = matrix((11:22)+0.5,4,3),
 #'   Bi = matrix(121L:132L,4,3),
 #'   B1d=as.matrix((31:34)+0.5),
 #'   B1i=as.matrix(41L:44L),
-#'   Ad = fm_sparse_from_R_to_C(A)
+#'   Ad = fm_as_fmesher_sparse(A)
 #' ))
-#' Aout <- fm_sparse_from_C_to_R(out[["Ad"]])
+#' Aout <- fm_as_dgTMatrix(out[["Ad"]])
 #' A
 #' Aout
 #' @export

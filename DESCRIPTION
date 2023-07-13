@@ -50,7 +50,6 @@ License: GPL (>=3)
 Copyright: The R package and code, and the main programs, were written by and
     are Copyright by Finn Lindgren, and are redistributable under the GNU Public
     License, version 3 or later.
-SystemRequirements: C++17
 NeedsCompilation: yes
 RoxygenNote: 7.2.3
 Encoding: UTF-8

@@ -498,102 +498,133 @@ Rcpp::List fmesher_bary(Rcpp::NumericMatrix loc,
 //' @param args_input Input argument list
 //' @examples
 //' A <- Matrix::sparseMatrix(i=1:4,j=4:1,x=2:5,dims=c(4,4))
+//' out <- C_matrixio_test2(args_input=list(
+//'   A = fm_as_dgTMatrix(A),
+//'   Bd = matrix((11:22)+0.5,4,3),
+//'   Bi = matrix(121L:132L,4,3),
+//'   B1d=as.matrix((31:34)+0.5),
+//'   B1i=as.matrix(41L:44L),
+//'   Ad = fm_as_fmesher_sparse(A)
+//' ))
+//' A1 <- fm_as_dgTMatrix(out[["A"]])
+//' A2 <- fm_as_dgTMatrix(out[["Ad"]])
+//' A
+//' A1
+//' A2
+//' @export
+// [[Rcpp::export]]
+Rcpp::List C_matrixio_test2(Rcpp::List args_input) {
+  MatrixC matrices(args_input);
+  Rcpp::List ret = Rcpp::wrap(matrices.output("-"));
+  return (ret);
+}
+
+
+
+//' @title Test the matrix I/O system
+//'
+//' @param args_input Input argument list
+//' @examples
+//' A <- Matrix::sparseMatrix(i=1:4,j=4:1,x=2:5,dims=c(4,4))
 //' out <- C_matrixio_test(args_input=list(
 //'   A = fm_as_dgTMatrix(A),
 //'   Bd = matrix((11:22)+0.5,4,3),
 //'   Bi = matrix(121L:132L,4,3),
 //'   B1d=as.matrix((31:34)+0.5),
 //'   B1i=as.matrix(41L:44L),
-//'   Ad = fm_sparse_from_R_to_C(A)
+//'   Ad = fm_as_fmesher_sparse(A)
 //' ))
-//' Aout <- fm_sparse_from_C_to_R(out[["Ad"]])
+//' Aout <- fm_as_dgTMatrix(out[["Ad"]])
 //' A
 //' Aout
 //' @export
 // [[Rcpp::export]]
-Rcpp::List C_matrixio_test(Rcpp::List args_input) {
-  MatrixC matrices;
+     Rcpp::List C_matrixio_test(Rcpp::List args_input) {
+       MatrixC matrices;
 
-//  matrices.attach("loc", new Matrix<double>(Rcpp::as<EigenMM<double>>(args_input["loc"])), true);
-//  matrices.attach("tv", new Matrix<int>(Rcpp::as<EigenMM<int>>(args_input["tv"])), true);
+       //  matrices.attach("loc", new Matrix<double>(Rcpp::as<EigenMM<double>>(args_input["loc"])), true);
+       //  matrices.attach("tv", new Matrix<int>(Rcpp::as<EigenMM<int>>(args_input["tv"])), true);
 
-  bool is_list = Rcpp::is<Rcpp::List>(args_input);
-  bool is_numeric_matrix = Rcpp::is<Rcpp::NumericMatrix>(args_input["A"]);
-  bool is_numeric_vector = Rcpp::is<Rcpp::NumericVector>(args_input["A"]);
-  bool is_integer_matrix = Rcpp::is<Rcpp::IntegerMatrix>(args_input["A"]);
-  bool is_integer_vector = Rcpp::is<Rcpp::IntegerVector>(args_input["A"]);
+       bool is_list = Rcpp::is<Rcpp::List>(args_input);
+       bool is_numeric_matrix = Rcpp::is<Rcpp::NumericMatrix>(args_input["A"]);
+       bool is_numeric_vector = Rcpp::is<Rcpp::NumericVector>(args_input["A"]);
+       bool is_integer_matrix = Rcpp::is<Rcpp::IntegerMatrix>(args_input["A"]);
+       bool is_integer_vector = Rcpp::is<Rcpp::IntegerVector>(args_input["A"]);
 
-  Rcpp::NumericMatrix Bd = Rcpp::as<Rcpp::NumericMatrix>(args_input["Bd"]);
-  Rcpp::IntegerMatrix Bi = Rcpp::as<Rcpp::IntegerMatrix>(args_input["Bi"]);
-  Rcpp::NumericVector B1d = Rcpp::as<Rcpp::NumericVector>(args_input["B1d"]);
-  Rcpp::IntegerVector B1i = Rcpp::as<Rcpp::IntegerVector>(args_input["B1i"]);
+       Rcpp::NumericMatrix Bd = Rcpp::as<Rcpp::NumericMatrix>(args_input["Bd"]);
+       Rcpp::IntegerMatrix Bi = Rcpp::as<Rcpp::IntegerMatrix>(args_input["Bi"]);
+       Rcpp::NumericVector B1d = Rcpp::as<Rcpp::NumericVector>(args_input["B1d"]);
+       Rcpp::IntegerVector B1i = Rcpp::as<Rcpp::IntegerVector>(args_input["B1i"]);
 
 
-  fmesh::Matrix<double> Bdd = Bd;
-  fmesh::Matrix<int> Bdi(Bd);
-  fmesh::Matrix<double> Bid(Bi);
-  fmesh::Matrix<int> Bii(Bi);
+       fmesh::Matrix<double> Bdd = Bd;
+       fmesh::Matrix<int> Bdi(Bd);
+       fmesh::Matrix<double> Bid(Bi);
+       fmesh::Matrix<int> Bii(Bi);
 
-  FMLOG_("Bdd: " << Bdd << std::endl);
-  FMLOG_("Bdi: " << Bdi << std::endl);
-  FMLOG_("Bid: " << Bid << std::endl);
-  FMLOG_("Bii: " << Bii << std::endl);
+       FMLOG_("Bdd: " << Bdd << std::endl);
+       FMLOG_("Bdi: " << Bdi << std::endl);
+       FMLOG_("Bid: " << Bid << std::endl);
+       FMLOG_("Bii: " << Bii << std::endl);
 
-  fmesh::Matrix1<double> Bdd1 = B1d;
-  fmesh::Matrix1<double> Bdd_1 = Rcpp::NumericVector(Bd(Rcpp::_, 1));
-  fmesh::Matrix1<int> Bdi1(B1d);
-  fmesh::Matrix1<double> Bid1(B1i);
-  fmesh::Matrix1<int> Bii1(B1i);
+       fmesh::Matrix1<double> Bdd1 = B1d;
+       fmesh::Matrix1<double> Bdd_1 = Rcpp::NumericVector(Bd(Rcpp::_, 1));
+       fmesh::Matrix1<int> Bdi1(B1d);
+       fmesh::Matrix1<double> Bid1(B1i);
+       fmesh::Matrix1<int> Bii1(B1i);
 
-  FMLOG_("Bdd1: " << Bdd1 << std::endl);
-  FMLOG_("Bdd_1: " << Bdd_1 << std::endl);
-  FMLOG_("Bdi1: " << Bdi1 << std::endl);
-  FMLOG_("Bid1: " << Bid1 << std::endl);
-  FMLOG_("Bii1: " << Bii1 << std::endl);
+       FMLOG_("Bdd1: " << Bdd1 << std::endl);
+       FMLOG_("Bdd_1: " << Bdd_1 << std::endl);
+       FMLOG_("Bdi1: " << Bdi1 << std::endl);
+       FMLOG_("Bid1: " << Bid1 << std::endl);
+       FMLOG_("Bii1: " << Bii1 << std::endl);
 
-  fmesh::Matrix3<double> Bdd3 = Bd;
-  fmesh::Matrix3<int> Bdi3(Bd);
-  fmesh::Matrix3<double> Bid3(Bi);
-  fmesh::Matrix3<int> Bii3(Bi);
+       fmesh::Matrix3<double> Bdd3 = Bd;
+       fmesh::Matrix3<int> Bdi3(Bd);
+       fmesh::Matrix3<double> Bid3(Bi);
+       fmesh::Matrix3<int> Bii3(Bi);
 
-  FMLOG_("Bdd3: " << Bdd3 << std::endl);
-  FMLOG_("Bdi3: " << Bdi3 << std::endl);
-  FMLOG_("Bid3: " << Bid3 << std::endl);
-  FMLOG_("Bii3: " << Bii3 << std::endl);
+       FMLOG_("Bdd3: " << Bdd3 << std::endl);
+       FMLOG_("Bdi3: " << Bdi3 << std::endl);
+       FMLOG_("Bid3: " << Bid3 << std::endl);
+       FMLOG_("Bii3: " << Bii3 << std::endl);
 
-  const Rcpp::List Ad(Rcpp::as<Rcpp::List>(args_input["Ad"]));
+       const Rcpp::List Ad(Rcpp::as<Rcpp::List>(args_input["Ad"]));
 
-  fmesh::SparseMatrix<double> Ad_fm(Ad);
+       fmesh::SparseMatrix<double> Ad_fm(Ad);
 
-//  const EigenMSM<int> Ai(Rcpp::as<EigenMSM<int>>(args_input["Ai"]));
+       //  const EigenMSM<int> Ai(Rcpp::as<EigenMSM<int>>(args_input["Ai"]));
 
-  //  bool is_msm = Rcpp::is<Eigen::SparseMatrix<double>>(args_input["a"]);
+       //  bool is_msm = Rcpp::is<Eigen::SparseMatrix<double>>(args_input["a"]);
 
-  matrices.attach("Ad_fm", &Ad_fm, false);
-  matrices.output("Ad_fm");
+       matrices.attach("Ad_fm", &Ad_fm, false);
+       matrices.output("Ad_fm");
 
-  MatrixC mat2(args_input);
+       MatrixC mat2(args_input);
 
-  FMLOG_(mat2.DI("tv"))
+       FMLOG_(mat2.DI("tv"))
 
-  Rcpp::List ret;
-  ret["is_list"] = is_list;
-  ret["is_numeric_matrix"] = is_numeric_matrix;
-  ret["is_numeric_vector"] = is_numeric_vector;
-  ret["is_integer_matrix"] = is_integer_matrix;
-  ret["is_integer_vector"] = is_integer_vector;
-//  ret["A"] = A;
-  ret["Ad"] = Ad;
+         Rcpp::List ret;
+       ret["is_list"] = is_list;
+       ret["is_numeric_matrix"] = is_numeric_matrix;
+       ret["is_numeric_vector"] = is_numeric_vector;
+       ret["is_integer_matrix"] = is_integer_matrix;
+       ret["is_integer_vector"] = is_integer_vector;
+       //  ret["A"] = A;
+       ret["Ad"] = Ad;
 #ifdef FMESHER_WITH_EIGEN
-  ret["Ad_fm"] = Ad_fm.EigenSparseMatrix();
+       ret["Ad_fm"] = Ad_fm.EigenSparseMatrix();
 #endif
-  ret["Ad_fm_auto"] = Ad_fm;
-  ret["Ad_fm_ijx"] = Ad_fm.RcppList();
-  ret["Bid3"] = Bid3;
-  ret["Bdi3"] = Bdi3;
-  ret["matrices"] = matrices;
-  ret["mat2"] = mat2.output("-");
-  return (ret);
-}
+       ret["Ad_fm_auto"] = Ad_fm;
+       ret["Ad_fm_ijx"] = Ad_fm.RcppList();
+       ret["Bid3"] = Bid3;
+       ret["Bdi3"] = Bdi3;
+       ret["matrices"] = matrices;
+       ret["mat2"] = mat2.output("-");
+       return (ret);
+     }
+
+
+
 
 #endif

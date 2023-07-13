@@ -716,6 +716,7 @@ public:
   Eigen::SparseMatrix<T> EigenSparseMatrix(IOMatrixtype matrixt = IOMatrixtype_general) const;
 #endif
   SEXP RcppList(IOMatrixtype matrixt = IOMatrixtype_general) const;
+  SEXP dgTMatrix(IOMatrixtype matrixt = IOMatrixtype_general) const;
 
 #endif
   /*! To list, general, symmetric, or diagonal. */
@@ -802,6 +803,8 @@ public:
       }
     }
   };
+
+  void fromRcpp(SEXP from);
 
 #ifdef FMESHER_WITH_EIGEN
   template<class TT> using EigenMSM = Eigen::Map<Eigen::SparseMatrix<TT>>;

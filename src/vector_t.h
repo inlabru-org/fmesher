@@ -381,14 +381,23 @@ template <class T> SEXP SparseMatrix<T>::RcppList(IOMatrixtype matrixt) const {
   output["j"] = j;
   output["x"] = x;
   output["dims"] = dims;
+  output.attr("class") = "fmesher_sparse";
 
   return output;
 }
 
+template <class T> SEXP SparseMatrix<T>::dgTMatrix(IOMatrixtype matrixt) const {
+  Rcpp::List output = RcppList(matrixt);
+  Rcpp::Environment pkg = Rcpp::Environment::namespace_env("fmesher");
+  Rcpp::Function fun = pkg["fm_as_dgTMatrix"];
+  Rcpp::S4 obj = fun(output);
+
+  return obj;
+}
+
 
 template <class T>
-SparseMatrix<T>::SparseMatrix(SEXP from)
-  : cols_(0), data_() {
+void SparseMatrix<T>::fromRcpp(SEXP from) {
   if (Rcpp::is<Rcpp::List>(from)) {
     Rcpp::List from_list = Rcpp::as<Rcpp::List>(from);
     Rcpp::IntegerVector Tr = Rcpp::as<Rcpp::IntegerVector>(from_list["i"]);
@@ -406,8 +415,20 @@ SparseMatrix<T>::SparseMatrix(SEXP from)
               from));
       (*this).fromEigen(mat);
 #else
-      Rcpp::warning("Attempt to convert a 'dgCMatrix' to internal fmesher format, but 'list' or 'dgTMatrix' is required.");
+
+      Rcpp::Environment pkg = Rcpp::Environment::namespace_env("fmesher");
+      Rcpp::Function fun = pkg["fm_as_dgTMatrix"];
+      obj = fun(from);
+
+      Rcpp::IntegerVector Tr = Rcpp::as<Rcpp::IntegerVector>(obj.slot("i"));
+      Rcpp::IntegerVector Tc = Rcpp::as<Rcpp::IntegerVector>(obj.slot("j"));
+      Rcpp::NumericVector Tv = Rcpp::as<Rcpp::NumericVector>(obj.slot("x"));
+      Rcpp::IntegerVector dims = Rcpp::as<Rcpp::IntegerVector>(obj.slot("Dim"));
+
+      fromlist(Tr, Tc, Tv, dims, IOMatrixtype_general);
+
 #endif
+
     } else if (obj.is("dgTMatrix")) {
       Rcpp::IntegerVector Tr = Rcpp::as<Rcpp::IntegerVector>(obj.slot("i"));
       Rcpp::IntegerVector Tc = Rcpp::as<Rcpp::IntegerVector>(obj.slot("j"));
@@ -419,6 +440,12 @@ SparseMatrix<T>::SparseMatrix(SEXP from)
       Rcpp::warning("Unsupported SparseMatrix<T>(Rcpp::S4) class.");
     }
   }
+}
+
+template <class T>
+SparseMatrix<T>::SparseMatrix(SEXP from)
+  : cols_(0), data_() {
+  fromRcpp(from);
 }
 
 #ifdef FMESHER_WITH_EIGEN
@@ -571,7 +598,7 @@ __FM_VECTOR_WRAP__(IntegerVector, Matrix1<int>)
 
   template<>
   inline SEXP wrap(const fmesh::SparseMatrix<double>& obj) {
-    return Rcpp::wrap(obj.RcppList(fmesh::IOMatrixtype_general));
+    return Rcpp::wrap(obj.dgTMatrix(fmesh::IOMatrixtype_general));
   }
   template<>
   inline SEXP wrap(const fmesh::SparseMatrix<int>& obj) {

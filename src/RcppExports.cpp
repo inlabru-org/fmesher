@@ -63,6 +63,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// C_matrixio_test2
+Rcpp::List C_matrixio_test2(Rcpp::List args_input);
+RcppExport SEXP _fmesher_C_matrixio_test2(SEXP args_inputSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args_input(args_inputSEXP);
+    rcpp_result_gen = Rcpp::wrap(C_matrixio_test2(args_input));
+    return rcpp_result_gen;
+END_RCPP
+}
 // C_matrixio_test
 Rcpp::List C_matrixio_test(Rcpp::List args_input);
 RcppExport SEXP _fmesher_C_matrixio_test(SEXP args_inputSEXP) {
@@ -80,6 +91,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_fmesher_fmesher_globe_points", (DL_FUNC) &_fmesher_fmesher_globe_points, 1},
     {"_fmesher_fmesher_rcdt", (DL_FUNC) &_fmesher_fmesher_rcdt, 7},
     {"_fmesher_fmesher_bary", (DL_FUNC) &_fmesher_fmesher_bary, 4},
+    {"_fmesher_C_matrixio_test2", (DL_FUNC) &_fmesher_C_matrixio_test2, 1},
     {"_fmesher_C_matrixio_test", (DL_FUNC) &_fmesher_C_matrixio_test, 1},
     {NULL, NULL, 0}
 };

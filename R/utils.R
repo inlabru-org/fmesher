@@ -130,10 +130,14 @@ fm_try_callstack <- function(expr) {
 #' @importFrom methods as
 # Explicit import of something from Matrix to appease automated checks:
 #' @importFrom Matrix as.matrix
-#' @export
 #' @keywords internal
-
+#' @export
 fm_as_dgCMatrix <- function(x) {
+  UseMethod("fm_as_dgCMatrix")
+}
+
+#' @export
+fm_as_dgCMatrix.default <- function(x) {
   if (inherits(x, "dgCMatrix")) {
     x
   } else {
@@ -142,8 +146,24 @@ fm_as_dgCMatrix <- function(x) {
 }
 
 #' @export
+fm_as_dgCMatrix.fmesher_sparse <- function(x) {
+  Matrix::sparseMatrix(
+    i = x[["i"]] + 1L,
+    j = x[["j"]] + 1L,
+    x = x[["x"]],
+    dims = x[["dims"]],
+    repr = "C"
+  )
+}
+
+#' @export
 #' @keywords internal
-fm_as_dgTMatrix <- function(x, unique = TRUE) {
+fm_as_dgTMatrix <- function(x, unique = TRUE, ...) {
+  UseMethod("fm_as_dgTMatrix")
+}
+
+#' @export
+fm_as_dgTMatrix.default <- function(x, unique = TRUE, ...) {
   if (unique) {
     as(fm_as_dgCMatrix(x), "TsparseMatrix")
   } else {
@@ -156,23 +176,27 @@ fm_as_dgTMatrix <- function(x, unique = TRUE) {
 }
 
 #' @export
-#' @keywords internal
-fm_sparse_from_C_to_R <- function(x) {
+fm_as_dgTMatrix.fmesher_sparse <- function(x, unique = TRUE, ...) {
   Matrix::sparseMatrix(
     i = x[["i"]] + 1L,
     j = x[["j"]] + 1L,
     x = x[["x"]],
-    dims = x[["dims"]]
+    dims = x[["dims"]],
+    repr = "T"
   )
 }
+
+
 #' @export
 #' @keywords internal
-fm_sparse_from_R_to_C <- function(x) {
+fm_as_fmesher_sparse <- function(x) {
   x <- fm_as_dgTMatrix(x, unique = TRUE)
-  list(
+  y <- list(
     i = slot(x, name = "i"),
     j = slot(x, name = "j"),
     x = slot(x, name = "x"),
     dims = slot(x, name = "Dim")
   )
+  class(y) <- c("fmesher_sparse", "list")
+  y
 }
