@@ -126,7 +126,9 @@ fm_try_callstack <- function(expr) {
 
 
 
-
+#' @title Conversion between sparse matrix types
+#' @rdname fmesher_sparse
+#' @param x Object to be converted
 #' @importFrom methods as
 # Explicit import of something from Matrix to appease automated checks:
 #' @importFrom Matrix as.matrix
@@ -136,6 +138,29 @@ fm_as_dgCMatrix <- function(x) {
   UseMethod("fm_as_dgCMatrix")
 }
 
+#' @param pretty logical; if `TRUE`, ensures that the sparse triplet
+#' representation has a single entry for each non-zero matrix element.
+#' @rdname fmesher_sparse
+#' @export
+fm_as_dgTMatrix <- function(x, unique = TRUE, ...) {
+  UseMethod("fm_as_dgTMatrix")
+}
+
+#' @rdname fmesher_sparse
+#' @export
+fm_as_fmesher_sparse <- function(x) {
+  x <- fm_as_dgTMatrix(x, unique = TRUE)
+  y <- list(
+    i = slot(x, name = "i"),
+    j = slot(x, name = "j"),
+    x = slot(x, name = "x"),
+    dims = slot(x, name = "Dim")
+  )
+  class(y) <- "fmesher_sparse"
+  y
+}
+
+#' @rdname fmesher_sparse
 #' @export
 fm_as_dgCMatrix.default <- function(x) {
   if (inherits(x, "dgCMatrix")) {
@@ -145,6 +170,7 @@ fm_as_dgCMatrix.default <- function(x) {
   }
 }
 
+#' @rdname fmesher_sparse
 #' @export
 fm_as_dgCMatrix.fmesher_sparse <- function(x) {
   Matrix::sparseMatrix(
@@ -156,12 +182,7 @@ fm_as_dgCMatrix.fmesher_sparse <- function(x) {
   )
 }
 
-#' @export
-#' @keywords internal
-fm_as_dgTMatrix <- function(x, unique = TRUE, ...) {
-  UseMethod("fm_as_dgTMatrix")
-}
-
+#' @rdname fmesher_sparse
 #' @export
 fm_as_dgTMatrix.default <- function(x, unique = TRUE, ...) {
   if (unique) {
@@ -175,6 +196,7 @@ fm_as_dgTMatrix.default <- function(x, unique = TRUE, ...) {
   }
 }
 
+#' @rdname fmesher_sparse
 #' @export
 fm_as_dgTMatrix.fmesher_sparse <- function(x, unique = TRUE, ...) {
   Matrix::sparseMatrix(
@@ -187,16 +209,3 @@ fm_as_dgTMatrix.fmesher_sparse <- function(x, unique = TRUE, ...) {
 }
 
 
-#' @export
-#' @keywords internal
-fm_as_fmesher_sparse <- function(x) {
-  x <- fm_as_dgTMatrix(x, unique = TRUE)
-  y <- list(
-    i = slot(x, name = "i"),
-    j = slot(x, name = "j"),
-    x = slot(x, name = "x"),
-    dims = slot(x, name = "Dim")
-  )
-  class(y) <- c("fmesher_sparse", "list")
-  y
-}
