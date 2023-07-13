@@ -369,7 +369,7 @@ template <class T> Eigen::SparseMatrix<T> SparseMatrix<T>::EigenSparseMatrix(IOM
 }
 #endif
 // Export to R as list(i,j,x,dims)
-template <class T> SEXP SparseMatrix<T>::RcppList(IOMatrixtype matrixt) const {
+template <class T> SEXP SparseMatrix<T>::fmesher_sparse(IOMatrixtype matrixt) const {
   std::vector<int> i;
   std::vector<int> j;
   std::vector<T> x;
@@ -386,8 +386,17 @@ template <class T> SEXP SparseMatrix<T>::RcppList(IOMatrixtype matrixt) const {
   return output;
 }
 
+template <class T> SEXP SparseMatrix<T>::dgCMatrix(IOMatrixtype matrixt) const {
+  Rcpp::List output = fmesher_sparse(matrixt);
+  Rcpp::Environment pkg = Rcpp::Environment::namespace_env("fmesher");
+  Rcpp::Function fun = pkg["fm_as_dgCMatrix"];
+  Rcpp::S4 obj = fun(output);
+
+  return obj;
+}
+
 template <class T> SEXP SparseMatrix<T>::dgTMatrix(IOMatrixtype matrixt) const {
-  Rcpp::List output = RcppList(matrixt);
+  Rcpp::List output = fmesher_sparse(matrixt);
   Rcpp::Environment pkg = Rcpp::Environment::namespace_env("fmesher");
   Rcpp::Function fun = pkg["fm_as_dgTMatrix"];
   Rcpp::S4 obj = fun(output);
@@ -398,7 +407,8 @@ template <class T> SEXP SparseMatrix<T>::dgTMatrix(IOMatrixtype matrixt) const {
 
 template <class T>
 void SparseMatrix<T>::fromRcpp(SEXP from) {
-  if (Rcpp::is<Rcpp::List>(from)) {
+  if (Rcpp::is<Rcpp::List>(from) &&
+      Rcpp::as<Rcpp::List>(from).inherits("fmesher_sparse")) {
     Rcpp::List from_list = Rcpp::as<Rcpp::List>(from);
     Rcpp::IntegerVector Tr = Rcpp::as<Rcpp::IntegerVector>(from_list["i"]);
     Rcpp::IntegerVector Tc = Rcpp::as<Rcpp::IntegerVector>(from_list["j"]);
@@ -406,30 +416,20 @@ void SparseMatrix<T>::fromRcpp(SEXP from) {
     Rcpp::IntegerVector dims = Rcpp::as<Rcpp::IntegerVector>(from_list["dims"]);
 
     fromlist(Tr, Tc, Tv, dims, IOMatrixtype_general);
-  } else {
+  } else if (Rcpp::is<Rcpp::S4>(from)) {
     Rcpp::S4 obj = (SEXP)from;
-    if (obj.is("dgCMatrix")) {
-#ifdef FMESHER_WITH_EIGEN
-      const Eigen::Map<Eigen::SparseMatrix<double>> mat(
-          Rcpp::as<Eigen::Map<Eigen::SparseMatrix<double> > >(
-              from));
-      (*this).fromEigen(mat);
-#else
+    if (obj.is("dgCMatrix") || obj.is("dgTMatrix")) {
+      if (obj.is("dgCMatrix")) {
+        //      const Eigen::Map<Eigen::SparseMatrix<double>> mat(
+        //          Rcpp::as<Eigen::Map<Eigen::SparseMatrix<double> > >(
+        //              from));
+        //      (*this).fromEigen(mat);
 
-      Rcpp::Environment pkg = Rcpp::Environment::namespace_env("fmesher");
-      Rcpp::Function fun = pkg["fm_as_dgTMatrix"];
-      obj = fun(from);
+        Rcpp::Environment pkg = Rcpp::Environment::namespace_env("fmesher");
+        Rcpp::Function fun = pkg["fm_as_dgTMatrix"];
+        obj = fun(from);
+      }
 
-      Rcpp::IntegerVector Tr = Rcpp::as<Rcpp::IntegerVector>(obj.slot("i"));
-      Rcpp::IntegerVector Tc = Rcpp::as<Rcpp::IntegerVector>(obj.slot("j"));
-      Rcpp::NumericVector Tv = Rcpp::as<Rcpp::NumericVector>(obj.slot("x"));
-      Rcpp::IntegerVector dims = Rcpp::as<Rcpp::IntegerVector>(obj.slot("Dim"));
-
-      fromlist(Tr, Tc, Tv, dims, IOMatrixtype_general);
-
-#endif
-
-    } else if (obj.is("dgTMatrix")) {
       Rcpp::IntegerVector Tr = Rcpp::as<Rcpp::IntegerVector>(obj.slot("i"));
       Rcpp::IntegerVector Tc = Rcpp::as<Rcpp::IntegerVector>(obj.slot("j"));
       Rcpp::NumericVector Tv = Rcpp::as<Rcpp::NumericVector>(obj.slot("x"));
@@ -439,6 +439,8 @@ void SparseMatrix<T>::fromRcpp(SEXP from) {
     } else {
       Rcpp::warning("Unsupported SparseMatrix<T>(Rcpp::S4) class.");
     }
+  } else {
+    Rcpp::warning("Unsupported SparseMatrix<T>(Rcpp) class.");
   }
 }
 
@@ -602,7 +604,8 @@ __FM_VECTOR_WRAP__(IntegerVector, Matrix1<int>)
   }
   template<>
   inline SEXP wrap(const fmesh::SparseMatrix<int>& obj) {
-    return Rcpp::wrap(obj.RcppList(fmesh::IOMatrixtype_general));
+    // No Sparse matrix storage for integers, so return ijx triples instead.
+    return Rcpp::wrap(obj.fmesher_sparse(fmesh::IOMatrixtype_general));
   }
 
 } // Namespace Rcpp

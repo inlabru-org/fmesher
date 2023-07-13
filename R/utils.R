@@ -150,13 +150,15 @@ fm_as_dgTMatrix <- function(x, unique = TRUE, ...) {
 #' @export
 fm_as_fmesher_sparse <- function(x) {
   x <- fm_as_dgTMatrix(x, unique = TRUE)
-  y <- list(
-    i = slot(x, name = "i"),
-    j = slot(x, name = "j"),
-    x = slot(x, name = "x"),
-    dims = slot(x, name = "Dim")
+  y <- structure(
+    list(
+      i = slot(x, name = "i"),
+      j = slot(x, name = "j"),
+      x = slot(x, name = "x"),
+      dims = slot(x, name = "Dim")
+    ),
+    class = "fmesher_sparse"
   )
-  class(y) <- "fmesher_sparse"
   y
 }
 

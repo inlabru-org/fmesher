@@ -616,7 +616,7 @@ Rcpp::List C_matrixio_test2(Rcpp::List args_input) {
        ret["Ad_fm"] = Ad_fm.EigenSparseMatrix();
 #endif
        ret["Ad_fm_auto"] = Ad_fm;
-       ret["Ad_fm_ijx"] = Ad_fm.RcppList();
+       ret["Ad_fm_ijx"] = Ad_fm.fmesher_sparse();
        ret["Bid3"] = Bid3;
        ret["Bdi3"] = Bdi3;
        ret["matrices"] = matrices;

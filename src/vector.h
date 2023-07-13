@@ -715,7 +715,8 @@ public:
 #ifdef FMESHER_WITH_EIGEN
   Eigen::SparseMatrix<T> EigenSparseMatrix(IOMatrixtype matrixt = IOMatrixtype_general) const;
 #endif
-  SEXP RcppList(IOMatrixtype matrixt = IOMatrixtype_general) const;
+  SEXP fmesher_sparse(IOMatrixtype matrixt = IOMatrixtype_general) const;
+  SEXP dgCMatrix(IOMatrixtype matrixt = IOMatrixtype_general) const;
   SEXP dgTMatrix(IOMatrixtype matrixt = IOMatrixtype_general) const;
 
 #endif

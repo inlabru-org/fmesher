@@ -558,8 +558,7 @@ SEXP MatrixC::Rcpp_wrap() const {
       else
         res[(*outi)] = Rcpp::wrap(mcc.DD());
     } else if (mcc.info.valuetype == IOValuetype_int) {
-      // No Sparse matrix storage for integers, so return ijx triples instead.
-      res[(*outi)] = mcc.SI().RcppList();
+      res[(*outi)] = Rcpp::wrap(mcc.SI());
     } else
       res[(*outi)] = Rcpp::wrap(mcc.SD());
   }
@@ -568,7 +567,6 @@ SEXP MatrixC::Rcpp_wrap() const {
 
 
 void MatrixC::attach(std::string name, SEXP from) {
-  Rcpp::List from_list = Rcpp::as<Rcpp::List>(from);
   if (Rcpp::is<Rcpp::NumericMatrix>(from)) {
     (*this).attach(name, new Matrix<double>(
         Rcpp::as<Rcpp::NumericMatrix>(
