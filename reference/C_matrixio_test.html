@@ -77,93 +77,93 @@
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">A</span> <span class="op">&lt;-</span> <span class="fu">Matrix</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/Matrix/man/sparseMatrix.html" class="external-link">sparseMatrix</a></span><span class="op">(</span>i<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>,j<span class="op">=</span><span class="fl">4</span><span class="op">:</span><span class="fl">1</span>,x<span class="op">=</span><span class="fl">2</span><span class="op">:</span><span class="fl">5</span>,dims<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>,<span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">C_matrixio_test</span><span class="op">(</span>args_input<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  A <span class="op">=</span> <span class="fu">fm_as_dgTMatrix</span><span class="op">(</span><span class="va">A</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  A <span class="op">=</span> <span class="fu"><a href="fmesher_sparse.html">fm_as_dgTMatrix</a></span><span class="op">(</span><span class="va">A</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  Bd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="op">(</span><span class="fl">11</span><span class="op">:</span><span class="fl">22</span><span class="op">)</span><span class="op">+</span><span class="fl">0.5</span>,<span class="fl">4</span>,<span class="fl">3</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  Bi <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">121L</span><span class="op">:</span><span class="fl">132L</span>,<span class="fl">4</span>,<span class="fl">3</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  B1d<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="op">(</span><span class="fl">31</span><span class="op">:</span><span class="fl">34</span><span class="op">)</span><span class="op">+</span><span class="fl">0.5</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  B1i<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="fl">41L</span><span class="op">:</span><span class="fl">44L</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  Ad <span class="op">=</span> <span class="fu">fm_sparse_from_R_to_C</span><span class="op">(</span><span class="va">A</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  Ad <span class="op">=</span> <span class="fu"><a href="fmesher_sparse.html">fm_as_fmesher_sparse</a></span><span class="op">(</span><span class="va">A</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Rcpp_interface.cc(537)	Bdd: 4 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Rcpp_interface.cc(565)	Bdd: 4 3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 11.5 15.5 19.5 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 12.5 16.5 20.5 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 13.5 17.5 21.5 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 14.5 18.5 22.5 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Rcpp_interface.cc(538)	Bdi: 4 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Rcpp_interface.cc(566)	Bdi: 4 3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 11 15 19 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 12 16 20 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 13 17 21 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 14 18 22 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Rcpp_interface.cc(539)	Bid: 4 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Rcpp_interface.cc(567)	Bid: 4 3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 121 125 129 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 122 126 130 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 123 127 131 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 124 128 132 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Rcpp_interface.cc(540)	Bii: 4 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Rcpp_interface.cc(568)	Bii: 4 3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 121 125 129 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 122 126 130 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 123 127 131 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 124 128 132 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Rcpp_interface.cc(548)	Bdd1: 4 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Rcpp_interface.cc(576)	Bdd1: 4 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 31.5 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 32.5 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 33.5 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 34.5 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Rcpp_interface.cc(549)	Bdd_1: 4 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Rcpp_interface.cc(577)	Bdd_1: 4 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 15.5 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 16.5 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 17.5 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 18.5 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Rcpp_interface.cc(550)	Bdi1: 4 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Rcpp_interface.cc(578)	Bdi1: 4 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 31 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 32 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 33 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 34 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Rcpp_interface.cc(551)	Bid1: 4 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Rcpp_interface.cc(579)	Bid1: 4 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 41 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 42 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 43 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 44 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Rcpp_interface.cc(552)	Bii1: 4 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Rcpp_interface.cc(580)	Bii1: 4 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 41 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 42 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 43 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 44 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Rcpp_interface.cc(559)	Bdd3: 4 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Rcpp_interface.cc(587)	Bdd3: 4 3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 11.5 15.5 19.5 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 12.5 16.5 20.5 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 13.5 17.5 21.5 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 14.5 18.5 22.5 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Rcpp_interface.cc(560)	Bdi3: 4 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Rcpp_interface.cc(588)	Bdi3: 4 3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 11 15 19 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 12 16 20 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 13 17 21 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 14 18 22 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Rcpp_interface.cc(561)	Bid3: 4 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Rcpp_interface.cc(589)	Bid3: 4 3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 121 125 129 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 122 126 130 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 123 127 131 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 124 128 132 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Rcpp_interface.cc(562)	Bii3: 4 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Rcpp_interface.cc(590)	Bii3: 4 3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 121 125 129 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 122 126 130 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 123 127 131 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 124 128 132 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Rcpp_interface.cc(577)	0 0</span>
-<span class="r-in"><span><span class="va">Aout</span> <span class="op">&lt;-</span> <span class="fu">fm_sparse_from_C_to_R</span><span class="op">(</span><span class="va">out</span><span class="op">[[</span><span class="st">"Ad"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Rcpp_interface.cc(605)	0 0</span>
+<span class="r-in"><span><span class="va">Aout</span> <span class="op">&lt;-</span> <span class="fu"><a href="fmesher_sparse.html">fm_as_dgTMatrix</a></span><span class="op">(</span><span class="va">out</span><span class="op">[[</span><span class="st">"Ad"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">A</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4 x 4 sparse Matrix of class "dgCMatrix"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             </span>
@@ -172,7 +172,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> [3,] . 4 . .</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 5 . . .</span>
 <span class="r-in"><span><span class="va">Aout</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 x 4 sparse Matrix of class "dgCMatrix"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 x 4 sparse Matrix of class "dgTMatrix"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,] . . . 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,] . . 3 .</span>
