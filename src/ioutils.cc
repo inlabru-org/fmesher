@@ -577,6 +577,7 @@ void MatrixC::attach(std::string name, SEXP from) {
         Rcpp::as<Rcpp::IntegerMatrix>(
           from)), true,
           IOMatrixtype_general);
+  } else if (Rcpp::is<Rcpp::CharacterMatrix>(from)) {
   } else if (Rcpp::is<Rcpp::NumericVector>(from)) {
     (*this).attach(name, new Matrix1<double>(
         Rcpp::as<Rcpp::NumericVector>(
@@ -587,6 +588,7 @@ void MatrixC::attach(std::string name, SEXP from) {
         Rcpp::as<Rcpp::IntegerVector>(
           from)), true,
           IOMatrixtype_general);
+  } else if (Rcpp::is<Rcpp::CharacterVector>(from)) {
   } else {
     (*this).attach(name,
      new SparseMatrix<double>(from),

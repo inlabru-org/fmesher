@@ -218,7 +218,7 @@ Rcpp::List fmesher_rcdt(Rcpp::List options,
   Matrix<int>* TV0 = NULL;
   if (!tv.isNull()) {
     matrices.attach("tv0",
-                    new Matrix<double>(Rcpp::as<Rcpp::IntegerMatrix>(tv)),
+                    new Matrix<int>(Rcpp::as<Rcpp::IntegerMatrix>(tv)),
                     true);
     FMLOG("'tv0' points imported." << std::endl);
     TV0 = &matrices.DI("tv0");
@@ -498,19 +498,17 @@ Rcpp::List fmesher_bary(Rcpp::NumericMatrix loc,
 //' @param args_input Input argument list
 //' @examples
 //' A <- Matrix::sparseMatrix(i=1:4,j=4:1,x=2:5,dims=c(4,4))
-//' out <- C_matrixio_test2(args_input=list(
+//' inp <- list(
 //'   A = fm_as_dgTMatrix(A),
 //'   Bd = matrix((11:22)+0.5,4,3),
 //'   Bi = matrix(121L:132L,4,3),
 //'   B1d=as.matrix((31:34)+0.5),
 //'   B1i=as.matrix(41L:44L),
 //'   Ad = fm_as_fmesher_sparse(A)
-//' ))
-//' A1 <- fm_as_dgTMatrix(out[["A"]])
-//' A2 <- fm_as_dgTMatrix(out[["Ad"]])
-//' A
-//' A1
-//' A2
+//' )
+//' inp[["BdM"]] <- as(inp[["Bd"]], "unpackedMatrix")
+//' out <- C_matrixio_test2(args_input = inp)
+//' str(out)
 //' @export
 // [[Rcpp::export]]
 Rcpp::List C_matrixio_test2(Rcpp::List args_input) {
@@ -558,8 +556,8 @@ Rcpp::List C_matrixio_test2(Rcpp::List args_input) {
 
 
        fmesh::Matrix<double> Bdd = Bd;
-       fmesh::Matrix<int> Bdi(Bd);
-       fmesh::Matrix<double> Bid(Bi);
+       fmesh::Matrix<int> Bdi(Rcpp::as<Rcpp::IntegerMatrix>(Bd));
+       fmesh::Matrix<double> Bid(Rcpp::as<Rcpp::NumericMatrix>(Bi));
        fmesh::Matrix<int> Bii(Bi);
 
        FMLOG_("Bdd: " << Bdd << std::endl);
@@ -569,8 +567,8 @@ Rcpp::List C_matrixio_test2(Rcpp::List args_input) {
 
        fmesh::Matrix1<double> Bdd1 = B1d;
        fmesh::Matrix1<double> Bdd_1 = Rcpp::NumericVector(Bd(Rcpp::_, 1));
-       fmesh::Matrix1<int> Bdi1(B1d);
-       fmesh::Matrix1<double> Bid1(B1i);
+       fmesh::Matrix1<int> Bdi1(Rcpp::as<Rcpp::IntegerVector>(B1d));
+       fmesh::Matrix1<double> Bid1(Rcpp::as<Rcpp::NumericVector>(B1i));
        fmesh::Matrix1<int> Bii1(B1i);
 
        FMLOG_("Bdd1: " << Bdd1 << std::endl);
@@ -580,8 +578,8 @@ Rcpp::List C_matrixio_test2(Rcpp::List args_input) {
        FMLOG_("Bii1: " << Bii1 << std::endl);
 
        fmesh::Matrix3<double> Bdd3 = Bd;
-       fmesh::Matrix3<int> Bdi3(Bd);
-       fmesh::Matrix3<double> Bid3(Bi);
+       fmesh::Matrix3<int> Bdi3(Rcpp::as<Rcpp::IntegerMatrix>(Bd));
+       fmesh::Matrix3<double> Bid3(Rcpp::as<Rcpp::NumericMatrix>(Bi));
        fmesh::Matrix3<int> Bii3(Bi);
 
        FMLOG_("Bdd3: " << Bdd3 << std::endl);

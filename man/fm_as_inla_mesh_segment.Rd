@@ -2,6 +2,8 @@
 % Please edit documentation in R/sf_mesh.R, R/sp_mesh.R
 \name{fm_as_inla_mesh_segment}
 \alias{fm_as_inla_mesh_segment}
+\alias{fm_as_inla_mesh_segment.list}
+\alias{fm_as_inla_mesh_segment.sfg}
 \alias{fm_as_inla_mesh_segment.sfc_POINT}
 \alias{fm_as_inla_mesh_segment.sfc_LINESTRING}
 \alias{fm_as_inla_mesh_segment.sfc_POLYGON}
@@ -22,6 +24,10 @@
 \title{Conversion to inla.mesh.segment}
 \usage{
 fm_as_inla_mesh_segment(x, ...)
+
+\method{fm_as_inla_mesh_segment}{list}(x, ...)
+
+\method{fm_as_inla_mesh_segment}{sfg}(x, ...)
 
 \method{fm_as_inla_mesh_segment}{sfc_POINT}(x, reverse = FALSE, grp = NULL, is.bnd = TRUE, ...)
 
@@ -101,6 +107,11 @@ An \code{inla.mesh.segment} object
 \description{
 Conversion to inla.mesh.segment
 }
+\section{Methods (by class)}{
+\itemize{
+\item \code{fm_as_inla_mesh_segment(list)}: Converts each list element.
+
+}}
 \seealso{
 Other fm_as: 
 \code{\link{fm_as_inla_mesh}()},

@@ -439,3 +439,207 @@ fm_bary <- function(mesh, loc, crs = NULL) {
   bary[pre_ok_idx[ok], ] <- result$bary[ok, ]
   list(t = tri, bary = bary)
 }
+
+
+
+
+
+
+
+
+
+
+#' @title Compute an extension of a spatial object
+#'
+#' @description
+#' Constructs a potentially nonconvex extension of a spatial object by
+#' performing dilation by `convex + concave` followed by
+#' erosion by `concave`. This is equivalent to dilation by `convex` followed
+#' by closing (dilation + erosion) by `concave`.
+#'
+#' @param x A spatial object
+#' @param ... Arguments passed on to the sub-methods
+#' @param convex How much to extend
+#' @param concave The minimum allowed reentrant curvature. Default equal to `convex`
+#' @param preserveTopology logical; argument to `sf::st_simplify()`
+#' @param dTolerance If not null, the `dTolerance` argument to `sf::st_simplify()`
+#' @returns An extended object
+#' @references Gonzalez and Woods (1992), Digital Image Processing
+#' @export
+#' @examples
+#' inp <- sf::st_as_sf(as.data.frame(matrix(1:6, 3, 2)), coords = 1:2)
+#' out <- fm_nonconvex_hull(inp, convex = 1)
+#' plot(out)
+fm_nonconvex_hull <- function(x, ...) {
+  UseMethod("fm_nonconvex_hull")
+}
+
+#' @rdname fm_nonconvex_hull
+#' @export
+fm_nonconvex_hull.matrix <- function(x, ...) {
+  fm_nonconvex_hull.sfc(sf::st_multipoint(x), ...)
+}
+
+#' @rdname fm_nonconvex_hull
+#' @export
+fm_nonconvex_hull.sf <- function(x, ...) {
+  fm_nonconvex_hull.sfc(sf::st_geometry(x), ...)
+}
+
+#' @rdname fm_nonconvex_hull
+#' @export
+fm_nonconvex_hull.Spatial <- function(x, ...) {
+  fm_nonconvex_hull.sfc(sf::st_as_sfc(x), ...)
+}
+
+#' @rdname fm_nonconvex_hull
+#' @export
+fm_nonconvex_hull.sfg <- function(x, ...) {
+  fm_nonconvex_hull.sfc(sf::st_sfc(x), ...)
+}
+
+#' @rdname fm_nonconvex_hull
+#' @details Differs from `sf::st_buffer(x, convex)` followed by
+#' `sf::st_concave_hull()` (available from GEOS 3.11)
+#' in how the amount of allowed concavity is controlled.
+#' @export
+fm_nonconvex_hull.sfc <- function(x,
+                                  convex = -0.15,
+                                  concave = convex,
+                                  preserveTopology = TRUE,
+                                  dTolerance = NULL,
+                                  ...) {
+  if ((convex < 0) || (concave < 0)) {
+    approx_diameter <- fm_diameter(x)
+    if (convex < 0) {
+      convex <- approx_diameter * abs(convex)
+    }
+    if (concave < 0) {
+      concave <- approx_diameter * abs(concave)
+    }
+  }
+
+  nQuadSegs <- 64
+  y <- sf::st_buffer(x, dist = convex + concave, nQuadSegs = nQuadSegs)
+  y <- sf::st_union(y)
+  y <- sf::st_buffer(y, dist = -concave, nQuadSegs = nQuadSegs)
+  if (!is.null(dTolerance)) {
+    y <- sf::st_simplify(y,
+      preserveTopology = preserveTopology,
+      dTolerance = dTolerance
+    )
+  }
+  y <- sf::st_union(y)
+  y
+}
+
+#' @title Compute approximate spatial object diameter
+#' @param x A spatial object
+#' @param ... Currently unused
+#' @export
+fm_diameter <- function(x, ...) {
+  UseMethod("fm_diameter")
+}
+
+#' @rdname fm_diameter
+#' @export
+fm_diameter.sf <- function(x, ...) {
+  fm_diameter.sfc(sf::st_geometry(x))
+}
+
+#' @rdname fm_diameter
+#' @export
+fm_diameter.sfg <- function(x, ...) {
+  fm_diameter.sfc(sf::st_sfc(x))
+}
+
+#' @rdname fm_diameter
+#' @export
+fm_diameter.sfc <- function(x, ...) {
+  fm_diameter.matrix(sf::st_coordinates(x))
+}
+
+#' @rdname fm_diameter
+#' @export
+fm_diameter.matrix <- function(x, ...) {
+  if (ncol(x) == 1) {
+    lim <- range(x)
+    approx_diameter <- diff(lim)
+  } else if (ncol(x) == 2) {
+    lim <- rbind(range(x[, 1]), range(x[, 2]))
+    approx_diameter <- max(diff(lim[1, ]), diff(lim[2, ]))
+  } else if (ncol(x) >= 3) {
+    lim <- rbind(range(x[, 1]), range(x[, 2]), range(x[, 3]))
+    approx_diameter <- max(diff(lim[1, ]), diff(lim[2, ]), diff(lim[3, ]))
+  }
+  approx_diameter
+}
+
+
+#' @title Compute extensions of a spatial object
+#'
+#' @description
+#' Constructs a potentially nonconvex extension of a spatial object by
+#' performing dilation by `convex + concave` followed by
+#' erosion by `concave`. This is equivalent to dilation by `convex` followed
+#' by closing (dilation + erosion) by `concave`.
+#' @seealso [fm_nonconvex_hull()]
+#'
+#' @param x A spatial object
+#' @param convex numeric vector; How much to extend
+#' @param concave numeric vector; The minimum allowed reentrant curvature. Default equal to `convex`
+#' @param dTolerance If not null, the `dTolerance` argument to `sf::st_simplify()`,
+#' passed on to [fm_nonconvex_hull()].
+#' The default is `pmin(convex, concave) / 40`, chosen to
+#' give approximately 4 or more subsegments per circular quadrant.
+#' @param ... Optional further arguments to pass on to [fm_nonconvex_hull()].
+#' @returns A list of `sfg` objects.
+#' @export
+#' @examples
+#' if (fm_safe_inla()) {
+#'   inp <- sf::st_as_sf(as.data.frame(matrix(1:6, 3, 2)), coords = 1:2)
+#'   out <- fm_extensions(inp, convex = c(0.75, 2))
+#'   bnd <- fm_as_inla_mesh_segment(out)
+#'   plot(INLA::inla.mesh.2d(boundary = bnd, max.edge = c(0.25, 1)), asp = 1)
+#' }
+#'
+fm_extensions <- function(x,
+                          convex = -0.15,
+                          concave = convex,
+                          dTolerance = NULL,
+                          ...) {
+  if (any(convex < 0) || any(concave < 0) || any(dTolerance < 0)) {
+    approx_diameter <- fm_diameter(x)
+  }
+  len <- max(length(convex), length(concave), length(dTolerance))
+  scale_fun <- function(val) {
+    if (any(val < 0)) {
+      val[val < 0] <- approx_diameter * abs(val[val < 0])
+    }
+    if (length(val) < len) {
+      val <- c(val, rep(val[length(val)], len - length(val)))
+    }
+    val
+  }
+  convex <- scale_fun(convex)
+  concave <- scale_fun(concave)
+  if (is.null(dTolerance)) {
+    dTolerance <- pmin(convex, concave) / 40
+  } else {
+    dTolerance <- scale_fun(dTolerance)
+  }
+
+  y <- lapply(
+    seq_along(convex),
+    function(k) {
+      fm_nonconvex_hull(
+        x,
+        convex = convex[k],
+        concave = concave[k],
+        dTolerance = dTolerance[k],
+        ...
+      )
+    }
+  )
+  y
+}

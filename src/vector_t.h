@@ -32,7 +32,7 @@ Matrix<T>::Matrix(const Matrix<T> &from)
 }
 #ifdef FMESHER_WITH_R
 template <class T>
-Matrix<T>::Matrix(const Rcpp::NumericMatrix &from)
+Matrix<T>::Matrix(const typename Matrix<T>::RcppMatrix &from)
   : data_(NULL), rows_(0), cols_(0), cap_(0) {
   clear();
   cols(from.ncol());
@@ -40,7 +40,7 @@ Matrix<T>::Matrix(const Rcpp::NumericMatrix &from)
   rows_ = from.nrow();
   if (data_) {
     for (size_t col_idx = 0; col_idx < cols_; col_idx++) {
-      Rcpp::NumericMatrix::ConstColumn col = from(Rcpp::_, col_idx);
+      typename RcppMatrix::ConstColumn col = from(Rcpp::_, col_idx);
       size_t row_idx = 0;
       for (auto elem = col.cbegin(); elem != col.cend(); elem++) {
         (*this)(row_idx, col_idx) = (T)(*elem);
@@ -50,6 +50,7 @@ Matrix<T>::Matrix(const Rcpp::NumericMatrix &from)
   }
 }
 
+/*
 template <class T>
 Matrix<T>::Matrix(const Rcpp::IntegerMatrix &from)
   : data_(NULL), rows_(0), cols_(0), cap_(0) {
@@ -68,9 +69,9 @@ Matrix<T>::Matrix(const Rcpp::IntegerMatrix &from)
     }
   }
 }
-
+*/
 template <class T>
-Matrix<T>::Matrix(const Rcpp::NumericVector &from)
+Matrix<T>::Matrix(const typename Matrix<T>::RcppVector &from)
   : data_(NULL), rows_(0), cols_(0), cap_(0) {
   clear();
   cols(1);
@@ -85,6 +86,7 @@ Matrix<T>::Matrix(const Rcpp::NumericVector &from)
   }
 }
 
+/*
 template <class T>
 Matrix<T>::Matrix(const Rcpp::IntegerVector &from)
   : data_(NULL), rows_(0), cols_(0), cap_(0) {
@@ -100,6 +102,7 @@ Matrix<T>::Matrix(const Rcpp::IntegerVector &from)
     }
   }
 }
+ */
 #endif
 
 
@@ -195,7 +198,7 @@ template <class T> Matrix<T> &Matrix<T>::cols(size_t set_cols) {
 
 #ifdef FMESHER_WITH_R
 template <class T>
-Matrix1<T>::Matrix1(const Rcpp::NumericMatrix &from) : Matrix<T>(from) {
+Matrix1<T>::Matrix1(const typename Matrix<T>::RcppMatrix &from) : Matrix<T>(from) {
   // Check number of columns:
   if (1 != from.ncol()) {
     Rcpp::stop("NumericMatrix->Matrix1 conversion: column number mismatch.");
@@ -203,34 +206,16 @@ Matrix1<T>::Matrix1(const Rcpp::NumericMatrix &from) : Matrix<T>(from) {
 }
 
 template <class T>
-Matrix1<T>::Matrix1(const Rcpp::IntegerMatrix &from) : Matrix<T>(from) {
-  // Check number of columns:
-  if (1 != from.ncol()) {
-    Rcpp::stop("IntegerMatrix->Matrix1 conversion: column number mismatch.");
-  }
-}
+Matrix1<T>::Matrix1(const typename Matrix<T>::RcppVector &from) : Matrix<T>(from) {}
 
 template <class T>
-Matrix1<T>::Matrix1(const Rcpp::NumericVector &from) : Matrix<T>(from) {}
-
-template <class T>
-Matrix1<T>::Matrix1(const Rcpp::IntegerVector &from) : Matrix<T>(from) {}
-
-template <class T>
-Matrix3<T>::Matrix3(const Rcpp::NumericMatrix &from) : Matrix<T>(from) {
+Matrix3<T>::Matrix3(const typename Matrix<T>::RcppMatrix &from) : Matrix<T>(from) {
   // Check number of columns:
   if (3 != from.ncol()) {
     Rcpp::stop("NumericMatrix->Matrix3 conversion: column number mismatch.");
   }
 }
 
-template <class T>
-Matrix3<T>::Matrix3(const Rcpp::IntegerMatrix &from) : Matrix<T>(from) {
-  // Check number of columns:
-  if (3 != from.ncol()) {
-    Rcpp::stop("IntegerMatrix->Matrix3 conversion: column number mismatch.");
-  }
-}
 #endif
 
 
@@ -386,6 +371,15 @@ template <class T> SEXP SparseMatrix<T>::fmesher_sparse(IOMatrixtype matrixt) co
   return output;
 }
 
+template <class T> SEXP SparseMatrix<T>::unpackedMatrix(IOMatrixtype matrixt) const {
+  Rcpp::List output = fmesher_sparse(matrixt);
+  Rcpp::Environment pkg = Rcpp::Environment::namespace_env("fmesher");
+  Rcpp::Function fun = pkg["fm_as_unpackedMatrix"];
+  Rcpp::S4 obj = fun(output);
+
+  return obj;
+}
+
 template <class T> SEXP SparseMatrix<T>::dgCMatrix(IOMatrixtype matrixt) const {
   Rcpp::List output = fmesher_sparse(matrixt);
   Rcpp::Environment pkg = Rcpp::Environment::namespace_env("fmesher");
@@ -418,13 +412,8 @@ void SparseMatrix<T>::fromRcpp(SEXP from) {
     fromlist(Tr, Tc, Tv, dims, IOMatrixtype_general);
   } else if (Rcpp::is<Rcpp::S4>(from)) {
     Rcpp::S4 obj = (SEXP)from;
-    if (obj.is("dgCMatrix") || obj.is("dgTMatrix")) {
-      if (obj.is("dgCMatrix")) {
-        //      const Eigen::Map<Eigen::SparseMatrix<double>> mat(
-        //          Rcpp::as<Eigen::Map<Eigen::SparseMatrix<double> > >(
-        //              from));
-        //      (*this).fromEigen(mat);
-
+    if (obj.is("Matrix")) {
+      if (!obj.is("dgTMatrix")) {
         Rcpp::Environment pkg = Rcpp::Environment::namespace_env("fmesher");
         Rcpp::Function fun = pkg["fm_as_dgTMatrix"];
         obj = fun(from);
@@ -591,6 +580,7 @@ inline SEXP wrap(const fmesh::InType& obj) {                   \
   }                                                            \
   return res;                                                  \
 }
+
 __FM_MATRIX_WRAP__(NumericMatrix, Matrix<double>, obj.cols())
 __FM_MATRIX_WRAP__(IntegerMatrix, Matrix<int>, obj.cols())
 __FM_MATRIX_WRAP__(NumericMatrix, Matrix3<double>, 3)

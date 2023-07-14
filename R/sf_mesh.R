@@ -138,6 +138,19 @@ fm_as_inla_mesh <- function(...) {
   UseMethod("fm_as_inla_mesh")
 }
 
+#' @describeIn fm_as_inla_mesh Converts each list element.
+#' @export
+fm_as_inla_mesh.list <-
+  function(x, ...) {
+    lapply(x, function(xx) fm_as_inla_mesh_segment(xx, ...))
+  }
+
+#' @rdname fm_as_inla_mesh
+#' @export
+fm_as_inla_mesh.sfg <-
+  function(x, ...) {
+    fm_as_inla_mesh(sf::st_sfc(x), ...)
+  }
 
 #' @rdname fm_as_inla_mesh
 #'
@@ -223,6 +236,20 @@ fm_as_inla_mesh.sf <-
 fm_as_inla_mesh_segment <-
   function(x, ...) {
     UseMethod("fm_as_inla_mesh_segment")
+  }
+
+#' @describeIn fm_as_inla_mesh_segment Converts each list element.
+#' @export
+fm_as_inla_mesh_segment.list <-
+  function(x, ...) {
+    lapply(x, function(xx) fm_as_inla_mesh_segment(xx, ...))
+  }
+
+#' @rdname fm_as_inla_mesh_segment
+#' @export
+fm_as_inla_mesh_segment.sfg <-
+  function(x, ...) {
+    fm_as_inla_mesh_segment(sf::st_sfc(x), ...)
   }
 
 #' @rdname fm_as_inla_mesh_segment

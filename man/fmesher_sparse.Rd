@@ -3,16 +3,21 @@
 \name{fm_as_dgCMatrix}
 \alias{fm_as_dgCMatrix}
 \alias{fm_as_dgTMatrix}
+\alias{fm_as_unpackedMatrix}
 \alias{fm_as_fmesher_sparse}
 \alias{fm_as_dgCMatrix.default}
 \alias{fm_as_dgCMatrix.fmesher_sparse}
 \alias{fm_as_dgTMatrix.default}
+\alias{fm_as_unpackedMatrix.default}
+\alias{fm_as_unpackedMatrix.fmesher_sparse}
 \alias{fm_as_dgTMatrix.fmesher_sparse}
 \title{Conversion between sparse matrix types}
 \usage{
 fm_as_dgCMatrix(x)
 
 fm_as_dgTMatrix(x, unique = TRUE, ...)
+
+fm_as_unpackedMatrix(x)
 
 fm_as_fmesher_sparse(x)
 
@@ -21,6 +26,10 @@ fm_as_fmesher_sparse(x)
 \method{fm_as_dgCMatrix}{fmesher_sparse}(x)
 
 \method{fm_as_dgTMatrix}{default}(x, unique = TRUE, ...)
+
+\method{fm_as_unpackedMatrix}{default}(x)
+
+\method{fm_as_unpackedMatrix}{fmesher_sparse}(x)
 
 \method{fm_as_dgTMatrix}{fmesher_sparse}(x, unique = TRUE, ...)
 }

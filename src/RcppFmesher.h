@@ -13,6 +13,33 @@ template <class T> class Matrix1;
 template <class T> class Matrix3;
 template <class T> class SparseMatrix;
 class MatrixC;
+
+template <typename T>
+struct Rcpp_traits;
+
+template <>
+struct Rcpp_traits<int> {
+  using Vector = Rcpp::IntegerVector;
+  using Matrix = Rcpp::IntegerMatrix;
+};
+
+template <>
+struct Rcpp_traits<double> {
+  using Vector = Rcpp::NumericVector;
+  using Matrix = Rcpp::NumericMatrix;
+};
+
+/* Define default specialisation that can't match any real types. */
+template <typename T>
+struct Rcpp_traits {
+private:
+  struct VectorType;
+  struct MatrixType;
+public:
+  using Vector = VectorType;
+  using Matrix = MatrixType;
+};
+
 }
 
 /* forward declarations */

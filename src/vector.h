@@ -73,10 +73,10 @@ public:
   Matrix(size_t set_rows, size_t set_cols, const T *vals = NULL);
   Matrix(const Matrix<T> &from);
 #ifdef FMESHER_WITH_R
-  Matrix(const Rcpp::NumericMatrix &from);
-  Matrix(const Rcpp::IntegerMatrix &from);
-  Matrix(const Rcpp::NumericVector &from);
-  Matrix(const Rcpp::IntegerVector &from);
+  using RcppMatrix = typename Rcpp_traits<T>::Matrix;
+  using RcppVector = typename Rcpp_traits<T>::Vector;
+  Matrix(const RcppMatrix &from);
+  Matrix(const RcppVector &from);
 #endif
   const Matrix<T> &operator=(const Matrix<T> &from);
   ~Matrix() {
@@ -273,10 +273,8 @@ public:
   typedef T ValueRaw;
   Matrix1() : Matrix<T>(1){};
 #ifdef FMESHER_WITH_R
-  Matrix1(const Rcpp::NumericMatrix &from);
-  Matrix1(const Rcpp::IntegerMatrix &from);
-  Matrix1(const Rcpp::NumericVector &from);
-  Matrix1(const Rcpp::IntegerVector &from);
+  Matrix1(const typename Matrix<T>::RcppMatrix &from);
+  Matrix1(const typename Matrix<T>::RcppVector &from);
 #endif
   Matrix1(size_t set_rows, const ValueRaw *vals = NULL)
       : Matrix<T>(set_rows, 1, (T *)vals){};
@@ -310,8 +308,7 @@ public:
     }
   };
 #ifdef FMESHER_WITH_R
-  Matrix3(const Rcpp::NumericMatrix &from);
-  Matrix3(const Rcpp::IntegerMatrix &from);
+  Matrix3(const typename Matrix<T>::RcppMatrix &from);
 #endif
   Matrix3(size_t set_rows, const ValueRow *vals)
       : Matrix<T>(set_rows, 3, (T *)vals){};
@@ -716,6 +713,7 @@ public:
   Eigen::SparseMatrix<T> EigenSparseMatrix(IOMatrixtype matrixt = IOMatrixtype_general) const;
 #endif
   SEXP fmesher_sparse(IOMatrixtype matrixt = IOMatrixtype_general) const;
+  SEXP unpackedMatrix(IOMatrixtype matrixt = IOMatrixtype_general) const;
   SEXP dgCMatrix(IOMatrixtype matrixt = IOMatrixtype_general) const;
   SEXP dgTMatrix(IOMatrixtype matrixt = IOMatrixtype_general) const;
 

@@ -148,6 +148,12 @@ fm_as_dgTMatrix <- function(x, unique = TRUE, ...) {
 
 #' @rdname fmesher_sparse
 #' @export
+fm_as_unpackedMatrix <- function(x) {
+  UseMethod("fm_as_unpackedMatrix")
+}
+
+#' @rdname fmesher_sparse
+#' @export
 fm_as_fmesher_sparse <- function(x) {
   x <- fm_as_dgTMatrix(x, unique = TRUE)
   y <- structure(
@@ -197,6 +203,28 @@ fm_as_dgTMatrix.default <- function(x, unique = TRUE, ...) {
     }
   }
 }
+
+#' @rdname fmesher_sparse
+#' @export
+fm_as_unpackedMatrix.default <- function(x) {
+  as(x, "unpackedMatrix")
+}
+
+#' @rdname fmesher_sparse
+#' @export
+fm_as_unpackedMatrix.fmesher_sparse <- function(x) {
+  as(
+    Matrix::sparseMatrix(
+      i = x[["i"]] + 1L,
+      j = x[["j"]] + 1L,
+      x = x[["x"]],
+      dims = x[["dims"]],
+      repr = "C"
+    ),
+    "unpackedMatrix"
+  )
+}
+
 
 #' @rdname fmesher_sparse
 #' @export
