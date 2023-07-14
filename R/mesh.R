@@ -643,3 +643,39 @@ fm_extensions <- function(x,
   )
   y
 }
+
+
+
+
+
+#' @title Make a spatial segment object
+#' @export
+#' @param ... Currently passed on to `inla.mesh.segment` or `fm_as_inla_mesh_segment`
+fm_segm <- function(...) {
+  UseMethod("fm_segm")
+}
+
+#' @rdname fm_segm
+#' @export
+fm_segm.default <- function(...) {
+  fm_as_segm(INLA::inla.mesh.segment(...))
+}
+
+#' @rdname fm_segm
+#' @export
+fm_as_segm <- function(...) {
+  UseMethod("fm_as_segm")
+}
+#' @rdname fm_segm
+#' @export
+fm_as_segm.default <- function(...) {
+  fm_as_segm(fm_as_inla_mesh_segment(...))
+}
+#' @rdname fm_segm
+#' @param x Object to be converted
+#' @export
+#' @method fm_as_segm inla.mesh.segment
+fm_as_segm.inla.mesh.segment <- function(x, ...) {
+  class(x) <- c("fm_segm", class(x))
+  x
+}
