@@ -209,5 +209,3 @@ fm_as_dgTMatrix.fmesher_sparse <- function(x, unique = TRUE, ...) {
     repr = "T"
   )
 }
-
-
