@@ -5,6 +5,7 @@
 \alias{fm_segm.default}
 \alias{fm_as_segm}
 \alias{fm_as_segm.default}
+\alias{fm_as_segm.list}
 \alias{fm_as_segm.inla.mesh.segment}
 \title{Make a spatial segment object}
 \usage{
@@ -15,6 +16,8 @@ fm_segm(...)
 fm_as_segm(...)
 
 \method{fm_as_segm}{default}(...)
+
+\method{fm_as_segm}{list}(...)
 
 \method{fm_as_segm}{inla.mesh.segment}(x, ...)
 }
