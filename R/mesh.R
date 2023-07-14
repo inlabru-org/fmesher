@@ -646,7 +646,7 @@ fm_extensions <- function(x,
 
 
 
-
+# fm_segm ####
 
 #' @title Make a spatial segment object
 #' @export
@@ -677,5 +677,88 @@ fm_as_segm.default <- function(...) {
 #' @method fm_as_segm inla.mesh.segment
 fm_as_segm.inla.mesh.segment <- function(x, ...) {
   class(x) <- c("fm_segm", class(x))
+  x
+}
+
+
+
+
+# fm_mesh ####
+
+#' @title Convert 1D and 2D objects to mesh objects
+#' @rdname fm_mesh
+#' @export
+fm_as_mesh <- function(...) {
+  UseMethod("fm_as_mesh")
+}
+#' @rdname fm_mesh
+#' @export
+#' @method fm_as_mesh inla.mesh.1d
+fm_as_mesh.inla.mesh.1d <- function(...) {
+  fm_as_mesh_1d(...)
+}
+#' @rdname fm_mesh
+#' @export
+#' @method fm_as_mesh inla.mesh
+fm_as_mesh.inla.mesh <- function(...) {
+  fm_as_mesh_2d(...)
+}
+
+# fm_mesh_1d ####
+
+#' @title Make a 1D mesh object
+#' @export
+#' @param ... Currently passed on to `inla.mesh.1d`
+fm_mesh_1d <- function(...) {
+  UseMethod("fm_segm_1d")
+}
+
+#' @rdname fm_mesh_1d
+#' @export
+fm_mesh_1d.default <- function(...) {
+  fm_as_mesh_1d(INLA::inla.mesh.1d(...))
+}
+
+#' @rdname fm_mesh_1d
+#' @export
+fm_as_mesh_1d <- function(...) {
+  UseMethod("fm_as_mesh_1d")
+}
+#' @rdname fm_mesh_1d
+#' @param x Object to be converted
+#' @export
+#' @method fm_as_mesh_1d inla.mesh.1d
+fm_as_mesh_1d.inla.mesh.1d <- function(x, ...) {
+  class(x) <- c("fm_mesh_1d", class(x))
+  x
+}
+
+
+# fm_mesh_2d ####
+
+#' @title Make a 2D mesh object
+#' @export
+#' @param ... Currently passed on to `inla.mesh.2d`
+fm_mesh_2d <- function(...) {
+  UseMethod("fm_segm_2d")
+}
+
+#' @rdname fm_mesh_2d
+#' @export
+fm_mesh_2d.default <- function(...) {
+  fm_as_mesh_2d(INLA::inla.mesh.2d(...))
+}
+
+#' @rdname fm_mesh_2d
+#' @export
+fm_as_mesh_2d <- function(...) {
+  UseMethod("fm_as_mesh_2d")
+}
+#' @rdname fm_mesh_2d
+#' @param x Object to be converted
+#' @export
+#' @method fm_as_mesh_2d inla.mesh
+fm_as_mesh_2d.inla.mesh <- function(x, ...) {
+  class(x) <- c("fm_mesh_2d", class(x))
   x
 }
