@@ -70,7 +70,13 @@
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_crs_wkt.html</loc>
   </url>
   <url>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fm_diameter.html</loc>
+  </url>
+  <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_evaluate.html</loc>
+  </url>
+  <url>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fm_extensions.html</loc>
   </url>
   <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_identical_CRS.html</loc>
@@ -89,6 +95,9 @@
   </url>
   <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_is_within.html</loc>
+  </url>
+  <url>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fm_nonconvex_hull.html</loc>
   </url>
   <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_pixels.html</loc>
