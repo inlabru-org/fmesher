@@ -97,6 +97,15 @@
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_is_within.html</loc>
   </url>
   <url>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fm_mesh.html</loc>
+  </url>
+  <url>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fm_mesh_1d.html</loc>
+  </url>
+  <url>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fm_mesh_2d.html</loc>
+  </url>
+  <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_nonconvex_hull.html</loc>
   </url>
   <url>
@@ -110,6 +119,9 @@
   </url>
   <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_safe_sp.html</loc>
+  </url>
+  <url>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fm_segm.html</loc>
   </url>
   <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_store_points.html</loc>
