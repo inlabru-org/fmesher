@@ -20,6 +20,13 @@ PKG_CPPFLAGS= \
 #PKG_LIBS -L/usr/X11R6/lib -L/usr/X11/lib -lX11
 
 # http://dirk.eddelbuettel.com/blog/2017/08/14/#009_compact_shared_libraries
+# 	if test -e "/usr/bin/strip"; then /usr/bin/strip --strip-debug $(SHLIB); fi
+# Variant here:
+# https://stat.ethz.ch/pipermail/r-package-devel/2017q4/002024.html
 strippedLib: $(SHLIB)
-	if test -e "/usr/bin/strip"; then /usr/bin/strip --strip-debug $(SHLIB); fi
+	@if test -e "/usr/bin/strip" & \
+	  test -e "/bin/uname" & \
+	  [[ `uname` == "Linux" ]]; then \
+	  /usr/bin/strip --strip-debug $(SHLIB); \
+	fi
 .phony: strippedLib
