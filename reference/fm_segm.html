@@ -68,10 +68,16 @@
 <span><span class="co"># S3 method for default</span></span>
 <span><span class="fu">fm_segm</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">fm_as_segm</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
+<span><span class="co"># S3 method for fm_segm</span></span>
+<span><span class="fu">fm_segm</span><span class="op">(</span><span class="va">...</span>, grp.default <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">fm_as_segm</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for default</span></span>
-<span><span class="fu">fm_as_segm</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">fm_as_segm</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for list</span></span>
+<span><span class="fu">fm_as_segm</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for inla.mesh.segment</span></span>
 <span><span class="fu">fm_as_segm</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
@@ -83,10 +89,34 @@
 <dd><p>Currently passed on to <code>inla.mesh.segment</code> or <code>fm_as_inla_mesh_segment</code></p></dd>
 
 
+<dt>grp.default</dt>
+<dd><p>When joining segments, use this group label for segments
+that have <code>grp == NULL</code>.</p></dd>
+
+
 <dt>x</dt>
-<dd><p>Object to be converted</p></dd>
+<dd><p>Object to be converted.</p></dd>
 
 </dl></div>
+    <div class="section level2">
+    <h2 id="methods-by-class-">Methods (by class)<a class="anchor" aria-label="anchor" href="#methods-by-class-"></a></h2>
+    
+<ul><li><p><code>fm_segm(fm_segm)</code>: Join multiple <code>fm_segm</code> objects into a single <code>fm_segm</code>
+object.</p></li>
+</ul></div>
+    <div class="section level2">
+    <h2 id="functions">Functions<a class="anchor" aria-label="anchor" href="#functions"></a></h2>
+    
+<ul><li><p><code>fm_segm()</code>: Create a new <code>fm_segm</code> object.</p></li>
+<li><p><code>fm_as_segm()</code>: Convert an object to <code>fm_segm</code>.</p></li>
+</ul></div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p>Other mesh object creation and conversion: 
+<code><a href="fm_mesh.html">fm_as_mesh</a>()</code>,
+<code><a href="fm_mesh_1d.html">fm_mesh_1d</a>()</code>,
+<code><a href="fm_mesh_2d.html">fm_mesh_2d</a>()</code></p></div>
+    </div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
