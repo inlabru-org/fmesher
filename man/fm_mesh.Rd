@@ -2,16 +2,32 @@
 % Please edit documentation in R/mesh.R
 \name{fm_as_mesh}
 \alias{fm_as_mesh}
+\alias{fm_as_mesh.list}
 \alias{fm_as_mesh.inla.mesh.1d}
 \alias{fm_as_mesh.inla.mesh}
 \title{Convert 1D and 2D objects to mesh objects}
 \usage{
-fm_as_mesh(...)
+fm_as_mesh(x, ...)
 
-\method{fm_as_mesh}{inla.mesh.1d}(...)
+\method{fm_as_mesh}{list}(x, ...)
 
-\method{fm_as_mesh}{inla.mesh}(...)
+\method{fm_as_mesh}{inla.mesh.1d}(x, ...)
+
+\method{fm_as_mesh}{inla.mesh}(x, ...)
+}
+\arguments{
+\item{x}{Object to be converted}
+
+\item{...}{For \code{fm_as_mesh.list}, arguments forwarded to an \code{fm_as_mesh}
+for each list item.}
 }
 \description{
 Convert 1D and 2D objects to mesh objects
 }
+\seealso{
+Other mesh object creation and conversion: 
+\code{\link{fm_mesh_1d}()},
+\code{\link{fm_mesh_2d}()},
+\code{\link{fm_segm}()}
+}
+\concept{mesh object creation and conversion}

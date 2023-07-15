@@ -4,6 +4,7 @@
 \alias{fm_mesh_2d}
 \alias{fm_mesh_2d.default}
 \alias{fm_as_mesh_2d}
+\alias{fm_as_mesh_2d.list}
 \alias{fm_as_mesh_2d.inla.mesh}
 \title{Make a 2D mesh object}
 \usage{
@@ -12,6 +13,8 @@ fm_mesh_2d(...)
 \method{fm_mesh_2d}{default}(...)
 
 fm_as_mesh_2d(...)
+
+\method{fm_as_mesh_2d}{list}(x, ...)
 
 \method{fm_as_mesh_2d}{inla.mesh}(x, ...)
 }
@@ -23,3 +26,10 @@ fm_as_mesh_2d(...)
 \description{
 Make a 2D mesh object
 }
+\seealso{
+Other mesh object creation and conversion: 
+\code{\link{fm_as_mesh}()},
+\code{\link{fm_mesh_1d}()},
+\code{\link{fm_segm}()}
+}
+\concept{mesh object creation and conversion}

@@ -4,6 +4,7 @@
 \alias{fm_mesh_1d}
 \alias{fm_mesh_1d.default}
 \alias{fm_as_mesh_1d}
+\alias{fm_as_mesh_1d.list}
 \alias{fm_as_mesh_1d.inla.mesh.1d}
 \title{Make a 1D mesh object}
 \usage{
@@ -12,6 +13,8 @@ fm_mesh_1d(...)
 \method{fm_mesh_1d}{default}(...)
 
 fm_as_mesh_1d(...)
+
+\method{fm_as_mesh_1d}{list}(x, ...)
 
 \method{fm_as_mesh_1d}{inla.mesh.1d}(x, ...)
 }
@@ -23,3 +26,10 @@ fm_as_mesh_1d(...)
 \description{
 Make a 1D mesh object
 }
+\seealso{
+Other mesh object creation and conversion: 
+\code{\link{fm_as_mesh}()},
+\code{\link{fm_mesh_2d}()},
+\code{\link{fm_segm}()}
+}
+\concept{mesh object creation and conversion}
