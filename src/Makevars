@@ -18,3 +18,8 @@ PKG_CPPFLAGS= \
 
 #PKG_CPPFLAGS=-DFMESHER_DEBUG=1 -DFMESHER_WITH_X
 #PKG_LIBS -L/usr/X11R6/lib -L/usr/X11/lib -lX11
+
+# http://dirk.eddelbuettel.com/blog/2017/08/14/#009_compact_shared_libraries
+strippedLib: $(SHLIB)
+	if test -e "/usr/bin/strip"; then /usr/bin/strip --strip-debug $(SHLIB); fi
+.phony: strippedLib
