@@ -423,8 +423,8 @@ fm_bary <- function(mesh, loc, crs = NULL) {
 
   pre_ok_idx <-
     which(rowSums(matrix(is.na(as.vector(loc)),
-      nrow = nrow(loc),
-      ncol = ncol(loc)
+                         nrow = nrow(loc),
+                         ncol = ncol(loc)
     )) == 0)
   result <- fmesher_bary(
     loc = loc[pre_ok_idx, , drop = FALSE],
@@ -438,6 +438,43 @@ fm_bary <- function(mesh, loc, crs = NULL) {
   tri[pre_ok_idx[ok]] <- result$t[ok] + 1L
   bary[pre_ok_idx[ok], ] <- result$bary[ok, ]
   list(t = tri, bary = bary)
+}
+
+
+
+
+
+#' @title Compute finite element matrices
+#'
+#' @description (...)
+#'
+#' @param mesh `inla.mesh` object
+#' @param order integer
+#' @param ... Currently unused
+#'
+#' @return A list with elements `...`
+#'
+#' @export
+fm_fem <- function(mesh, order = 2, ...) {
+  UseMethod()
+}
+
+#' @rdname fm_fem
+#' @export
+fm_fem.inla.mesh <- function(mesh, order = 2, ...) {
+  fm_fem(fm_as_mesh(mesh), order = order, ...)
+}
+
+#' @rdname fm_fem
+#' @export
+fm_fem.fm_mesh_2d <- function(mesh, order = 2, ...) {
+  result <- fmesher_fem(
+    mesh_loc = mesh$loc,
+    mesh_tv = mesh$graph$tv - 1L,
+    fem_order_max = order,
+    options = list()
+  )
+  result
 }
 
 

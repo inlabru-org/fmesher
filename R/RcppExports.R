@@ -60,6 +60,22 @@ fmesher_bary <- function(loc, mesh_loc, mesh_tv, options) {
     .Call(`_fmesher_fmesher_bary`, loc, mesh_loc, mesh_tv, options)
 }
 
+#' @title Finite element matrix computation
+#'
+#' @description
+#' (...)
+#'
+#' @param mesh_loc numeric matrix; mesh vertex coordinates
+#' @param mesh_tv 3-column integer matrix with 0-based vertex indices for each triangle
+#' @param options list of triangulation options (`sphere_tolerance`)
+#' @examples
+#' m <- fmesher_rcdt(list(cet_margin = 1), matrix(0, 1, 2))
+#' b <- fmesher_fem(m$s, m$tv, fem_order_max = 2, list())
+#' @export
+fmesher_fem <- function(mesh_loc, mesh_tv, fem_order_max, options) {
+    .Call(`_fmesher_fmesher_fem`, mesh_loc, mesh_tv, fem_order_max, options)
+}
+
 #' @title Test the matrix I/O system
 #'
 #' @param args_input Input argument list

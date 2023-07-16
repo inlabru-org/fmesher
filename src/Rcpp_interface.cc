@@ -493,6 +493,150 @@ Rcpp::List fmesher_bary(Rcpp::NumericMatrix loc,
 
 
 
+//' @title Finite element matrix computation
+//'
+//' @description
+//' (...)
+//'
+//' @param mesh_loc numeric matrix; mesh vertex coordinates
+//' @param mesh_tv 3-column integer matrix with 0-based vertex indices for each triangle
+//' @param options list of triangulation options (`sphere_tolerance`)
+//' @examples
+//' m <- fmesher_rcdt(list(cet_margin = 1), matrix(0, 1, 2))
+//' b <- fmesher_fem(m$s, m$tv, fem_order_max = 2, list())
+//' @export
+// [[Rcpp::export]]
+Rcpp::List fmesher_fem(Rcpp::NumericMatrix mesh_loc,
+                       Rcpp::IntegerMatrix mesh_tv,
+                       int fem_order_max,
+                       Rcpp::List options) {
+  const bool useVT = true;
+  const bool useTTi = true;
+
+  MatrixC matrices;
+
+  matrices.attach("mesh_loc", new Matrix<double>(mesh_loc), true);
+  FMLOG("'mesh_loc' points imported." << std::endl);
+  matrices.attach("mesh_tv", new Matrix<int>(mesh_tv), true);
+  FMLOG("'mesh_tv' points imported." << std::endl);
+
+  Matrix<double>& iS0 = matrices.DD("mesh_loc");
+  Matrix<int>& TV0 = matrices.DI("mesh_tv");
+
+  /* Initialise mesh structure */
+  Mesh M(Mesh::Mtype_plane, 0, useVT, useTTi);
+  if ((iS0.rows() > 0) && (iS0.cols() < 2)) {
+    /* 1D data. Not implemented */
+    FMLOG("1D data not implemented." << std::endl);
+    return Rcpp::List();
+  }
+
+  if (iS0.rows() > 0) {
+    Matrix3double S0(iS0); /* Make sure we have a Nx3 matrix. */
+    M.S_append(S0);
+  }
+
+  Options rcdt_options(options, iS0.rows());
+
+  //  double sphere_tolerance = 1e-10;
+  (void)M.auto_type(rcdt_options.sphere_tolerance);
+
+  M.TV_set(TV0);
+
+  FMLOG("Compute finite element matrices." << std::endl)
+
+  if (fem_order_max >= 0) {
+    FMLOG("fem output." << std::endl)
+    SparseMatrix<double> &C0 = matrices.SD("c0").clear();
+    SparseMatrix<double> &C1 = matrices.SD("c1").clear();
+    SparseMatrix<double> &B1 = matrices.SD("b1").clear();
+    SparseMatrix<double> &G = matrices.SD("g1").clear();
+    SparseMatrix<double> &K = matrices.SD("k1").clear();
+    /* K1=G1-B1, K2=K1*inv(C0)*K1, ... */
+    Matrix<double> &Tareas = matrices.DD("ta").clear();
+
+    M.calcQblocks(C0, C1, G, B1, Tareas);
+
+    matrices.attach(string("va"), new Matrix<double>(diag(C0)), true);
+
+    K = G - B1;
+
+    matrices.matrixtype("c0", fmesh::IOMatrixtype_diagonal);
+    matrices.matrixtype("c1", fmesh::IOMatrixtype_symmetric);
+    matrices.matrixtype("b1", fmesh::IOMatrixtype_general);
+    matrices.matrixtype("g1", fmesh::IOMatrixtype_symmetric);
+    matrices.matrixtype("k1", fmesh::IOMatrixtype_general);
+    matrices.output("c0");
+    matrices.output("c1");
+    matrices.output("b1");
+    matrices.output("g1");
+    matrices.output("k1");
+    matrices.output("va");
+    matrices.output("ta");
+
+    SparseMatrix<double> C0inv = inverse(C0, true);
+    // Protect temporary local variables
+    {
+      SparseMatrix<double> tmp = G * C0inv;
+      SparseMatrix<double> *a;
+      SparseMatrix<double> *b = &G;
+      for (size_t i = 1; int(i) < fem_order_max; i++) {
+        std::stringstream ss;
+        ss << i + 1;
+        std::string Gname = "g" + ss.str();
+        a = b;
+        b = &(matrices.SD(Gname).clear());
+        *b = tmp * (*a);
+        matrices.matrixtype(Gname, fmesh::IOMatrixtype_symmetric);
+        matrices.output(Gname);
+      }
+      tmp = C0inv * K;
+      b = &K;
+      for (size_t i = 1; int(i) < fem_order_max; i++) {
+        std::stringstream ss;
+        ss << i + 1;
+        std::string Kname = "k" + ss.str();
+        a = b;
+        b = &(matrices.SD(Kname).clear());
+        *b = (*a) * tmp;
+        matrices.matrixtype(Kname, fmesh::IOMatrixtype_general);
+        matrices.output(Kname);
+      }
+    }
+
+    // if (aniso_names.size() > 0) {
+    //   SparseMatrix<double> &Gani = matrices.SD("g1aniso").clear();
+    //   M.calcQblocksAni(Gani, matrices.DD(aniso_names[0]),
+    //                    matrices.DD(aniso_names[1]));
+    //   matrices.output("g1aniso");
+    //
+    //   // Protect temporary local variables
+    //   {
+    //     SparseMatrix<double> tmp = Gani * C0inv;
+    //     SparseMatrix<double> *a;
+    //     SparseMatrix<double> *b = &Gani;
+    //     for (size_t i = 1; int(i) < fem_order_max; i++) {
+    //       std::stringstream ss;
+    //       ss << i + 1;
+    //       std::string Gname = "g" + ss.str() + "aniso";
+    //       a = b;
+    //       b = &(matrices.SD(Gname).clear());
+    //       *b = tmp * (*a);
+    //       matrices.matrixtype(Gname, fmesh::IOMatrixtype_symmetric);
+    //       matrices.output(Gname);
+    //     }
+    //   }
+    // }
+  }
+
+  matrices.output("-");
+
+  return Rcpp::wrap(matrices);
+}
+
+
+
+
 //' @title Test the matrix I/O system
 //'
 //' @param args_input Input argument list
