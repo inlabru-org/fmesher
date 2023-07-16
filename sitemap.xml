@@ -79,6 +79,9 @@
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_extensions.html</loc>
   </url>
   <url>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fm_fem.html</loc>
+  </url>
+  <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_identical_CRS.html</loc>
   </url>
   <url>
@@ -140,6 +143,9 @@
   </url>
   <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fmesher_bary.html</loc>
+  </url>
+  <url>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fmesher_fem.html</loc>
   </url>
   <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fmesher_globe_points.html</loc>
