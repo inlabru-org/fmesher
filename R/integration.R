@@ -1,80 +1,15 @@
-#' Split lines at mesh edges
-#'
-#' @aliases split_lines
-#' @export
-#' @param mesh An inla.mesh object
-#' @param sp Start points of lines
-#' @param ep End points of lines
-#' @param filter.zero.length Filter out segments with zero length? (Bool)
-#' @param ... argments to int.quadrature
-#' @return List of start and end points resulting from splitting the given lines
-#' @author Fabian E. Bachl \email{f.e.bachl@@bath.ac.uk}
-#' @keywords internal
+#' @describeIn fmesher-deprecated Split lines at mesh edges.
+#' @inheritParams fm_split_lines
+#' @param filter.zero.length logical; if `TRUE`, remove line segments of length zero
+#' `r lifecycle::badge("deprecated")` in favour of [fm_split_lines()].
 split_lines <- function(mesh, sp, ep, filter.zero.length = TRUE) {
-  idx <- seq_len(NROW(sp))
-  if (NROW(sp) > 0) {
-    # Filter out segments not on the mesh
-    t1 <- INLA::inla.fmesher.smorg(
-      loc = mesh$loc, tv = mesh$graph$tv,
-      points2mesh = as.matrix(data.frame(sp, z = 0))
-    )$p2m.t
-    t2 <- INLA::inla.fmesher.smorg(
-      loc = mesh$loc, tv = mesh$graph$tv,
-      points2mesh = as.matrix(data.frame(ep, z = 0))
-    )$p2m.t
-    # if (any(t1==0) | any(t2==0)) { warning("points outside boundary! filtering...")}
-    sp <- sp[!((t1 == 0) | (t2 == 0)), , drop = FALSE]
-    ep <- ep[!((t1 == 0) | (t2 == 0)), , drop = FALSE]
-    idx <- idx[!((t1 == 0) | (t2 == 0))]
+  if (!isTRUE(filter.zero.length)) {
+    lifecycle::deprecate_soft(
+      "0.0.1",
+      "split_lines(filter.zero.length = 'is assumed to be TRUE')"
+    )
   }
-
-  if (NROW(sp) == 0) {
-    return(list(
-      sp = sp, ep = ep,
-      split.origin = NULL,
-      idx = idx,
-      split.loc = NULL
-    ))
-  }
-
-  loc <- as.matrix(rbind(sp, ep))
-
-  # Split the segments into parts
-  if (NCOL(loc) == 2) {
-    loc <- cbind(loc, rep(0, NROW(loc)))
-  }
-  np <- dim(sp)[1]
-  sp.idx <- t(rbind(seq_len(np), np + seq_len(np)))
-  splt <- INLA::inla.fmesher.smorg(
-    mesh$loc, mesh$graph$tv,
-    splitlines = list(loc = loc, idx = sp.idx)
-  )
-  # plot(data$mesh)
-  # points(loc)
-  # points(splt$split.loc,col="blue)
-
-  # Start points of new segments
-  sp <- splt$split.loc[splt$split.idx[, 1], seq_len(dim(sp)[2]), drop = FALSE]
-  # End points of new segments
-  ep <- splt$split.loc[splt$split.idx[, 2], seq_len(dim(ep)[2]), drop = FALSE]
-  idx <- idx[splt$split.idx[, 1]]
-  origin <- splt$split.origin
-
-  # Filter out zero length segments
-  if (filter.zero.length) {
-    sl <- apply((ep - sp)^2, MARGIN = 1, sum)
-    sp <- sp[!(sl == 0), , drop = FALSE]
-    ep <- ep[!(sl == 0), , drop = FALSE]
-    origin <- origin[!(sl == 0)]
-    idx <- idx[!(sl == 0)]
-  }
-
-  return(list(
-    sp = sp, ep = ep,
-    split.origin = origin,
-    idx = idx,
-    split.loc = splt$split.loc
-  ))
+  fm_split_lines(mesh, sp = sp, ep = ep)
 }
 
 
@@ -1028,7 +963,7 @@ fm_int_inla_mesh_lines <- function(samplers,
   idx <- idx[ok]
 
   # Split at mesh edges
-  line.spl <- split_lines(domain, sp, ep, TRUE)
+  line.spl <- fm_split_lines(domain, sp, ep)
   sp <- line.spl$sp
   ep <- line.spl$ep
   idx <- idx[line.spl$split.origin]

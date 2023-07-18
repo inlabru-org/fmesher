@@ -37,6 +37,8 @@ using fmesh::IOHelperM;
 using fmesh::IOHelperSM;
 using fmesh::Matrix;
 using fmesh::Matrix3double;
+using fmesh::Matrix3int;
+using fmesh::Matrix1int;
 using fmesh::MatrixC;
 using fmesh::Mesh;
 using fmesh::MeshC;
@@ -58,6 +60,124 @@ template <class T> using EigenMSM = Eigen::Map<EigenSM<T>>;
 
 // const bool useVT = true;
 // const bool useTTi = true;
+
+template <typename T>
+bool Rcpp_is_element(const Rcpp::List& list, std::string name) {
+  if (!list.containsElementNamed(name.c_str()))
+    return false;
+
+  if (Rf_isNull(list[name.c_str()]))
+    return false;
+
+  return Rcpp::is<T>(list[name.c_str()]);
+}
+
+
+class Options {
+public:
+  double cutoff;
+  double sphere_tolerance;
+  int cet_sides;
+  double cet_margin;
+  double rcdt_min_angle;
+  double rcdt_max_edge;
+  Matrix<double> quality;
+  int rcdt_max_n0;
+  int rcdt_max_n1;
+  bool rcdt;
+
+public:
+  Options(Rcpp::List& options, size_t rows) :
+  cutoff(1.0e-12),
+  sphere_tolerance(1.0e-7),
+  cet_sides(8),
+  cet_margin(-0.1),
+  rcdt_min_angle(21),
+  rcdt_max_edge(-1.0),
+  quality(1),
+  rcdt_max_n0(-1),
+  rcdt_max_n1(-1),
+  rcdt(true) {
+    if (Rcpp_is_element<Rcpp::NumericVector>(options, "cutoff"))
+      cutoff = options["cutoff"];
+    if (Rcpp_is_element<Rcpp::NumericVector>(options, "sphere_tolerance"))
+      sphere_tolerance = options["sphere_tolerance"];
+    if (Rcpp_is_element<Rcpp::IntegerVector>(options, "cet_sides"))
+      cet_sides = options["cet_sides"];
+    if (Rcpp_is_element<Rcpp::NumericVector>(options, "cet_margin"))
+      cet_margin = options["cet_margin"];
+    if (Rcpp_is_element<Rcpp::NumericVector>(options, "rcdt_min_angle"))
+      rcdt_min_angle = options["rcdt_min_angle"];
+    if (Rcpp_is_element<Rcpp::NumericVector>(options, "rcdt_max_edge"))
+      rcdt_max_edge = options["rcdt_max_edge"];
+    if (Rcpp_is_element<Rcpp::LogicalVector>(options, "rcdt"))
+      rcdt = options["rcdt"];
+
+    /* Construct quality info */
+    if (Rcpp_is_element<Rcpp::NumericVector>(options, "quality")) {
+      quality = Rcpp::as<Rcpp::NumericVector>(options["quality"]);
+      for (int r = quality.rows(); r < rows; r++)
+        quality(r, 0) = rcdt_max_edge;
+      quality.rows(rows); /* Make sure we have the right number of rows */
+    } else {
+      quality.rows(rows);
+      for (int r = 0; r < rows; r++)
+        quality(r, 0) = rcdt_max_edge;
+    }
+
+    if (Rcpp_is_element<Rcpp::IntegerVector>(options, "rcdt_max_n0"))
+      rcdt_max_n0 = options["rcdt_max_n0"];
+    if (Rcpp_is_element<Rcpp::IntegerVector>(options, "rcdt_max_n1"))
+      rcdt_max_n1 = options["rcdt_max_n1"];
+  };
+
+};
+
+
+
+Mesh Rcpp_import_mesh(Rcpp::NumericMatrix mesh_loc,
+                      Rcpp::IntegerMatrix mesh_tv,
+                      MatrixC & matrices,
+                      Rcpp::List options) {
+  const bool useVT = true;
+  const bool useTTi = true;
+
+  matrices.attach("mesh_loc", new Matrix3double(Matrix<double>(mesh_loc)), true);
+  FMLOG("'mesh_loc' points imported." << std::endl);
+  matrices.attach("mesh_tv", new Matrix<int>(mesh_tv), true);
+  FMLOG("'mesh_tv' points imported." << std::endl);
+
+  Matrix<double>& iS0 = matrices.DD("mesh_loc");
+  Matrix<int>& TV0 = matrices.DI("mesh_tv");
+
+  /* Initialise mesh structure */
+  Mesh M(Mesh::Mtype_plane, 0, useVT, useTTi);
+  //  if ((iS0.rows() > 0) && (iS0.cols() < 2)) {
+  //    /* 1D data. Not implemented */
+  //    FMLOG("1D data not implemented." << std::endl);
+  //    return Rcpp::List();
+  //  }
+
+  if (iS0.rows() > 0) {
+    //    Matrix3double S0(iS0); /* Make sure we have a Nx3 matrix. */
+    M.S_append(iS0);
+  }
+
+  Options the_options(options, iS0.rows());
+
+  //  double sphere_tolerance = 1e-10;
+  (void)M.auto_type(the_options.sphere_tolerance);
+
+  M.TV_set(TV0);
+
+  return M;
+}
+
+
+
+
+
+
 
 #include "qtool.h"
 
@@ -104,80 +224,6 @@ Rcpp::NumericMatrix fmesher_globe_points(Rcpp::IntegerVector globe) {
   return Rcpp::wrap(matrices.DD(".globe"));
 }
 
-
-
-
-template <typename T>
-bool is_element(const Rcpp::List& list, std::string name) {
-  if (!list.containsElementNamed(name.c_str()))
-    return false;
-
-  if (Rf_isNull(list[name.c_str()]))
-    return false;
-
-  return Rcpp::is<T>(list[name.c_str()]);
-}
-
-
-class Options {
-public:
-  double cutoff;
-  double sphere_tolerance;
-  int cet_sides;
-  double cet_margin;
-  double rcdt_min_angle;
-  double rcdt_max_edge;
-  Matrix<double> quality;
-  int rcdt_max_n0;
-  int rcdt_max_n1;
-  bool rcdt;
-
-public:
-  Options(Rcpp::List& options, size_t rows) :
-    cutoff(1.0e-12),
-    sphere_tolerance(1.0e-7),
-    cet_sides(8),
-    cet_margin(-0.1),
-    rcdt_min_angle(21),
-    rcdt_max_edge(-1.0),
-    quality(1),
-    rcdt_max_n0(-1),
-    rcdt_max_n1(-1),
-    rcdt(true) {
-    if (is_element<Rcpp::NumericVector>(options, "cutoff"))
-      cutoff = options["cutoff"];
-    if (is_element<Rcpp::NumericVector>(options, "sphere_tolerance"))
-      sphere_tolerance = options["sphere_tolerance"];
-    if (is_element<Rcpp::IntegerVector>(options, "cet_sides"))
-      cet_sides = options["cet_sides"];
-    if (is_element<Rcpp::NumericVector>(options, "cet_margin"))
-      cet_margin = options["cet_margin"];
-    if (is_element<Rcpp::NumericVector>(options, "rcdt_min_angle"))
-      rcdt_min_angle = options["rcdt_min_angle"];
-    if (is_element<Rcpp::NumericVector>(options, "rcdt_max_edge"))
-      rcdt_max_edge = options["rcdt_max_edge"];
-    if (is_element<Rcpp::LogicalVector>(options, "rcdt"))
-      rcdt = options["rcdt"];
-
-    /* Construct quality info */
-    if (is_element<Rcpp::NumericVector>(options, "quality")) {
-      quality = Rcpp::as<Rcpp::NumericVector>(options["quality"]);
-      for (int r = quality.rows(); r < rows; r++)
-        quality(r, 0) = rcdt_max_edge;
-      quality.rows(rows); /* Make sure we have the right number of rows */
-    } else {
-      quality.rows(rows);
-      for (int r = 0; r < rows; r++)
-        quality(r, 0) = rcdt_max_edge;
-    }
-
-    if (is_element<Rcpp::IntegerVector>(options, "rcdt_max_n0"))
-      rcdt_max_n0 = options["rcdt_max_n0"];
-    if (is_element<Rcpp::IntegerVector>(options, "rcdt_max_n1"))
-      rcdt_max_n1 = options["rcdt_max_n1"];
-  };
-
-};
 
 
 
@@ -422,51 +468,19 @@ Rcpp::List fmesher_rcdt(Rcpp::List options,
 //' @param options list of triangulation options
 //' @examples
 //' m <- fmesher_rcdt(list(cet_margin = 1), matrix(0, 1, 2))
-//' b <- fmesher_bary(matrix(c(0.5, 0.5), 1, 2),
-//'                   m$s,
+//' b <- fmesher_bary(m$s,
 //'                   m$tv,
+//'                   matrix(c(0.5, 0.5), 1, 2),
 //'                   list())
 //' @export
 // [[Rcpp::export]]
-Rcpp::List fmesher_bary(Rcpp::NumericMatrix loc,
-                        Rcpp::NumericMatrix mesh_loc,
+Rcpp::List fmesher_bary(Rcpp::NumericMatrix mesh_loc,
                         Rcpp::IntegerMatrix mesh_tv,
+                        Rcpp::NumericMatrix loc,
                         Rcpp::List options) {
-  const bool useVT = true;
-  const bool useTTi = true;
-
   MatrixC matrices;
-
-  matrices.attach("loc", new Matrix<double>(loc), true);
-  FMLOG("'loc' points imported." << std::endl);
-  matrices.attach("mesh_loc", new Matrix<double>(mesh_loc), true);
-  FMLOG("'mesh_loc' points imported." << std::endl);
-  matrices.attach("mesh_tv", new Matrix<int>(mesh_tv), true);
-  FMLOG("'mesh_tv' points imported." << std::endl);
-
-  Matrix<double>& points2mesh = matrices.DD("loc");
-  Matrix<double>& iS0 = matrices.DD("mesh_loc");
-  Matrix<int>& TV0 = matrices.DI("mesh_tv");
-
-  Options rcdt_options(options, iS0.rows());
-
-  /* Initialise mesh structure */
-  Mesh M(Mesh::Mtype_plane, 0, useVT, useTTi);
-  if ((iS0.rows() > 0) && (iS0.cols() < 2)) {
-    /* 1D data. Not implemented */
-    FMLOG("1D data not implemented." << std::endl);
-    return Rcpp::List();
-  }
-
-  if (iS0.rows() > 0) {
-    Matrix3double S0(iS0); /* Make sure we have a Nx3 matrix. */
-    M.S_append(S0);
-  }
-
-  //  double sphere_tolerance = 1e-10;
-  (void)M.auto_type(rcdt_options.sphere_tolerance);
-
-  M.TV_set(TV0);
+  Mesh M = Rcpp_import_mesh(mesh_loc, mesh_tv, matrices, options);
+  Options rcdt_options(options, M.nV());
 
   FMLOG("barycentric coordinate output." << std::endl);
   if ((M.type() != Mesh::Mtype_plane) &&
@@ -475,6 +489,9 @@ Rcpp::List fmesher_bary(Rcpp::NumericMatrix loc,
              << std::endl);
     return Rcpp::List();
   }
+
+  matrices.attach("loc", new Matrix3double(Matrix<double>(loc)), true);
+  Matrix<double>& points2mesh = matrices.DD("loc");
 
   size_t points_n = points2mesh.rows();
   Matrix<int> &points2mesh_t =
@@ -493,6 +510,8 @@ Rcpp::List fmesher_bary(Rcpp::NumericMatrix loc,
 
 
 
+
+
 //' @title Finite element matrix computation
 //'
 //' @description
@@ -500,6 +519,7 @@ Rcpp::List fmesher_bary(Rcpp::NumericMatrix loc,
 //'
 //' @param mesh_loc numeric matrix; mesh vertex coordinates
 //' @param mesh_tv 3-column integer matrix with 0-based vertex indices for each triangle
+//' @param fem_order_max integer; the highest operator order to compute
 //' @param options list of triangulation options (`sphere_tolerance`)
 //' @examples
 //' m <- fmesher_rcdt(list(cet_margin = 1), matrix(0, 1, 2))
@@ -510,40 +530,10 @@ Rcpp::List fmesher_fem(Rcpp::NumericMatrix mesh_loc,
                        Rcpp::IntegerMatrix mesh_tv,
                        int fem_order_max,
                        Rcpp::List options) {
-  const bool useVT = true;
-  const bool useTTi = true;
-
   MatrixC matrices;
+  Mesh M = Rcpp_import_mesh(mesh_loc, mesh_tv, matrices, options);
 
-  matrices.attach("mesh_loc", new Matrix<double>(mesh_loc), true);
-  FMLOG("'mesh_loc' points imported." << std::endl);
-  matrices.attach("mesh_tv", new Matrix<int>(mesh_tv), true);
-  FMLOG("'mesh_tv' points imported." << std::endl);
-
-  Matrix<double>& iS0 = matrices.DD("mesh_loc");
-  Matrix<int>& TV0 = matrices.DI("mesh_tv");
-
-  /* Initialise mesh structure */
-  Mesh M(Mesh::Mtype_plane, 0, useVT, useTTi);
-  if ((iS0.rows() > 0) && (iS0.cols() < 2)) {
-    /* 1D data. Not implemented */
-    FMLOG("1D data not implemented." << std::endl);
-    return Rcpp::List();
-  }
-
-  if (iS0.rows() > 0) {
-    Matrix3double S0(iS0); /* Make sure we have a Nx3 matrix. */
-    M.S_append(S0);
-  }
-
-  Options rcdt_options(options, iS0.rows());
-
-  //  double sphere_tolerance = 1e-10;
-  (void)M.auto_type(rcdt_options.sphere_tolerance);
-
-  M.TV_set(TV0);
-
-  FMLOG("Compute finite element matrices." << std::endl)
+  FMLOG("Compute finite element matrices." << std::endl);
 
   if (fem_order_max >= 0) {
     FMLOG("fem output." << std::endl)
@@ -634,6 +624,60 @@ Rcpp::List fmesher_fem(Rcpp::NumericMatrix mesh_loc,
   return Rcpp::wrap(matrices);
 }
 
+
+
+
+//' @title Split lines at triangle edges
+//'
+//' @description
+//' (...)
+//'
+//' @param mesh_loc numeric matrix; mesh vertex coordinates
+//' @param mesh_tv 3-column integer matrix with 0-based vertex indices for each triangle
+//' @param loc numeric coordinate matrix
+//' @param idx 2-column integer matrix
+//' @param options list of triangulation options (`sphere_tolerance`)
+//' @export
+// [[Rcpp::export]]
+Rcpp::List fmesher_split_lines(
+    Rcpp::NumericMatrix mesh_loc,
+    Rcpp::IntegerMatrix mesh_tv,
+    Rcpp::NumericMatrix loc,
+    Rcpp::IntegerMatrix idx,
+    Rcpp::List options) {
+  MatrixC matrices;
+  Mesh M = Rcpp_import_mesh(mesh_loc, mesh_tv, matrices, options);
+
+  FMLOG("Compute line splitting." << std::endl);
+
+  matrices.attach("loc", new Matrix3double(Matrix<double>(loc)), true);
+  matrices.attach("idx", new Matrix<int>(idx), true);
+
+  /* Make sure we have a Nx3 matrix: */
+  Matrix<double> *splitloc1 = new Matrix<double>(3);
+  Matrix<int> *splitidx1 = new Matrix<int>(2);
+  Matrix<int> *splittriangle1 = new Matrix<int>(1);
+  Matrix<double> *splitbary1 = new Matrix<double>(3);
+  Matrix<double> *splitbary2 = new Matrix<double>(3);
+  Matrix<int> *splitorigin1 = new Matrix<int>(1);
+
+  split_line_segments_on_triangles(
+    M, matrices.DD("loc"), matrices.DI("idx"), *splitloc1,
+    *splitidx1, *splittriangle1, *splitbary1, *splitbary2, *splitorigin1);
+
+  /* Now it's ok to overwrite potential input split* matrices. */
+  matrices.attach("split.loc", splitloc1, true);
+  matrices.attach("split.idx", splitidx1, true);
+  matrices.attach("split.t", splittriangle1, true);
+  matrices.attach("split.b1", splitbary1, true);
+  matrices.attach("split.b2", splitbary2, true);
+  matrices.attach("split.origin", splitorigin1, true);
+  matrices.output("split.loc").output("split.idx");
+  matrices.output("split.b1").output("split.b2");
+  matrices.output("split.t").output("split.origin");
+
+  return Rcpp::wrap(matrices);
+}
 
 
 

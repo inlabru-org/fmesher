@@ -4,14 +4,14 @@
 \alias{fmesher_bary}
 \title{Barycentric coordinate computation}
 \usage{
-fmesher_bary(loc, mesh_loc, mesh_tv, options)
+fmesher_bary(mesh_loc, mesh_tv, loc, options)
 }
 \arguments{
-\item{loc}{numeric matrix; coordinates of points to locate in the mesh}
-
 \item{mesh_loc}{numeric matrix; mesh vertex coordinates}
 
 \item{mesh_tv}{3-column integer matrix with 0-based vertex indices for each triangle}
+
+\item{loc}{numeric matrix; coordinates of points to locate in the mesh}
 
 \item{options}{list of triangulation options}
 }
@@ -20,8 +20,8 @@ fmesher_bary(loc, mesh_loc, mesh_tv, options)
 }
 \examples{
 m <- fmesher_rcdt(list(cet_margin = 1), matrix(0, 1, 2))
-b <- fmesher_bary(matrix(c(0.5, 0.5), 1, 2),
-                  m$s,
+b <- fmesher_bary(m$s,
                   m$tv,
+                  matrix(c(0.5, 0.5), 1, 2),
                   list())
 }

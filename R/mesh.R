@@ -400,7 +400,7 @@ fm_onto_mesh <- function(mesh, loc, crs = NULL) {
 #'
 #' @description Identify triangles and compute barycentric coordinates
 #'
-#' @param mesh `inla.mesh` object
+#' @param mesh `fm_mesh_2d` or `inla.mesh` object
 #' @param loc Points for which to identify the containing triangle, and
 #' corresponding barycentric coordinates. May be raw matrix coordinates, `sf`, or `sp`
 #' point information.
@@ -427,9 +427,9 @@ fm_bary <- function(mesh, loc, crs = NULL) {
                          ncol = ncol(loc)
     )) == 0)
   result <- fmesher_bary(
-    loc = loc[pre_ok_idx, , drop = FALSE],
     mesh_loc = mesh$loc * scale,
     mesh_tv = mesh$graph$tv - 1L,
+    loc = loc[pre_ok_idx, , drop = FALSE],
     options = list()
   )
   tri <- rep(NA_integer_, nrow(loc))
@@ -456,7 +456,7 @@ fm_bary <- function(mesh, loc, crs = NULL) {
 #'
 #' @export
 fm_fem <- function(mesh, order = 2, ...) {
-  UseMethod()
+  UseMethod("fm_fem")
 }
 
 #' @rdname fm_fem
@@ -479,6 +479,102 @@ fm_fem.fm_mesh_2d <- function(mesh, order = 2, ...) {
 
 
 
+#' @title Split lines at triangle edges
+#'
+#' @description Compute intersections between line segments and triangle edges,
+#' and filter out segment of length zero.
+#'
+#' @param mesh An `fm_mesh_2d` or `inla.mesh` object
+#' @param sp Start points of lines
+#' @param ep End points of lines
+#' @param ... Passed on to the method for `fm_mesh_2d`.
+#' @return List of start and end points resulting from splitting the given lines:
+#' `list(sp, ep, split.origin, idx, split.loc)`
+#'
+#' @author Fabian E. Bachl \email{f.e.bachl@@bath.ac.uk}
+#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @keywords internal
+#'
+#' @export
+fm_split_lines <- function(mesh, ...) {
+  UseMethod("fm_split_lines")
+}
+
+
+#' @rdname fm_split_lines
+#' @export
+fm_split_lines.inla.mesh <- function(mesh, ...) {
+  fm_split_lines(fm_as_mesh(mesh), ...)
+}
+
+#' @rdname fm_split_lines
+#' @export
+fm_split_lines.fm_mesh_2d <- function(mesh, sp, ep, ...) {
+  idx <- seq_len(NROW(sp))
+  if (NROW(sp) > 0) {
+    # Filter out segments not on the mesh
+    t1 <- fm_bary(mesh, loc = as.matrix(sp))$t
+    t2 <- fm_bary(mesh, loc = as.matrix(ep))$t
+    keep <- !(is.na(t1) | is.na(t2))
+    # if (any(!keep)) { warning("points outside boundary! filtering...")}
+    sp <- sp[keep, , drop = FALSE]
+    ep <- ep[keep, , drop = FALSE]
+    idx <- idx[keep]
+  }
+
+  if (NROW(sp) == 0) {
+    return(list(
+      sp = sp, ep = ep,
+      split.origin = NULL,
+      idx = idx,
+      split.loc = NULL
+    ))
+  }
+
+  loc <- as.matrix(rbind(sp, ep))
+
+  # Split the segments into parts
+  if (NCOL(loc) == 2) {
+    loc <- cbind(loc, rep(0, NROW(loc)))
+  }
+  np <- dim(sp)[1]
+  sp.idx <- cbind(seq_len(np), np + seq_len(np))
+  splt <- fmesher_split_lines(
+    mesh_loc = mesh$loc,
+    mesh_tv = mesh$graph$tv - 1L,
+    loc = loc,
+    idx = sp.idx - 1L,
+    options = list()
+  )
+  indexoutput <- list("split.idx", "split.t", "split.origin")
+  for (name in intersect(names(splt), indexoutput)) {
+    splt[[name]] <- splt[[name]] + 1L
+  }
+  # plot(data$mesh)
+  # points(loc)
+  # points(splt$split.loc,col="blue)
+
+  # Start points of new segments
+  sp <- splt$split.loc[splt$split.idx[, 1], seq_len(dim(sp)[2]), drop = FALSE]
+  # End points of new segments
+  ep <- splt$split.loc[splt$split.idx[, 2], seq_len(dim(ep)[2]), drop = FALSE]
+  idx <- idx[splt$split.idx[, 1]]
+  origin <- splt$split.origin
+
+  # Filter out zero length segments
+  sl <- apply((ep - sp)^2, MARGIN = 1, sum)
+  sp <- sp[!(sl == 0), , drop = FALSE]
+  ep <- ep[!(sl == 0), , drop = FALSE]
+  origin <- origin[!(sl == 0)]
+  idx <- idx[!(sl == 0)]
+
+  return(list(
+    sp = sp, ep = ep,
+    split.origin = origin,
+    idx = idx,
+    split.loc = splt$split.loc
+  ))
+}
 
 
 
@@ -754,6 +850,18 @@ fm_as_mesh <- function(x, ...) {
 fm_as_mesh.list <- function(x, ...) {
   lapply(x, function(xx) fm_as_mesh(xx, ...))
 }
+#' @rdname fm_mesh_1d
+#' @export
+fm_as_mesh.fm_mesh_1d <- function(x, ...) {
+  #  class(x) <- c("fm_mesh_1d", setdiff(class(x), "fm_mesh_1d"))
+  x
+}
+#' @rdname fm_mesh_2d
+#' @export
+fm_as_mesh.fm_mesh_2d <- function(x, ...) {
+  #  class(x) <- c("fm_mesh_1d", setdiff(class(x), "fm_mesh_2d"))
+  x
+}
 #' @rdname fm_mesh
 #' @export
 #' @method fm_as_mesh inla.mesh.1d
@@ -796,6 +904,13 @@ fm_as_mesh_1d.list <- function(x, ...) {
 #' @rdname fm_mesh_1d
 #' @param x Object to be converted
 #' @export
+fm_as_mesh_1d.fm_mesh_1d <- function(x, ...) {
+  #  class(x) <- c("fm_mesh_1d", setdiff(class(x), "fm_mesh_1d"))
+  x
+}
+#' @rdname fm_mesh_1d
+#' @param x Object to be converted
+#' @export
 #' @method fm_as_mesh_1d inla.mesh.1d
 fm_as_mesh_1d.inla.mesh.1d <- function(x, ...) {
   class(x) <- c("fm_mesh_1d", class(x))
@@ -831,6 +946,12 @@ fm_as_mesh_2d.list <- function(x, ...) {
 }
 #' @rdname fm_mesh_2d
 #' @param x Object to be converted
+#' @export
+fm_as_mesh_2d.fm_mesh_2d <- function(x, ...) {
+#  class(x) <- c("fm_mesh_2d", setdiff(class(x), "fm_mesh_2d"))
+  x
+}
+#' @rdname fm_mesh_2d
 #' @export
 #' @method fm_as_mesh_2d inla.mesh
 fm_as_mesh_2d.inla.mesh <- function(x, ...) {

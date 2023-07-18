@@ -51,13 +51,13 @@ fmesher_rcdt <- function(options, loc, tv = NULL, boundary = NULL, interior = NU
 #' @param options list of triangulation options
 #' @examples
 #' m <- fmesher_rcdt(list(cet_margin = 1), matrix(0, 1, 2))
-#' b <- fmesher_bary(matrix(c(0.5, 0.5), 1, 2),
-#'                   m$s,
+#' b <- fmesher_bary(m$s,
 #'                   m$tv,
+#'                   matrix(c(0.5, 0.5), 1, 2),
 #'                   list())
 #' @export
-fmesher_bary <- function(loc, mesh_loc, mesh_tv, options) {
-    .Call(`_fmesher_fmesher_bary`, loc, mesh_loc, mesh_tv, options)
+fmesher_bary <- function(mesh_loc, mesh_tv, loc, options) {
+    .Call(`_fmesher_fmesher_bary`, mesh_loc, mesh_tv, loc, options)
 }
 
 #' @title Finite element matrix computation
@@ -67,6 +67,7 @@ fmesher_bary <- function(loc, mesh_loc, mesh_tv, options) {
 #'
 #' @param mesh_loc numeric matrix; mesh vertex coordinates
 #' @param mesh_tv 3-column integer matrix with 0-based vertex indices for each triangle
+#' @param fem_order_max integer; the highest operator order to compute
 #' @param options list of triangulation options (`sphere_tolerance`)
 #' @examples
 #' m <- fmesher_rcdt(list(cet_margin = 1), matrix(0, 1, 2))
@@ -74,6 +75,21 @@ fmesher_bary <- function(loc, mesh_loc, mesh_tv, options) {
 #' @export
 fmesher_fem <- function(mesh_loc, mesh_tv, fem_order_max, options) {
     .Call(`_fmesher_fmesher_fem`, mesh_loc, mesh_tv, fem_order_max, options)
+}
+
+#' @title Split lines at triangle edges
+#'
+#' @description
+#' (...)
+#'
+#' @param mesh_loc numeric matrix; mesh vertex coordinates
+#' @param mesh_tv 3-column integer matrix with 0-based vertex indices for each triangle
+#' @param loc numeric coordinate matrix
+#' @param idx 2-column integer matrix
+#' @param options list of triangulation options (`sphere_tolerance`)
+#' @export
+fmesher_split_lines <- function(mesh_loc, mesh_tv, loc, idx, options) {
+    .Call(`_fmesher_fmesher_split_lines`, mesh_loc, mesh_tv, loc, idx, options)
 }
 
 #' @title Test the matrix I/O system

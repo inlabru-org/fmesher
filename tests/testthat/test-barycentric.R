@@ -13,7 +13,13 @@ test_that("point location", {
     c(0.8, 0.2),
     c(0.1, 0.8)
   )
-  b <- fmesher_bary(loc, mesh_loc, mesh_tv - 1L, list())
+  b <-
+    fmesher_bary(
+      mesh_loc = mesh_loc,
+      mesh_tv = mesh_tv - 1L,
+      loc = loc,
+      options = list()
+    )
 
   expect_equal(
     rbind(

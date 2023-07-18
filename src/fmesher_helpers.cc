@@ -308,16 +308,17 @@ void split_line_segments_on_triangles(
     const Mesh &M, const Matrix<double> &loc0, const Matrix<int> &idx0,
     Matrix<double> &loc1, Matrix<int> &idx1, Matrix<int> &triangle1,
     Matrix<double> &bary1, Matrix<double> &bary2, Matrix<int> &origin1) {
+  FMESHER_R_INTERRUPT_CHECKER(10000);
   FMLOG("Mesh M=" << M << endl);
   FMLOG("Mesh M.TT=" << M.TT() << endl);
 
   FMLOG("Split line segments into subsegments on triangles." << endl);
   FMLOG("Point size: " << loc0.rows() << ", " << loc0.cols() << endl);
   FMLOG("Index size: " << idx0.rows() << ", " << idx0.cols() << endl);
-  Matrix<int> *loc_in_tri = new Matrix<int>(loc0.rows(), 1);
-  Matrix<double> *bary_in_tri = new Matrix<double>(loc0.rows(), 3);
+  Matrix<int> loc_in_tri(loc0.rows(), 1);
+  Matrix<double> bary_in_tri(loc0.rows(), 3);
   DartList dart_trace;
-  map_points_to_mesh(M, loc0, *loc_in_tri, *bary_in_tri);
+  map_points_to_mesh(M, loc0, loc_in_tri, bary_in_tri);
 
   /* Initialize output structures. */
   loc1.rows(0);
@@ -333,7 +334,7 @@ void split_line_segments_on_triangles(
   for (size_t i = 0; i < idx0.rows(); ++i) {
     FMLOG("Split line nr " << i << ": (" << idx0[i][0] << ", " << idx0[i][1]
                            << ")" << std::endl);
-    Dart d(M, (*loc_in_tri)[idx0[i][0]][0]);
+    Dart d(M, (loc_in_tri)[idx0[i][0]][0]);
     Point s0(loc0[idx0[i][0]]);
     Point s1(loc0[idx0[i][1]]);
     FMLOG("Tracing path between points" << std::endl);
@@ -412,8 +413,8 @@ void split_line_segments_on_triangles(
       origin1(i_idx_curr, 0) = i;
       triangle1(i_idx_curr, 0) = endpoints.second.t();
     }
+
+    FMESHER_R_INTERRUPT_CHECK;
   }
-  delete bary_in_tri;
-  delete loc_in_tri;
   FMLOG("Done." << endl);
 }

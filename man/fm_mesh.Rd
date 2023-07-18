@@ -26,8 +26,8 @@ Convert 1D and 2D objects to mesh objects
 }
 \seealso{
 Other mesh object creation and conversion: 
-\code{\link{fm_mesh_1d}()},
-\code{\link{fm_mesh_2d}()},
+\code{\link{fm_as_mesh.fm_mesh_1d}()},
+\code{\link{fm_as_mesh.fm_mesh_2d}()},
 \code{\link{fm_segm}()}
 }
 \concept{mesh object creation and conversion}

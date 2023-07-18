@@ -50,16 +50,16 @@ BEGIN_RCPP
 END_RCPP
 }
 // fmesher_bary
-Rcpp::List fmesher_bary(Rcpp::NumericMatrix loc, Rcpp::NumericMatrix mesh_loc, Rcpp::IntegerMatrix mesh_tv, Rcpp::List options);
-RcppExport SEXP _fmesher_fmesher_bary(SEXP locSEXP, SEXP mesh_locSEXP, SEXP mesh_tvSEXP, SEXP optionsSEXP) {
+Rcpp::List fmesher_bary(Rcpp::NumericMatrix mesh_loc, Rcpp::IntegerMatrix mesh_tv, Rcpp::NumericMatrix loc, Rcpp::List options);
+RcppExport SEXP _fmesher_fmesher_bary(SEXP mesh_locSEXP, SEXP mesh_tvSEXP, SEXP locSEXP, SEXP optionsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type loc(locSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type mesh_loc(mesh_locSEXP);
     Rcpp::traits::input_parameter< Rcpp::IntegerMatrix >::type mesh_tv(mesh_tvSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type loc(locSEXP);
     Rcpp::traits::input_parameter< Rcpp::List >::type options(optionsSEXP);
-    rcpp_result_gen = Rcpp::wrap(fmesher_bary(loc, mesh_loc, mesh_tv, options));
+    rcpp_result_gen = Rcpp::wrap(fmesher_bary(mesh_loc, mesh_tv, loc, options));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -74,6 +74,21 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type fem_order_max(fem_order_maxSEXP);
     Rcpp::traits::input_parameter< Rcpp::List >::type options(optionsSEXP);
     rcpp_result_gen = Rcpp::wrap(fmesher_fem(mesh_loc, mesh_tv, fem_order_max, options));
+    return rcpp_result_gen;
+END_RCPP
+}
+// fmesher_split_lines
+Rcpp::List fmesher_split_lines(Rcpp::NumericMatrix mesh_loc, Rcpp::IntegerMatrix mesh_tv, Rcpp::NumericMatrix loc, Rcpp::IntegerMatrix idx, Rcpp::List options);
+RcppExport SEXP _fmesher_fmesher_split_lines(SEXP mesh_locSEXP, SEXP mesh_tvSEXP, SEXP locSEXP, SEXP idxSEXP, SEXP optionsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type mesh_loc(mesh_locSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerMatrix >::type mesh_tv(mesh_tvSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type loc(locSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerMatrix >::type idx(idxSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type options(optionsSEXP);
+    rcpp_result_gen = Rcpp::wrap(fmesher_split_lines(mesh_loc, mesh_tv, loc, idx, options));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -106,6 +121,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_fmesher_fmesher_rcdt", (DL_FUNC) &_fmesher_fmesher_rcdt, 7},
     {"_fmesher_fmesher_bary", (DL_FUNC) &_fmesher_fmesher_bary, 4},
     {"_fmesher_fmesher_fem", (DL_FUNC) &_fmesher_fmesher_fem, 4},
+    {"_fmesher_fmesher_split_lines", (DL_FUNC) &_fmesher_fmesher_split_lines, 5},
     {"_fmesher_C_matrixio_test2", (DL_FUNC) &_fmesher_C_matrixio_test2, 1},
     {"_fmesher_C_matrixio_test", (DL_FUNC) &_fmesher_C_matrixio_test, 1},
     {NULL, NULL, 0}

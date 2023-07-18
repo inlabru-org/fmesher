@@ -7,7 +7,7 @@
 fm_bary(mesh, loc, crs = NULL)
 }
 \arguments{
-\item{mesh}{\code{inla.mesh} object}
+\item{mesh}{\code{fm_mesh_2d} or \code{inla.mesh} object}
 
 \item{loc}{Points for which to identify the containing triangle, and
 corresponding barycentric coordinates. May be raw matrix coordinates, \code{sf}, or \code{sp}
