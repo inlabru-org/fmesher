@@ -63,21 +63,21 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fmesher_bary</span><span class="op">(</span><span class="va">loc</span>, <span class="va">mesh_loc</span>, <span class="va">mesh_tv</span>, <span class="va">options</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fmesher_bary</span><span class="op">(</span><span class="va">mesh_loc</span>, <span class="va">mesh_tv</span>, <span class="va">loc</span>, <span class="va">options</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
-    <dl><dt>loc</dt>
-<dd><p>numeric matrix; coordinates of points to locate in the mesh</p></dd>
-
-
-<dt>mesh_loc</dt>
+    <dl><dt>mesh_loc</dt>
 <dd><p>numeric matrix; mesh vertex coordinates</p></dd>
 
 
 <dt>mesh_tv</dt>
 <dd><p>3-column integer matrix with 0-based vertex indices for each triangle</p></dd>
+
+
+<dt>loc</dt>
+<dd><p>numeric matrix; coordinates of points to locate in the mesh</p></dd>
 
 
 <dt>options</dt>
@@ -88,9 +88,9 @@
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="fmesher_rcdt.html">fmesher_rcdt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>cet_margin <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu">fmesher_bary</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.5</span><span class="op">)</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                  <span class="va">m</span><span class="op">$</span><span class="va">s</span>,</span></span>
+<span class="r-in"><span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu">fmesher_bary</span><span class="op">(</span><span class="va">m</span><span class="op">$</span><span class="va">s</span>,</span></span>
 <span class="r-in"><span>                  <span class="va">m</span><span class="op">$</span><span class="va">tv</span>,</span></span>
+<span class="r-in"><span>                  <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.5</span><span class="op">)</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>

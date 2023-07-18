@@ -55,7 +55,7 @@ future version."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Deprecated functions in fmesher</h1>
-      <small class="dont-index">Source: <a href="https://github.com/inlabru-org/fmesher/blob/HEAD/R/crs.R" class="external-link"><code>R/crs.R</code></a>, <a href="https://github.com/inlabru-org/fmesher/blob/HEAD/R/deprecated.R" class="external-link"><code>R/deprecated.R</code></a>, <a href="https://github.com/inlabru-org/fmesher/blob/HEAD/R/sp_mesh.R" class="external-link"><code>R/sp_mesh.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/inlabru-org/fmesher/blob/HEAD/R/crs.R" class="external-link"><code>R/crs.R</code></a>, <a href="https://github.com/inlabru-org/fmesher/blob/HEAD/R/deprecated.R" class="external-link"><code>R/deprecated.R</code></a>, <a href="https://github.com/inlabru-org/fmesher/blob/HEAD/R/integration.R" class="external-link"><code>R/integration.R</code></a>, and 3 more</small>
       <div class="d-none name"><code>fmesher-deprecated.Rd</code></div>
     </div>
 
@@ -100,6 +100,12 @@ future version.</p>
 <span><span class="co"># S3 method for inla.mesh</span></span>
 <span><span class="fu">fm_spTransform</span><span class="op">(</span><span class="va">x</span>, <span class="va">CRSobj</span>, passthrough <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
+<span><span class="fu">split_lines</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">sp</span>, <span class="va">ep</span>, filter.zero.length <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">fm_as_inla_mesh_segment</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">fm_as_inla_mesh</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
+<span></span>
 <span><span class="fu">fm_sp2segment</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -111,7 +117,7 @@ which uses the name of the calling function.</p></dd>
 
 
 <dt>x</dt>
-<dd><p>The object that should be transformed from it's current CRS to a new CRS</p></dd>
+<dd><p>An object to be coerced/transformed/converted into another class</p></dd>
 
 
 <dt>...</dt>
@@ -135,12 +141,39 @@ through without transformation.</p></dd>
 <dt>CRSobj</dt>
 <dd><p>The target sp::CRS or inla.CRS object</p></dd>
 
+
+<dt>mesh</dt>
+<dd><p>An <code>fm_mesh_2d</code> or <code>inla.mesh</code> object</p></dd>
+
+
+<dt>sp</dt>
+<dd><p>Start points of lines</p></dd>
+
+
+<dt>ep</dt>
+<dd><p>End points of lines</p></dd>
+
+
+<dt>filter.zero.length</dt>
+<dd><p>logical; if <code>TRUE</code>, remove line segments of length zero
+<a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> in favour of <code><a href="fm_split_lines.html">fm_split_lines()</a></code>.</p></dd>
+
+
+<dt>...</dt>
+<dd><p>Arguments passed on to other methods</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
 <p>A <code>CRS</code> object, or NULL if no valid CRS identified</p>
+
+
+<p>An <code>inla.mesh.segment</code> object</p>
+
+
+<p>An <code>inla.mesh</code> object</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -170,8 +203,13 @@ Handle transformation of various inla objects according to coordinate
 reference systems of <code><a href="https://rdrr.io/pkg/sp/man/CRS-class.html" class="external-link">sp::CRS</a></code> or <code><a href="https://rdrr.io/pkg/INLA/man/inla.CRS.html" class="external-link">INLA::inla.CRS</a></code> class.</p></li>
 <li><p><code>fm_spTransform(default)</code>: The default method handles low level transformation of raw
 coordinates.</p></li>
+<li><p><code>split_lines()</code>: Split lines at mesh edges.</p></li>
+<li><p><code>fm_as_inla_mesh_segment()</code>: Conversion to inla.mesh.segment
+<a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> in favour of <code><a href="fm_as_segm.html">fm_as_segm()</a></code>.</p></li>
+<li><p><code>fm_as_inla_mesh()</code>: Conversion to inla.mesh.
+<a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> in favour of <code><a href="fm_as_mesh_2d.html">fm_as_mesh_2d()</a></code>.</p></li>
 <li><p><code>fm_sp2segment()</code>: <a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> in favour of
-<code><a href="fm_as_inla_mesh_segment.html">fm_as_inla_mesh_segment()</a></code></p></li>
+<code><a href="fm_as_segm.html">fm_as_segm()</a></code></p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

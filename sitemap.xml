@@ -43,10 +43,16 @@
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_CRSargs.html</loc>
   </url>
   <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_as_inla_mesh.html</loc>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fm_as_fm.html</loc>
   </url>
   <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_as_inla_mesh_segment.html</loc>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fm_as_mesh_1d.html</loc>
+  </url>
+  <url>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fm_as_mesh_2d.html</loc>
+  </url>
+  <url>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fm_as_segm.html</loc>
   </url>
   <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_as_sfc.html</loc>
@@ -100,9 +106,6 @@
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_is_within.html</loc>
   </url>
   <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_mesh.html</loc>
-  </url>
-  <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_mesh_1d.html</loc>
   </url>
   <url>
@@ -125,6 +128,9 @@
   </url>
   <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_segm.html</loc>
+  </url>
+  <url>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fm_split_lines.html</loc>
   </url>
   <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_store_points.html</loc>
@@ -157,6 +163,9 @@
     <loc>https://inlabru-org.github.io/fmesher/reference/fmesher_sparse.html</loc>
   </url>
   <url>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fmesher_split_lines.html</loc>
+  </url>
+  <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/globeproj.html</loc>
   </url>
   <url>
@@ -182,9 +191,6 @@
   </url>
   <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/project.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/split_lines.html</loc>
   </url>
   <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/st_check_dim.html</loc>

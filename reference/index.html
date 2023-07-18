@@ -98,14 +98,24 @@
         <dd>Create a coordinate reference system object</dd>
       </dl><dl><dt>
           
-          <code><a href="fm_as_inla_mesh.html">fm_as_inla_mesh()</a></code> 
+          <code><a href="fm_as_fm.html">fm_as_fm()</a></code> 
         </dt>
-        <dd>Conversion to inla.mesh</dd>
+        <dd>Convert objects to fmesher objects</dd>
       </dl><dl><dt>
           
-          <code><a href="fm_as_inla_mesh_segment.html">fm_as_inla_mesh_segment()</a></code> 
+          <code><a href="fm_as_mesh_1d.html">fm_as_mesh_1d()</a></code> 
         </dt>
-        <dd>Conversion to inla.mesh.segment</dd>
+        <dd>Convert objects to <code>fm_segm</code></dd>
+      </dl><dl><dt>
+          
+          <code><a href="fm_as_mesh_2d.html">fm_as_mesh_2d()</a></code> 
+        </dt>
+        <dd>Convert objects to <code>fm_mesh_2d</code></dd>
+      </dl><dl><dt>
+          
+          <code><a href="fm_as_segm.html">fm_as_segm()</a></code> 
+        </dt>
+        <dd>Convert objects to <code>fm_segm</code></dd>
       </dl><dl><dt>
           
           <code><a href="fm_as_sfc.html">fm_as_sfc()</a></code> 
@@ -168,17 +178,12 @@
         <dd>Query if points are inside a mesh</dd>
       </dl><dl><dt>
           
-          <code><a href="fm_mesh.html">fm_as_mesh()</a></code> 
-        </dt>
-        <dd>Convert 1D and 2D objects to mesh objects</dd>
-      </dl><dl><dt>
-          
-          <code><a href="fm_mesh_1d.html">fm_mesh_1d()</a></code> <code><a href="fm_mesh_1d.html">fm_as_mesh_1d()</a></code> 
+          <code><a href="fm_mesh_1d.html">fm_mesh_1d()</a></code> 
         </dt>
         <dd>Make a 1D mesh object</dd>
       </dl><dl><dt>
           
-          <code><a href="fm_mesh_2d.html">fm_mesh_2d()</a></code> <code><a href="fm_mesh_2d.html">fm_as_mesh_2d()</a></code> 
+          <code><a href="fm_mesh_2d.html">fm_mesh_2d()</a></code> 
         </dt>
         <dd>Make a 2D mesh object</dd>
       </dl><dl><dt>
@@ -208,7 +213,7 @@
         <dd>Check for potential <code>sp</code> version compatibility issues</dd>
       </dl><dl><dt>
           
-          <code><a href="fm_segm.html">fm_segm()</a></code> <code><a href="fm_segm.html">fm_as_segm()</a></code> 
+          <code><a href="fm_segm.html">fm_segm()</a></code> 
         </dt>
         <dd>Make a spatial segment object</dd>
       </dl><dl><dt>
@@ -223,7 +228,7 @@
         <dd>Extract vertex locations from an <code>inla.mesh</code></dd>
       </dl><dl><dt>
           
-          <code><a href="fmesher-deprecated.html">fm_has_PROJ6()</a></code> <code><a href="fmesher-deprecated.html">fm_not_for_PROJ6()</a></code> <code><a href="fmesher-deprecated.html">fm_not_for_PROJ4()</a></code> <code><a href="fmesher-deprecated.html">fm_fallback_PROJ6()</a></code> <code><a href="fmesher-deprecated.html">fm_requires_PROJ6()</a></code> <code><a href="fmesher-deprecated.html">fm_as_sp_crs()</a></code> <code><a href="fmesher-deprecated.html">fm_sp_get_crs()</a></code> <code><a href="fmesher-deprecated.html">fm_spTransform()</a></code> <code><a href="fmesher-deprecated.html">fm_sp2segment()</a></code> 
+          <code><a href="fmesher-deprecated.html">fm_has_PROJ6()</a></code> <code><a href="fmesher-deprecated.html">fm_not_for_PROJ6()</a></code> <code><a href="fmesher-deprecated.html">fm_not_for_PROJ4()</a></code> <code><a href="fmesher-deprecated.html">fm_fallback_PROJ6()</a></code> <code><a href="fmesher-deprecated.html">fm_requires_PROJ6()</a></code> <code><a href="fmesher-deprecated.html">fm_as_sp_crs()</a></code> <code><a href="fmesher-deprecated.html">fm_sp_get_crs()</a></code> <code><a href="fmesher-deprecated.html">fm_spTransform()</a></code> <code><a href="fmesher-deprecated.html">split_lines()</a></code> <code><a href="fmesher-deprecated.html">fm_as_inla_mesh_segment()</a></code> <code><a href="fmesher-deprecated.html">fm_as_inla_mesh()</a></code> <code><a href="fmesher-deprecated.html">fm_sp2segment()</a></code> 
         </dt>
         <dd>Deprecated functions in fmesher</dd>
       </dl><dl><dt>
@@ -246,6 +251,11 @@
           <code><a href="fmesher_rcdt.html">fmesher_rcdt()</a></code> 
         </dt>
         <dd>Refined Constrained Delaunay Triangulation</dd>
+      </dl><dl><dt>
+          
+          <code><a href="fmesher_split_lines.html">fmesher_split_lines()</a></code> 
+        </dt>
+        <dd>Split lines at triangle edges</dd>
       </dl><dl><dt>
           
           <code><a href="globeproj.html">globeproj()</a></code> 
