@@ -20,6 +20,11 @@ fm_as_mesh_1d(...)
 \description{
 Convert objects to \code{fm_segm}
 }
+\section{Functions}{
+\itemize{
+\item \code{fm_as_mesh_1d()}: Convert an object to \code{fm_mesh_1d}.
+
+}}
 \seealso{
 Other object creation and conversion: 
 \code{\link{fm_as_fm}()},

@@ -1,3 +1,5 @@
+#' @include deprecated.R
+
 #' @describeIn fmesher-deprecated Split lines at mesh edges.
 #' @inheritParams fm_split_lines
 #' @param filter.zero.length logical; if `TRUE`, remove line segments of length zero

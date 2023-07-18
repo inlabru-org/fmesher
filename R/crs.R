@@ -1,3 +1,5 @@
+#' @include deprecated.R
+
 #' @importFrom sp coordinates proj4string `proj4string<-`
 
 #' @describeIn fmesher-deprecated Detect whether PROJ6 is available

@@ -1,4 +1,5 @@
 #' @include mesh.R
+#' @include deprecated.R
 
 #' @title Conversion methods from mesh related objects to sfc
 #' @rdname fm_as_sfc
@@ -151,7 +152,6 @@ fm_as_sfc.fm_segm <- function(x, ..., multi = FALSE) {
 #' @describeIn fmesher-deprecated Conversion to inla.mesh.
 #' `r lifecycle::badge("deprecated")` in favour of [fm_as_mesh_2d()].
 #' @param x An object to be coerced/transformed/converted into another class
-#' @param ... Arguments passed on to other methods
 #' @returns An `inla.mesh` object
 #' @export
 fm_as_inla_mesh <- function(...) {

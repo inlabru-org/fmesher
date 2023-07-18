@@ -1,3 +1,5 @@
+#' @include deprecated.R
+
 #' @title Generate lattice points covering a mesh
 #'
 #' @description Generate `terra`, `sf`, or `sp` lattice locations
@@ -733,7 +735,7 @@ fm_diameter.matrix <- function(x, ...) {
 #' if (fm_safe_inla()) {
 #'   inp <- sf::st_as_sf(as.data.frame(matrix(1:6, 3, 2)), coords = 1:2)
 #'   out <- fm_extensions(inp, convex = c(0.75, 2))
-#'   bnd <- fm_as_segm(out)
+#'   bnd <- lapply(out, fm_as_segm)
 #'   plot(INLA::inla.mesh.2d(boundary = bnd, max.edge = c(0.25, 1)), asp = 1)
 #' }
 #'
@@ -836,7 +838,6 @@ fm_as_segm.inla.mesh.segment <- function(x, ...) {
 #' @describeIn fmesher-deprecated Conversion to inla.mesh.segment
 #' `r lifecycle::badge("deprecated")` in favour of [fm_as_segm()].
 #' @param x An object to be coerced/transformed/converted into another class
-#' @param ... Arguments passed on to other methods
 #' @returns An `inla.mesh.segment` object
 #' @export
 fm_as_inla_mesh_segment <-
@@ -925,7 +926,6 @@ fm_mesh_1d.default <- function(...) {
 #' @param ... Arguments passed on to submethods
 #' @export
 #' @family object creation and conversion
-#' @rdname fm_as_mesh_1d
 #' @export
 fm_as_mesh_1d <- function(...) {
   UseMethod("fm_as_mesh_1d")

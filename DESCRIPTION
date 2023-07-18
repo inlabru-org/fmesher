@@ -64,8 +64,8 @@ Remotes:
     inlabru-org/inlabru@feature/fmesher
 Collate: 
     'RcppExports.R'
-    'crs.R'
     'deprecated.R'
+    'crs.R'
     'evaluator.R'
     'fmesher-package.R'
     'fmesher.R'

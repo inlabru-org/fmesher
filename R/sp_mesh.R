@@ -1,4 +1,6 @@
 #' @include mesh.R
+#' @include deprecated.R
+
 #' @importFrom sp coordinates proj4string `proj4string<-`
 
 ## Input: list of segments, all closed polygons.
