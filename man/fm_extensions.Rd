@@ -33,7 +33,7 @@ by closing (dilation + erosion) by \code{concave}.
 if (fm_safe_inla()) {
   inp <- sf::st_as_sf(as.data.frame(matrix(1:6, 3, 2)), coords = 1:2)
   out <- fm_extensions(inp, convex = c(0.75, 2))
-  bnd <- fm_as_inla_mesh_segment(out)
+  bnd <- fm_as_segm(out)
   plot(INLA::inla.mesh.2d(boundary = bnd, max.edge = c(0.25, 1)), asp = 1)
 }
 

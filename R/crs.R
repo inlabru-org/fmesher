@@ -847,7 +847,14 @@ fm_crs.sfg <- function(x, ..., crsonly = FALSE) {
 
 #' @rdname fm_crs
 #' @export
+#' @method fm_crs inla.mesh
 fm_crs.inla.mesh <- function(x, ..., crsonly = FALSE) {
+  fm_crs(x[["crs"]], ..., crsonly = crsonly)
+}
+
+#' @rdname fm_crs
+#' @export
+fm_crs.fm_mesh_2d <- function(x, ..., crsonly = FALSE) {
   fm_crs(x[["crs"]], ..., crsonly = crsonly)
 }
 
@@ -860,6 +867,12 @@ fm_crs.inla.mesh.lattice <- function(x, ..., crsonly = FALSE) {
 #' @rdname fm_crs
 #' @export
 fm_crs.inla.mesh.segment <- function(x, ..., crsonly = FALSE) {
+  fm_crs(x[["crs"]], ..., crsonly = crsonly)
+}
+
+#' @rdname fm_crs
+#' @export
+fm_crs.fm_segm <- function(x, ..., crsonly = FALSE) {
   fm_crs(x[["crs"]], ..., crsonly = crsonly)
 }
 
@@ -1000,6 +1013,12 @@ fm_CRS.inla.mesh <- function(x, ..., crsonly = FALSE) {
 
 #' @rdname fm_CRS_sp
 #' @export
+fm_CRS.fm_mesh_2d <- function(x, ..., crsonly = FALSE) {
+  fm_CRS(x[["crs"]], ..., crsonly = crsonly)
+}
+
+#' @rdname fm_CRS_sp
+#' @export
 fm_CRS.inla.mesh.lattice <- function(x, ..., crsonly = FALSE) {
   fm_CRS(x[["crs"]], ..., crsonly = crsonly)
 }
@@ -1007,6 +1026,12 @@ fm_CRS.inla.mesh.lattice <- function(x, ..., crsonly = FALSE) {
 #' @rdname fm_CRS_sp
 #' @export
 fm_CRS.inla.mesh.segment <- function(x, ..., crsonly = FALSE) {
+  fm_CRS(x[["crs"]], ..., crsonly = crsonly)
+}
+
+#' @rdname fm_CRS_sp
+#' @export
+fm_CRS.fm_segm <- function(x, ..., crsonly = FALSE) {
   fm_CRS(x[["crs"]], ..., crsonly = crsonly)
 }
 
@@ -1977,6 +2002,19 @@ fm_transform.inla.mesh <- function(x,
 
 #' @export
 #' @rdname fm_transform
+fm_transform.fm_mesh_2d <- function(x,
+                                    crs = fm_crs(x),
+                                    ...,
+                                    passthrough = FALSE,
+                                    crs0 = fm_crs(x)) {
+  x$loc <- fm_transform(x$loc, crs = crs, ..., crs0 = x$crs, passthrough = passthrough)
+  x$manifold <- fm_crs_detect_manifold(crs)
+  x$crs <- fm_CRS(crs)
+  x
+}
+
+#' @export
+#' @rdname fm_transform
 fm_transform.inla.mesh.lattice <- function(x,
                                            crs = fm_crs(x),
                                            ...,
@@ -1991,6 +2029,14 @@ fm_transform.inla.mesh.lattice <- function(x,
 #' @export
 #' @rdname fm_transform
 fm_transform.inla.mesh.segment <- function(x, crs = fm_crs(x), ..., passthrough = FALSE) {
+  x$loc <- fm_transform(x$loc, crs = crs, crs0 = x$crs, ..., passthrough = passthrough)
+  x$crs <- fm_CRS(crs)
+  invisible(x)
+}
+
+#' @export
+#' @rdname fm_transform
+fm_transform.fm_segm <- function(x, crs = fm_crs(x), ..., passthrough = FALSE) {
   x$loc <- fm_transform(x$loc, crs = crs, crs0 = x$crs, ..., passthrough = passthrough)
   x$crs <- fm_CRS(crs)
   invisible(x)

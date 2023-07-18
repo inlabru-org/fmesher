@@ -4,10 +4,7 @@
 \alias{fm_segm}
 \alias{fm_segm.default}
 \alias{fm_segm.fm_segm}
-\alias{fm_as_segm}
-\alias{fm_as_segm.default}
-\alias{fm_as_segm.list}
-\alias{fm_as_segm.inla.mesh.segment}
+\alias{fm_segm.inla.mesh.segment}
 \title{Make a spatial segment object}
 \usage{
 fm_segm(...)
@@ -16,21 +13,13 @@ fm_segm(...)
 
 \method{fm_segm}{fm_segm}(..., grp.default = 0)
 
-fm_as_segm(x, ...)
-
-\method{fm_as_segm}{default}(x, ...)
-
-\method{fm_as_segm}{list}(x, ...)
-
-\method{fm_as_segm}{inla.mesh.segment}(x, ...)
+\method{fm_segm}{inla.mesh.segment}(..., grp.default = 0)
 }
 \arguments{
-\item{...}{Currently passed on to \code{inla.mesh.segment} or \code{fm_as_inla_mesh_segment}}
+\item{...}{Currently passed on to \code{inla.mesh.segment}}
 
 \item{grp.default}{When joining segments, use this group label for segments
 that have \code{grp == NULL}.}
-
-\item{x}{Object to be converted.}
 }
 \description{
 Make a spatial segment object
@@ -40,18 +29,23 @@ Make a spatial segment object
 \item \code{fm_segm(fm_segm)}: Join multiple \code{fm_segm} objects into a single \code{fm_segm}
 object.
 
+\item \code{fm_segm(inla.mesh.segment)}: Join multiple \code{inla.mesh.segment} objects into a single \code{fm_segm}
+object.
+
 }}
 \section{Functions}{
 \itemize{
 \item \code{fm_segm()}: Create a new \code{fm_segm} object.
 
-\item \code{fm_as_segm()}: Convert an object to \code{fm_segm}.
-
 }}
 \seealso{
-Other mesh object creation and conversion: 
-\code{\link{fm_as_mesh.fm_mesh_1d}()},
-\code{\link{fm_as_mesh.fm_mesh_2d}()},
-\code{\link{fm_as_mesh}()}
+Other object creation and conversion: 
+\code{\link{fm_as_fm}()},
+\code{\link{fm_as_mesh_1d}()},
+\code{\link{fm_as_mesh_2d}()},
+\code{\link{fm_as_segm}()},
+\code{\link{fm_as_sfc}()},
+\code{\link{fm_mesh_1d}()},
+\code{\link{fm_mesh_2d}()}
 }
-\concept{mesh object creation and conversion}
+\concept{object creation and conversion}

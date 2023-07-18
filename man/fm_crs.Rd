@@ -21,8 +21,10 @@
 \alias{fm_crs.sfc}
 \alias{fm_crs.sfg}
 \alias{fm_crs.inla.mesh}
+\alias{fm_crs.fm_mesh_2d}
 \alias{fm_crs.inla.mesh.lattice}
 \alias{fm_crs.inla.mesh.segment}
+\alias{fm_crs.fm_segm}
 \alias{fm_wkt_predef}
 \title{Obtain coordinate reference system object}
 \usage{
@@ -66,9 +68,13 @@ fm_crs_oblique(x) <- value
 
 \method{fm_crs}{inla.mesh}(x, ..., crsonly = FALSE)
 
+\method{fm_crs}{fm_mesh_2d}(x, ..., crsonly = FALSE)
+
 \method{fm_crs}{inla.mesh.lattice}(x, ..., crsonly = FALSE)
 
 \method{fm_crs}{inla.mesh.segment}(x, ..., crsonly = FALSE)
+
+\method{fm_crs}{fm_segm}(x, ..., crsonly = FALSE)
 
 fm_wkt_predef()
 }

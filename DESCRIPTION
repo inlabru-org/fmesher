@@ -62,3 +62,19 @@ VignetteBuilder: knitr
 BuildVignettes: true
 Remotes:
     inlabru-org/inlabru@feature/fmesher
+Collate: 
+    'RcppExports.R'
+    'crs.R'
+    'deprecated.R'
+    'evaluator.R'
+    'fmesher-package.R'
+    'fmesher.R'
+    'integration.R'
+    'local.R'
+    'mapping.R'
+    'mesh.R'
+    'onload.R'
+    'sf_mesh.R'
+    'sf_utils.R'
+    'sp_mesh.R'
+    'utils.R'
