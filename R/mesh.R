@@ -295,9 +295,9 @@ fm_vertices <- function(x, format = NULL) {
   )
 }
 
-#' @title Extract triangle centroids from an `inla.mesh`
+#' @title Extract triangle centroids from an `fm_mesh_2d`
 #'
-#' @description Computes the centroids of the triangles of an `inla.mesh`
+#' @description Computes the centroids of the triangles of an [fm_mesh_2d()]
 #' object.
 #'
 #' @export
@@ -845,7 +845,7 @@ fm_as_inla_mesh_segment <-
     lifecycle::deprecate_soft("0.0.1",
                               "fm_as_inla_mesh_segment()",
                               "fm_as_segm()")
-    fm_as_segm(...)
+    fm_as_segm(x, ...)
   }
 
 
@@ -1000,6 +1000,19 @@ fm_as_mesh_2d.inla.mesh <- function(x, ...) {
   class(x) <- c("fm_mesh_2d", class(x))
   x
 }
+
+#' @describeIn fmesher-deprecated Conversion to inla.mesh.
+#' `r lifecycle::badge("deprecated")` in favour of [fm_as_mesh_2d()].
+#' @returns An `inla.mesh` object
+#' @export
+fm_as_inla_mesh <- function(...) {
+  lifecycle::deprecate_soft("0.0.1",
+                            "fm_as_inla_mesh()",
+                            "fm_as_mesh_2d()")
+  fm_as_mesh_2d(...)
+}
+
+
 
 # fm_lattice_2d ####
 

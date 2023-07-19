@@ -149,18 +149,6 @@ fm_as_sfc.fm_segm <- function(x, ..., multi = FALSE) {
 }
 
 
-#' @describeIn fmesher-deprecated Conversion to inla.mesh.
-#' `r lifecycle::badge("deprecated")` in favour of [fm_as_mesh_2d()].
-#' @param x An object to be coerced/transformed/converted into another class
-#' @returns An `inla.mesh` object
-#' @export
-fm_as_inla_mesh <- function(...) {
-  lifecycle::deprecate_soft("0.0.1",
-                            "fm_as_inla_mesh()",
-                            "fm_as_mesh_2d()")
-  fm_as_mesh_2d(...)
-}
-
 #' @rdname fm_as_mesh_2d
 #' @export
 fm_as_mesh_2d.sfg <-

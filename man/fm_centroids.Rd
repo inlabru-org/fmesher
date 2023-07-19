@@ -2,7 +2,7 @@
 % Please edit documentation in R/mesh.R
 \name{fm_centroids}
 \alias{fm_centroids}
-\title{Extract triangle centroids from an \code{inla.mesh}}
+\title{Extract triangle centroids from an \code{fm_mesh_2d}}
 \usage{
 fm_centroids(x, format = NULL)
 }
@@ -16,7 +16,7 @@ An \code{sf}, \code{data.frame}, or \code{SpatialPointsDataFrame} object, with t
 coordinates, and a \code{.triangle} column with the triangle indices.
 }
 \description{
-Computes the centroids of the triangles of an \code{inla.mesh}
+Computes the centroids of the triangles of an \code{\link[=fm_mesh_2d]{fm_mesh_2d()}}
 object.
 }
 \examples{
