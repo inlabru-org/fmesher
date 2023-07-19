@@ -12,7 +12,7 @@ defined on an inla.mesh or inla.mesh.1d object."><!-- mathjax --><script src="ht
     
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.9.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.9.9002</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,7 +71,13 @@ defined on an <code>inla.mesh</code> or <code>inla.mesh.1d</code> object.</p>
 <span><span class="co"># S3 method for inla.mesh</span></span>
 <span><span class="fu">fm_evaluate</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">field</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># S3 method for fm_mesh_2d</span></span>
+<span><span class="fu">fm_evaluate</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">field</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
 <span><span class="co"># S3 method for inla.mesh.1d</span></span>
+<span><span class="fu">fm_evaluate</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">field</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for fm_mesh_1d</span></span>
 <span><span class="fu">fm_evaluate</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">field</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for fm_evaluator</span></span>
@@ -79,9 +85,9 @@ defined on an <code>inla.mesh</code> or <code>inla.mesh.1d</code> object.</p>
 <span></span>
 <span><span class="fu">fm_evaluator</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">fm_evaluator_inla_mesh</span><span class="op">(</span><span class="va">mesh</span>, loc <span class="op">=</span> <span class="cn">NULL</span>, crs <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">fm_evaluator_mesh_2d</span><span class="op">(</span><span class="va">mesh</span>, loc <span class="op">=</span> <span class="cn">NULL</span>, crs <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">fm_evaluator_inla_mesh_1d</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">loc</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">fm_evaluator_mesh_1d</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">loc</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">fm_evaluator_lattice</span><span class="op">(</span></span>
 <span>  <span class="va">mesh</span>,</span>
@@ -96,7 +102,13 @@ defined on an <code>inla.mesh</code> or <code>inla.mesh.1d</code> object.</p>
 <span><span class="co"># S3 method for inla.mesh</span></span>
 <span><span class="fu">fm_evaluator</span><span class="op">(</span><span class="va">mesh</span>, loc <span class="op">=</span> <span class="cn">NULL</span>, lattice <span class="op">=</span> <span class="cn">NULL</span>, crs <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># S3 method for fm_mesh_2d</span></span>
+<span><span class="fu">fm_evaluator</span><span class="op">(</span><span class="va">mesh</span>, loc <span class="op">=</span> <span class="cn">NULL</span>, lattice <span class="op">=</span> <span class="cn">NULL</span>, crs <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
 <span><span class="co"># S3 method for inla.mesh.1d</span></span>
+<span><span class="fu">fm_evaluator</span><span class="op">(</span><span class="va">mesh</span>, loc <span class="op">=</span> <span class="cn">NULL</span>, xlim <span class="op">=</span> <span class="va">mesh</span><span class="op">$</span><span class="va">interval</span>, dims <span class="op">=</span> <span class="fl">100</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for fm_mesh_1d</span></span>
 <span><span class="fu">fm_evaluator</span><span class="op">(</span><span class="va">mesh</span>, loc <span class="op">=</span> <span class="cn">NULL</span>, xlim <span class="op">=</span> <span class="va">mesh</span><span class="op">$</span><span class="va">interval</span>, dims <span class="op">=</span> <span class="fl">100</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -148,7 +160,7 @@ the domain.</p></dd>
 
 
 <dt>lattice</dt>
-<dd><p>An <code>inla.mesh.lattice()</code> object.</p></dd>
+<dd><p>An <code><a href="fm_lattice_2d.html">fm_lattice_2d()</a></code> object.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -157,19 +169,22 @@ the domain.</p></dd>
 <ul><li><p><code>fm_evaluate()</code>: Returns the field function evaluated at the locations determined by an
 <code>fm_evaluator</code> object. <code>fm_evaluate(mesh, field = field, ...)</code> is a
 shortcut to <code>fm_evaluate(fm_evaluator(mesh, ...), field = field)</code>.</p></li>
-<li><p><code>fm_evaluator()</code>: Returns the and <code>fm_evaluator</code> list object with evaluation information.
+<li><p><code>fm_evaluator()</code>: Returns an <code>fm_evaluator</code> list object with evaluation information.
 The <code>proj</code> element contains a mapping matrix <code>A</code> and a logical vector <code>ok</code>,
-that indicates which locations were mappable to the input mesh. For <code>inla.mesh</code>
+that indicates which locations were mappable to the input mesh.
+For <code>fm_mesh_2d</code> and <code>inla.mesh</code>
 input, <code>proj</code> also contains a matrix <code>bary</code> and vector <code>t</code>, with the
 barycentric coordinates within the triangle each input location falls in.</p></li>
-<li><p><code>fm_evaluator_lattice()</code>: Creates an <code>inla.mesh.lattice</code>, by default covering the input mesh.</p></li>
+<li><p><code>fm_evaluator_lattice()</code>: Creates an <code><a href="fm_lattice_2d.html">fm_lattice_2d()</a></code> object, by default covering the input mesh.</p></li>
 <li><p><code>fm_evaluator(inla.mesh)</code>: The <code>...</code> arguments are passed on to <code>fm_evaluator_lattice()</code>
+if no <code>loc</code> or <code>lattice</code> is provided.</p></li>
+<li><p><code>fm_evaluator(fm_mesh_2d)</code>: The <code>...</code> arguments are passed on to <code>fm_evaluator_lattice()</code>
 if no <code>loc</code> or <code>lattice</code> is provided.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code>inla.mesh</code>, <code>inla.mesh.1d</code>,
-<code>inla.mesh.lattice</code></p></div>
+    <div class="dont-index"><p><code><a href="fm_mesh_2d.html">fm_mesh_2d()</a></code>, <code><a href="fm_mesh_1d.html">fm_mesh_1d()</a></code>,
+<code><a href="fm_lattice_2d.html">fm_lattice_2d()</a></code></p></div>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>

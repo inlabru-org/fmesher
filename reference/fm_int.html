@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.9.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.9.9002</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -86,7 +86,20 @@
 <span><span class="co"># S3 method for inla.mesh.1d</span></span>
 <span><span class="fu">fm_int</span><span class="op">(</span><span class="va">domain</span>, samplers <span class="op">=</span> <span class="cn">NULL</span>, name <span class="op">=</span> <span class="st">"x"</span>, int.args <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># S3 method for fm_mesh_1d</span></span>
+<span><span class="fu">fm_int</span><span class="op">(</span><span class="va">domain</span>, samplers <span class="op">=</span> <span class="cn">NULL</span>, name <span class="op">=</span> <span class="st">"x"</span>, int.args <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
 <span><span class="co"># S3 method for inla.mesh</span></span>
+<span><span class="fu">fm_int</span><span class="op">(</span></span>
+<span>  <span class="va">domain</span>,</span>
+<span>  samplers <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  name <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  int.args <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  format <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for fm_mesh_2d</span></span>
 <span><span class="fu">fm_int</span><span class="op">(</span></span>
 <span>  <span class="va">domain</span>,</span>
 <span>  samplers <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -153,14 +166,14 @@ the sampler type.</p></dd>
 <li><p><code>fm_int(factor)</code>: Discrete factor space integration</p></li>
 <li><p><code>fm_int(SpatRaster)</code>: <code>SpatRaster</code> integration. Not yet implemented.</p></li>
 <li><p><code>fm_int(inla.mesh.lattice)</code>: <code>inla.mesh.lattice</code> integration. Not yet implemented.</p></li>
-<li><p><code>fm_int(inla.mesh.1d)</code>: <code>inla.mesh.1d</code> integration. Supported samplers:</p><ul><li><p><code>NULL</code> for integration over the entire domain;</p></li>
+<li><p><code>fm_int(fm_mesh_1d)</code>: <code>fm_mesh_1d</code> integration. Supported samplers:</p><ul><li><p><code>NULL</code> for integration over the entire domain;</p></li>
 <li><p>A length 2 vector defining an interval;</p></li>
 <li><p>A 2-column matrix with a single interval in each row;</p></li>
 <li><p>A tibble with a named column containing a matrix, and optionally a
 <code>weight</code> column.</p></li>
 </ul></li>
-<li><p><code>fm_int(inla.mesh)</code>: <code>inla.mesh</code> integration. Any sampler class with an
-associated <code><a href="fm_int_inla_mesh.html">fm_int_inla_mesh()</a></code> method is supported.</p></li>
+<li><p><code>fm_int(fm_mesh_2d)</code>: <code>inla.mesh</code> integration. Any sampler class with an
+associated <code><a href="fm_int_mesh_2d.html">fm_int_mesh_2d()</a></code> method is supported.</p></li>
 </ul></div>
 
     <div class="section level2">
