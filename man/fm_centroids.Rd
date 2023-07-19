@@ -7,7 +7,7 @@
 fm_centroids(x, format = NULL)
 }
 \arguments{
-\item{x}{An \code{inla.mesh} object.}
+\item{x}{An \code{fm_mesh_2d} or \code{inla.mesh} object.}
 
 \item{format}{character; \code{"sf"}, \code{"df"}, \code{"sp"}}
 }

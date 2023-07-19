@@ -868,6 +868,12 @@ fm_crs.inla.mesh.lattice <- function(x, ..., crsonly = FALSE) {
 
 #' @rdname fm_crs
 #' @export
+fm_crs.fm_lattice <- function(x, ..., crsonly = FALSE) {
+  fm_crs(x[["crs"]], ..., crsonly = crsonly)
+}
+
+#' @rdname fm_crs
+#' @export
 fm_crs.inla.mesh.segment <- function(x, ..., crsonly = FALSE) {
   fm_crs(x[["crs"]], ..., crsonly = crsonly)
 }
@@ -1022,6 +1028,12 @@ fm_CRS.fm_mesh_2d <- function(x, ..., crsonly = FALSE) {
 #' @rdname fm_CRS_sp
 #' @export
 fm_CRS.inla.mesh.lattice <- function(x, ..., crsonly = FALSE) {
+  fm_CRS(x[["crs"]], ..., crsonly = crsonly)
+}
+
+#' @rdname fm_CRS_sp
+#' @export
+fm_CRS.fm_lattice <- function(x, ..., crsonly = FALSE) {
   fm_CRS(x[["crs"]], ..., crsonly = crsonly)
 }
 
@@ -2022,6 +2034,21 @@ fm_transform.inla.mesh.lattice <- function(x,
                                            ...,
                                            passthrough = FALSE,
                                            crs0 = fm_crs(x)) {
+  fm_transform.fm_lattice_2d(
+    fm_as_lattice_2d(x),
+    crs = crs,
+    ...,
+    passthrough = passthrough,
+    crs0 = crs0
+  )
+}
+#' @export
+#' @rdname fm_transform
+fm_transform.fm_lattice_2d <- function(x,
+                                       crs = fm_crs(x),
+                                       ...,
+                                       passthrough = FALSE,
+                                       crs0 = fm_crs(x)) {
   x$segm <- fm_transform(x$segm, crs = crs, crs0 = x$crs, ..., passthrough = passthrough)
   x$loc <- fm_transform(x$loc, crs = crs, crs0 = x$crs, ..., passthrough = passthrough)
   x$crs <- fm_CRS(crs)

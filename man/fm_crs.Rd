@@ -23,6 +23,7 @@
 \alias{fm_crs.inla.mesh}
 \alias{fm_crs.fm_mesh_2d}
 \alias{fm_crs.inla.mesh.lattice}
+\alias{fm_crs.fm_lattice}
 \alias{fm_crs.inla.mesh.segment}
 \alias{fm_crs.fm_segm}
 \alias{fm_wkt_predef}
@@ -71,6 +72,8 @@ fm_crs_oblique(x) <- value
 \method{fm_crs}{fm_mesh_2d}(x, ..., crsonly = FALSE)
 
 \method{fm_crs}{inla.mesh.lattice}(x, ..., crsonly = FALSE)
+
+\method{fm_crs}{fm_lattice}(x, ..., crsonly = FALSE)
 
 \method{fm_crs}{inla.mesh.segment}(x, ..., crsonly = FALSE)
 

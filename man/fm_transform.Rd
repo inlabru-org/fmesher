@@ -12,6 +12,7 @@
 \alias{fm_transform.inla.mesh}
 \alias{fm_transform.fm_mesh_2d}
 \alias{fm_transform.inla.mesh.lattice}
+\alias{fm_transform.fm_lattice_2d}
 \alias{fm_transform.inla.mesh.segment}
 \alias{fm_transform.fm_segm}
 \title{Object coordinate transformation}
@@ -37,6 +38,8 @@ fm_transform(x, crs = fm_crs(x), ...)
 \method{fm_transform}{fm_mesh_2d}(x, crs = fm_crs(x), ..., passthrough = FALSE, crs0 = fm_crs(x))
 
 \method{fm_transform}{inla.mesh.lattice}(x, crs = fm_crs(x), ..., passthrough = FALSE, crs0 = fm_crs(x))
+
+\method{fm_transform}{fm_lattice_2d}(x, crs = fm_crs(x), ..., passthrough = FALSE, crs0 = fm_crs(x))
 
 \method{fm_transform}{inla.mesh.segment}(x, crs = fm_crs(x), ..., passthrough = FALSE)
 

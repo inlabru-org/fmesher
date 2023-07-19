@@ -513,7 +513,20 @@ fm_int.inla.mesh.lattice <- function(domain, samplers = NULL, name = "x", ...) {
 
 
 
-# inla.mesh.1d integration ####
+# fm_mesh_1d integration ####
+
+#' @rdname fm_int
+#' @export
+fm_int.inla.mesh.1d <- function(domain, samplers = NULL, name = "x", int.args = NULL, ...) {
+  fm_int.fm_mesh_1d(
+    fm_as_mesh_1d(domain),
+    samplers = samplers,
+    name = name,
+    int.args = NULL,
+    ...
+  )
+}
+
 
 #' @param int.args List of arguments passed to line and integration methods.
 #' * `method`: "stable" (to aggregate integration weights onto mesh nodes)
@@ -523,13 +536,13 @@ fm_int.inla.mesh.lattice <- function(domain, samplers = NULL, name = "x", ...) {
 #'   points before aggregation. Points per triangle: `(nsub2+1)^2`.
 #'   Points per knot segment: `nsub1`
 #' @export
-#' @describeIn fm_int `inla.mesh.1d` integration. Supported samplers:
+#' @describeIn fm_int `fm_mesh_1d` integration. Supported samplers:
 #' * `NULL` for integration over the entire domain;
 #' * A length 2 vector defining an interval;
 #' * A 2-column matrix with a single interval in each row;
 #' * A tibble with a named column containing a matrix, and optionally a
 #'  `weight` column.
-fm_int.inla.mesh.1d <- function(domain, samplers = NULL, name = "x", int.args = NULL, ...) {
+fm_int.fm_mesh_1d <- function(domain, samplers = NULL, name = "x", int.args = NULL, ...) {
   int.args.default <- list(method = "stable", nsub1 = 30, nsub2 = 9)
   if (is.null(int.args)) {
     int.args <- list()
@@ -699,7 +712,7 @@ fm_int.inla.mesh.1d <- function(domain, samplers = NULL, name = "x", int.args = 
 #'
 #' @export
 #' @param points A `SpatialPointsDataFrame`, `sf`, or `list` object
-#' @param mesh An `inla.mesh` object
+#' @param mesh An `fm_mesh_2d` or `inla.mesh` object
 #' @return `SpatialPointsDataFrame`, `sf`, or `list` of mesh vertices with
 #' projected data attached
 #' @importFrom rlang .data
@@ -784,16 +797,16 @@ fm_vertex_projection <- function(points, mesh) {
 #' @inheritParams fm_int
 #' @export
 #' @keywords internal
-fm_int_inla_mesh <- function(samplers,
-                             domain,
-                             name = NULL,
-                             int.args = NULL,
-                             ...) {
-  stopifnot(inherits(domain, "inla.mesh"))
+fm_int_mesh_2d <- function(samplers,
+                           domain,
+                           name = NULL,
+                           int.args = NULL,
+                           ...) {
+  stopifnot(inherits(domain, c("fm_mesh_2d", "inla.mesh")))
 
   if (missing(samplers) || is.null(samplers)) {
     return(
-      fm_int_inla_mesh_NULL(
+      fm_int_mesh_2d_NULL(
         samplers = NULL,
         domain = domain,
         name = name,
@@ -803,18 +816,18 @@ fm_int_inla_mesh <- function(samplers,
     )
   }
 
-  UseMethod("fm_int_inla_mesh")
+  UseMethod("fm_int_mesh_2d")
 }
 
-#' @describeIn fm_int_inla_mesh Full domain integration
-fm_int_inla_mesh_NULL <- function(samplers,
+#' @describeIn fm_int_mesh_2d Full domain integration
+fm_int_mesh_2d_NULL <- function(samplers,
                                   domain,
                                   name = NULL,
                                   int.args = NULL,
                                   ...) {
   stopifnot(is.null(samplers))
 
-  ips <- fm_int_inla_mesh_polygon(
+  ips <- fm_int_mesh_2d_polygon(
     domain = domain,
     samplers = NULL,
     int.args = int.args
@@ -828,8 +841,8 @@ fm_int_inla_mesh_NULL <- function(samplers,
 }
 
 #' @export
-#' @describeIn fm_int_inla_mesh `sf` integration
-fm_int_inla_mesh.sf <- function(samplers,
+#' @describeIn fm_int_mesh_2d `sf` integration
+fm_int_mesh_2d.sf <- function(samplers,
                                 domain,
                                 name = NULL,
                                 int.args = NULL,
@@ -843,7 +856,7 @@ fm_int_inla_mesh.sf <- function(samplers,
     weight <- samplers$weight
   }
 
-  fm_int_inla_mesh(
+  fm_int_mesh_2d(
     sf::st_geometry(samplers),
     domain,
     name = name,
@@ -856,8 +869,8 @@ fm_int_inla_mesh.sf <- function(samplers,
 #' @param .weight Optional weight vector for `sfc_*` integration
 #' @param .block Optional block grouping vector for `sfc_*` integration
 #' @export
-#' @describeIn fm_int_inla_mesh `sfc_POINT` integration
-fm_int_inla_mesh.sfc_POINT <- function(samplers,
+#' @describeIn fm_int_mesh_2d `sfc_POINT` integration
+fm_int_mesh_2d.sfc_POINT <- function(samplers,
                                        domain,
                                        name = NULL,
                                        int.args = NULL,
@@ -880,9 +893,9 @@ fm_int_inla_mesh.sfc_POINT <- function(samplers,
 
 
 #' @export
-#' @describeIn fm_int_inla_mesh `sfc_MULTIPOINT` integration
+#' @describeIn fm_int_mesh_2d `sfc_MULTIPOINT` integration
 #' @importFrom rlang :=
-fm_int_inla_mesh.sfc_MULTIPOINT <- function(samplers,
+fm_int_mesh_2d.sfc_MULTIPOINT <- function(samplers,
                                             domain,
                                             name = NULL,
                                             int.args = NULL,
@@ -913,7 +926,7 @@ fm_int_inla_mesh.sfc_MULTIPOINT <- function(samplers,
 
 
 
-fm_int_inla_mesh_lines <- function(samplers,
+fm_int_mesh_2d_lines <- function(samplers,
                                    domain,
                                    name = NULL,
                                    int.args = NULL,
@@ -1023,14 +1036,14 @@ fm_int_inla_mesh_lines <- function(samplers,
 
 
 #' @export
-#' @describeIn fm_int_inla_mesh `sfc_LINESTRING` integration
-fm_int_inla_mesh.sfc_LINESTRING <- function(samplers,
+#' @describeIn fm_int_mesh_2d `sfc_LINESTRING` integration
+fm_int_mesh_2d.sfc_LINESTRING <- function(samplers,
                                             domain,
                                             name = NULL,
                                             int.args = NULL,
                                             .weight = rep(1, NROW(samplers)),
                                             ...) {
-  ips <- fm_int_inla_mesh_lines(samplers, domain, name, int.args, .weight, ...)
+  ips <- fm_int_mesh_2d_lines(samplers, domain, name, int.args, .weight, ...)
 
   if (!is.null(name) && (name != attr(ips, "sf_column"))) {
     ips <- dplyr::rename(ips, "{name}" := "geometry")
@@ -1040,14 +1053,14 @@ fm_int_inla_mesh.sfc_LINESTRING <- function(samplers,
 }
 
 #' @export
-#' @describeIn fm_int_inla_mesh `sfc_MULTILINESTRING` integration
-fm_int_inla_mesh.sfc_MULTILINESTRING <- function(samplers,
+#' @describeIn fm_int_mesh_2d `sfc_MULTILINESTRING` integration
+fm_int_mesh_2d.sfc_MULTILINESTRING <- function(samplers,
                                                  domain,
                                                  name = NULL,
                                                  int.args = NULL,
                                                  .weight = rep(1, NROW(samplers)),
                                                  ...) {
-  ips <- fm_int_inla_mesh_lines(samplers, domain, name, int.args, .weight, ...)
+  ips <- fm_int_mesh_2d_lines(samplers, domain, name, int.args, .weight, ...)
 
   if (!is.null(name) && (name != attr(ips, "sf_column"))) {
     ips <- dplyr::rename(ips, "{name}" := "geometry")
@@ -1072,7 +1085,7 @@ fm_int_inla_mesh.sfc_MULTILINESTRING <- function(samplers,
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
 #' @keywords internal
 #' @export
-fm_int_inla_mesh_core <- function(mesh, tri_subset = NULL, nsub = NULL) {
+fm_int_mesh_2d_core <- function(mesh, tri_subset = NULL, nsub = NULL) {
   # Construct a barycentric grid of subdivision triangle midpoints
   if (is.null(nsub)) {
     nsub <- 9
@@ -1131,7 +1144,7 @@ fm_int_inla_mesh_core <- function(mesh, tri_subset = NULL, nsub = NULL) {
 }
 
 
-fm_int_inla_mesh_polygon <- function(samplers,
+fm_int_mesh_2d_polygon <- function(samplers,
                                      domain,
                                      name = NULL,
                                      int.args = NULL,
@@ -1144,7 +1157,7 @@ fm_int_inla_mesh_polygon <- function(samplers,
   # Compute direct integration points
   # TODO: Allow blockwise construction to avoid
   # overly large temporary coordinate matrices (via tri_subset)
-  integ <- fm_int_inla_mesh_core(domain, nsub = int.args[["nsub2"]])
+  integ <- fm_int_mesh_2d_core(domain, nsub = int.args[["nsub2"]])
 
   # Keep points with positive weights (This should be all,
   # but if there's a degenerate triangle, this gets rid of it)
@@ -1257,8 +1270,8 @@ fm_int_inla_mesh_polygon <- function(samplers,
 
 
 #' @export
-#' @describeIn fm_int_inla_mesh `sfc_POLYGON` integration
-fm_int_inla_mesh.sfc_POLYGON <- function(samplers,
+#' @describeIn fm_int_mesh_2d `sfc_POLYGON` integration
+fm_int_mesh_2d.sfc_POLYGON <- function(samplers,
                                          domain,
                                          name = NULL,
                                          int.args = NULL,
@@ -1267,7 +1280,7 @@ fm_int_inla_mesh.sfc_POLYGON <- function(samplers,
   weight <- .weight
   .block <- seq_len(NROW(samplers))
 
-  ips <- fm_int_inla_mesh_polygon(
+  ips <- fm_int_mesh_2d_polygon(
     domain = domain,
     int.args = int.args,
     samplers = samplers
@@ -1284,8 +1297,8 @@ fm_int_inla_mesh.sfc_POLYGON <- function(samplers,
 }
 
 #' @export
-#' @describeIn fm_int_inla_mesh `sfc_MULTIPOLYGON` integration
-fm_int_inla_mesh.sfc_MULTIPOLYGON <- function(samplers,
+#' @describeIn fm_int_mesh_2d `sfc_MULTIPOLYGON` integration
+fm_int_mesh_2d.sfc_MULTIPOLYGON <- function(samplers,
                                               domain,
                                               name = NULL,
                                               int.args = NULL,
@@ -1294,7 +1307,7 @@ fm_int_inla_mesh.sfc_MULTIPOLYGON <- function(samplers,
   weight <- .weight
   .block <- seq_len(NROW(samplers))
 
-  ips <- fm_int_inla_mesh_polygon(
+  ips <- fm_int_mesh_2d_polygon(
     domain = domain,
     int.args = int.args,
     samplers = samplers
@@ -1313,8 +1326,8 @@ fm_int_inla_mesh.sfc_MULTIPOLYGON <- function(samplers,
 
 
 #' @export
-#' @describeIn fm_int_inla_mesh `sfc_GEOMERY` integration
-fm_int_inla_mesh.sfc_GEOMETRY <- function(samplers,
+#' @describeIn fm_int_mesh_2d `sfc_GEOMERY` integration
+fm_int_mesh_2d.sfc_GEOMETRY <- function(samplers,
                                           domain,
                                           name = NULL,
                                           int.args = NULL,
@@ -1333,7 +1346,7 @@ fm_int_inla_mesh.sfc_GEOMETRY <- function(samplers,
   for (g_class in unique(geometry_class)) {
     subset <- geometry_class == g_class
     ips[[g_class]] <-
-      fm_int_inla_mesh(samplers[subset],
+      fm_int_mesh_2d(samplers[subset],
         domain = domain,
         name = name,
         int.args = int.args,
@@ -1359,8 +1372,8 @@ fm_int_inla_mesh.sfc_GEOMETRY <- function(samplers,
 
 
 #' @export
-#' @describeIn fm_int_inla_mesh `Spatial` integration
-fm_int_inla_mesh.Spatial <- function(samplers,
+#' @describeIn fm_int_mesh_2d `Spatial` integration
+fm_int_mesh_2d.Spatial <- function(samplers,
                                      domain,
                                      name = NULL,
                                      int.args = NULL,
@@ -1369,7 +1382,7 @@ fm_int_inla_mesh.Spatial <- function(samplers,
   samplers <- sf::st_as_sf(samplers)
 
   ips <-
-    fm_int_inla_mesh(
+    fm_int_mesh_2d(
       samplers,
       domain = domain,
       name = name,
@@ -1381,17 +1394,34 @@ fm_int_inla_mesh.Spatial <- function(samplers,
 }
 
 #' @export
-#' @describeIn fm_int `inla.mesh` integration. Any sampler class with an
-#' associated [fm_int_inla_mesh()] method is supported.
-#' @param format character; determines the output format, as either "sf"
-#'   (default when the sampler is `NULL`) or "sp". When `NULL`, determined by
-#'   the sampler type.
+#' @rdname fm_int
 fm_int.inla.mesh <- function(domain,
                              samplers = NULL,
                              name = NULL,
                              int.args = NULL,
                              format = NULL,
                              ...) {
+  fm_int.fm_mesh_2d(
+    fm_as_mesh_2d(domain),
+    samplers = samplers,
+    name = name,
+    int.args = int.args,
+    format = format,
+    ...
+  )
+}
+#' @export
+#' @describeIn fm_int `inla.mesh` integration. Any sampler class with an
+#' associated [fm_int_mesh_2d()] method is supported.
+#' @param format character; determines the output format, as either "sf"
+#'   (default when the sampler is `NULL`) or "sp". When `NULL`, determined by
+#'   the sampler type.
+fm_int.fm_mesh_2d <- function(domain,
+                              samplers = NULL,
+                              name = NULL,
+                              int.args = NULL,
+                              format = NULL,
+                              ...) {
   int.args.default <- list(method = "stable", nsub1 = 30, nsub2 = 9)
   if (is.null(int.args)) {
     int.args <- list()
@@ -1402,7 +1432,7 @@ fm_int.inla.mesh <- function(domain,
     int.args[["nsub2"]] <- int.args[["nsub"]]
   }
 
-  ips <- fm_int_inla_mesh(samplers,
+  ips <- fm_int_mesh_2d(samplers,
     domain = domain,
     name = name,
     int.args = int.args,

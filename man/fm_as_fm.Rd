@@ -5,9 +5,11 @@
 \alias{fm_as_fm.fm_mesh_1d}
 \alias{fm_as_fm.fm_mesh_2d}
 \alias{fm_as_fm.fm_segm}
+\alias{fm_as_fm.fm_lattice_2d}
 \alias{fm_as_fm.inla.mesh.1d}
 \alias{fm_as_fm.inla.mesh}
 \alias{fm_as_fm.inla.mesh.segment}
+\alias{fm_as_fm.inla.mesh.lattice}
 \title{Convert objects to fmesher objects}
 \usage{
 fm_as_fm(x, ...)
@@ -18,11 +20,15 @@ fm_as_fm(x, ...)
 
 \method{fm_as_fm}{fm_segm}(x, ...)
 
+\method{fm_as_fm}{fm_lattice_2d}(x, ...)
+
 \method{fm_as_fm}{inla.mesh.1d}(x, ...)
 
 \method{fm_as_fm}{inla.mesh}(x, ...)
 
 \method{fm_as_fm}{inla.mesh.segment}(x, ...)
+
+\method{fm_as_fm}{inla.mesh.lattice}(x, ...)
 }
 \arguments{
 \item{x}{Object to be converted}
@@ -36,10 +42,12 @@ to \code{fmesher} classes.
 }
 \seealso{
 Other object creation and conversion: 
+\code{\link{fm_as_lattice_2d}()},
 \code{\link{fm_as_mesh_1d}()},
 \code{\link{fm_as_mesh_2d}()},
 \code{\link{fm_as_segm}()},
 \code{\link{fm_as_sfc}()},
+\code{\link{fm_lattice_2d}()},
 \code{\link{fm_mesh_1d}()},
 \code{\link{fm_mesh_2d}()},
 \code{\link{fm_segm}()}

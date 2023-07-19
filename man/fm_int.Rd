@@ -9,7 +9,9 @@
 \alias{fm_int.SpatRaster}
 \alias{fm_int.inla.mesh.lattice}
 \alias{fm_int.inla.mesh.1d}
+\alias{fm_int.fm_mesh_1d}
 \alias{fm_int.inla.mesh}
+\alias{fm_int.fm_mesh_2d}
 \title{Multi-domain integration}
 \usage{
 fm_int(domain, samplers = NULL, ...)
@@ -28,7 +30,18 @@ fm_int(domain, samplers = NULL, ...)
 
 \method{fm_int}{inla.mesh.1d}(domain, samplers = NULL, name = "x", int.args = NULL, ...)
 
+\method{fm_int}{fm_mesh_1d}(domain, samplers = NULL, name = "x", int.args = NULL, ...)
+
 \method{fm_int}{inla.mesh}(
+  domain,
+  samplers = NULL,
+  name = NULL,
+  int.args = NULL,
+  format = NULL,
+  ...
+)
+
+\method{fm_int}{fm_mesh_2d}(
   domain,
   samplers = NULL,
   name = NULL,
@@ -87,7 +100,7 @@ Construct integration points on tensor product spaces
 
 \item \code{fm_int(inla.mesh.lattice)}: \code{inla.mesh.lattice} integration. Not yet implemented.
 
-\item \code{fm_int(inla.mesh.1d)}: \code{inla.mesh.1d} integration. Supported samplers:
+\item \code{fm_int(fm_mesh_1d)}: \code{fm_mesh_1d} integration. Supported samplers:
 \itemize{
 \item \code{NULL} for integration over the entire domain;
 \item A length 2 vector defining an interval;
@@ -96,8 +109,8 @@ Construct integration points on tensor product spaces
 \code{weight} column.
 }
 
-\item \code{fm_int(inla.mesh)}: \code{inla.mesh} integration. Any sampler class with an
-associated \code{\link[=fm_int_inla_mesh]{fm_int_inla_mesh()}} method is supported.
+\item \code{fm_int(fm_mesh_2d)}: \code{inla.mesh} integration. Any sampler class with an
+associated \code{\link[=fm_int_mesh_2d]{fm_int_mesh_2d()}} method is supported.
 
 }}
 \examples{

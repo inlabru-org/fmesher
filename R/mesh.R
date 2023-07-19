@@ -301,7 +301,7 @@ fm_vertices <- function(x, format = NULL) {
 #' object.
 #'
 #' @export
-#' @param x An `inla.mesh` object.
+#' @param x An `fm_mesh_2d` or `inla.mesh` object.
 #' @param format character; `"sf"`, `"df"`, `"sp"`
 #' @return
 #' An `sf`, `data.frame`, or `SpatialPointsDataFrame` object, with the vertex
@@ -886,6 +886,12 @@ fm_as_fm.fm_segm <- function(x, ...) {
 }
 #' @rdname fm_as_fm
 #' @export
+fm_as_fm.fm_lattice_2d <- function(x, ...) {
+  #  class(x) <- c("fm_lattice_2d", setdiff(class(x), "fm_lattice_2d"))
+  x
+}
+#' @rdname fm_as_fm
+#' @export
 #' @method fm_as_fm inla.mesh.1d
 fm_as_fm.inla.mesh.1d <- function(x, ...) {
   fm_as_mesh_1d(x, ...)
@@ -904,6 +910,13 @@ fm_as_fm.inla.mesh.segment <- function(x, ...) {
   fm_as_segm(x, ...)
 }
 
+#' @rdname fm_as_fm
+#' @export
+#' @method fm_as_fm inla.mesh.lattice
+fm_as_fm.inla.mesh.lattice <- function(x, ...) {
+  fm_as_lattice_2d(x, ...)
+}
+
 # fm_mesh_1d ####
 
 #' @title Make a 1D mesh object
@@ -911,7 +924,7 @@ fm_as_fm.inla.mesh.segment <- function(x, ...) {
 #' @param ... Currently passed on to `inla.mesh.1d`
 #' @family object creation and conversion
 fm_mesh_1d <- function(...) {
-  UseMethod("fm_segm_1d")
+  UseMethod("fm_mesh_1d")
 }
 
 #' @rdname fm_mesh_1d
@@ -954,7 +967,7 @@ fm_as_mesh_1d.inla.mesh.1d <- function(x, ...) {
 #' @param ... Currently passed on to `inla.mesh.2d`
 #' @family object creation and conversion
 fm_mesh_2d <- function(...) {
-  UseMethod("fm_segm_2d")
+  UseMethod("fm_mesh_2d")
 }
 
 #' @rdname fm_mesh_2d
@@ -988,3 +1001,44 @@ fm_as_mesh_2d.inla.mesh <- function(x, ...) {
   x
 }
 
+# fm_lattice_2d ####
+
+#' @title Make a lattice object
+#' @export
+#' @param ... Currently passed on to `inla.mesh.lattice`
+#' @family object creation and conversion
+fm_lattice_2d <- function(...) {
+  UseMethod("fm_lattice_2d")
+}
+
+#' @rdname fm_lattice_2d
+#' @export
+fm_lattice_2d.default <- function(...) {
+  fm_as_lattice_2d(INLA::inla.mesh.lattice(...))
+}
+
+#' @title Convert objects to `fm_lattice_2d`
+#' @describeIn fm_as_lattice_2d Convert an object to `fm_lattice_2d`.
+#' @param x Object to be converted.
+#' @param ... Arguments passed on to submethods
+#' @export
+#' @family object creation and conversion
+#' @export
+fm_as_lattice_2d <- function(...) {
+  UseMethod("fm_as_lattice_2d")
+}
+#' @rdname fm_as_lattice_2d
+#' @param x Object to be converted
+#' @export
+fm_as_lattice_2d.fm_lattice_2d <- function(x, ...) {
+  #  class(x) <- c("fm_lattice_2d", setdiff(class(x), "fm_lattice_2d"))
+  x
+}
+#' @rdname fm_as_lattice_2d
+#' @param x Object to be converted
+#' @export
+#' @method fm_as_lattice_2d inla.mesh.lattice
+fm_as_lattice_2d.inla.mesh.lattice <- function(x, ...) {
+  class(x) <- c("fm_lattice_2d", class(x))
+  x
+}

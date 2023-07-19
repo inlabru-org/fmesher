@@ -52,9 +52,11 @@ Conversion methods from mesh related objects to sfc
 \seealso{
 Other object creation and conversion: 
 \code{\link{fm_as_fm}()},
+\code{\link{fm_as_lattice_2d}()},
 \code{\link{fm_as_mesh_1d}()},
 \code{\link{fm_as_mesh_2d}()},
 \code{\link{fm_as_segm}()},
+\code{\link{fm_lattice_2d}()},
 \code{\link{fm_mesh_1d}()},
 \code{\link{fm_mesh_2d}()},
 \code{\link{fm_segm}()}

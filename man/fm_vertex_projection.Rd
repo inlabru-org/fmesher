@@ -9,7 +9,7 @@ fm_vertex_projection(points, mesh)
 \arguments{
 \item{points}{A \code{SpatialPointsDataFrame}, \code{sf}, or \code{list} object}
 
-\item{mesh}{An \code{inla.mesh} object}
+\item{mesh}{An \code{fm_mesh_2d} or \code{inla.mesh} object}
 }
 \value{
 \code{SpatialPointsDataFrame}, \code{sf}, or \code{list} of mesh vertices with

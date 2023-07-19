@@ -8,7 +8,7 @@
 #' @param mesh An `inla.mesh` or `inla.mesh.1d` object.
 #' @param loc Projection locations.  Can be a matrix, `SpatialPoints`,
 #' `SpatialPointsDataFrame`, `sf`, `sfc`, or `sfg` object.
-#' @param lattice An `inla.mesh.lattice()` object.
+#' @param lattice An [fm_lattice_2d()] object.
 #' @param xlim X-axis limits for a lattice. For R2 meshes, defaults to covering
 #' the domain.
 #' @param ylim Y-axis limits for a lattice. For R2 meshes, defaults to covering
@@ -23,8 +23,8 @@
 #' and/or `lattice`.
 #' @param \dots Additional arguments passed on to methods.
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
-#' @seealso `inla.mesh`, `inla.mesh.1d`,
-#' `inla.mesh.lattice`
+#' @seealso [fm_mesh_2d()], [fm_mesh_1d()],
+#' [fm_lattice_2d()]
 #' @examples
 #' if (fm_safe_inla()) {
 #'   n <- 20
@@ -61,6 +61,11 @@ fm_evaluate <- function(...) {
 #' @export
 #' @rdname fm_evaluate
 fm_evaluate.inla.mesh <- function(mesh, field, ...) {
+  fm_evaluate.fm_mesh_2d(fm_as_mesh_2d(mesh), field = field, ...)
+}
+#' @export
+#' @rdname fm_evaluate
+fm_evaluate.fm_mesh_2d <- function(mesh, field, ...) {
   if (missing(field) || is.null(field)) {
     lifecycle::deprecate_stop(
       "0.0.1",
@@ -77,7 +82,12 @@ fm_evaluate.inla.mesh <- function(mesh, field, ...) {
 #' @export
 #' @rdname fm_evaluate
 fm_evaluate.inla.mesh.1d <- function(mesh, field, ...) {
-  if (missing(field) || is.null(field)) {
+  fm_evaluate.fm_mesh_1d(fm_as_mesh_1d(mesh), field = field, ...)
+}
+#' @export
+#' @rdname fm_evaluate
+fm_evaluate.fm_mesh_1d <- function(mesh, field, ...) {
+    if (missing(field) || is.null(field)) {
     lifecycle::deprecate_stop(
       "0.0.1",
       "fm_evaluate(field = ' must not be missing or NULL.')",
@@ -125,9 +135,10 @@ fm_evaluate.fm_evaluator <-
 
 
 #' @describeIn fm_evaluate
-#' Returns the and `fm_evaluator` list object with evaluation information.
+#' Returns an `fm_evaluator` list object with evaluation information.
 #' The `proj` element contains a mapping matrix `A` and a logical vector `ok`,
-#' that indicates which locations were mappable to the input mesh. For `inla.mesh`
+#' that indicates which locations were mappable to the input mesh.
+#' For `fm_mesh_2d` and `inla.mesh`
 #' input, `proj` also contains a matrix `bary` and vector `t`, with the
 #' barycentric coordinates within the triangle each input location falls in.
 #' @export
@@ -138,9 +149,7 @@ fm_evaluator <- function(...) {
 
 #' @export
 #' @rdname fm_evaluate
-fm_evaluator_inla_mesh <- function(mesh, loc = NULL, crs = NULL, ...) {
-  stopifnot(inherits(mesh, "inla.mesh"))
-
+fm_evaluator_mesh_2d <- function(mesh, loc = NULL, crs = NULL, ...) {
   smorg <- fm_bary(mesh, loc = loc, crs = crs)
   ti <- matrix(0L, NROW(loc), 1)
   ti[, 1L] <- smorg$t
@@ -162,9 +171,7 @@ fm_evaluator_inla_mesh <- function(mesh, loc = NULL, crs = NULL, ...) {
 
 #' @export
 #' @rdname fm_evaluate
-fm_evaluator_inla_mesh_1d <- function(mesh, loc, ...) {
-  stopifnot(inherits(mesh, "inla.mesh.1d"))
-
+fm_evaluator_mesh_1d <- function(mesh, loc, ...) {
   A <- INLA::inla.mesh.1d.A(mesh, loc = loc)
 
   return(list(
@@ -177,7 +184,7 @@ fm_evaluator_inla_mesh_1d <- function(mesh, loc, ...) {
 
 
 #' @describeIn fm_evaluate
-#' Creates an `inla.mesh.lattice`, by default covering the input mesh.
+#' Creates an [fm_lattice_2d()] object, by default covering the input mesh.
 #' @export
 fm_evaluator_lattice <- function(mesh,
                                  xlim = NULL,
@@ -225,9 +232,9 @@ fm_evaluator_lattice <- function(mesh,
   x <- seq(xlim[1], xlim[2], length.out = dims[1])
   y <- seq(ylim[1], ylim[2], length.out = dims[2])
   if (is.null(mesh$crs) || is.null(crs)) {
-    lattice <- INLA::inla.mesh.lattice(x = x, y = y, units = units)
+    lattice <- fm_lattice_2d(x = x, y = y, units = units)
   } else {
-    lattice <- INLA::inla.mesh.lattice(x = x, y = y, crs = crs)
+    lattice <- fm_lattice_2d(x = x, y = y, crs = crs)
   }
   lattice
 }
@@ -240,6 +247,23 @@ fm_evaluator.inla.mesh <- function(mesh,
                                    lattice = NULL,
                                    crs = NULL,
                                    ...) {
+  fm_evaluator.fm_mesh_2d(
+    fm_as_mesh_2d(mesh),
+    loc = loc,
+    lattice = lattice,
+    crs = crs,
+    ...
+  )
+}
+#' @export
+#' @describeIn fm_evaluate The `...` arguments are passed on to `fm_evaluator_lattice()`
+#' if no `loc` or `lattice` is provided.
+fm_evaluator.fm_mesh_2d <- function(mesh,
+                                   loc = NULL,
+                                   lattice = NULL,
+                                   crs = NULL,
+                                   ...) {
+
   if (missing(loc) || is.null(loc)) {
     if (missing(lattice) || is.null(lattice)) {
       lattice <- fm_evaluator_lattice(mesh,
@@ -253,9 +277,9 @@ fm_evaluator.inla.mesh <- function(mesh,
     crs <- lattice$crs
 
     if (is.null(mesh$crs) || is.null(lattice$crs)) {
-      proj <- fm_evaluator_inla_mesh(mesh, lattice$loc)
+      proj <- fm_evaluator_mesh_2d(mesh, lattice$loc)
     } else {
-      proj <- fm_evaluator_inla_mesh(mesh,
+      proj <- fm_evaluator_mesh_2d(mesh,
         loc = lattice$loc,
         crs = lattice$crs
       )
@@ -263,7 +287,7 @@ fm_evaluator.inla.mesh <- function(mesh,
     projector <- list(x = x, y = y, lattice = lattice, loc = NULL, proj = proj, crs = crs)
     class(projector) <- "fm_evaluator"
   } else {
-    proj <- fm_evaluator_inla_mesh(mesh, loc = loc, crs = crs)
+    proj <- fm_evaluator_mesh_2d(mesh, loc = loc, crs = crs)
     projector <- list(x = NULL, y = NULL, lattice = NULL, loc = loc, proj = proj, crs = crs)
     class(projector) <- "fm_evaluator"
   }
@@ -279,13 +303,20 @@ fm_evaluator.inla.mesh.1d <- function(mesh,
                                       xlim = mesh$interval,
                                       dims = 100,
                                       ...) {
-  stopifnot(inherits(mesh, "inla.mesh.1d"))
-
+  fm_evaluator.fm_mesh_1d(fm_as_mesh_1d(mesh), loc = loc, xlim = xlim, dims = dims, ...)
+}
+#' @export
+#' @rdname fm_evaluate
+fm_evaluator.fm_mesh_1d <- function(mesh,
+                                      loc = NULL,
+                                      xlim = mesh$interval,
+                                      dims = 100,
+                                      ...) {
   if (missing(loc) || is.null(loc)) {
     loc <- seq(xlim[1], xlim[2], length.out = dims[1])
   }
 
-  proj <- fm_evaluator_inla_mesh_1d(mesh, loc)
+  proj <- fm_evaluator_mesh_1d(mesh, loc)
   projector <- list(x = loc, lattice = NULL, loc = loc, proj = proj)
   class(projector) <- "fm_evaluator"
 
