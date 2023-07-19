@@ -835,18 +835,6 @@ fm_as_segm.inla.mesh.segment <- function(x, ...) {
   x
 }
 
-#' @describeIn fmesher-deprecated Conversion to inla.mesh.segment
-#' `r lifecycle::badge("deprecated")` in favour of [fm_as_segm()].
-#' @param x An object to be coerced/transformed/converted into another class
-#' @returns An `inla.mesh.segment` object
-#' @export
-fm_as_inla_mesh_segment <-
-  function(x, ...) {
-    lifecycle::deprecate_soft("0.0.1",
-                              "fm_as_inla_mesh_segment()",
-                              "fm_as_segm()")
-    fm_as_segm(x, ...)
-  }
 
 
 
@@ -1001,16 +989,6 @@ fm_as_mesh_2d.inla.mesh <- function(x, ...) {
   x
 }
 
-#' @describeIn fmesher-deprecated Conversion to inla.mesh.
-#' `r lifecycle::badge("deprecated")` in favour of [fm_as_mesh_2d()].
-#' @returns An `inla.mesh` object
-#' @export
-fm_as_inla_mesh <- function(...) {
-  lifecycle::deprecate_soft("0.0.1",
-                            "fm_as_inla_mesh()",
-                            "fm_as_mesh_2d()")
-  fm_as_mesh_2d(...)
-}
 
 
 
