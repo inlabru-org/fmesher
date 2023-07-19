@@ -863,7 +863,7 @@ fm_as_fm.fm_mesh_1d <- function(x, ...) {
 #' @rdname fm_as_fm
 #' @export
 fm_as_fm.fm_mesh_2d <- function(x, ...) {
-  #  class(x) <- c("fm_mesh_1d", setdiff(class(x), "fm_mesh_2d"))
+  #  class(x) <- c("fm_mesh_2d", setdiff(class(x), "fm_mesh_2d"))
   x
 }
 #' @rdname fm_as_fm
@@ -1060,4 +1060,3 @@ fm_as_inla_mesh <- function(...) {
                             "fm_as_mesh_2d()")
   fm_as_mesh_2d(...)
 }
-
