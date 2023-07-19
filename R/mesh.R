@@ -1033,3 +1033,31 @@ fm_as_lattice_2d.inla.mesh.lattice <- function(x, ...) {
   class(x) <- c("fm_lattice_2d", class(x))
   x
 }
+
+
+
+# Deprecated ####
+
+#' @describeIn fmesher-deprecated Conversion to inla.mesh.segment
+#' `r lifecycle::badge("deprecated")` in favour of [fm_as_segm()].
+#' @returns An `fm_segm` object
+#' @export
+fm_as_inla_mesh_segment <-
+  function(...) {
+    lifecycle::deprecate_soft("0.0.1",
+                              "fm_as_inla_mesh_segment()",
+                              "fm_as_segm()")
+    fm_as_segm(...)
+  }
+
+#' @describeIn fmesher-deprecated Conversion to inla.mesh.
+#' `r lifecycle::badge("deprecated")` in favour of [fm_as_mesh_2d()].
+#' @returns An `fm_mesh_2d` object
+#' @export
+fm_as_inla_mesh <- function(...) {
+  lifecycle::deprecate_soft("0.0.1",
+                            "fm_as_inla_mesh()",
+                            "fm_as_mesh_2d()")
+  fm_as_mesh_2d(...)
+}
+
