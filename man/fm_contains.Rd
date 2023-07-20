@@ -18,7 +18,7 @@ fm_contains(x, y, ...)
 \arguments{
 \item{x}{geometry (typically an \code{sf} or \code{sp::SpatialPolygons} object) for the queries}
 
-\item{y}{an \code{inla.mesh()} object}
+\item{y}{an \code{\link[=fm_mesh_2d]{fm_mesh_2d()}} or \code{inla.mesh} object}
 
 \item{\dots}{Passed on to other methods}
 

@@ -821,10 +821,10 @@ fm_int_mesh_2d <- function(samplers,
 
 #' @describeIn fm_int_mesh_2d Full domain integration
 fm_int_mesh_2d_NULL <- function(samplers,
-                                  domain,
-                                  name = NULL,
-                                  int.args = NULL,
-                                  ...) {
+                                domain,
+                                name = NULL,
+                                int.args = NULL,
+                                ...) {
   stopifnot(is.null(samplers))
 
   ips <- fm_int_mesh_2d_polygon(
@@ -843,10 +843,10 @@ fm_int_mesh_2d_NULL <- function(samplers,
 #' @export
 #' @describeIn fm_int_mesh_2d `sf` integration
 fm_int_mesh_2d.sf <- function(samplers,
-                                domain,
-                                name = NULL,
-                                int.args = NULL,
-                                ...) {
+                              domain,
+                              name = NULL,
+                              int.args = NULL,
+                              ...) {
   if (is.null(name)) {
     name <- attr(samplers, "sf_column")
   }
@@ -871,11 +871,11 @@ fm_int_mesh_2d.sf <- function(samplers,
 #' @export
 #' @describeIn fm_int_mesh_2d `sfc_POINT` integration
 fm_int_mesh_2d.sfc_POINT <- function(samplers,
-                                       domain,
-                                       name = NULL,
-                                       int.args = NULL,
-                                       .weight = rep(1, NROW(samplers)),
-                                       ...) {
+                                     domain,
+                                     name = NULL,
+                                     int.args = NULL,
+                                     .weight = rep(1, NROW(samplers)),
+                                     ...) {
   if (is.null(name)) {
     name <- "geometry"
   }
@@ -896,11 +896,11 @@ fm_int_mesh_2d.sfc_POINT <- function(samplers,
 #' @describeIn fm_int_mesh_2d `sfc_MULTIPOINT` integration
 #' @importFrom rlang :=
 fm_int_mesh_2d.sfc_MULTIPOINT <- function(samplers,
-                                            domain,
-                                            name = NULL,
-                                            int.args = NULL,
-                                            .weight = rep(1, NROW(samplers)),
-                                            ...) {
+                                          domain,
+                                          name = NULL,
+                                          int.args = NULL,
+                                          .weight = rep(1, NROW(samplers)),
+                                          ...) {
   coords <- tibble::as_tibble(sf::st_coordinates(samplers))
   coords <- dplyr::rename(coords, .block = "L1")
   coords$weight <- .weight[coords$.block]
@@ -927,11 +927,11 @@ fm_int_mesh_2d.sfc_MULTIPOINT <- function(samplers,
 
 
 fm_int_mesh_2d_lines <- function(samplers,
-                                   domain,
-                                   name = NULL,
-                                   int.args = NULL,
-                                   .weight = rep(1, NROW(samplers)),
-                                   ...) {
+                                 domain,
+                                 name = NULL,
+                                 int.args = NULL,
+                                 .weight = rep(1, NROW(samplers)),
+                                 ...) {
   project <- identical(int.args$method, "stable")
 
   weight <- .weight
@@ -1038,11 +1038,11 @@ fm_int_mesh_2d_lines <- function(samplers,
 #' @export
 #' @describeIn fm_int_mesh_2d `sfc_LINESTRING` integration
 fm_int_mesh_2d.sfc_LINESTRING <- function(samplers,
-                                            domain,
-                                            name = NULL,
-                                            int.args = NULL,
-                                            .weight = rep(1, NROW(samplers)),
-                                            ...) {
+                                          domain,
+                                          name = NULL,
+                                          int.args = NULL,
+                                          .weight = rep(1, NROW(samplers)),
+                                          ...) {
   ips <- fm_int_mesh_2d_lines(samplers, domain, name, int.args, .weight, ...)
 
   if (!is.null(name) && (name != attr(ips, "sf_column"))) {
@@ -1055,11 +1055,11 @@ fm_int_mesh_2d.sfc_LINESTRING <- function(samplers,
 #' @export
 #' @describeIn fm_int_mesh_2d `sfc_MULTILINESTRING` integration
 fm_int_mesh_2d.sfc_MULTILINESTRING <- function(samplers,
-                                                 domain,
-                                                 name = NULL,
-                                                 int.args = NULL,
-                                                 .weight = rep(1, NROW(samplers)),
-                                                 ...) {
+                                               domain,
+                                               name = NULL,
+                                               int.args = NULL,
+                                               .weight = rep(1, NROW(samplers)),
+                                               ...) {
   ips <- fm_int_mesh_2d_lines(samplers, domain, name, int.args, .weight, ...)
 
   if (!is.null(name) && (name != attr(ips, "sf_column"))) {
@@ -1145,11 +1145,11 @@ fm_int_mesh_2d_core <- function(mesh, tri_subset = NULL, nsub = NULL) {
 
 
 fm_int_mesh_2d_polygon <- function(samplers,
-                                     domain,
-                                     name = NULL,
-                                     int.args = NULL,
-                                     .weight = rep(1, NROW(samplers)),
-                                     ...) {
+                                   domain,
+                                   name = NULL,
+                                   int.args = NULL,
+                                   .weight = rep(1, NROW(samplers)),
+                                   ...) {
   method <- match.arg(int.args[["method"]], c("stable", "direct"))
 
   ipsl <- list()
@@ -1272,11 +1272,11 @@ fm_int_mesh_2d_polygon <- function(samplers,
 #' @export
 #' @describeIn fm_int_mesh_2d `sfc_POLYGON` integration
 fm_int_mesh_2d.sfc_POLYGON <- function(samplers,
-                                         domain,
-                                         name = NULL,
-                                         int.args = NULL,
-                                         .weight = rep(1, NROW(samplers)),
-                                         ...) {
+                                       domain,
+                                       name = NULL,
+                                       int.args = NULL,
+                                       .weight = rep(1, NROW(samplers)),
+                                       ...) {
   weight <- .weight
   .block <- seq_len(NROW(samplers))
 
@@ -1299,11 +1299,11 @@ fm_int_mesh_2d.sfc_POLYGON <- function(samplers,
 #' @export
 #' @describeIn fm_int_mesh_2d `sfc_MULTIPOLYGON` integration
 fm_int_mesh_2d.sfc_MULTIPOLYGON <- function(samplers,
-                                              domain,
-                                              name = NULL,
-                                              int.args = NULL,
-                                              .weight = rep(1, NROW(samplers)),
-                                              ...) {
+                                            domain,
+                                            name = NULL,
+                                            int.args = NULL,
+                                            .weight = rep(1, NROW(samplers)),
+                                            ...) {
   weight <- .weight
   .block <- seq_len(NROW(samplers))
 
@@ -1328,11 +1328,11 @@ fm_int_mesh_2d.sfc_MULTIPOLYGON <- function(samplers,
 #' @export
 #' @describeIn fm_int_mesh_2d `sfc_GEOMERY` integration
 fm_int_mesh_2d.sfc_GEOMETRY <- function(samplers,
-                                          domain,
-                                          name = NULL,
-                                          int.args = NULL,
-                                          .weight = rep(1, NROW(samplers)),
-                                          ...) {
+                                        domain,
+                                        name = NULL,
+                                        int.args = NULL,
+                                        .weight = rep(1, NROW(samplers)),
+                                        ...) {
   geometry_class <- vapply(
     seq_along(samplers),
     function(x) {
@@ -1374,11 +1374,11 @@ fm_int_mesh_2d.sfc_GEOMETRY <- function(samplers,
 #' @export
 #' @describeIn fm_int_mesh_2d `Spatial` integration
 fm_int_mesh_2d.Spatial <- function(samplers,
-                                     domain,
-                                     name = NULL,
-                                     int.args = NULL,
-                                     format = NULL,
-                                     ...) {
+                                   domain,
+                                   name = NULL,
+                                   int.args = NULL,
+                                   format = NULL,
+                                   ...) {
   samplers <- sf::st_as_sf(samplers)
 
   ips <-

@@ -3,7 +3,7 @@
 #' @title Methods for projecting to/from an inla.mesh
 #'
 #' @description Calculate evaluation information and/or evaluate a function
-#' defined on an `inla.mesh` or `inla.mesh.1d` object.
+#' defined on a mesh or function space.
 #'
 #' @param mesh An `inla.mesh` or `inla.mesh.1d` object.
 #' @param loc Projection locations.  Can be a matrix, `SpatialPoints`,
@@ -77,6 +77,20 @@ fm_evaluate.fm_mesh_2d <- function(mesh, field, ...) {
   proj <- fm_evaluator(mesh, ...)
   fm_evaluate(proj, field = field)
 }
+#' @export
+#' @rdname fm_evaluate
+fm_evaluate.fm_tensor <- function(mesh, field, ...) {
+  if (missing(field) || is.null(field)) {
+    lifecycle::deprecate_stop(
+      "0.0.1",
+      "fm_evaluate(field = ' must not be missing or NULL.')",
+      "fm_evaluator()"
+    )
+  }
+
+  proj <- fm_evaluator(mesh, ...)
+  fm_evaluate(proj, field = field)
+}
 
 
 #' @export
@@ -87,7 +101,7 @@ fm_evaluate.inla.mesh.1d <- function(mesh, field, ...) {
 #' @export
 #' @rdname fm_evaluate
 fm_evaluate.fm_mesh_1d <- function(mesh, field, ...) {
-    if (missing(field) || is.null(field)) {
+  if (missing(field) || is.null(field)) {
     lifecycle::deprecate_stop(
       "0.0.1",
       "fm_evaluate(field = ' must not be missing or NULL.')",
@@ -193,7 +207,7 @@ fm_evaluator_lattice <- function(mesh,
                                  projection = NULL,
                                  crs = NULL,
                                  ...) {
-  stopifnot(inherits(mesh, "inla.mesh"))
+  stopifnot(inherits(mesh, c("fm_mesh_2d", "inla.mesh")))
   if (identical(mesh$manifold, "R2") &&
     (is.null(mesh$crs) || is.null(crs))) {
     units <- "default"
@@ -259,11 +273,10 @@ fm_evaluator.inla.mesh <- function(mesh,
 #' @describeIn fm_evaluate The `...` arguments are passed on to `fm_evaluator_lattice()`
 #' if no `loc` or `lattice` is provided.
 fm_evaluator.fm_mesh_2d <- function(mesh,
-                                   loc = NULL,
-                                   lattice = NULL,
-                                   crs = NULL,
-                                   ...) {
-
+                                    loc = NULL,
+                                    lattice = NULL,
+                                    crs = NULL,
+                                    ...) {
   if (missing(loc) || is.null(loc)) {
     if (missing(lattice) || is.null(lattice)) {
       lattice <- fm_evaluator_lattice(mesh,
@@ -308,10 +321,10 @@ fm_evaluator.inla.mesh.1d <- function(mesh,
 #' @export
 #' @rdname fm_evaluate
 fm_evaluator.fm_mesh_1d <- function(mesh,
-                                      loc = NULL,
-                                      xlim = mesh$interval,
-                                      dims = 100,
-                                      ...) {
+                                    loc = NULL,
+                                    xlim = mesh$interval,
+                                    dims = 100,
+                                    ...) {
   if (missing(loc) || is.null(loc)) {
     loc <- seq(xlim[1], xlim[2], length.out = dims[1])
   }
@@ -324,6 +337,41 @@ fm_evaluator.fm_mesh_1d <- function(mesh,
 }
 
 
+#' @param x [fm_tensor()] object
+#' @export
+#' @rdname fm_evaluate
+fm_evaluator.fm_tensor <- function(x,
+                                   loc,
+                                   ...) {
+  if (length(loc) != length(x[["fun_spaces"]])) {
+    stop("")
+  }
+  if (is.null(names(loc))) {
+    names(loc) <- names(x[["fun_spaces"]])
+  } else if (!setequal(names(x[["fun_spaces"]]), names(loc))) {
+    stop("")
+  }
+  proj <- lapply(
+    names(x[["fun_spaces"]]),
+    function(k) {
+      fm_evaluator(x[["fun_spaces"]][[k]], loc = loc[[k]])$proj
+    }
+  )
+
+  # Combine the matrices
+  # (A1, A2, A3) -> rowkron(A3, rowkron(A2, A1))
+  A <- proj[[1]][["A"]]
+  ok <- proj[[1]][["ok"]]
+  for (k in seq_len(length(x[["fun_spaces"]]) - 1)) {
+    A <- inlabru::row_kron(proj[[k + 1]][["A"]], A)
+    ok <- proj[[k + 1]][["ok"]] & ok
+  }
+
+  structure(
+    list(proj = list(A = A, ok = ok)),
+    class = "fm_evaluator"
+  )
+}
 
 
 
@@ -335,7 +383,7 @@ fm_evaluator.fm_mesh_1d <- function(mesh,
 #' or vertices inside `sf` or `sp` polygon objects
 #'
 #' @param x geometry (typically an `sf` or `sp::SpatialPolygons` object) for the queries
-#' @param y an `inla.mesh()` object
+#' @param y an [fm_mesh_2d()] or `inla.mesh` object
 #' @param \dots Passed on to other methods
 #' @param type the query type; either `'centroid'` (default, for triangle centroids),
 #' or `'vertex'` (for mesh vertices)
@@ -398,9 +446,9 @@ fm_contains.sf <- function(x, y, ...) {
 #' @rdname fm_contains
 #' @export
 fm_contains.sfc <- function(x, y, ..., type = c("centroid", "vertex")) {
-  if (!inherits(y, "inla.mesh")) {
+  if (!inherits(y, c("fm_mesh_2d", "inla.mesh"))) {
     stop(paste0(
-      "'y' must be an 'inla.mesh' object, not '",
+      "'y' must be an 'fm_mesh_2d' or 'inla.mesh' object, not '",
       paste0(class(y), collapse = ", "),
       "'."
     ))
@@ -480,4 +528,36 @@ fm_is_within <- function(x, y, ...) {
 #' @export
 fm_is_within.default <- function(x, y, ...) {
   fm_evaluator(y, loc = x)$proj$ok
+}
+
+
+#' @title Compute mapping matrix between mesh function space and points
+#'
+#' @description
+#'  Computes the mapping matrix between a function space on a mesh, and locations.
+#'
+#' @param x An mesh object supported by an [fm_evaluator()] class
+#' @param y A set of points of a class supported by `fm_evaluator(x, loc = y)`
+#' @param \dots Currently unused
+#' @returns A `sparseMatrix`
+#' @examples
+#' \dontrun{
+#' if (fm_safe_inla(quietly = TRUE)) {
+#'   # Load Gorilla data
+#'
+#'   data("gorillas", package = "inlabru")
+#'
+#'   # Compute mapping matrix
+#'   str(fm_A(gorillas$mesh, gorillas$nests))
+#' }
+#' }
+#' @export
+fm_A <- function(x, ...) {
+  UseMethod("fm_A")
+}
+
+#' @rdname fm_A
+#' @export
+fm_A.default <- function(x, y, ...) {
+  fm_evaluator(x, loc = y)$proj$A
 }

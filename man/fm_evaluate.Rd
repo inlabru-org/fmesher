@@ -4,6 +4,7 @@
 \alias{fm_evaluate}
 \alias{fm_evaluate.inla.mesh}
 \alias{fm_evaluate.fm_mesh_2d}
+\alias{fm_evaluate.fm_tensor}
 \alias{fm_evaluate.inla.mesh.1d}
 \alias{fm_evaluate.fm_mesh_1d}
 \alias{fm_evaluate.fm_evaluator}
@@ -15,6 +16,7 @@
 \alias{fm_evaluator.fm_mesh_2d}
 \alias{fm_evaluator.inla.mesh.1d}
 \alias{fm_evaluator.fm_mesh_1d}
+\alias{fm_evaluator.fm_tensor}
 \title{Methods for projecting to/from an inla.mesh}
 \usage{
 fm_evaluate(...)
@@ -22,6 +24,8 @@ fm_evaluate(...)
 \method{fm_evaluate}{inla.mesh}(mesh, field, ...)
 
 \method{fm_evaluate}{fm_mesh_2d}(mesh, field, ...)
+
+\method{fm_evaluate}{fm_tensor}(mesh, field, ...)
 
 \method{fm_evaluate}{inla.mesh.1d}(mesh, field, ...)
 
@@ -52,6 +56,8 @@ fm_evaluator_lattice(
 \method{fm_evaluator}{inla.mesh.1d}(mesh, loc = NULL, xlim = mesh$interval, dims = 100, ...)
 
 \method{fm_evaluator}{fm_mesh_1d}(mesh, loc = NULL, xlim = mesh$interval, dims = 100, ...)
+
+\method{fm_evaluator}{fm_tensor}(x, loc, ...)
 }
 \arguments{
 \item{\dots}{Additional arguments passed on to methods.}
@@ -80,10 +86,12 @@ the domain.}
 \item{projection}{One of \code{c("default", "longlat", "longsinlat", "mollweide")}.}
 
 \item{lattice}{An \code{\link[=fm_lattice_2d]{fm_lattice_2d()}} object.}
+
+\item{x}{\code{\link[=fm_tensor]{fm_tensor()}} object}
 }
 \description{
 Calculate evaluation information and/or evaluate a function
-defined on an \code{inla.mesh} or \code{inla.mesh.1d} object.
+defined on a mesh or function space.
 }
 \section{Functions}{
 \itemize{

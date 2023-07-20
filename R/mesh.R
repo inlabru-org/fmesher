@@ -424,9 +424,10 @@ fm_bary <- function(mesh, loc, crs = NULL) {
   }
 
   pre_ok_idx <-
-    which(rowSums(matrix(is.na(as.vector(loc)),
-                         nrow = nrow(loc),
-                         ncol = ncol(loc)
+    which(rowSums(matrix(
+      is.na(as.vector(loc)),
+      nrow = nrow(loc),
+      ncol = ncol(loc)
     )) == 0)
   result <- fmesher_bary(
     mesh_loc = mesh$loc * scale,
@@ -978,7 +979,7 @@ fm_as_mesh_2d <- function(...) {
 #' @param x Object to be converted
 #' @export
 fm_as_mesh_2d.fm_mesh_2d <- function(x, ...) {
-#  class(x) <- c("fm_mesh_2d", setdiff(class(x), "fm_mesh_2d"))
+  #  class(x) <- c("fm_mesh_2d", setdiff(class(x), "fm_mesh_2d"))
   x
 }
 #' @rdname fm_as_mesh_2d
@@ -988,6 +989,51 @@ fm_as_mesh_2d.inla.mesh <- function(x, ...) {
   class(x) <- c("fm_mesh_2d", class(x))
   x
 }
+
+
+# fm_tensor ####
+
+#' @title Make a tensor product function space
+#' @export
+#' @param ... Passed on to submethods
+#' @family object creation and conversion
+fm_tensor <- function(...) {
+  UseMethod("fm_tensor")
+}
+
+#' @rdname fm_tensor
+#' @export
+fm_tensor.list <- function(x, ...) {
+  nn <- names(x)
+  if (is.null(nn)) {
+    nn <- as.character(seq_along(x))
+  } else if (any(nn == "")) {
+    stop("all or no elements of the list of function space objects need to be named.")
+  }
+  structure(
+    list(fun_spaces = lapply(x, fm_as_fm)),
+    class = "fm_tensor"
+  )
+}
+
+#' @title Convert objects to `fm_tensor`
+#' @describeIn fm_as_tensor Convert an object to `fm_tensor`.
+#' @param x Object to be converted.
+#' @param ... Arguments passed on to submethods
+#' @export
+#' @family object creation and conversion
+#' @export
+fm_as_tensor <- function(...) {
+  UseMethod("fm_as_tensor")
+}
+#' @rdname fm_as_tensor
+#' @param x Object to be converted
+#' @export
+fm_as_tensor.fm_tensor <- function(x, ...) {
+  #  class(x) <- c("fm_tensor", setdiff(class(x), "fm_tensor"))
+  x
+}
+
 
 
 
@@ -1044,9 +1090,11 @@ fm_as_lattice_2d.inla.mesh.lattice <- function(x, ...) {
 #' @export
 fm_as_inla_mesh_segment <-
   function(...) {
-    lifecycle::deprecate_soft("0.0.1",
-                              "fm_as_inla_mesh_segment()",
-                              "fm_as_segm()")
+    lifecycle::deprecate_soft(
+      "0.0.1",
+      "fm_as_inla_mesh_segment()",
+      "fm_as_segm()"
+    )
     fm_as_segm(...)
   }
 
@@ -1055,8 +1103,10 @@ fm_as_inla_mesh_segment <-
 #' @returns An `fm_mesh_2d` object
 #' @export
 fm_as_inla_mesh <- function(...) {
-  lifecycle::deprecate_soft("0.0.1",
-                            "fm_as_inla_mesh()",
-                            "fm_as_mesh_2d()")
+  lifecycle::deprecate_soft(
+    "0.0.1",
+    "fm_as_inla_mesh()",
+    "fm_as_mesh_2d()"
+  )
   fm_as_mesh_2d(...)
 }

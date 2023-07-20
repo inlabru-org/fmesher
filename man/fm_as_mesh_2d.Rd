@@ -44,9 +44,11 @@ Other object creation and conversion:
 \code{\link{fm_as_mesh_1d}()},
 \code{\link{fm_as_segm}()},
 \code{\link{fm_as_sfc}()},
+\code{\link{fm_as_tensor}()},
 \code{\link{fm_lattice_2d}()},
 \code{\link{fm_mesh_1d}()},
 \code{\link{fm_mesh_2d}()},
-\code{\link{fm_segm}()}
+\code{\link{fm_segm}()},
+\code{\link{fm_tensor}()}
 }
 \concept{object creation and conversion}
