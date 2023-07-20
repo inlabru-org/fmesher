@@ -37,6 +37,9 @@
     <loc>https://inlabru-org.github.io/fmesher/reference/dot-globeproj.types.html</loc>
   </url>
   <url>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fm_A.html</loc>
+  </url>
+  <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_CRS_sp.html</loc>
   </url>
   <url>
@@ -59,6 +62,9 @@
   </url>
   <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_as_sfc.html</loc>
+  </url>
+  <url>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fm_as_tensor.html</loc>
   </url>
   <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_bary.html</loc>
@@ -140,6 +146,9 @@
   </url>
   <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_store_points.html</loc>
+  </url>
+  <url>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fm_tensor.html</loc>
   </url>
   <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_transform.html</loc>
