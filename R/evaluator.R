@@ -363,7 +363,7 @@ fm_evaluator.fm_tensor <- function(x,
   A <- proj[[1]][["A"]]
   ok <- proj[[1]][["ok"]]
   for (k in seq_len(length(x[["fun_spaces"]]) - 1)) {
-    A <- inlabru::row_kron(proj[[k + 1]][["A"]], A)
+    A <- fm_row_kron(proj[[k + 1]][["A"]], A)
     ok <- proj[[k + 1]][["ok"]] & ok
   }
 
