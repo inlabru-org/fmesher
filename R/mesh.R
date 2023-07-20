@@ -995,15 +995,10 @@ fm_as_mesh_2d.inla.mesh <- function(x, ...) {
 
 #' @title Make a tensor product function space
 #' @export
-#' @param ... Passed on to submethods
+#' @param x list of function space objects, such as [fm_mesh_2d()].
+#' @param ... Currently unused
 #' @family object creation and conversion
-fm_tensor <- function(...) {
-  UseMethod("fm_tensor")
-}
-
-#' @rdname fm_tensor
-#' @export
-fm_tensor.list <- function(x, ...) {
+fm_tensor <- function(x, ...) {
   nn <- names(x)
   if (is.null(nn)) {
     nn <- as.character(seq_along(x))

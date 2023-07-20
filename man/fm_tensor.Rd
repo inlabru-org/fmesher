@@ -2,15 +2,14 @@
 % Please edit documentation in R/mesh.R
 \name{fm_tensor}
 \alias{fm_tensor}
-\alias{fm_tensor.list}
 \title{Make a tensor product function space}
 \usage{
-fm_tensor(...)
-
-\method{fm_tensor}{list}(x, ...)
+fm_tensor(x, ...)
 }
 \arguments{
-\item{...}{Passed on to submethods}
+\item{x}{list of function space objects, such as \code{\link[=fm_mesh_2d]{fm_mesh_2d()}}.}
+
+\item{...}{Currently unused}
 }
 \description{
 Make a tensor product function space

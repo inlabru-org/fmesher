@@ -257,7 +257,7 @@ fm_as_dgTMatrix.fmesher_sparse <- function(x, unique = TRUE, ...) {
 #' resulting matrix.
 #' @return A `Matrix::sparseMatrix` object.
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
-#' @export row_kron
+#' @export
 fm_row_kron <- function(M1, M2, repl = NULL, n.repl = NULL, weights = NULL # ,
                         # method. = 1
 ) {
