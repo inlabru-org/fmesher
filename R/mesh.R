@@ -187,7 +187,7 @@ fm_subdivide <- function(mesh, n = 1) {
     is.bnd = FALSE
   )
 
-  boundary2 <- split.edges(INLA::inla.mesh.boundary(mesh)[[1]], n = n)
+  boundary2 <- split.edges(fm_segm(mesh), n = n)
 
   if (identical(mesh$manifold, "S2")) {
     radius <- mean(rowSums(mesh$loc^2)^0.5)
@@ -808,14 +808,30 @@ fm_segm.default <- function(...) {
 fm_segm.fm_segm <- function(..., grp.default = 0) {
   fm_as_segm(INLA::inla.mesh.segment(..., grp.default = grp.default))
 }
-#' @describeIn fm_segm Join multiple `inla.mesh.segment` objects into a single `fm_segm`
-#' object.
-#' @param grp.default When joining segments, use this group label for segments
-#' that have `grp == NULL`.
+#' @rdname fm_segm
 #' @export
 #' @method fm_segm inla.mesh.segment
 fm_segm.inla.mesh.segment <- function(..., grp.default = 0) {
   fm_as_segm(INLA::inla.mesh.segment(..., grp.default = grp.default))
+}
+#' @rdname fm_segm
+#' @export
+#' @method fm_segm inla.mesh
+fm_segm.inla.mesh <- function(x, ...) {
+  fm_segm.fm_mesh_2d(fm_as_mesh_2d(x), ...)
+}
+#' @describeIn fm_segm Extract the boundary segments of a 2d mesh
+#' @param x Mesh to extract segments from
+#' @param boundary logical; if `TRUE`, extract the boundary segments,
+#' otherwise interior constrain segments.
+#' @export
+fm_segm.fm_mesh_2d <- function(x, boundary = TRUE, ...) {
+  # TODO: The [[1]] should be a join operation instead
+  if (boundary) {
+    fm_as_segm(INLA::inla.mesh.boundary(x, ...)[[1]])
+  } else {
+    fm_as_segm(INLA::inla.mesh.interior(x, ...)[[1]])
+  }
 }
 
 

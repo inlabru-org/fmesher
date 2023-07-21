@@ -187,7 +187,6 @@ Mesh Rcpp_import_mesh(Rcpp::NumericMatrix mesh_loc,
 // [[Rcpp::export]]
 Rcpp::List C_qinv(SEXP AA) {
 #ifdef FMESHER_WITH_EIGEN
-  // Eigen::SparseMatrix<double> C_qinv(SEXP AA)
   const EigenMSM<double> A(Rcpp::as<EigenMSM<double>>(AA));
 
   QTool<double> Q;
@@ -196,9 +195,8 @@ Rcpp::List C_qinv(SEXP AA) {
   Rcpp::List ret;
   ret["Qinv"] = Q.S();
   return ret;
-  //  return Rcpp::List::create(Rcpp::Named("Q") = Q.S());
-  //  return Q.S();
 #else
+  Rcpp::stop("Unsupported method C_qinv; fmesher was built without FMESHER_WITH_EIGEN");
   Rcpp::List ret;
   return ret;
 #endif

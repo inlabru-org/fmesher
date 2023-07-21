@@ -5,6 +5,8 @@
 \alias{fm_segm.default}
 \alias{fm_segm.fm_segm}
 \alias{fm_segm.inla.mesh.segment}
+\alias{fm_segm.inla.mesh}
+\alias{fm_segm.fm_mesh_2d}
 \title{Make a spatial segment object}
 \usage{
 fm_segm(...)
@@ -14,12 +16,21 @@ fm_segm(...)
 \method{fm_segm}{fm_segm}(..., grp.default = 0)
 
 \method{fm_segm}{inla.mesh.segment}(..., grp.default = 0)
+
+\method{fm_segm}{inla.mesh}(x, ...)
+
+\method{fm_segm}{fm_mesh_2d}(x, boundary = TRUE, ...)
 }
 \arguments{
 \item{...}{Currently passed on to \code{inla.mesh.segment}}
 
 \item{grp.default}{When joining segments, use this group label for segments
 that have \code{grp == NULL}.}
+
+\item{x}{Mesh to extract segments from}
+
+\item{boundary}{logical; if \code{TRUE}, extract the boundary segments,
+otherwise interior constrain segments.}
 }
 \description{
 Make a spatial segment object
@@ -29,8 +40,7 @@ Make a spatial segment object
 \item \code{fm_segm(fm_segm)}: Join multiple \code{fm_segm} objects into a single \code{fm_segm}
 object.
 
-\item \code{fm_segm(inla.mesh.segment)}: Join multiple \code{inla.mesh.segment} objects into a single \code{fm_segm}
-object.
+\item \code{fm_segm(fm_mesh_2d)}: Extract the boundary segments of a 2d mesh
 
 }}
 \section{Functions}{

@@ -1130,7 +1130,7 @@ fm_int_mesh_2d_core <- function(mesh, tri_subset = NULL, nsub = NULL) {
   }
 
   # Construct integration weights
-  tri_area <- INLA::inla.mesh.fem(mesh, order = 1)$ta[tri_subset]
+  tri_area <- fm_fem(mesh, order = 1)$ta[tri_subset]
 
   if (is_spherical) {
     tri_area <- tri_area * radius^2
