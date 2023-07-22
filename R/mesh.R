@@ -981,7 +981,7 @@ fm_as_mesh_1d.inla.mesh.1d <- function(x, ...) {
 #' @param crs Optional crs object
 #' @param ... Arguments passed on as options to [fmesher_rcdt()]
 #' @examples
-#' m <- fm_rcdt_2d(boundary=fm_nonconvex_hull(cbind(0,0), convex = 5), rcdt_max_edge=1)
+#' m <- fm_rcdt_2d(boundary = fm_nonconvex_hull(cbind(0, 0), convex = 5), rcdt_max_edge = 1)
 #'
 #' @export
 fm_rcdt_2d <-
@@ -1016,10 +1016,12 @@ fm_rcdt_2d <-
       int_grp <- interior$grp
       loc <- rbind(loc, interior$loc)
     }
-    result <- fmesher_rcdt(options = list(...),
-                           loc = loc, tv = tv,
-                           boundary = bnd, interior = int,
-                           boundary_grp = bnd_grp, interior_grp = int_grp)
+    result <- fmesher_rcdt(
+      options = list(...),
+      loc = loc, tv = tv,
+      boundary = bnd, interior = int,
+      boundary_grp = bnd_grp, interior_grp = int_grp
+    )
 
     idx_C2R <- function(x) {
       x <- x + 1L
@@ -1031,12 +1033,17 @@ fm_rcdt_2d <-
       list(
         loc = result[["s"]],
         segm = list(
-          int = fm_segm(idx = idx_C2R(result[["segm.int.idx"]]),
-                        grp = result[["segm.int.grp"]],
-                        is.bnd = FALSE),
-          bnd = fm_segm(idx = idx_C2R(result[["segm.bnd.idx"]]),
-                        grp = result[["segm.bnd.grp"]],
-                        is.bnd = TRUE)),
+          int = fm_segm(
+            idx = idx_C2R(result[["segm.int.idx"]]),
+            grp = result[["segm.int.grp"]],
+            is.bnd = FALSE
+          ),
+          bnd = fm_segm(
+            idx = idx_C2R(result[["segm.bnd.idx"]]),
+            grp = result[["segm.bnd.grp"]],
+            is.bnd = TRUE
+          )
+        ),
         graph = list(
           tv = idx_C2R(result[["tv"]]),
           vt = idx_C2R(result[["vt"]]),

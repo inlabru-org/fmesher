@@ -28,6 +28,6 @@ fm_rcdt_2d(
 Computes a refined constrained Delaunay triangulation on R2 or S2.
 }
 \examples{
-m <- fm_rcdt_2d(boundary=fm_nonconvex_hull(cbind(0,0), convex = 5), rcdt_max_edge=1)
+m <- fm_rcdt_2d(boundary = fm_nonconvex_hull(cbind(0, 0), convex = 5), rcdt_max_edge = 1)
 
 }
