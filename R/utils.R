@@ -363,13 +363,13 @@ fm_row_kron <- function(M1, M2, repl = NULL, n.repl = NULL, weights = NULL # ,
       jjj <- c(
         jjj,
         (1L + rep(M2@j[sub2], times = k) +
-           ncol(M2) * (as.vector(j.sub[i, ]) - 1L) +
-           ncol(M2) * ncol(M1) * (repl.i - 1L))
+          ncol(M2) * (as.vector(j.sub[i, ]) - 1L) +
+          ncol(M2) * ncol(M1) * (repl.i - 1L))
       )
       xxx <- c(
         xxx,
         (rep(M2@x[sub2], times = k) *
-           as.vector(x.sub[i, ]))
+          as.vector(x.sub[i, ]))
       )
       # }
     }

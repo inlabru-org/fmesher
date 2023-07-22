@@ -23,7 +23,7 @@ test_that("Discrete integration", {
 test_that("Continuous integration", {
   local_fm_safe_inla()
 
-  domain <- INLA::inla.mesh.1d(2:5)
+  domain <- fm_mesh_1d(2:5)
 
   samplers <- c(3, 7)
   ips_ <- data.frame(
@@ -46,8 +46,8 @@ test_that("Continuous integration", {
 test_that("Tensor space integration", {
   local_fm_safe_inla()
 
-  mesh_time <- INLA::inla.mesh.1d(1:5)
-  mesh_space <- INLA::inla.mesh.1d(c(0, 5, 10))
+  mesh_time <- fm_mesh_1d(1:5)
+  mesh_space <- fm_mesh_1d(c(0, 5, 10))
   domain <- list(space = mesh_space, time = mesh_time)
   samplers1 <- tibble::tibble(
     time = rbind(c(1, 3), c(2, 4), c(3, 5)),
@@ -129,8 +129,8 @@ test_that("Polygon integration with holes", {
     )
   ))
 
-  bndA <- INLA::inla.sp2segment(plyA)
-  m <- INLA::inla.mesh.2d(
+  bndA <- fm_as_segm(plyA)
+  m <- fm_mesh_2d(
     loc.domain = bndA$loc,
     max.edge = 1
   )
@@ -165,7 +165,7 @@ test_that("Polygon integration with holes", {
 test_that("Integration line splitting", {
   local_fm_safe_inla()
 
-  mesh <- INLA::inla.mesh.2d(
+  mesh <- fm_mesh_2d(
     loc.domain = cbind(0, 0),
     offset = 2,
     max.edge = 0.5
@@ -216,7 +216,7 @@ test_that("flat mesh integration", {
   skip_on_cran()
   local_fm_safe_inla()
 
-  mesh <- INLA::inla.mesh.2d(cbind(0, 0), offset = 1, max.edge = 2)
+  mesh <- fm_mesh_2d(cbind(0, 0), offset = 1, max.edge = 2)
 
   ips0 <- fm_int(mesh, int.args = list(nsub2 = 0))
   ips9 <- fm_int(mesh, int.args = list(nsub2 = 9))
@@ -270,7 +270,7 @@ test_that("flat SpatialPolygons integration", {
   local_fm_safe_inla()
   fm_safe_sp()
 
-  mesh <- INLA::inla.mesh.2d(cbind(0, 0), offset = 2, max.edge = 4)
+  mesh <- fm_mesh_2d(cbind(0, 0), offset = 2, max.edge = 4)
 
   poly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(rbind(
     c(-1, -1), c(-1, 1), c(1, 1), c(1, -1)

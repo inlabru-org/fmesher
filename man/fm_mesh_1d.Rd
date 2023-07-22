@@ -2,12 +2,9 @@
 % Please edit documentation in R/mesh.R
 \name{fm_mesh_1d}
 \alias{fm_mesh_1d}
-\alias{fm_mesh_1d.default}
 \title{Make a 1D mesh object}
 \usage{
 fm_mesh_1d(...)
-
-\method{fm_mesh_1d}{default}(...)
 }
 \arguments{
 \item{...}{Currently passed on to \code{inla.mesh.1d}}

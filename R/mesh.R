@@ -635,6 +635,12 @@ fm_nonconvex_hull.sfg <- function(x, ...) {
   fm_nonconvex_hull.sfc(sf::st_sfc(x), ...)
 }
 
+#' @describeIn fm_nonconvex_hull Legacy method for `INLA::inla.nonconvex.hull()`
+#' @export
+fm_nonconvex_hull_inla <- function(...) {
+  fm_as_segm(INLA::inla.nonconvex.hull(...))
+}
+
 #' @rdname fm_nonconvex_hull
 #' @details Differs from `sf::st_buffer(x, convex)` followed by
 #' `sf::st_concave_hull()` (available from GEOS 3.11)
@@ -735,9 +741,8 @@ fm_diameter.matrix <- function(x, ...) {
 #' @examples
 #' if (fm_safe_inla()) {
 #'   inp <- sf::st_as_sf(as.data.frame(matrix(1:6, 3, 2)), coords = 1:2)
-#'   out <- fm_extensions(inp, convex = c(0.75, 2))
-#'   bnd <- lapply(out, fm_as_segm)
-#'   plot(INLA::inla.mesh.2d(boundary = bnd, max.edge = c(0.25, 1)), asp = 1)
+#'   bnd <- fm_extensions(inp, convex = c(0.75, 2))
+#'   plot(fm_mesh_2d(boundary = bnd, max.edge = c(0.25, 1)), asp = 1)
 #' }
 #'
 fm_extensions <- function(x,
@@ -929,12 +934,6 @@ fm_as_fm.inla.mesh.lattice <- function(x, ...) {
 #' @param ... Currently passed on to `inla.mesh.1d`
 #' @family object creation and conversion
 fm_mesh_1d <- function(...) {
-  UseMethod("fm_mesh_1d")
-}
-
-#' @rdname fm_mesh_1d
-#' @export
-fm_mesh_1d.default <- function(...) {
   fm_as_mesh_1d(INLA::inla.mesh.1d(...))
 }
 
@@ -972,13 +971,23 @@ fm_as_mesh_1d.inla.mesh.1d <- function(x, ...) {
 #' @param ... Currently passed on to `inla.mesh.2d`
 #' @family object creation and conversion
 fm_mesh_2d <- function(...) {
-  UseMethod("fm_mesh_2d")
+  fm_mesh_2d_inla(...)
 }
 
-#' @rdname fm_mesh_2d
+#' @describeIn fm_mesh_2d Legacy method for `INLA::inla.mesh.2d()`
 #' @export
-fm_mesh_2d.default <- function(...) {
-  fm_as_mesh_2d(INLA::inla.mesh.2d(...))
+#' @param boundary,interior list of [fm_segm()] objects, or objects
+#' supported by [fm_as_segm()]
+fm_mesh_2d_inla <- function(...,
+                            boundary = NULL,
+                            interior = NULL) {
+  if (!is.null(boundary)) {
+    boundary <- lapply(boundary, fm_as_segm)
+  }
+  if (!is.null(interior)) {
+    interior <- lapply(interior, fm_as_segm)
+  }
+  fm_as_mesh_2d(INLA::inla.mesh.2d(..., boundary = boundary, interior = interior))
 }
 
 #' @title Convert objects to `fm_mesh_2d`

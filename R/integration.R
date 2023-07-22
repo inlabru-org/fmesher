@@ -45,7 +45,7 @@ split_lines <- function(mesh, sp, ep, filter.zero.length = TRUE) {
 #' if (fm_safe_inla() &&
 #'   require("ggplot2")) {
 #'   # Create integration points in dimension 'myDim' and 'myDiscreteDim'
-#'   ips1 <- fm_int(INLA::inla.mesh.1d(1:20),
+#'   ips1 <- fm_int(fm_mesh_1d(1:20),
 #'     rbind(c(0, 3), c(3, 8)),
 #'     name = "myDim"
 #'   )
@@ -201,19 +201,19 @@ fm_cprod <- function(..., na.rm = NULL, .blockwise = FALSE) {
 #' @examples
 #' if (fm_safe_inla() && fm_safe_sp()) {
 #'   # Integration on the interval (2, 3.5) with Simpson's rule
-#'   ips <- fm_int(INLA::inla.mesh.1d(0:4), samplers = cbind(2, 3.5))
+#'   ips <- fm_int(fm_mesh_1d(0:4), samplers = cbind(2, 3.5))
 #'   plot(ips)
 #'
 #'   # Create integration points for the two intervals [0,3] and [5,10]
 #'
 #'   ips <- fm_int(
-#'     INLA::inla.mesh.1d(0:10),
+#'     fm_mesh_1d(0:10),
 #'     matrix(c(0, 3, 5, 10), nrow = 2, byrow = TRUE)
 #'   )
 #'   plot(ips)
 #'
 #'   # Convert a 1D mesh into integration points
-#'   mesh <- INLA::inla.mesh.1d(seq(0, 10, by = 1))
+#'   mesh <- fm_mesh_1d(seq(0, 10, by = 1))
 #'   ips <- fm_int(mesh, name = "time")
 #'   plot(ips)
 #'

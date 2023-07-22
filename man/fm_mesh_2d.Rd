@@ -2,19 +2,27 @@
 % Please edit documentation in R/mesh.R
 \name{fm_mesh_2d}
 \alias{fm_mesh_2d}
-\alias{fm_mesh_2d.default}
+\alias{fm_mesh_2d_inla}
 \title{Make a 2D mesh object}
 \usage{
 fm_mesh_2d(...)
 
-\method{fm_mesh_2d}{default}(...)
+fm_mesh_2d_inla(..., boundary = NULL, interior = NULL)
 }
 \arguments{
 \item{...}{Currently passed on to \code{inla.mesh.2d}}
+
+\item{boundary, interior}{list of \code{\link[=fm_segm]{fm_segm()}} objects, or objects
+supported by \code{\link[=fm_as_segm]{fm_as_segm()}}}
 }
 \description{
 Make a 2D mesh object
 }
+\section{Functions}{
+\itemize{
+\item \code{fm_mesh_2d_inla()}: Legacy method for \code{INLA::inla.mesh.2d()}
+
+}}
 \seealso{
 Other object creation and conversion: 
 \code{\link{fm_as_fm}()},

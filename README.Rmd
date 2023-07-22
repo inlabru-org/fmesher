@@ -4,10 +4,12 @@ output: github_document
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-```{r, include = FALSE}
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
+  dev = "png",
+  dev.args = list(type = "cairo-png"),
   fig.path = "man/figures/README-",
   out.width = "100%"
 )
@@ -16,6 +18,7 @@ knitr::opts_chunk$set(
 # fmesher: 
 
 <!-- badges: start -->
+[![inlabru status badge](https://inlabru-org.r-universe.dev/badges/fmesher)](https://inlabru-org.r-universe.dev)
 [![R build status](https://github.com/inlabru-org/fmesher/workflows/R-CMD-check/badge.svg)](https://github.com/inlabru-org/fmesher/actions)
 [![test-coverage](https://github.com/inlabru-org/fmesher/workflows/test-coverage/badge.svg)](https://github.com/inlabru-org/fmesher/actions)
 [![Codecov test coverage](https://codecov.io/gh/inlabru-org/fmesher/branch/devel/graph/badge.svg)](https://codecov.io/gh/inlabru-org/fmesher?branch=devel)
@@ -39,6 +42,10 @@ And the development version with:
 # install.packages("remotes")
 remotes::install_github("inlabru-org/fmesher")
 ```
+
+## Online documentation
+
+[https://inlabru-org.github.io/fmesher/](https://inlabru-org.github.io/fmesher/)
 
 ## Example
 

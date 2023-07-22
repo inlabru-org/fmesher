@@ -35,7 +35,7 @@ weights attached to it all weights are assumed to be 1.
 if (fm_safe_inla() &&
   require("ggplot2")) {
   # Create integration points in dimension 'myDim' and 'myDiscreteDim'
-  ips1 <- fm_int(INLA::inla.mesh.1d(1:20),
+  ips1 <- fm_int(fm_mesh_1d(1:20),
     rbind(c(0, 3), c(3, 8)),
     name = "myDim"
   )

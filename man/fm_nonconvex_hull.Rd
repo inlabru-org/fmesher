@@ -6,6 +6,7 @@
 \alias{fm_nonconvex_hull.sf}
 \alias{fm_nonconvex_hull.Spatial}
 \alias{fm_nonconvex_hull.sfg}
+\alias{fm_nonconvex_hull_inla}
 \alias{fm_nonconvex_hull.sfc}
 \title{Compute an extension of a spatial object}
 \usage{
@@ -18,6 +19,8 @@ fm_nonconvex_hull(x, ...)
 \method{fm_nonconvex_hull}{Spatial}(x, ...)
 
 \method{fm_nonconvex_hull}{sfg}(x, ...)
+
+fm_nonconvex_hull_inla(...)
 
 \method{fm_nonconvex_hull}{sfc}(
   x,
@@ -55,6 +58,11 @@ Differs from \code{sf::st_buffer(x, convex)} followed by
 \code{sf::st_concave_hull()} (available from GEOS 3.11)
 in how the amount of allowed concavity is controlled.
 }
+\section{Functions}{
+\itemize{
+\item \code{fm_nonconvex_hull_inla()}: Legacy method for \code{INLA::inla.nonconvex.hull()}
+
+}}
 \examples{
 inp <- sf::st_as_sf(as.data.frame(matrix(1:6, 3, 2)), coords = 1:2)
 out <- fm_nonconvex_hull(inp, convex = 1)

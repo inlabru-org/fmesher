@@ -2,8 +2,10 @@ test_that("fm_pixels sp vs sf", {
   skip_on_cran()
   local_fm_safe_inla()
 
-  mesh <- INLA::inla.mesh.2d(cbind(0, 0),
-    offset = 10, max.edge = 1,
+  mesh <- fm_mesh_2d(
+    cbind(0, 0),
+    offset = 10,
+    max.edge = 1,
     crs = fm_CRS("longlat_globe")
   )
 

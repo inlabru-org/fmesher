@@ -1,0 +1,49 @@
+---
+title: "Converting legacy INLA mesh code to fmesher"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Converting legacy INLA mesh code to fmesher}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup, echo = FALSE}
+suppressPackageStartupMessages(library(fmesher))
+suppressPackageStartupMessages(library(tibble))
+```
+
+```{r echo = FALSE}
+df <- tribble(
+  ~INLA, ~fmesher,
+  c("inla.mesh.create()", "inla.mesh.2d()"), "fm_mesh_2d()",
+  "inla.mesh.1d()", "fm_mesh_1d()",
+  "inla.mesh.segment()", "fm_segm()",
+  "inla.mesh.lattice()", "fm_lattice_2d()",
+  "inla.nonconvex.hull()", c("fm_nonconvex_hull()", "fm_extensions()"),
+  "inla.mesh.projector()", "fm_evaluator()",
+  "inla.mesh.project()", "fm_evaluate()",
+  "inla.CRS()", c("fm_crs()", "fm_CRS()"),
+  "inla.spTransform()", "fm_transform()"
+)
+
+webref <- "https://inlabru-org.github.io/fmesher/reference/"
+for (k in seq_len(nrow(df))) {
+  df$fmesher[[k]] <-
+    sub(
+      pattern = "([^(]+)(\\(.*\\))$", replacement =
+        paste0('<a href="', webref, '\\1.html">\\1</a>\\2'),
+      x = df$fmesher[[k]]
+    )
+}
+```
+
+```{r, echo = FALSE}
+knitr::kable(df)
+```
