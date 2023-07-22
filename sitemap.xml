@@ -40,9 +40,6 @@
     <loc>https://inlabru-org.github.io/fmesher/reference/dot-globeproj.types.html</loc>
   </url>
   <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_A.html</loc>
-  </url>
-  <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_CRS_sp.html</loc>
   </url>
   <url>
@@ -71,6 +68,9 @@
   </url>
   <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_bary.html</loc>
+  </url>
+  <url>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fm_basis.html</loc>
   </url>
   <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_centroids.html</loc>
