@@ -5,26 +5,29 @@
 \title{Refined Constrained Delaunay Triangulation}
 \usage{
 fm_rcdt_2d(
-  loc,
+  loc = NULL,
   tv = NULL,
   boundary = NULL,
   interior = NULL,
   crs = NULL,
-  cet_margin = 1,
   ...
 )
 }
 \arguments{
-\item{loc}{numeric matrix; initial points to include}
+\item{loc}{Input coordinates that should be part of the mesh}
 
-\item{tv}{3-column integer matrix with 0-based vertex indices for each triangle}
+\item{tv}{Initial triangulation, as a N-by-3 indec vector into \code{loc}}
 
-\item{boundary}{2-column integer matrix with 0-based vertex indices for each
-boundary edge constraint}
+\item{boundary, interior}{Objects supported by \code{\link[=fm_as_segm]{fm_as_segm()}}}
 
-\item{interior}{2-column integer matrix with 0-based vertex indices for each
-interior edge constraint}
+\item{crs}{Optional crs object}
+
+\item{...}{Arguments passed on as options to \code{\link[=fmesher_rcdt]{fmesher_rcdt()}}}
 }
 \description{
 Computes a refined constrained Delaunay triangulation on R2 or S2.
+}
+\examples{
+m <- fm_rcdt_2d(boundary=fm_nonconvex_hull(cbind(0,0), convex = 5), rcdt_max_edge=1)
+
 }

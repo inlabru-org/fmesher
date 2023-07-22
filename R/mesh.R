@@ -975,16 +975,23 @@ fm_as_mesh_1d.inla.mesh.1d <- function(x, ...) {
 #' @description
 #' Computes a refined constrained Delaunay triangulation on R2 or S2.
 #'
-#' @inheritParams fmesher_rcdt
+#' @param loc Input coordinates that should be part of the mesh
+#' @param tv Initial triangulation, as a N-by-3 indec vector into `loc`
+#' @param boundary,interior Objects supported by [fm_as_segm()]
+#' @param crs Optional crs object
+#' @param ... Arguments passed on as options to [fmesher_rcdt()]
+#' @examples
+#' m <- fm_rcdt_2d(boundary=fm_nonconvex_hull(cbind(0,0), convex = 5), rcdt_max_edge=1)
+#'
 #' @export
 fm_rcdt_2d <-
-  function(loc,
+  function(loc = NULL,
            tv = NULL,
            boundary = NULL,
            interior = NULL,
            crs = NULL,
-           cet_margin = 1,
            ...) {
+    # TODO: handle general loc inputs
     if (is.null(boundary)) {
       bnd <- NULL
       bnd_grp <- NULL
@@ -993,7 +1000,7 @@ fm_rcdt_2d <-
       if (!is.null(crs)) {
         boundary <- fm_transform(boundary, crs = crs, passthrough = TRUE)
       }
-      bnd <- nrow(loc) + boundary$idx - 1L
+      bnd <- NROW(loc) + boundary$idx - 1L
       bnd_grp <- boundary$grp
       loc <- rbind(loc, boundary$loc)
     }
@@ -1005,11 +1012,11 @@ fm_rcdt_2d <-
       if (!is.null(crs)) {
         interior <- fm_transform(interior, crs = crs, passthrough = TRUE)
       }
-      int <- nrow(loc) + interior$idx - 1L
+      int <- NROW(loc) + interior$idx - 1L
       int_grp <- interior$grp
       loc <- rbind(loc, interior$loc)
     }
-    result <- fmesher_rcdt(options = list(cet_margin = cet_margin, ...),
+    result <- fmesher_rcdt(options = list(...),
                            loc = loc, tv = tv,
                            boundary = bnd, interior = int,
                            boundary_grp = bnd_grp, interior_grp = int_grp)
@@ -1038,7 +1045,8 @@ fm_rcdt_2d <-
           vv = fm_as_dgCMatrix(result[["vv"]])
         ),
         manifold = result[["manifold"]],
-        crs = crs,
+        crs = fm_crs(crs),
+        n = nrow(result[["s"]]),
         meta = list(
           is.refined = TRUE
         )
