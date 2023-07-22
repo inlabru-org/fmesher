@@ -95,15 +95,27 @@
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"inlabru-org/fmesher"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
+<h2 id="online-documentation">Online documentation<a class="anchor" aria-label="anchor" href="#online-documentation"></a>
+</h2>
+<p><a href="https://inlabru-org.github.io/fmesher/" class="uri">https://inlabru-org.github.io/fmesher/</a></p>
+</div>
+<div class="section level2">
 <h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
 </h2>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://inlabru-org.github.io/fmesher/">fmesher</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; Loading required package: Matrix</span></span>
+<span><span class="co">#&gt; The legacy packages maptools, rgdal, and rgeos, underpinning the sp package,</span></span>
+<span><span class="co">#&gt; which was just loaded, will retire in October 2023.</span></span>
+<span><span class="co">#&gt; Please refer to R-spatial evolution reports for details, especially</span></span>
+<span><span class="co">#&gt; https://r-spatial.org/r/2023/05/15/evolution4.html.</span></span>
+<span><span class="co">#&gt; It may be desirable to make the sf package available;</span></span>
+<span><span class="co">#&gt; package maintainers should consider adding sf to Suggests:.</span></span>
+<span><span class="co">#&gt; The sp package is now running under evolution status 2</span></span>
+<span><span class="co">#&gt;      (status 2 uses the sf package in place of rgdal)</span></span>
 <span><span class="co"># longlat for a spherical version of the Earth</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="reference/fm_crs.html">fm_crs</a></span><span class="op">(</span><span class="st">"longlat_globe"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Coordinate Reference System:</span></span>
-<span><span class="co">#&gt;   User input: GEOGCRS["unknown",DATUM["Unknown based on Normal Sphere (r=6370997) ellipsoid",ELLIPSOID["Normal Sphere (r=6370997)",6370997,0,LENGTHUNIT["metre",1,ID["EPSG",9001]]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8901]],CS[ellipsoidal,2],AXIS["longitude",east,ORDER[1],ANGLEUNIT["degree",0.0174532925199433,ID["EPSG",9122]]],AXIS["latitude",north,ORDER[2],ANGLEUNIT["degree",0.0174532925199433,ID["EPSG",9122]]]] </span></span>
+<span><span class="co">#&gt;   User input: +proj=longlat +ellps=sphere +no_defs </span></span>
 <span><span class="co">#&gt;   wkt:</span></span>
 <span><span class="co">#&gt; GEOGCRS["unknown",</span></span>
 <span><span class="co">#&gt;     DATUM["Unknown based on Normal Sphere (r=6370997) ellipsoid",</span></span>
@@ -126,7 +138,7 @@
 <span><span class="co"># longlat for a sphere of radius 1m</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="reference/fm_crs.html">fm_crs</a></span><span class="op">(</span><span class="st">"longlat_norm"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Coordinate Reference System:</span></span>
-<span><span class="co">#&gt;   User input: GEOGCRS["unknown",DATUM["unknown",ELLIPSOID["unknown",1,0,LENGTHUNIT["metre",1,ID["EPSG",9001]]]],PRIMEM["Reference meridian",0,ANGLEUNIT["degree",0.0174532925199433,ID["EPSG",9122]]],CS[ellipsoidal,2],AXIS["longitude",east,ORDER[1],ANGLEUNIT["degree",0.0174532925199433,ID["EPSG",9122]]],AXIS["latitude",north,ORDER[2],ANGLEUNIT["degree",0.0174532925199433,ID["EPSG",9122]]]] </span></span>
+<span><span class="co">#&gt;   User input: +proj=longlat +R=1 +no_defs </span></span>
 <span><span class="co">#&gt;   wkt:</span></span>
 <span><span class="co">#&gt; GEOGCRS["unknown",</span></span>
 <span><span class="co">#&gt;     DATUM["unknown",</span></span>
@@ -149,7 +161,7 @@
 <span><span class="co"># A sphere of radius 1m</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="reference/fm_crs.html">fm_crs</a></span><span class="op">(</span><span class="st">"sphere"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Coordinate Reference System:</span></span>
-<span><span class="co">#&gt;   User input: GEODCRS["unknown",DATUM["unknown",ELLIPSOID["unknown",1,0,LENGTHUNIT["metre",1,ID["EPSG",9001]]]],PRIMEM["Reference meridian",0,ANGLEUNIT["degree",0.0174532925199433,ID["EPSG",9122]]],CS[Cartesian,3],AXIS["(X)",geocentricX,ORDER[1],LENGTHUNIT["metre",1,ID["EPSG",9001]]],AXIS["(Y)",geocentricY,ORDER[2],LENGTHUNIT["metre",1,ID["EPSG",9001]]],AXIS["(Z)",geocentricZ,ORDER[3],LENGTHUNIT["metre",1,ID["EPSG",9001]]]] </span></span>
+<span><span class="co">#&gt;   User input: +proj=geocent +R=1 +units=m +no_defs </span></span>
 <span><span class="co">#&gt;   wkt:</span></span>
 <span><span class="co">#&gt; GEODCRS["unknown",</span></span>
 <span><span class="co">#&gt;     DATUM["unknown",</span></span>
@@ -208,6 +220,7 @@
 <div class="dev-status">
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
+<li><a href="https://inlabru-org.r-universe.dev" class="external-link"><img src="https://inlabru-org.r-universe.dev/badges/fmesher" alt="inlabru status badge"></a></li>
 <li><a href="https://github.com/inlabru-org/fmesher/actions" class="external-link"><img src="https://github.com/inlabru-org/fmesher/workflows/R-CMD-check/badge.svg" alt="R build status"></a></li>
 <li><a href="https://github.com/inlabru-org/fmesher/actions" class="external-link"><img src="https://github.com/inlabru-org/fmesher/workflows/test-coverage/badge.svg" alt="test-coverage"></a></li>
 <li><a href="https://codecov.io/gh/inlabru-org/fmesher?branch=devel" class="external-link"><img src="https://codecov.io/gh/inlabru-org/fmesher/branch/devel/graph/badge.svg" alt="Codecov test coverage"></a></li>

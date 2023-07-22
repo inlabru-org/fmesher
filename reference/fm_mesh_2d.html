@@ -65,8 +65,7 @@
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fm_mesh_2d</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># S3 method for default</span></span>
-<span><span class="fu">fm_mesh_2d</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">fm_mesh_2d_inla</span><span class="op">(</span><span class="va">...</span>, boundary <span class="op">=</span> <span class="cn">NULL</span>, interior <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -74,7 +73,17 @@
     <dl><dt>...</dt>
 <dd><p>Currently passed on to <code>inla.mesh.2d</code></p></dd>
 
+
+<dt>boundary, interior</dt>
+<dd><p>list of <code><a href="fm_segm.html">fm_segm()</a></code> objects, or objects
+supported by <code><a href="fm_as_segm.html">fm_as_segm()</a></code></p></dd>
+
 </dl></div>
+    <div class="section level2">
+    <h2 id="functions">Functions<a class="anchor" aria-label="anchor" href="#functions"></a></h2>
+    
+<ul><li><p><code>fm_mesh_2d_inla()</code>: Legacy method for <code><a href="https://rdrr.io/pkg/INLA/man/inla.mesh.2d.html" class="external-link">INLA::inla.mesh.2d()</a></code></p></li>
+</ul></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Other object creation and conversion: 
