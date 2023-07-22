@@ -534,9 +534,9 @@ fm_is_within.default <- function(x, y, ...) {
 #' @title Compute mapping matrix between mesh function space and points
 #'
 #' @description
-#'  Computes the mapping matrix between a function space on a mesh, and locations.
+#'  Computes the basis mapping matrix between a function space on a mesh, and locations.
 #'
-#' @param x An mesh object supported by an [fm_evaluator()] class
+#' @param x An object supported by the [fm_evaluator()] class
 #' @param y A set of points of a class supported by `fm_evaluator(x, loc = y)`
 #' @param \dots Currently unused
 #' @returns A `sparseMatrix`
@@ -547,17 +547,23 @@ fm_is_within.default <- function(x, y, ...) {
 #'
 #'   data("gorillas", package = "inlabru")
 #'
-#'   # Compute mapping matrix
-#'   str(fm_A(gorillas$mesh, gorillas$nests))
+#'   # Compute basis mapping matrix
+#'   str(fm_basis(gorillas$mesh, gorillas$nests))
 #' }
 #' }
 #' @export
-fm_A <- function(x, ...) {
-  UseMethod("fm_A")
+fm_basis <- function(x, ...) {
+  UseMethod("fm_basis")
 }
 
-#' @rdname fm_A
+#' @rdname fm_basis
 #' @export
-fm_A.default <- function(x, y, ...) {
+fm_basis.default <- function(x, y, ...) {
   fm_evaluator(x, loc = y)$proj$A
+}
+
+#' @rdname fm_basis
+#' @export
+fm_basis.fm_evaluator <- function(x, ...) {
+  x$proj$A
 }
