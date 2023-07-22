@@ -847,8 +847,12 @@ fm_segm.fm_mesh_2d <- function(x, boundary = TRUE, ...) {
 #' @export
 #' @family object creation and conversion
 fm_as_segm <- function(x, ...) {
+  if (is.null(x)) {
+    return(NULL)
+  }
   UseMethod("fm_as_segm")
 }
+
 #' @rdname fm_as_segm
 #' @export
 #' @method fm_as_segm inla.mesh.segment
@@ -966,6 +970,85 @@ fm_as_mesh_1d.inla.mesh.1d <- function(x, ...) {
 
 # fm_mesh_2d ####
 
+#' @title Refined Constrained Delaunay Triangulation
+#'
+#' @description
+#' Computes a refined constrained Delaunay triangulation on R2 or S2.
+#'
+#' @inheritParams fmesher_rcdt
+#' @export
+fm_rcdt_2d <-
+  function(loc,
+           tv = NULL,
+           boundary = NULL,
+           interior = NULL,
+           crs = NULL,
+           cet_margin = 1,
+           ...) {
+    if (is.null(boundary)) {
+      bnd <- NULL
+      bnd_grp <- NULL
+    } else {
+      boundary <- fm_as_segm(boundary)
+      if (!is.null(crs)) {
+        boundary <- fm_transform(boundary, crs = crs, passthrough = TRUE)
+      }
+      bnd <- nrow(loc) + boundary$idx - 1L
+      bnd_grp <- boundary$grp
+      loc <- rbind(loc, boundary$loc)
+    }
+    if (is.null(interior)) {
+      int <- NULL
+      int_grp <- NULL
+    } else {
+      interior <- fm_as_segm(interior)
+      if (!is.null(crs)) {
+        interior <- fm_transform(interior, crs = crs, passthrough = TRUE)
+      }
+      int <- nrow(loc) + interior$idx - 1L
+      int_grp <- interior$grp
+      loc <- rbind(loc, interior$loc)
+    }
+    result <- fmesher_rcdt(options = list(cet_margin = cet_margin, ...),
+                           loc = loc, tv = tv,
+                           boundary = bnd, interior = int,
+                           boundary_grp = bnd_grp, interior_grp = int_grp)
+
+    idx_C2R <- function(x) {
+      x <- x + 1L
+      x[x == 0] <- NA
+      x
+    }
+
+    m <- structure(
+      list(
+        loc = result[["s"]],
+        segm = list(
+          int = fm_segm(idx = idx_C2R(result[["segm.int.idx"]]),
+                        grp = result[["segm.int.grp"]],
+                        is.bnd = FALSE),
+          bnd = fm_segm(idx = idx_C2R(result[["segm.bnd.idx"]]),
+                        grp = result[["segm.bnd.grp"]],
+                        is.bnd = TRUE)),
+        graph = list(
+          tv = idx_C2R(result[["tv"]]),
+          vt = idx_C2R(result[["vt"]]),
+          tt = idx_C2R(result[["tt"]]),
+          tti = idx_C2R(result[["tti"]]),
+          vv = fm_as_dgCMatrix(result[["vv"]])
+        ),
+        manifold = result[["manifold"]],
+        crs = crs,
+        meta = list(
+          is.refined = TRUE
+        )
+      ),
+      class = c("fm_mesh_2d", "inla.mesh")
+    )
+
+    m
+  }
+
 #' @title Make a 2D mesh object
 #' @export
 #' @param ... Currently passed on to `inla.mesh.2d`
@@ -985,7 +1068,7 @@ fm_mesh_2d_inla <- function(...,
     boundary <- lapply(boundary, fm_as_segm)
   }
   if (!is.null(interior)) {
-    interior <- lapply(interior, fm_as_segm)
+    interior <- fm_as_segm(interior)
   }
   fm_as_mesh_2d(INLA::inla.mesh.2d(..., boundary = boundary, interior = interior))
 }

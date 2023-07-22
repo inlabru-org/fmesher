@@ -234,7 +234,7 @@ Rcpp::NumericMatrix fmesher_globe_points(Rcpp::IntegerVector globe) {
 //' @param loc numeric matrix; initial points to include
 //' @param tv 3-column integer matrix with 0-based vertex indices for each triangle
 //' @param boundary 2-column integer matrix with 0-based vertex indices for each
-//' boundary edge constrain
+//' boundary edge constraint
 //' @param interior 2-column integer matrix with 0-based vertex indices for each
 //' interior edge constraint
 //' @param boundary_grp integer vector with group labels
