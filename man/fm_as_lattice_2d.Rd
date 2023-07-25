@@ -2,11 +2,14 @@
 % Please edit documentation in R/mesh.R
 \name{fm_as_lattice_2d}
 \alias{fm_as_lattice_2d}
+\alias{fm_as_lattice_2d_list}
 \alias{fm_as_lattice_2d.fm_lattice_2d}
 \alias{fm_as_lattice_2d.inla.mesh.lattice}
 \title{Convert objects to \code{fm_lattice_2d}}
 \usage{
 fm_as_lattice_2d(...)
+
+fm_as_lattice_2d_list(x, ...)
 
 \method{fm_as_lattice_2d}{fm_lattice_2d}(x, ...)
 
@@ -23,6 +26,8 @@ Convert objects to \code{fm_lattice_2d}
 \section{Functions}{
 \itemize{
 \item \code{fm_as_lattice_2d()}: Convert an object to \code{fm_lattice_2d}.
+
+\item \code{fm_as_lattice_2d_list()}: Convert each element of a list
 
 }}
 \seealso{

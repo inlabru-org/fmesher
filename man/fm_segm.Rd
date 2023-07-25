@@ -7,11 +7,13 @@
 \alias{fm_segm.inla.mesh.segment}
 \alias{fm_segm.inla.mesh}
 \alias{fm_segm.fm_mesh_2d}
+\alias{fm_is_bnd}
+\alias{fm_is_bnd<-}
 \title{Make a spatial segment object}
 \usage{
 fm_segm(...)
 
-\method{fm_segm}{default}(...)
+\method{fm_segm}{default}(loc = NULL, idx = NULL, grp = NULL, is.bnd = TRUE, crs = NULL, ...)
 
 \method{fm_segm}{fm_segm}(..., grp.default = 0)
 
@@ -19,10 +21,33 @@ fm_segm(...)
 
 \method{fm_segm}{inla.mesh}(x, ...)
 
-\method{fm_segm}{fm_mesh_2d}(x, boundary = TRUE, ...)
+\method{fm_segm}{fm_mesh_2d}(x, boundary = TRUE, grp = NULL, ...)
+
+fm_is_bnd(x)
+
+fm_is_bnd(x) <- value
 }
 \arguments{
-\item{...}{Currently passed on to \code{inla.mesh.segment}}
+\item{...}{Passed on to submethods}
+
+\item{loc}{Matrix of point locations, or \code{SpatialPoints}, or \code{sf}/\code{sfc} point
+object.}
+
+\item{idx}{Segment index sequence vector or index pair matrix.  The indices
+refer to the rows of \code{loc}.  If \code{loc==NULL}, the indices will be
+interpreted as indices into the point specification supplied to
+\code{\link[=inla.mesh.create]{inla.mesh.create()}}.  If \code{is.bnd==TRUE}, defaults to linking
+all the points in \code{loc}, as \code{c(1:nrow(loc),1L)}, otherwise
+\code{1:nrow(loc)}.}
+
+\item{grp}{Vector of group labels for each segment.  Set to \code{NULL} to
+let the labels be chosen automatically in a call to
+\code{\link[=inla.mesh.create]{inla.mesh.create()}}.}
+
+\item{is.bnd}{\code{TRUE} if the segments are boundary segments, otherwise
+\code{FALSE}.}
+
+\item{crs}{An optional \code{fm_crs()}, \code{sf::st_crs()} or \code{sp::CRS()} object}
 
 \item{grp.default}{When joining segments, use this group label for segments
 that have \code{grp == NULL}.}
@@ -31,6 +56,8 @@ that have \code{grp == NULL}.}
 
 \item{boundary}{logical; if \code{TRUE}, extract the boundary segments,
 otherwise interior constrain segments.}
+
+\item{value}{logical}
 }
 \description{
 Make a spatial segment object
@@ -40,7 +67,9 @@ Make a spatial segment object
 \item \code{fm_segm(fm_segm)}: Join multiple \code{fm_segm} objects into a single \code{fm_segm}
 object.
 
-\item \code{fm_segm(fm_mesh_2d)}: Extract the boundary segments of a 2d mesh
+\item \code{fm_segm(fm_mesh_2d)}: Extract the boundary or interior segments of a 2d mesh.
+If \code{grp} is non-NULL, extracts only segments matching the matching the set
+of groups given by \code{grp}.
 
 }}
 \section{Functions}{

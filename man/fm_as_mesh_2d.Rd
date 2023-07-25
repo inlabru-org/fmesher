@@ -2,6 +2,7 @@
 % Please edit documentation in R/mesh.R, R/sf_mesh.R
 \name{fm_as_mesh_2d}
 \alias{fm_as_mesh_2d}
+\alias{fm_as_mesh_2d_list}
 \alias{fm_as_mesh_2d.fm_mesh_2d}
 \alias{fm_as_mesh_2d.inla.mesh}
 \alias{fm_as_mesh_2d.sfg}
@@ -10,7 +11,9 @@
 \alias{fm_as_mesh_2d.sf}
 \title{Convert objects to \code{fm_mesh_2d}}
 \usage{
-fm_as_mesh_2d(...)
+fm_as_mesh_2d(x, ...)
+
+fm_as_mesh_2d_list(x, ...)
 
 \method{fm_as_mesh_2d}{fm_mesh_2d}(x, ...)
 
@@ -25,9 +28,9 @@ fm_as_mesh_2d(...)
 \method{fm_as_mesh_2d}{sf}(x, ...)
 }
 \arguments{
-\item{...}{Arguments passed on to submethods}
-
 \item{x}{Object to be converted}
+
+\item{...}{Arguments passed on to submethods}
 }
 \description{
 Convert objects to \code{fm_mesh_2d}
@@ -35,6 +38,8 @@ Convert objects to \code{fm_mesh_2d}
 \section{Functions}{
 \itemize{
 \item \code{fm_as_mesh_2d()}: Convert an object to \code{fm_mesh_2d}.
+
+\item \code{fm_as_mesh_2d_list()}: Convert each element of a list
 
 }}
 \seealso{

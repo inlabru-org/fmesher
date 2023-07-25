@@ -165,10 +165,13 @@ public:
       }
     }
     if (isflat) {
+      FMLOG("Plane detected" << std::endl);
       return Mtype_plane;
     } else if (issphere) {
+      FMLOG("Sphere detected" << std::endl);
       return Mtype_sphere;
     } else {
+      FMLOG("General manifold detected" << std::endl);
       return Mtype_manifold;
     }
   }

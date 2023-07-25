@@ -2,17 +2,20 @@
 % Please edit documentation in R/mesh.R
 \name{fm_as_tensor}
 \alias{fm_as_tensor}
+\alias{fm_as_tensor_list}
 \alias{fm_as_tensor.fm_tensor}
 \title{Convert objects to \code{fm_tensor}}
 \usage{
-fm_as_tensor(...)
+fm_as_tensor(x, ...)
+
+fm_as_tensor_list(x, ...)
 
 \method{fm_as_tensor}{fm_tensor}(x, ...)
 }
 \arguments{
-\item{...}{Arguments passed on to submethods}
-
 \item{x}{Object to be converted}
+
+\item{...}{Arguments passed on to submethods}
 }
 \description{
 Convert objects to \code{fm_tensor}
@@ -20,6 +23,8 @@ Convert objects to \code{fm_tensor}
 \section{Functions}{
 \itemize{
 \item \code{fm_as_tensor()}: Convert an object to \code{fm_tensor}.
+
+\item \code{fm_as_tensor_list()}: Convert each element of a list
 
 }}
 \seealso{

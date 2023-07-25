@@ -2,32 +2,47 @@
 % Please edit documentation in R/mesh.R
 \name{fm_rcdt_2d}
 \alias{fm_rcdt_2d}
+\alias{fm_rcdt_2d_inla}
 \title{Refined Constrained Delaunay Triangulation}
 \usage{
-fm_rcdt_2d(
+fm_rcdt_2d(...)
+
+fm_rcdt_2d_inla(
   loc = NULL,
   tv = NULL,
   boundary = NULL,
   interior = NULL,
   crs = NULL,
+  globe = NULL,
   ...
 )
 }
 \arguments{
+\item{...}{Currently passed on to \code{fm_mesh_2d_inla} or converted to
+\code{\link[=fmesher_rcdt]{fmesher_rcdt()}} options.}
+
 \item{loc}{Input coordinates that should be part of the mesh}
 
 \item{tv}{Initial triangulation, as a N-by-3 indec vector into \code{loc}}
 
-\item{boundary, interior}{Objects supported by \code{\link[=fm_as_segm]{fm_as_segm()}}}
+\item{boundary, interior}{Objects supported by \code{\link[=fm_as_segm]{fm_as_segm()}}.
+If \code{boundary} is \code{numeric}, \code{fm_nonconvex_hull(loc, convex = boundary)} is
+used.}
 
 \item{crs}{Optional crs object}
-
-\item{...}{Arguments passed on as options to \code{\link[=fmesher_rcdt]{fmesher_rcdt()}}}
 }
 \description{
 Computes a refined constrained Delaunay triangulation on R2 or S2.
 }
+\section{Functions}{
+\itemize{
+\item \code{fm_rcdt_2d_inla()}: Legacy method for \code{INLA::inla.mesh.create()}
+
+}}
 \examples{
-m <- fm_rcdt_2d(boundary = fm_nonconvex_hull(cbind(0, 0), convex = 5), rcdt_max_edge = 1)
+m <- fm_rcdt_2d(
+  boundary = fm_nonconvex_hull(cbind(0, 0), convex = 5),
+  rcdt_max_edge = 1
+)
 
 }

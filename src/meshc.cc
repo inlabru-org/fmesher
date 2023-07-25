@@ -914,7 +914,9 @@ bool MeshC::CETsphere(int sides, double margin) {
     if (nV < 3) { /* Not enough points for even one triangle,
                      needs special treatment. */
       NOT_IMPLEMENTED;
-      FMLOG("nV=" << nV << endl);
+      FMLOG_("nV=" << nV << endl);
+      FMLOG_("Not enough points for even one triangle, needs special treatment."
+               << std::endl);
       return false;
     }
 

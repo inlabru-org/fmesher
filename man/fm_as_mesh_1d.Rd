@@ -2,20 +2,23 @@
 % Please edit documentation in R/mesh.R
 \name{fm_as_mesh_1d}
 \alias{fm_as_mesh_1d}
+\alias{fm_as_mesh_1d_list}
 \alias{fm_as_mesh_1d.fm_mesh_1d}
 \alias{fm_as_mesh_1d.inla.mesh.1d}
 \title{Convert objects to \code{fm_segm}}
 \usage{
-fm_as_mesh_1d(...)
+fm_as_mesh_1d(x, ...)
+
+fm_as_mesh_1d_list(x, ...)
 
 \method{fm_as_mesh_1d}{fm_mesh_1d}(x, ...)
 
 \method{fm_as_mesh_1d}{inla.mesh.1d}(x, ...)
 }
 \arguments{
-\item{...}{Arguments passed on to submethods}
-
 \item{x}{Object to be converted}
+
+\item{...}{Arguments passed on to submethods}
 }
 \description{
 Convert objects to \code{fm_segm}
@@ -23,6 +26,8 @@ Convert objects to \code{fm_segm}
 \section{Functions}{
 \itemize{
 \item \code{fm_as_mesh_1d()}: Convert an object to \code{fm_mesh_1d}.
+
+\item \code{fm_as_mesh_1d_list()}: Convert each element of a list
 
 }}
 \seealso{

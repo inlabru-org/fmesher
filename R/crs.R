@@ -682,7 +682,13 @@ fm_crs <- function(x, ..., crsonly = FALSE) {
 #' @export
 #' @rdname fm_crs
 fm_crs_oblique <- function(x) {
-  stopifnot(inherits(x, c("crs", "fm_crs", "inla.CRS")))
+  if (is.null(x)) {
+    return(NULL)
+  }
+  stopifnot(inherits(x, c("crs", "CRS", "fm_crs", "inla.CRS")))
+  if (fm_crs_is_null(x)) {
+    return(NULL)
+  }
   if (inherits(x, c("fm_crs", "inla.CRS"))) {
     x$oblique
   } else {
@@ -942,8 +948,8 @@ fm_crs.fm_segm <- function(x, ..., crsonly = FALSE) {
 #' containing at least one element: \item{crs }{The basic `sp::CRS`
 #' object}
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
-#' @seealso [sp::CRS()], [`fm_crs_wkt`],
-#' [fm_sp_get_crs()], [fm_identical_CRS()]
+#' @seealso [fm_crs()], [sp::CRS()], [`fm_crs_wkt`],
+#' [fm_sp_get_crs()], [fm_crs_is_identical()]
 #' @examples
 #' crs1 <- fm_CRS("longlat_globe")
 #' crs2 <- fm_CRS("lambert_globe")
@@ -1679,23 +1685,37 @@ fm_internal_update_crs <- function(crs, newcrs, mismatch.allowed) {
 #' @param crsonly logical. If `TRUE` and any of `crs0` and `crs1` are `fm_crs` or `inla.CRS`
 #' objects, extract and compare only the `sf::crs` or `sp::CRS` aspects. Default: `FALSE`
 #' @export
-#' @keywords internal
 #' @seealso [fm_crs()], [fm_CRS()]
 #' @examples
 #'
 #' crs0 <- crs1 <- fm_crs("longlat_globe")
 #' fm_crs_oblique(crs1) <- c(0, 90)
 #' print(c(
-#'   fm_identical_CRS(crs0, crs0),
-#'   fm_identical_CRS(crs0, crs1),
-#'   fm_identical_CRS(crs0, crs1, crsonly = TRUE)
+#'   fm_crs_is_identical(crs0, crs0),
+#'   fm_crs_is_identical(crs0, crs1),
+#'   fm_crs_is_identical(crs0, crs1, crsonly = TRUE)
 #' ))
-fm_identical_CRS <- function(crs0, crs1, crsonly = FALSE) {
+fm_crs_is_identical <- function(crs0, crs1, crsonly = FALSE) {
+  crs0_ <- fm_crs(crs0, crsonly = TRUE)
+  crs1_ <- fm_crs(crs1, crsonly = TRUE)
+  crs_ident <- identical(crs0_, crs1_)
   if (crsonly) {
-    crs0 <- fm_crs(crs0, crsonly = TRUE)
-    crs1 <- fm_crs(crs1, crsonly = TRUE)
+    return(crs_ident)
   }
-  identical(crs0, crs1)
+  return(crs_ident &&
+    identical(fm_crs_oblique(crs0), fm_crs_oblique(crs1)))
+}
+
+#' @describeIn fm_crs_is_identical `r lifecycle::badge("deprecated")`
+#' by `fm_crs_is_identical()`.
+#' @export
+fm_identical_CRS <- function(crs0, crs1, crsonly = FALSE) {
+  lifecycle::deprecate_soft(
+    "0.1.0",
+    "fm_identical_CRS()",
+    "fm_crs_is_identical()"
+  )
+  fm_crs_is_identical(crs0, crs1, crsonly = crsonly)
 }
 
 
@@ -1807,8 +1827,8 @@ fm_transform.matrix <- function(x, crs = NULL, ..., passthrough = FALSE, crs0 = 
   longlat_1 <- fm_crs_set_ellipsoid_radius(longlat_norm, sphere_radius_1)
 
   crs_sphere <- fm_crs("sphere")
-  onsphere_0 <- fm_identical_CRS(crs0, crs_sphere, crsonly = TRUE)
-  onsphere_1 <- fm_identical_CRS(crs1, crs_sphere, crsonly = TRUE)
+  onsphere_0 <- fm_crs_is_identical(crs0, crs_sphere, crsonly = TRUE)
+  onsphere_1 <- fm_crs_is_identical(crs1, crs_sphere, crsonly = TRUE)
   is_geocentric_0 <- fm_crs_is_geocent(crs0)
   is_geocentric_1 <- fm_crs_is_geocent(crs1)
   if (is_geocentric_0) {

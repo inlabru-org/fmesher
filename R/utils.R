@@ -433,3 +433,17 @@ fm_row_kron <- function(M1, M2, repl = NULL, n.repl = NULL, weights = NULL # ,
 #   # ℹ 1 more variable: gc <list>
 #   Warning message:
 #   Some expressions had a GC in every iteration; so filtering is disabled.
+
+
+# @title Find S3 method supported classes
+# @description Calls `utils::.S3Methods` and extracts the class information
+# as a character vector
+# @param f character; the name of an S3 generic
+# @keyword internal
+method_classes <- function(f) {
+  gsub(
+    pattern = paste0("^", f, "\\.([^*]*)\\*?"),
+    replacement = "\\1",
+    x = format(utils::.S3methods(f))
+  )
+}

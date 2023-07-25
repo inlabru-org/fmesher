@@ -2,6 +2,7 @@
 % Please edit documentation in R/mesh.R
 \name{fm_as_fm}
 \alias{fm_as_fm}
+\alias{fm_as_fm_list}
 \alias{fm_as_fm.fm_mesh_1d}
 \alias{fm_as_fm.fm_mesh_2d}
 \alias{fm_as_fm.fm_segm}
@@ -13,6 +14,8 @@
 \title{Convert objects to fmesher objects}
 \usage{
 fm_as_fm(x, ...)
+
+fm_as_fm_list(x, ...)
 
 \method{fm_as_fm}{fm_mesh_1d}(x, ...)
 
@@ -40,6 +43,12 @@ Used for conversion from general objects
 (usually \code{inla.mesh} and other INLA specific classes)
 to \code{fmesher} classes.
 }
+\section{Functions}{
+\itemize{
+\item \code{fm_as_fm_list()}: Convert each element of a list, or convert a single
+object and return in a list
+
+}}
 \seealso{
 Other object creation and conversion: 
 \code{\link{fm_as_lattice_2d}()},

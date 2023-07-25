@@ -359,11 +359,11 @@ fm_onto_mesh <- function(mesh, loc, crs = NULL) {
   if (!fm_crs_is_null(crs) && !fm_crs_is_null(mesh_crs)) {
     if (fm_crs_is_geocent(mesh_crs)) {
       if (!is.matrix(loc)) {
-        if (!fm_identical_CRS(crs, mesh_crs)) {
+        if (!fm_crs_is_identical(crs, mesh_crs)) {
           loc <- fm_transform(loc, crs = mesh_crs, crs0 = crs)
         }
       }
-    } else if (!fm_identical_CRS(crs, mesh_crs)) {
+    } else if (!fm_crs_is_identical(crs, mesh_crs)) {
       loc <- fm_transform(loc, crs = mesh_crs, crs0 = crs, passthrough = TRUE)
     }
   } else if (identical(mesh$manifold, "S2")) {
@@ -787,22 +787,156 @@ fm_extensions <- function(x,
 }
 
 
+#' @title Query the mesh manifold type
+#' @description
+#' Extract a manifold definition string, or a logical for matching
+#' manifold type
+#' @param x A [fm_mesh_1d] or [fm_mesh_2d] object (or other object containing a
+#' `manifold` element)
+#' @param type `character`; if `NULL` (the default), returns the manifold definition string.
+#' If `character`, returns `TRUE` if the manifold type of `x` matches at least
+#' one of the character vector elements.
+#' @export
+fm_manifold <- function(x, type = NULL) {
+  if (is.null(type)) {
+    return(x[["manifold"]])
+  }
+  # Match exact manifold?
+  if (x[["manifold"]] %in% type) {
+    return(TRUE)
+  }
+  # Match space name or dimension?
+  m <- intersect(c("M", "R", "S"), type)
+  d <- intersect(as.character(seq_len(3)), type)
+  return(grepl(paste0(c(m, d), collapse = "|"), x[["manifold"]]))
+}
+
 
 # fm_segm ####
 
 #' @title Make a spatial segment object
 #' @describeIn fm_segm Create a new `fm_segm` object.
 #' @export
-#' @param ... Currently passed on to `inla.mesh.segment`
+#' @param ... Passed on to submethods
 #' @family object creation and conversion
 fm_segm <- function(...) {
   UseMethod("fm_segm")
 }
 
 #' @rdname fm_segm
+#' @param loc Matrix of point locations, or `SpatialPoints`, or `sf`/`sfc` point
+#' object.
+#' @param idx Segment index sequence vector or index pair matrix.  The indices
+#' refer to the rows of `loc`.  If `loc==NULL`, the indices will be
+#' interpreted as indices into the point specification supplied to
+#' [inla.mesh.create()].  If `is.bnd==TRUE`, defaults to linking
+#' all the points in `loc`, as `c(1:nrow(loc),1L)`, otherwise
+#' `1:nrow(loc)`.
+#' @param grp Vector of group labels for each segment.  Set to `NULL` to
+#' let the labels be chosen automatically in a call to
+#' [inla.mesh.create()].
+#' @param is.bnd `TRUE` if the segments are boundary segments, otherwise
+#' `FALSE`.
+#' @param crs An optional `fm_crs()`, `sf::st_crs()` or `sp::CRS()` object
 #' @export
-fm_segm.default <- function(...) {
-  fm_as_segm(INLA::inla.mesh.segment(...))
+fm_segm.default <- function(loc = NULL, idx = NULL, grp = NULL, is.bnd = TRUE,
+                            crs = NULL, ...) {
+  if (is.null(loc) && is.null(idx)) {
+    stop("At most one of 'loc' and 'idx' may be missing or null.")
+  }
+  if (!is.null(loc)) {
+    loc <- unify_loc_coords(loc)
+    if (is.null(idx)) {
+      idx <- if (is.bnd) {
+        c(seq_len(nrow(loc)), 1)
+      } else {
+        seq_len(nrow(loc))
+      }
+    }
+  }
+
+  if (!is.null(idx)) {
+    if (!is.vector(idx) && !is.matrix(idx)) {
+      stop("'idx' must be a vector or a matrix")
+    }
+    if (is.vector(idx)) {
+      idx <- as.matrix(idx, nrow = length(idx), ncol = 1)
+    }
+    if (ncol(idx) == 1) {
+      if (nrow(idx) < 2) {
+        if (nrow(idx) == 1) {
+          warning("Segment specification must have at least 2, or 0, indices.")
+        }
+        idx <- matrix(0L, 0, 2)
+      } else {
+        idx <- matrix(c(idx[-nrow(idx)], idx[-1]), nrow(idx) - 1, 2)
+      }
+    }
+    storage.mode(idx) <- "integer"
+    if (!is.null(loc) &&
+      (nrow(idx) > 0) &&
+      (max(idx, na.rm = TRUE) > nrow(loc))) {
+      warning(
+        "Segment indices (max=", max(idx, na.rm = TRUE),
+        ") exceed specified location list length (",
+        nrow(loc), ")."
+      )
+    }
+  }
+
+  if (!is.null(grp)) {
+    if (!is.vector(grp) && !is.matrix(grp)) {
+      stop("'grp' must be a vector or a matrix")
+    }
+    grp <- matrix(grp, min(length(grp), nrow(idx)), 1)
+    if (nrow(grp) < nrow(idx)) {
+      grp <- (matrix(
+        c(
+          as.vector(grp),
+          rep(grp[nrow(grp)], nrow(idx) - length(grp))
+        ),
+        nrow(idx), 1
+      ))
+    }
+    storage.mode(grp) <- "integer"
+  } else {
+    grp <- NULL
+  }
+
+  ## Filter away NAs in loc and idx
+  if (!is.null(loc)) {
+    idx[is.na(idx)] <- 0L ## Avoid R annoyances with logical+NA indexing
+    while (sum(is.na(loc)) > 0) {
+      i <- min(which(rowSums(is.na(loc)) > 0))
+      loc <- loc[-i, , drop = FALSE]
+      idx[idx == i] <- 0L
+      idx[idx > i] <- idx[idx > i] - 1L
+    }
+    idx[idx == 0L] <- NA
+  }
+  while (sum(is.na(idx)) > 0) {
+    i <- min(which(rowSums(is.na(idx)) > 0))
+    idx <- idx[-i, , drop = FALSE]
+    if (!is.null(grp)) {
+      grp <- grp[-i, , drop = FALSE]
+    }
+  }
+
+  if (!is.null(loc)) {
+    ## Identify unused locations and remap indices accordingly.
+    idx.new <- rep(0L, nrow(loc))
+    idx.new[as.vector(idx)] <- 1L
+    loc <- loc[idx.new == 1L, , drop = FALSE]
+    idx.new[idx.new == 1L] <- seq_len(sum(idx.new))
+    idx <- (matrix(idx.new[as.vector(idx)],
+      nrow = nrow(idx),
+      ncol = ncol(idx)
+    ))
+  }
+
+  ret <- list(loc = loc, idx = idx, grp = grp, is.bnd = is.bnd, crs = crs)
+  class(ret) <- c("fm_segm", "inla.mesh.segment")
+  return(ret)
 }
 
 #' @describeIn fm_segm Join multiple `fm_segm` objects into a single `fm_segm`
@@ -811,13 +945,87 @@ fm_segm.default <- function(...) {
 #' that have `grp == NULL`.
 #' @export
 fm_segm.fm_segm <- function(..., grp.default = 0) {
-  fm_as_segm(INLA::inla.mesh.segment(..., grp.default = grp.default))
+  segm <- fm_as_segm_list(list(...))
+
+  keep <- vapply(segm, function(x) !is.null(x), TRUE)
+  segm <- segm[keep]
+  if (!all(vapply(
+    segm,
+    function(x) inherits(x, "fm_segm"),
+    TRUE
+  ))) {
+    stop("All objects must be of class 'fm_segm'.")
+  }
+
+  Nloc <- vapply(segm, function(x) nrow(x$loc), 0L)
+  cumNloc <- c(0, cumsum(Nloc))
+  Nidx <- vapply(segm, function(x) nrow(x$idx), 0L)
+
+  loc <- do.call(rbind, lapply(segm, function(x) x$loc))
+  idx <- do.call(rbind, lapply(
+    seq_along(segm),
+    function(x) segm[[x]]$idx + cumNloc[x]
+  ))
+  grp <- unlist(lapply(
+    seq_along(segm),
+    function(x) {
+      if (is.null(segm[[x]]$grp)) {
+        rep(grp.default, Nidx[x])
+      } else {
+        segm[[x]]$grp
+      }
+    }
+  ))
+  is.bnd <- vapply(segm, function(x) x$is.bnd, TRUE)
+  if (!all(is.bnd) || (any(!is.bnd) && !all(!is.bnd))) {
+    warning("Inconsistent 'is.bnd' attributes.  Setting 'is.bnd=FALSE'.")
+    is.bnd <- FALSE
+  } else {
+    is.bnd <- all(is.bnd)
+  }
+
+  crs <- lapply(segm, function(x) fm_crs(x))
+  if (!is.null(crs)) {
+    crs <- crs[vapply(
+      crs,
+      function(x) !fm_crs_is_null(x),
+      TRUE
+    )]
+    if (length(crs) > 0) {
+      if (!all(vapply(
+        crs,
+        function(x) fm_crs_is_identical(crs[[1]], x),
+        TRUE
+      ))) {
+        lapply(crs, function(x) show(x))
+        stop("Inconsistent 'crs' attributes.")
+      } else {
+        crs <- crs[[1]]
+      }
+    } else {
+      crs <- NULL
+    }
+  }
+
+  fm_segm(
+    loc = loc,
+    idx = idx,
+    grp = grp,
+    is.bnd = is.bnd,
+    crs = crs
+  )
 }
 #' @rdname fm_segm
 #' @export
 #' @method fm_segm inla.mesh.segment
 fm_segm.inla.mesh.segment <- function(..., grp.default = 0) {
-  fm_as_segm(INLA::inla.mesh.segment(..., grp.default = grp.default))
+  do.call(
+    fm_segm,
+    c(
+      fm_as_segm_list(list(...)),
+      list(grp.default = grp.default)
+    )
+  )
 }
 #' @rdname fm_segm
 #' @export
@@ -825,18 +1033,54 @@ fm_segm.inla.mesh.segment <- function(..., grp.default = 0) {
 fm_segm.inla.mesh <- function(x, ...) {
   fm_segm.fm_mesh_2d(fm_as_mesh_2d(x), ...)
 }
-#' @describeIn fm_segm Extract the boundary segments of a 2d mesh
+#' @describeIn fm_segm Extract the boundary or interior segments of a 2d mesh.
+#' If `grp` is non-NULL, extracts only segments matching the matching the set
+#' of groups given by `grp`.
 #' @param x Mesh to extract segments from
 #' @param boundary logical; if `TRUE`, extract the boundary segments,
 #' otherwise interior constrain segments.
 #' @export
-fm_segm.fm_mesh_2d <- function(x, boundary = TRUE, ...) {
-  # TODO: The [[1]] should be a join operation instead
-  if (boundary) {
-    fm_as_segm(INLA::inla.mesh.boundary(x, ...)[[1]])
-  } else {
-    fm_as_segm(INLA::inla.mesh.interior(x, ...)[[1]])
+fm_segm.fm_mesh_2d <- function(x, boundary = TRUE, grp = NULL, ...) {
+  extract_segments <- function(mesh.loc,
+                               segm,
+                               grp = NULL,
+                               is.bnd,
+                               crs = NULL) {
+    segments <- NULL
+    if (nrow(segm[["idx"]]) == 0) {
+      return(NULL)
+    }
+    if (is.null(grp)) {
+      grp <- unique(sort(segm[["grp"]]))
+    }
+    extract <- (segm[["grp"]] %in% grp)
+    if (!any(extract)) {
+      return(NULL)
+    }
+    segments <-
+      fm_segm(
+        mesh.loc,
+        idx = segm[["idx"]][extract, , drop = FALSE],
+        grp = segm[["grp"]][extract, drop = FALSE],
+        is.bnd = is.bnd,
+        crs = crs
+      )
+    return(segments)
   }
+
+  if (boundary) {
+    segm <- x[["segm"]][["bnd"]]
+  } else {
+    segm <- x[["segm"]][["int"]]
+  }
+
+  extract_segments(
+    mesh.loc = x[["loc"]],
+    segm = segm,
+    grp = NULL,
+    is.bnd = boundary,
+    crs = fm_crs(x)
+  )
 }
 
 
@@ -853,12 +1097,48 @@ fm_as_segm <- function(x, ...) {
   UseMethod("fm_as_segm")
 }
 
+#' @describeIn fm_as_segm Convert each element of a list
+#' @export
+fm_as_segm_list <- function(x, ...) {
+  fm_as_list(x, ..., .method = "fm_as_segm")
+}
+
+#' @rdname fm_as_segm
+#' @export
+fm_as_segm.fm_segm <- function(x, ...) {
+  x
+}
+
 #' @rdname fm_as_segm
 #' @export
 #' @method fm_as_segm inla.mesh.segment
 fm_as_segm.inla.mesh.segment <- function(x, ...) {
   class(x) <- c("fm_segm", class(x))
   x
+}
+
+#' @rdname fm_as_segm
+#' @export
+fm_as_segm.matrix <- function(x, crs = NULL, ...) {
+  fm_segm(loc = x, crs = fm_CRS(crs))
+}
+
+#' @rdname fm_segm
+#' @export
+`fm_is_bnd` <- function(x) {
+  x[["is.bnd"]]
+}
+
+#' @rdname fm_segm
+#' @param value logical
+#' @export
+`fm_is_bnd<-` <- function(x, value) {
+  if (is.null(value)) {
+    value <- FALSE
+  }
+  value <- as.logical(value)
+  x[["is.bnd"]] <- rep(value, length(x[["is.bnd"]]))
+  invisible(x)
 }
 
 
@@ -878,7 +1158,38 @@ fm_as_segm.inla.mesh.segment <- function(x, ...) {
 #' @export
 #' @family object creation and conversion
 fm_as_fm <- function(x, ...) {
+  if (is.null(x)) {
+    return(NULL)
+  }
   UseMethod("fm_as_fm")
+}
+# @description fm_as_list Convert each element of a list, or convert a single
+# object and return in a list
+fm_as_list <- function(x, ..., .method) {
+  if (is.null(x)) {
+    return(list())
+  }
+  m_c <- method_classes(.method)
+  if (inherits(x, setdiff(m_c, "list"))) {
+    return(list(do.call(.method, list(x, ...))))
+  }
+  if (!inherits(x, "list")) {
+    stop(paste0(
+      "'list' object expected. Received '",
+      paste0(class(x), collapse = ", "),
+      "'."
+    ))
+  }
+  if ("list" %in% m_c) {
+    return(do.call(.method, list(x, ...)))
+  }
+  lapply(x, function(xx) do.call(.method, list(xx, ...)))
+}
+#' @describeIn fm_as_fm Convert each element of a list, or convert a single
+#' object and return in a list
+#' @export
+fm_as_fm_list <- function(x, ...) {
+  fm_as_list(x, ..., .method = "fm_as_fm")
 }
 #' @rdname fm_as_fm
 #' @export
@@ -948,8 +1259,16 @@ fm_mesh_1d <- function(...) {
 #' @export
 #' @family object creation and conversion
 #' @export
-fm_as_mesh_1d <- function(...) {
+fm_as_mesh_1d <- function(x, ...) {
+  if (is.null(x)) {
+    return(NULL)
+  }
   UseMethod("fm_as_mesh_1d")
+}
+#' @describeIn fm_as_mesh_1d Convert each element of a list
+#' @export
+fm_as_mesh_1d_list <- function(x, ...) {
+  fm_as_list(x, ..., .method = "fm_as_mesh_1d")
 }
 #' @rdname fm_as_mesh_1d
 #' @param x Object to be converted
@@ -970,6 +1289,159 @@ fm_as_mesh_1d.inla.mesh.1d <- function(x, ...) {
 
 # fm_mesh_2d ####
 
+unify_loc_coords <- function(loc, crs = crs) {
+  if (is.null(loc) || (nrow(loc) == 0)) {
+    return(matrix(c(0.0), 0, 3))
+  }
+  if (inherits(loc, c(
+    "SpatialPoints",
+    "SpatialPointsDataFrame"
+  ))) {
+    loc <- fm_transform(
+      sp::coordinates(loc),
+      crs0 = fm_crs(loc),
+      crs = crs,
+      passthrough = TRUE
+    )
+  } else if (inherits(loc, c("sf", "sfg", "sfc"))) {
+    loc <- fm_transform(
+      sf::st_coordinates(loc),
+      crs0 = fm_crs(loc),
+      crs = crs,
+      passthrough = TRUE
+    )
+  }
+  if (!is.matrix(loc)) {
+    loc <- as.matrix(loc)
+  }
+  if (ncol(loc) == 2) {
+    loc <- cbind(loc, 0.0)
+  }
+  loc
+}
+
+unify_segm_coords <- function(segm, crs = NULL) {
+  if (is.null(segm)) {
+    return(NULL)
+  }
+  unify.one.segm <- function(segm, crs = NULL) {
+    segm <- fm_transform(segm, crs, passthrough = TRUE)
+    if (ncol(segm$loc) == 2) {
+      segm$loc <- cbind(segm$loc, 0.0)
+    }
+    segm
+  }
+  if (inherits(segm, "fm_segm")) {
+    segm <- unify.one.segm(segm, crs = crs)
+  } else {
+    for (j in seq_along(segm)) {
+      if (!is.null(segm[[j]])) {
+        segm[[j]] <- unify.one.segm(segm[[j]], crs = crs)
+      }
+    }
+  }
+  segm
+}
+
+
+
+
+handle_rcdt_options_inla <- function(
+    ...,
+    quality.spec = NULL,
+    cutoff = 1e-12,
+    extend = NULL,
+    refine = NULL,
+    .n,
+    .loc) {
+  options <- list(cutoff = cutoff)
+  if (is.null(quality.spec)) {
+    quality <- NULL
+  } else {
+    quality <- rep(NA, .n$segm + .n$lattice + .n$loc)
+    ## Order must be same as in .loc
+    if (!is.null(quality.spec$segm)) {
+      quality[seq_len(.n$segm)] <- quality.spec$segm
+    }
+    if (!is.null(quality.spec$lattice)) {
+      quality[.n$segm + seq_len(.n$lattice)] <- quality.spec$lattice
+    }
+    if (!is.null(quality.spec$loc)) {
+      quality[.n$segm + .n$lattice + seq_len(.n$loc)] <- quality.spec$loc
+    }
+    ## NA:s will be replaced with max.edge settings below.
+
+    options <- c(options, list(quality = quality))
+  }
+
+  cet_sides <- NULL
+  cet_margin <- NULL
+  if (inherits(extend, "list")) {
+    cet_sides <- ifelse(is.null(extend$n), 16, extend$n)
+    cet_margin <- ifelse(is.null(extend$offset), -0.1, extend$offset)
+  }
+  options <- c(options, list(cet_sides = cet_sides, cet_margin = cet_margin))
+
+  if (inherits(refine, "list")) {
+    rcdt_min_angle <- 0
+    rcdt_max_edge <- 0
+    ## Multiply by to ensure cover S2 domains
+    max.edge.default <- fm_diameter(.loc) * 2
+    if ((inherits(extend, "list")) && (!is.null(extend$offset))) {
+      max.edge.default <- (max.edge.default +
+        max(0, 2 * extend$offset))
+      max.edge.default <- (max.edge.default *
+        (1 + max(0, -2 * extend$offset)))
+    }
+    rcdt_min_angle <- ifelse(is.null(refine$min.angle), 21, refine$min.angle)
+    rcdt_max_edge <- ifelse(
+      is.null(refine$max.edge) ||
+        is.na(refine$max.edge),
+      max.edge.default,
+      refine$max.edge
+    )
+    max_edge_extra <- ifelse(
+      is.null(refine$max.edge.extra) ||
+        is.na(refine$max.edge.extra),
+      rcdt_max_edge,
+      refine$max.edge.extra
+    )
+
+    if (!is.null(refine[["max.n.strict"]]) &&
+      !is.na(refine$max.n.strict)) {
+      rcdt_max_n0 <- refine$max.n.strict
+    } else {
+      rcdt_max_n0 <- -1
+    }
+    if (!is.null(refine[["max.n"]]) &&
+      !is.na(refine$max.n)) {
+      rcdt_max_n1 <- refine$max.n
+    } else {
+      rcdt_max_n1 <- -1
+    }
+    is.refined <- TRUE
+
+    if (!is.null(options[["quality"]])) {
+      options[["quality"]][is.na(options[["quality"]])] <- max_edge_extra
+    }
+
+    options <-
+      c(
+        options,
+        list(
+          rcdt_min_angle = rcdt_min_angle,
+          rcdt_max_edge = rcdt_max_edge,
+          rcdt_max_n0 = rcdt_max_n0,
+          rcdt_max_n1 = rcdt_max_n1
+        )
+      )
+  }
+
+  options
+}
+
+
+
 #' @title Refined Constrained Delaunay Triangulation
 #'
 #' @description
@@ -977,47 +1449,119 @@ fm_as_mesh_1d.inla.mesh.1d <- function(x, ...) {
 #'
 #' @param loc Input coordinates that should be part of the mesh
 #' @param tv Initial triangulation, as a N-by-3 indec vector into `loc`
-#' @param boundary,interior Objects supported by [fm_as_segm()]
+#' @param boundary,interior Objects supported by [fm_as_segm()].
+#' If `boundary` is `numeric`, `fm_nonconvex_hull(loc, convex = boundary)` is
+#' used.
 #' @param crs Optional crs object
-#' @param ... Arguments passed on as options to [fmesher_rcdt()]
+#' @param ... Currently passed on to `fm_mesh_2d_inla` or converted to
+#' [fmesher_rcdt()] options.
 #' @examples
-#' m <- fm_rcdt_2d(boundary = fm_nonconvex_hull(cbind(0, 0), convex = 5), rcdt_max_edge = 1)
+#' m <- fm_rcdt_2d(
+#'   boundary = fm_nonconvex_hull(cbind(0, 0), convex = 5),
+#'   rcdt_max_edge = 1
+#' )
 #'
 #' @export
 fm_rcdt_2d <-
+  function(...) {
+    fm_rcdt_2d_inla(...)
+  }
+
+#' @describeIn fm_rcdt_2d Legacy method for `INLA::inla.mesh.create()`
+#' @export
+fm_rcdt_2d_inla <-
   function(loc = NULL,
            tv = NULL,
            boundary = NULL,
            interior = NULL,
            crs = NULL,
+           globe = NULL,
            ...) {
-    # TODO: handle general loc inputs
+    crs.target <- crs
+    if (!fm_crs_is_null(crs) &&
+      fm_crs_is_geocent(crs)) {
+      ## Build all geocentric meshes on a sphere, and transform afterwards,
+      ## to allow general geoids.
+      crs <- fm_crs("sphere")
+    }
+
+    if (!is.null(loc) && !is.matrix(loc)) {
+      crs.loc <- fm_crs(loc)
+    } else {
+      crs.loc <- NULL
+    }
+    loc <- unify_loc_coords(loc)
+    if (!fm_crs_is_null(crs.loc) && !fm_crs_is_null(crs)) {
+      loc <- fm_transform(loc, crs = crs, passthrough = TRUE, crs0 = crs.loc)
+      loc <- unify_loc_coords(loc)
+    }
+
+    if (!is.null(globe)) {
+      loc.globe <- fmesher_globe_points(globe = globe)
+      crs.globe <- fm_crs("sphere")
+      if (!fm_crs_is_null(crs.globe) && !fm_crs_is_null(crs)) {
+        loc.globe <- fm_transform(loc.globe, crs = crs, passthrough = TRUE, crs0 = crs.globe)
+        loc.globe <- unify_loc_coords(loc.globe)
+      }
+      loc <- rbind(loc, loc.globe)
+    }
+    loc.n <- max(0L, nrow(loc))
+
+    segm.n <- 0L
     if (is.null(boundary)) {
       bnd <- NULL
       bnd_grp <- NULL
+      loc.bnd <- matrix(0.0, 0, 3)
     } else {
-      boundary <- fm_as_segm(boundary)
-      if (!is.null(crs)) {
+      if (is.numeric(boundary)) {
+        boundary <- fm_nonconvex_hull(loc, convex = boundary)
+      } else {
+        boundary <- fm_as_segm(boundary)
+      }
+      if (!fm_crs_is_null(crs)) {
         boundary <- fm_transform(boundary, crs = crs, passthrough = TRUE)
       }
-      bnd <- NROW(loc) + boundary$idx - 1L
+      bnd <- segm.n + boundary$idx - 1L
       bnd_grp <- boundary$grp
-      loc <- rbind(loc, boundary$loc)
+      if (ncol(boundary$loc) == 2) {
+        boundary$loc <- cbind(boundary$loc, 0.0)
+      }
+      segm.n <- segm.n + max(0L, nrow(boundary$loc))
+      loc.bnd <- boundary$loc
     }
     if (is.null(interior)) {
       int <- NULL
       int_grp <- NULL
+      loc.int <- matrix(0.0, 0, 3)
     } else {
       interior <- fm_as_segm(interior)
-      if (!is.null(crs)) {
+      if (!fm_crs_is_null(crs)) {
         interior <- fm_transform(interior, crs = crs, passthrough = TRUE)
       }
-      int <- NROW(loc) + interior$idx - 1L
+      int <- segm.n + interior$idx - 1L
       int_grp <- interior$grp
-      loc <- rbind(loc, interior$loc)
+      if (ncol(interior$loc) == 2) {
+        interior$loc <- cbind(interior$loc, 0.0)
+      }
+      segm.n <- segm.n + max(0L, nrow(interior$loc))
+      loc.int <- interior$loc
     }
+
+    lattice.n <- 0L
+    loc.lattice <- matrix(0, 0, 3)
+
+    loc <- rbind(loc.bnd, loc.int, loc.lattice, loc)
+
+    options <- handle_rcdt_options_inla(...,
+                                        .n = list(
+                                          segm = segm.n,
+                                          lattice = lattice.n,
+                                          loc = loc.n
+                                        ),
+                                        .loc = loc)
+
     result <- fmesher_rcdt(
-      options = list(...),
+      options = options,
       loc = loc, tv = tv,
       boundary = bnd, interior = int,
       boundary_grp = bnd_grp, interior_grp = int_grp
@@ -1029,9 +1573,46 @@ fm_rcdt_2d <-
       x
     }
 
+    if (!fm_crs_is_null(crs) &&
+      !fm_crs_is_identical(crs, crs.target)) {
+      ## Target is a non-spherical geoid
+      result[["s"]] <- fm_transform(result[["s"]], crs0 = crs, crs = crs.target)
+      crs <- crs.target
+    }
+
+    split_idx <- function(idx, splits) {
+      cumulative_splits <- c(0L, cumsum(splits))
+      idx <- lapply(
+        seq_along(splits),
+        function(k) {
+          if (splits[k] > 0) {
+            idx[cumulative_splits[k] + seq_len(splits[k])]
+          } else {
+            NULL
+          }
+        }
+      )
+      names(idx) <- names(splits)
+      idx
+    }
+    idx.all <- idx_C2R(result[["idx"]])
+    idx <- split_idx(idx.all, c(segm = segm.n, lattice = lattice.n, loc = loc.n))
+
     m <- structure(
       list(
+        meta = list(
+          is.refined = !is.null(options[["rcdt_max_edge"]])
+        ),
+        manifold = result[["manifold"]],
+        n = nrow(result[["s"]]),
         loc = result[["s"]],
+        graph = list(
+          tv = idx_C2R(result[["tv"]]),
+          vt = idx_C2R(result[["vt"]]),
+          tt = idx_C2R(result[["tt"]]),
+          tti = idx_C2R(result[["tti"]]),
+          vv = fm_as_dgCMatrix(result[["vv"]])
+        ),
         segm = list(
           int = fm_segm(
             idx = idx_C2R(result[["segm.int.idx"]]),
@@ -1044,48 +1625,348 @@ fm_rcdt_2d <-
             is.bnd = TRUE
           )
         ),
-        graph = list(
-          tv = idx_C2R(result[["tv"]]),
-          vt = idx_C2R(result[["vt"]]),
-          tt = idx_C2R(result[["tt"]]),
-          tti = idx_C2R(result[["tti"]]),
-          vv = fm_as_dgCMatrix(result[["vv"]])
-        ),
-        manifold = result[["manifold"]],
+        idx = idx,
         crs = fm_crs(crs),
-        n = nrow(result[["s"]]),
-        meta = list(
-          is.refined = TRUE
-        )
+        n = nrow(result[["s"]])
       ),
       class = c("fm_mesh_2d", "inla.mesh")
     )
+
+    remap_unused <- function(mesh) {
+      ## Remap indices to remove unused vertices
+      used <- !is.na(mesh$graph$vt)
+      if (!all(used)) {
+        used <- which(used)
+        idx.map <- rep(NA, nrow(mesh$loc))
+        idx.map[used] <- seq_len(length(used))
+        mesh$loc <- mesh$loc[used, , drop = FALSE]
+        mesh$graph$tv <-
+          matrix(idx.map[as.vector(mesh$graph$tv)], nrow(mesh$graph$tv), 3)
+        mesh$graph$vt <- mesh$graph$vt[used, , drop = FALSE]
+        ## graph$tt  ## No change needed
+        ## graph$tti ## No change needed
+        mesh$graph$vv <- mesh$graph$vv[used, used, drop = FALSE]
+        if (!is.null(mesh$idx$loc)) {
+          mesh$idx$loc <- idx.map[mesh$idx$loc]
+        }
+        if (!is.null(mesh$idx$lattice)) {
+          mesh$idx$lattice <- idx.map[mesh$idx$lattice]
+        }
+        if (!is.null(mesh$idx$segm)) {
+          mesh$idx$segm <- idx.map[mesh$idx$segm]
+        }
+        mesh$segm$bnd$idx <-
+          matrix(idx.map[mesh$segm$bnd$idx], nrow(mesh$segm$bnd$idx), 2)
+        mesh$segm$int$idx <-
+          matrix(idx.map[mesh$segm$int$idx], nrow(mesh$segm$int$idx), 2)
+        mesh$segm$bnd$idx[mesh$segm$bnd$idx == 0L] <- NA
+        mesh$segm$int$idx[mesh$segm$int$idx == 0L] <- NA
+      }
+      mesh
+    }
+
+    m <- remap_unused(m)
 
     m
   }
 
 #' @title Make a 2D mesh object
 #' @export
-#' @param ... Currently passed on to `inla.mesh.2d`
+#' @param ... Currently passed on to `fm_mesh_2d_inla`
 #' @family object creation and conversion
 fm_mesh_2d <- function(...) {
   fm_mesh_2d_inla(...)
 }
 
 #' @describeIn fm_mesh_2d Legacy method for `INLA::inla.mesh.2d()`
+#' Create a triangle mesh based on initial point locations, specified or
+#' automatic boundaries, and mesh quality parameters.
 #' @export
-#' @param boundary,interior list of [fm_segm()] objects, or objects
+#'
+#' @param loc Matrix of point locations to be used as initial triangulation
+#' nodes.  Can alternatively be a `SpatialPoints` or
+#' `SpatialPointsDataFrame` object.
+#' @param loc.domain Matrix of point locations used to determine the domain
+#' extent.  Can alternatively be a `SpatialPoints` or
+#' `SpatialPointsDataFrame` object.
+#' @param offset The automatic extension distance.  One or two values, for an
+#' inner and an optional outer extension.  If negative, interpreted as a factor
+#' relative to the approximate data diameter (default=-0.10???)
+#' @param n The number of initial nodes in the automatic extensions
+#' (default=16)
+#' @param boundary one or more (as list) of [fm_segm()] objects, or objects
 #' supported by [fm_as_segm()]
-fm_mesh_2d_inla <- function(...,
-                            boundary = NULL,
-                            interior = NULL) {
-  if (!is.null(boundary)) {
-    boundary <- lapply(boundary, fm_as_segm)
+#' @param interior one object supported by [fm_as_segm()]
+#' @param max.edge The largest allowed triangle edge length.  One or two
+#' values.
+#' @param min.angle The smallest allowed triangle angle.  One or two values.
+#' (Default=21)
+#' @param cutoff The minimum allowed distance between points.  Point at most as
+#' far apart as this are replaced by a single vertex prior to the mesh
+#' refinement step.
+#' @param max.n.strict The maximum number of vertices allowed, overriding
+#' `min.angle` and `max.edge` (default=-1, meaning no limit).  One or
+#' two values, where the second value gives the number of additional vertices
+#' allowed for the extension.
+#' @param max.n The maximum number of vertices allowed, overriding
+#' `max.edge` only (default=-1, meaning no limit).  One or two values,
+#' where the second value gives the number of additional vertices allowed for
+#' the extension.
+#' @param plot.delay On Linux (and Mac if appropriate X11 libraries are
+#' installed), specifying a nonnegative numeric value activates a rudimentary
+#' plotting system in the underlying `fmesher` program, showing the
+#' triangulation algorithm at work, with waiting time factor `plot.delay`
+#' between each step.
+#'
+#' On all systems, specifying any negative value activates displaying the
+#' result after each step of the multi-step domain extension algorithm.
+#' @param crs An optional [fm_crs()], `sf::crs` or `sp::CRS` object
+#' @return An `inla.mesh` object.
+#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @seealso [fm_rcdt_2d()], [fm_mesh_2d()], [inla.delaunay()],
+#' [fm_nonconvex_hull()], [fm_extensions()]
+fm_mesh_2d_inla <- function(loc = NULL, ## Points to include in final triangulation
+                            loc.domain = NULL, ## Points that determine the automatic domain
+                            offset = NULL, ## Size of automatic extensions
+                            n = NULL, ## Sides of automatic extension polygons
+                            boundary = NULL, ## User-specified domains (list of length 2)
+                            interior = NULL, ## User-specified constraints for the inner domain
+                            max.edge = NULL,
+                            min.angle = NULL, ## Angle constraint for the entire domain
+                            cutoff = 1e-12, ## Only add input points further apart than this
+                            max.n.strict = NULL,
+                            max.n = NULL,
+                            plot.delay = NULL,
+                            crs = NULL,
+                            ...) {
+  ##  fm_as_mesh_2d(INLA::inla.mesh.2d(..., boundary = boundary, interior = interior))
+
+  ## plot.delay: Do plotting.
+  ## NULL --> No plotting
+  ## <0  --> Intermediate meshes displayed at the end
+  ## >0   --> Dynamical fmesher plotting
+
+
+  if ((missing(max.edge) || is.null(max.edge)) &&
+    (missing(max.n.strict) || is.null(max.n.strict)) &&
+    (missing(max.n) || is.null(max.n))) {
+    stop("At least one of max.edge, max.n.strict, and max.n must be specified")
   }
-  if (!is.null(interior)) {
-    interior <- fm_as_segm(interior)
+
+  if (!is.null(crs)) {
+    issphere <- fm_crs_is_identical(crs, fm_crs("sphere"))
+    isgeocentric <- fm_crs_is_geocent(crs)
+    if (isgeocentric) {
+      crs.target <- crs
+      crs <- fm_CRS("sphere")
+    }
   }
-  fm_as_mesh_2d(INLA::inla.mesh.2d(..., boundary = boundary, interior = interior))
+
+  loc <- unify_loc_coords(loc, crs = crs)
+  loc.domain <- unify_loc_coords(loc.domain, crs = crs)
+
+  boundary <- fm_as_segm_list(boundary)
+  interior <- fm_as_segm(interior)
+
+  if (length(boundary) == 0) {
+    list(NULL)
+  }
+
+  if (missing(offset) || is.null(offset)) {
+    if (length(boundary) < 2) {
+      offset <- -0.05
+    } else {
+      offset <- c(-0.05, -0.15)
+    }
+  }
+  if (missing(n) || is.null(n)) {
+    n <- c(8)
+  }
+  if (missing(max.edge) || is.null(max.edge)) {
+    max.edge <- c(NA)
+  }
+  if (missing(min.angle) || is.null(min.angle)) {
+    min.angle <- c(21)
+  }
+  if (missing(max.n.strict) || is.null(max.n.strict)) {
+    max.n.strict <- c(NA)
+  }
+  if (missing(max.n) || is.null(max.n)) {
+    max.n <- c(NA)
+  }
+  if (missing(cutoff) || is.null(cutoff)) {
+    cutoff <- 1e-12
+  }
+  if (missing(plot.delay) || is.null(plot.delay)) {
+    plot.delay <- NULL
+  }
+
+  num.layers <-
+    max(c(
+      length(boundary), length(offset), length(n),
+      length(min.angle), length(max.edge),
+      length(max.n.strict), length(max.n)
+    ))
+  if (num.layers > 2) {
+    warning(paste("num.layers=", num.layers, " > 2 detected.  ",
+      "Excess information ignored.",
+      sep = ""
+    ))
+    num.layers <- 2
+  }
+
+  if (length(boundary) < num.layers) {
+    boundary <- c(boundary, list(NULL))
+  }
+  if (length(min.angle) < num.layers) {
+    min.angle <- c(min.angle, min.angle)
+  }
+  if (length(max.n.strict) < num.layers) {
+    max.n0 <- c(max.n.strict, max.n.strict)
+  }
+  if (length(max.n) < num.layers) {
+    max.n <- c(max.n, max.n)
+  }
+  if (length(max.edge) < num.layers) {
+    max.edge <- c(max.edge, max.edge)
+  }
+  if (length(offset) < num.layers) {
+    offset <- c(offset, -0.15)
+  }
+  if (length(n) < num.layers) {
+    n <- c(n, 16)
+  }
+  if (length(n) < num.layers) {
+    n <- c(n, 16)
+  }
+
+  ## Unify the dimensionality of the boundary&interior segments input
+  ## and optionally transform coordinates.
+  boundary <- unify_segm_coords(boundary, crs = crs)
+  interior <- unify_segm_coords(interior, crs = crs)
+
+  ## Triangulate to get inner domain boundary
+  ## Constraints included only to get proper domain extent
+  ## First, attach the loc points to the domain definition set
+  if (!is.null(loc) && !is.null(loc.domain)) {
+    loc.domain <- rbind(loc.domain, loc)
+  }
+  mesh1 <-
+    fm_rcdt_2d(
+      loc = loc.domain,
+      boundary = boundary[[1]],
+      interior = interior,
+      cutoff = cutoff,
+      extend = list(n = n[1], offset = offset[1]),
+      refine = FALSE,
+      plot.delay = plot.delay,
+      crs = crs
+    )
+
+  ## Save the resulting boundary
+  boundary1 <- fm_segm(mesh1, boundary = TRUE)
+  interior1 <- fm_segm(mesh1, boundary = FALSE)
+
+  if (!is.null(plot.delay) && (plot.delay < 0)) {
+    plot(mesh1)
+  }
+
+  ## Triangulate inner domain
+  mesh2 <-
+    fm_rcdt_2d(
+      loc = loc,
+      boundary = boundary1,
+      interior = interior1,
+      cutoff = cutoff,
+      extend = FALSE, ## Should have no effect
+      refine =
+        list(
+          min.angle = min.angle[1],
+          max.edge = max.edge[1],
+          max.edge.extra = max.edge[1],
+          max.n.strict = max.n.strict[1],
+          max.n = max.n[1]
+        ),
+      plot.delay = plot.delay,
+      crs = crs
+    )
+
+  boundary2 <- fm_segm(mesh2, boundary = TRUE)
+  interior2 <- fm_segm(mesh2, boundary = FALSE)
+
+  if (!is.null(plot.delay) && (plot.delay < 0)) {
+    plot(mesh2)
+  }
+
+  if (num.layers == 1) {
+    if (!is.null(crs) && isgeocentric && !issphere) {
+      mesh2$loc <- fm_transform(mesh2$loc, crs0 = mesh2$crs, crs = crs.target)
+      mesh2$crs <- crs.target
+    }
+    return(invisible(mesh2))
+  }
+
+  ## Triangulate inner+outer domain
+  mesh3 <-
+    fm_rcdt_2d(
+      loc = rbind(loc, mesh2$loc),
+      boundary = boundary[[2]],
+      interior = fm_segm(boundary2, interior2),
+      cutoff = cutoff,
+      extend = list(n = n[2], offset = offset[2]),
+      refine =
+        list(
+          min.angle = min.angle[2],
+          max.edge = max.edge[2],
+          max.edge.extra = max.edge[2],
+          max.n.strict = mesh2$n + max.n.strict[2],
+          max.n = mesh2$n + max.n[2]
+        ),
+      plot.delay = plot.delay,
+      crs = crs
+    )
+
+  ## Hide generated points, to match regular inla.mesh.create output
+  mesh3$idx$loc <- mesh3$idx$loc[seq_len(nrow(loc))]
+
+  ## Obtain the corresponding segm indices.
+  segm.loc <- matrix(0.0, 0, 3)
+  for (k in seq_along(boundary)) {
+    if (!is.null(boundary[[k]])) {
+      segm.loc <- rbind(segm.loc, boundary[[k]]$loc)
+    }
+  }
+  for (k in seq_along(interior)) {
+    if (!is.null(interior[[k]])) {
+      segm.loc <- rbind(segm.loc, interior[[k]]$loc)
+    }
+  }
+  if (nrow(segm.loc) > 0) {
+    proj <- fm_evaluator(mesh3, loc = segm.loc)$proj
+    mesh3$idx$segm <- rep(NA, nrow(segm.loc))
+    if (any(proj$ok)) {
+      t.idx <- proj$t[proj$ok]
+      tv.idx <- max.col(proj$bary[proj$ok, , drop = FALSE],
+        ties.method = "first"
+      )
+      mesh3$idx$segm[proj$ok] <-
+        mesh3$graph$tv[t.idx + nrow(mesh3$graph$tv) * (tv.idx - 1)]
+    }
+  } else {
+    mesh3$idx$segm <- NULL
+  }
+
+  if (!is.null(crs) && isgeocentric && !issphere) {
+    mesh3$loc <-
+      fm_transform(mesh3$loc, crs0 = mesh3$crs, crs = crs.target)
+    mesh3$crs <- crs.target
+  }
+
+  if (!is.null(plot.delay) && (plot.delay < 0)) {
+    plot(mesh3)
+  }
+
+  return(invisible(mesh3))
 }
 
 #' @title Convert objects to `fm_mesh_2d`
@@ -1095,8 +1976,16 @@ fm_mesh_2d_inla <- function(...,
 #' @export
 #' @family object creation and conversion
 #' @export
-fm_as_mesh_2d <- function(...) {
+fm_as_mesh_2d <- function(x, ...) {
+  if (is.null(x)) {
+    return(NULL)
+  }
   UseMethod("fm_as_mesh_2d")
+}
+#' @describeIn fm_as_mesh_2d Convert each element of a list
+#' @export
+fm_as_mesh_2d_list <- function(x, ...) {
+  fm_as_list(x, ..., .method = "fm_as_mesh_2d")
 }
 #' @rdname fm_as_mesh_2d
 #' @param x Object to be converted
@@ -1141,8 +2030,16 @@ fm_tensor <- function(x, ...) {
 #' @export
 #' @family object creation and conversion
 #' @export
-fm_as_tensor <- function(...) {
+fm_as_tensor <- function(x, ...) {
+  if (is.null(x)) {
+    return(NULL)
+  }
   UseMethod("fm_as_tensor")
+}
+#' @describeIn fm_as_tensor Convert each element of a list
+#' @export
+fm_as_tensor_list <- function(x, ...) {
+  fm_as_list(x, ..., .method = "fm_as_tensor")
 }
 #' @rdname fm_as_tensor
 #' @param x Object to be converted
@@ -1181,6 +2078,11 @@ fm_lattice_2d.default <- function(...) {
 #' @export
 fm_as_lattice_2d <- function(...) {
   UseMethod("fm_as_lattice_2d")
+}
+#' @describeIn fm_as_lattice_2d Convert each element of a list
+#' @export
+fm_as_lattice_2d_list <- function(x, ...) {
+  fm_as_list(x, ..., .method = "fm_as_lattice_2d")
 }
 #' @rdname fm_as_lattice_2d
 #' @param x Object to be converted

@@ -131,8 +131,8 @@ crs5 <- fm_CRS("sphere")
 crs6 <- fm_CRS("globe")
 }
 \seealso{
-\code{\link[sp:CRS-class]{sp::CRS()}}, \code{\link{fm_crs_wkt}},
-\code{\link[=fm_sp_get_crs]{fm_sp_get_crs()}}, \code{\link[=fm_identical_CRS]{fm_identical_CRS()}}
+\code{\link[=fm_crs]{fm_crs()}}, \code{\link[sp:CRS-class]{sp::CRS()}}, \code{\link{fm_crs_wkt}},
+\code{\link[=fm_sp_get_crs]{fm_sp_get_crs()}}, \code{\link[=fm_crs_is_identical]{fm_crs_is_identical()}}
 }
 \author{
 Finn Lindgren \email{finn.lindgren@gmail.com}
