@@ -14,10 +14,10 @@ progressr::with_progress({
   pr <- progressr::progressor(2 * length(N_))
   n <- c()
   for (N in N_) {
-    m <- INLA::inla.mesh.create(globe = N)
+    m <- fm_rcdt_2d_inla(globe = N)
     n <- c(n, m$n)
     for (car_order in 1:2) {
-      fem <- INLA::inla.mesh.fem(m)
+      fem <- fm_fem(m)
       if (car_order == 1) {
         Q <- fem$g1 + fem$c0
       } else {

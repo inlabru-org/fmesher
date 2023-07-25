@@ -50,7 +50,7 @@ if (fm_safe_inla() &&
     )),
     proj4string = fm_CRS("longlat_globe")
   )
-  mesh <- INLA::inla.mesh.create(globe = 2, crs = fm_crs("sphere"))
+  mesh <- fm_rcdt_2d_inla(globe = 2, crs = fm_crs("sphere"))
 
   ## 3 vertices found in the polygon
   fm_contains(obj, mesh, type = "vertex")

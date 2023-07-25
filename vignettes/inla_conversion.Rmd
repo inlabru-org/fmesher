@@ -22,7 +22,8 @@ suppressPackageStartupMessages(library(tibble))
 ```{r echo = FALSE}
 df <- tribble(
   ~INLA, ~fmesher,
-  c("inla.mesh.create()", "inla.mesh.2d()"), "fm_mesh_2d()",
+  "inla.mesh.create()", c("fm_rcdt_2d()", "fm_rcdt_2d_inla()"),
+  "inla.mesh.2d()", c("fm_mesh_2d()", "fm_mesh_2d_inla()"),
   "inla.mesh.1d()", "fm_mesh_1d()",
   "inla.mesh.lattice()", "fm_lattice_2d()",
   "inla.mesh.segment()", "fm_segm()",
@@ -32,7 +33,7 @@ df <- tribble(
   "inla.mesh.project()", "fm_evaluate()",
   "inla.CRS()", c("fm_crs()", "fm_CRS()"),
   "inla.spTransform()", "fm_transform()",
-  "inla.spde.make.A()", "fm_basis(), fm_row_kron()"
+  "inla.spde.make.A()", c("fm_basis()", "fm_row_kron()")
 )
 
 webref <- "https://inlabru-org.github.io/fmesher/reference/"

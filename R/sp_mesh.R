@@ -163,7 +163,7 @@ fm_as_segm.Lines <-
       }
     ))
     if (join) {
-      segm <- fm_internal_sp2segment_join(segm, grp = grp, closed = FALSE)
+      segm <- fm_segm_join(segm, grp = grp)
     }
     segm
   }
@@ -184,7 +184,7 @@ fm_as_segm.SpatialLines <-
       if (missing(grp)) {
         grp <- seq_len(length(segm))
       }
-      segm <- fm_internal_sp2segment_join(segm, grp = grp, closed = FALSE)
+      segm <- fm_segm_join(segm, grp = grp)
     }
     segm
   }
@@ -210,7 +210,7 @@ fm_as_segm.SpatialPolygons <-
       if (missing(grp)) {
         grp <- seq_len(length(segm))
       }
-      segm <- fm_internal_sp2segment_join(segm, grp = grp)
+      segm <- fm_segm_join(segm, grp = grp)
     }
     segm
   }
@@ -234,7 +234,7 @@ fm_as_segm.Polygons <-
       if (missing(grp)) {
         grp <- seq_len(length(segm))
       }
-      segm <- fm_internal_sp2segment_join(segm, grp = grp)
+      segm <- fm_segm_join(segm, grp = grp)
     }
     segm
   }

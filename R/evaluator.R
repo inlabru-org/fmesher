@@ -29,7 +29,7 @@
 #' if (fm_safe_inla()) {
 #'   n <- 20
 #'   loc <- matrix(runif(n * 2), n, 2)
-#'   mesh <- INLA::inla.mesh.create(loc, refine = list(max.edge = 0.05))
+#'   mesh <- fm_rcdt_2d_inla(loc, refine = list(max.edge = 0.05))
 #'   proj <- fm_evaluator(mesh)
 #'   field <- cos(mesh$loc[, 1] * 2 * pi * 3) * sin(mesh$loc[, 2] * 2 * pi * 7)
 #'   image(proj$x, proj$y, fm_evaluate(proj, field))
@@ -208,14 +208,14 @@ fm_evaluator_lattice <- function(mesh,
                                  crs = NULL,
                                  ...) {
   stopifnot(inherits(mesh, c("fm_mesh_2d", "inla.mesh")))
-  if (identical(mesh$manifold, "R2") &&
+  if (fm_manifold(mesh, "R2") &&
     (is.null(mesh$crs) || is.null(crs))) {
     units <- "default"
     lim <- list(
       xlim = if (is.null(xlim)) range(mesh$loc[, 1]) else xlim,
       ylim = if (is.null(ylim)) range(mesh$loc[, 2]) else ylim
     )
-  } else if (identical(mesh$manifold, "S2") &&
+  } else if (fm_manifold(mesh, "S2") &&
     (is.null(mesh$crs) || is.null(crs))) {
     projection <-
       match.arg(projection, c(
@@ -226,7 +226,7 @@ fm_evaluator_lattice <- function(mesh,
     lim <- INLA::inla.mesh.map.lim(loc = mesh$loc, projection = projection)
   } else {
     lim <- fm_crs_bounds(crs)
-    if (identical(mesh$manifold, "R2")) {
+    if (fm_manifold(mesh, "R2")) {
       lim0 <- list(
         xlim = if (is.null(xlim)) range(mesh$loc[, 1]) else xlim,
         ylim = if (is.null(ylim)) range(mesh$loc[, 2]) else ylim
@@ -410,7 +410,7 @@ fm_evaluator.fm_tensor <- function(x,
 #'     )),
 #'     proj4string = fm_CRS("longlat_globe")
 #'   )
-#'   mesh <- INLA::inla.mesh.create(globe = 2, crs = fm_crs("sphere"))
+#'   mesh <- fm_rcdt_2d_inla(globe = 2, crs = fm_crs("sphere"))
 #'
 #'   ## 3 vertices found in the polygon
 #'   fm_contains(obj, mesh, type = "vertex")
@@ -464,12 +464,12 @@ fm_contains.sfc <- function(x, y, ..., type = c("centroid", "vertex")) {
     ## Extract vertices
     points <- y$loc
   }
-  if (identical(y$manifold, "S2")) {
+  if (fm_manifold(y, "S2")) {
     points <- points / rowSums(points^2)^0.5
   }
   ## Convert to sf points
   ## Extract coordinate system information
-  if (identical(y$manifold, "S2")) {
+  if (fm_manifold(y, "S2")) {
     crs <- fm_crs("sphere")
   } else {
     crs <- fm_crs(y)

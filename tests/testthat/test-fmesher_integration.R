@@ -228,7 +228,7 @@ test_that("sphere and globe mesh integration", {
   skip_on_cran()
   local_fm_safe_inla()
 
-  mesh <- INLA::inla.mesh.create(globe = 1)
+  mesh <- fm_rcdt_2d_inla(globe = 1)
 
   ips0 <- fm_int(mesh, int.args = list(nsub2 = 0))
   ips9 <- fm_int(mesh, int.args = list(nsub2 = 9))
@@ -246,7 +246,7 @@ test_that("sphere and globe mesh integration", {
   expect_equal(sum(ips9_$weight), 4 * pi * 1e6)
 
   suppressWarnings(
-    mesh_2 <- INLA::inla.mesh.create(globe = 1, crs = fm_CRS("globe"))
+    mesh_2 <- fm_rcdt_2d_inla(globe = 1, crs = fm_CRS("globe"))
   )
 
   ips0_2 <- fm_int(mesh_2, int.args = list(nsub2 = 0))
@@ -299,7 +299,7 @@ test_that("globe polygon integration", {
   local_fm_safe_inla()
 
   suppressWarnings(
-    mesh <- INLA::inla.mesh.create(globe = 1, crs = fm_CRS("globe"))
+    mesh <- fm_rcdt_2d_inla(globe = 1, crs = fm_CRS("globe"))
   )
 
   poly <- sp::SpatialPolygons(

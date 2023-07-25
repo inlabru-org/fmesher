@@ -269,6 +269,7 @@ Rcpp::List fmesher_rcdt(Rcpp::List options,
   }
 
   Options rcdt_options(options, iS0.rows());
+  FMLOG("rcdt_options parsed" << std::endl);
 
   /* Prepare boundary/interior edges */
   matrices.attach("boundary", new Matrix<int>(2), true);
@@ -282,12 +283,12 @@ Rcpp::List fmesher_rcdt(Rcpp::List options,
     matrices.DI("interior") = Rcpp::as<Rcpp::IntegerMatrix>(interior);
   }
   if (!boundary_grp.isNull()) {
-    matrices.DI("boundary_grp") = Rcpp::as<Rcpp::IntegerMatrix>(boundary_grp);
+    matrices.DI("boundary_grp") = Rcpp::as<Rcpp::IntegerVector>(boundary_grp);
   } else {
     matrices.DI("boundary_grp")(0, 0) = 1;
   }
   if (!interior_grp.isNull()) {
-    matrices.DI("interior_grp") = Rcpp::as<Rcpp::IntegerMatrix>(interior_grp);
+    matrices.DI("interior_grp") = Rcpp::as<Rcpp::IntegerVector>(interior_grp);
   } else {
     matrices.DI("interior_grp")(0, 0) = 1;
   }

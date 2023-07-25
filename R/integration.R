@@ -1098,7 +1098,7 @@ fm_int_mesh_2d_core <- function(mesh, tri_subset = NULL, nsub = NULL) {
     tri_subset <- seq_len(nT)
   }
 
-  is_spherical <- identical(mesh$manifold, "S2")
+  is_spherical <- fm_manifold(mesh, "S2")
 
   # Barycentric integration coordinates
   b <- seq(1 / 3, 1 / 3 + nsub, length.out = nsub + 1) / (nsub + 1)

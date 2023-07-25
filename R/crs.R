@@ -1667,16 +1667,17 @@ fm_crs_bounds_check <- function(x, bounds) {
 
 # ! show() for "CRS" and "crs" class appear identical
 fm_internal_update_crs <- function(crs, newcrs, mismatch.allowed) {
-  if (is.null(crs)) {
-    newcrs
-  } else {
-    if (!mismatch.allowed && !identical(crs, newcrs)) {
-      methods::show(crs)
-      methods::show(newcrs)
-      stop("CRS information mismatch.")
-    }
-    crs
+  if (fm_crs_is_null(crs)) {
+    return(newcrs)
   }
+
+  if (!mismatch.allowed && !fm_crs_is_identical(crs, newcrs)) {
+    methods::show(crs)
+    methods::show(newcrs)
+    stop("CRS information mismatch.")
+  }
+
+  crs
 }
 
 

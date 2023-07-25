@@ -183,8 +183,10 @@ fm_as_mesh_2d.sfc_MULTIPOLYGON <- function(x, ...) {
     )
   )
   crs <- fm_CRS(sf::st_crs(x))
-  mesh <- INLA::inla.mesh.create(
-    loc = loc, tv = tv, ...,
+  mesh <- fm_rcdt_2d_inla(
+    loc = loc,
+    tv = tv,
+    ...,
     crs = crs
   )
   mesh
@@ -212,8 +214,10 @@ fm_as_mesh_2d.sfc_POLYGON <- function(x, ...) {
     )
   )
   crs <- fm_CRS(sf::st_crs(x))
-  mesh <- INLA::inla.mesh.create(
-    loc = loc, tv = tv, ...,
+  mesh <- fm_rcdt_2d_inla(
+    loc = loc,
+    tv = tv,
+    ...,
     crs = crs
   )
   mesh
@@ -299,11 +303,12 @@ fm_as_segm.sfc_LINESTRING <-
     #    }
 
     crs <- sf::st_crs(sfc)
-    crs <- fm_CRS(crs) # required for INLA::inla.mesh.segment
 
     segm <- list()
     if (is.null(grp)) {
       grp <- seq_len(length(sfc))
+    } else {
+      grp <- c(grp, rep(grp[length(grp)], length(sfc) - length(grp)))
     }
     for (k in seq_len(length(sfc))) {
       loc <- sf::st_coordinates(sfc[k])
@@ -326,7 +331,7 @@ fm_as_segm.sfc_LINESTRING <-
     }
 
     if (join) {
-      segm <- fm_internal_sp2segment_join(segm, grp = grp)
+      segm <- fm_segm_join(segm)
     }
     segm
   }
@@ -344,6 +349,8 @@ fm_as_segm.sfc_POLYGON <-
     segm <- list()
     if (is.null(grp)) {
       grp <- seq_len(length(sfc))
+    } else {
+      grp <- c(grp, rep(grp[length(grp)], length(sfc) - length(grp)))
     }
     for (k in seq_len(length(sfc))) {
       loc <- sf::st_coordinates(sfc[k])
@@ -371,11 +378,11 @@ fm_as_segm.sfc_POLYGON <-
             )
           }
         )
-      segm[[k]] <- fm_internal_sp2segment_join(segm_k)
+      segm[[k]] <- fm_segm_join(segm_k)
     }
 
     if (join) {
-      segm <- fm_internal_sp2segment_join(segm, grp = grp)
+      segm <- fm_segm_join(segm)
     }
     segm
   }
@@ -393,6 +400,8 @@ fm_as_segm.sfc_MULTIPOLYGON <-
     segm <- list()
     if (is.null(grp)) {
       grp <- seq_len(length(sfc))
+    } else {
+      grp <- c(grp, rep(grp[length(grp)], length(sfc) - length(grp)))
     }
     for (k in seq_len(length(sfc))) {
       loc <- sf::st_coordinates(sfc[k])
@@ -421,11 +430,11 @@ fm_as_segm.sfc_MULTIPOLYGON <-
             )
           }
         )
-      segm[[k]] <- fm_internal_sp2segment_join(segm_k)
+      segm[[k]] <- fm_segm_join(segm_k)
     }
 
     if (join) {
-      segm <- fm_internal_sp2segment_join(segm, grp = grp)
+      segm <- fm_segm_join(segm)
     }
     segm
   }
@@ -436,16 +445,18 @@ fm_as_segm.sfc_GEOMETRY <-
   function(x, grp = NULL, join = TRUE, ...) {
     if (is.null(grp)) {
       grp <- seq_len(length(x))
+    } else {
+      grp <- c(grp, rep(grp[length(grp)], length(x) - length(grp)))
     }
     segm <-
       lapply(
         seq_along(x),
         function(k) {
-          fm_as_segm(x[k], grp = grp[[k]], join = join, ...)
+          fm_as_segm(x[k], grp = grp[k], join = join, ...)
         }
       )
     if (join) {
-      segm <- fm_internal_sp2segment_join(segm, grp = grp)
+      segm <- fm_segm_join(segm)
     }
     segm
   }

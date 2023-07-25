@@ -5,7 +5,6 @@
 \alias{fm_as_segm_list}
 \alias{fm_as_segm.fm_segm}
 \alias{fm_as_segm.inla.mesh.segment}
-\alias{fm_as_segm.matrix}
 \alias{fm_as_segm.sfg}
 \alias{fm_as_segm.sfc_POINT}
 \alias{fm_as_segm.sfc_LINESTRING}
@@ -13,6 +12,7 @@
 \alias{fm_as_segm.sfc_MULTIPOLYGON}
 \alias{fm_as_segm.sfc_GEOMETRY}
 \alias{fm_as_segm.sf}
+\alias{fm_as_segm.matrix}
 \alias{fm_as_segm.SpatialPoints}
 \alias{fm_as_segm.SpatialPointsDataFrame}
 \alias{fm_as_segm.Line}
@@ -32,16 +32,6 @@ fm_as_segm_list(x, ...)
 \method{fm_as_segm}{fm_segm}(x, ...)
 
 \method{fm_as_segm}{inla.mesh.segment}(x, ...)
-
-\method{fm_as_segm}{matrix}(
-  x,
-  reverse = FALSE,
-  grp = NULL,
-  is.bnd = FALSE,
-  crs = NULL,
-  closed = FALSE,
-  ...
-)
 
 \method{fm_as_segm}{sfg}(x, ...)
 
@@ -102,13 +92,13 @@ Default \code{NULL}}
 \item{is.bnd}{logical; if \code{TRUE}, set the boundary flag for the segments.
 Default \code{TRUE}}
 
+\item{join}{logical; if \code{TRUE}, join input segments with common vertices.
+Default \code{TRUE}}
+
 \item{crs}{A crs object}
 
 \item{closed}{logical; whether to treat a point sequence as a closed polygon.
 Default: \code{FALSE}}
-
-\item{join}{logical; if \code{TRUE}, join input segments with common vertices.
-Default \code{TRUE}}
 }
 \description{
 Convert objects to \code{fm_segm}

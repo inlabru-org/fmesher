@@ -4,6 +4,7 @@
 \alias{fm_segm}
 \alias{fm_segm.default}
 \alias{fm_segm.fm_segm}
+\alias{fm_segm_join}
 \alias{fm_segm.inla.mesh.segment}
 \alias{fm_segm.inla.mesh}
 \alias{fm_segm.fm_mesh_2d}
@@ -15,7 +16,9 @@ fm_segm(...)
 
 \method{fm_segm}{default}(loc = NULL, idx = NULL, grp = NULL, is.bnd = TRUE, crs = NULL, ...)
 
-\method{fm_segm}{fm_segm}(..., grp.default = 0)
+\method{fm_segm}{fm_segm}(..., grp = NULL, grp.default = 0L)
+
+fm_segm_join(x, grp = NULL, grp.default = 0L)
 
 \method{fm_segm}{inla.mesh.segment}(..., grp.default = 0)
 
@@ -36,21 +39,20 @@ object.}
 \item{idx}{Segment index sequence vector or index pair matrix.  The indices
 refer to the rows of \code{loc}.  If \code{loc==NULL}, the indices will be
 interpreted as indices into the point specification supplied to
-\code{\link[=inla.mesh.create]{inla.mesh.create()}}.  If \code{is.bnd==TRUE}, defaults to linking
+\code{\link[=fm_rcdt_2d]{fm_rcdt_2d()}}.  If \code{is.bnd==TRUE}, defaults to linking
 all the points in \code{loc}, as \code{c(1:nrow(loc),1L)}, otherwise
 \code{1:nrow(loc)}.}
 
-\item{grp}{Vector of group labels for each segment.  Set to \code{NULL} to
-let the labels be chosen automatically in a call to
-\code{\link[=inla.mesh.create]{inla.mesh.create()}}.}
+\item{grp}{When joining segments, use these group labels for segments
+instead of the original group labels.}
 
 \item{is.bnd}{\code{TRUE} if the segments are boundary segments, otherwise
 \code{FALSE}.}
 
 \item{crs}{An optional \code{fm_crs()}, \code{sf::st_crs()} or \code{sp::CRS()} object}
 
-\item{grp.default}{When joining segments, use this group label for segments
-that have \code{grp == NULL}.}
+\item{grp.default}{If \code{grp.default} is \code{NULL}, use these group labels for segments
+with NULL group.}
 
 \item{x}{Mesh to extract segments from}
 
@@ -75,6 +77,9 @@ of groups given by \code{grp}.
 \section{Functions}{
 \itemize{
 \item \code{fm_segm()}: Create a new \code{fm_segm} object.
+
+\item \code{fm_segm_join()}: Join multiple \code{fm_segm} objects into a single \code{fm_segm}
+object.
 
 }}
 \seealso{

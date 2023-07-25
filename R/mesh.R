@@ -35,7 +35,7 @@
 fm_pixels <- function(mesh, nx = 150, ny = 150, mask = TRUE,
                       format = "sf") {
   format <- match.arg(format, c("sf", "terra", "sp"))
-  if (!identical(mesh$manifold, "R2")) {
+  if (!fm_manifold(mesh, "R2")) {
     stop("fmesher::fm_pixels() currently works for R2 meshes only.")
   }
 
@@ -82,6 +82,27 @@ fm_pixels <- function(mesh, nx = 150, ny = 150, mask = TRUE,
 }
 
 
+
+#' Refine a 2d mesh
+#'
+#' @keywords internal
+#'
+#' @param mesh an fm_mesh_2d object
+#' @param refine A list of refinement options passed on to
+#' [fm_rcdt_2d_inla]
+#' @return mesh A refined fm_mesh_2d object
+#' @author Fabian E. Bachl \email{bachlfab@@gmail.com}
+
+fm_refine <- function(mesh, refine = list(max.edge = 1)) {
+  rmesh <- fm_rcdt_2d_inla(
+    loc = mesh$loc,
+    boundary = fm_segm(mesh, boundary = TRUE),
+    interior = fm_segm(mesh, boundary = FALSE),
+    crs = fm_crs(mesh),
+    refine = refine
+  )
+  return(rmesh)
+}
 
 
 
@@ -186,31 +207,156 @@ fm_subdivide <- function(mesh, n = 1) {
     ),
     is.bnd = FALSE
   )
+  # I think this code assumes fm_segm filters out duplicated points?
+  new.loc <- rbind(tri.edges$loc, tri.inner.loc)
 
-  boundary2 <- split.edges(fm_segm(mesh), n = n)
+  boundary2 <- split.edges(fm_segm(mesh, boundary = TRUE), n = n)
+  interior2 <- split.edges(fm_segm(mesh, boundary = FALSE), n = n)
 
-  if (identical(mesh$manifold, "S2")) {
+  if (fm_manifold(mesh, "S2")) {
     radius <- mean(rowSums(mesh$loc^2)^0.5)
     renorm <- function(loc) {
       loc * (radius / rowSums(loc^2)^0.5)
     }
-    tri.inner.loc <- renorm(tri.inner.loc)
-    tri.edges2$loc <- renorm(tri.edges2$loc)
+    new.loc <- renorm(new.loc)
+    interior2$loc <- renorm(interior2$loc)
     boundary2$loc <- renorm(boundary2$loc)
   }
 
-  mesh2 <- INLA::inla.mesh.create(
-    loc = tri.inner.loc,
-    interior = tri.edges,
+  mesh2 <- fm_rcdt_2d_inla(
+    loc = new.loc,
+    interior = interior2,
     boundary = boundary2,
     refine = list(
       min.angle = 0,
       max.edge = Inf
     ),
-    crs = fm_CRS(mesh)
+    crs = fm_crs(mesh)
   )
 
   mesh2
+}
+
+
+
+join_segm <- function(...) {
+  segm_list <- list(...)
+  loc <- matrix(0, 0, 3)
+  idx <- matrix(0, 0, 2)
+  for (k in seq_along(segm_list)) {
+    idx <- rbind(idx, segm_list[[k]]$idx + nrow(loc))
+    loc <- rbind(loc, segm_list[[k]]$loc)
+  }
+
+  # Collapse duplicate points
+  new_loc <- loc
+  new_idx <- seq_len(nrow(loc))
+  prev_idx <- 0
+  for (k in seq_len(nrow(loc))) {
+    if (any(is.na(new_loc[k, ]))) {
+      new_idx[k] <- NA
+    } else {
+      if (prev_idx == 0) {
+        prev_dist <- 1
+      } else {
+        prev_dist <- ((new_loc[seq_len(prev_idx), 1] - new_loc[k, 1])^2 +
+          (new_loc[seq_len(prev_idx), 2] - new_loc[k, 2])^2 +
+          (new_loc[seq_len(prev_idx), 3] - new_loc[k, 3])^2)^0.5
+      }
+      if (all(prev_dist > 0)) {
+        prev_idx <- prev_idx + 1
+        new_idx[k] <- prev_idx
+        new_loc[prev_idx, ] <- new_loc[k, ]
+      } else {
+        new_idx[k] <- which.min(prev_dist)
+      }
+    }
+  }
+  idx <- matrix(new_idx[idx], nrow(idx), 2)
+  # Remove NA and atomic lines
+  ok <-
+    !is.na(idx[, 1]) &
+      !is.na(idx[, 2]) &
+      idx[, 1] != idx[, 2]
+  idx <- idx[ok, , drop = FALSE]
+  # Set locations
+  loc <- new_loc[seq_len(prev_idx), , drop = FALSE]
+
+  fm_segm(
+    loc = loc,
+    idx = idx,
+    is.bnd = FALSE
+  )
+}
+
+
+#' Construct the intersection mesh of a mesh and a polygon
+#'
+#' @param mesh `fm_mesh_2d` object to be intersected
+#' @param poly `fm_segm` object with a closed polygon
+#'   to intersect with the mesh
+#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @keywords internal
+fm_mesh_intersection <- function(mesh, poly) {
+  if (ncol(poly$loc) < 3) {
+    poly$loc <- cbind(poly$loc, 0)
+  }
+
+  all_edges <- fm_segm(
+    loc = mesh$loc,
+    idx = cbind(
+      as.vector(t(mesh$graph$tv)),
+      as.vector(t(mesh$graph$tv[, c(2, 3, 1), drop = FALSE]))
+    ),
+    is.bnd = FALSE
+  )
+
+  mesh_cover <- fm_rcdt_2d_inla(
+    loc = rbind(mesh$loc, poly$loc),
+    interior = list(all_edges)
+  )
+
+  split <- fm_split_lines(mesh_cover, loc = poly$loc, idx = poly$idx)
+  split_segm <- fm_segm(
+    loc = split$split.loc,
+    idx = split$split.idx,
+    is.bnd = FALSE
+  )
+
+  joint_segm <- join_segm(split_segm, all_edges)
+
+  mesh_joint_cover <- fm_rcdt_2d_inla(
+    interior = list(joint_segm),
+    extend = TRUE
+  )
+
+  mesh_poly <- fm_rcdt_2d_inla(boundary = poly)
+
+  loc_tri <-
+    (mesh_joint_cover$loc[mesh_joint_cover$graph$tv[, 1], , drop = FALSE] +
+      mesh_joint_cover$loc[mesh_joint_cover$graph$tv[, 2], , drop = FALSE] +
+      mesh_joint_cover$loc[mesh_joint_cover$graph$tv[, 3], , drop = FALSE]) / 3
+  ok_tri <-
+    fm_is_within(loc = loc_tri, mesh) &
+      fm_is_within(loc = loc_tri, mesh_poly)
+  if (any(ok_tri)) {
+    loc_subset <- unique(sort(as.vector(mesh_joint_cover$graph$tv[ok_tri, , drop = FALSE])))
+    new_idx <- integer(mesh$n)
+    new_idx[loc_subset] <- seq_along(loc_subset)
+    tv_subset <- matrix(new_idx[mesh_joint_cover$graph$tv[ok_tri, , drop = FALSE]],
+      ncol = 3
+    )
+    loc_subset <- mesh_joint_cover$loc[loc_subset, , drop = FALSE]
+    mesh_subset <- fm_rcdt_2d_inla(
+      loc = loc_subset,
+      tv = tv_subset,
+      extend = FALSE
+    )
+  } else {
+    mesh_subset <- NULL
+  }
+
+  mesh_subset
 }
 
 
@@ -328,7 +474,7 @@ fm_centroids <- function(x, format = NULL) {
     x$loc[x$graph$tv[, 2], , drop = FALSE] +
     x$loc[x$graph$tv[, 3], , drop = FALSE]) / 3
 
-  if (identical(x$manifold, "S2")) {
+  if (fm_manifold(x, "S2")) {
     loc <- loc / rowSums(loc^2)^0.5 * sum(x$loc[1, ]^2)^0.5
   }
 
@@ -366,7 +512,7 @@ fm_onto_mesh <- function(mesh, loc, crs = NULL) {
     } else if (!fm_crs_is_identical(crs, mesh_crs)) {
       loc <- fm_transform(loc, crs = mesh_crs, crs0 = crs, passthrough = TRUE)
     }
-  } else if (identical(mesh$manifold, "S2")) {
+  } else if (fm_manifold(mesh, "S2")) {
     loc_needs_normalisation <- TRUE
   }
 
@@ -418,7 +564,7 @@ fm_bary <- function(mesh, loc, crs = NULL) {
 
   # Avoid sphere accuracy issues by scaling to unit sphere
   scale <- 1
-  if (identical(mesh$manifold, "S2")) {
+  if (fm_manifold(mesh, "S2")) {
     scale <- 1 / mean(rowSums(mesh$loc^2)^0.5)
     loc <- loc / rowSums(loc^2)^0.5
   }
@@ -808,7 +954,10 @@ fm_manifold <- function(x, type = NULL) {
   # Match space name or dimension?
   m <- intersect(c("M", "R", "S"), type)
   d <- intersect(as.character(seq_len(3)), type)
-  return(grepl(paste0(c(m, d), collapse = "|"), x[["manifold"]]))
+  if (length(c(m, d)) == 0) {
+    return(FALSE)
+  }
+  grepl(paste0(c(m, d), collapse = "|"), x[["manifold"]])
 }
 
 
@@ -829,12 +978,12 @@ fm_segm <- function(...) {
 #' @param idx Segment index sequence vector or index pair matrix.  The indices
 #' refer to the rows of `loc`.  If `loc==NULL`, the indices will be
 #' interpreted as indices into the point specification supplied to
-#' [inla.mesh.create()].  If `is.bnd==TRUE`, defaults to linking
+#' [fm_rcdt_2d()].  If `is.bnd==TRUE`, defaults to linking
 #' all the points in `loc`, as `c(1:nrow(loc),1L)`, otherwise
 #' `1:nrow(loc)`.
 #' @param grp Vector of group labels for each segment.  Set to `NULL` to
 #' let the labels be chosen automatically in a call to
-#' [inla.mesh.create()].
+#' [fm_rcdt_2d()].
 #' @param is.bnd `TRUE` if the segments are boundary segments, otherwise
 #' `FALSE`.
 #' @param crs An optional `fm_crs()`, `sf::st_crs()` or `sp::CRS()` object
@@ -888,19 +1037,14 @@ fm_segm.default <- function(loc = NULL, idx = NULL, grp = NULL, is.bnd = TRUE,
     if (!is.vector(grp) && !is.matrix(grp)) {
       stop("'grp' must be a vector or a matrix")
     }
-    grp <- matrix(grp, min(length(grp), nrow(idx)), 1)
-    if (nrow(grp) < nrow(idx)) {
-      grp <- (matrix(
-        c(
-          as.vector(grp),
-          rep(grp[nrow(grp)], nrow(idx) - length(grp))
-        ),
-        nrow(idx), 1
-      ))
+    grp <- as.vector(grp)
+    if (length(grp) < nrow(idx)) {
+      grp <- c(
+        grp,
+        rep(grp[length(grp)], nrow(idx) - length(grp))
+      )
     }
     storage.mode(grp) <- "integer"
-  } else {
-    grp <- NULL
   }
 
   ## Filter away NAs in loc and idx
@@ -918,7 +1062,7 @@ fm_segm.default <- function(loc = NULL, idx = NULL, grp = NULL, is.bnd = TRUE,
     i <- min(which(rowSums(is.na(idx)) > 0))
     idx <- idx[-i, , drop = FALSE]
     if (!is.null(grp)) {
-      grp <- grp[-i, , drop = FALSE]
+      grp <- grp[-i]
     }
   }
 
@@ -941,11 +1085,38 @@ fm_segm.default <- function(loc = NULL, idx = NULL, grp = NULL, is.bnd = TRUE,
 
 #' @describeIn fm_segm Join multiple `fm_segm` objects into a single `fm_segm`
 #' object.
-#' @param grp.default When joining segments, use this group label for segments
-#' that have `grp == NULL`.
+#' @param grp When joining segments, use these group labels for segments
+#' instead of the original group labels.
+#' @param grp.default If `grp.default` is `NULL`, use these group labels for segments
+#' with NULL group.
 #' @export
-fm_segm.fm_segm <- function(..., grp.default = 0) {
+fm_segm.fm_segm <- function(..., grp = NULL, grp.default = 0L) {
   segm <- fm_as_segm_list(list(...))
+  fm_segm_join(segm, grp = grp, grp.default = grp.default)
+}
+#' @describeIn fm_segm Join multiple `fm_segm` objects into a single `fm_segm`
+#' object.
+#' @export
+fm_segm_join <- function(x, grp = NULL, grp.default = 0L) {
+  segm <- fm_as_segm_list(x)
+  segm <- lapply(seq_along(segm), function(k) {
+    seg <- segm[[k]]
+    if (!is.null(seg)) {
+      if (is.null(grp)) {
+        if (is.null(seg[["grp"]])) {
+          seg[["grp"]] <-
+            rep(
+              grp.default[min(length(grp.default), k)],
+              nrow(seg[["idx"]])
+            )
+        }
+      } else {
+        seg[["grp"]] <-
+          rep(grp[min(length(grp), k)], nrow(seg[["idx"]]))
+      }
+    }
+    seg
+  })
 
   keep <- vapply(segm, function(x) !is.null(x), TRUE)
   segm <- segm[keep]
@@ -970,18 +1141,18 @@ fm_segm.fm_segm <- function(..., grp.default = 0) {
     seq_along(segm),
     function(x) {
       if (is.null(segm[[x]]$grp)) {
-        rep(grp.default, Nidx[x])
+        rep(grp.default[min(length(grp.default), k)], Nidx[x])
       } else {
         segm[[x]]$grp
       }
     }
   ))
-  is.bnd <- vapply(segm, function(x) x$is.bnd, TRUE)
-  if (!all(is.bnd) || (any(!is.bnd) && !all(!is.bnd))) {
+  is.bnd <- vapply(segm, function(x) fm_is_bnd(x), TRUE)
+  if (all(is.bnd) || all(!is.bnd)) {
+    is.bnd <- all(is.bnd)
+  } else {
     warning("Inconsistent 'is.bnd' attributes.  Setting 'is.bnd=FALSE'.")
     is.bnd <- FALSE
-  } else {
-    is.bnd <- all(is.bnd)
   }
 
   crs <- lapply(segm, function(x) fm_crs(x))
@@ -1115,12 +1286,6 @@ fm_as_segm.fm_segm <- function(x, ...) {
 fm_as_segm.inla.mesh.segment <- function(x, ...) {
   class(x) <- c("fm_segm", class(x))
   x
-}
-
-#' @rdname fm_as_segm
-#' @export
-fm_as_segm.matrix <- function(x, crs = NULL, ...) {
-  fm_segm(loc = x, crs = fm_CRS(crs))
 }
 
 #' @rdname fm_segm
@@ -1467,7 +1632,8 @@ fm_rcdt_2d <-
     fm_rcdt_2d_inla(...)
   }
 
-#' @describeIn fm_rcdt_2d Legacy method for `INLA::inla.mesh.create()`
+#' @describeIn fm_rcdt_2d Legacy method for the `INLA::inla.mesh.create()`
+#' interface
 #' @export
 fm_rcdt_2d_inla <-
   function(loc = NULL,
@@ -1518,10 +1684,13 @@ fm_rcdt_2d_inla <-
       } else {
         boundary <- fm_as_segm(boundary)
       }
-      if (!fm_crs_is_null(crs)) {
+      if (is.null(boundary$loc)) {
+        boundary$loc <- loc
+        boundary$crs <- fm_crs(crs)
+      } else if (!fm_crs_is_null(crs)) {
         boundary <- fm_transform(boundary, crs = crs, passthrough = TRUE)
       }
-      bnd <- segm.n + boundary$idx - 1L
+      bnd <- segm.n + boundary$idx
       bnd_grp <- boundary$grp
       if (ncol(boundary$loc) == 2) {
         boundary$loc <- cbind(boundary$loc, 0.0)
@@ -1535,10 +1704,13 @@ fm_rcdt_2d_inla <-
       loc.int <- matrix(0.0, 0, 3)
     } else {
       interior <- fm_as_segm(interior)
-      if (!fm_crs_is_null(crs)) {
+      if (is.null(interior$loc)) {
+        interior$loc <- loc
+        interior$crs <- fm_crs(crs)
+      } else if (!fm_crs_is_null(crs)) {
         interior <- fm_transform(interior, crs = crs, passthrough = TRUE)
       }
-      int <- segm.n + interior$idx - 1L
+      int <- segm.n + interior$idx
       int_grp <- interior$grp
       if (ncol(interior$loc) == 2) {
         interior$loc <- cbind(interior$loc, 0.0)
@@ -1553,13 +1725,23 @@ fm_rcdt_2d_inla <-
     loc <- rbind(loc.bnd, loc.int, loc.lattice, loc)
 
     options <- handle_rcdt_options_inla(...,
-                                        .n = list(
-                                          segm = segm.n,
-                                          lattice = lattice.n,
-                                          loc = loc.n
-                                        ),
-                                        .loc = loc)
+      .n = list(
+        segm = segm.n,
+        lattice = lattice.n,
+        loc = loc.n
+      ),
+      .loc = loc
+    )
 
+    if (!is.null(tv)) {
+      tv <- tv + segm.n + lattice.n - 1L
+    }
+    if (!is.null(bnd)) {
+      bnd <- bnd - 1L
+    }
+    if (!is.null(int)) {
+      int <- int - 1L
+    }
     result <- fmesher_rcdt(
       options = options,
       loc = loc, tv = tv,
@@ -1739,8 +1921,6 @@ fm_mesh_2d_inla <- function(loc = NULL, ## Points to include in final triangulat
                             plot.delay = NULL,
                             crs = NULL,
                             ...) {
-  ##  fm_as_mesh_2d(INLA::inla.mesh.2d(..., boundary = boundary, interior = interior))
-
   ## plot.delay: Do plotting.
   ## NULL --> No plotting
   ## <0  --> Intermediate meshes displayed at the end
@@ -1926,7 +2106,7 @@ fm_mesh_2d_inla <- function(loc = NULL, ## Points to include in final triangulat
       crs = crs
     )
 
-  ## Hide generated points, to match regular inla.mesh.create output
+  ## Hide generated points, to match regular fm_rcdt_2d_inla output
   mesh3$idx$loc <- mesh3$idx$loc[seq_len(nrow(loc))]
 
   ## Obtain the corresponding segm indices.

@@ -36,7 +36,8 @@ Computes a refined constrained Delaunay triangulation on R2 or S2.
 }
 \section{Functions}{
 \itemize{
-\item \code{fm_rcdt_2d_inla()}: Legacy method for \code{INLA::inla.mesh.create()}
+\item \code{fm_rcdt_2d_inla()}: Legacy method for the \code{INLA::inla.mesh.create()}
+interface
 
 }}
 \examples{

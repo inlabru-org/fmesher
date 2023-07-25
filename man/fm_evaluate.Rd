@@ -119,7 +119,7 @@ if no \code{loc} or \code{lattice} is provided.
 if (fm_safe_inla()) {
   n <- 20
   loc <- matrix(runif(n * 2), n, 2)
-  mesh <- INLA::inla.mesh.create(loc, refine = list(max.edge = 0.05))
+  mesh <- fm_rcdt_2d_inla(loc, refine = list(max.edge = 0.05))
   proj <- fm_evaluator(mesh)
   field <- cos(mesh$loc[, 1] * 2 * pi * 3) * sin(mesh$loc[, 2] * 2 * pi * 7)
   image(proj$x, proj$y, fm_evaluate(proj, field))
