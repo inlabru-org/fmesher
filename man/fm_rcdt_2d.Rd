@@ -30,6 +30,9 @@ If \code{boundary} is \code{numeric}, \code{fm_nonconvex_hull(loc, convex = boun
 used.}
 
 \item{crs}{Optional crs object}
+
+\item{globe}{If non-NULL, an integer specifying the level of subdivision
+for global mesh points, used with \code{\link[=fmesher_globe_points]{fmesher_globe_points()}}}
 }
 \description{
 Computes a refined constrained Delaunay triangulation on R2 or S2.

@@ -1618,6 +1618,8 @@ handle_rcdt_options_inla <- function(
 #' If `boundary` is `numeric`, `fm_nonconvex_hull(loc, convex = boundary)` is
 #' used.
 #' @param crs Optional crs object
+#' @param globe If non-NULL, an integer specifying the level of subdivision
+#' for global mesh points, used with [fmesher_globe_points()]
 #' @param ... Currently passed on to `fm_mesh_2d_inla` or converted to
 #' [fmesher_rcdt()] options.
 #' @examples
