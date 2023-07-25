@@ -65,28 +65,124 @@
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fm_mesh_2d</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">fm_mesh_2d_inla</span><span class="op">(</span><span class="va">...</span>, boundary <span class="op">=</span> <span class="cn">NULL</span>, interior <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">fm_mesh_2d_inla</span><span class="op">(</span></span>
+<span>  loc <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  loc.domain <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  offset <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  n <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  boundary <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  interior <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  max.edge <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  min.angle <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  cutoff <span class="op">=</span> <span class="fl">1e-12</span>,</span>
+<span>  max.n.strict <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  max.n <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  plot.delay <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  crs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>...</dt>
-<dd><p>Currently passed on to <code>inla.mesh.2d</code></p></dd>
+<dd><p>Currently passed on to <code>fm_mesh_2d_inla</code></p></dd>
 
 
-<dt>boundary, interior</dt>
-<dd><p>list of <code><a href="fm_segm.html">fm_segm()</a></code> objects, or objects
+<dt>loc</dt>
+<dd><p>Matrix of point locations to be used as initial triangulation
+nodes.  Can alternatively be a <code>SpatialPoints</code> or
+<code>SpatialPointsDataFrame</code> object.</p></dd>
+
+
+<dt>loc.domain</dt>
+<dd><p>Matrix of point locations used to determine the domain
+extent.  Can alternatively be a <code>SpatialPoints</code> or
+<code>SpatialPointsDataFrame</code> object.</p></dd>
+
+
+<dt>offset</dt>
+<dd><p>The automatic extension distance.  One or two values, for an
+inner and an optional outer extension.  If negative, interpreted as a factor
+relative to the approximate data diameter (default=-0.10???)</p></dd>
+
+
+<dt>n</dt>
+<dd><p>The number of initial nodes in the automatic extensions
+(default=16)</p></dd>
+
+
+<dt>boundary</dt>
+<dd><p>one or more (as list) of <code><a href="fm_segm.html">fm_segm()</a></code> objects, or objects
 supported by <code><a href="fm_as_segm.html">fm_as_segm()</a></code></p></dd>
+
+
+<dt>interior</dt>
+<dd><p>one object supported by <code><a href="fm_as_segm.html">fm_as_segm()</a></code></p></dd>
+
+
+<dt>max.edge</dt>
+<dd><p>The largest allowed triangle edge length.  One or two
+values.</p></dd>
+
+
+<dt>min.angle</dt>
+<dd><p>The smallest allowed triangle angle.  One or two values.
+(Default=21)</p></dd>
+
+
+<dt>cutoff</dt>
+<dd><p>The minimum allowed distance between points.  Point at most as
+far apart as this are replaced by a single vertex prior to the mesh
+refinement step.</p></dd>
+
+
+<dt>max.n.strict</dt>
+<dd><p>The maximum number of vertices allowed, overriding
+<code>min.angle</code> and <code>max.edge</code> (default=-1, meaning no limit).  One or
+two values, where the second value gives the number of additional vertices
+allowed for the extension.</p></dd>
+
+
+<dt>max.n</dt>
+<dd><p>The maximum number of vertices allowed, overriding
+<code>max.edge</code> only (default=-1, meaning no limit).  One or two values,
+where the second value gives the number of additional vertices allowed for
+the extension.</p></dd>
+
+
+<dt>plot.delay</dt>
+<dd><p>On Linux (and Mac if appropriate X11 libraries are
+installed), specifying a nonnegative numeric value activates a rudimentary
+plotting system in the underlying <code>fmesher</code> program, showing the
+triangulation algorithm at work, with waiting time factor <code>plot.delay</code>
+between each step.</p>
+<p>On all systems, specifying any negative value activates displaying the
+result after each step of the multi-step domain extension algorithm.</p></dd>
+
+
+<dt>crs</dt>
+<dd><p>An optional <code><a href="fm_crs.html">fm_crs()</a></code>, <code>sf::crs</code> or <code><a href="https://rdrr.io/pkg/sp/man/CRS-class.html" class="external-link">sp::CRS</a></code> object</p></dd>
 
 </dl></div>
     <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    
+
+<p>An <code>inla.mesh</code> object.</p>
+    </div>
+    <div class="section level2">
     <h2 id="functions">Functions<a class="anchor" aria-label="anchor" href="#functions"></a></h2>
     
-<ul><li><p><code>fm_mesh_2d_inla()</code>: Legacy method for <code><a href="https://rdrr.io/pkg/INLA/man/inla.mesh.2d.html" class="external-link">INLA::inla.mesh.2d()</a></code></p></li>
+<ul><li><p><code>fm_mesh_2d_inla()</code>: Legacy method for <code><a href="https://rdrr.io/pkg/INLA/man/inla.mesh.2d.html" class="external-link">INLA::inla.mesh.2d()</a></code>
+Create a triangle mesh based on initial point locations, specified or
+automatic boundaries, and mesh quality parameters.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p>Other object creation and conversion: 
+    <div class="dont-index"><p><code><a href="fm_rcdt_2d.html">fm_rcdt_2d()</a></code>, <code>fm_mesh_2d()</code>, <code>inla.delaunay()</code>,
+<code><a href="fm_nonconvex_hull.html">fm_nonconvex_hull()</a></code>, <code><a href="fm_extensions.html">fm_extensions()</a></code></p>
+<p>Other object creation and conversion: 
 <code><a href="fm_as_fm.html">fm_as_fm</a>()</code>,
 <code><a href="fm_as_lattice_2d.html">fm_as_lattice_2d</a>()</code>,
 <code><a href="fm_as_mesh_1d.html">fm_as_mesh_1d</a>()</code>,
@@ -98,6 +194,10 @@ supported by <code><a href="fm_as_segm.html">fm_as_segm()</a></code></p></dd>
 <code><a href="fm_mesh_1d.html">fm_mesh_1d</a>()</code>,
 <code><a href="fm_segm.html">fm_segm</a>()</code>,
 <code><a href="fm_tensor.html">fm_tensor</a>()</code></p></div>
+    </div>
+    <div class="section level2">
+    <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
+    <p>Finn Lindgren <a href="mailto:finn.lindgren@gmail.com">finn.lindgren@gmail.com</a></p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

@@ -85,6 +85,9 @@
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_crs.html</loc>
   </url>
   <url>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fm_crs_is_identical.html</loc>
+  </url>
+  <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_crs_wkt.html</loc>
   </url>
   <url>
@@ -98,9 +101,6 @@
   </url>
   <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_fem.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_identical_CRS.html</loc>
   </url>
   <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_int.html</loc>
@@ -121,10 +121,16 @@
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_lattice_2d.html</loc>
   </url>
   <url>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fm_manifold.html</loc>
+  </url>
+  <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_mesh_1d.html</loc>
   </url>
   <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_mesh_2d.html</loc>
+  </url>
+  <url>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fm_mesh_intersection.html</loc>
   </url>
   <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_nonconvex_hull.html</loc>
@@ -137,6 +143,9 @@
   </url>
   <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_rcdt_2d.html</loc>
+  </url>
+  <url>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fm_refine.html</loc>
   </url>
   <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_row_kron.html</loc>

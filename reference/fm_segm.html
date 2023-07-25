@@ -66,10 +66,12 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fm_segm</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for default</span></span>
-<span><span class="fu">fm_segm</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">fm_segm</span><span class="op">(</span>loc <span class="op">=</span> <span class="cn">NULL</span>, idx <span class="op">=</span> <span class="cn">NULL</span>, grp <span class="op">=</span> <span class="cn">NULL</span>, is.bnd <span class="op">=</span> <span class="cn">TRUE</span>, crs <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for fm_segm</span></span>
-<span><span class="fu">fm_segm</span><span class="op">(</span><span class="va">...</span>, grp.default <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
+<span><span class="fu">fm_segm</span><span class="op">(</span><span class="va">...</span>, grp <span class="op">=</span> <span class="cn">NULL</span>, grp.default <span class="op">=</span> <span class="fl">0L</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">fm_segm_join</span><span class="op">(</span><span class="va">x</span>, grp <span class="op">=</span> <span class="cn">NULL</span>, grp.default <span class="op">=</span> <span class="fl">0L</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for inla.mesh.segment</span></span>
 <span><span class="fu">fm_segm</span><span class="op">(</span><span class="va">...</span>, grp.default <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
@@ -78,18 +80,50 @@
 <span><span class="fu">fm_segm</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for fm_mesh_2d</span></span>
-<span><span class="fu">fm_segm</span><span class="op">(</span><span class="va">x</span>, boundary <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">fm_segm</span><span class="op">(</span><span class="va">x</span>, boundary <span class="op">=</span> <span class="cn">TRUE</span>, grp <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">fm_is_bnd</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">fm_is_bnd</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">value</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>...</dt>
-<dd><p>Currently passed on to <code>inla.mesh.segment</code></p></dd>
+<dd><p>Passed on to submethods</p></dd>
+
+
+<dt>loc</dt>
+<dd><p>Matrix of point locations, or <code>SpatialPoints</code>, or <code>sf</code>/<code>sfc</code> point
+object.</p></dd>
+
+
+<dt>idx</dt>
+<dd><p>Segment index sequence vector or index pair matrix.  The indices
+refer to the rows of <code>loc</code>.  If <code>loc==NULL</code>, the indices will be
+interpreted as indices into the point specification supplied to
+<code><a href="fm_rcdt_2d.html">fm_rcdt_2d()</a></code>.  If <code>is.bnd==TRUE</code>, defaults to linking
+all the points in <code>loc</code>, as <code>c(1:nrow(loc),1L)</code>, otherwise
+<code>1:nrow(loc)</code>.</p></dd>
+
+
+<dt>grp</dt>
+<dd><p>When joining segments, use these group labels for segments
+instead of the original group labels.</p></dd>
+
+
+<dt>is.bnd</dt>
+<dd><p><code>TRUE</code> if the segments are boundary segments, otherwise
+<code>FALSE</code>.</p></dd>
+
+
+<dt>crs</dt>
+<dd><p>An optional <code><a href="fm_crs.html">fm_crs()</a></code>, <code><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">sf::st_crs()</a></code> or <code><a href="https://rdrr.io/pkg/sp/man/CRS-class.html" class="external-link">sp::CRS()</a></code> object</p></dd>
 
 
 <dt>grp.default</dt>
-<dd><p>When joining segments, use this group label for segments
-that have <code>grp == NULL</code>.</p></dd>
+<dd><p>If <code>grp.default</code> is <code>NULL</code>, use these group labels for segments
+with NULL group.</p></dd>
 
 
 <dt>x</dt>
@@ -100,18 +134,26 @@ that have <code>grp == NULL</code>.</p></dd>
 <dd><p>logical; if <code>TRUE</code>, extract the boundary segments,
 otherwise interior constrain segments.</p></dd>
 
+
+<dt>value</dt>
+<dd><p>logical</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="methods-by-class-">Methods (by class)<a class="anchor" aria-label="anchor" href="#methods-by-class-"></a></h2>
     
 <ul><li><p><code>fm_segm(fm_segm)</code>: Join multiple <code>fm_segm</code> objects into a single <code>fm_segm</code>
 object.</p></li>
-<li><p><code>fm_segm(fm_mesh_2d)</code>: Extract the boundary segments of a 2d mesh</p></li>
+<li><p><code>fm_segm(fm_mesh_2d)</code>: Extract the boundary or interior segments of a 2d mesh.
+If <code>grp</code> is non-NULL, extracts only segments matching the matching the set
+of groups given by <code>grp</code>.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="functions">Functions<a class="anchor" aria-label="anchor" href="#functions"></a></h2>
     
 <ul><li><p><code>fm_segm()</code>: Create a new <code>fm_segm</code> object.</p></li>
+<li><p><code>fm_segm_join()</code>: Join multiple <code>fm_segm</code> objects into a single <code>fm_segm</code>
+object.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
