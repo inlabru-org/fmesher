@@ -73,7 +73,9 @@
 <span>  crs <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  globe <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">fm_delaunay_2d</span><span class="op">(</span><span class="va">loc</span>, crs <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -100,12 +102,18 @@ used.</p></dd>
 <dt>crs</dt>
 <dd><p>Optional crs object</p></dd>
 
+
+<dt>globe</dt>
+<dd><p>If non-NULL, an integer specifying the level of subdivision
+for global mesh points, used with <code><a href="fmesher_globe_points.html">fmesher_globe_points()</a></code></p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="functions">Functions<a class="anchor" aria-label="anchor" href="#functions"></a></h2>
     
 <ul><li><p><code>fm_rcdt_2d_inla()</code>: Legacy method for the <code><a href="https://rdrr.io/pkg/INLA/man/inla.mesh.create.html" class="external-link">INLA::inla.mesh.create()</a></code>
 interface</p></li>
+<li><p><code>fm_delaunay_2d()</code>: Construct a plain Delaunay triangulation.</p></li>
 </ul></div>
 
     <div class="section level2">
