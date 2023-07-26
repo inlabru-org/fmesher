@@ -3,6 +3,7 @@
 \name{fm_rcdt_2d}
 \alias{fm_rcdt_2d}
 \alias{fm_rcdt_2d_inla}
+\alias{fm_delaunay_2d}
 \title{Refined Constrained Delaunay Triangulation}
 \usage{
 fm_rcdt_2d(...)
@@ -16,6 +17,8 @@ fm_rcdt_2d_inla(
   globe = NULL,
   ...
 )
+
+fm_delaunay_2d(loc, crs = NULL, ...)
 }
 \arguments{
 \item{...}{Currently passed on to \code{fm_mesh_2d_inla} or converted to
@@ -41,6 +44,8 @@ Computes a refined constrained Delaunay triangulation on R2 or S2.
 \itemize{
 \item \code{fm_rcdt_2d_inla()}: Legacy method for the \code{INLA::inla.mesh.create()}
 interface
+
+\item \code{fm_delaunay_2d()}: Construct a plain Delaunay triangulation.
 
 }}
 \examples{

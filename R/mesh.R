@@ -1854,6 +1854,31 @@ fm_rcdt_2d_inla <-
     m
   }
 
+#' @describeIn fm_rcdt_2d Construct a plain Delaunay triangulation.
+#' @export
+fm_delaunay_2d <- function(loc, crs = NULL, ...) {
+  if (is.null(crs) && !is.matrix(loc)) {
+    crs <- fm_crs(loc)
+  }
+  loc <- unify_loc_coords(loc, crs = crs)
+
+  hull <- chull(loc[, 1], loc[, 2])
+  bnd <- fm_segm(
+    loc = loc[hull[rev(seq_along(hull))], , drop = FALSE],
+    is.bnd = TRUE
+  )
+  mesh <- fm_rcdt_2d_inla(
+    loc = loc,
+    boundary = bnd,
+    extend = list(n = 3),
+    refine = FALSE,
+    crs = crs,
+    ...
+  )
+  return(invisible(mesh))
+}
+
+
 #' @title Make a 2D mesh object
 #' @export
 #' @param ... Currently passed on to `fm_mesh_2d_inla`
@@ -1907,8 +1932,8 @@ fm_mesh_2d <- function(...) {
 #' @param crs An optional [fm_crs()], `sf::crs` or `sp::CRS` object
 #' @return An `inla.mesh` object.
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
-#' @seealso [fm_rcdt_2d()], [fm_mesh_2d()], [inla.delaunay()],
-#' [fm_nonconvex_hull()], [fm_extensions()]
+#' @seealso [fm_rcdt_2d()], [fm_mesh_2d()], [fm_delaunay_2d()],
+#' [fm_nonconvex_hull()], [fm_extensions()], [fm_refine()]
 fm_mesh_2d_inla <- function(loc = NULL, ## Points to include in final triangulation
                             loc.domain = NULL, ## Points that determine the automatic domain
                             offset = NULL, ## Size of automatic extensions

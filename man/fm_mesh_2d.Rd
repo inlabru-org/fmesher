@@ -92,8 +92,8 @@ automatic boundaries, and mesh quality parameters.
 
 }}
 \seealso{
-\code{\link[=fm_rcdt_2d]{fm_rcdt_2d()}}, \code{\link[=fm_mesh_2d]{fm_mesh_2d()}}, \code{\link[=inla.delaunay]{inla.delaunay()}},
-\code{\link[=fm_nonconvex_hull]{fm_nonconvex_hull()}}, \code{\link[=fm_extensions]{fm_extensions()}}
+\code{\link[=fm_rcdt_2d]{fm_rcdt_2d()}}, \code{\link[=fm_mesh_2d]{fm_mesh_2d()}}, \code{\link[=fm_delaunay_2d]{fm_delaunay_2d()}},
+\code{\link[=fm_nonconvex_hull]{fm_nonconvex_hull()}}, \code{\link[=fm_extensions]{fm_extensions()}}, \code{\link[=fm_refine]{fm_refine()}}
 
 Other object creation and conversion: 
 \code{\link{fm_as_fm}()},
