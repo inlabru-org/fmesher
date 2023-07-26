@@ -856,14 +856,26 @@ fm_crs.sfg <- function(x, ..., crsonly = FALSE) {
 
 #' @rdname fm_crs
 #' @export
-#' @method fm_crs inla.mesh
-fm_crs.inla.mesh <- function(x, ..., crsonly = FALSE) {
+fm_crs.fm_mesh_2d <- function(x, ..., crsonly = FALSE) {
   fm_crs(x[["crs"]], ..., crsonly = crsonly)
 }
 
 #' @rdname fm_crs
 #' @export
-fm_crs.fm_mesh_2d <- function(x, ..., crsonly = FALSE) {
+fm_crs.fm_lattice_2d <- function(x, ..., crsonly = FALSE) {
+  fm_crs(x[["crs"]], ..., crsonly = crsonly)
+}
+
+#' @rdname fm_crs
+#' @export
+fm_crs.fm_segm <- function(x, ..., crsonly = FALSE) {
+  fm_crs(x[["crs"]], ..., crsonly = crsonly)
+}
+
+#' @rdname fm_crs
+#' @export
+#' @method fm_crs inla.mesh
+fm_crs.inla.mesh <- function(x, ..., crsonly = FALSE) {
   fm_crs(x[["crs"]], ..., crsonly = crsonly)
 }
 
@@ -875,19 +887,7 @@ fm_crs.inla.mesh.lattice <- function(x, ..., crsonly = FALSE) {
 
 #' @rdname fm_crs
 #' @export
-fm_crs.fm_lattice <- function(x, ..., crsonly = FALSE) {
-  fm_crs(x[["crs"]], ..., crsonly = crsonly)
-}
-
-#' @rdname fm_crs
-#' @export
 fm_crs.inla.mesh.segment <- function(x, ..., crsonly = FALSE) {
-  fm_crs(x[["crs"]], ..., crsonly = crsonly)
-}
-
-#' @rdname fm_crs
-#' @export
-fm_crs.fm_segm <- function(x, ..., crsonly = FALSE) {
   fm_crs(x[["crs"]], ..., crsonly = crsonly)
 }
 

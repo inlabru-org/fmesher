@@ -7,15 +7,70 @@
 \usage{
 fm_lattice_2d(...)
 
-\method{fm_lattice_2d}{default}(...)
+\method{fm_lattice_2d}{default}(
+  x = seq(0, 1, length.out = 2),
+  y = seq(0, 1, length.out = 2),
+  z = NULL,
+  dims = if (is.matrix(x)) {
+     dim(x)
+ } else {
+     c(length(x), length(y))
+ },
+  units = NULL,
+  crs = NULL,
+  ...
+)
 }
 \arguments{
 \item{...}{Currently passed on to \code{inla.mesh.lattice}}
+
+\item{x}{vector or grid matrix of x-values}
+
+\item{y}{vector of grid matrix of y-values}
+
+\item{z}{if x is a matrix, a grid matrix of z-values}
+
+\item{dims}{the size of the grid, length 2 vector}
+
+\item{units}{One of \code{c("default", "longlat", "longsinlat", "mollweide")}
+or NULL (equivalent to \code{"default"}).}
+
+\item{crs}{An optional \code{fm_crs}, \code{sf::st_crs}, or \code{sp::CRS} object}
+}
+\value{
+An \code{fm_lattice_2d} object.
 }
 \description{
-Make a lattice object
+Construct a lattice grid for \code{\link[=fm_mesh_2d]{fm_mesh_2d()}}
+}
+\examples{
+
+lattice <- fm_lattice_2d(seq(0, 1, length.out = 17), seq(0, 1, length.out = 10))
+
+## Use the lattice "as-is", without refinement:
+mesh <- fm_rcdt_2d_inla(lattice = lattice, boundary = lattice$segm)
+mesh <- fm_rcdt_2d_inla(lattice = lattice, extend = FALSE)
+
+## Refine the triangulation, with limits on triangle angles and edges:
+mesh <- fm_rcdt_2d(
+  lattice = lattice,
+  refine = list(max.edge = 0.08),
+  extend = FALSE
+)
+
+## Add an extension around the lattice, but maintain the lattice edges:
+mesh <- fm_rcdt_2d(
+  lattice = lattice,
+  refine = list(max.edge = 0.08),
+  interior = lattice$segm
+)
+
+## Only add extension:
+mesh <- fm_rcdt_2d(lattice = lattice, refine = list(max.edge = 0.08))
 }
 \seealso{
+\code{\link[=fm_mesh_2d]{fm_mesh_2d()}}
+
 Other object creation and conversion: 
 \code{\link{fm_as_fm}()},
 \code{\link{fm_as_lattice_2d}()},
@@ -28,5 +83,8 @@ Other object creation and conversion:
 \code{\link{fm_mesh_2d}()},
 \code{\link{fm_segm}()},
 \code{\link{fm_tensor}()}
+}
+\author{
+Finn Lindgren \email{finn.lindgren@gmail.com}
 }
 \concept{object creation and conversion}

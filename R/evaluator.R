@@ -193,13 +193,15 @@ fm_evaluator_mesh_1d <- function(mesh,
                                  loc,
                                  weights = NULL,
                                  derivatives = NULL,
-                                 method = c("default",
-                                            "nearest",
-                                            "linear",
-                                            "quadratic"),
+                                 method = c(
+                                   "default",
+                                   "nearest",
+                                   "linear",
+                                   "quadratic"
+                                 ),
                                  ...) {
   method <- match.arg(method)
-  ok = (loc >= mesh$interval[1]) & (loc <= mesh$interval[2])
+  ok <- (loc >= mesh$interval[1]) & (loc <= mesh$interval[2])
   if (identical(method, "default")) {
     ## Compute basis based on mesh$degree and mesh$boundary
     if (mesh$degree == 0) {
@@ -232,7 +234,8 @@ fm_evaluator_mesh_1d <- function(mesh,
         weights = weights,
         derivatives =
           ifelse(is.null(derivatives),
-                 FALSE, TRUE)
+            FALSE, TRUE
+          )
       )
       if (mesh$boundary[1] == "dirichlet") {
         info$A <- info$A[, -1, drop = FALSE]
@@ -257,7 +260,8 @@ fm_evaluator_mesh_1d <- function(mesh,
           weights = weights,
           derivatives =
             ifelse(is.null(derivatives),
-                   FALSE, TRUE)
+              FALSE, TRUE
+            )
         )
       adjust.matrix <- function(mesh, A) {
         A <- fm_as_dgTMatrix(A)
@@ -277,7 +281,7 @@ fm_evaluator_mesh_1d <- function(mesh,
             j[j == 1L] <- 2L
             j <- j - 1L
           } else if ((mesh$boundary[1] == "free") &&
-                     mesh$free.clamped[1]) {
+            mesh$free.clamped[1]) {
             j1 <- which(j == 1L)
             i <- c(i, i[j1])
             j <- c(j, j[j1] + 1L)
@@ -290,7 +294,7 @@ fm_evaluator_mesh_1d <- function(mesh,
             x[j == (mesh$m + 1L)] <- -x[j == (mesh$m + 1L)]
             j[j == (mesh$m + 1L)] <- mesh$m
           } else if ((mesh$boundary[2] == "free") &&
-                     mesh$free.clamped[2]) {
+            mesh$free.clamped[2]) {
             j1 <- which(j == (mesh$m))
             i <- c(i, i[j1])
             j <- c(j, j[j1] - 1L)
@@ -318,9 +322,9 @@ fm_evaluator_mesh_1d <- function(mesh,
       }
     } else {
       stop(paste("'degree' must be 0, 1, or 2.  'degree=",
-                 mesh$degree,
-                 "' is not supported.",
-                 sep = ""
+        mesh$degree,
+        "' is not supported.",
+        sep = ""
       ))
     }
   } else {
@@ -345,7 +349,7 @@ fm_evaluator_mesh_1d <- function(mesh,
         if (!is.null(derivatives) && derivatives) {
           if (mesh$cyclic) {
             d <- (c(mesh$loc[-1], mesh$interval[2]) -
-                    mesh$loc)
+              mesh$loc)
           } else {
             d <- (mesh$loc[-1] - mesh$loc[-mesh$n])
           }
@@ -362,7 +366,7 @@ fm_evaluator_mesh_1d <- function(mesh,
       } else {
         ## Nearest neighbours.
         A <- (Matrix::sparseMatrix(
-          i = 1:length(loc),
+          i = seq_along(loc),
           j = idx$index[, 1],
           x = weights * idx$bary[, 1],
           dims = c(length(loc), mesh$n)
@@ -380,7 +384,7 @@ fm_evaluator_mesh_1d <- function(mesh,
       if (mesh$cyclic) {
         Boundary.knots <-
           (c(mesh$loc, mesh$interval[2])[c(mesh$n, 2)] +
-             diff(mesh$interval) * c(-1, 1))
+            diff(mesh$interval) * c(-1, 1))
         knots <- c(mesh$loc, mesh$interval[2])
       } else {
         Boundary.knots <-
@@ -421,8 +425,9 @@ fm_evaluator_mesh_1d <- function(mesh,
       } else {
         idx <-
           fm_bary(fm_mesh_1d(knots, boundary = "free"),
-                  loc,
-                  method = "linear")
+            loc,
+            method = "linear"
+          )
       }
       knots <- c(knots, Boundary.knots[2])
       idx$index <- idx$index[, 1] - 1L ## Indices into mesh intervals.
@@ -431,18 +436,18 @@ fm_evaluator_mesh_1d <- function(mesh,
       d2 <- knots[3:length(knots)] - knots[1:(length(knots) - 2)]
 
       ## Left intervals for each basis function:
-      i.l <- 1:length(idx$index)
+      i.l <- seq_along(idx$index)
       j.l <- idx$index + 2L
       x.l <- (idx$bary[, 2] * d[idx$index + 1] / d2[idx$index + 1] * idx$bary[, 2])
       ## Right intervals for each basis function:
-      i.r <- 1:length(idx$index)
+      i.r <- seq_along(idx$index)
       j.r <- idx$index
       x.r <- (idx$bary[, 1] * d[idx$index + 1] / d2[idx$index] * idx$bary[, 1])
       ## Middle intervals for each basis function:
-      i.m <- 1:length(idx$index)
+      i.m <- seq_along(idx$index)
       j.m <- idx$index + 1L
       x.m <- (1 - (idx$bary[, 1] * d[idx$index + 1] / d2[idx$index] * idx$bary[, 1] +
-                     idx$bary[, 2] * d[idx$index + 1] / d2[idx$index + 1] * idx$bary[, 2]
+        idx$bary[, 2] * d[idx$index + 1] / d2[idx$index + 1] * idx$bary[, 2]
       ))
 
       i <- c(i.l, i.r, i.m)
@@ -463,7 +468,7 @@ fm_evaluator_mesh_1d <- function(mesh,
         x.l <- (2 / d2[idx$index + 1] * idx$bary[, 2])
         x.r <- (-2 / d2[idx$index] * idx$bary[, 1])
         x.m <- (-(-2 / d2[idx$index] * idx$bary[, 1] +
-                    2 / d2[idx$index + 1] * idx$bary[, 2]
+          2 / d2[idx$index + 1] * idx$bary[, 2]
         ))
         dA <- (Matrix::sparseMatrix(
           i = i, j = j,
@@ -479,7 +484,7 @@ fm_evaluator_mesh_1d <- function(mesh,
         x.l <- (2 / d[idx$index + 1] / d2[idx$index + 1])
         x.r <- (2 / d[idx$index + 1] / d2[idx$index])
         x.m <- (-(2 / d[idx$index + 1] / d2[idx$index] +
-                    2 / d[idx$index + 1] / d2[idx$index + 1]))
+          2 / d[idx$index + 1] / d2[idx$index + 1]))
         d2A <- (Matrix::sparseMatrix(
           i = i, j = j,
           x = weights.i * c(x.l, x.r, x.m),
@@ -528,7 +533,7 @@ fm_evaluator_lattice <- function(mesh,
         "mollweide"
       ))
     units <- projection
-    lim <- INLA::inla.mesh.map.lim(loc = mesh$loc, projection = projection)
+    lim <- fm_mesh_2d_map_lim(loc = mesh$loc, projection = projection)
   } else {
     lim <- fm_crs_bounds(crs)
     if (fm_manifold(mesh, "R2")) {

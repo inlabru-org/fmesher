@@ -2,15 +2,15 @@
 % Please edit documentation in R/mesh.R
 \name{fm_split_lines}
 \alias{fm_split_lines}
-\alias{fm_split_lines.inla.mesh}
 \alias{fm_split_lines.fm_mesh_2d}
+\alias{fm_split_lines.inla.mesh}
 \title{Split lines at triangle edges}
 \usage{
 fm_split_lines(mesh, ...)
 
-\method{fm_split_lines}{inla.mesh}(mesh, ...)
-
 \method{fm_split_lines}{fm_mesh_2d}(mesh, sp, ep, ...)
+
+\method{fm_split_lines}{inla.mesh}(mesh, ...)
 }
 \arguments{
 \item{mesh}{An \code{fm_mesh_2d} or \code{inla.mesh} object}

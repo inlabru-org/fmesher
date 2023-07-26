@@ -25,6 +25,8 @@ fm_bary(mesh, loc, ...)
 corresponding barycentric coordinates. May be a vector (for 1d) or
 raw matrix coordinates, \code{sf}, or \code{sp} point information (for 2d).}
 
+\item{\dots}{Arguments forwarded to sub-methods.}
+
 \item{method}{character; method for defining the barycentric coordinates}
 
 \item{crs}{Optional crs information for \code{loc}}

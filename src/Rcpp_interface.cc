@@ -361,6 +361,8 @@ Rcpp::List fmesher_rcdt(Rcpp::List options,
   } else {
     /* If we don't already have a triangulation, we must create one. */
     if (M.nT() == 0) {
+      FMLOG("cet_sides = " << rcdt_options.cet_sides << std::endl);
+      FMLOG("cet_margin = " << rcdt_options.cet_margin << std::endl);
       MC.CET(rcdt_options.cet_sides, rcdt_options.cet_margin);
     }
 

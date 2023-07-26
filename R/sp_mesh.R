@@ -58,17 +58,6 @@ fm_internal_sp2segment_join <- function(inp, grp = NULL, closed = TRUE) {
 
 
 #' @export
-#' @describeIn fmesher-deprecated `r lifecycle::badge("deprecated")` in favour of
-#' [fm_as_segm()]
-fm_sp2segment <-
-  function(...) {
-    fm_as_segm(...)
-  }
-
-
-
-
-#' @export
 #' @rdname fm_as_segm
 #' @param crs A crs object
 #' @param closed logical; whether to treat a point sequence as a closed polygon.
@@ -263,3 +252,14 @@ fm_as_segm.Polygon <-
       crs = fm_CRS(crs)
     )
   }
+
+
+
+
+
+#' @export
+#' @describeIn fmesher-deprecated `r lifecycle::badge("deprecated")` in favour of
+#' [fm_as_segm()]
+fm_sp2segment <- function(...) {
+  fm_as_segm(...)
+}

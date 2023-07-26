@@ -2,9 +2,15 @@
 % Please edit documentation in R/mesh.R
 \name{fm_manifold}
 \alias{fm_manifold}
+\alias{fm_manifold_type}
+\alias{fm_manifold_dim}
 \title{Query the mesh manifold type}
 \usage{
 fm_manifold(x, type = NULL)
+
+fm_manifold_type(x)
+
+fm_manifold_dim(x)
 }
 \arguments{
 \item{x}{A \link{fm_mesh_1d} or \link{fm_mesh_2d} object (or other object containing a

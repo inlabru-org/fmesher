@@ -40,15 +40,20 @@ remotes::install_github("inlabru-org/fmesher")
 ## Example
 
 ``` r
-library(fmesher)
-#> The legacy packages maptools, rgdal, and rgeos, underpinning the sp package,
-#> which was just loaded, will retire in October 2023.
-#> Please refer to R-spatial evolution reports for details, especially
-#> https://r-spatial.org/r/2023/05/15/evolution4.html.
-#> It may be desirable to make the sf package available;
-#> package maintainers should consider adding sf to Suggests:.
-#> The sp package is now running under evolution status 2
-#>      (status 2 uses the sf package in place of rgdal)
+suppressPackageStartupMessages(library(fmesher))
+
+# Port of the old inla mesh inla.mesh.create interface:
+INLA:::plot.inla.mesh(fm_rcdt_2d_inla(
+  cbind(0, 0),
+  extend = list(offset = 1, n = 16L),
+  refine = list(max.edge = 0.5)
+), asp = 1)
+```
+
+<img src="man/figures/README-example-1.png" width="100%" />
+
+``` r
+
 # longlat for a spherical version of the Earth
 print(fm_crs("longlat_globe"))
 #> Coordinate Reference System:

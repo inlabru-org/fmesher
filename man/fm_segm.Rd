@@ -5,6 +5,7 @@
 \alias{fm_segm.default}
 \alias{fm_segm.fm_segm}
 \alias{fm_segm_join}
+\alias{fm_segm_split}
 \alias{fm_segm.inla.mesh.segment}
 \alias{fm_segm.inla.mesh}
 \alias{fm_segm.fm_mesh_2d}
@@ -19,6 +20,8 @@ fm_segm(...)
 \method{fm_segm}{fm_segm}(..., grp = NULL, grp.default = 0L)
 
 fm_segm_join(x, grp = NULL, grp.default = 0L)
+
+fm_segm_split(x, grp = NULL, grp.default = 0L)
 
 \method{fm_segm}{inla.mesh.segment}(..., grp.default = 0)
 
@@ -80,6 +83,9 @@ of groups given by \code{grp}.
 
 \item \code{fm_segm_join()}: Join multiple \code{fm_segm} objects into a single \code{fm_segm}
 object.
+
+\item \code{fm_segm_split()}: Split an \code{fm_segm} object by \code{grp} into a list of \code{fm_segm}
+objects, optionally keeping only some groups.
 
 }}
 \seealso{
