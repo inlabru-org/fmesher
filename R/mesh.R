@@ -799,12 +799,12 @@ fm_nonconvex_hull.sfc <- function(x,
                                   dTolerance = NULL,
                                   ...) {
   if ((convex < 0) || (concave < 0)) {
-    approx_diameter <- fm_diameter(x)
+    diameter_bound <- fm_diameter(x)
     if (convex < 0) {
-      convex <- approx_diameter * abs(convex)
+      convex <- diameter_bound * abs(convex)
     }
     if (concave < 0) {
-      concave <- approx_diameter * abs(concave)
+      concave <- diameter_bound * abs(concave)
     }
   }
 
@@ -822,12 +822,72 @@ fm_nonconvex_hull.sfc <- function(x,
   y
 }
 
-#' @title Compute approximate spatial object diameter
-#' @param x A spatial object
-#' @param ... Currently unused
+#' Diameter bound for a geometric object
+#'
+#' Find an upper bound to the convex hull of a point set
+#'
+#' @param x A point set as an \eqn{n\times d}{n x d} matrix, or an
+#' `fm_mesh_2d`/`1d`/`sf` related object.
+#' @param manifold Character string specifying the manifold type. Default is to
+#' treat the point set with Euclidean \eqn{R^d} metrics. Use
+#' `manifold="S2"` for great circle distances on the unit sphere (this is
+#' set automatically for `fm_fmesh_2d` objects).
+#' @param \dots Additional parameters passed on to the submethods.
+#' @return A scalar, upper bound for the diameter of the convex hull of the
+#' point set.
+#' @author Finn Lindgren <finn.lindgren@@gmail.com>
+#' @examples
+#'
+#' fm_diameter(matrix(c(0, 1, 1, 0, 0, 0, 1, 1), 4, 2))
 #' @export
 fm_diameter <- function(x, ...) {
   UseMethod("fm_diameter")
+}
+
+#' @rdname fm_diameter
+#' @export
+fm_diameter.matrix <- function(x, manifold = NULL, ...) {
+  if (nrow(x) <= 1) {
+    return(0)
+  }
+  if (ncol(x) == 1) {
+    return(diff(range(x)))
+  }
+
+  if (identical(manifold, "S2")) {
+    radius <- mean(rowSums(x^2)^0.5)
+    x <- x / radius
+    distance <- function(u, v) {
+      2 * asin(pmin(
+        1,
+        ((u[1] - v[, 1])^2 + (u[2] - v[, 2])^2 + (u[3] - v[, 3])^2)^0.5 / 2
+      ))
+    }
+    center <- colMeans(x)
+    tmp <- sqrt(sum(center^2))
+    if (tmp < 1e-6 * radius) {
+      diam <- pi
+    } else {
+      center <- center / tmp
+      diam <- min(pi, 2 * max(distance(center, x)))
+    }
+    diam <- diam * radius
+    return(diam)
+  }
+
+  distance <- function(u, v) {
+    d <- 0
+    for (k in seq_len(ncol(v))) {
+      d <- d + (u[k] - v[, k])^2
+    }
+    d^0.5
+  }
+  center <- rep(0, ncol(x))
+  for (k in seq_len(ncol(x))) {
+    center[k] <- mean(range(x[, k]))
+  }
+  diam <- 2 * max(distance(center, x))
+  return(diam)
 }
 
 #' @rdname fm_diameter
@@ -850,19 +910,61 @@ fm_diameter.sfc <- function(x, ...) {
 
 #' @rdname fm_diameter
 #' @export
-fm_diameter.matrix <- function(x, ...) {
-  if (ncol(x) == 1) {
-    lim <- range(x)
-    approx_diameter <- diff(lim)
-  } else if (ncol(x) == 2) {
-    lim <- rbind(range(x[, 1]), range(x[, 2]))
-    approx_diameter <- max(diff(lim[1, ]), diff(lim[2, ]))
-  } else if (ncol(x) >= 3) {
-    lim <- rbind(range(x[, 1]), range(x[, 2]), range(x[, 3]))
-    approx_diameter <- max(diff(lim[1, ]), diff(lim[2, ]), diff(lim[3, ]))
-  }
-  approx_diameter
+fm_diameter.fm_lattice_2d <- function(x, ...) {
+  fm_diameter.matrix(x$loc, manifold = fm_manifold(x), ...)
 }
+
+#' @rdname fm_diameter
+#' @export
+fm_diameter.fm_segm <- function(x, ...) {
+  fm_diameter.matrix(x$loc, manifold = fm_manifold(x), ...)
+}
+
+#' @rdname fm_diameter
+#' @export
+fm_diameter.fm_mesh_2d <- function(x, ...) {
+  fm_diameter.matrix(x$loc, manifold = fm_manifold(x), ...)
+}
+
+#' @rdname fm_diameter
+#' @export
+fm_diameter.fm_mesh_1d <- function(x, ...) {
+  diff(x[["interval"]])
+}
+
+#' @rdname fm_diameter
+#' @export
+#' @method fm_diameter inla.mesh.1d
+fm_diameter.inla.mesh.1d <- function(x, ...) {
+  fm_diameter(fm_as_fm(x), ...)
+}
+
+#' @rdname fm_diameter
+#' @export
+#' @method fm_diameter inla.mesh.segment
+fm_diameter.inla.mesh.segment <- function(x, ...) {
+  fm_diameter(fm_as_fm(x), ...)
+}
+
+#' @rdname fm_diameter
+#' @export
+#' @method fm_diameter inla.mesh.lattice
+fm_diameter.inla.mesh.lattice <- function(x, ...) {
+  fm_diameter(fm_as_fm(x), ...)
+}
+
+#' @rdname fm_diameter
+#' @export
+#' @method fm_diameter inla.mesh
+fm_diameter.inla.mesh <- function(x, ...) {
+  fm_diameter(fm_as_fm(x), ...)
+}
+
+
+
+
+
+
 
 
 #' @title Compute extensions of a spatial object
@@ -897,12 +999,12 @@ fm_extensions <- function(x,
                           dTolerance = NULL,
                           ...) {
   if (any(convex < 0) || any(concave < 0) || any(dTolerance < 0)) {
-    approx_diameter <- fm_diameter(x)
+    diameter_bound <- fm_diameter(x)
   }
   len <- max(length(convex), length(concave), length(dTolerance))
   scale_fun <- function(val) {
     if (any(val < 0)) {
-      val[val < 0] <- approx_diameter * abs(val[val < 0])
+      val[val < 0] <- diameter_bound * abs(val[val < 0])
     }
     if (length(val) < len) {
       val <- c(val, rep(val[length(val)], len - length(val)))
@@ -946,6 +1048,9 @@ fm_extensions <- function(x,
 fm_manifold <- function(x, type = NULL) {
   if (is.null(type)) {
     return(x[["manifold"]])
+  }
+  if (is.null(x) || is.null(x[["manifold"]])) {
+    return(FALSE)
   }
   # Match exact manifold?
   if (x[["manifold"]] %in% type) {
@@ -1550,7 +1655,7 @@ handle_rcdt_options_inla <- function(
   if (inherits(refine, "list")) {
     rcdt_min_angle <- 0
     rcdt_max_edge <- 0
-    ## Multiply by to ensure cover S2 domains
+    # Multiply by 2 to cover S2; could remove if supplied manifold info
     max.edge.default <- fm_diameter(.loc) * 2
     if ((inherits(extend, "list")) && (!is.null(extend$offset))) {
       max.edge.default <- (max.edge.default +
