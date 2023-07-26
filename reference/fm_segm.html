@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.9.9004</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.9.9005</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,6 +72,8 @@
 <span><span class="fu">fm_segm</span><span class="op">(</span><span class="va">...</span>, grp <span class="op">=</span> <span class="cn">NULL</span>, grp.default <span class="op">=</span> <span class="fl">0L</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">fm_segm_join</span><span class="op">(</span><span class="va">x</span>, grp <span class="op">=</span> <span class="cn">NULL</span>, grp.default <span class="op">=</span> <span class="fl">0L</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">fm_segm_split</span><span class="op">(</span><span class="va">x</span>, grp <span class="op">=</span> <span class="cn">NULL</span>, grp.default <span class="op">=</span> <span class="fl">0L</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for inla.mesh.segment</span></span>
 <span><span class="fu">fm_segm</span><span class="op">(</span><span class="va">...</span>, grp.default <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
@@ -154,6 +156,8 @@ of groups given by <code>grp</code>.</p></li>
 <ul><li><p><code>fm_segm()</code>: Create a new <code>fm_segm</code> object.</p></li>
 <li><p><code>fm_segm_join()</code>: Join multiple <code>fm_segm</code> objects into a single <code>fm_segm</code>
 object.</p></li>
+<li><p><code>fm_segm_split()</code>: Split an <code>fm_segm</code> object by <code>grp</code> into a list of <code>fm_segm</code>
+objects, optionally keeping only some groups.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
