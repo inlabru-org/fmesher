@@ -72,10 +72,13 @@ fm_as_sfc.inla.mesh.segment <- function(x, ..., multi = FALSE) {
 }
 #' @describeIn fm_as_sfc `r lifecycle::badge("experimental")`
 #'
-#' @exportS3Method fm_as_sfc inla.mesh.segment
 #' @export
 fm_as_sfc.fm_segm <- function(x, ..., multi = FALSE) {
   stopifnot(inherits(x, "fm_segm"))
+
+  if (x$is.bnd) {
+    warning("fm_as_sfc currently only supports (multi)linestring output")
+  }
 
   group_segments <- list()
   used_seg <- c()
@@ -328,6 +331,66 @@ fm_as_segm.sfc_LINESTRING <-
         is.bnd = FALSE,
         crs = crs
       )
+    }
+
+    if (join) {
+      segm <- fm_segm_join(segm)
+    }
+    segm
+  }
+
+#' @rdname fm_as_segm
+#' @param join logical; if `TRUE`, join input segments with common vertices.
+#'    Default `TRUE`
+#' @export
+fm_as_segm.sfc_MULTILINESTRING <-
+  function(x, join = TRUE, grp = NULL, reverse = FALSE, ...) {
+    sfc <- x
+    # Note: Z should be fully supported in what we do with 3D coordinates ourselves.
+    # It's when applying st_ methods that the check needs to be done, not when crating
+    # objects, as we _do_ support 3D meshes in inla.mesh, and _should_ support those
+    # in inlabru.
+    #    if (st_check_dim(sfc)) {
+    #      warning(
+    #        "XYZ, XYM and XYZM sfg classes are not fully supported. In general the Z and M coordinates will be ignored"
+    #      )
+    #    }
+
+    crs <- sf::st_crs(sfc)
+
+    segm <- list()
+    if (is.null(grp)) {
+      grp <- seq_len(length(sfc))
+    } else {
+      grp <- c(grp, rep(grp[length(grp)], length(sfc) - length(grp)))
+    }
+    for (k in seq_len(length(sfc))) {
+      loc <- sf::st_coordinates(sfc[k])
+      coord_names <- intersect(c("X", "Y", "Z"), colnames(loc))
+      Linfo <- loc[, c("L1", "L2"), drop = FALSE]
+      uniqueLinfo <- unique(Linfo)
+      loc <- unname(loc[, coord_names, drop = FALSE])
+
+      segm_k <-
+        lapply(
+          seq_len(nrow(uniqueLinfo)),
+          function(i) {
+            subset <- which((Linfo[, 1] == uniqueLinfo[i, 1]) &
+              (Linfo[, 2] == uniqueLinfo[i, 2]))
+            idx <- seq_len(length(subset))
+            if (reverse) {
+              idx <- rev(idx)
+            }
+            fm_segm(
+              loc = loc[subset, , drop = FALSE],
+              idx = idx,
+              grp = grp[k],
+              is.bnd = FALSE,
+              crs = crs
+            )
+          }
+        )
+      segm[[k]] <- fm_segm_join(segm_k)
     }
 
     if (join) {

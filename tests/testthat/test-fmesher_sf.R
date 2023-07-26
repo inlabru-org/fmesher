@@ -18,18 +18,18 @@ test_that("sf standards compliance: basic polygons", {
   expect_false(st_check_polygon(badp2))
 })
 
-# FL note: see the inla.mesh.segment documentation for the idx and is.bnd arguments
+# FL note: see the fm_segm documentation for the idx and is.bnd arguments
 # sf stores polygons with repeated coordinates for the first and last point,
-# whereas inla.mesh.segment requires the index into loc to do that job;
+# whereas fm_segm requires the index into loc to do that job;
 # For is.bnd=TRUE, the idx default closes the polygon, but not for is.bnd=FALSE,
 # which is used for "linestring" type information.
-# Further note: inla.mesh.segment has two ways of specifying the index;
+# Further note: fm_segm has two ways of specifying the index;
 # as a sequence, or as a two-column matrix. But it is always stored as a two column matrix,
 # with no general guarantee that one line connects to the one in the next row.
 # This makes conversion to sp and sf polygons more difficult, which is why there
-# isn't a general fm_as_sp.inla.mesh.segment method. There is some code in various places,
+# isn't a general fm_as_sp.fm_segm method. There is some code in various places,
 # including in 'excursions' that could be used as a starting point to doing it properly
-# for sf conversion.
+# for sf conversion.  This work has been started; see fm_as_sfc.fm_segm()
 #
 # The fm_as_inla_mesh_segment.SpatialPoints method had a bug, w.r.t is.bnd
 # handling, and has now been fixed.
@@ -42,13 +42,13 @@ test_that("sf standards compliance: basic polygons", {
 # See https://github.com/r-spatial/sf/issues/2096
 
 
-test_that("Conversion from sfc_POINT to inla.mesh.segment", {
+test_that("Conversion from sfc_POINT to fm_segm", {
   local_fm_safe_inla()
 
   ## sfc_POINT ##
 
-  # compare inla.mesh.segment with matrix input
-  # to fm_as_inla_mesh_segment with sf point input
+  # compare fm_segm with matrix input
+  # to fm_as_segm with sf point input
 
   # matrix version
   loc.bnd <- matrix(c(0, 0, 1, 0, 1, 1, 0, 1), 4, 2, byrow = TRUE)
@@ -82,13 +82,13 @@ test_that("Conversion from sfc_POINT to inla.mesh.segment", {
 })
 
 
-test_that("Conversion from sfc_LINESTRING to inla.mesh.segment", {
+test_that("Conversion between sfc_(MULTI)LINESTRING and fm_segm", {
   local_fm_safe_inla()
 
   ## sfc_LINESTRING ##
 
-  pts1 <- rbind(c(0, 3), c(0, 4), c(1, 5), c(2, 5))
-  pts2 <- rbind(c(1, 1), c(0, 0), c(0, -1), c(-2, -2))
+  pts1 <- rbind(c(0, 3, 0), c(0, 4, 0), c(1, 5, 0), c(2, 5, 0))
+  pts2 <- rbind(c(1, 1, 0), c(0, 0, 0), c(0, -1, 0), c(-2, -2, 0))
   seg1 <- fm_segm(
     loc = pts1,
     idx = seq_len(nrow(pts1)),
@@ -119,16 +119,20 @@ test_that("Conversion from sfc_LINESTRING to inla.mesh.segment", {
 
   seg_to_sf <- fm_as_sfc(seg)
   expect_identical(fm_as_segm(sf::st_geometry(line_sf)), seg)
+  expect_identical(sf::st_geometry(line_sf), fm_as_sfc(seg))
 
   seg_to_sf2 <- fm_as_sfc(seg, multi = TRUE)
-  expect_identical(fm_as_segm(sf::st_union(sf::st_geometry(line_sf))), seg)
+  seg_one_group <- seg
+  seg_one_group$grp <- rep(1L, nrow(seg$idx))
+  expect_identical(fm_as_segm(sf::st_union(sf::st_geometry(line_sf))), seg_one_group)
+  expect_identical(sf::st_union(sf::st_geometry(line_sf)), fm_as_sfc(seg, multi = TRUE))
 
   #  str(seg)
   #  str(seg_sf)
 })
 
 
-test_that("Conversion from sfc_POLYGON to inla.mesh.segment", {
+test_that("Conversion from sfc_POLYGON to fm_segm", {
   local_fm_safe_inla()
 
   ## sfc_POLYGON ##
@@ -137,27 +141,33 @@ test_that("Conversion from sfc_POLYGON to inla.mesh.segment", {
   pts0b <- pts0 + 10
   pts1 <- rbind(c(0, 3), c(0, 4), c(1, 5), c(2, 5), c(0, 3)) # hole (CW)
   pts2 <- rbind(c(1, 2), c(0, 0), c(0, -1), c(-2, -2), c(1, 2)) # hole (CW)
+
+  pts0 <- cbind(pts0, 0)
+  pts0b <- cbind(pts0b, 0)
+  pts1 <- cbind(pts1, 0)
+  pts2 <- cbind(pts2, 0)
+
   seg0 <- fm_segm(
     loc = pts0[1:4, , drop = FALSE],
     is.bnd = TRUE,
-    crs = fm_CRS()
+    crs = fm_crs()
   )
   seg0b <- fm_segm(
     loc = pts0b[1:4, , drop = FALSE],
     is.bnd = TRUE,
-    crs = fm_CRS()
+    crs = fm_crs()
   )
 
   seg1 <- fm_segm(
     loc = pts1[1:4, , drop = FALSE],
     is.bnd = TRUE,
-    crs = fm_CRS()
+    crs = fm_crs()
   )
 
   seg2 <- fm_segm(
     loc = pts2[1:4, , drop = FALSE],
     is.bnd = TRUE,
-    crs = fm_CRS()
+    crs = fm_crs()
   )
 
   seg <- fm_segm_join(list(seg0, seg1, seg2, seg0b),
@@ -173,13 +183,16 @@ test_that("Conversion from sfc_POLYGON to inla.mesh.segment", {
 
   expect_identical(seg_sf, seg)
 
+  # Not yet supported (2023-07-26)
+  # expect_identical(line_sf, fm_as_sfc(seg))
+
   #  str(seg)
   #  str(seg_sf)
 })
 
 
 
-test_that("Conversion from sfc_MULTIPOLYGON to inla.mesh.segment", {
+test_that("Conversion from sfc_MULTIPOLYGON to fm_segm", {
   local_fm_safe_inla()
 
   ## sfc_MULTIPOLYGON ##
@@ -268,7 +281,7 @@ test_that("Conversion from sfc_MULTIPOLYGON to inla.mesh.segment", {
 
 
 
-test_that("Conversion from sfc_GEOMETRY to inla.mesh.segment", {
+test_that("Conversion from sfc_GEOMETRY to fm_segm", {
   local_fm_safe_inla()
 
   ## sfc_GEOMETRY ##

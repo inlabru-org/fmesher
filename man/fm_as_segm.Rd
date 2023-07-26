@@ -8,6 +8,7 @@
 \alias{fm_as_segm.sfg}
 \alias{fm_as_segm.sfc_POINT}
 \alias{fm_as_segm.sfc_LINESTRING}
+\alias{fm_as_segm.sfc_MULTILINESTRING}
 \alias{fm_as_segm.sfc_POLYGON}
 \alias{fm_as_segm.sfc_MULTIPOLYGON}
 \alias{fm_as_segm.sfc_GEOMETRY}
@@ -38,6 +39,8 @@ fm_as_segm_list(x, ...)
 \method{fm_as_segm}{sfc_POINT}(x, reverse = FALSE, grp = NULL, is.bnd = TRUE, ...)
 
 \method{fm_as_segm}{sfc_LINESTRING}(x, join = TRUE, grp = NULL, reverse = FALSE, ...)
+
+\method{fm_as_segm}{sfc_MULTILINESTRING}(x, join = TRUE, grp = NULL, reverse = FALSE, ...)
 
 \method{fm_as_segm}{sfc_POLYGON}(x, join = TRUE, grp = NULL, ...)
 
