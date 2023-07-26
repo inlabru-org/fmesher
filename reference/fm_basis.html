@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.9.9003</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.9.9004</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,7 +66,13 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fm_basis</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for default</span></span>
-<span><span class="fu">fm_basis</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">fm_basis</span><span class="op">(</span><span class="va">x</span>, <span class="va">loc</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for fm_mesh_1d</span></span>
+<span><span class="fu">fm_basis</span><span class="op">(</span><span class="va">x</span>, <span class="va">loc</span>, weights <span class="op">=</span> <span class="cn">NULL</span>, derivatives <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for inla.mesh.1d</span></span>
+<span><span class="fu">fm_basis</span><span class="op">(</span><span class="va">x</span>, <span class="va">loc</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for fm_evaluator</span></span>
 <span><span class="fu">fm_basis</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
@@ -82,8 +88,17 @@
 <dd><p>Currently unused</p></dd>
 
 
-<dt>y</dt>
-<dd><p>A set of points of a class supported by <code>fm_evaluator(x, loc = y)</code></p></dd>
+<dt>loc</dt>
+<dd><p>A set of points of a class supported by <code>fm_evaluator(x, loc = loc)</code></p></dd>
+
+
+<dt>weights</dt>
+<dd><p>Optional weight matrix to apply (from the left)</p></dd>
+
+
+<dt>derivatives</dt>
+<dd><p>If non-NULL and logical, return a list, optionally
+including <code>dA</code> and <code>d2A</code> matrices</p></dd>
 
 </dl></div>
     <div class="section level2">
