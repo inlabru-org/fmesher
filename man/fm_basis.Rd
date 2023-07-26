@@ -3,12 +3,18 @@
 \name{fm_basis}
 \alias{fm_basis}
 \alias{fm_basis.default}
+\alias{fm_basis.fm_mesh_1d}
+\alias{fm_basis.inla.mesh.1d}
 \alias{fm_basis.fm_evaluator}
 \title{Compute mapping matrix between mesh function space and points}
 \usage{
 fm_basis(x, ...)
 
-\method{fm_basis}{default}(x, y, ...)
+\method{fm_basis}{default}(x, loc, ...)
+
+\method{fm_basis}{fm_mesh_1d}(x, loc, weights = NULL, derivatives = NULL, ...)
+
+\method{fm_basis}{inla.mesh.1d}(x, loc, ...)
 
 \method{fm_basis}{fm_evaluator}(x, ...)
 }
@@ -17,7 +23,12 @@ fm_basis(x, ...)
 
 \item{\dots}{Currently unused}
 
-\item{y}{A set of points of a class supported by \code{fm_evaluator(x, loc = y)}}
+\item{loc}{A set of points of a class supported by \code{fm_evaluator(x, loc = loc)}}
+
+\item{weights}{Optional weight matrix to apply (from the left)}
+
+\item{derivatives}{If non-NULL and logical, return a list, optionally
+including \code{dA} and \code{d2A} matrices}
 }
 \value{
 A \code{sparseMatrix}

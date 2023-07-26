@@ -2,24 +2,45 @@
 % Please edit documentation in R/mesh.R
 \name{fm_bary}
 \alias{fm_bary}
+\alias{fm_bary.fm_mesh_1d}
+\alias{fm_bary.fm_mesh_2d}
+\alias{fm_bary.inla.mesh}
+\alias{fm_bary.inla.mesh.1d}
 \title{Compute barycentric coordinates}
 \usage{
-fm_bary(mesh, loc, crs = NULL)
+fm_bary(mesh, loc, ...)
+
+\method{fm_bary}{fm_mesh_1d}(mesh, loc, method = c("linear", "nearest"), ...)
+
+\method{fm_bary}{fm_mesh_2d}(mesh, loc, crs = NULL, ...)
+
+\method{fm_bary}{inla.mesh}(mesh, ...)
+
+\method{fm_bary}{inla.mesh.1d}(mesh, ...)
 }
 \arguments{
-\item{mesh}{\code{fm_mesh_2d} or \code{inla.mesh} object}
+\item{mesh}{\code{fm_mesh_1d} or \code{fm_mesh_2d} object}
 
 \item{loc}{Points for which to identify the containing triangle, and
-corresponding barycentric coordinates. May be raw matrix coordinates, \code{sf}, or \code{sp}
-point information.}
+corresponding barycentric coordinates. May be a vector (for 1d) or
+raw matrix coordinates, \code{sf}, or \code{sp} point information (for 2d).}
+
+\item{method}{character; method for defining the barycentric coordinates}
 
 \item{crs}{Optional crs information for \code{loc}}
 }
-\value{
-A list with elements \code{t} (vector of triangle indices) and \code{bary}
+\description{
+Identify knot intervals or triangles and compute barycentric coordinates
+}
+\section{Methods (by class)}{
+\itemize{
+\item \code{fm_bary(fm_mesh_1d)}: Return a list with elements
+\code{t} (start and endpoint knot indices) and \code{bary} (barycentric coordinates), both
+2-column matrices. For backwards compatibility with old inla code, a copy \code{index=t}
+is also included in the list.
+
+\item \code{fm_bary(fm_mesh_2d)}: A list with elements \code{t} (vector of triangle indices) and \code{bary}
 (3-column matrix of barycentric coordinates). Points that were not found
 give \code{NA} entries in \code{t} and \code{bary}.
-}
-\description{
-Identify triangles and compute barycentric coordinates
-}
+
+}}

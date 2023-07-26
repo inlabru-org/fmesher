@@ -546,20 +546,110 @@ fm_onto_mesh <- function(mesh, loc, crs = NULL) {
 
 #' @title Compute barycentric coordinates
 #'
-#' @description Identify triangles and compute barycentric coordinates
+#' @description Identify knot intervals or triangles and compute barycentric coordinates
 #'
-#' @param mesh `fm_mesh_2d` or `inla.mesh` object
+#' @param mesh `fm_mesh_1d` or `fm_mesh_2d` object
 #' @param loc Points for which to identify the containing triangle, and
-#' corresponding barycentric coordinates. May be raw matrix coordinates, `sf`, or `sp`
-#' point information.
+#' corresponding barycentric coordinates. May be a vector (for 1d) or
+#' raw matrix coordinates, `sf`, or `sp` point information (for 2d).
+#'
+#' @export
+fm_bary <- function(mesh, loc, ...) {
+  UseMethod("fm_bary")
+}
+
+
+#' @describeIn fm_bary Return a list with elements
+#' `t` (start and endpoint knot indices) and `bary` (barycentric coordinates), both
+#' 2-column matrices. For backwards compatibility with old inla code, a copy `index=t`
+#' is also included in the list.
+#' @param method character; method for defining the barycentric coordinates
+#' @export
+fm_bary.fm_mesh_1d <- function(mesh, loc, method = c("linear", "nearest"), ...) {
+  method <- match.arg(method)
+
+  if (method == "linear") {
+    if (mesh$cyclic) {
+      mloc <- c(mesh$loc - mesh$loc[1], diff(mesh$interval))
+      loc <- (loc - mesh$loc[1]) %% diff(mesh$interval)
+    } else {
+      mloc <- c(mesh$loc - mesh$loc[1], diff(mesh$interval))
+      loc <- pmax(0, pmin(diff(mesh$interval), loc - mesh$loc[1]))
+    }
+  } else {
+    if (mesh$cyclic) {
+      mloc <-
+        c(
+          mesh$loc[mesh$n] - diff(mesh$interval),
+          mesh$loc,
+          diff(mesh$interval)
+        )
+      mloc <- (mloc[-(mesh$n + 2)] + mloc[-1]) / 2
+      loc <- (loc - mloc[1]) %% diff(mesh$interval)
+      mloc <- mloc - mloc[1]
+    } else {
+      mloc <-
+        c(
+          0,
+          (mesh$loc[1:(mesh$n - 1L)] +
+             mesh$loc[2:mesh$n]) / 2 - mesh$loc[1],
+          diff(mesh$interval)
+        )
+      loc <- pmax(0, pmin(diff(mesh$interval), loc - mesh$loc[1]))
+    }
+  }
+
+  ## Binary split method:
+  do.the.split <- function(knots, loc) {
+    n <- length(knots)
+    if (n <= 2L) {
+      return(rep(1L, length(loc)))
+    }
+    split <- 1L + (n - 1L) %/% 2L ## Split point
+    upper <- (loc >= knots[split])
+    idx <- rep(0, length(loc))
+    idx[!upper] <- do.the.split(knots[1:split], loc[!upper])
+    idx[upper] <- split - 1L + do.the.split(knots[split:n], loc[upper])
+    return(idx)
+  }
+
+  idx <- do.the.split(mloc, loc)
+
+  if (method == "nearest") {
+    u <- rep(0, length(loc))
+    if (mesh$cyclic) {
+      found <- which(idx == (mesh$n + 1L))
+      idx[found] <- 1L
+    }
+  } else { ## (method=="linear") {
+    u <- pmax(0, pmin(1, (loc - mloc[idx]) / (mloc[idx + 1L] - mloc[idx])))
+    if (!mesh$cyclic) {
+      found <- which(idx == mesh$n)
+      idx[found] <- mesh$n - 1L
+      u[found] <- 1
+    }
+  }
+
+  if (mesh$cyclic) {
+    index <- matrix(c(idx, (idx %% mesh$n) + 1L), length(idx), 2)
+    bary <- matrix(c(1 - u, u), length(idx), 2)
+  } else {
+    index <- matrix(c(idx, idx + 1L), length(idx), 2)
+    bary <- matrix(c(1 - u, u), length(idx), 2)
+  }
+
+  return(list(t = index, bary = bary, index = index))
+}
+
+
 #' @param crs Optional crs information for `loc`
 #'
-#' @return A list with elements `t` (vector of triangle indices) and `bary`
+#' @describeIn fm_bary A list with elements `t` (vector of triangle indices) and `bary`
 #' (3-column matrix of barycentric coordinates). Points that were not found
 #' give `NA` entries in `t` and `bary`.
 #'
 #' @export
-fm_bary <- function(mesh, loc, crs = NULL) {
+fm_bary.fm_mesh_2d <- function(mesh, loc, crs = NULL, ...) {
   loc <- fm_onto_mesh(mesh, loc, crs = crs)
 
   # Avoid sphere accuracy issues by scaling to unit sphere
@@ -587,6 +677,22 @@ fm_bary <- function(mesh, loc, crs = NULL) {
   tri[pre_ok_idx[ok]] <- result$t[ok] + 1L
   bary[pre_ok_idx[ok], ] <- result$bary[ok, ]
   list(t = tri, bary = bary)
+}
+
+
+
+#' @rdname fm_bary
+#' @export
+#' @method fm_bary inla.mesh
+fm_bary.inla.mesh <- function(mesh, ...) {
+  fm_bary.fm_mesh_2d(fm_as_mesh_2d(mesh), ...)
+}
+
+#' @rdname fm_bary
+#' @export
+#' @method fm_bary inla.mesh.1d
+fm_bary.inla.mesh.1d <- function(mesh, ...) {
+  fm_bary.fm_mesh_1d(fm_as_mesh_1d(mesh), ...)
 }
 
 
@@ -1514,13 +1620,184 @@ fm_as_fm.inla.mesh.lattice <- function(x, ...) {
 
 # fm_mesh_1d ####
 
-#' @title Make a 1D mesh object
-#' @export
-#' @param ... Currently passed on to `inla.mesh.1d`
-#' @family object creation and conversion
-fm_mesh_1d <- function(...) {
-  fm_as_mesh_1d(INLA::inla.mesh.1d(...))
+`match.arg.vector` <- function(arg = NULL,
+                               choices,
+                               length = NULL) {
+  ## Like match.arg, but for a vector of options 'arg'
+  if (is.null(length)) {
+    length <- ifelse(is.null(arg), 1L, length(arg))
+  }
+  if (is.null(arg)) {
+    arg <- match.arg(arg, choices)
+  } else {
+    for (k in seq_along(arg)) {
+      arg[k] <- match.arg(arg[k], choices)
+    }
+  }
+  if (length(arg) < length) {
+    arg <- c(arg, rep(arg, length - length(arg)))
+  } else if (length(arg) > length) {
+    stop("Option list too long.")
+  }
+  return(arg)
 }
+
+#' @title Make a 1D mesh object
+#' @description
+#' Create a `fm_mesh_1d` object.
+#'
+#' @param loc B-spline knot locations.
+#' @param interval Interval domain endpoints.
+#' @param boundary Boundary condition specification.  Valid conditions are
+#' `c('neumann', 'dirichlet', 'free', 'cyclic')`.  Two separate values can
+#' be specified, one applied to each endpoint.
+#' @param degree The B-spline basis degree.  Supported values are 0, 1, and 2.
+#' @param free.clamped If `TRUE`, for `'free'` boundaries, clamp the
+#' basis functions to the interval endpoints.
+#' @param \dots Additional options, currently unused.
+#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @export
+#' @family object creation and conversion
+fm_mesh_1d <- function(loc,
+                       interval = range(loc),
+                       boundary = NULL,
+                       degree = 1,
+                       free.clamped = FALSE,
+                       ...) {
+  ## Note: do not change the order of these options without also
+  ## changing 'basis.reduction' below.
+  boundary.options <- c("neumann", "dirichlet", "free", "cyclic")
+
+  boundary <- match.arg.vector(boundary, boundary.options, length = 2)
+  cyclic <- !is.na(pmatch(boundary[1], "cyclic"))
+  if (cyclic && is.na(pmatch(boundary[2], "cyclic"))) {
+    stop("Inconsistent boundary specification 'boundary=c(",
+         paste(boundary, collapse = ","), ")'.",
+         sep = ""
+    )
+  }
+
+  loc.orig <- loc
+  if (cyclic) {
+    loc <-
+      (sort(unique(c(0, loc - interval[1]) %% diff(interval))) +
+         interval[1])
+  } else {
+    loc <-
+      (sort(unique(c(
+        interval,
+        pmax(interval[1], pmin(interval[2], loc))
+      ))))
+  }
+
+  n <- length(loc)
+
+  if (loc[1] < interval[1]) {
+    stop("All 'loc' must be >= interval[1].")
+  }
+  if (loc[n] > interval[2]) {
+    stop("All 'loc' must be <= interval[2].")
+  }
+
+  if ((degree < 0) || (degree > 2)) {
+    stop(paste("'degree' must be 0, 1, or 2.  'degree=",
+               degree,
+               "' is not supported.",
+               sep = ""
+    ))
+  }
+
+  if (length(free.clamped) == 1L) {
+    free.clamped <- rep(free.clamped, 2)
+  }
+
+
+  ## Number of basis functions
+  if (degree == 0) {
+    basis.reduction <- c(0, 1, 0, 1 / 2) ## neu, dir, free, cyclic
+  } else if (degree == 1) {
+    basis.reduction <- c(0, 1, 0, 1 / 2) ## neu, dir, free, cyclic
+  } else {
+    basis.reduction <- c(1, 1, 0, 1)
+  }
+  m <- (n + cyclic + (degree == 2) * 1
+        - basis.reduction[pmatch(boundary[1], boundary.options)]
+        - basis.reduction[pmatch(boundary[2], boundary.options)])
+  ## if (m < 1+max(1,degree)) {
+  if (m < 1L) {
+    stop("Degree ", degree,
+         " meshes must have at least ", 1L,
+         " basis functions, not 'm=", m, "'.",
+         sep = ""
+    )
+  }
+
+  ## Compute representative basis midpoints.
+  if ((degree == 0) || (degree == 1)) {
+    mid <- loc
+    if (boundary[1] == "dirichlet") {
+      mid <- mid[-1]
+    }
+    if (boundary[2] == "dirichlet") {
+      mid <- mid[-(m + 1)]
+    }
+  } else { ## degree==2
+    if (cyclic) {
+      mid <- (loc + c(loc[-1], interval[2])) / 2
+    } else {
+      mid <- c(loc[1], (loc[-n] + loc[-1]) / 2, loc[n])
+      mid <-
+        switch(boundary[1],
+               neumann = mid[-1],
+               dirichlet = mid[-1],
+               free = mid
+        )
+      mid <-
+        switch(boundary[2],
+               neumann = mid[-(m + 1)],
+               dirichlet = mid[-(m + 1)],
+               free = mid
+        )
+    }
+  }
+
+  mesh <-
+    structure(
+      list(
+        n = n,
+        m = m,
+        loc = loc,
+        mid = mid,
+        interval = interval,
+        boundary = boundary,
+        cyclic = cyclic,
+        manifold = ifelse(cyclic, "S1", "R1"),
+        degree = degree,
+        free.clamped = free.clamped,
+        idx = list(loc = NULL)
+      ),
+      class = c("fm_mesh_1d", "inla.mesh.1d")
+    )
+
+  if (degree < 2) {
+    mesh$idx$loc <-
+      fm_bary(mesh, loc.orig, method = "nearest")$index[, 1]
+  } else {
+    if (length(mid) >= 2) {
+      mesh$idx$loc <-
+        fm_bary(fm_mesh_1d(mid, degree = 0),
+                loc.orig,
+                method = "nearest"
+        )$index[, 1]
+    } else {
+      mesh$idx$loc <- rep(1, length(loc.orig))
+    }
+  }
+
+  return(mesh)
+}
+
+
 
 #' @title Convert objects to `fm_segm`
 #' @describeIn fm_as_mesh_1d Convert an object to `fm_mesh_1d`.

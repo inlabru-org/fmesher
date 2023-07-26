@@ -4,13 +4,33 @@
 \alias{fm_mesh_1d}
 \title{Make a 1D mesh object}
 \usage{
-fm_mesh_1d(...)
+fm_mesh_1d(
+  loc,
+  interval = range(loc),
+  boundary = NULL,
+  degree = 1,
+  free.clamped = FALSE,
+  ...
+)
 }
 \arguments{
-\item{...}{Currently passed on to \code{inla.mesh.1d}}
+\item{loc}{B-spline knot locations.}
+
+\item{interval}{Interval domain endpoints.}
+
+\item{boundary}{Boundary condition specification.  Valid conditions are
+\code{c('neumann', 'dirichlet', 'free', 'cyclic')}.  Two separate values can
+be specified, one applied to each endpoint.}
+
+\item{degree}{The B-spline basis degree.  Supported values are 0, 1, and 2.}
+
+\item{free.clamped}{If \code{TRUE}, for \code{'free'} boundaries, clamp the
+basis functions to the interval endpoints.}
+
+\item{\dots}{Additional options, currently unused.}
 }
 \description{
-Make a 1D mesh object
+Create a \code{fm_mesh_1d} object.
 }
 \seealso{
 Other object creation and conversion: 
@@ -25,5 +45,8 @@ Other object creation and conversion:
 \code{\link{fm_mesh_2d}()},
 \code{\link{fm_segm}()},
 \code{\link{fm_tensor}()}
+}
+\author{
+Finn Lindgren \email{finn.lindgren@gmail.com}
 }
 \concept{object creation and conversion}
