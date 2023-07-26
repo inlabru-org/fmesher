@@ -1862,7 +1862,7 @@ fm_delaunay_2d <- function(loc, crs = NULL, ...) {
   }
   loc <- unify_loc_coords(loc, crs = crs)
 
-  hull <- chull(loc[, 1], loc[, 2])
+  hull <- grDevices::chull(loc[, 1], loc[, 2])
   bnd <- fm_segm(
     loc = loc[hull[rev(seq_along(hull))], , drop = FALSE],
     is.bnd = TRUE
