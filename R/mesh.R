@@ -2698,7 +2698,7 @@ fm_mesh_2d_inla <- function(loc = NULL, ## Points to include in final triangulat
   }
 
   if (length(boundary) < num.layers) {
-    boundary <- c(boundary, list(NULL))
+    boundary <- c(boundary, rep(list(NULL), num.layers - length(boundary)))
   }
   if (length(min.angle) < num.layers) {
     min.angle <- c(min.angle, min.angle)
