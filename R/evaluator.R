@@ -962,7 +962,7 @@ fm_block <- function(block = NULL,
                      weights = NULL,
                      log_weights = NULL,
                      rescale = FALSE,
-                     n_block = NULL, ...) {
+                     n_block = NULL) {
   block <- block_prep(block = block, log_weights = log_weights, weights = weights)
   if (length(block) == 0) {
     return(

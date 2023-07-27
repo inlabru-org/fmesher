@@ -12,8 +12,7 @@ fm_block(
   weights = NULL,
   log_weights = NULL,
   rescale = FALSE,
-  n_block = NULL,
-  ...
+  n_block = NULL
 )
 
 fm_block_weights(
