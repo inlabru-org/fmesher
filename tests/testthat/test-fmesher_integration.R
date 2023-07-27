@@ -21,8 +21,6 @@ test_that("Discrete integration", {
 
 
 test_that("Continuous integration", {
-  local_fm_safe_inla()
-
   domain <- fm_mesh_1d(2:5)
 
   samplers <- c(3, 7)
@@ -44,8 +42,6 @@ test_that("Continuous integration", {
 
 
 test_that("Tensor space integration", {
-  local_fm_safe_inla()
-
   mesh_time <- fm_mesh_1d(1:5)
   mesh_space <- fm_mesh_1d(c(0, 5, 10))
   domain <- list(space = mesh_space, time = mesh_time)
@@ -77,42 +73,39 @@ test_that("Tensor space integration", {
 # From old ipoints tests
 
 test_that("conversion of SpatialPolygon to integration points when domain is defined via a mesh", {
-  local_fm_safe_inla()
   skip_if_not_installed("inlabru")
 
   data(gorillas, package = "inlabru", envir = environment())
-  ips <- fm_int(gorillas$mesh, gorillas$boundary)
+  ips <- fm_int(gorillas$mesh, samplers = gorillas$boundary)
 
   expect_s4_class(ips, "SpatialPointsDataFrame")
-  expect_equal(colnames(as.data.frame(ips)), c("weight", ".block", "x", "y", "z"))
-  expect_equal(sum(ips$weight),
-    gorillas$boundary@polygons[[1]]@area,
-    tolerance = lowtol
+  expect_equal(
+    sort(colnames(as.data.frame(ips))),
+    sort(c("weight", ".block", "x", "y", "z"))
   )
+  expect_equal(sum(ips$weight), 19.87366, tolerance = lowtol)
 })
 
 test_that("conversion of whole 2D mesh to integration points", {
-  local_fm_safe_inla()
   skip_if_not_installed("inlabru")
 
   data(gorillas, package = "inlabru", envir = environment())
+
+  ips <- fm_int(gorillas$mesh, format = "sf")
+
+  expect_s3_class(ips, "sf")
+  expect_equal(colnames(ips), c("weight", ".block", "geometry"))
+  expect_equal(sum(ips$weight), 27.64229, tolerance = lowtol)
 
   ips <- fm_int(gorillas$mesh, format = "sp")
 
   expect_s4_class(ips, "SpatialPointsDataFrame")
   expect_equal(colnames(as.data.frame(ips)), c("weight", ".block", "x", "y", "z"))
   expect_equal(sum(ips$weight), 27.64229, tolerance = lowtol)
-
-  ips <- fm_int(gorillas$mesh, format = "sf")
-
-  expect_s3_class(ips, "sf")
-  expect_equal(colnames(as.data.frame(ips)), c("weight", ".block", "geometry"))
-  expect_equal(sum(ips$weight), 27.64229, tolerance = lowtol)
 })
 
 
 test_that("Polygon integration with holes", {
-  local_fm_safe_inla()
   set.seed(123L)
 
   plyA <- sp::SpatialPolygons(list(
@@ -130,18 +123,26 @@ test_that("Polygon integration with holes", {
   ))
 
   bndA <- fm_as_segm(plyA)
-  m <- fm_mesh_2d(
+  m <- fm_mesh_2d_inla(
     loc.domain = bndA$loc,
     max.edge = 1
   )
-  ipA3 <- fm_int(m, plyA, int.args = list(
+  ipA1 <- fm_int(m, plyA, int.args = list(
     method = "direct",
     nsub2 = 1
   ))
-  ipA4 <- fm_int(m, plyA, int.args = list(
+  ipA2 <- fm_int(m, plyA, int.args = list(
     method = "stable",
     nsub2 = 1
   ))
+  ipA3 <- fm_int(m, plyA, int.args = list(
+    method = "direct"
+  ))
+  ipA4 <- fm_int(m, plyA, int.args = list(
+    method = "stable"
+  ))
+  ipA1$test <- "A1"
+  ipA2$test <- "A2"
   ipA3$test <- "A3"
   ipA4$test <- "A4"
 
@@ -152,20 +153,25 @@ test_that("Polygon integration with holes", {
     pl
 
     pl +
+      gg(ipA1, mapping = aes(col = weight, size = weight)) +
+      gg(ipA2, mapping = aes(col = weight, size = weight)) +
       gg(ipA3, mapping = aes(col = weight, size = weight)) +
       gg(ipA4, mapping = aes(col = weight, size = weight)) +
       ggplot2::facet_wrap(vars(test))
   }
 
-  expect_equal(sum(ipA3$weight), 7.780959, tolerance = midtol)
-  expect_equal(sum(ipA4$weight), 7.780959, tolerance = midtol)
+  # > sf::st_area(sf::st_as_sf(plyA))
+  # [1] 8.006112
+
+  expect_equal(sum(ipA1$weight), 7.780959, tolerance = lowtol)
+  expect_equal(sum(ipA2$weight), 7.780959, tolerance = lowtol)
+  expect_equal(sum(ipA3$weight), 8.004363, tolerance = lowtol)
+  expect_equal(sum(ipA4$weight), 8.004363, tolerance = lowtol)
 })
 
 
 test_that("Integration line splitting", {
-  local_fm_safe_inla()
-
-  mesh <- fm_mesh_2d(
+  mesh <- fm_mesh_2d_inla(
     loc.domain = cbind(0, 0),
     offset = 2,
     max.edge = 0.5

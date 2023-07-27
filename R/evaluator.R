@@ -903,3 +903,213 @@ fm_basis.inla.mesh.1d <- function(x, loc, ...) {
 fm_basis.fm_evaluator <- function(x, ...) {
   x$proj$A
 }
+
+
+
+
+
+block_prep <- function(block = NULL, log_weights = NULL, weights = NULL) {
+  block_len <- NULL
+  if (is.null(block)) {
+    if (!is.null(log_weights)) {
+      block_len <- length(log_weights)
+    } else {
+      block_len <- length(weights)
+    }
+    if (block_len == 0) {
+      return(integer(0))
+    }
+    block <- rep(1L, block_len)
+  } else if (length(block) == 1L) {
+    if (!is.null(log_weights)) {
+      block_len <- length(log_weights)
+    } else {
+      block_len <- length(weights)
+    }
+    if (block_len > 1L) {
+      block <- rep(block, block_len)
+    }
+  }
+  block
+}
+
+#' Blockwise aggregation matrices
+#'
+#' Creates an aggregation matrix for blockwise aggregation, with optional
+#' weighting.
+#'
+#' @param block integer vector; block information. If `NULL`,
+#' `rep(1L, block_len)` is used, where `block_len` is determined by
+#' `length(log_weights)))` or `length(weights)))`.A single scalar is also repeated
+#' to a vector of corresponding length to the weights.
+#' @param weights Optional weight vector
+#' @param log_weights Optional `log(weights)` vector. Overrides `weights` when
+#' non-NULL.
+#' @param rescale logical; If `TRUE`, normalise the weights by `sum(weights)`
+#' or `sum(exp(log_weights))` within each block.
+#' Default: `FALSE`
+#' @param n_block integer; The number of conceptual blocks. Only needs to be
+#' specified if it's larger than `max(block)`.
+#'
+#' @export
+#'
+#' @describeIn fm_block A (sparse) matrix of size `n_block` times `length(block)`.
+#' @examples
+#' fm_block(c(1, 1, 1, 2, 2))
+#' fm_block(c(1, 1, 1, 2, 2), rescale = TRUE)
+#' fm_block(c(1, 1, 1, 2, 2), log_weights = -2:2, rescale = TRUE)
+fm_block <- function(block = NULL,
+                     weights = NULL,
+                     log_weights = NULL,
+                     rescale = FALSE,
+                     n_block = NULL, ...) {
+  block <- block_prep(block = block, log_weights = log_weights, weights = weights)
+  if (length(block) == 0) {
+    return(
+      Matrix::sparseMatrix(
+        i = integer(0),
+        j = integer(0),
+        x = numeric(0),
+        dims = c(0L, 0L)
+      )
+    )
+  }
+  if (is.null(n_block)) {
+    n_block <- max(block)
+  }
+  weights <-
+    fm_block_weights(
+      block = block,
+      weights = weights,
+      log_weights = log_weights,
+      n_block = n_block,
+      rescale = rescale
+    )
+
+  Matrix::sparseMatrix(
+    i = block,
+    j = seq_len(length(block)),
+    x = weights,
+    dims = c(n_block, length(block))
+  )
+}
+
+
+#' @describeIn fm_block Computes (optionally) blockwise renormalised weights
+#' @export
+fm_block_weights <- function(block = NULL, weights = NULL, log_weights = NULL,
+                             n_block = NULL, rescale = FALSE) {
+  block <- block_prep(block = block, log_weights = log_weights, weights = weights)
+  if (length(block) == 0) {
+    return(numeric(0))
+  }
+  if (is.null(n_block)) {
+    n_block <- max(block)
+  }
+  if (rescale) {
+    # Compute blockwise normalised weights
+    if (!is.null(log_weights)) {
+      log_weights <- fm_block_log_weights(
+        log_weights = log_weights,
+        block = block,
+        n_block = n_block,
+        rescale = rescale
+      )
+      weights <- exp(log_weights)
+    } else {
+      if (is.null(weights)) {
+        weights <- rep(1.0, length(block))
+      }
+      scale <- as.vector(
+        Matrix::sparseMatrix(
+          i = block,
+          j = rep(1L, length(block)),
+          x = weights,
+          dims = c(n_block, 1)
+        )
+      )
+      weights <- weights / scale[block]
+    }
+  } else if (!is.null(log_weights)) {
+    weights <- exp(log_weights)
+  } else if (is.null(weights)) {
+    weights <- rep(1.0, length(block))
+  }
+  weights
+}
+
+#' @describeIn fm_block Computes (optionally) blockwise renormalised log-weights
+#' @export
+fm_block_log_weights <- function(block = NULL, weights = NULL, log_weights = NULL,
+                                 n_block = NULL,
+                                 rescale = FALSE) {
+  block <- block_prep(block = block, log_weights = log_weights, weights = weights)
+  if (length(block) == 0) {
+    return(numeric(0))
+  }
+  if (is.null(n_block)) {
+    n_block <- max(block)
+  }
+  if (is.null(log_weights)) {
+    if (is.null(weights)) {
+      log_weights <- rep(0.0, length(block))
+    } else {
+      log_weights <- log(weights)
+    }
+  }
+  if (rescale) {
+    shift <- fm_block_log_shift(
+      block = block, log_weights = log_weights,
+      n_block = n_block
+    )
+    log_rescale <- as.vector(
+      Matrix::sparseMatrix(
+        i = block,
+        j = rep(1L, length(block)),
+        x = exp(log_weights - shift[block]),
+        dims = c(n_block, 1)
+      )
+    )
+    log_rescale <- (log(log_rescale) + shift)[block]
+    log_weights <- log_weights - log_rescale
+  }
+  log_weights
+}
+
+
+#' @describeIn fm_block Computes shifts for stable blocked log-sum-exp.
+#' To compute \eqn{\log(\sum_{i; \text{block}_i=k} \exp(v_i) w_i)}{
+#' log(sum_(i;block_i=k) exp(v_i) w_i)
+#' } for
+#' each block `k`:
+#' ```
+#' w_values <- values + fm_block_log_weights(block, log_weights)
+#' shift <- fm_block_log_shift(block, w_values)
+#' agg <- aggregate(exp(w_values - shift[block]),
+#'                  by = list(block = block),
+#'                  \(x) log(sum(x)))
+#' agg$x <- agg$x + shift[agg$block]
+#' ```
+#' @export
+fm_block_log_shift <- function(block = NULL, log_weights = NULL, n_block = NULL) {
+  block <- block_prep(block = block, log_weights = log_weights, weights = NULL)
+  if (length(block) == 0) {
+    return(0.0)
+  }
+  if (is.null(n_block)) {
+    n_block <- max(block)
+  }
+  block_k <- sort(unique(block))
+  shift <- numeric(n_block)
+  if (!is.null(log_weights)) {
+    shift[block_k] <-
+      vapply(
+        block_k,
+        function(k) {
+          max(log_weights[block == k])
+        },
+        0.0
+      )
+  }
+  shift
+}
