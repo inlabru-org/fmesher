@@ -11,7 +11,7 @@
 \alias{fm_crs.default}
 \alias{fm_crs.crs}
 \alias{fm_crs.fm_crs}
-\alias{fm_crs.inla.CRS}
+\alias{fm_crs.fm_CRS}
 \alias{fm_crs.character}
 \alias{fm_crs.Spatial}
 \alias{fm_crs.SpatVector}
@@ -22,10 +22,11 @@
 \alias{fm_crs.fm_mesh_2d}
 \alias{fm_crs.fm_lattice_2d}
 \alias{fm_crs.fm_segm}
+\alias{fm_wkt_predef}
+\alias{fm_crs.inla.CRS}
 \alias{fm_crs.inla.mesh}
 \alias{fm_crs.inla.mesh.lattice}
 \alias{fm_crs.inla.mesh.segment}
-\alias{fm_wkt_predef}
 \title{Obtain coordinate reference system object}
 \usage{
 fm_crs(x, oblique = NULL, ..., crsonly = deprecated())
@@ -48,7 +49,7 @@ fm_crs_oblique(x)
 
 \method{fm_crs}{fm_crs}(x, oblique = NULL, ...)
 
-\method{fm_crs}{inla.CRS}(x, oblique = NULL, ...)
+\method{fm_crs}{fm_CRS}(x, oblique = NULL, ...)
 
 \method{fm_crs}{character}(x, oblique = NULL, ...)
 
@@ -70,13 +71,15 @@ fm_crs_oblique(x)
 
 \method{fm_crs}{fm_segm}(x, oblique = NULL, ...)
 
+fm_wkt_predef()
+
+\method{fm_crs}{inla.CRS}(x, oblique = NULL, ...)
+
 \method{fm_crs}{inla.mesh}(x, oblique = NULL, ...)
 
 \method{fm_crs}{inla.mesh.lattice}(x, oblique = NULL, ...)
 
 \method{fm_crs}{inla.mesh.segment}(x, oblique = NULL, ...)
-
-fm_wkt_predef()
 }
 \arguments{
 \item{x}{Object to convert to \code{crs} or  to extract \code{crs} information from.

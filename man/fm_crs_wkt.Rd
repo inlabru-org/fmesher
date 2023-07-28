@@ -13,7 +13,7 @@
 \alias{fm_ellipsoid_radius<-}
 \alias{fm_ellipsoid_radius<-.character}
 \alias{fm_ellipsoid_radius<-.CRS}
-\alias{fm_ellipsoid_radius<-.inla.CRS}
+\alias{fm_ellipsoid_radius<-.fm_CRS}
 \alias{fm_ellipsoid_radius<-.crs}
 \alias{fm_ellipsoid_radius<-.fm_crs}
 \alias{fm_crs_set_ellipsoid_radius}
@@ -28,7 +28,7 @@
 \alias{fm_length_unit<-}
 \alias{fm_length_unit<-.character}
 \alias{fm_length_unit<-.CRS}
-\alias{fm_length_unit<-.inla.CRS}
+\alias{fm_length_unit<-.fm_CRS}
 \alias{fm_length_unit<-.crs}
 \alias{fm_length_unit<-.fm_crs}
 \alias{fm_wkt}
@@ -39,6 +39,8 @@
 \alias{fm_crs_projection_type}
 \alias{fm_crs_bounds}
 \alias{fm_crs_detect_manifold}
+\alias{fm_ellipsoid_radius<-.inla.CRS}
+\alias{fm_length_unit<-.inla.CRS}
 \title{Handling CRS/WKT}
 \usage{
 fm_wkt_is_geocent(wkt)
@@ -63,7 +65,7 @@ fm_ellipsoid_radius(x) <- value
 
 \method{fm_ellipsoid_radius}{CRS}(x) <- value
 
-\method{fm_ellipsoid_radius}{inla.CRS}(x) <- value
+\method{fm_ellipsoid_radius}{fm_CRS}(x) <- value
 
 \method{fm_ellipsoid_radius}{crs}(x) <- value
 
@@ -93,7 +95,7 @@ fm_length_unit(x) <- value
 
 \method{fm_length_unit}{CRS}(x) <- value
 
-\method{fm_length_unit}{inla.CRS}(x) <- value
+\method{fm_length_unit}{fm_CRS}(x) <- value
 
 \method{fm_length_unit}{crs}(x) <- value
 
@@ -114,6 +116,10 @@ fm_crs_projection_type(crs)
 fm_crs_bounds(crs, warn.unknown = FALSE)
 
 fm_crs_detect_manifold(crs)
+
+\method{fm_ellipsoid_radius}{inla.CRS}(x) <- value
+
+\method{fm_length_unit}{inla.CRS}(x) <- value
 }
 \arguments{
 \item{wkt}{A WKT2 character string}

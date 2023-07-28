@@ -12,11 +12,12 @@
 \alias{fm_crs<-.Spatial}
 \alias{fm_crs_oblique<-.crs}
 \alias{fm_crs_oblique<-.CRS}
-\alias{fm_crs_oblique<-.inla.CRS}
+\alias{fm_crs_oblique<-.fm_CRS}
 \alias{fm_crs_oblique<-.fm_crs}
 \alias{fm_crs_oblique<-.fm_segm}
 \alias{fm_crs_oblique<-.fm_mesh_2d}
 \alias{fm_crs_oblique<-.fm_lattice_2d}
+\alias{fm_crs_oblique<-.inla.CRS}
 \title{Assignment operators for crs information objects}
 \usage{
 fm_crs(x) <- value
@@ -41,7 +42,7 @@ fm_crs_oblique(x) <- value
 
 \method{fm_crs_oblique}{CRS}(x) <- value
 
-\method{fm_crs_oblique}{inla.CRS}(x) <- value
+\method{fm_crs_oblique}{fm_CRS}(x) <- value
 
 \method{fm_crs_oblique}{fm_crs}(x) <- value
 
@@ -50,6 +51,8 @@ fm_crs_oblique(x) <- value
 \method{fm_crs_oblique}{fm_mesh_2d}(x) <- value
 
 \method{fm_crs_oblique}{fm_lattice_2d}(x) <- value
+
+\method{fm_crs_oblique}{inla.CRS}(x) <- value
 }
 \arguments{
 \item{x}{Object to assign crs information to}

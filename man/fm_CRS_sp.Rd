@@ -2,26 +2,30 @@
 % Please edit documentation in R/crs.R
 \name{fm_CRS}
 \alias{fm_CRS}
+\alias{is.na.fm_CRS}
 \alias{is.na.inla.CRS}
 \alias{fm_CRS.crs}
 \alias{fm_CRS.fm_crs}
 \alias{fm_CRS.Spatial}
-\alias{fm_CRS.inla.CRS}
+\alias{fm_CRS.fm_CRS}
 \alias{fm_CRS.sf}
 \alias{fm_CRS.sfc}
 \alias{fm_CRS.sfg}
-\alias{fm_CRS.inla.mesh}
 \alias{fm_CRS.fm_mesh_2d}
-\alias{fm_CRS.inla.mesh.lattice}
 \alias{fm_CRS.fm_lattice}
-\alias{fm_CRS.inla.mesh.segment}
 \alias{fm_CRS.fm_segm}
 \alias{fm_CRS.CRS}
 \alias{fm_CRS.default}
 \alias{print.fm_CRS}
+\alias{fm_CRS.inla.CRS}
+\alias{fm_CRS.inla.mesh}
+\alias{fm_CRS.inla.mesh.lattice}
+\alias{fm_CRS.inla.mesh.segment}
 \title{Create a coordinate reference system object}
 \usage{
 fm_CRS(...)
+
+\method{is.na}{fm_CRS}(x)
 
 \method{is.na}{inla.CRS}(x)
 
@@ -31,7 +35,7 @@ fm_CRS(...)
 
 \method{fm_CRS}{Spatial}(x, ...)
 
-\method{fm_CRS}{inla.CRS}(x, oblique = NULL, ...)
+\method{fm_CRS}{fm_CRS}(x, oblique = NULL, ...)
 
 \method{fm_CRS}{sf}(x, oblique = NULL, ...)
 
@@ -39,15 +43,9 @@ fm_CRS(...)
 
 \method{fm_CRS}{sfg}(x, oblique = NULL, ...)
 
-\method{fm_CRS}{inla.mesh}(x, oblique = NULL, ...)
-
 \method{fm_CRS}{fm_mesh_2d}(x, oblique = NULL, ...)
 
-\method{fm_CRS}{inla.mesh.lattice}(x, oblique = NULL, ...)
-
 \method{fm_CRS}{fm_lattice}(x, oblique = NULL, ...)
-
-\method{fm_CRS}{inla.mesh.segment}(x, oblique = NULL, ...)
 
 \method{fm_CRS}{fm_segm}(x, oblique = NULL, ...)
 
@@ -63,6 +61,14 @@ fm_CRS(...)
 )
 
 \method{print}{fm_CRS}(x, ...)
+
+\method{fm_CRS}{inla.CRS}(x, oblique = NULL, ...)
+
+\method{fm_CRS}{inla.mesh}(x, oblique = NULL, ...)
+
+\method{fm_CRS}{inla.mesh.lattice}(x, oblique = NULL, ...)
+
+\method{fm_CRS}{inla.mesh.segment}(x, oblique = NULL, ...)
 }
 \arguments{
 \item{\dots}{Additional parameters. Not currently in use.}
@@ -128,6 +134,9 @@ projection is only correct for perfect spheres.
 }
 \section{Functions}{
 \itemize{
+\item \code{is.na(fm_CRS)}: Check if a \code{fm_CRS} has \code{NA} crs information and \code{NA}
+obliqueness
+
 \item \code{is.na(inla.CRS)}: Check if a \code{inla.CRS} has \code{NA} crs information and \code{NA}
 obliqueness
 

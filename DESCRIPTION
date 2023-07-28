@@ -17,7 +17,7 @@ Description: Functions that generate planar and spherical triangle meshes,
     and interoperability with sf and sp geometries. Experimental
     package that will take over these features from the INLA package.
 Depends:
-    R (>= 3.6)
+    R (>= 3.6),
     methods
 Imports:
     dplyr,

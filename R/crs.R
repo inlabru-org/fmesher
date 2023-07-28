@@ -201,7 +201,7 @@ fm_wkt_set_ellipsoid_radius <- function(wkt, radius) {
 
 #' @rdname fm_crs_wkt
 #' @export
-`fm_ellipsoid_radius<-.inla.CRS` <- function(x, value) {
+`fm_ellipsoid_radius<-.fm_CRS` <- function(x, value) {
   crs <- fm_crs(x)
   fm_ellipsoid_radius(crs) <- value
   new_crs <- fm_CRS(crs)
@@ -464,7 +464,7 @@ fm_length_unit.character <- function(x) {
 
 #' @rdname fm_crs_wkt
 #' @export
-`fm_length_unit<-.inla.CRS` <- function(x, value) {
+`fm_length_unit<-.fm_CRS` <- function(x, value) {
   crs <- fm_crs(x)
   fm_length_unit(crs) <- value
   new_crs <- fm_CRS(crs)
@@ -707,7 +707,7 @@ fm_crs.fm_crs <- function(x, oblique = NULL, ...) {
 
 #' @export
 #' @rdname fm_crs
-fm_crs.inla.CRS <- function(x, oblique = NULL, ...) {
+fm_crs.fm_CRS <- function(x, oblique = NULL, ...) {
   fm_crs(
     x[["crs"]],
     oblique = if (is.null(oblique)) x[["oblique"]] else oblique,
@@ -830,25 +830,6 @@ fm_crs.fm_segm <- function(x, oblique = NULL, ...) {
   fm_crs(x[["crs"]], oblique = oblique, ...)
 }
 
-#' @rdname fm_crs
-#' @export
-#' @method fm_crs inla.mesh
-fm_crs.inla.mesh <- function(x, oblique = NULL, ...) {
-  fm_crs(x[["crs"]], oblique = oblique, ...)
-}
-
-#' @rdname fm_crs
-#' @export
-fm_crs.inla.mesh.lattice <- function(x, oblique = NULL, ...) {
-  fm_crs(x[["crs"]], oblique = oblique, ...)
-}
-
-#' @rdname fm_crs
-#' @export
-fm_crs.inla.mesh.segment <- function(x, oblique = NULL, ...) {
-  fm_crs(x[["crs"]], oblique = oblique, ...)
-}
-
 
 
 
@@ -950,7 +931,7 @@ fm_crs.inla.mesh.segment <- function(x, oblique = NULL, ...) {
 
 #' @export
 #' @rdname fm_crs-set
-`fm_crs_oblique<-.inla.CRS` <- function(x, value) {
+`fm_crs_oblique<-.fm_CRS` <- function(x, value) {
   fm_CRS(x[["crs"]],
     oblique = if (is.null(value)) NA else value
   )
@@ -1068,6 +1049,13 @@ fm_CRS <- function(...) {
   UseMethod("fm_CRS")
 }
 
+#' @describeIn fm_CRS_sp Check if a `fm_CRS` has `NA` crs information and `NA`
+#' obliqueness
+#' @export
+is.na.fm_CRS <- function(x) {
+  is.na(fm_crs(x))
+}
+
 #' @describeIn fm_CRS_sp Check if a `inla.CRS` has `NA` crs information and `NA`
 #' obliqueness
 #' @export
@@ -1104,7 +1092,7 @@ fm_CRS.Spatial <- function(x, ...) {
 
 #' @rdname fm_CRS_sp
 #' @export
-fm_CRS.inla.CRS <- function(x, oblique = NULL, ...) {
+fm_CRS.fm_CRS <- function(x, oblique = NULL, ...) {
   fm_CRS(fm_crs(x, oblique = oblique, ...))
 }
 
@@ -1128,31 +1116,13 @@ fm_CRS.sfg <- function(x, oblique = NULL, ...) {
 
 #' @rdname fm_CRS_sp
 #' @export
-fm_CRS.inla.mesh <- function(x, oblique = NULL, ...) {
-  fm_CRS(x[["crs"]], oblique = oblique, ...)
-}
-
-#' @rdname fm_CRS_sp
-#' @export
 fm_CRS.fm_mesh_2d <- function(x, oblique = NULL, ...) {
   fm_CRS(x[["crs"]], oblique = oblique, ...)
 }
 
 #' @rdname fm_CRS_sp
 #' @export
-fm_CRS.inla.mesh.lattice <- function(x, oblique = NULL, ...) {
-  fm_CRS(x[["crs"]], oblique = oblique, ...)
-}
-
-#' @rdname fm_CRS_sp
-#' @export
 fm_CRS.fm_lattice <- function(x, oblique = NULL, ...) {
-  fm_CRS(x[["crs"]], oblique = oblique, ...)
-}
-
-#' @rdname fm_CRS_sp
-#' @export
-fm_CRS.inla.mesh.segment <- function(x, oblique = NULL, ...) {
   fm_CRS(x[["crs"]], oblique = oblique, ...)
 }
 
@@ -2132,19 +2102,6 @@ fm_crs_detect_manifold <- function(crs) {
 
 #' @export
 #' @rdname fm_transform
-fm_transform.inla.mesh <- function(x,
-                                   crs = fm_crs(x),
-                                   ...,
-                                   passthrough = FALSE,
-                                   crs0 = fm_crs(x)) {
-  x$loc <- fm_transform(x$loc, crs = crs, ..., crs0 = x$crs, passthrough = passthrough)
-  x$manifold <- fm_crs_detect_manifold(crs)
-  x$crs <- fm_CRS(crs)
-  x
-}
-
-#' @export
-#' @rdname fm_transform
 fm_transform.fm_mesh_2d <- function(x,
                                     crs = fm_crs(x),
                                     ...,
@@ -2158,21 +2115,6 @@ fm_transform.fm_mesh_2d <- function(x,
 
 #' @export
 #' @rdname fm_transform
-fm_transform.inla.mesh.lattice <- function(x,
-                                           crs = fm_crs(x),
-                                           ...,
-                                           passthrough = FALSE,
-                                           crs0 = fm_crs(x)) {
-  fm_transform.fm_lattice_2d(
-    fm_as_lattice_2d(x),
-    crs = crs,
-    ...,
-    passthrough = passthrough,
-    crs0 = crs0
-  )
-}
-#' @export
-#' @rdname fm_transform
 fm_transform.fm_lattice_2d <- function(x,
                                        crs = fm_crs(x),
                                        ...,
@@ -2184,13 +2126,6 @@ fm_transform.fm_lattice_2d <- function(x,
   invisible(x)
 }
 
-#' @export
-#' @rdname fm_transform
-fm_transform.inla.mesh.segment <- function(x, crs = fm_crs(x), ..., passthrough = FALSE) {
-  x$loc <- fm_transform(x$loc, crs = crs, crs0 = x$crs, ..., passthrough = passthrough)
-  x$crs <- fm_CRS(crs)
-  invisible(x)
-}
 
 #' @export
 #' @rdname fm_transform
@@ -2200,6 +2135,112 @@ fm_transform.fm_segm <- function(x, crs = fm_crs(x), ..., passthrough = FALSE) {
   invisible(x)
 }
 
+
+
+
+# Legacy class support ####
+
+#' @rdname fm_crs_wkt
+#' @export
+`fm_ellipsoid_radius<-.inla.CRS` <- function(x, value) {
+  crs <- fm_crs(x)
+  fm_ellipsoid_radius(crs) <- value
+  new_crs <- fm_CRS(crs)
+
+  new_crs
+}
+
+#' @rdname fm_crs_wkt
+#' @export
+`fm_length_unit<-.inla.CRS` <- function(x, value) {
+  crs <- fm_crs(x)
+  fm_length_unit(crs) <- value
+  new_crs <- fm_CRS(crs)
+
+  new_crs
+}
+
+#' @export
+#' @rdname fm_crs
+fm_crs.inla.CRS <- function(x, oblique = NULL, ...) {
+  fm_crs(
+    x[["crs"]],
+    oblique = if (is.null(oblique)) x[["oblique"]] else oblique,
+    ...
+  )
+}
+
+#' @rdname fm_crs
+#' @export
+#' @method fm_crs inla.mesh
+fm_crs.inla.mesh <- function(x, oblique = NULL, ...) {
+  fm_crs(x[["crs"]], oblique = oblique, ...)
+}
+
+#' @rdname fm_crs
+#' @export
+fm_crs.inla.mesh.lattice <- function(x, oblique = NULL, ...) {
+  fm_crs(x[["crs"]], oblique = oblique, ...)
+}
+
+#' @rdname fm_crs
+#' @export
+fm_crs.inla.mesh.segment <- function(x, oblique = NULL, ...) {
+  fm_crs(x[["crs"]], oblique = oblique, ...)
+}
+
+#' @export
+#' @rdname fm_crs-set
+`fm_crs_oblique<-.inla.CRS` <- function(x, value) {
+  fm_CRS(x[["crs"]],
+    oblique = if (is.null(value)) NA else value
+  )
+}
+
+#' @rdname fm_CRS_sp
+#' @export
+fm_CRS.inla.CRS <- function(x, oblique = NULL, ...) {
+  fm_CRS(fm_crs(x, oblique = oblique, ...))
+}
+
+#' @rdname fm_CRS_sp
+#' @export
+fm_CRS.inla.mesh <- function(x, oblique = NULL, ...) {
+  fm_CRS(x[["crs"]], oblique = oblique, ...)
+}
+
+#' @rdname fm_CRS_sp
+#' @export
+fm_CRS.inla.mesh.lattice <- function(x, oblique = NULL, ...) {
+  fm_CRS(x[["crs"]], oblique = oblique, ...)
+}
+
+#' @rdname fm_CRS_sp
+#' @export
+fm_CRS.inla.mesh.segment <- function(x, oblique = NULL, ...) {
+  fm_CRS(x[["crs"]], oblique = oblique, ...)
+}
+
+#' @export
+#' @rdname fm_transform
+fm_transform.inla.mesh <- function(x,
+                                   crs = fm_crs(x),
+                                   ...) {
+  fm_transform.fm_mesh_2d(fm_as_mesh_2d(x), crs = crs, ...)
+}
+
+#' @export
+#' @rdname fm_transform
+fm_transform.inla.mesh.lattice <- function(x,
+                                           crs = fm_crs(x),
+                                           ...) {
+  fm_transform.fm_lattice_2d(fm_as_lattice_2d(x), crs = crs, ...)
+}
+#' @export
+#' @rdname fm_transform
+fm_transform.inla.mesh.segment <- function(x, crs = fm_crs(x), ...) {
+  fm_transform.fm_segm(fm_as_segm(x), crs = crs, ...)
+}
 
 
 # fm_spTransform ----
