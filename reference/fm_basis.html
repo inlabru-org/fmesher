@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.9.9006</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.9.9007</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,7 +71,13 @@
 <span><span class="co"># S3 method for fm_mesh_1d</span></span>
 <span><span class="fu">fm_basis</span><span class="op">(</span><span class="va">x</span>, <span class="va">loc</span>, weights <span class="op">=</span> <span class="cn">NULL</span>, derivatives <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># S3 method for fm_mesh_2d</span></span>
+<span><span class="fu">fm_basis</span><span class="op">(</span><span class="va">x</span>, <span class="va">loc</span>, weights <span class="op">=</span> <span class="cn">NULL</span>, derivatives <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
 <span><span class="co"># S3 method for inla.mesh.1d</span></span>
+<span><span class="fu">fm_basis</span><span class="op">(</span><span class="va">x</span>, <span class="va">loc</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for inla.mesh</span></span>
 <span><span class="fu">fm_basis</span><span class="op">(</span><span class="va">x</span>, <span class="va">loc</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for fm_evaluator</span></span>
@@ -98,7 +104,7 @@
 
 <dt>derivatives</dt>
 <dd><p>If non-NULL and logical, return a list, optionally
-including <code>dA</code> and <code>d2A</code> matrices</p></dd>
+including derivative matrices.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -108,7 +114,24 @@ including <code>dA</code> and <code>d2A</code> matrices</p></dd>
 <p>A <code>sparseMatrix</code></p>
 
 
-    </div>
+
+<p>For <code>fm_mesh_1d</code>, a list with elements</p>
+<dl><dt>A </dt>
+<dd><p>The projection matrix, <code>u(loc_i)=sum_j A_ij w_i</code></p></dd>
+
+<dt>d1A, d2A </dt>
+<dd><p>Derivative weight matrices,
+<code>du/dx(loc_i)=sum_j dx_ij w_i</code>, etc.</p></dd>
+
+
+</dl><p>For <code>fm_mesh_2d</code>, a list with elements</p>
+<dl><dt>A </dt>
+<dd><p>The projection matrix, <code>u(loc_i)=sum_j A_ij w_i</code></p></dd>
+
+<dt>dx, dy, dz </dt>
+<dd><p>Derivative weight matrices, <code>du/dx(loc_i)=sum_j dx_ij w_i</code>, etc.</p></dd>
+
+</dl></div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>

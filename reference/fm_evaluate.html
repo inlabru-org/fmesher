@@ -12,7 +12,7 @@ defined on a mesh or function space."><!-- mathjax --><script src="https://cdnjs
     
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.9.9006</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.9.9007</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -88,7 +88,14 @@ defined on a mesh or function space.</p>
 <span></span>
 <span><span class="fu">fm_evaluator</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">fm_evaluator_mesh_2d</span><span class="op">(</span><span class="va">mesh</span>, loc <span class="op">=</span> <span class="cn">NULL</span>, crs <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">fm_evaluator_mesh_2d</span><span class="op">(</span></span>
+<span>  <span class="va">mesh</span>,</span>
+<span>  loc <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  weights <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  derivatives <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  crs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">fm_evaluator_mesh_1d</span><span class="op">(</span></span>
 <span>  <span class="va">mesh</span>,</span>
@@ -149,17 +156,18 @@ the function to be evaluated at the projection locations</p></dd>
 <code>SpatialPointsDataFrame</code>, <code>sf</code>, <code>sfc</code>, or <code>sfg</code> object.</p></dd>
 
 
-<dt>crs</dt>
-<dd><p>An optional CRS or inla.CRS object associated with <code>loc</code>
-and/or <code>lattice</code>.</p></dd>
-
-
 <dt>weights</dt>
 <dd><p>Optional weight vector</p></dd>
 
 
 <dt>derivatives</dt>
-<dd><p>logical; If true, also return matrices <code>dA</code> and <code>d2A</code></p></dd>
+<dd><p>logical; If true, also return matrices <code>dA</code> and <code>d2A</code>
+for <code>fm_mesh_1d</code> objects, and <code>dx</code>, <code>dy</code>, <code>dz</code> for <code>fm_mesh_2d</code>.</p></dd>
+
+
+<dt>crs</dt>
+<dd><p>An optional CRS or inla.CRS object associated with <code>loc</code>
+and/or <code>lattice</code>.</p></dd>
 
 
 <dt>method</dt>
