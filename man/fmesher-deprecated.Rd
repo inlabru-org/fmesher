@@ -3,13 +3,6 @@
 %   R/mesh.R, R/sp_mesh.R
 \name{fmesher-deprecated}
 \alias{fmesher-deprecated}
-\alias{fm_has_PROJ6}
-\alias{fm_not_for_PROJ6}
-\alias{fm_not_for_PROJ4}
-\alias{fm_fallback_PROJ6}
-\alias{fm_requires_PROJ6}
-\alias{fm_as_sp_crs}
-\alias{fm_sp_get_crs}
 \alias{fm_spTransform}
 \alias{fm_spTransform.default}
 \alias{fm_spTransform.SpatialPoints}
@@ -17,26 +10,19 @@
 \alias{fm_spTransform.inla.mesh.lattice}
 \alias{fm_spTransform.inla.mesh.segment}
 \alias{fm_spTransform.inla.mesh}
+\alias{fm_has_PROJ6}
+\alias{fm_not_for_PROJ6}
+\alias{fm_not_for_PROJ4}
+\alias{fm_fallback_PROJ6}
+\alias{fm_requires_PROJ6}
+\alias{fm_as_sp_crs}
+\alias{fm_sp_get_crs}
 \alias{split_lines}
 \alias{fm_as_inla_mesh_segment}
 \alias{fm_as_inla_mesh}
 \alias{fm_sp2segment}
 \title{Deprecated functions in fmesher}
 \usage{
-fm_has_PROJ6()
-
-fm_not_for_PROJ6(fun = NULL)
-
-fm_not_for_PROJ4(fun = NULL)
-
-fm_fallback_PROJ6(fun = NULL)
-
-fm_requires_PROJ6(fun = NULL)
-
-fm_as_sp_crs(x, ...)
-
-fm_sp_get_crs(x)
-
 fm_spTransform(x, ...)
 
 \method{fm_spTransform}{default}(x, crs0 = NULL, crs1 = NULL, passthrough = FALSE, ...)
@@ -51,6 +37,20 @@ fm_spTransform(x, ...)
 
 \method{fm_spTransform}{inla.mesh}(x, CRSobj, passthrough = FALSE, ...)
 
+fm_has_PROJ6()
+
+fm_not_for_PROJ6(fun = NULL)
+
+fm_not_for_PROJ4(fun = NULL)
+
+fm_fallback_PROJ6(fun = NULL)
+
+fm_requires_PROJ6(fun = NULL)
+
+fm_as_sp_crs(x, ...)
+
+fm_sp_get_crs(x)
+
 split_lines(mesh, sp, ep, filter.zero.length = TRUE)
 
 fm_as_inla_mesh_segment(...)
@@ -60,10 +60,7 @@ fm_as_inla_mesh(...)
 fm_sp2segment(...)
 }
 \arguments{
-\item{fun}{The name of the function that requires PROJ6. Default: NULL,
-which uses the name of the calling function.}
-
-\item{x}{The object that should be transformed from it's current CRS to a new CRS}
+\item{x}{A \code{sp::Spatial} object}
 
 \item{\dots}{Potential additional arguments}
 
@@ -76,6 +73,9 @@ Setting to TRUE allows objects with no CRS information to be passed
 through without transformation.}
 
 \item{CRSobj}{The target sp::CRS or inla.CRS object}
+
+\item{fun}{The name of the function that requires PROJ6. Default: NULL,
+which uses the name of the calling function.}
 
 \item{mesh}{An \code{fm_mesh_2d} or \code{inla.mesh} object}
 
@@ -105,6 +105,13 @@ and use \link[=fm_crs]{fm_CRS()} to extract/construct/convert to old style \code
 }
 \section{Functions}{
 \itemize{
+\item \code{fm_spTransform()}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} (See \code{\link[=fm_transform]{fm_transform()}} instead)
+Handle transformation of various inla objects according to coordinate
+reference systems of \code{sp::CRS} or \code{INLA::inla.CRS} class.
+
+\item \code{fm_spTransform(default)}: The default method handles low level transformation of raw
+coordinates.
+
 \item \code{fm_has_PROJ6()}: Detect whether PROJ6 is available
 
 \item \code{fm_not_for_PROJ6()}: \code{fm_not_for_PROJ6} is called to warn about using old PROJ4
@@ -124,13 +131,6 @@ is required but not available
 
 \item \code{fm_sp_get_crs()}: Wrapper for CRS(projargs) (PROJ4) and CRS(wkt) for
 \code{sp::Spatial} objects.
-
-\item \code{fm_spTransform()}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} (See \code{\link[=fm_transform]{fm_transform()}} instead)
-Handle transformation of various inla objects according to coordinate
-reference systems of \code{sp::CRS} or \code{INLA::inla.CRS} class.
-
-\item \code{fm_spTransform(default)}: The default method handles low level transformation of raw
-coordinates.
 
 \item \code{split_lines()}: Split lines at mesh edges.
 

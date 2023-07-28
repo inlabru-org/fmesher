@@ -2,6 +2,7 @@
 % Please edit documentation in R/crs.R
 \name{fm_CRS}
 \alias{fm_CRS}
+\alias{is.na.inla.CRS}
 \alias{fm_CRS.crs}
 \alias{fm_CRS.fm_crs}
 \alias{fm_CRS.Spatial}
@@ -17,9 +18,12 @@
 \alias{fm_CRS.fm_segm}
 \alias{fm_CRS.CRS}
 \alias{fm_CRS.default}
+\alias{print.fm_CRS}
 \title{Create a coordinate reference system object}
 \usage{
 fm_CRS(...)
+
+\method{is.na}{inla.CRS}(x)
 
 \method{fm_CRS}{crs}(x, ...)
 
@@ -27,25 +31,25 @@ fm_CRS(...)
 
 \method{fm_CRS}{Spatial}(x, ...)
 
-\method{fm_CRS}{inla.CRS}(x, ..., crsonly = FALSE)
+\method{fm_CRS}{inla.CRS}(x, oblique = NULL, ...)
 
-\method{fm_CRS}{sf}(x, ..., crsonly = FALSE)
+\method{fm_CRS}{sf}(x, oblique = NULL, ...)
 
-\method{fm_CRS}{sfc}(x, ..., crsonly = FALSE)
+\method{fm_CRS}{sfc}(x, oblique = NULL, ...)
 
-\method{fm_CRS}{sfg}(x, ..., crsonly = FALSE)
+\method{fm_CRS}{sfg}(x, oblique = NULL, ...)
 
-\method{fm_CRS}{inla.mesh}(x, ..., crsonly = FALSE)
+\method{fm_CRS}{inla.mesh}(x, oblique = NULL, ...)
 
-\method{fm_CRS}{fm_mesh_2d}(x, ..., crsonly = FALSE)
+\method{fm_CRS}{fm_mesh_2d}(x, oblique = NULL, ...)
 
-\method{fm_CRS}{inla.mesh.lattice}(x, ..., crsonly = FALSE)
+\method{fm_CRS}{inla.mesh.lattice}(x, oblique = NULL, ...)
 
-\method{fm_CRS}{fm_lattice}(x, ..., crsonly = FALSE)
+\method{fm_CRS}{fm_lattice}(x, oblique = NULL, ...)
 
-\method{fm_CRS}{inla.mesh.segment}(x, ..., crsonly = FALSE)
+\method{fm_CRS}{inla.mesh.segment}(x, oblique = NULL, ...)
 
-\method{fm_CRS}{fm_segm}(x, ..., crsonly = FALSE)
+\method{fm_CRS}{fm_segm}(x, oblique = NULL, ...)
 
 \method{fm_CRS}{CRS}(x, oblique = NULL, ...)
 
@@ -57,13 +61,13 @@ fm_CRS(...)
   SRS_string = NULL,
   ...
 )
+
+\method{print}{fm_CRS}(x, ...)
 }
 \arguments{
 \item{\dots}{Additional parameters. Not currently in use.}
 
 \item{x}{Object to convert to CRS or to extract CRS information from.}
-
-\item{crsonly}{logical; if \code{TRUE}, remove any oblique\verb{information for}inla.CRS\verb{class objects and return a pure}CRS\verb{class object. Default:}FALSE`.}
 
 \item{oblique}{Vector of length at most 4 of rotation angles (in degrees)
 for an oblique projection, all values defaulting to zero. The values
@@ -122,6 +126,12 @@ the projection.
 When \code{oblique[2]} or \code{oblique[3]} are non-zero, the resulting
 projection is only correct for perfect spheres.
 }
+\section{Functions}{
+\itemize{
+\item \code{is.na(inla.CRS)}: Check if a \code{inla.CRS} has \code{NA} crs information and \code{NA}
+obliqueness
+
+}}
 \examples{
 crs1 <- fm_CRS("longlat_globe")
 crs2 <- fm_CRS("lambert_globe")

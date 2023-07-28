@@ -2,129 +2,6 @@
 
 #' @importFrom sp coordinates proj4string `proj4string<-`
 
-#' @describeIn fmesher-deprecated Detect whether PROJ6 is available
-#'
-#' @export
-
-fm_has_PROJ6 <- function() {
-  lifecycle::deprecate_warn("0.0.1",
-    "fm_has_PROJ6()",
-    details = c(
-      i = "Since inlabru 2.7.1, fm_has_PROJ6() always returns TRUE",
-      i = "rgdal/PROJ4 is no longer supported."
-    )
-  )
-  TRUE
-}
-
-#' @describeIn fmesher-deprecated `fm_not_for_PROJ6` is called to warn about using old PROJ4
-#' features even though PROJ6 is available
-
-fm_not_for_PROJ6 <- function(fun = NULL) {
-  lifecycle::deprecate_stop("0.0.1",
-    "fm_not_for_PROJ6()",
-    details = c(x = "rgdal/PROJ4 is no longer supported.")
-  )
-}
-
-#' @describeIn fmesher-deprecated `fm_not_for_PROJ4` is called to give an error when
-#' calling methods that are only available for PROJ6
-
-fm_not_for_PROJ4 <- function(fun = NULL) {
-  lifecycle::deprecate_stop("0.0.1",
-    "fm_not_for_PROJ4()",
-    details = c(x = "rgdal/PROJ4 is no longer supported.")
-  )
-}
-
-#' @describeIn fmesher-deprecated Called to warn about falling back
-#' to using old PROJ4 methods when a PROJ6 method hasn't been implemented
-
-fm_fallback_PROJ6 <- function(fun = NULL) {
-  lifecycle::deprecate_stop("0.0.1",
-    "fm_not_for_PROJ4()",
-    details = c(x = "rgdal/PROJ4 requested by PROJ4 is no longer supported.")
-  )
-}
-
-
-#' @param fun The name of the function that requires PROJ6. Default: NULL,
-#' which uses the name of the calling function.
-#' @describeIn fmesher-deprecated Called to give an error when PROJ6
-#' is required but not available
-
-fm_requires_PROJ6 <- function(fun = NULL) {
-  lifecycle::deprecate_stop("0.0.1",
-    "fm_requires_PROJ6()",
-    details = c(x = "rgdal/PROJ4 is no longer supported.")
-  )
-}
-
-
-#' @describeIn fmesher-deprecated Wrapper for [fm_CRS()]
-#' `sp::Spatial` and `sp::CRS` objects.
-#' @export
-fm_as_sp_crs <- function(x, ...) {
-  lifecycle::deprecate_soft(
-    "0.0.1",
-    "fm_as_sp_crs()",
-    "fm_CRS()"
-  )
-  fm_CRS(x, ...)
-}
-
-
-
-
-#' @describeIn fmesher-deprecated Wrapper for CRS(projargs) (PROJ4) and CRS(wkt) for
-#' `sp::Spatial` objects.
-#' @param x A `sp::Spatial` object
-#' @return A `CRS` object, or NULL if no valid CRS identified
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
-#' @details This function is a convenience method to workaround PROJ4/PROJ6
-#' differences, and the lack of a crs extraction method for Spatial objects.
-#' For newer code, use [fm_crs()] instead, that returns `crs` objects,
-#' and use [fm_CRS()] to extract/construct/convert to old style `sp::CRS` objects.
-#' @examples
-#' \dontrun{
-#' if (interactive()) {
-#'   s <- sp::SpatialPoints(matrix(1:6, 3, 2), proj4string = fm_CRS("sphere"))
-#'   fm_CRS(s)
-#' }
-#' }
-#' @export
-
-fm_sp_get_crs <- function(x) {
-  lifecycle::deprecate_warn("0.0.1", "fm_sp_get_crs()", "fm_CRS()")
-  fm_CRS(x)
-}
-
-
-#' @describeIn fm_crs Check if a `fm_crs` has `NA` crs information
-#' @export
-is.na.fm_crs <- function(x) {
-  is.na(fm_crs(x, crsonly = TRUE))
-}
-
-#' @describeIn fm_crs Check if a `inla.CRS` has `NA` crs information
-#' @export
-is.na.inla.CRS <- function(x) {
-  is.na(fm_crs(x, crsonly = TRUE))
-}
-
-#' @describeIn fm_crs Check if an object is or has `NULL` or `NA` CRS information.
-#' If not `NULL`, `is.na(fm_crs(x))` is returned. This allows the input to be e.g.
-#' a proj4string or epsg number, since the default [fm_crs()] method passes
-#' its argument on to `sf::st_crs()`.
-#'
-#' @export
-fm_crs_is_null <- function(x) {
-  is.null(x) || is.na(fm_crs(x))
-}
-
-
-
-
 
 #' @title Handling CRS/WKT
 #' @description Get and set CRS object or WKT string properties.
@@ -626,17 +503,24 @@ fm_length_unit.character <- function(x) {
 #' If `character`, a string suitable for `sf::st_crs(x)`, or the name of a
 #' predefined `wkt` string from ``names(fm_wkt_predef())`.
 #' @param \dots Additional arguments passed on the `sf::st_crs()`
-#' @param crsonly logical; if TRUE, remove `oblique` information from `fm_crs`
-#' objects and return a plain `crs` object instead.
-#' @param value Vector of length at most 4 of rotation angles (in degrees)
+#' @param crsonly `r lifecycle::badge("deprecated")` logical;
+#' if TRUE, remove `oblique` information from `fm_crs`
+#' objects and return a plain `crs` object instead. For `crsonly = TRUE`, use
+#' `oblique = NA` instead. For `crsonly = FALSE`, use default, NULL, or non-NA
+#' `oblique`.
+#' @param oblique Numeric vector of length at most 4 of rotation angles (in degrees)
 #' for an oblique projection, all values defaulting to zero. The values
 #' indicate (longitude, latitude, orientation, orbit), as explained in the
-#' Details section below.
+#' Details section below. When
+#' `oblique` is non-NULL, used to override the obliqueness parameters of a
+#' `fm_crs` object. When `NA`, remove obliqueness from the object, resulting
+#' in a return class of `sf::st_crs()`. When `NULL`, pass though any oblique
+#' information in the object, returning an `fm_crs()` object if needed.
 #'
 #' @details The first two
 #' elements of the `oblique` vector are the (longitude, latitude)
 #' coordinates for the oblique centre point. The third value (orientation) is a
-#' counterclockwise rotation angle for an observer looking at the centre point
+#' counter-clockwise rotation angle for an observer looking at the centre point
 #' from outside the sphere. The fourth value is the quasi-longitude (orbit
 #' angle) for a rotation along the oblique observers equator.
 #'
@@ -675,73 +559,88 @@ fm_length_unit.character <- function(x) {
 #' crs6 <- fm_crs("globe")
 #' @export
 #' @rdname fm_crs
-fm_crs <- function(x, ..., crsonly = FALSE) {
+#' @seealso [fm_crs<-()], [fm_crs_oblique<-()]
+fm_crs <- function(x, oblique = NULL, ..., crsonly = deprecated()) {
+  if (lifecycle::is_present(crsonly)) {
+    if (crsonly) {
+      if (is.null(oblique) || all(is.na(oblique))) {
+        msg <- c(
+          "`crsonly = TRUE`, so we will use `oblique = NA`."
+        )
+        oblique <- NA
+        return(fm_crs(x, ..., oblique = NA))
+      } else {
+        msg <- c(
+          "Ignoring `crsonly = TRUE`, as it contradicts with the given `oblique`.",
+          "We will use `oblique = oblique`."
+        )
+      }
+    } else {
+      msg <- c(
+        "`crsonly = FALSE`, so we will use `oblique = oblique`."
+      )
+    }
+
+    lifecycle::deprecate_soft(
+      "0.0.1",
+      "fm_crs(crsonly=' should no longer be used')",
+      "fm_crs(oblique)",
+      c(
+        "For `crsonly = TRUE`, use `oblique = NA`.",
+        "For `crsonly = FALSE`, use default, NULL, or non-NA `oblique`.",
+        msg
+      )
+    )
+    return(fm_crs(x, oblique = oblique, ...))
+  }
+
   UseMethod("fm_crs")
 }
 
+
+
+
+#' @describeIn fm_crs Check if a `fm_crs` has `NA` crs information and `NA`
+#' obliqueness
 #' @export
-#' @rdname fm_crs
+is.na.fm_crs <- function(x) {
+  is.na(x[["crs"]]) && all(is.na(x[["oblique"]]))
+}
+
+#' @describeIn fm_crs Check if an object is or has `NULL` or `NA` CRS information.
+#' If not `NULL`, `is.na(fm_crs(x))` is returned. This allows the input to be e.g.
+#' a proj4string or epsg number, since the default [fm_crs()] method passes
+#' its argument on to `sf::st_crs()`.
+#'
+#' @export
+fm_crs_is_null <- function(x, crsonly = FALSE) {
+  if (crsonly) {
+    return(is.null(x) || is.na(fm_crs(x, oblique = NA)))
+  }
+  is.null(x) || is.na(fm_crs(x))
+}
+
+
+#' @export
+#' @describeIn fm_crs Return `NA` for object with no oblique information,
+#' and otherwise a length 4 numeric vector.
 fm_crs_oblique <- function(x) {
   if (is.null(x)) {
-    return(NULL)
-  }
-  stopifnot(inherits(x, c("crs", "CRS", "fm_crs", "inla.CRS")))
-  if (fm_crs_is_null(x)) {
-    return(NULL)
+    return(NA)
   }
   if (inherits(x, c("fm_crs", "inla.CRS"))) {
-    x$oblique
-  } else {
-    NULL
+    return(x[["oblique"]])
   }
-}
-
-#' @export
-#' @rdname fm_crs
-`fm_crs_oblique<-` <- function(x, value) {
-  stopifnot(inherits(x, c("crs", "fm_crs")))
-  if (is.null(value)) {
-    if (inherits(x, "fm_crs")) {
-      x <- x[["crs"]]
-    }
-  } else {
-    if (!inherits(x, "fm_crs")) {
-      stopifnot(is.vector(value))
-      if (length(value) < 4) {
-        value <- c(value, rep(0, 4 - length(value)))
-      }
-      x <- list(crs = x, oblique = value)
-      class(x) <- "fm_crs"
-    }
-  }
-  x
-}
-
-#' @export
-#' @rdname fm_crs
-print.fm_crs <- function(x, ...) {
-  print(x[["crs"]])
-  cat(paste0("Oblique: c(", paste0(x[["oblique"]], collapse = ", "), ")\n"))
-  invisible(x)
-}
-
-
-
-#' @export
-#' @rdname fm_crs
-fm_crs.default <- function(x, ..., crsonly = FALSE) {
-  if (missing(x)) {
-    return(sf::NA_crs_)
-  }
-  sf::st_crs(x, ...)
+  NA
 }
 
 #' @importFrom sf st_crs
 #' @exportS3Method sf::st_crs fm_crs
-#' @describeIn fm_crs `st_crs(x, ...)` is equivalent to `fm_crs(x, ..., crsonly = TRUE)`
+#' @describeIn fm_crs `st_crs(x, ...)` is equivalent to
+#' `fm_crs(x, ... oblique = NA)`
 #' when `x` is a `fm_crs` object.
 st_crs.fm_crs <- function(x, ...) {
-  fm_crs(x, ..., crsonly = TRUE)
+  fm_crs(x, ..., oblique = NA)
 }
 
 #' @rawNamespace S3method("$", fm_crs)
@@ -757,32 +656,66 @@ st_crs.fm_crs <- function(x, ...) {
   }
 }
 
+#' @export
+#' @rdname fm_crs
+print.fm_crs <- function(x, ...) {
+  print(x[["crs"]], ...)
+  cat(paste0("Oblique: c(", paste0(x[["oblique"]], collapse = ", "), ")\n"))
+  invisible(x)
+}
+
 
 
 #' @export
-#' @param crsonly logical; if `TRUE`, remove any `oblique` information
-#' for `fm_crs` class objects and return a pure `crs` class object. Default: `FALSE`.
 #' @rdname fm_crs
-fm_crs.fm_crs <- function(x, ..., crsonly = FALSE) {
-  if (crsonly) {
-    fm_crs_oblique(x) <- NULL
+fm_crs.default <- function(x, oblique = NULL, ...) {
+  if (missing(x) || is.null(x) || is.na(x)) {
+    x <- sf::NA_crs_
+  } else if (!inherits(x, "crs")) {
+    x <- sf::st_crs(x, ...)
+  }
+  fm_crs.crs(x, oblique = oblique, ...)
+}
+
+#' @export
+#' @rdname fm_crs
+fm_crs.crs <- function(x, oblique = NULL, ...) {
+  if (!is.null(oblique) && !all(is.na(oblique))) {
+    stopifnot(is.vector(oblique))
+    if (length(oblique) < 4) {
+      oblique <- c(oblique, rep(0, 4 - length(oblique)))
+    }
+    x <- structure(
+      list(crs = x, oblique = oblique),
+      class = "fm_crs"
+    )
+  }
+  x
+}
+
+
+
+
+#' @export
+#' @rdname fm_crs
+fm_crs.fm_crs <- function(x, oblique = NULL, ...) {
+  if (!is.null(oblique)) {
+    fm_crs_oblique(x) <- oblique
   }
   x
 }
 
 #' @export
 #' @rdname fm_crs
-fm_crs.inla.CRS <- function(x, ..., crsonly = FALSE) {
-  y <- fm_crs(x$crs, ..., crsonly = TRUE)
-  if (!crsonly) {
-    fm_crs_oblique(y) <- x$oblique
-  }
-  y
+fm_crs.inla.CRS <- function(x, oblique = NULL, ...) {
+  fm_crs(x[["crs"]],
+         oblique = if (is.null(oblique)) x[["oblique"]] else oblique,
+         ...)
 }
 
 #' @export
 #' @rdname fm_crs
-fm_crs.character <- function(x, ..., crsonly = FALSE) {
+fm_crs.character <- function(x, oblique = NULL, ...) {
   predef <- fm_wkt_predef()
   if (x %in% names(predef)) {
     x <- predef[[x]]
@@ -798,17 +731,26 @@ fm_crs.character <- function(x, ..., crsonly = FALSE) {
   if (is.na(x) || identical(x, y$input)) {
     return(y)
   }
-  sf::st_crs(x, ...)
+  x <- sf::st_crs(x, ...)
+  if (!is.null(oblique)) {
+    fm_crs_oblique(x) <- oblique
+  }
+  x
 }
 
 
 #' @rdname fm_crs
 #' @export
-fm_crs.Spatial <- function(x, ..., crsonly = FALSE) {
+fm_crs.Spatial <- function(x, oblique = NULL, ...) {
   if (is.null(x)) {
-    return(sf::NA_crs_)
+    crs <- sf::NA_crs_
+  } else {
+    suppressWarnings(crs <- fm_crs(sp::wkt(x)))
   }
-  suppressWarnings(crs <- fm_crs(sp::wkt(x)))
+  crs
+  if (!is.null(oblique)) {
+    fm_crs_oblique(crs) <- oblique
+  }
   crs
 }
 
@@ -816,80 +758,235 @@ fm_crs.Spatial <- function(x, ..., crsonly = FALSE) {
 
 #' @rdname fm_crs
 #' @export
-fm_crs.SpatVector <- function(x, ..., crsonly = FALSE) {
+fm_crs.SpatVector <- function(x, oblique = NULL, ...) {
   tcrs <- terra::crs(x)
   if (is.null(tcrs) || is.na(tcrs) || identical(tcrs, "")) {
-    fm_crs()
+    y <- fm_crs(oblique = oblique)
   } else {
-    fm_crs(tcrs, ...)
+    y <- fm_crs(tcrs, oblique = oblique, ...)
   }
+  y
+
 }
 
 #' @rdname fm_crs
 #' @export
-fm_crs.SpatRaster <- function(x, ..., crsonly = FALSE) {
+fm_crs.SpatRaster <- function(x, oblique = NULL, ...) {
   tcrs <- terra::crs(x)
   if (is.null(tcrs) || is.na(tcrs) || identical(tcrs, "")) {
-    fm_crs()
+    y <- fm_crs(oblique = oblique)
   } else {
-    fm_crs(tcrs, ...)
+    y <- fm_crs(tcrs, ..., oblique = oblique)
   }
+  y
 }
 
 #' @rdname fm_crs
 #' @export
-fm_crs.sf <- function(x, ..., crsonly = FALSE) {
-  sf::st_crs(x, ...)
+fm_crs.sf <- function(x, oblique = NULL, ...) {
+  y <- sf::st_crs(x, ...)
+  if (!is.null(oblique)) {
+    fm_crs_oblique(y) <- oblique
+  }
+  y
 }
 
 #' @rdname fm_crs
 #' @export
-fm_crs.sfc <- function(x, ..., crsonly = FALSE) {
-  sf::st_crs(x, ...)
+fm_crs.sfc <- function(x, oblique = NULL, ...) {
+  y <- sf::st_crs(x, ...)
+  if (!is.null(oblique)) {
+    fm_crs_oblique(y) <- oblique
+  }
+  y
 }
 
 #' @rdname fm_crs
 #' @export
-fm_crs.sfg <- function(x, ..., crsonly = FALSE) {
-  sf::st_crs(x, ...)
+fm_crs.sfg <- function(x, oblique = NULL, ...) {
+  y <- sf::st_crs(x, ...)
+  if (!is.null(oblique)) {
+    fm_crs_oblique(y) <- oblique
+  }
+  y
 }
 
 #' @rdname fm_crs
 #' @export
-fm_crs.fm_mesh_2d <- function(x, ..., crsonly = FALSE) {
-  fm_crs(x[["crs"]], ..., crsonly = crsonly)
+fm_crs.fm_mesh_2d <- function(x, oblique = NULL, ...) {
+  fm_crs(x[["crs"]], oblique = oblique, ...)
 }
 
 #' @rdname fm_crs
 #' @export
-fm_crs.fm_lattice_2d <- function(x, ..., crsonly = FALSE) {
-  fm_crs(x[["crs"]], ..., crsonly = crsonly)
+fm_crs.fm_lattice_2d <- function(x, oblique = NULL, ...) {
+  fm_crs(x[["crs"]], oblique = oblique, ...)
 }
 
 #' @rdname fm_crs
 #' @export
-fm_crs.fm_segm <- function(x, ..., crsonly = FALSE) {
-  fm_crs(x[["crs"]], ..., crsonly = crsonly)
+fm_crs.fm_segm <- function(x, oblique = NULL, ...) {
+  fm_crs(x[["crs"]], oblique = oblique, ...)
 }
 
 #' @rdname fm_crs
 #' @export
 #' @method fm_crs inla.mesh
-fm_crs.inla.mesh <- function(x, ..., crsonly = FALSE) {
-  fm_crs(x[["crs"]], ..., crsonly = crsonly)
+fm_crs.inla.mesh <- function(x, oblique = NULL, ...) {
+  fm_crs(x[["crs"]], oblique = oblique, ...)
 }
 
 #' @rdname fm_crs
 #' @export
-fm_crs.inla.mesh.lattice <- function(x, ..., crsonly = FALSE) {
-  fm_crs(x[["crs"]], ..., crsonly = crsonly)
+fm_crs.inla.mesh.lattice <- function(x, oblique = NULL, ...) {
+  fm_crs(x[["crs"]], oblique = oblique, ...)
 }
 
 #' @rdname fm_crs
 #' @export
-fm_crs.inla.mesh.segment <- function(x, ..., crsonly = FALSE) {
-  fm_crs(x[["crs"]], ..., crsonly = crsonly)
+fm_crs.inla.mesh.segment <- function(x, oblique = NULL, ...) {
+  fm_crs(x[["crs"]], oblique = oblique, ...)
 }
+
+
+
+
+# crs assignment operators ####
+
+#' @title
+#' Assignment operators for crs information objects
+#'
+#' @description
+#' Assigns new crs information.
+#'
+#' @describeIn fm_crs-set
+#' Automatically converts the input value with
+#' `fm_crs(value)`, `fm_crs(value, oblique = NA)`,
+#' `fm_CRS(value)`, or `fm_CRS(value, oblique = NA)`, depending on the type of `x`.
+#'
+#' @param x Object to assign crs information to
+#' @param value For `fm_crs<-()`, object supported by `fm_crs(value)`.
+#' For `fm_crs_oblique<-()`, NULL, NA, or a numeric vector, see
+#' the `oblique` argument for [fm_crs()].
+#' @seealso [fm_crs()]
+#' @export
+`fm_crs<-` <- function(x, value) {
+  UseMethod("fm_crs<-")
+}
+
+#' @describeIn fm_crs-set Assigns new `oblique` information.
+#' @export
+`fm_crs_oblique<-` <- function(x, value) {
+  if (is.null(x)) {
+    return(`fm_crs_oblique<-.fm_crs`(fm_crs(), value))
+  }
+  UseMethod("fm_crs_oblique<-")
+}
+
+#' @rdname fm_crs-set
+#' @export
+`fm_crs<-.fm_segm` <- function(x, value) {
+  x[["crs"]] <- fm_crs(value)
+  x
+}
+
+#' @rdname fm_crs-set
+#' @export
+`fm_crs<-.fm_mesh_2d` <- function(x, value) {
+  x[["crs"]] <- fm_crs(value)
+  x
+}
+
+#' @rdname fm_crs-set
+#' @export
+`fm_crs<-.fm_lattice_2d` <- function(x, value) {
+  x[["crs"]] <- fm_crs(value)
+  x
+}
+
+#' @rdname fm_crs-set
+#' @export
+`fm_crs<-.sf` <- function(x, value) {
+  sf::st_crs(x) <- fm_crs(value, oblique = NA)
+  x
+}
+#' @rdname fm_crs-set
+#' @export
+`fm_crs<-.sfg` <- function(x, value) {
+  sf::st_crs(x) <- fm_crs(value, oblique = NA)
+  x
+}
+#' @rdname fm_crs-set
+#' @export
+`fm_crs<-.sfc` <- function(x, value) {
+  sf::st_crs(x) <- fm_crs(value, oblique = NA)
+  x
+}
+#' @rdname fm_crs-set
+#' @export
+`fm_crs<-.Spatial` <- function(x, value) {
+  sp::proj4string(x) <- fm_CRS(value, oblique = NA)
+  x
+}
+
+#' @export
+#' @rdname fm_crs-set
+`fm_crs_oblique<-.crs` <- function(x, value) {
+  if (is.null(value) || all(is.na(value))) {
+    return(x)
+  }
+  fm_crs(x, oblique = if (is.null(value)) NA else value)
+}
+
+#' @export
+#' @rdname fm_crs-set
+`fm_crs_oblique<-.CRS` <- function(x, value) {
+  fm_CRS(x,
+         oblique = if (is.null(value)) NA else value)
+}
+
+#' @export
+#' @rdname fm_crs-set
+`fm_crs_oblique<-.inla.CRS` <- function(x, value) {
+  fm_CRS(x[["crs"]],
+         oblique = if (is.null(value)) NA else value)
+}
+
+#' @export
+#' @rdname fm_crs-set
+`fm_crs_oblique<-.fm_crs` <- function(x, value) {
+  fm_crs(x[["crs"]],
+         oblique = if (is.null(value)) NA else value)
+}
+
+#' @export
+#' @rdname fm_crs-set
+`fm_crs_oblique<-.fm_segm` <- function(x, value) {
+  fm_crs(x) <-
+    fm_crs(x,
+           oblique = if (is.null(value)) NA else value)
+  x
+}
+
+#' @export
+#' @rdname fm_crs-set
+`fm_crs_oblique<-.fm_mesh_2d` <- function(x, value) {
+  fm_crs(x) <-
+    fm_crs(x,
+           oblique = if (is.null(value)) NA else value)
+  x
+}
+
+#' @export
+#' @rdname fm_crs-set
+`fm_crs_oblique<-.fm_lattice_2d` <- function(x, value) {
+  fm_crs(x) <-
+    fm_crs(x,
+           oblique = if (is.null(value)) NA else value)
+  x
+}
+
+
 
 
 
@@ -963,6 +1060,14 @@ fm_CRS <- function(...) {
   UseMethod("fm_CRS")
 }
 
+#' @describeIn fm_CRS_sp Check if a `inla.CRS` has `NA` crs information and `NA`
+#' obliqueness
+#' @export
+is.na.inla.CRS <- function(x) {
+  is.na(fm_crs(x))
+}
+
+
 #' @export
 #' @param x Object to convert to CRS or to extract CRS information from.
 #' @rdname fm_CRS_sp
@@ -990,83 +1095,78 @@ fm_CRS.Spatial <- function(x, ...) {
 }
 
 #' @rdname fm_CRS_sp
-#' @param crsonly logical; if `TRUE`, remove any oblique` information
-#' for `inla.CRS` class objects and return a pure `CRS` class object.
-#' Default: `FALSE`.
 #' @export
-fm_CRS.inla.CRS <- function(x, ..., crsonly = FALSE) {
-  y <- x[["crs"]]
-  if (crsonly) {
-    y <- y[["crs"]]
-  }
-  y
+fm_CRS.inla.CRS <- function(x, oblique = NULL, ...) {
+  fm_CRS(fm_crs(x, oblique = oblique, ...))
 }
 
 #' @rdname fm_CRS_sp
 #' @export
-fm_CRS.sf <- function(x, ..., crsonly = FALSE) {
-  fm_CRS(sf::st_crs(x, ...))
+fm_CRS.sf <- function(x, oblique = NULL, ...) {
+  fm_CRS(sf::st_crs(x, ...), oblique = oblique)
 }
 
 #' @rdname fm_CRS_sp
 #' @export
-fm_CRS.sfc <- function(x, ..., crsonly = FALSE) {
-  fm_CRS(sf::st_crs(x, ...))
+fm_CRS.sfc <- function(x, oblique = NULL, ...) {
+  fm_CRS(sf::st_crs(x, ...), oblique = oblique)
 }
 
 #' @rdname fm_CRS_sp
 #' @export
-fm_CRS.sfg <- function(x, ..., crsonly = FALSE) {
-  fm_CRS(sf::st_crs(x, ...))
+fm_CRS.sfg <- function(x, oblique = NULL, ...) {
+  fm_CRS(sf::st_crs(x, ...), oblique = oblique)
 }
 
 #' @rdname fm_CRS_sp
 #' @export
-fm_CRS.inla.mesh <- function(x, ..., crsonly = FALSE) {
-  fm_CRS(x[["crs"]], ..., crsonly = crsonly)
+fm_CRS.inla.mesh <- function(x, oblique = NULL, ...) {
+  fm_CRS(x[["crs"]], oblique = oblique, ...)
 }
 
 #' @rdname fm_CRS_sp
 #' @export
-fm_CRS.fm_mesh_2d <- function(x, ..., crsonly = FALSE) {
-  fm_CRS(x[["crs"]], ..., crsonly = crsonly)
+fm_CRS.fm_mesh_2d <- function(x, oblique = NULL, ...) {
+  fm_CRS(x[["crs"]], oblique = oblique, ...)
 }
 
 #' @rdname fm_CRS_sp
 #' @export
-fm_CRS.inla.mesh.lattice <- function(x, ..., crsonly = FALSE) {
-  fm_CRS(x[["crs"]], ..., crsonly = crsonly)
+fm_CRS.inla.mesh.lattice <- function(x, oblique = NULL, ...) {
+  fm_CRS(x[["crs"]], oblique = oblique, ...)
 }
 
 #' @rdname fm_CRS_sp
 #' @export
-fm_CRS.fm_lattice <- function(x, ..., crsonly = FALSE) {
-  fm_CRS(x[["crs"]], ..., crsonly = crsonly)
+fm_CRS.fm_lattice <- function(x, oblique = NULL, ...) {
+  fm_CRS(x[["crs"]], oblique = oblique, ...)
 }
 
 #' @rdname fm_CRS_sp
 #' @export
-fm_CRS.inla.mesh.segment <- function(x, ..., crsonly = FALSE) {
-  fm_CRS(x[["crs"]], ..., crsonly = crsonly)
+fm_CRS.inla.mesh.segment <- function(x, oblique = NULL, ...) {
+  fm_CRS(x[["crs"]], oblique = oblique, ...)
 }
 
 #' @rdname fm_CRS_sp
 #' @export
-fm_CRS.fm_segm <- function(x, ..., crsonly = FALSE) {
-  fm_CRS(x[["crs"]], ..., crsonly = crsonly)
+fm_CRS.fm_segm <- function(x, oblique = NULL, ...) {
+  fm_CRS(x[["crs"]], oblique = oblique, ...)
 }
 
 #' @export
 #' @rdname fm_CRS_sp
 fm_CRS.CRS <- function(x, oblique = NULL,
                        ...) {
-  if (!is.null(oblique)) {
+  if (!is.null(oblique) && !all(is.na(oblique))) {
     stopifnot(is.vector(oblique))
     if (length(oblique) < 4) {
       oblique <- c(oblique, rep(0, 4 - length(oblique)))
     }
-    x <- list(crs = x, oblique = oblique)
-    class(x) <- "inla.CRS"
+    x <- structure(
+      list(crs = x, oblique = oblique),
+      class = c("fm_CRS", "inla.CRS")
+    )
   }
   x
 }
@@ -1099,12 +1199,6 @@ fm_CRS.default <- function(projargs = NULL, doCheckCRSArgs = NULL,
       SRS_string <- predef[[projargs]]
       projargs <- NULL
     } else {
-      warning(
-        paste0(
-          "'fm_CRS' should be given a SRS_string for PROJ6 or a known keyword for a\n",
-          "  predefined string given in projargs. Using 'fm_crs()' workaround."
-        )
-      )
       if (!is.null(args)) {
         x <- fm_crs(projargs)
         if (typeof(args) != "list") {
@@ -1132,13 +1226,8 @@ fm_CRS.default <- function(projargs = NULL, doCheckCRSArgs = NULL,
     x <- sp::CRS(NA_character_)
   }
 
-  if (!is.null(oblique)) {
-    stopifnot(is.vector(oblique))
-    if (length(oblique) < 4) {
-      oblique <- c(oblique, rep(0, 4 - length(oblique)))
-    }
-    x <- list(crs = x, oblique = oblique)
-    class(x) <- "inla.CRS"
+  if (!is.null(oblique) && !all(is.na(oblique))) {
+    x <- fm_CRS(x, oblique = oblique)
   }
   x
 }
@@ -1415,6 +1504,14 @@ fm_CRSargs_as_list <- function(x, ...) {
 }
 
 
+#' @export
+#' @rdname fm_CRS_sp
+print.fm_CRS <- function(x, ...) {
+  print(x[["crs"]], ...)
+  cat(paste0("Oblique: c(", paste0(x[["oblique"]], collapse = ", "), ")\n"))
+  invisible(x)
+}
+
 
 
 
@@ -1425,13 +1522,13 @@ fm_CRSargs_as_list <- function(x, ...) {
 #' @export
 
 fm_wkt <- function(crs) {
-  fm_crs(crs, crsonly = TRUE)$wkt
+  fm_crs(crs, oblique = NA)$wkt
 }
 
 #' @describeIn fm_crs_wkt Returns a proj4 string, for any input supported by [fm_crs()].
 #' @export
 fm_proj4string <- function(crs) {
-  fm_crs(crs, crsonly = TRUE)$proj4string
+  fm_crs(crs, oblique = NA)$proj4string
 }
 
 #' @export
@@ -1697,8 +1794,8 @@ fm_internal_update_crs <- function(crs, newcrs, mismatch.allowed) {
 #'   fm_crs_is_identical(crs0, crs1, crsonly = TRUE)
 #' ))
 fm_crs_is_identical <- function(crs0, crs1, crsonly = FALSE) {
-  crs0_ <- fm_crs(crs0, crsonly = TRUE)
-  crs1_ <- fm_crs(crs1, crsonly = TRUE)
+  crs0_ <- fm_crs(crs0, oblique = NA)
+  crs1_ <- fm_crs(crs1, oblique = NA)
   crs_ident <- identical(crs0_, crs1_)
   if (crsonly) {
     return(crs_ident)
@@ -1853,7 +1950,7 @@ fm_transform.matrix <- function(x, crs = NULL, ..., passthrough = FALSE, crs0 = 
       inherits(crs1, "fm_crs") ||
       different_radii
   x <- x[ok, , drop = FALSE]
-  current_crs <- fm_crs(crs0, crsonly = TRUE)
+  current_crs <- fm_crs(crs0, oblique = NA)
   if (do_work_on_sphere) {
     if (!onsphere_0) {
       if (sphere_radius_0 != 1) {
@@ -1872,18 +1969,20 @@ fm_transform.matrix <- function(x, crs = NULL, ..., passthrough = FALSE, crs0 = 
       )
       current_crs <- crs_sphere
     }
-    if (!is.null(crs0$oblique)) {
+    obl0 <- fm_crs_oblique(crs0)
+    if (!is.na(obl0)) {
       x <- fm_crs_transform_oblique(
         x,
-        fm_crs_oblique(crs0),
+        obl0,
         to.oblique = FALSE
       )
     }
 
-    if (!is.null(crs1$oblique)) {
+    obl1 <- fm_crs_oblique(crs1)
+    if (!is.na(obl1)) {
       x <- fm_crs_transform_oblique(
         x,
-        fm_crs_oblique(crs1),
+        obl1,
         to.oblique = TRUE
       )
     }
@@ -1901,7 +2000,7 @@ fm_transform.matrix <- function(x, crs = NULL, ..., passthrough = FALSE, crs0 = 
   x <- fm_transform_raw(
     x,
     from = current_crs,
-    to = fm_crs(crs1, crsonly = TRUE)
+    to = fm_crs(crs1, oblique = NA)
   )
 
   if (!all(ok)) {
@@ -2162,3 +2261,105 @@ fm_spTransform.inla.mesh.segment <- function(x, CRSobj, passthrough = FALSE, ...
 fm_spTransform.inla.mesh <- function(x, CRSobj, passthrough = FALSE, ...) {
   fm_transform(x, crs = CRSobj, passthrough = passthrough)
 }
+
+
+
+# Deprecated methods ####
+
+#' @describeIn fmesher-deprecated Detect whether PROJ6 is available
+#'
+#' @export
+
+fm_has_PROJ6 <- function() {
+  lifecycle::deprecate_warn("0.0.1",
+                            "fm_has_PROJ6()",
+                            details = c(
+                              i = "Since inlabru 2.7.1, fm_has_PROJ6() always returns TRUE",
+                              i = "rgdal/PROJ4 is no longer supported."
+                            )
+  )
+  TRUE
+}
+
+#' @describeIn fmesher-deprecated `fm_not_for_PROJ6` is called to warn about using old PROJ4
+#' features even though PROJ6 is available
+
+fm_not_for_PROJ6 <- function(fun = NULL) {
+  lifecycle::deprecate_stop("0.0.1",
+                            "fm_not_for_PROJ6()",
+                            details = c(x = "rgdal/PROJ4 is no longer supported.")
+  )
+}
+
+#' @describeIn fmesher-deprecated `fm_not_for_PROJ4` is called to give an error when
+#' calling methods that are only available for PROJ6
+
+fm_not_for_PROJ4 <- function(fun = NULL) {
+  lifecycle::deprecate_stop("0.0.1",
+                            "fm_not_for_PROJ4()",
+                            details = c(x = "rgdal/PROJ4 is no longer supported.")
+  )
+}
+
+#' @describeIn fmesher-deprecated Called to warn about falling back
+#' to using old PROJ4 methods when a PROJ6 method hasn't been implemented
+
+fm_fallback_PROJ6 <- function(fun = NULL) {
+  lifecycle::deprecate_stop("0.0.1",
+                            "fm_not_for_PROJ4()",
+                            details = c(x = "rgdal/PROJ4 requested by PROJ4 is no longer supported.")
+  )
+}
+
+
+#' @param fun The name of the function that requires PROJ6. Default: NULL,
+#' which uses the name of the calling function.
+#' @describeIn fmesher-deprecated Called to give an error when PROJ6
+#' is required but not available
+
+fm_requires_PROJ6 <- function(fun = NULL) {
+  lifecycle::deprecate_stop("0.0.1",
+                            "fm_requires_PROJ6()",
+                            details = c(x = "rgdal/PROJ4 is no longer supported.")
+  )
+}
+
+
+#' @describeIn fmesher-deprecated Wrapper for [fm_CRS()]
+#' `sp::Spatial` and `sp::CRS` objects.
+#' @export
+fm_as_sp_crs <- function(x, ...) {
+  lifecycle::deprecate_soft(
+    "0.0.1",
+    "fm_as_sp_crs()",
+    "fm_CRS()"
+  )
+  fm_CRS(x, ...)
+}
+
+
+
+
+#' @describeIn fmesher-deprecated Wrapper for CRS(projargs) (PROJ4) and CRS(wkt) for
+#' `sp::Spatial` objects.
+#' @param x A `sp::Spatial` object
+#' @return A `CRS` object, or NULL if no valid CRS identified
+#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @details This function is a convenience method to workaround PROJ4/PROJ6
+#' differences, and the lack of a crs extraction method for Spatial objects.
+#' For newer code, use [fm_crs()] instead, that returns `crs` objects,
+#' and use [fm_CRS()] to extract/construct/convert to old style `sp::CRS` objects.
+#' @examples
+#' \dontrun{
+#' if (interactive()) {
+#'   s <- sp::SpatialPoints(matrix(1:6, 3, 2), proj4string = fm_CRS("sphere"))
+#'   fm_CRS(s)
+#' }
+#' }
+#' @export
+
+fm_sp_get_crs <- function(x) {
+  lifecycle::deprecate_warn("0.0.1", "fm_sp_get_crs()", "fm_CRS()")
+  fm_CRS(x)
+}
+

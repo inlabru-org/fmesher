@@ -3717,37 +3717,3 @@ fm_as_inla_mesh <- function(...) {
 }
 
 
-# crs assignment operators ####
-
-#' Assingment operators for crs information for `fm` objects
-#'
-#' Assigns new crs information
-#'
-#' @param x Object of supported `fm_*` object class
-#' @param value Object supported by `fm_crs(value)`
-#'
-#' @export
-`fm_crs<-` <- function(x, value) {
-  UseMethod("fm_crs<-")
-}
-
-#' @rdname fm_crs-set
-#' @export
-`fm_crs<-.fm_segm` <- function(x, value) {
-  x[["crs"]] <- fm_crs(value)
-  x
-}
-
-#' @rdname fm_crs-set
-#' @export
-`fm_crs<-.fm_mesh_2d` <- function(x, value) {
-  x[["crs"]] <- fm_crs(value)
-  x
-}
-
-#' @rdname fm_crs-set
-#' @export
-`fm_crs<-.fm_lattice_2d` <- function(x, value) {
-  x[["crs"]] <- fm_crs(value)
-  x
-}
