@@ -2,15 +2,27 @@
 % Please edit documentation in R/mesh.R
 \name{fm_nonconvex_hull}
 \alias{fm_nonconvex_hull}
+\alias{fm_nonconvex_hull.sfc}
+\alias{fm_extensions}
 \alias{fm_nonconvex_hull.matrix}
 \alias{fm_nonconvex_hull.sf}
 \alias{fm_nonconvex_hull.Spatial}
 \alias{fm_nonconvex_hull.sfg}
-\alias{fm_nonconvex_hull_inla}
-\alias{fm_nonconvex_hull.sfc}
 \title{Compute an extension of a spatial object}
 \usage{
 fm_nonconvex_hull(x, ...)
+
+\method{fm_nonconvex_hull}{sfc}(
+  x,
+  convex = -0.15,
+  concave = convex,
+  preserveTopology = TRUE,
+  dTolerance = NULL,
+  crs = fm_crs(x),
+  ...
+)
+
+fm_extensions(x, convex = -0.15, concave = convex, dTolerance = NULL, ...)
 
 \method{fm_nonconvex_hull}{matrix}(x, ...)
 
@@ -19,33 +31,32 @@ fm_nonconvex_hull(x, ...)
 \method{fm_nonconvex_hull}{Spatial}(x, ...)
 
 \method{fm_nonconvex_hull}{sfg}(x, ...)
-
-fm_nonconvex_hull_inla(...)
-
-\method{fm_nonconvex_hull}{sfc}(
-  x,
-  convex = -0.15,
-  concave = convex,
-  preserveTopology = TRUE,
-  dTolerance = NULL,
-  ...
-)
 }
 \arguments{
 \item{x}{A spatial object}
 
-\item{...}{Arguments passed on to the sub-methods}
+\item{...}{Arguments passed on to the \code{\link[=fm_nonconvex_hull]{fm_nonconvex_hull()}} sub-methods}
 
-\item{convex}{How much to extend}
+\item{convex}{numeric vector; How much to extend}
 
-\item{concave}{The minimum allowed reentrant curvature. Default equal to \code{convex}}
+\item{concave}{numeric vector; The minimum allowed reentrant curvature. Default equal to \code{convex}}
 
 \item{preserveTopology}{logical; argument to \code{sf::st_simplify()}}
 
-\item{dTolerance}{If not null, the \code{dTolerance} argument to \code{sf::st_simplify()}}
+\item{dTolerance}{If not null, the \code{dTolerance} argument to \code{sf::st_simplify()},
+passed on to \code{\link[=fm_nonconvex_hull]{fm_nonconvex_hull()}}.
+The default for \code{fm_extensions()} is \code{pmin(convex, concave) / 40}, chosen to
+give approximately 4 or more subsegments per circular quadrant.
+For \code{fm_nonconvex_hull()}, the default is \code{NULL}
+(i.e. not to call \code{sf::st_simplify()})}
+
+\item{crs}{Options crs object for the resulting polygon}
 }
 \value{
-An extended object
+\code{fm_nonconvex_hull()} returns an extended object as an \code{sfc}
+polygon object (regardless of the \code{x} class).
+
+\code{fm_extensions()} returns a list of \code{sfc} objects.
 }
 \description{
 Constructs a potentially nonconvex extension of a spatial object by
@@ -54,20 +65,46 @@ erosion by \code{concave}. This is equivalent to dilation by \code{convex} follo
 by closing (dilation + erosion) by \code{concave}.
 }
 \details{
+Morphological dilation by \code{convex}, followed by closing by
+\code{concave}, with minimum concave curvature radius \code{concave}.  If
+the dilated set has no gaps of width between \deqn{2 \text{convex} (\sqrt{1+2
+\text{concave}/\text{convex}} - 1)}{2*convex*(sqrt(1+2*concave/convex) - 1)}
+and \eqn{2\text{concave}}{2*concave}, then the minimum convex curvature radius is
+\code{convex}.
+
+The implementation is based on the identity \deqn{\text{dilation}(a) \&
+\text{closing}(b) = \text{dilation}(a+b) \& \text{erosion}(b)}{
+dilation(a) & closing(b) = dilation(a+b) & erosion(b)} where all operations
+are with respect to disks with the specified radii.
+
 Differs from \code{sf::st_buffer(x, convex)} followed by
 \code{sf::st_concave_hull()} (available from GEOS 3.11)
 in how the amount of allowed concavity is controlled.
 }
 \section{Functions}{
 \itemize{
-\item \code{fm_nonconvex_hull_inla()}: Legacy method for \code{INLA::inla.nonconvex.hull()}
+\item \code{fm_nonconvex_hull()}: Basic nonconvex hull method.
+
+\item \code{fm_extensions()}: Constructs a potentially nonconvex extension of a spatial object by
+performing dilation by \code{convex + concave} followed by
+erosion by \code{concave}. This is equivalent to dilation by \code{convex} followed
+by closing (dilation + erosion) by \code{concave}.
 
 }}
 \examples{
-inp <- sf::st_as_sf(as.data.frame(matrix(1:6, 3, 2)), coords = 1:2)
+inp <- matrix(rnorm(20), 10, 2)
 out <- fm_nonconvex_hull(inp, convex = 1)
 plot(out)
+points(inp, pch = 20)
+if (fm_safe_inla()) {
+  inp <- sf::st_as_sf(as.data.frame(matrix(1:6, 3, 2)), coords = 1:2)
+  bnd <- fm_extensions(inp, convex = c(0.75, 2))
+  plot(fm_mesh_2d(boundary = bnd, max.edge = c(0.25, 1)), asp = 1)
+}
 }
 \references{
 Gonzalez and Woods (1992), Digital Image Processing
+}
+\seealso{
+\code{\link[=fm_nonconvex_hull_inla]{fm_nonconvex_hull_inla()}}
 }

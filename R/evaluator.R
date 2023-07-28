@@ -1,5 +1,7 @@
 # Point/mesh connection methods ####
 
+# fm_evaluate ####
+
 #' @title Methods for projecting to/from an inla.mesh
 #'
 #' @description Calculate evaluation information and/or evaluate a function
@@ -148,6 +150,8 @@ fm_evaluate.fm_evaluator <-
   }
 
 
+# fm_evaluator ####
+
 #' @describeIn fm_evaluate
 #' Returns an `fm_evaluator` list object with evaluation information.
 #' The `proj` element contains a mapping matrix `A` and a logical vector `ok`,
@@ -161,9 +165,17 @@ fm_evaluator <- function(...) {
 }
 
 
+#' @param weights Optional weight vector
+#' @param derivatives logical; If true, also return matrices `dA` and `d2A`
+#' for `fm_mesh_1d` objects, and `dx`, `dy`, `dz` for `fm_mesh_2d`.
 #' @export
 #' @rdname fm_evaluate
-fm_evaluator_mesh_2d <- function(mesh, loc = NULL, crs = NULL, ...) {
+fm_evaluator_mesh_2d <- function(mesh,
+                                 loc = NULL,
+                                 weights = NULL,
+                                 derivatives = NULL,
+                                 crs = NULL,
+                                 ...) {
   smorg <- fm_bary(mesh, loc = loc, crs = crs)
   ti <- matrix(0L, NROW(loc), 1)
   ti[, 1L] <- smorg$t
@@ -171,20 +183,78 @@ fm_evaluator_mesh_2d <- function(mesh, loc = NULL, crs = NULL, ...) {
 
   ok <- !is.na(ti[, 1L])
 
+  if (is.null(weights)) {
+    weights <- rep(1.0, NROW(loc))
+  } else if (length(weights) == 1) {
+    weights <- rep(weights, NROW(loc))
+  }
+
   ii <- which(ok)
   A <- (Matrix::sparseMatrix(
     dims = c(NROW(loc), mesh$n),
     i = rep(ii, 3),
     j = as.vector(mesh$graph$tv[ti[ii, 1L], ]),
-    x = as.vector(b[ii, ])
+    x = as.vector(b[ii, ]) * weights[rep(ii, 3)]
   ))
 
-  list(t = ti, bary = b, A = A, ok = ok)
+  mesh_deriv <- function(mesh, info, weights) {
+    n.mesh <- mesh$n
+
+    ii <- which(info$ok)
+    n.ok <- sum(info$ok)
+    tv <- mesh$graph$tv[info$t[ii, 1L], ]
+    e1 <- mesh$loc[tv[, 3], ] - mesh$loc[tv[, 2], ]
+    e2 <- mesh$loc[tv[, 1], ] - mesh$loc[tv[, 3], ]
+    e3 <- mesh$loc[tv[, 2], ] - mesh$loc[tv[, 1], ]
+    n1 <- e2 - e1 * matrix(rowSums(e1 * e2) / rowSums(e1 * e1), n.ok, 3)
+    n2 <- e3 - e2 * matrix(rowSums(e2 * e3) / rowSums(e2 * e2), n.ok, 3)
+    n3 <- e1 - e3 * matrix(rowSums(e3 * e1) / rowSums(e3 * e3), n.ok, 3)
+    g1 <- n1 / matrix(rowSums(n1 * n1), n.ok, 3)
+    g2 <- n2 / matrix(rowSums(n2 * n2), n.ok, 3)
+    g3 <- n3 / matrix(rowSums(n3 * n3), n.ok, 3)
+    x <- cbind(g1[, 1], g2[, 1], g3[, 1])
+    y <- cbind(g1[, 2], g2[, 2], g3[, 2])
+    z <- cbind(g1[, 3], g2[, 3], g3[, 3])
+    dx <- (Matrix::sparseMatrix(
+      dims = c(nrow(loc), n.mesh),
+      i = rep(ii, 3),
+      j = as.vector(tv),
+      x = as.vector(x) * weights[rep(ii, 3)]
+    ))
+    dy <- (Matrix::sparseMatrix(
+      dims = c(nrow(loc), n.mesh),
+      i = rep(ii, 3),
+      j = as.vector(tv),
+      x = as.vector(y) * weights[rep(ii, 3)]
+    ))
+    dz <- (Matrix::sparseMatrix(
+      dims = c(nrow(loc), n.mesh),
+      i = rep(ii, 3),
+      j = as.vector(tv),
+      x = as.vector(z) * weights[rep(ii, 3)]
+    ))
+
+    return(list(dx = dx, dy = dy, dz = dz))
+  }
+
+  info <- list(t = ti, bary = b, A = A, ok = ok)
+
+  if (!is.null(derivatives) && derivatives) {
+    info <-
+      c(
+        info,
+        mesh_deriv(
+          mesh = mesh,
+          info = info,
+          weights = weights
+        )
+      )
+  }
+
+  info
 }
 
 
-#' @param weights Optional weight vector
-#' @param derivatives logical; If true, also return matrices `dA` and `d2A`
 #' @param method character; with "default", uses the object definition of the
 #' function space. Otherwise overrides the object definition.
 #' @export
@@ -686,6 +756,7 @@ fm_evaluator.fm_tensor <- function(x,
 
 
 
+# fm_contains ####
 
 #' Check which mesh triangles are inside a polygon
 #'
@@ -803,6 +874,10 @@ fm_contains.sfc <- function(x, y, ..., type = c("centroid", "vertex")) {
 }
 
 
+
+
+# fm_is_within ####
+
 #' @title Query if points are inside a mesh
 #'
 #' @description
@@ -841,6 +916,9 @@ fm_is_within.default <- function(x, y, ...) {
 }
 
 
+
+# fm_basis ####
+
 #' @title Compute mapping matrix between mesh function space and points
 #'
 #' @description
@@ -874,11 +952,35 @@ fm_basis.default <- function(x, loc, ...) {
 
 #' @param weights Optional weight matrix to apply (from the left)
 #' @param derivatives If non-NULL and logical, return a list, optionally
-#' including `dA` and `d2A` matrices
+#' including derivative matrices.
+#' @returns For `fm_mesh_1d`, a list with elements
+#' \item{A }{The projection matrix, `u(loc_i)=sum_j A_ij w_i`}
+#' \item{d1A, d2A }{Derivative weight matrices,
+#' `du/dx(loc_i)=sum_j dx_ij w_i`, etc.}
 #' @rdname fm_basis
 #' @export
 fm_basis.fm_mesh_1d <- function(x, loc, weights = NULL, derivatives = NULL, ...) {
   result <- fm_evaluator_mesh_1d(
+    x,
+    loc = loc,
+    weights = weights,
+    derivatives = derivatives,
+    ...
+  )
+  if (is.null(derivatives)) {
+    return(result$A)
+  }
+  return(result)
+}
+
+#' @return For `fm_mesh_2d`, a list with elements
+#' \item{A }{The projection matrix, `u(loc_i)=sum_j A_ij w_i`}
+#' \item{dx, dy, dz }{Derivative weight matrices, `du/dx(loc_i)=sum_j
+#' dx_ij w_i`, etc.}
+#' @rdname fm_basis
+#' @export
+fm_basis.fm_mesh_2d <- function(x, loc, weights = NULL, derivatives = NULL, ...) {
+  result <- fm_evaluator_mesh_2d(
     x,
     loc = loc,
     weights = weights,
@@ -900,6 +1002,13 @@ fm_basis.inla.mesh.1d <- function(x, loc, ...) {
 
 #' @rdname fm_basis
 #' @export
+#' @method fm_basis inla.mesh
+fm_basis.inla.mesh <- function(x, loc, ...) {
+  fm_basis.fm_mesh_2d(fm_as_mesh_2d(x), loc = loc, ...)
+}
+
+#' @rdname fm_basis
+#' @export
 fm_basis.fm_evaluator <- function(x, ...) {
   x$proj$A
 }
@@ -907,6 +1016,14 @@ fm_basis.fm_evaluator <- function(x, ...) {
 
 
 
+
+
+
+
+
+
+
+# Block methods ####
 
 block_prep <- function(block = NULL, log_weights = NULL, weights = NULL) {
   block_len <- NULL

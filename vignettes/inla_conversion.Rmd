@@ -28,12 +28,23 @@ df <- tribble(
   "inla.mesh.lattice()", "fm_lattice_2d()",
   "inla.mesh.segment()", "fm_segm()",
   "inla.nonconvex.hull()", c("fm_nonconvex_hull()", "fm_extensions()"),
+  c(
+    "inla.nonconvex.hull()",
+    "inla.contour.segment()",
+    "inla.simplify.curve()"
+  ),
+  c(
+    "fm_nonconvex_hull_inla()",
+    "fm_simplify_helper()",
+    "fm_segm_contour_helper()"
+  ),
   c("inla.mesh.boundary()", "inla.mesh.interior()"), "fm_segm()",
   "inla.mesh.projector()", "fm_evaluator()",
   "inla.mesh.project()", "fm_evaluate()",
   "inla.CRS()", c("fm_crs()", "fm_CRS()"),
   "inla.spTransform()", "fm_transform()",
-  "inla.spde.make.A()", c("fm_basis()", "fm_row_kron()")
+  "inla.spde.make.A()", c("fm_basis()", "fm_row_kron()"),
+  "inla.mesh.deriv()", "fm_basis()"
 )
 
 webref <- "https://inlabru-org.github.io/fmesher/reference/"

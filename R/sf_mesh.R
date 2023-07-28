@@ -1,6 +1,10 @@
 #' @include mesh.R
 #' @include deprecated.R
 
+
+
+# fm_as_sfc ####
+
 #' @title Conversion methods from mesh related objects to sfc
 #' @rdname fm_as_sfc
 #' @family fm_as
@@ -151,6 +155,23 @@ fm_as_sfc.fm_segm <- function(x, ..., multi = FALSE) {
   geom
 }
 
+#' @rdname fm_as_sfc
+#'
+#' @export
+fm_as_sfc.sfc <- function(x, ...) {
+  x
+}
+
+#' @rdname fm_as_sfc
+#' @export
+fm_as_sfc.sf <- function(x, ...) {
+  sf::st_geometry(x)
+}
+
+
+
+
+# fm_as_mesh_2d ####
 
 #' @rdname fm_as_mesh_2d
 #' @export
@@ -235,7 +256,7 @@ fm_as_mesh_2d.sf <-
 
 
 
-
+# fm_as_segm ####
 
 #' @rdname fm_as_segm
 #' @export

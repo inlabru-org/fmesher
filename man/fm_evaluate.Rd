@@ -35,7 +35,14 @@ fm_evaluate(...)
 
 fm_evaluator(...)
 
-fm_evaluator_mesh_2d(mesh, loc = NULL, crs = NULL, ...)
+fm_evaluator_mesh_2d(
+  mesh,
+  loc = NULL,
+  weights = NULL,
+  derivatives = NULL,
+  crs = NULL,
+  ...
+)
 
 fm_evaluator_mesh_1d(
   mesh,
@@ -79,12 +86,13 @@ the function to be evaluated at the projection locations}
 \item{loc}{Projection locations.  Can be a matrix, \code{SpatialPoints},
 \code{SpatialPointsDataFrame}, \code{sf}, \code{sfc}, or \code{sfg} object.}
 
-\item{crs}{An optional CRS or inla.CRS object associated with \code{loc}
-and/or \code{lattice}.}
-
 \item{weights}{Optional weight vector}
 
-\item{derivatives}{logical; If true, also return matrices \code{dA} and \code{d2A}}
+\item{derivatives}{logical; If true, also return matrices \code{dA} and \code{d2A}
+for \code{fm_mesh_1d} objects, and \code{dx}, \code{dy}, \code{dz} for \code{fm_mesh_2d}.}
+
+\item{crs}{An optional CRS or inla.CRS object associated with \code{loc}
+and/or \code{lattice}.}
 
 \item{method}{character; with "default", uses the object definition of the
 function space. Otherwise overrides the object definition.}

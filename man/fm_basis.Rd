@@ -4,7 +4,9 @@
 \alias{fm_basis}
 \alias{fm_basis.default}
 \alias{fm_basis.fm_mesh_1d}
+\alias{fm_basis.fm_mesh_2d}
 \alias{fm_basis.inla.mesh.1d}
+\alias{fm_basis.inla.mesh}
 \alias{fm_basis.fm_evaluator}
 \title{Compute mapping matrix between mesh function space and points}
 \usage{
@@ -14,7 +16,11 @@ fm_basis(x, ...)
 
 \method{fm_basis}{fm_mesh_1d}(x, loc, weights = NULL, derivatives = NULL, ...)
 
+\method{fm_basis}{fm_mesh_2d}(x, loc, weights = NULL, derivatives = NULL, ...)
+
 \method{fm_basis}{inla.mesh.1d}(x, loc, ...)
+
+\method{fm_basis}{inla.mesh}(x, loc, ...)
 
 \method{fm_basis}{fm_evaluator}(x, ...)
 }
@@ -28,10 +34,19 @@ fm_basis(x, ...)
 \item{weights}{Optional weight matrix to apply (from the left)}
 
 \item{derivatives}{If non-NULL and logical, return a list, optionally
-including \code{dA} and \code{d2A} matrices}
+including derivative matrices.}
 }
 \value{
 A \code{sparseMatrix}
+
+For \code{fm_mesh_1d}, a list with elements
+\item{A }{The projection matrix, \verb{u(loc_i)=sum_j A_ij w_i}}
+\item{d1A, d2A }{Derivative weight matrices,
+\verb{du/dx(loc_i)=sum_j dx_ij w_i}, etc.}
+
+For \code{fm_mesh_2d}, a list with elements
+\item{A }{The projection matrix, \verb{u(loc_i)=sum_j A_ij w_i}}
+\item{dx, dy, dz }{Derivative weight matrices, \verb{du/dx(loc_i)=sum_j dx_ij w_i}, etc.}
 }
 \description{
 Computes the basis mapping matrix between a function space on a mesh, and locations.

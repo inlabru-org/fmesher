@@ -6,6 +6,8 @@
 \alias{fm_as_sfc.fm_mesh_2d}
 \alias{fm_as_sfc.inla.mesh.segment}
 \alias{fm_as_sfc.fm_segm}
+\alias{fm_as_sfc.sfc}
+\alias{fm_as_sfc.sf}
 \title{Conversion methods from mesh related objects to sfc}
 \usage{
 fm_as_sfc(x, ...)
@@ -17,6 +19,10 @@ fm_as_sfc(x, ...)
 \method{fm_as_sfc}{inla.mesh.segment}(x, ..., multi = FALSE)
 
 \method{fm_as_sfc}{fm_segm}(x, ..., multi = FALSE)
+
+\method{fm_as_sfc}{sfc}(x, ...)
+
+\method{fm_as_sfc}{sf}(x, ...)
 }
 \arguments{
 \item{x}{An object to be coerced/transformed/converted into another class}

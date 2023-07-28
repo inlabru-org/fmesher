@@ -1,7 +1,7 @@
 Package: fmesher
 Type: Package
 Title: Triangle Meshes and Other Geometry Tools
-Version: 0.0.9.9006
+Version: 0.0.9.9007
 Authors@R: c(
   person("Finn", "Lindgren", email = "finn.lindgren@gmail.com",
          role = c("aut", "cre", "cph"),
@@ -45,7 +45,8 @@ Suggests:
     testthat (>= 3.0.0),
     tidyterra,
     rgl,
-    rmarkdown
+    rmarkdown,
+    splancs
 Additional_repositories: https://inla.r-inla-download.org/R/testing
 URL: https://inlabru-org.github.io/fmesher/
 BugReports: https://github.com/inlabru-org/fmesher/issues
