@@ -12,7 +12,7 @@ future version."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
     
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.9.9007</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.9.9008</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,21 +66,7 @@ future version.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fm_has_PROJ6</span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">fm_not_for_PROJ6</span><span class="op">(</span>fun <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">fm_not_for_PROJ4</span><span class="op">(</span>fun <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">fm_fallback_PROJ6</span><span class="op">(</span>fun <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">fm_requires_PROJ6</span><span class="op">(</span>fun <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">fm_as_sp_crs</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">fm_sp_get_crs</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">fm_spTransform</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fm_spTransform</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for default</span></span>
 <span><span class="fu">fm_spTransform</span><span class="op">(</span><span class="va">x</span>, crs0 <span class="op">=</span> <span class="cn">NULL</span>, crs1 <span class="op">=</span> <span class="cn">NULL</span>, passthrough <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
@@ -100,6 +86,20 @@ future version.</p>
 <span><span class="co"># S3 method for inla.mesh</span></span>
 <span><span class="fu">fm_spTransform</span><span class="op">(</span><span class="va">x</span>, <span class="va">CRSobj</span>, passthrough <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
+<span><span class="fu">fm_has_PROJ6</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">fm_not_for_PROJ6</span><span class="op">(</span>fun <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">fm_not_for_PROJ4</span><span class="op">(</span>fun <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">fm_fallback_PROJ6</span><span class="op">(</span>fun <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">fm_requires_PROJ6</span><span class="op">(</span>fun <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">fm_as_sp_crs</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">fm_sp_get_crs</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span></span>
 <span><span class="fu">split_lines</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">sp</span>, <span class="va">ep</span>, filter.zero.length <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">fm_as_inla_mesh_segment</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
@@ -111,13 +111,8 @@ future version.</p>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
-    <dl><dt>fun</dt>
-<dd><p>The name of the function that requires PROJ6. Default: NULL,
-which uses the name of the calling function.</p></dd>
-
-
-<dt>x</dt>
-<dd><p>The object that should be transformed from it's current CRS to a new CRS</p></dd>
+    <dl><dt>x</dt>
+<dd><p>A <code><a href="https://rdrr.io/pkg/sp/man/Spatial-class.html" class="external-link">sp::Spatial</a></code> object</p></dd>
 
 
 <dt>...</dt>
@@ -140,6 +135,11 @@ through without transformation.</p></dd>
 
 <dt>CRSobj</dt>
 <dd><p>The target sp::CRS or inla.CRS object</p></dd>
+
+
+<dt>fun</dt>
+<dd><p>The name of the function that requires PROJ6. Default: NULL,
+which uses the name of the calling function.</p></dd>
 
 
 <dt>mesh</dt>
@@ -181,7 +181,12 @@ and use <a href="fm_crs.html">fm_CRS()</a> to extract/construct/convert to old s
     <div class="section level2">
     <h2 id="functions">Functions<a class="anchor" aria-label="anchor" href="#functions"></a></h2>
     
-<ul><li><p><code>fm_has_PROJ6()</code>: Detect whether PROJ6 is available</p></li>
+<ul><li><p><code>fm_spTransform()</code>: <a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> (See <code><a href="fm_transform.html">fm_transform()</a></code> instead)
+Handle transformation of various inla objects according to coordinate
+reference systems of <code><a href="https://rdrr.io/pkg/sp/man/CRS-class.html" class="external-link">sp::CRS</a></code> or <code><a href="https://rdrr.io/pkg/INLA/man/inla.CRS.html" class="external-link">INLA::inla.CRS</a></code> class.</p></li>
+<li><p><code>fm_spTransform(default)</code>: The default method handles low level transformation of raw
+coordinates.</p></li>
+<li><p><code>fm_has_PROJ6()</code>: Detect whether PROJ6 is available</p></li>
 <li><p><code>fm_not_for_PROJ6()</code>: <code>fm_not_for_PROJ6</code> is called to warn about using old PROJ4
 features even though PROJ6 is available</p></li>
 <li><p><code>fm_not_for_PROJ4()</code>: <code>fm_not_for_PROJ4</code> is called to give an error when
@@ -194,11 +199,6 @@ is required but not available</p></li>
 <code><a href="https://rdrr.io/pkg/sp/man/Spatial-class.html" class="external-link">sp::Spatial</a></code> and <code><a href="https://rdrr.io/pkg/sp/man/CRS-class.html" class="external-link">sp::CRS</a></code> objects.</p></li>
 <li><p><code>fm_sp_get_crs()</code>: Wrapper for CRS(projargs) (PROJ4) and CRS(wkt) for
 <code><a href="https://rdrr.io/pkg/sp/man/Spatial-class.html" class="external-link">sp::Spatial</a></code> objects.</p></li>
-<li><p><code>fm_spTransform()</code>: <a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> (See <code><a href="fm_transform.html">fm_transform()</a></code> instead)
-Handle transformation of various inla objects according to coordinate
-reference systems of <code><a href="https://rdrr.io/pkg/sp/man/CRS-class.html" class="external-link">sp::CRS</a></code> or <code><a href="https://rdrr.io/pkg/INLA/man/inla.CRS.html" class="external-link">INLA::inla.CRS</a></code> class.</p></li>
-<li><p><code>fm_spTransform(default)</code>: The default method handles low level transformation of raw
-coordinates.</p></li>
 <li><p><code>split_lines()</code>: Split lines at mesh edges.</p></li>
 <li><p><code>fm_as_inla_mesh_segment()</code>: Conversion to inla.mesh.segment
 <a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> in favour of <code><a href="fm_as_segm.html">fm_as_segm()</a></code>.</p></li>
