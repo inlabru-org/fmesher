@@ -55,8 +55,9 @@ fm_crs_oblique(x) <- value
 \item{x}{Object to assign crs information to}
 
 \item{value}{For \verb{fm_crs<-()}, object supported by \code{fm_crs(value)}.
-For \verb{fm_crs_oblique<-()}, NULL, NA, or a numeric vector, see
-the \code{oblique} argument for \code{\link[=fm_crs]{fm_crs()}}.}
+
+For \verb{fm_crs_oblique<-()}, \code{NA} or a numeric vector, see
+the \code{oblique} argument for \code{\link[=fm_crs]{fm_crs()}}. For assignment, \code{NULL} is treated as \code{NA}.}
 }
 \description{
 Assigns new crs information.

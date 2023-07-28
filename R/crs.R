@@ -866,8 +866,9 @@ fm_crs.inla.mesh.segment <- function(x, oblique = NULL, ...) {
 #'
 #' @param x Object to assign crs information to
 #' @param value For `fm_crs<-()`, object supported by `fm_crs(value)`.
-#' For `fm_crs_oblique<-()`, NULL, NA, or a numeric vector, see
-#' the `oblique` argument for [fm_crs()].
+#'
+#' For `fm_crs_oblique<-()`, `NA` or a numeric vector, see
+#' the `oblique` argument for [fm_crs()]. For assignment, `NULL` is treated as `NA`.
 #' @seealso [fm_crs()]
 #' @export
 `fm_crs<-` <- function(x, value) {
