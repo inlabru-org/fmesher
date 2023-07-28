@@ -68,6 +68,9 @@ reference system</p>
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># S3 method for fm_CRS</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span></span>
 <span><span class="co"># S3 method for inla.CRS</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span></span>
@@ -80,7 +83,7 @@ reference system</p>
 <span><span class="co"># S3 method for Spatial</span></span>
 <span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># S3 method for inla.CRS</span></span>
+<span><span class="co"># S3 method for fm_CRS</span></span>
 <span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, oblique <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for sf</span></span>
@@ -92,19 +95,10 @@ reference system</p>
 <span><span class="co"># S3 method for sfg</span></span>
 <span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, oblique <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># S3 method for inla.mesh</span></span>
-<span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, oblique <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
-<span></span>
 <span><span class="co"># S3 method for fm_mesh_2d</span></span>
 <span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, oblique <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># S3 method for inla.mesh.lattice</span></span>
-<span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, oblique <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
-<span></span>
 <span><span class="co"># S3 method for fm_lattice</span></span>
-<span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, oblique <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S3 method for inla.mesh.segment</span></span>
 <span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, oblique <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for fm_segm</span></span>
@@ -124,7 +118,19 @@ reference system</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for fm_CRS</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for inla.CRS</span></span>
+<span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, oblique <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for inla.mesh</span></span>
+<span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, oblique <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for inla.mesh.lattice</span></span>
+<span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, oblique <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for inla.mesh.segment</span></span>
+<span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, oblique <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -206,7 +212,9 @@ projection is only correct for perfect spheres.</p>
     <div class="section level2">
     <h2 id="functions">Functions<a class="anchor" aria-label="anchor" href="#functions"></a></h2>
     
-<ul><li><p><code>is.na(inla.CRS)</code>: Check if a <code>inla.CRS</code> has <code>NA</code> crs information and <code>NA</code>
+<ul><li><p><code>is.na(fm_CRS)</code>: Check if a <code>fm_CRS</code> has <code>NA</code> crs information and <code>NA</code>
+obliqueness</p></li>
+<li><p><code>is.na(inla.CRS)</code>: Check if a <code>inla.CRS</code> has <code>NA</code> crs information and <code>NA</code>
 obliqueness</p></li>
 </ul></div>
     <div class="section level2">

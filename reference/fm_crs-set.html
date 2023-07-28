@@ -94,7 +94,7 @@
 <span><span class="co"># S3 method for CRS</span></span>
 <span><span class="fu"><a href="fm_crs.html">fm_crs_oblique</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">value</span></span>
 <span></span>
-<span><span class="co"># S3 method for inla.CRS</span></span>
+<span><span class="co"># S3 method for fm_CRS</span></span>
 <span><span class="fu"><a href="fm_crs.html">fm_crs_oblique</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">value</span></span>
 <span></span>
 <span><span class="co"># S3 method for fm_crs</span></span>
@@ -107,6 +107,9 @@
 <span><span class="fu"><a href="fm_crs.html">fm_crs_oblique</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">value</span></span>
 <span></span>
 <span><span class="co"># S3 method for fm_lattice_2d</span></span>
+<span><span class="fu"><a href="fm_crs.html">fm_crs_oblique</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">value</span></span>
+<span></span>
+<span><span class="co"># S3 method for inla.CRS</span></span>
 <span><span class="fu"><a href="fm_crs.html">fm_crs_oblique</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">value</span></span></code></pre></div>
     </div>
 
@@ -117,9 +120,9 @@
 
 
 <dt>value</dt>
-<dd><p>For <code>fm_crs&lt;-()</code>, object supported by <code>fm_crs(value)</code>.
-For <code>fm_crs_oblique&lt;-()</code>, NULL, NA, or a numeric vector, see
-the <code>oblique</code> argument for <code><a href="fm_crs.html">fm_crs()</a></code>.</p></dd>
+<dd><p>For <code>fm_crs&lt;-()</code>, object supported by <code>fm_crs(value)</code>.</p>
+<p>For <code>fm_crs_oblique&lt;-()</code>, <code>NA</code> or a numeric vector, see
+the <code>oblique</code> argument for <code><a href="fm_crs.html">fm_crs()</a></code>. For assignment, <code>NULL</code> is treated as <code>NA</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
