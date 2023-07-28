@@ -7,11 +7,12 @@
 \alias{fm_int.character}
 \alias{fm_int.factor}
 \alias{fm_int.SpatRaster}
+\alias{fm_int.fm_lattice_2d}
+\alias{fm_int.fm_mesh_1d}
+\alias{fm_int.fm_mesh_2d}
 \alias{fm_int.inla.mesh.lattice}
 \alias{fm_int.inla.mesh.1d}
-\alias{fm_int.fm_mesh_1d}
 \alias{fm_int.inla.mesh}
-\alias{fm_int.fm_mesh_2d}
 \title{Multi-domain integration}
 \usage{
 fm_int(domain, samplers = NULL, ...)
@@ -26,13 +27,11 @@ fm_int(domain, samplers = NULL, ...)
 
 \method{fm_int}{SpatRaster}(domain, samplers = NULL, name = "x", ...)
 
-\method{fm_int}{inla.mesh.lattice}(domain, samplers = NULL, name = "x", ...)
-
-\method{fm_int}{inla.mesh.1d}(domain, samplers = NULL, name = "x", int.args = NULL, ...)
+\method{fm_int}{fm_lattice_2d}(domain, samplers = NULL, name = "x", ...)
 
 \method{fm_int}{fm_mesh_1d}(domain, samplers = NULL, name = "x", int.args = NULL, ...)
 
-\method{fm_int}{inla.mesh}(
+\method{fm_int}{fm_mesh_2d}(
   domain,
   samplers = NULL,
   name = NULL,
@@ -41,7 +40,11 @@ fm_int(domain, samplers = NULL, ...)
   ...
 )
 
-\method{fm_int}{fm_mesh_2d}(
+\method{fm_int}{inla.mesh.lattice}(domain, samplers = NULL, name = "x", ...)
+
+\method{fm_int}{inla.mesh.1d}(domain, samplers = NULL, name = "x", int.args = NULL, ...)
+
+\method{fm_int}{inla.mesh}(
   domain,
   samplers = NULL,
   name = NULL,
@@ -98,7 +101,7 @@ Construct integration points on tensor product spaces
 
 \item \code{fm_int(SpatRaster)}: \code{SpatRaster} integration. Not yet implemented.
 
-\item \code{fm_int(inla.mesh.lattice)}: \code{inla.mesh.lattice} integration. Not yet implemented.
+\item \code{fm_int(fm_lattice_2d)}: \code{fm_lattice_2d} integration. Not yet implemented.
 
 \item \code{fm_int(fm_mesh_1d)}: \code{fm_mesh_1d} integration. Supported samplers:
 \itemize{

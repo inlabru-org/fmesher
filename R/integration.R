@@ -506,27 +506,14 @@ fm_int.SpatRaster <- function(domain, samplers = NULL, name = "x", ...) {
 }
 
 #' @export
-#' @describeIn fm_int `inla.mesh.lattice` integration. Not yet implemented.
-fm_int.inla.mesh.lattice <- function(domain, samplers = NULL, name = "x", ...) {
+#' @describeIn fm_int `fm_lattice_2d` integration. Not yet implemented.
+fm_int.fm_lattice_2d <- function(domain, samplers = NULL, name = "x", ...) {
   stop("'inla.mesh.lattice' integration is not yet implemented.")
 }
 
 
 
 # fm_mesh_1d integration ####
-
-#' @rdname fm_int
-#' @export
-fm_int.inla.mesh.1d <- function(domain, samplers = NULL, name = "x", int.args = NULL, ...) {
-  fm_int.fm_mesh_1d(
-    fm_as_mesh_1d(domain),
-    samplers = samplers,
-    name = name,
-    int.args = NULL,
-    ...
-  )
-}
-
 
 #' @param int.args List of arguments passed to line and integration methods.
 #' * `method`: "stable" (to aggregate integration weights onto mesh nodes)
@@ -703,14 +690,61 @@ fm_int.fm_mesh_1d <- function(domain, samplers = NULL, name = "x", int.args = NU
 }
 
 
-# inla.mesh integration ####
+# fm_mesh_2d integration ####
+
+#' @export
+#' @describeIn fm_int `inla.mesh` integration. Any sampler class with an
+#' associated [fm_int_mesh_2d()] method is supported.
+#' @param format character; determines the output format, as either "sf"
+#'   (default when the sampler is `NULL`) or "sp". When `NULL`, determined by
+#'   the sampler type.
+fm_int.fm_mesh_2d <- function(domain,
+                              samplers = NULL,
+                              name = NULL,
+                              int.args = NULL,
+                              format = NULL,
+                              ...) {
+  int.args.default <- list(method = "stable", nsub1 = 30, nsub2 = 9)
+  if (is.null(int.args)) {
+    int.args <- list()
+  }
+  missing.args <- setdiff(names(int.args.default), names(int.args))
+  int.args[missing.args] <- int.args.default[missing.args]
+  if (!is.null(int.args[["nsub"]])) {
+    int.args[["nsub2"]] <- int.args[["nsub"]]
+  }
+
+  ips <- fm_int_mesh_2d(samplers,
+                        domain = domain,
+                        name = name,
+                        int.args = int.args,
+                        ...
+  )
+
+  if (is.null(format) && inherits(samplers, "Spatial")) {
+    format <- "sp"
+  }
+  if (!is.null(format)) {
+    if ((format == "sf") && !inherits(ips, "sf")) {
+      ips <- sf::st_as_sf(ips)
+      if (!is.null(name) && (name != attr(ips, "sf_column"))) {
+        ips <- dplyr::rename(ips, "{name}" := attr(ips, "sf_column"))
+      }
+    } else if ((format == "sp") && !inherits(ips, "Spatial")) {
+      ips <- as(ips, "Spatial")
+      cnames <- sp::coordnames(ips)
+      sp::coordnames(ips) <- c("x", "y", "z")[seq_along(cnames)]
+    }
+  }
+
+  ips
+}
 
 #' @title Project integration points to mesh vertices
 #'
 #' @description
 #' Compute information for assigning points to the vertices of the covering triangle
 #'
-#' @export
 #' @param points A `SpatialPointsDataFrame`, `sf`, or `list` object
 #' @param mesh An `fm_mesh_2d` or `inla.mesh` object
 #' @return `SpatialPointsDataFrame`, `sf`, or `list` of mesh vertices with
@@ -1393,6 +1427,29 @@ fm_int_mesh_2d.Spatial <- function(samplers,
   ips
 }
 
+
+
+
+# Legacy class support ####
+
+#' @export
+#' @rdname fm_int
+fm_int.inla.mesh.lattice <- function(domain, samplers = NULL, name = "x", ...) {
+  stop("'inla.mesh.lattice' integration is not yet implemented.")
+}
+
+#' @rdname fm_int
+#' @export
+fm_int.inla.mesh.1d <- function(domain, samplers = NULL, name = "x", int.args = NULL, ...) {
+  fm_int.fm_mesh_1d(
+    fm_as_mesh_1d(domain),
+    samplers = samplers,
+    name = name,
+    int.args = NULL,
+    ...
+  )
+}
+
 #' @export
 #' @rdname fm_int
 fm_int.inla.mesh <- function(domain,
@@ -1409,51 +1466,4 @@ fm_int.inla.mesh <- function(domain,
     format = format,
     ...
   )
-}
-#' @export
-#' @describeIn fm_int `inla.mesh` integration. Any sampler class with an
-#' associated [fm_int_mesh_2d()] method is supported.
-#' @param format character; determines the output format, as either "sf"
-#'   (default when the sampler is `NULL`) or "sp". When `NULL`, determined by
-#'   the sampler type.
-fm_int.fm_mesh_2d <- function(domain,
-                              samplers = NULL,
-                              name = NULL,
-                              int.args = NULL,
-                              format = NULL,
-                              ...) {
-  int.args.default <- list(method = "stable", nsub1 = 30, nsub2 = 9)
-  if (is.null(int.args)) {
-    int.args <- list()
-  }
-  missing.args <- setdiff(names(int.args.default), names(int.args))
-  int.args[missing.args] <- int.args.default[missing.args]
-  if (!is.null(int.args[["nsub"]])) {
-    int.args[["nsub2"]] <- int.args[["nsub"]]
-  }
-
-  ips <- fm_int_mesh_2d(samplers,
-    domain = domain,
-    name = name,
-    int.args = int.args,
-    ...
-  )
-
-  if (is.null(format) && inherits(samplers, "Spatial")) {
-    format <- "sp"
-  }
-  if (!is.null(format)) {
-    if ((format == "sf") && !inherits(ips, "sf")) {
-      ips <- sf::st_as_sf(ips)
-      if (!is.null(name) && (name != attr(ips, "sf_column"))) {
-        ips <- dplyr::rename(ips, "{name}" := attr(ips, "sf_column"))
-      }
-    } else if ((format == "sp") && !inherits(ips, "Spatial")) {
-      ips <- as(ips, "Spatial")
-      cnames <- sp::coordnames(ips)
-      sp::coordnames(ips) <- c("x", "y", "z")[seq_along(cnames)]
-    }
-  }
-
-  ips
 }
