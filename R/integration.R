@@ -714,11 +714,12 @@ fm_int.fm_mesh_2d <- function(domain,
     int.args[["nsub2"]] <- int.args[["nsub"]]
   }
 
-  ips <- fm_int_mesh_2d(samplers,
-                        domain = domain,
-                        name = name,
-                        int.args = int.args,
-                        ...
+  ips <- fm_int_mesh_2d(
+    samplers,
+    domain = domain,
+    name = name,
+    int.args = int.args,
+    ...
   )
 
   if (is.null(format) && inherits(samplers, "Spatial")) {

@@ -708,9 +708,11 @@ fm_crs.fm_crs <- function(x, oblique = NULL, ...) {
 #' @export
 #' @rdname fm_crs
 fm_crs.inla.CRS <- function(x, oblique = NULL, ...) {
-  fm_crs(x[["crs"]],
-         oblique = if (is.null(oblique)) x[["oblique"]] else oblique,
-         ...)
+  fm_crs(
+    x[["crs"]],
+    oblique = if (is.null(oblique)) x[["oblique"]] else oblique,
+    ...
+  )
 }
 
 #' @export
@@ -766,7 +768,6 @@ fm_crs.SpatVector <- function(x, oblique = NULL, ...) {
     y <- fm_crs(tcrs, oblique = oblique, ...)
   }
   y
-
 }
 
 #' @rdname fm_crs
@@ -943,21 +944,24 @@ fm_crs.inla.mesh.segment <- function(x, oblique = NULL, ...) {
 #' @rdname fm_crs-set
 `fm_crs_oblique<-.CRS` <- function(x, value) {
   fm_CRS(x,
-         oblique = if (is.null(value)) NA else value)
+    oblique = if (is.null(value)) NA else value
+  )
 }
 
 #' @export
 #' @rdname fm_crs-set
 `fm_crs_oblique<-.inla.CRS` <- function(x, value) {
   fm_CRS(x[["crs"]],
-         oblique = if (is.null(value)) NA else value)
+    oblique = if (is.null(value)) NA else value
+  )
 }
 
 #' @export
 #' @rdname fm_crs-set
 `fm_crs_oblique<-.fm_crs` <- function(x, value) {
   fm_crs(x[["crs"]],
-         oblique = if (is.null(value)) NA else value)
+    oblique = if (is.null(value)) NA else value
+  )
 }
 
 #' @export
@@ -965,7 +969,8 @@ fm_crs.inla.mesh.segment <- function(x, oblique = NULL, ...) {
 `fm_crs_oblique<-.fm_segm` <- function(x, value) {
   fm_crs(x) <-
     fm_crs(x,
-           oblique = if (is.null(value)) NA else value)
+      oblique = if (is.null(value)) NA else value
+    )
   x
 }
 
@@ -974,7 +979,8 @@ fm_crs.inla.mesh.segment <- function(x, oblique = NULL, ...) {
 `fm_crs_oblique<-.fm_mesh_2d` <- function(x, value) {
   fm_crs(x) <-
     fm_crs(x,
-           oblique = if (is.null(value)) NA else value)
+      oblique = if (is.null(value)) NA else value
+    )
   x
 }
 
@@ -983,7 +989,8 @@ fm_crs.inla.mesh.segment <- function(x, oblique = NULL, ...) {
 `fm_crs_oblique<-.fm_lattice_2d` <- function(x, value) {
   fm_crs(x) <-
     fm_crs(x,
-           oblique = if (is.null(value)) NA else value)
+      oblique = if (is.null(value)) NA else value
+    )
   x
 }
 
@@ -2273,11 +2280,11 @@ fm_spTransform.inla.mesh <- function(x, CRSobj, passthrough = FALSE, ...) {
 
 fm_has_PROJ6 <- function() {
   lifecycle::deprecate_warn("0.0.1",
-                            "fm_has_PROJ6()",
-                            details = c(
-                              i = "Since inlabru 2.7.1, fm_has_PROJ6() always returns TRUE",
-                              i = "rgdal/PROJ4 is no longer supported."
-                            )
+    "fm_has_PROJ6()",
+    details = c(
+      i = "Since inlabru 2.7.1, fm_has_PROJ6() always returns TRUE",
+      i = "rgdal/PROJ4 is no longer supported."
+    )
   )
   TRUE
 }
@@ -2287,8 +2294,8 @@ fm_has_PROJ6 <- function() {
 
 fm_not_for_PROJ6 <- function(fun = NULL) {
   lifecycle::deprecate_stop("0.0.1",
-                            "fm_not_for_PROJ6()",
-                            details = c(x = "rgdal/PROJ4 is no longer supported.")
+    "fm_not_for_PROJ6()",
+    details = c(x = "rgdal/PROJ4 is no longer supported.")
   )
 }
 
@@ -2297,8 +2304,8 @@ fm_not_for_PROJ6 <- function(fun = NULL) {
 
 fm_not_for_PROJ4 <- function(fun = NULL) {
   lifecycle::deprecate_stop("0.0.1",
-                            "fm_not_for_PROJ4()",
-                            details = c(x = "rgdal/PROJ4 is no longer supported.")
+    "fm_not_for_PROJ4()",
+    details = c(x = "rgdal/PROJ4 is no longer supported.")
   )
 }
 
@@ -2307,8 +2314,8 @@ fm_not_for_PROJ4 <- function(fun = NULL) {
 
 fm_fallback_PROJ6 <- function(fun = NULL) {
   lifecycle::deprecate_stop("0.0.1",
-                            "fm_not_for_PROJ4()",
-                            details = c(x = "rgdal/PROJ4 requested by PROJ4 is no longer supported.")
+    "fm_not_for_PROJ4()",
+    details = c(x = "rgdal/PROJ4 requested by PROJ4 is no longer supported.")
   )
 }
 
@@ -2320,8 +2327,8 @@ fm_fallback_PROJ6 <- function(fun = NULL) {
 
 fm_requires_PROJ6 <- function(fun = NULL) {
   lifecycle::deprecate_stop("0.0.1",
-                            "fm_requires_PROJ6()",
-                            details = c(x = "rgdal/PROJ4 is no longer supported.")
+    "fm_requires_PROJ6()",
+    details = c(x = "rgdal/PROJ4 is no longer supported.")
   )
 }
 
@@ -2363,4 +2370,3 @@ fm_sp_get_crs <- function(x) {
   lifecycle::deprecate_warn("0.0.1", "fm_sp_get_crs()", "fm_CRS()")
   fm_CRS(x)
 }
-
