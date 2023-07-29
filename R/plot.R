@@ -1,10 +1,15 @@
-#' Draw `inla.mesh.segment` objects.
+#' @title Draw `fm_segm` objects.
 #'
-#' Draws a [inla.mesh.segment()] object with generic or `rgl`
+#' @description
+#' A short description...
+#'
+#' Draws a [fm_segm()] object with generic or `rgl`
 #' graphics.
 #'
+#' @importFrom grDevices cm.colors rgb
+#' @importFrom graphics lines plot.window points
 #'
-#' @param x An [inla.mesh.segment()] object.
+#' @param x An [fm_segm()] object.
 #' @param loc Point locations to be used if `x$loc` is `NULL`.
 #' @param col Segment color specification.
 #' @param colors Colors to cycle through if `col` is `NULL`.
@@ -16,6 +21,12 @@
 #' @param \dots Additional parameters, passed on to graphics methods.
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
 #' @seealso [fm_segm()]
+#' @export
+plot.fm_segm <- function(x, ..., add = FALSE) {
+  lines(x, add = add, rgl = FALSE, ...)
+}
+
+#' @rdname plot.fm_segm
 #' @export
 lines.fm_segm <- function(x, loc = NULL, col = NULL,
                           colors = c("black", "blue", "red", "green"),
@@ -59,14 +70,14 @@ lines.fm_segm <- function(x, loc = NULL, col = NULL,
     }
     if (rgl) {
       rgl::segments3d(loc[as.vector(t(segm$idx[idx, , drop = FALSE])), , drop = FALSE],
-                      color = color,
-                      ...
+        color = color,
+        ...
       )
     } else {
       lines(loc[t(cbind(segm$idx[idx, , drop = FALSE], NA)), 1],
-            loc[t(cbind(segm$idx[idx, , drop = FALSE], NA)), 2],
-            col = color,
-            ...
+        loc[t(cbind(segm$idx[idx, , drop = FALSE], NA)), 2],
+        col = color,
+        ...
       )
     }
   }
@@ -100,13 +111,13 @@ generate_colors <- function(color,
     }
     if (color.truncate) {
       not.ok <- ((color < color.axis[1]) |
-                   (color > color.axis[2]))
+        (color > color.axis[2]))
     } else {
       not.ok <- rep(FALSE, length(color))
     }
     cs <- (pmax(color.axis[1],
-                pmin(color.axis[2], color, na.rm = TRUE),
-                na.rm = TRUE
+      pmin(color.axis[2], color, na.rm = TRUE),
+      na.rm = TRUE
     ))
     cs <- (cs - color.axis[1]) / (color.axis[2] - color.axis[1])
     not.ok <- not.ok | is.na(cs)
@@ -118,7 +129,7 @@ generate_colors <- function(color,
     }
 
     ics <- (as.numeric(cut(cs, seq(0, 1, length.out = color.n + 1),
-                           include.lowest = TRUE
+      include.lowest = TRUE
     )))
     colors <- color.palette(color.n)[ics]
 
@@ -129,18 +140,18 @@ generate_colors <- function(color,
     }
     if (color.truncate) {
       not.ok <- ((color[, 1] < color.axis[1]) |
-                   (color[, 2] < color.axis[1]) |
-                   (color[, 3] < color.axis[1]) |
-                   (color[, 1] > color.axis[2]) |
-                   (color[, 2] > color.axis[2]) |
-                   (color[, 3] > color.axis[2]))
+        (color[, 2] < color.axis[1]) |
+        (color[, 3] < color.axis[1]) |
+        (color[, 1] > color.axis[2]) |
+        (color[, 2] > color.axis[2]) |
+        (color[, 3] > color.axis[2]))
     } else {
       not.ok <- rep(FALSE, nrow(color))
     }
     cs <- matrix(
       pmax(color.axis[1],
-           pmin(color.axis[2], color, na.rm = TRUE),
-           na.rm = TRUE
+        pmin(color.axis[2], color, na.rm = TRUE),
+        na.rm = TRUE
       ), dim(color)
     )
     cs <- (cs - color.axis[1]) / (color.axis[2] - color.axis[1])
@@ -160,9 +171,6 @@ generate_colors <- function(color,
 }
 
 
-## Export as plot!inla.trimesh as well as plot.inla.trimesh,
-## even though it's not actually an S3 method.
-
 
 #' Low level triangulation mesh plotting
 #'
@@ -170,7 +178,7 @@ generate_colors <- function(color,
 #'
 #'
 #' @param x A `fm_mesh_2d()` object
-#' @param color Color specification.  A single named color, a vector of scalar
+#' @param col Color specification.  A single named color, a vector of scalar
 #' values, or a matrix of RGB values.
 #' @param color.axis The min/max limit values for the color mapping.
 #' @param color.n The number of colors to use in the color palette.
@@ -183,6 +191,7 @@ generate_colors <- function(color,
 #' @param draw.vertices If `TRUE`, draw triangle vertices.
 #' @param size Size for vertex points.
 #' @param draw.edges If `TRUE`, draw triangle edges.
+#' @param draw.faces If `TRUE`, draw triangles.
 #' @param edge.color Edge color specification.
 #' @param S Deprecated.
 #' @param \dots Additional parameters passed to and from other methods.
@@ -193,7 +202,8 @@ generate_colors <- function(color,
 #' @examples
 #' \donttest{
 #' if (require(rgl)) {
-#'     plot_rgl(mesh, col = mesh$loc[, 1])
+#'   mesh <- fm_rcdt_2d(globe = 10)
+#'   plot_rgl(mesh, col = mesh$loc[, 1])
 #' }
 #' }
 plot_rgl <- function(x, ...) {
@@ -210,22 +220,23 @@ lines_rgl.fm_segm <- function(x, ..., add = TRUE) {
   lines(x, add = add, rgl = TRUE, ...)
 }
 #' @export
+#' @inheritParams plot.fm_mesh_2d
 #' @rdname plot_rgl
-plot_rgl.fm_mesh_2d <- function(x, color = "white", color.axis = NULL,
-                              color.n = 512, color.palette = cm.colors,
-                              color.truncate = FALSE, alpha = NULL,
-                              lwd = 1, specular = "black",
-                              draw.vertices = TRUE,
-                              draw.edges = TRUE,
-                              draw.faces = TRUE,
-                              draw.segments = draw.edges,
-                              size = 2,
-                              edge.color = rgb(0.3, 0.3, 0.3),
-                              t.sub = seq_len(nrow(x$graph$tv)),
-                              visibility = "",
-                              S = deprecated(),
-                              add = FALSE,
-                              ...) {
+plot_rgl.fm_mesh_2d <- function(x, col = "white", color.axis = NULL,
+                                color.n = 512, color.palette = cm.colors,
+                                color.truncate = FALSE, alpha = NULL,
+                                lwd = 1, specular = "black",
+                                draw.vertices = TRUE,
+                                draw.edges = TRUE,
+                                draw.faces = TRUE,
+                                draw.segments = draw.edges,
+                                size = 2,
+                                edge.color = rgb(0.3, 0.3, 0.3),
+                                t.sub = seq_len(nrow(x$graph$tv)),
+                                visibility = "",
+                                S = deprecated(),
+                                add = FALSE,
+                                ...) {
   requireNamespace("rgl", quietly = FALSE)
   mesh <- x
 
@@ -236,29 +247,33 @@ plot_rgl.fm_mesh_2d <- function(x, color = "white", color.axis = NULL,
     dev <- rgl::cur3d()
   }
 
-  tv_info <- get_tv_sub(tv = mesh$graph$tv,
-                        loc = mesh$loc,
-                        t.sub = t.sub,
-                        visibility = visibility)
+  tv_info <- get_tv_sub(
+    tv = mesh$graph$tv,
+    loc = mesh$loc,
+    t.sub = t.sub,
+    visibility = visibility
+  )
   tv <- tv_info$tv
 
   if (draw.vertices) {
     idx <- intersect(unique(as.vector(tv)), mesh$idx$loc)
     rgl::points3d(mesh$loc[idx, , drop = FALSE],
-                  size = 2 * size, lwd = lwd, color = "blue", ...
+      size = 2 * size, lwd = lwd, color = "blue", ...
     )
   }
   if (draw.segments) {
     if (!is.null(mesh$segm$bnd)) {
-      lines_rgl(mesh$segm$bnd, loc = mesh$loc,
-            lwd = lwd + 1,
-            ...
+      lines_rgl(mesh$segm$bnd,
+        loc = mesh$loc,
+        lwd = lwd + 1,
+        ...
       )
     }
     if (!is.null(mesh$segm$int)) {
-      lines_rgl(mesh$segm$int, loc = mesh$loc,
-            lwd = lwd + 1,
-            ...
+      lines_rgl(mesh$segm$int,
+        loc = mesh$loc,
+        lwd = lwd + 1,
+        ...
       )
     }
   }
@@ -267,7 +282,7 @@ plot_rgl.fm_mesh_2d <- function(x, color = "white", color.axis = NULL,
   TV <- tv
 
   colors <- (generate_colors(
-    color, color.axis, color.n,
+    col, color.axis, color.n,
     color.palette, color.truncate, alpha
   ))
 
@@ -295,8 +310,10 @@ plot_rgl.fm_mesh_2d <- function(x, color = "white", color.axis = NULL,
       cbind(TV[, 2], TV[, 3]),
       cbind(TV[, 3], TV[, 1])
     )
-    Ev <- cbind(pmin(Ev[, 1], Ev[, 2]),
-                pmax(Ev[, 1], Ev[, 2]))
+    Ev <- cbind(
+      pmin(Ev[, 1], Ev[, 2]),
+      pmax(Ev[, 1], Ev[, 2])
+    )
     Ev <- unique(Ev)
     if (identical(mesh$manifold, "S2")) {
       # Subdivide
@@ -370,6 +387,8 @@ plot_rgl.fm_mesh_2d <- function(x, color = "white", color.axis = NULL,
 #' @param edge.color Color specification for all edges.
 #' @param draw.segments If `TRUE`, draw boundary and interior constraint
 #' edges more prominently.
+#' @param visibility If "front" only display mesh faces with normal pointing
+#' towards the camera.
 #' @param \dots Further graphics parameters, interpreted by the respective
 #' plotting systems.
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
@@ -380,6 +399,7 @@ plot_rgl.fm_mesh_2d <- function(x, color = "white", color.axis = NULL,
 #' plot(mesh)
 #'
 #' @rdname plot.fm_mesh_2d
+#' @name plot.fm_mesh_2d
 #' @export
 lines.fm_mesh_2d <- function(x, ..., add = TRUE) {
   plot(x, ..., add = add)
@@ -407,10 +427,11 @@ get_tv_sub <- function(tv, loc, t.sub, visibility = "front") {
 
 
 #' @rdname plot.fm_mesh_2d
+#' @param rgl Deprecated
 #' @export
 plot.fm_mesh_2d <- function(
     x,
-    color = "white",
+    col = "white",
     t.sub = seq_len(nrow(x$graph$tv)),
     add = FALSE,
     lwd = 1,
@@ -423,7 +444,6 @@ plot.fm_mesh_2d <- function(
     draw.edges = TRUE,
     edge.color = rgb(0.3, 0.3, 0.3),
     draw.segments = draw.edges,
-    crs = NULL,
     rgl = deprecated(),
     visibility = "front",
     ...) {
@@ -432,10 +452,12 @@ plot.fm_mesh_2d <- function(
   force(ylim)
   mesh <- x
 
-  tv_info <- get_tv_sub(tv = mesh$graph$tv,
-                        loc = mesh$loc,
-                        t.sub = t.sub,
-                        visibility = visibility)
+  tv_info <- get_tv_sub(
+    tv = mesh$graph$tv,
+    loc = mesh$loc,
+    t.sub = t.sub,
+    visibility = visibility
+  )
   tv <- tv_info$tv
 
   idx <- cbind(tv[, c(1:3, 1), drop = FALSE], NA)
@@ -448,8 +470,10 @@ plot.fm_mesh_2d <- function(
       cbind(TV[, 2], TV[, 3]),
       cbind(TV[, 3], TV[, 1])
     )
-    Ev <- cbind(pmin(Ev[, 1], Ev[, 2]),
-                pmax(Ev[, 1], Ev[, 2]))
+    Ev <- cbind(
+      pmin(Ev[, 1], Ev[, 2]),
+      pmax(Ev[, 1], Ev[, 2])
+    )
     Ev <- unique(Ev)
     if (identical(mesh$manifold, "S2")) {
       # Subdivide
@@ -484,11 +508,11 @@ plot.fm_mesh_2d <- function(
   if (draw.vertices) {
     idx <- unique(as.vector(tv))
     points(mesh$loc[idx, , drop = FALSE],
-           pch = 20, col = vertex.color, cex = size, ...
+      pch = 20, col = vertex.color, cex = size, ...
     )
     idx <- intersect(idx, mesh$idx$loc)
     points(mesh$loc[idx, , drop = FALSE],
-           pch = 20, col = "blue", cex = size, ...
+      pch = 20, col = "blue", cex = size, ...
     )
   }
   if (draw.segments) {
@@ -501,4 +525,3 @@ plot.fm_mesh_2d <- function(
   }
   return(invisible())
 }
-

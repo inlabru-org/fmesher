@@ -15,7 +15,7 @@ lines_rgl(x, ..., add = TRUE)
 
 \method{plot_rgl}{fm_mesh_2d}(
   x,
-  color = "white",
+  col = "white",
   color.axis = NULL,
   color.n = 512,
   color.palette = cm.colors,
@@ -41,7 +41,10 @@ lines_rgl(x, ..., add = TRUE)
 
 \item{\dots}{Additional parameters passed to and from other methods.}
 
-\item{color}{Color specification.  A single named color, a vector of scalar
+\item{add}{If \code{TRUE}, adds to the current plot instead of starting a
+new one.}
+
+\item{col}{Color specification.  A single named color, a vector of scalar
 values, or a matrix of RGB values.}
 
 \item{color.axis}{The min/max limit values for the color mapping.}
@@ -63,9 +66,19 @@ limits.}
 
 \item{draw.edges}{If \code{TRUE}, draw triangle edges.}
 
+\item{draw.faces}{If \code{TRUE}, draw triangles.}
+
+\item{draw.segments}{If \code{TRUE}, draw boundary and interior constraint
+edges more prominently.}
+
 \item{size}{Size for vertex points.}
 
 \item{edge.color}{Edge color specification.}
+
+\item{t.sub}{Optional triangle index subset to be drawn.}
+
+\item{visibility}{If "front" only display mesh faces with normal pointing
+towards the camera.}
 
 \item{S}{Deprecated.}
 }
@@ -75,7 +88,8 @@ Plots a triangulation mesh using \code{rgl}.
 \examples{
 \donttest{
 if (require(rgl)) {
-    plot_rgl(mesh, col = mesh$loc[, 1])
+  mesh <- fm_rcdt_2d(globe = 10)
+  plot_rgl(mesh, col = mesh$loc[, 1])
 }
 }
 }
