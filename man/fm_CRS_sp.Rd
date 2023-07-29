@@ -3,7 +3,6 @@
 \name{fm_CRS}
 \alias{fm_CRS}
 \alias{is.na.fm_CRS}
-\alias{is.na.inla.CRS}
 \alias{fm_CRS.crs}
 \alias{fm_CRS.fm_crs}
 \alias{fm_CRS.Spatial}
@@ -17,23 +16,22 @@
 \alias{fm_CRS.CRS}
 \alias{fm_CRS.default}
 \alias{print.fm_CRS}
+\alias{is.na.inla.CRS}
 \alias{fm_CRS.inla.CRS}
 \alias{fm_CRS.inla.mesh}
 \alias{fm_CRS.inla.mesh.lattice}
 \alias{fm_CRS.inla.mesh.segment}
 \title{Create a coordinate reference system object}
 \usage{
-fm_CRS(...)
+fm_CRS(x, oblique = NULL, ...)
 
 \method{is.na}{fm_CRS}(x)
 
-\method{is.na}{inla.CRS}(x)
+\method{fm_CRS}{crs}(x, oblique = NULL, ...)
 
-\method{fm_CRS}{crs}(x, ...)
+\method{fm_CRS}{fm_crs}(x, oblique = NULL, ...)
 
-\method{fm_CRS}{fm_crs}(x, ...)
-
-\method{fm_CRS}{Spatial}(x, ...)
+\method{fm_CRS}{Spatial}(x, oblique = NULL, ...)
 
 \method{fm_CRS}{fm_CRS}(x, oblique = NULL, ...)
 
@@ -52,15 +50,18 @@ fm_CRS(...)
 \method{fm_CRS}{CRS}(x, oblique = NULL, ...)
 
 \method{fm_CRS}{default}(
+  x,
+  oblique = NULL,
   projargs = NULL,
   doCheckCRSArgs = NULL,
   args = NULL,
-  oblique = NULL,
   SRS_string = NULL,
   ...
 )
 
 \method{print}{fm_CRS}(x, ...)
+
+\method{is.na}{inla.CRS}(x)
 
 \method{fm_CRS}{inla.CRS}(x, oblique = NULL, ...)
 
@@ -71,19 +72,20 @@ fm_CRS(...)
 \method{fm_CRS}{inla.mesh.segment}(x, oblique = NULL, ...)
 }
 \arguments{
-\item{\dots}{Additional parameters. Not currently in use.}
-
 \item{x}{Object to convert to CRS or to extract CRS information from.}
 
 \item{oblique}{Vector of length at most 4 of rotation angles (in degrees)
 for an oblique projection, all values defaulting to zero. The values
 indicate (longitude, latitude, orientation, orbit), as explained in the
-Details section below.}
+Details section for \code{\link[=fm_crs]{fm_crs()}}.}
+
+\item{\dots}{Additional parameters, passed on to sub-methods.}
 
 \item{projargs}{Either 1) a projection argument string suitable as input to
 \code{sp::CRS}, or 2) an existing \code{CRS} object, or 3) a shortcut
 reference string to a predefined projection; run
-\code{names(fm_wkt_predef())} for valid predefined projections.}
+\code{names(fm_wkt_predef())} for valid predefined projections. (projargs is a
+compatibility parameter that can be used for the default \code{fm_CRS()} method)}
 
 \item{doCheckCRSArgs}{ignored.}
 

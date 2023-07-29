@@ -38,7 +38,6 @@
 \alias{fm_wkt_projection_type}
 \alias{fm_crs_projection_type}
 \alias{fm_crs_bounds}
-\alias{fm_crs_detect_manifold}
 \alias{fm_ellipsoid_radius<-.inla.CRS}
 \alias{fm_length_unit<-.inla.CRS}
 \title{Handling CRS/WKT}
@@ -115,8 +114,6 @@ fm_crs_projection_type(crs)
 
 fm_crs_bounds(crs, warn.unknown = FALSE)
 
-fm_crs_detect_manifold(crs)
-
 \method{fm_ellipsoid_radius}{inla.CRS}(x) <- value
 
 \method{fm_length_unit}{inla.CRS}(x) <- value
@@ -189,9 +186,6 @@ instead.
 \item \code{fm_crs_bounds()}: Returns bounds information for a projection, as
 a list with elements \code{type} ("rectangle" or "ellipse"), \code{xlim}, \code{ylim}, and
 \code{polygon}.
-
-\item \code{fm_crs_detect_manifold()}: Detect if a crs is on "R2" or "S2"
-(if \code{fm_crs_is_geocent(crs)} is \code{TRUE})
 
 }}
 \examples{

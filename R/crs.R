@@ -682,6 +682,16 @@ fm_crs.default <- function(x, oblique = NULL, ...) {
 fm_crs.crs <- function(x, oblique = NULL, ...) {
   if (!is.null(oblique) && !all(is.na(oblique))) {
     stopifnot(is.vector(oblique))
+    if (length(oblique) > 4) {
+      warning(
+        paste0(
+          "'oblique' vector length too long (",
+          length(oblique),
+          " > 4). Truncating to length 4."
+        )
+      )
+      oblique <- oblique[seq_len(4)]
+    }
     if (length(oblique) < 4) {
       oblique <- c(oblique, rep(0, 4 - length(oblique)))
     }
@@ -749,7 +759,6 @@ fm_crs.Spatial <- function(x, oblique = NULL, ...) {
   } else {
     suppressWarnings(crs <- fm_crs(sp::wkt(x)))
   }
-  crs
   if (!is.null(oblique)) {
     fm_crs_oblique(crs) <- oblique
   }
@@ -785,31 +794,19 @@ fm_crs.SpatRaster <- function(x, oblique = NULL, ...) {
 #' @rdname fm_crs
 #' @export
 fm_crs.sf <- function(x, oblique = NULL, ...) {
-  y <- sf::st_crs(x, ...)
-  if (!is.null(oblique)) {
-    fm_crs_oblique(y) <- oblique
-  }
-  y
+  fm_crs(sf::st_crs(x, ...), oblique = NULL)
 }
 
 #' @rdname fm_crs
 #' @export
 fm_crs.sfc <- function(x, oblique = NULL, ...) {
-  y <- sf::st_crs(x, ...)
-  if (!is.null(oblique)) {
-    fm_crs_oblique(y) <- oblique
-  }
-  y
+  fm_crs(sf::st_crs(x, ...), oblique = NULL)
 }
 
 #' @rdname fm_crs
 #' @export
 fm_crs.sfg <- function(x, oblique = NULL, ...) {
-  y <- sf::st_crs(x, ...)
-  if (!is.null(oblique)) {
-    fm_crs_oblique(y) <- oblique
-  }
-  y
+  fm_crs(sf::st_crs(x, ...), oblique = NULL)
 }
 
 #' @rdname fm_crs
@@ -1011,21 +1008,22 @@ fm_crs.fm_segm <- function(x, oblique = NULL, ...) {
 #' When `oblique[2]` or `oblique[3]` are non-zero, the resulting
 #' projection is only correct for perfect spheres.
 #'
+#' @param oblique Vector of length at most 4 of rotation angles (in degrees)
+#' for an oblique projection, all values defaulting to zero. The values
+#' indicate (longitude, latitude, orientation, orbit), as explained in the
+#' Details section for [fm_crs()].
 #' @param projargs Either 1) a projection argument string suitable as input to
 #' `sp::CRS`, or 2) an existing `CRS` object, or 3) a shortcut
 #' reference string to a predefined projection; run
-#' `names(fm_wkt_predef())` for valid predefined projections.
+#' `names(fm_wkt_predef())` for valid predefined projections. (projargs is a
+#' compatibility parameter that can be used for the default `fm_CRS()` method)
 #' @param doCheckCRSArgs ignored.
 #' @param args An optional list of name/value pairs to add to and/or override
 #' the PROJ4 arguments in `projargs`.  `name=value` is converted to
 #' `"+name=value"`, and `name=NA` is converted to `"+name"`.
-#' @param oblique Vector of length at most 4 of rotation angles (in degrees)
-#' for an oblique projection, all values defaulting to zero. The values
-#' indicate (longitude, latitude, orientation, orbit), as explained in the
-#' Details section below.
 #' @param SRS_string a WKT2 string defining the coordinate system;
 #' see `sp::CRS`. This takes precedence over `projargs`.
-#' @param \dots Additional parameters. Not currently in use.
+#' @param \dots Additional parameters, passed on to sub-methods.
 #' @return Either an `sp::CRS` object or an `inla.CRS` object,
 #' depending on if the coordinate reference system described by the parameters
 #' can be expressed with a pure `sp::CRS` object or not.
@@ -1045,7 +1043,7 @@ fm_crs.fm_segm <- function(x, oblique = NULL, ...) {
 #' crs6 <- fm_CRS("globe")
 #' @export
 #' @rdname fm_CRS_sp
-fm_CRS <- function(...) {
+fm_CRS <- function(x, oblique = NULL, ...) {
   UseMethod("fm_CRS")
 }
 
@@ -1053,47 +1051,49 @@ fm_CRS <- function(...) {
 #' obliqueness
 #' @export
 is.na.fm_CRS <- function(x) {
-  is.na(fm_crs(x))
-}
-
-#' @describeIn fm_CRS_sp Check if a `inla.CRS` has `NA` crs information and `NA`
-#' obliqueness
-#' @export
-is.na.inla.CRS <- function(x) {
-  is.na(fm_crs(x))
+  is.na(x[["crs"]]) && all(is.na(x[["oblique"]]))
 }
 
 
 #' @export
 #' @param x Object to convert to CRS or to extract CRS information from.
 #' @rdname fm_CRS_sp
-fm_CRS.crs <- function(x, ...) {
+fm_CRS.crs <- function(x, oblique = NULL, ...) {
   if (is.na(x)) {
-    return(fm_CRS(NA_character_))
+    y <- sp::CRS()
+  } else {
+    y <- fm_CRS(SRS_string = x$wkt)
   }
-  fm_CRS(SRS_string = x$wkt)
+  fm_CRS.CRS(y, oblique = oblique)
 }
 
 #' @export
 #' @rdname fm_CRS_sp
-fm_CRS.fm_crs <- function(x, ...) {
-  if (fm_crs_is_null(x)) {
-    return(fm_CRS(NA_character_))
-  }
-  fm_CRS(SRS_string = x$crs$wkt, oblique = fm_crs_oblique(x))
+fm_CRS.fm_crs <- function(x, oblique = NULL, ...) {
+  fm_CRS(
+    x[["crs"]],
+    oblique = if (is.null(oblique)) x[["oblique"]] else oblique,
+    ...
+  )
 }
 
 #' @rdname fm_CRS_sp
 #' @export
-fm_CRS.Spatial <- function(x, ...) {
+fm_CRS.Spatial <- function(x, oblique = NULL, ...) {
   suppressWarnings(crs <- sp::CRS(SRS_string = sp::wkt(x)))
+  if (!is.null(oblique)) {
+    fm_crs_oblique(crs) <- oblique
+  }
   crs
 }
 
 #' @rdname fm_CRS_sp
 #' @export
 fm_CRS.fm_CRS <- function(x, oblique = NULL, ...) {
-  fm_CRS(fm_crs(x, oblique = oblique, ...))
+  if (!is.null(oblique)) {
+    fm_crs_oblique(x) <- oblique
+  }
+  x
 }
 
 #' @rdname fm_CRS_sp
@@ -1138,6 +1138,16 @@ fm_CRS.CRS <- function(x, oblique = NULL,
                        ...) {
   if (!is.null(oblique) && !all(is.na(oblique))) {
     stopifnot(is.vector(oblique))
+    if (length(oblique) > 4) {
+      warning(
+        paste0(
+          "'oblique' vector length too long (",
+          length(oblique),
+          " > 4). Truncating to length 4."
+        )
+      )
+      oblique <- oblique[seq_len(4)]
+    }
     if (length(oblique) < 4) {
       oblique <- c(oblique, rep(0, 4 - length(oblique)))
     }
@@ -1151,10 +1161,18 @@ fm_CRS.CRS <- function(x, oblique = NULL,
 
 #' @export
 #' @rdname fm_CRS_sp
-fm_CRS.default <- function(projargs = NULL, doCheckCRSArgs = NULL,
-                           args = NULL, oblique = NULL,
+fm_CRS.default <- function(x, oblique = NULL,
+                           projargs = NULL,
+                           doCheckCRSArgs = NULL,
+                           args = NULL,
                            SRS_string = NULL,
                            ...) {
+  # Handle renaming of projargs to match fm_CRS generic arguments
+  if (missing(x)) {
+    x <- projargs
+  }
+  projargs <- x
+
   if (identical(projargs, "")) {
     projargs <- NULL
   }
@@ -1205,7 +1223,7 @@ fm_CRS.default <- function(projargs = NULL, doCheckCRSArgs = NULL,
   }
 
   if (!is.null(oblique) && !all(is.na(oblique))) {
-    x <- fm_CRS(x, oblique = oblique)
+    x <- fm_CRS.CRS(x, oblique = oblique)
   }
   x
 }
@@ -1796,6 +1814,83 @@ fm_identical_CRS <- function(crs0, crs1, crsonly = FALSE) {
 
 
 
+# fm_detect_manifold ####
+
+#' @title Detect manifold type
+#' @description
+#' Detect if a 2d object is on "R2", "S2", or "M2"
+#' @param x Object to investigate
+#' @export
+fm_detect_manifold <- function(x) {
+  UseMethod("fm_detect_manifold")
+}
+
+#' @export
+#' @describeIn fm_detect_manifold Detect if a crs is on "R2" or "S2"
+#' (if `fm_crs_is_geocent(crs)` is `TRUE`). Returns `NA_character_` if the crs
+#' is NULL or NA.
+fm_crs_detect_manifold <- function(x) {
+  if (is.null(x) || is.na(x)) {
+    return(NA_character_)
+  }
+  if (fm_crs_is_geocent(x)) {
+    return("S2")
+  }
+  "R2"
+}
+
+#' @rdname fm_detect_manifold
+#' @export
+fm_detect_manifold.crs <- function(x) {
+  fm_crs_detect_manifold(x)
+}
+
+#' @rdname fm_detect_manifold
+#' @export
+fm_detect_manifold.CRS <- function(x) {
+  fm_crs_detect_manifold(x)
+}
+
+#' @rdname fm_detect_manifold
+#' @export
+fm_detect_manifold.matrix <- function(x) {
+  if (ncol(x) <= 2) {
+    return("R2")
+  }
+  tol <- 1e-10
+  if (all(abs(x[, 3]) < tol)) {
+    return("R2")
+  }
+  radii <- rowSums(x^2)^0.5
+  radius <- mean(radii)
+  if (all(abs(radii - radius) < radius * tol)) {
+    return("S2")
+  }
+  return("M2")
+}
+
+#' @rdname fm_detect_manifold
+#' @export
+fm_detect_manifold.fm_mesh_2d <- function(x) {
+  if (ncol(x[["loc"]] <= 2)) {
+    return("R2")
+  }
+  tol <- 1e-10
+  if (all(abs(x[["loc"]][, 3]) < tol)) {
+    if (identical(fm_crs_detect_manifold(x[["crs"]]), "S2")) {
+      return("S2")
+    }
+    return("R2")
+  }
+  radii <- rowSums(x[["loc"]]^2)^0.5
+  radius <- mean(radii)
+  if (all(abs(radii - radius) < radius * tol)) {
+    return("S2")
+  }
+  return("M2")
+}
+
+
 
 
 # fm_transform ----
@@ -1884,10 +1979,10 @@ fm_transform.matrix <- function(x, crs = NULL, ..., passthrough = FALSE, crs0 = 
   if (fm_crs_is_null(crs0) || fm_crs_is_null(crs1)) {
     if (!passthrough) {
       if (fm_crs_is_null(crs0)) {
-        stop("'crs0' is an invalid coordinate reference object.")
+        stop("'crs0' is either NA or an invalid coordinate reference object.")
       }
       if (fm_crs_is_null(crs1)) {
-        stop("'crs' is an invalid coordinate reference object.")
+        stop("'crs' is either NA or an invalid coordinate reference object.")
       }
     }
     return(x)
@@ -2089,18 +2184,6 @@ fm_transform.Spatial <- function(x, crs = fm_crs(x), ..., passthrough = FALSE) {
 
 
 #' @export
-#' @describeIn fm_crs_wkt Detect if a crs is on "R2" or "S2"
-#' (if `fm_crs_is_geocent(crs)` is `TRUE`)
-fm_crs_detect_manifold <- function(crs) {
-  if (fm_crs_is_geocent(crs)) {
-    manifold <- "S2"
-  } else {
-    manifold <- "R2"
-  }
-  manifold
-}
-
-#' @export
 #' @rdname fm_transform
 fm_transform.fm_mesh_2d <- function(x,
                                     crs = fm_crs(x),
@@ -2108,8 +2191,8 @@ fm_transform.fm_mesh_2d <- function(x,
                                     passthrough = FALSE,
                                     crs0 = fm_crs(x)) {
   x$loc <- fm_transform(x$loc, crs = crs, ..., crs0 = x$crs, passthrough = passthrough)
-  x$manifold <- fm_crs_detect_manifold(crs)
   x$crs <- fm_CRS(crs)
+  x$manifold <- fm_detect_manifold(x)
   x
 }
 
@@ -2195,6 +2278,13 @@ fm_crs.inla.mesh.segment <- function(x, oblique = NULL, ...) {
   fm_CRS(x[["crs"]],
     oblique = if (is.null(value)) NA else value
   )
+}
+
+#' @describeIn fm_CRS_sp Check if a `inla.CRS` has `NA` crs information and `NA`
+#' obliqueness
+#' @export
+is.na.inla.CRS <- function(x) {
+  is.na(fm_CRS(x))
 }
 
 #' @rdname fm_CRS_sp
