@@ -66,22 +66,19 @@ reference system</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, oblique <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for fm_CRS</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># S3 method for inla.CRS</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span></span>
 <span><span class="co"># S3 method for crs</span></span>
-<span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, oblique <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for fm_crs</span></span>
-<span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, oblique <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for Spatial</span></span>
-<span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, oblique <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for fm_CRS</span></span>
 <span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, oblique <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
@@ -109,16 +106,20 @@ reference system</p>
 <span></span>
 <span><span class="co"># S3 method for default</span></span>
 <span><span class="fu">fm_CRS</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  oblique <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  projargs <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  doCheckCRSArgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  args <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  oblique <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  SRS_string <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for fm_CRS</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for inla.CRS</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for inla.CRS</span></span>
 <span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, oblique <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
@@ -135,11 +136,7 @@ reference system</p>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
-    <dl><dt>...</dt>
-<dd><p>Additional parameters. Not currently in use.</p></dd>
-
-
-<dt>x</dt>
+    <dl><dt>x</dt>
 <dd><p>Object to convert to CRS or to extract CRS information from.</p></dd>
 
 
@@ -147,14 +144,19 @@ reference system</p>
 <dd><p>Vector of length at most 4 of rotation angles (in degrees)
 for an oblique projection, all values defaulting to zero. The values
 indicate (longitude, latitude, orientation, orbit), as explained in the
-Details section below.</p></dd>
+Details section for <code><a href="fm_crs.html">fm_crs()</a></code>.</p></dd>
+
+
+<dt>...</dt>
+<dd><p>Additional parameters, passed on to sub-methods.</p></dd>
 
 
 <dt>projargs</dt>
 <dd><p>Either 1) a projection argument string suitable as input to
 <code><a href="https://rdrr.io/pkg/sp/man/CRS-class.html" class="external-link">sp::CRS</a></code>, or 2) an existing <code>CRS</code> object, or 3) a shortcut
 reference string to a predefined projection; run
-<code>names(fm_wkt_predef())</code> for valid predefined projections.</p></dd>
+<code>names(fm_wkt_predef())</code> for valid predefined projections. (projargs is a
+compatibility parameter that can be used for the default <code>fm_CRS()</code> method)</p></dd>
 
 
 <dt>doCheckCRSArgs</dt>
