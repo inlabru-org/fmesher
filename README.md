@@ -43,7 +43,7 @@ remotes::install_github("inlabru-org/fmesher")
 suppressPackageStartupMessages(library(fmesher))
 
 # Port of the old inla mesh inla.mesh.create interface:
-INLA:::plot.inla.mesh(fm_rcdt_2d_inla(
+plot(fm_rcdt_2d_inla(
   cbind(0, 0),
   extend = list(offset = 1, n = 16L),
   refine = list(max.edge = 0.5)
