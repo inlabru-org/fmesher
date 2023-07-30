@@ -1,8 +1,6 @@
 #' @title Draw `fm_segm` objects.
 #'
 #' @description
-#' A short description...
-#'
 #' Draws a [fm_segm()] object with generic or `rgl`
 #' graphics.
 #'

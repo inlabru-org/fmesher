@@ -40,8 +40,6 @@ plot.}
 \item{rgl}{If \code{TRUE}, use \code{rgl} for plotting.}
 }
 \description{
-A short description...
-
 Draws a \code{\link[=fm_segm]{fm_segm()}} object with generic or \code{rgl}
 graphics.
 }

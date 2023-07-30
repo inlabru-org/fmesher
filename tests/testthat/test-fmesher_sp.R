@@ -1,14 +1,9 @@
-# FL note: see the inla.mesh.segment documentation for the idx and is.bnd arguments
-# Further note: inla.mesh.segment has two ways of specifying the index;
+# FL note: see the fm_segm documentation for the idx and is.bnd arguments
+# Further note: fm_segm has two ways of specifying the index;
 # as a sequence, or as a two-column matrix. But it is always stored as a two column matrix,
 # with no general guarantee that one line connects to the one in the next row.
 # This makes conversion to sp and sf polygons more difficult, which is why there
-# isn't a general fm_as_sp.inla.mesh.segment method. There is some code in various places,
-# including in 'excursions' that could be used as a starting point to doing it properly
-# for sf conversion.
-#
-# The fm_as_inla_mesh_segment.SpatialPoints method had a bug, w.r.t is.bnd
-# handling, and has now been fixed.
+# isn't a general fm_as_sp.inla.mesh.segment method, but fm_as_sfc() has partial support.
 
 test_that("Conversion from matrix to inla.mesh.segment", {
   local_fm_safe_inla()
