@@ -1842,7 +1842,7 @@ fm_segm <- function(...) {
 fm_segm.default <- function(loc = NULL, idx = NULL, grp = NULL, is.bnd = TRUE,
                             crs = NULL, ...) {
   if (is.null(loc) && is.null(idx)) {
-    stop("At most one of 'loc' and 'idx' may be missing or null.")
+    idx <- matrix(0L, 0, 2)
   }
   if (!is.null(loc)) {
     loc <- unify_loc_coords(loc)
@@ -3103,7 +3103,8 @@ fm_mesh_2d_inla <- function(loc = NULL, ## Points to include in final triangulat
   if ((missing(max.edge) || is.null(max.edge)) &&
     (missing(max.n.strict) || is.null(max.n.strict)) &&
     (missing(max.n) || is.null(max.n))) {
-    stop("At least one of max.edge, max.n.strict, and max.n must be specified")
+    max.edge <- NA
+    #    stop("At least one of max.edge, max.n.strict, and max.n must be specified")
   }
 
   if (!is.null(crs)) {

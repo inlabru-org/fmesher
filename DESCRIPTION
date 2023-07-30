@@ -81,6 +81,7 @@ Collate:
     'mesh.R'
     'onload.R'
     'plot.R'
+    'print.R'
     'sf_mesh.R'
     'sf_utils.R'
     'sp_mesh.R'
