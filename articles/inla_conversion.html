@@ -86,8 +86,8 @@
     
 <table class="table">
 <colgroup>
-<col width="15%">
-<col width="84%">
+<col width="16%">
+<col width="83%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">INLA</th>
@@ -109,27 +109,32 @@
 <a href="https://inlabru-org.github.io/fmesher/reference/fm_mesh_2d.html">fm_mesh_2d_inla</a>()</td>
 </tr>
 <tr class="odd">
+<td align="left">inla.delaunay()</td>
+<td align="left">
+<a href="https://inlabru-org.github.io/fmesher/reference/fm_rcdt_2d.html">fm_delaunay_2d</a>()</td>
+</tr>
+<tr class="even">
 <td align="left">inla.mesh.1d()</td>
 <td align="left">
 <a href="https://inlabru-org.github.io/fmesher/reference/fm_mesh_1d.html">fm_mesh_1d</a>()</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">inla.mesh.lattice()</td>
 <td align="left">
 <a href="https://inlabru-org.github.io/fmesher/reference/fm_lattice_2d.html">fm_lattice_2d</a>()</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">inla.mesh.segment()</td>
 <td align="left">
 <a href="https://inlabru-org.github.io/fmesher/reference/fm_segm.html">fm_segm</a>()</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">inla.nonconvex.hull()</td>
 <td align="left">
 <a href="https://inlabru-org.github.io/fmesher/reference/fm_nonconvex_hull.html">fm_nonconvex_hull</a>(),
 <a href="https://inlabru-org.github.io/fmesher/reference/fm_nonconvex_hull.html">fm_extensions</a>()</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">inla.nonconvex.hull() , inla.contour.segment(),
 inla.simplify.curve()</td>
 <td align="left">
@@ -138,62 +143,72 @@ inla.simplify.curve()</td>
 ,
 <a href="https://inlabru-org.github.io/fmesher/reference/fm_segm_contour_helper.html">fm_segm_contour_helper</a>()</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">inla.mesh.boundary(), inla.mesh.interior()</td>
 <td align="left">
 <a href="https://inlabru-org.github.io/fmesher/reference/fm_segm.html">fm_segm</a>()</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">inla.mesh.projector()</td>
 <td align="left">
 <a href="https://inlabru-org.github.io/fmesher/reference/fm_evaluate.html">fm_evaluator</a>()</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">inla.mesh.project()</td>
 <td align="left">
 <a href="https://inlabru-org.github.io/fmesher/reference/fm_evaluate.html">fm_evaluate</a>()</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">inla.CRS()</td>
 <td align="left">
 <a href="https://inlabru-org.github.io/fmesher/reference/fm_crs.html">fm_crs</a>()
 ,
-<a href="https://inlabru-org.github.io/fmesher/reference/fm_CRS_sp.html">fm_CRS</a>()</td>
+<a href="https://inlabru-org.github.io/fmesher/reference/fm_CRS_sp.html">fm_CRS</a>()
+,
+<a href="https://inlabru-org.github.io/fmesher/reference/fm_crs-set.html">fm_crs&lt;-</a>()</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">inla.spTransform()</td>
 <td align="left">
 <a href="https://inlabru-org.github.io/fmesher/reference/fm_transform.html">fm_transform</a>()</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">inla.spde.make.A()</td>
 <td align="left">
 <a href="https://inlabru-org.github.io/fmesher/reference/fm_basis.html">fm_basis</a>()
 ,
 <a href="https://inlabru-org.github.io/fmesher/reference/fm_row_kron.html">fm_row_kron</a>()</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">inla.mesh.deriv()</td>
 <td align="left">
 <a href="https://inlabru-org.github.io/fmesher/reference/fm_basis.html">fm_basis</a>()</td>
 </tr>
-<tr class="odd">
-<td align="left">plot.inla.mesh()</td>
-<td align="left">
-<a href="https://inlabru-org.github.io/fmesher/reference/plot.fm_mesh_2d.html">plot.fm_mesh_2d</a>(),
-<a href="https://inlabru-org.github.io/fmesher/reference/plot_rgl.html">plot_rgl</a>()</td>
-</tr>
 <tr class="even">
-<td align="left">lines.inla.mesh.segment()</td>
+<td align="left">plot.inla.mesh(rgl = FALSE)</td>
+<td align="left">
+<a href="https://inlabru-org.github.io/fmesher/reference/plot.fm_mesh_2d.html">plot.fm_mesh_2d</a>()</td>
+</tr>
+<tr class="odd">
+<td align="left">lines.inla.mesh.segment(rgl = FALSE)</td>
 <td align="left">
 <a href="https://inlabru-org.github.io/fmesher/reference/plot.fm_segm.html">plot.fm_segm</a>()
 ,
-<a href="https://inlabru-org.github.io/fmesher/reference/plot.fm_segm.html">lines.fm_segm</a>(),
+<a href="https://inlabru-org.github.io/fmesher/reference/plot.fm_segm.html">lines.fm_segm</a>()</td>
+</tr>
+<tr class="even">
+<td align="left">plot.inla.mesh(rgl = TRUE)</td>
+<td align="left">
+<a href="https://inlabru-org.github.io/fmesher/reference/plot_rgl.html">plot_rgl</a>()</td>
+</tr>
+<tr class="odd">
+<td align="left">lines.inla.mesh.segment(rgl = TRUE)</td>
+<td align="left">
 <a href="https://inlabru-org.github.io/fmesher/reference/plot_rgl.html">plot_rgl</a>()
 ,
 <a href="https://inlabru-org.github.io/fmesher/reference/plot_rgl.html">lines_rgl</a>()</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">summary.inla.mesh()</td>
 <td align="left">
 <a href="https://inlabru-org.github.io/fmesher/reference/fmesher-print.html">print.fm_mesh_2d</a>(),
