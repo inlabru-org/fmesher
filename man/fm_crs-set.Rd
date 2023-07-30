@@ -3,6 +3,8 @@
 \name{fm_crs<-}
 \alias{fm_crs<-}
 \alias{fm_crs_oblique<-}
+\alias{fm_crs<-.NULL}
+\alias{fm_crs_oblique<-.NULL}
 \alias{fm_crs<-.fm_segm}
 \alias{fm_crs<-.fm_mesh_2d}
 \alias{fm_crs<-.fm_lattice_2d}
@@ -23,6 +25,10 @@
 fm_crs(x) <- value
 
 fm_crs_oblique(x) <- value
+
+\method{fm_crs}{`NULL`}(x) <- value
+
+\method{fm_crs_oblique}{`NULL`}(x) <- value
 
 \method{fm_crs}{fm_segm}(x) <- value
 

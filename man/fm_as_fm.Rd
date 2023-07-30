@@ -3,10 +3,15 @@
 \name{fm_as_fm}
 \alias{fm_as_fm}
 \alias{fm_as_fm_list}
+\alias{fm_as_fm.NULL}
 \alias{fm_as_fm.fm_mesh_1d}
 \alias{fm_as_fm.fm_mesh_2d}
 \alias{fm_as_fm.fm_segm}
 \alias{fm_as_fm.fm_lattice_2d}
+\alias{fm_as_fm.crs}
+\alias{fm_as_fm.CRS}
+\alias{fm_as_fm.fm_crs}
+\alias{fm_as_fm.inla.CRS}
 \alias{fm_as_fm.inla.mesh.1d}
 \alias{fm_as_fm.inla.mesh}
 \alias{fm_as_fm.inla.mesh.segment}
@@ -17,6 +22,8 @@ fm_as_fm(x, ...)
 
 fm_as_fm_list(x, ...)
 
+\method{fm_as_fm}{`NULL`}(x, ...)
+
 \method{fm_as_fm}{fm_mesh_1d}(x, ...)
 
 \method{fm_as_fm}{fm_mesh_2d}(x, ...)
@@ -24,6 +31,14 @@ fm_as_fm_list(x, ...)
 \method{fm_as_fm}{fm_segm}(x, ...)
 
 \method{fm_as_fm}{fm_lattice_2d}(x, ...)
+
+\method{fm_as_fm}{crs}(x, ...)
+
+\method{fm_as_fm}{CRS}(x, ...)
+
+\method{fm_as_fm}{fm_crs}(x, ...)
+
+\method{fm_as_fm}{inla.CRS}(x, ...)
 
 \method{fm_as_fm}{inla.mesh.1d}(x, ...)
 

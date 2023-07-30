@@ -857,10 +857,19 @@ fm_crs.fm_segm <- function(x, oblique = NULL, ...) {
 #' @describeIn fm_crs-set Assigns new `oblique` information.
 #' @export
 `fm_crs_oblique<-` <- function(x, value) {
-  if (is.null(x)) {
-    return(`fm_crs_oblique<-.fm_crs`(fm_crs(), value))
-  }
   UseMethod("fm_crs_oblique<-")
+}
+
+#' @rdname fm_crs-set
+#' @export
+`fm_crs<-.NULL` <- function(x, value) {
+  fm_crs(value)
+}
+
+#' @rdname fm_crs-set
+#' @export
+`fm_crs_oblique<-.NULL` <- function(x, value) {
+  `fm_crs_oblique<-`(fm_crs(), value)
 }
 
 #' @rdname fm_crs-set
@@ -1153,7 +1162,7 @@ fm_CRS.CRS <- function(x, oblique = NULL,
     }
     x <- structure(
       list(crs = x, oblique = oblique),
-      class = c("fm_CRS", "inla.CRS")
+      class = "fm_CRS"
     )
   }
   x

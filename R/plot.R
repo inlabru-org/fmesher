@@ -301,8 +301,8 @@ plot_rgl.fm_mesh_2d <- function(x, col = "white", color.axis = NULL,
   } else {
     ## One color per triangle
     stopifnot(length(colors$colors) == nrow(TV))
-    Tcol <- colors$colors[t(matrix(rep(1:nrow(TV), 3), dim(TV)))]
-    Talpha <- colors$alpha[t(matrix(rep(1:nrow(TV), 3), dim(TV)))]
+    Tcol <- colors$colors[t(matrix(rep(seq_len(nrow(TV)), 3), dim(TV)))]
+    Talpha <- colors$alpha[t(matrix(rep(seq_len(nrow(TV)), 3), dim(TV)))]
   }
   if (draw.edges) {
     Ev <- rbind(

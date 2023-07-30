@@ -2199,13 +2199,15 @@ fm_as_segm.inla.mesh.segment <- function(x, ...) {
 #' @export
 #' @family object creation and conversion
 fm_as_fm <- function(x, ...) {
-  if (is.null(x)) {
-    return(NULL)
-  }
   UseMethod("fm_as_fm")
 }
+
 # @description fm_as_list Convert each element of a list, or convert a single
 # object and return in a list
+# @param x list of objects to be converted.
+# @param ... Arguments passed to each individual conversion call.
+# @param .method character; name of a conversion generic to apply to each list
+# element.
 fm_as_list <- function(x, ..., .method) {
   if (is.null(x)) {
     return(list())
@@ -2234,6 +2236,11 @@ fm_as_fm_list <- function(x, ...) {
 }
 #' @rdname fm_as_fm
 #' @export
+fm_as_fm.NULL <- function(x, ...) {
+  NULL
+}
+#' @rdname fm_as_fm
+#' @export
 fm_as_fm.fm_mesh_1d <- function(x, ...) {
   #  class(x) <- c("fm_mesh_1d", setdiff(class(x), "fm_mesh_1d"))
   x
@@ -2242,12 +2249,6 @@ fm_as_fm.fm_mesh_1d <- function(x, ...) {
 #' @export
 fm_as_fm.fm_mesh_2d <- function(x, ...) {
   #  class(x) <- c("fm_mesh_2d", setdiff(class(x), "fm_mesh_2d"))
-  if (!is.null(x$segm$bnd)) {
-    x$segm$bnd <- fm_as_fm(x$segm$bnd)
-  }
-  if (!is.null(x$segm$int)) {
-    x$segm$int <- fm_as_fm(x$segm$int)
-  }
   x
 }
 #' @rdname fm_as_fm
@@ -2261,6 +2262,27 @@ fm_as_fm.fm_segm <- function(x, ...) {
 fm_as_fm.fm_lattice_2d <- function(x, ...) {
   #  class(x) <- c("fm_lattice_2d", setdiff(class(x), "fm_lattice_2d"))
   x
+}
+#' @rdname fm_as_fm
+#' @export
+fm_as_fm.crs <- function(x, ...) {
+  fm_crs(x)
+}
+#' @rdname fm_as_fm
+#' @export
+fm_as_fm.CRS <- function(x, ...) {
+  fm_crs(x)
+}
+#' @rdname fm_as_fm
+#' @export
+fm_as_fm.fm_crs <- function(x, ...) {
+  fm_crs(x)
+}
+#' @rdname fm_as_fm
+#' @export
+#' @method fm_as_fm inla.CRS
+fm_as_fm.inla.CRS <- function(x, ...) {
+  fm_crs(x)
 }
 #' @rdname fm_as_fm
 #' @export
@@ -3329,6 +3351,13 @@ fm_as_mesh_2d.fm_mesh_2d <- function(x, ...) {
 #' @export
 #' @method fm_as_mesh_2d inla.mesh
 fm_as_mesh_2d.inla.mesh <- function(x, ...) {
+  x[["crs"]] <- fm_crs(x[["crs"]])
+  if (!is.null(x$segm$bnd)) {
+    x$segm$bnd <- fm_as_fm(x$segm$bnd)
+  }
+  if (!is.null(x$segm$int)) {
+    x$segm$int <- fm_as_fm(x$segm$int)
+  }
   class(x) <- c("fm_mesh_2d", class(x))
   x
 }
@@ -3687,6 +3716,8 @@ fm_as_lattice_2d.fm_lattice_2d <- function(x, ...) {
 #' @export
 #' @method fm_as_lattice_2d inla.mesh.lattice
 fm_as_lattice_2d.inla.mesh.lattice <- function(x, ...) {
+  x[["crs"]] <- fm_crs(x[["crs"]])
+  x[["segm"]] <- fm_as_fm(x[["segm"]])
   class(x) <- c("fm_lattice_2d", class(x))
   x
 }
