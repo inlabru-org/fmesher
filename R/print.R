@@ -143,5 +143,27 @@ print.fm_mesh_2d <- function(x, verbose = FALSE, ...) {
     cat(", zlim: (", ret$zlim[1], ", ", ret$zlim[2], ")", sep = "")
   }
   cat("\n", sep = "")
+  cat("  Basis d.o.f.:\t", ret$nV, "\n", sep = "")
+  invisible(x)
+}
+
+
+
+#' @param verbose logical
+#'
+#' @export
+#' @rdname fmesher-print
+print.fm_mesh_1d <- function(x, verbose = FALSE, ...) {
+  cat("fm_mesh_1d object:\n", sep = "")
+
+  cat("  Manifold:\t", x$manifold, "\n", sep = "")
+  cat("  #{knots}:\t", length(x$loc), "\n", sep = "")
+  cat("  Interval:\t(", paste0(x$interval, collapse = ", "), ")\n", sep = "")
+  clamped <- x$free.clamped & (x$boundary == "free")
+  clamped <- c("", " and clamped")[clamped + 1]
+  cat("  Boundary:\t(", paste0(x$boundary, clamped, collapse = ", "), ")\n", sep = "")
+  cat("  B-spline degree:\t", x$degree, "\n", sep = "")
+  cat("  Basis d.o.f.:\t", x$m, "\n", sep = "")
+
   invisible(x)
 }

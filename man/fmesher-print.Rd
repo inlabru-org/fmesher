@@ -4,11 +4,14 @@
 \alias{fmesher-print}
 \alias{print.fm_segm}
 \alias{print.fm_mesh_2d}
+\alias{print.fm_mesh_1d}
 \title{Print objects}
 \usage{
 \method{print}{fm_segm}(x, newline = TRUE, ...)
 
 \method{print}{fm_mesh_2d}(x, verbose = FALSE, ...)
+
+\method{print}{fm_mesh_1d}(x, verbose = FALSE, ...)
 }
 \arguments{
 \item{x}{an object used to select a method.}
