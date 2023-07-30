@@ -63,7 +63,8 @@ df <- tribble(
   )
 )
 
-webref <- "https://inlabru-org.github.io/fmesher/reference/"
+# webref <- "https://inlabru-org.github.io/fmesher/reference/"
+webref <- "../reference/"
 for (k in seq_len(nrow(df))) {
   df$fmesher[[k]] <-
     vapply(

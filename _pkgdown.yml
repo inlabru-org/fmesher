@@ -13,5 +13,7 @@ navbar:
         href: articles/basic_use.html
       - text: ---
       - text: Concepts
+      - text: Conversion from legacy INLA package methods
+        href: articles/inla_conversion.html
       - text: The fmesher backend library
         href: articles/fmesher_library.html
