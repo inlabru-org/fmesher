@@ -263,14 +263,14 @@ plot_rgl.fm_mesh_2d <- function(x, col = "white", color.axis = NULL,
   }
   if (draw.segments) {
     if (!is.null(mesh$segm$bnd)) {
-      lines_rgl(mesh$segm$bnd,
+      lines_rgl(fm_as_fm(mesh$segm$bnd),
         loc = mesh$loc,
         lwd = lwd + 1,
         ...
       )
     }
     if (!is.null(mesh$segm$int)) {
-      lines_rgl(mesh$segm$int,
+      lines_rgl(fm_as_fm(mesh$segm$int),
         loc = mesh$loc,
         lwd = lwd + 1,
         ...
@@ -517,10 +517,10 @@ plot.fm_mesh_2d <- function(
   }
   if (draw.segments) {
     if (!is.null(mesh$segm$bnd)) {
-      lines(mesh$segm$bnd, mesh$loc, lwd = lwd + 1, ...)
+      lines(fm_as_fm(mesh$segm$bnd), mesh$loc, lwd = lwd + 1, ...)
     }
     if (!is.null(mesh$segm$int)) {
-      lines(mesh$segm$int, mesh$loc, lwd = lwd + 1, ...)
+      lines(fm_as_fm(mesh$segm$int), mesh$loc, lwd = lwd + 1, ...)
     }
   }
   return(invisible())
