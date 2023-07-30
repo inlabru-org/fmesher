@@ -232,9 +232,6 @@
     <loc>https://inlabru-org.github.io/fmesher/reference/limits.html</loc>
   </url>
   <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/lines.fm_segm.html</loc>
-  </url>
-  <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/local_testthat.html</loc>
   </url>
   <url>
@@ -242,6 +239,9 @@
   </url>
   <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/plot.fm_mesh_2d.html</loc>
+  </url>
+  <url>
+    <loc>https://inlabru-org.github.io/fmesher/reference/plot.fm_segm.html</loc>
   </url>
   <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/plot_PolySet.html</loc>
