@@ -1,6 +1,6 @@
 Package: fmesher
 Type: Package
-Title: Triangle Meshes and Other Geometry Tools
+Title: Triangle Meshes and Related Geometry Tools
 Version: 0.0.9.9009
 Authors@R: c(
   person("Finn", "Lindgren", email = "finn.lindgren@gmail.com",
@@ -12,10 +12,11 @@ Authors@R: c(
          comment = "Andy Seaton developed sf support")
   )
 Description: Functions that generate planar and spherical triangle meshes,
-    computes finite element calculations for 1- and 2-dimensional manifolds,
-    functions for lines and polygons, and transparent handling of crs information
-    and interoperability with sf and sp geometries. Experimental
-    package that will take over these features from the INLA package.
+    computes finite element calculations for 1- and 2-dimensional flat and curved
+    manifolds, functions for lines and polygons, and transparent handling of
+    crs information and coordinate transformation, including and interoperability
+    with sf and sp geometries. Experimental package that will take over these
+    features from the INLA and inlabru packages.
 Depends:
     R (>= 3.6),
     methods

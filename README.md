@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# fmesher:
+# fmesher: Triangle Meshes and Other Geometry Tools
 
 <!-- badges: start -->
 
@@ -14,11 +14,19 @@ status](https://github.com/inlabru-org/fmesher/workflows/R-CMD-check/badge.svg)]
 coverage](https://codecov.io/gh/inlabru-org/fmesher/branch/devel/graph/badge.svg)](https://codecov.io/gh/inlabru-org/fmesher?branch=devel)
 <!-- badges: end -->
 
-fmesher: Triangle Meshes and Other Geometry Tools
+Functions that generate planar and spherical triangle meshes, computes
+finite element calculations for 1- and 2-dimensional flat and curved
+manifolds, functions for lines and polygons, and transparent handling of
+crs information and coordinate transformation, including and
+interoperability with `sf` and `sp` geometries. Experimental package
+that will take over the relevant subset of features from the
+[INLA](https://www.r-inla.org) and
+[inlabru](https://inlabru-org.github.io/inlabru/) packages, as well as
+extend them.
 
 ## Installation
 
-You can install the latest stable release of fmesher from
+You can install the latest stable release of `fmesher` from
 [GitHub](https://github.com/):
 
 ``` r
@@ -31,6 +39,28 @@ And the development version with:
 ``` r
 # install.packages("remotes")
 remotes::install_github("inlabru-org/fmesher")
+```
+
+or track the development version builds via
+[inlabru-org.r-universe.dev](https://inlabru-org.r-universe.dev/builds):
+
+``` r
+# Enable universe(s) by inlabru-org
+options(repos = c(
+  inlabruorg = "https://inlabru-org.r-universe.dev",
+  INLA = "https://inla.r-inla-download.org/R/testing",
+  CRAN = "https://cloud.r-project.org"
+))
+
+install.packages("fmesher")
+```
+
+Note that you need the `feature/fmesher` branch of `inlabru` until that
+is merged into the main development branch:
+
+``` r
+# install.packages("remotes")
+remotes::install_github("inlabru-org/inlabru@feature/fmesher")
 ```
 
 ## Online documentation

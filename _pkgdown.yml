@@ -12,8 +12,6 @@ navbar:
       - text: Basic use
         href: articles/basic_use.html
       - text: ---
-      - text: Point process examples
-      - text: ---
       - text: Concepts
       - text: The fmesher backend library
         href: articles/fmesher_library.html
