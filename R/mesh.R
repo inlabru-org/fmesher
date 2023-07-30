@@ -2242,6 +2242,12 @@ fm_as_fm.fm_mesh_1d <- function(x, ...) {
 #' @export
 fm_as_fm.fm_mesh_2d <- function(x, ...) {
   #  class(x) <- c("fm_mesh_2d", setdiff(class(x), "fm_mesh_2d"))
+  if (!is.null(x$segm$bnd)) {
+    x$segm$bnd <- fm_as_fm(x$segm$bnd)
+  }
+  if (!is.null(x$segm$int)) {
+    x$segm$int <- fm_as_fm(x$segm$int)
+  }
   x
 }
 #' @rdname fm_as_fm
