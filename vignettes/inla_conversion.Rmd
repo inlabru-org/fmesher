@@ -47,14 +47,20 @@ df <- tribble(
   "inla.spde.make.A()", c("fm_basis()", "fm_row_kron()"),
   "inla.mesh.deriv()", "fm_basis()",
   "plot.inla.mesh(rgl = FALSE)", "plot.fm_mesh_2d()",
-  "lines.inla.mesh.segment(rgl = FALSE)", c("plot.fm_segm()",
-                                            "lines.fm_segm()"),
+  "lines.inla.mesh.segment(rgl = FALSE)", c(
+    "plot.fm_segm()",
+    "lines.fm_segm()"
+  ),
   "plot.inla.mesh(rgl = TRUE)", "plot_rgl()",
-  "lines.inla.mesh.segment(rgl = TRUE)", c("plot_rgl()",
-                                           "lines_rgl()"),
-  "summary.inla.mesh()", c("print.fm_mesh_2d()",
-                           "print.fm_segm()",
-                           "print.fm_mesh_1d()")
+  "lines.inla.mesh.segment(rgl = TRUE)", c(
+    "plot_rgl()",
+    "lines_rgl()"
+  ),
+  "summary.inla.mesh()", c(
+    "print.fm_mesh_2d()",
+    "print.fm_segm()",
+    "print.fm_mesh_1d()"
+  )
 )
 
 webref <- "https://inlabru-org.github.io/fmesher/reference/"
@@ -63,14 +69,18 @@ for (k in seq_len(nrow(df))) {
     vapply(
       df$fmesher[[k]],
       function(x) {
-        nm <- sub(pattern = "([^(]+)(\\(.*\\))$",
-                  replacement = '\\1',
-                  x = x)
-        args <- sub(pattern = "([^(]+)(\\(.*\\))$",
-                    replacement = '\\2',
-                    x = x)
+        nm <- sub(
+          pattern = "([^(]+)(\\(.*\\))$",
+          replacement = "\\1",
+          x = x
+        )
+        args <- sub(
+          pattern = "([^(]+)(\\(.*\\))$",
+          replacement = "\\2",
+          x = x
+        )
         help_name <- basename(utils::help(nm, package = "fmesher"))
-        paste0('<a href="', webref, help_name, '.html">', nm, '</a>', args)
+        paste0('<a href="', webref, help_name, '.html">', nm, "</a>", args)
       },
       ""
     )
