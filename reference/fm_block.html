@@ -112,6 +112,7 @@ weighting.</p>
 <span></span>
 <span><span class="fu">fm_block_prep</span><span class="op">(</span></span>
 <span>  block <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  n_block <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  log_weights <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  weights <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  force_log <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -146,7 +147,8 @@ Default: <code>FALSE</code></p></dd>
 
 <dt>n_block</dt>
 <dd><p>integer; The number of conceptual blocks. Only needs to be
-specified if it's larger than <code>max(block)</code>.</p></dd>
+specified if it's larger than <code>max(block)</code>, or to keep the output of
+consistent size for different inputs.</p></dd>
 
 
 <dt>values</dt>
@@ -190,7 +192,7 @@ each block <code>k</code>:</p>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>                 \(x) <span class="fu">log</span>(<span class="fu">sum</span>(x)))</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>agg<span class="sc">$</span>x <span class="ot">&lt;-</span> agg<span class="sc">$</span>x <span class="sc">+</span> shift[agg<span class="sc">$</span>block]</span></code></pre><p></p></div></li>
 <li><p><code>fm_block_prep()</code>: Helper function for preparing <code>block</code>, <code>weights</code>, and
-<code>log_weights</code> inputs.</p></li>
+<code>log_weights</code>, <code>n_block</code> inputs.</p></li>
 </ul></div>
 
     <div class="section level2">
