@@ -57,6 +57,7 @@ fm_block_log_shift(block = NULL, log_weights = NULL, n_block = NULL)
 
 fm_block_prep(
   block = NULL,
+  n_block = NULL,
   log_weights = NULL,
   weights = NULL,
   force_log = FALSE,
@@ -80,7 +81,8 @@ or \code{sum(exp(log_weights))} within each block.
 Default: \code{FALSE}}
 
 \item{n_block}{integer; The number of conceptual blocks. Only needs to be
-specified if it's larger than \code{max(block)}.}
+specified if it's larger than \code{max(block)}, or to keep the output of
+consistent size for different inputs.}
 
 \item{values}{Vector to be blockwise aggregated}
 
@@ -128,7 +130,7 @@ agg$x <- agg$x + shift[agg$block]
 }\if{html}{\out{</div>}}
 
 \item \code{fm_block_prep()}: Helper function for preparing \code{block}, \code{weights}, and
-\code{log_weights} inputs.
+\code{log_weights}, \code{n_block} inputs.
 
 }}
 \examples{

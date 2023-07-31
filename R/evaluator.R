@@ -1041,7 +1041,8 @@ fm_basis.fm_evaluator <- function(x, ...) {
 #' or `sum(exp(log_weights))` within each block.
 #' Default: `FALSE`
 #' @param n_block integer; The number of conceptual blocks. Only needs to be
-#' specified if it's larger than `max(block)`.
+#' specified if it's larger than `max(block)`, or to keep the output of
+#' consistent size for different inputs.
 #'
 #' @export
 #'
@@ -1068,6 +1069,7 @@ fm_block <- function(block = NULL,
   info <-
     fm_block_prep(
       block = block,
+      n_block = n_block,
       log_weights = log_weights,
       weights = weights
     )
@@ -1081,15 +1083,12 @@ fm_block <- function(block = NULL,
       )
     )
   }
-  if (is.null(n_block)) {
-    n_block <- max(info$block)
-  }
   weights <-
     fm_block_weights(
       block = info$block,
       weights = info$weights,
       log_weights = info$log_weights,
-      n_block = n_block,
+      n_block = info$n_block,
       rescale = rescale
     )
 
@@ -1097,7 +1096,7 @@ fm_block <- function(block = NULL,
     i = info$block,
     j = seq_len(length(info$block)),
     x = as.numeric(weights),
-    dims = c(n_block, length(info$block))
+    dims = c(info$n_block, length(info$block))
   )
 }
 
@@ -1114,6 +1113,7 @@ fm_block_eval <- function(block = NULL,
   info <-
     fm_block_prep(
       block = block,
+      n_block = n_block,
       log_weights = log_weights,
       weights = weights,
       values = values
@@ -1121,15 +1121,12 @@ fm_block_eval <- function(block = NULL,
   if (length(info$block) == 0) {
     return(numeric(0L))
   }
-  if (is.null(n_block)) {
-    n_block <- max(block)
-  }
   weights <-
     fm_block_weights(
       block = info$block,
       weights = info$weights,
       log_weights = info$log_weights,
-      n_block = n_block,
+      n_block = info$n_block,
       rescale = rescale
     )
 
@@ -1138,7 +1135,7 @@ fm_block_eval <- function(block = NULL,
       i = info$block,
       j = rep(1L, length(info$block)),
       x = as.numeric(values * weights),
-      dims = c(n_block, 1)
+      dims = c(info$n_block, 1)
     )
   as.vector(val)
 }
@@ -1160,6 +1157,7 @@ fm_block_logsumexp_eval <- function(block = NULL,
   info <-
     fm_block_prep(
       block = block,
+      n_block = n_block,
       log_weights = log_weights,
       weights = weights,
       values = values
@@ -1167,15 +1165,12 @@ fm_block_logsumexp_eval <- function(block = NULL,
   if (length(info$block) == 0) {
     return(numeric(0L))
   }
-  if (is.null(n_block)) {
-    n_block <- max(block)
-  }
   log_weights <-
     fm_block_log_weights(
       block = info$block,
       weights = info$weights,
       log_weights = info$log_weights,
-      n_block = n_block,
+      n_block = info$n_block,
       rescale = rescale
     )
 
@@ -1184,7 +1179,7 @@ fm_block_logsumexp_eval <- function(block = NULL,
   shift <- fm_block_log_shift(
     log_weights = w_values,
     block = info$block,
-    n_block = n_block
+    n_block = info$n_block
   )
 
   val <-
@@ -1192,7 +1187,7 @@ fm_block_logsumexp_eval <- function(block = NULL,
       i = info$block,
       j = rep(1L, length(info$block)),
       x = as.numeric(exp(w_values - shift[info$block])),
-      dims = c(n_block, 1)
+      dims = c(info$n_block, 1)
     )
 
   if (log) {
@@ -1210,14 +1205,12 @@ fm_block_weights <- function(block = NULL, weights = NULL, log_weights = NULL,
   info <-
     fm_block_prep(
       block = block,
+      n_block = n_block,
       log_weights = log_weights,
       weights = weights
     )
   if (length(info$block) == 0) {
     return(numeric(0))
-  }
-  if (is.null(n_block)) {
-    n_block <- max(info$block)
   }
   if (rescale) {
     # Compute blockwise normalised weights
@@ -1225,7 +1218,7 @@ fm_block_weights <- function(block = NULL, weights = NULL, log_weights = NULL,
       info$log_weights <- fm_block_log_weights(
         log_weights = info$log_weights,
         block = info$block,
-        n_block = n_block,
+        n_block = info$n_block,
         rescale = rescale
       )
       info$weights <- exp(info$log_weights)
@@ -1238,7 +1231,7 @@ fm_block_weights <- function(block = NULL, weights = NULL, log_weights = NULL,
           i = info$block,
           j = rep(1L, length(info$block)),
           x = as.numeric(info$weights),
-          dims = c(n_block, 1)
+          dims = c(info$n_block, 1L)
         )
       )
       info$weights <- info$weights / scale[block]
@@ -1259,15 +1252,13 @@ fm_block_log_weights <- function(block = NULL, weights = NULL, log_weights = NUL
   info <-
     fm_block_prep(
       block = block,
+      n_block = n_block,
       log_weights = log_weights,
       weights = weights,
       force_log = TRUE
     )
   if (length(info$block) == 0) {
     return(numeric(0))
-  }
-  if (is.null(n_block)) {
-    n_block <- max(info$block)
   }
   if (is.null(info$log_weights)) {
     if (is.null(info$weights)) {
@@ -1279,14 +1270,14 @@ fm_block_log_weights <- function(block = NULL, weights = NULL, log_weights = NUL
   if (rescale) {
     shift <- fm_block_log_shift(
       block = info$block, log_weights = info$log_weights,
-      n_block = n_block
+      n_block = info$n_block
     )
     log_rescale <- as.vector(
       Matrix::sparseMatrix(
         i = info$block,
         j = rep(1L, length(info$block)),
         x = as.numeric(exp(info$log_weights - shift[info$block])),
-        dims = c(n_block, 1)
+        dims = c(info$n_block, 1L)
       )
     )
     log_rescale <- (log(log_rescale) + shift)[block]
@@ -1315,17 +1306,15 @@ fm_block_log_shift <- function(block = NULL, log_weights = NULL, n_block = NULL)
   info <-
     fm_block_prep(
       block = block,
+      n_block = n_block,
       log_weights = log_weights,
       force_log = TRUE
     )
   if (length(info$block) == 0) {
     return(0.0)
   }
-  if (is.null(n_block)) {
-    n_block <- max(info$block)
-  }
   block_k <- sort(unique(info$block))
-  shift <- numeric(n_block)
+  shift <- numeric(info$n_block)
   if (!is.null(info$log_weights)) {
     shift[block_k] <-
       vapply(
@@ -1342,7 +1331,7 @@ fm_block_log_shift <- function(block = NULL, log_weights = NULL, n_block = NULL)
 
 
 #' @describeIn fm_block Helper function for preparing `block`, `weights`, and
-#' `log_weights` inputs.
+#' `log_weights`, `n_block` inputs.
 #' @export
 #' @param force_log When `FALSE` (default), passes both `weights` and `log_weights`
 #' on, if provided. If `TRUE`, forces the computation of `log_weights`, whether
@@ -1350,6 +1339,7 @@ fm_block_log_shift <- function(block = NULL, log_weights = NULL, n_block = NULL)
 #' @param n_values When supplied, used instead of `length(values)` to determine
 #' the value vector input length.
 fm_block_prep <- function(block = NULL,
+                          n_block = NULL,
                           log_weights = NULL,
                           weights = NULL,
                           force_log = FALSE,
@@ -1362,10 +1352,27 @@ fm_block_prep <- function(block = NULL,
       n_values <- length(values)
     }
   }
-  if (is.null(block)) {
+  if (is.null(block) || (length(block) == 0)) {
     block <- rep(1L, n_values)
   } else if (length(block) == 1L) {
     block <- rep(block, n_values)
+  }
+  if (min(block) < 1L) {
+    warning(paste0(
+      "min(block) = ", min(block),
+      " < 1L. Setting too small values to 1L."
+    ))
+    block <- pmax(1L, block)
+  }
+  if (is.null(n_block)) {
+    n_block <- max(block)
+  } else if (max(block) > n_block) {
+    warning(paste0(
+      max(block), " = max(block) > n_block = ",
+      n_block,
+      ". Setting too large values to n_block."
+    ))
+    block <- pmin(n_block, block)
   }
 
   if (force_log) {
@@ -1402,5 +1409,8 @@ fm_block_prep <- function(block = NULL,
     log_weights <- rep(log_weights, n_values)
   }
 
-  list(block = block, weights = weights, log_weights = log_weights)
+  list(
+    block = block, weights = weights, log_weights = log_weights,
+    n_block = n_block
+  )
 }
