@@ -96,28 +96,28 @@ weighting.</p>
 <span>  block <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  weights <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  log_weights <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  n_block <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  rescale <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  rescale <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  n_block <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">fm_block_log_weights</span><span class="op">(</span></span>
 <span>  block <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  weights <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  log_weights <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  n_block <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  rescale <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  rescale <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  n_block <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">fm_block_log_shift</span><span class="op">(</span>block <span class="op">=</span> <span class="cn">NULL</span>, log_weights <span class="op">=</span> <span class="cn">NULL</span>, n_block <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">fm_block_prep</span><span class="op">(</span></span>
 <span>  block <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  n_block <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  log_weights <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  weights <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  force_log <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  n_block <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  values <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  n_values <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  n_values <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  force_log <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -126,7 +126,8 @@ weighting.</p>
     <dl><dt>block</dt>
 <dd><p>integer vector; block information. If <code>NULL</code>,
 <code>rep(1L, block_len)</code> is used, where <code>block_len</code> is determined by
-<code>length(log_weights)))</code> or <code>length(weights)))</code>.A single scalar is also repeated
+<code>length(log_weights)))</code> or <code>length(weights)))</code>.
+A single scalar is also repeated
 to a vector of corresponding length to the weights.</p></dd>
 
 
@@ -160,15 +161,16 @@ consistent size for different inputs.</p></dd>
 return sum-exp.</p></dd>
 
 
-<dt>force_log</dt>
-<dd><p>When <code>FALSE</code> (default), passes both <code>weights</code> and <code>log_weights</code>
-on, if provided. If <code>TRUE</code>, forces the computation of <code>log_weights</code>, whether
-given in the input or not.</p></dd>
-
-
 <dt>n_values</dt>
 <dd><p>When supplied, used instead of <code>length(values)</code> to determine
 the value vector input length.</p></dd>
+
+
+<dt>force_log</dt>
+<dd><p>When <code>FALSE</code> (default),
+passes either <code>weights</code> and <code>log_weights</code> on, if provided, with <code>log_weights</code>
+taking precedence. If <code>TRUE</code>, forces the computation of <code>log_weights</code>,
+whether given in the input or not.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -184,13 +186,22 @@ More efficient and numerically stable alternative to to
 <li><p><code>fm_block_log_weights()</code>: Computes (optionally) blockwise renormalised log-weights</p></li>
 <li><p><code>fm_block_log_shift()</code>: Computes shifts for stable blocked log-sum-exp.
 To compute \(\log(\sum_{i; \text{block}_i=k} \exp(v_i) w_i)\) for
-each block <code>k</code>:</p>
-<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>w_values <span class="ot">&lt;-</span> values <span class="sc">+</span> <span class="fu">fm_block_log_weights</span>(block, log_weights)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>shift <span class="ot">&lt;-</span> <span class="fu">fm_block_log_shift</span>(block, w_values)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>agg <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(<span class="fu">exp</span>(w_values <span class="sc">-</span> shift[block]),</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">by =</span> <span class="fu">list</span>(<span class="at">block =</span> block),</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>                 \(x) <span class="fu">log</span>(<span class="fu">sum</span>(x)))</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>agg<span class="sc">$</span>x <span class="ot">&lt;-</span> agg<span class="sc">$</span>x <span class="sc">+</span> shift[agg<span class="sc">$</span>block]</span></code></pre><p></p></div></li>
+each block <code>k</code>, first compute combined values and weights, and a shift:</p>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>w_values <span class="ot">&lt;-</span> values <span class="sc">+</span> <span class="fu">fm_block_log_weights</span>(block, <span class="at">log_weights =</span> log_weights)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>shift <span class="ot">&lt;-</span> <span class="fu">fm_block_log_shift</span>(block, <span class="at">log_weights =</span> w_values)</span></code></pre><p></p></div>
+<p>Then aggregate the values within each block:</p>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>agg <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(<span class="fu">exp</span>(w_values <span class="sc">-</span> shift[block]),</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">by =</span> <span class="fu">list</span>(<span class="at">block =</span> block),</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>                 \(x) <span class="fu">log</span>(<span class="fu">sum</span>(x)))</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>agg<span class="sc">$</span>x <span class="ot">&lt;-</span> agg<span class="sc">$</span>x <span class="sc">+</span> shift[agg<span class="sc">$</span>block]</span></code></pre><p></p></div>
+<p>The implementation uses a faster method:</p>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as.vector</span>(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  Matrix<span class="sc">::</span><span class="fu">sparseMatrix</span>(</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">i =</span> block,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">j =</span> <span class="fu">rep</span>(1L, <span class="fu">length</span>(block)),</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">exp</span>(w_values <span class="sc">-</span> shift[block]),</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">dims =</span> <span class="fu">c</span>(n_block, <span class="dv">1</span>))</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span> shift</span></code></pre><p></p></div></li>
 <li><p><code>fm_block_prep()</code>: Helper function for preparing <code>block</code>, <code>weights</code>, and
 <code>log_weights</code>, <code>n_block</code> inputs.</p></li>
 </ul></div>
@@ -213,13 +224,17 @@ each block <code>k</code>:</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                                       </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.09003057 0.2447285 0.665241 .         .        </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,] .          .         .        0.2689414 0.7310586</span>
-<span class="r-in"><span><span class="fu">fm_block_eval</span><span class="op">(</span><span class="va">block</span>,</span></span>
-<span class="r-in"><span>  weights <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, rescale <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span><span class="fu">fm_block_eval</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">block</span>,</span></span>
+<span class="r-in"><span>  weights <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>,</span></span>
+<span class="r-in"><span>  rescale <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>  values <span class="op">=</span> <span class="fl">11</span><span class="op">:</span><span class="fl">15</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 12.33333 14.55556</span>
-<span class="r-in"><span><span class="fu">fm_block_logsumexp_eval</span><span class="op">(</span><span class="va">block</span>,</span></span>
-<span class="r-in"><span>  weights <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, rescale <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span><span class="fu">fm_block_logsumexp_eval</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">block</span>,</span></span>
+<span class="r-in"><span>  weights <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>,</span></span>
+<span class="r-in"><span>  rescale <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>  values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">11</span><span class="op">:</span><span class="fl">15</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  log <span class="op">=</span> <span class="cn">FALSE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
