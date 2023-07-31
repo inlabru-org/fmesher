@@ -41,34 +41,35 @@ fm_block_weights(
   block = NULL,
   weights = NULL,
   log_weights = NULL,
-  n_block = NULL,
-  rescale = FALSE
+  rescale = FALSE,
+  n_block = NULL
 )
 
 fm_block_log_weights(
   block = NULL,
   weights = NULL,
   log_weights = NULL,
-  n_block = NULL,
-  rescale = FALSE
+  rescale = FALSE,
+  n_block = NULL
 )
 
 fm_block_log_shift(block = NULL, log_weights = NULL, n_block = NULL)
 
 fm_block_prep(
   block = NULL,
-  n_block = NULL,
   log_weights = NULL,
   weights = NULL,
-  force_log = FALSE,
+  n_block = NULL,
   values = NULL,
-  n_values = NULL
+  n_values = NULL,
+  force_log = FALSE
 )
 }
 \arguments{
 \item{block}{integer vector; block information. If \code{NULL},
 \code{rep(1L, block_len)} is used, where \code{block_len} is determined by
-\verb{length(log_weights)))} or \verb{length(weights)))}.A single scalar is also repeated
+\verb{length(log_weights)))} or \verb{length(weights)))}.
+A single scalar is also repeated
 to a vector of corresponding length to the weights.}
 
 \item{weights}{Optional weight vector}
@@ -89,12 +90,13 @@ consistent size for different inputs.}
 \item{log}{If \code{TRUE} (default), return log-sum-exp. If \code{FALSE},
 return sum-exp.}
 
-\item{force_log}{When \code{FALSE} (default), passes both \code{weights} and \code{log_weights}
-on, if provided. If \code{TRUE}, forces the computation of \code{log_weights}, whether
-given in the input or not.}
-
 \item{n_values}{When supplied, used instead of \code{length(values)} to determine
 the value vector input length.}
+
+\item{force_log}{When \code{FALSE} (default),
+passes either \code{weights} and \code{log_weights} on, if provided, with \code{log_weights}
+taking precedence. If \code{TRUE}, forces the computation of \code{log_weights},
+whether given in the input or not.}
 }
 \description{
 Creates an aggregation matrix for blockwise aggregation, with optional
@@ -119,14 +121,29 @@ More efficient and numerically stable alternative to to
 To compute \eqn{\log(\sum_{i; \text{block}_i=k} \exp(v_i) w_i)}{
 log(sum_(i;block_i=k) exp(v_i) w_i)
 } for
-each block \code{k}:
+each block \code{k}, first compute combined values and weights, and a shift:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{w_values <- values + fm_block_log_weights(block, log_weights)
-shift <- fm_block_log_shift(block, w_values)
-agg <- aggregate(exp(w_values - shift[block]),
+\if{html}{\out{<div class="sourceCode">}}\preformatted{w_values <- values + fm_block_log_weights(block, log_weights = log_weights)
+shift <- fm_block_log_shift(block, log_weights = w_values)
+}\if{html}{\out{</div>}}
+
+Then aggregate the values within each block:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{agg <- aggregate(exp(w_values - shift[block]),
                  by = list(block = block),
                  \\(x) log(sum(x)))
 agg$x <- agg$x + shift[agg$block]
+}\if{html}{\out{</div>}}
+
+The implementation uses a faster method:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{as.vector(
+  Matrix::sparseMatrix(
+    i = block,
+    j = rep(1L, length(block)),
+    x = exp(w_values - shift[block]),
+    dims = c(n_block, 1))
+) + shift
 }\if{html}{\out{</div>}}
 
 \item \code{fm_block_prep()}: Helper function for preparing \code{block}, \code{weights}, and
@@ -138,12 +155,16 @@ block <- rep(1:2, 3:2)
 fm_block(block)
 fm_block(block, rescale = TRUE)
 fm_block(block, log_weights = -2:2, rescale = TRUE)
-fm_block_eval(block,
-  weights = 1:5, rescale = TRUE,
+fm_block_eval(
+  block,
+  weights = 1:5,
+  rescale = TRUE,
   values = 11:15
 )
-fm_block_logsumexp_eval(block,
-  weights = 1:5, rescale = TRUE,
+fm_block_logsumexp_eval(
+  block,
+  weights = 1:5,
+  rescale = TRUE,
   values = log(11:15),
   log = FALSE
 )
