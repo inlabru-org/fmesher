@@ -44,7 +44,15 @@ df <- tribble(
   "inla.mesh.project()", "fm_evaluate()",
   "inla.CRS()", c("fm_crs()", "fm_CRS()", "fm_crs<-()"),
   "inla.spTransform()", "fm_transform()",
-  "inla.spde.make.A()", c("fm_basis()", "fm_row_kron()"),
+  "inla.spde.make.A()", c(
+    "fm_basis()",
+    "fm_row_kron()",
+    "inlabru::bru_mapper_multi()",
+    "inlabru::ibm_jacobian()",
+    "fm_block()",
+    "fm_block_eval()",
+    "inlabru::bru_mapper_aggregate()"
+  ),
   "inla.mesh.deriv()", "fm_basis()",
   "plot.inla.mesh(rgl = FALSE)", "plot.fm_mesh_2d()",
   "lines.inla.mesh.segment(rgl = FALSE)", c(
@@ -64,24 +72,44 @@ df <- tribble(
 )
 
 # webref <- "https://inlabru-org.github.io/fmesher/reference/"
-webref <- "../reference/"
+webref <- list(
+  fmesher = "../reference/",
+  inlabru = "https://inlabru-org.github.io/inlabru/reference/"
+)
 for (k in seq_len(nrow(df))) {
   df$fmesher[[k]] <-
     vapply(
       df$fmesher[[k]],
       function(x) {
-        nm <- sub(
-          pattern = "([^(]+)(\\(.*\\))$",
-          replacement = "\\1",
-          x = x
-        )
-        args <- sub(
-          pattern = "([^(]+)(\\(.*\\))$",
+        pkg_name <- sub(
+          pattern = "^(([^:]*)::)?([^(]+)(\\(.*\\))$",
           replacement = "\\2",
           x = x
         )
-        help_name <- basename(utils::help(nm, package = "fmesher"))
-        paste0('<a href="', webref, help_name, '.html">', nm, "</a>", args)
+        if (identical(pkg_name, "")) {
+          pkg_name <- "fmesher"
+        }
+        nm <- sub(
+          pattern = "^(([^:]*)::)?([^(]+)(\\(.*\\))$",
+          replacement = "\\3",
+          x = x
+        )
+        args <- sub(
+          pattern = "^(([^:]*)::)?([^(]+)(\\(.*\\))$",
+          replacement = "\\4",
+          x = x
+        )
+        help_name <- basename(utils::help((nm), package = (pkg_name)))
+        paste0(
+          '<a href="', webref[[pkg_name]], help_name, '.html">',
+          if (!identical(pkg_name, "fmesher")) {
+            paste0(pkg_name, "::")
+          } else {
+            ""
+          },
+          nm,
+          "</a>", args
+        )
       },
       ""
     )
