@@ -130,11 +130,23 @@
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://inlabru-org.github.io/fmesher/">fmesher</a></span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Port of the old inla mesh inla.mesh.create interface:</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="reference/fm_rcdt_2d.html">fm_rcdt_2d_inla</a></span><span class="op">(</span></span>
+<span><span class="op">(</span><span class="va">mesh</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/fm_rcdt_2d.html">fm_rcdt_2d_inla</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>,</span>
 <span>  extend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>offset <span class="op">=</span> <span class="fl">1</span>, n <span class="op">=</span> <span class="fl">16L</span><span class="op">)</span>,</span>
 <span>  refine <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>max.edge <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
-<span><span class="op">)</span>, asp <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; fm_mesh_2d object:</span></span>
+<span><span class="co">#&gt;   CRS:</span></span>
+<span><span class="co">#&gt;     LegacyPROJ4: NA</span></span>
+<span><span class="co">#&gt;     WKT: (only shown with verbose = TRUE)</span></span>
+<span><span class="co">#&gt;   Manifold:  R2</span></span>
+<span><span class="co">#&gt;   V / E / T: 43 / 110 / 68</span></span>
+<span><span class="co">#&gt;   Euler char:    1</span></span>
+<span><span class="co">#&gt;   Constraints:   16 boundary edges (1 group: 0), 0 interior edges</span></span>
+<span><span class="co">#&gt;   Bounding box: (-1, 1) x (-1, 1) x (0,0)</span></span>
+<span><span class="co">#&gt;   Basis d.o.f.:  43</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mesh</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-example-1.png" width="100%"></p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
