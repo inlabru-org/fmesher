@@ -138,10 +138,10 @@ print.fm_mesh_2d <- function(x, verbose = FALSE, ...) {
   cat(", ")
   print(ret$segm.int, newline = TRUE)
   cat("  Bounding box:\n")
-  cat("    xlim: (", paste0(ret$xlim, collapse = ", "), ")", sep = "")
-  cat(", ylim: (", paste0(ret$ylim, collapse = ", "), ")", sep = "")
+  cat("    xlim: (", paste0(format(ret$xlim), collapse = ", "), ")", sep = "")
+  cat(", ylim: (", paste0(format(ret$ylim), collapse = ", "), ")", sep = "")
   if (all(is.finite(ret$zlim))) {
-    cat(", zlim: (", paste0(ret$zlim, collapse = ", "), ")", sep = "")
+    cat(", zlim: (", paste0(format(ret$zlim), collapse = ", "), ")", sep = "")
   }
   cat("\n", sep = "")
   cat("  Basis d.o.f.:\t", ret$nV, "\n", sep = "")
