@@ -843,7 +843,7 @@ bool MeshC::CETsphere(int sides, double margin) {
   int nV = (int)M_->nV();
 
   if (nV < 1) {
-    FMLOG("Need at least one vertex to calculate enclosure.");
+    FMLOG("Need at least one vertex to calculate enclosure." << std::endl);
     return false;
   }
 

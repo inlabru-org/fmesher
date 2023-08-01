@@ -154,6 +154,10 @@ public:
   Mtype determine_type(double sphere_tolerance) {
     bool issphere = false;
     bool isflat = false;
+    if ((*this).S().rows() == 0) {
+      FMLOG("Empty manifold detected, treating as flat." << std::endl);
+      return Mtype_plane;
+    }
     isflat = (std::fabs((*this).S(0)[2]) < 1.0e-10);
     double radius = (*this).S(0).length();
     issphere = (radius > sphere_tolerance);

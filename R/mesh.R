@@ -3021,7 +3021,7 @@ fm_delaunay_2d <- function(loc, crs = NULL, ...) {
     crs = crs,
     ...
   )
-  return(invisible(mesh))
+  return(mesh)
 }
 
 
@@ -3257,7 +3257,7 @@ fm_mesh_2d_inla <- function(loc = NULL, ## Points to include in final triangulat
       mesh2$loc <- fm_transform(mesh2$loc, crs0 = mesh2$crs, crs = crs.target)
       mesh2$crs <- crs.target
     }
-    return(invisible(mesh2))
+    return(mesh2)
   }
 
   ## Triangulate inner+outer domain
@@ -3320,7 +3320,7 @@ fm_mesh_2d_inla <- function(loc = NULL, ## Points to include in final triangulat
     plot(mesh3)
   }
 
-  return(invisible(mesh3))
+  return(mesh3)
 }
 
 #' @title Convert objects to `fm_mesh_2d`

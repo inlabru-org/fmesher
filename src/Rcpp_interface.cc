@@ -329,21 +329,28 @@ Rcpp::List fmesher_rcdt(Rcpp::List options,
   }
 
   if (iS0.rows() > 0) {
+    FMLOG("Append S0." << std::endl);
     Matrix3double S0(iS0); /* Make sure we have a Nx3 matrix. */
     M.S_append(S0);
   }
 
+  FMLOG("Auto-detect manifold type." << std::endl);
   //  double sphere_tolerance = 1e-10;
   (void)M.auto_type(rcdt_options.sphere_tolerance);
 
   if (TV0) {
+    FMLOG("Set TV0." << std::endl);
     M.TV_set(*TV0);
   }
 
+  FMLOG("Attach 's'." << std::endl);
   matrices.attach(string("s"), &M.S(), false);
+  FMLOG("Attach 'tv'." << std::endl);
   matrices.attach("tv", &M.TV(), false);
+  FMLOG("Set output of 's' and 'tv'." << std::endl);
   matrices.output("s").output("tv");
 
+  FMLOG("Create MeshC helper." << std::endl);
   MeshC MC(&M);
   MC.setOptions(MC.getOptions() | MeshC::Option_offcenter_steiner);
 

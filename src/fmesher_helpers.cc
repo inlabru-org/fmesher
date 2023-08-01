@@ -249,7 +249,7 @@ void remap_vertex_indices(const Matrix<int> &idx, Matrix<int> &matrix) {
       matrix(i, j) = idx[matrix[i][j]][0];
     }
   }
-  FMLOG("Done." << endl);
+  FMLOG("Done remapping index matrix." << endl);
 }
 
 void remap_vertex_indices(const Matrix<int> &idx, constrListT &segm) {
@@ -260,7 +260,7 @@ void remap_vertex_indices(const Matrix<int> &idx, constrListT &segm) {
     (*i).first.first = idx[(*i).first.first][0];
     (*i).first.second = idx[(*i).first.second][0];
   }
-  FMLOG("Done." << endl);
+  FMLOG("Done remapping constraint indices." << endl);
 }
 
 void prepare_cdt_input(const Matrix<int> &segm0, const Matrix<int> &segmgrp,
@@ -416,5 +416,5 @@ void split_line_segments_on_triangles(
 
     FMESHER_R_INTERRUPT_CHECK;
   }
-  FMLOG("Done." << endl);
+  FMLOG("Done split_line_segments_on_triangles." << endl);
 }

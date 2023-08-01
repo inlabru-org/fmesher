@@ -17,7 +17,56 @@ knitr::opts_chunk$set(
 ```{r setup, echo = FALSE}
 suppressPackageStartupMessages(library(fmesher))
 suppressPackageStartupMessages(library(tibble))
+
+convert_fun_links <- function(df) {
+  webref <- list(
+    fmesher = "../reference/",
+    inlabru = "https://inlabru-org.github.io/inlabru/reference/"
+  )
+  for (k in seq_len(nrow(df))) {
+    df$INLA[[k]] <- paste0("`", df$INLA[[k]], "`")
+    df$fmesher[[k]] <-
+      vapply(
+        df$fmesher[[k]],
+        function(x) {
+          pkg_name <- sub(
+            pattern = "^(([^:]*)::)?([^(]+)(\\(.*\\))(<-)?$",
+            replacement = "\\2",
+            x = x
+          )
+          if (identical(pkg_name, "")) {
+            pkg_name <- "fmesher"
+          }
+          nm <- sub(
+            pattern = "^(([^:]*)::)?([^(]+)(\\(.*\\))(<-)?$",
+            replacement = "\\3",
+            x = x
+          )
+          args <- sub(
+            pattern = "^(([^:]*)::)?([^(]+)(\\(.*\\))(<-)?$",
+            replacement = "\\4\\5",
+            x = x
+          )
+          help_name <- basename(utils::help((nm), package = (pkg_name)))
+          paste0(
+            '<a href="', webref[[pkg_name]], help_name, '.html">`',
+            if (!identical(pkg_name, "fmesher")) {
+              paste0(pkg_name, "::")
+            } else {
+              ""
+            },
+            nm,
+            "`</a>", args
+          )
+        },
+        ""
+      )
+  }
+  df
+}
 ```
+
+## Mesh construction
 
 ```{r echo = FALSE}
 df <- tribble(
@@ -38,12 +87,22 @@ df <- tribble(
     "fm_nonconvex_hull_inla()",
     "fm_simplify_helper()",
     "fm_segm_contour_helper()"
-  ),
-  c("inla.mesh.boundary()", "inla.mesh.interior()"), "fm_segm()",
+  )
+)
+df <- convert_fun_links(df)
+```
+
+```{r, echo = FALSE}
+knitr::kable(df)
+```
+
+## Basis and function evaluation
+
+```{r echo = FALSE}
+df <- tribble(
+  ~INLA, ~fmesher,
   "inla.mesh.projector()", "fm_evaluator()",
   "inla.mesh.project()", "fm_evaluate()",
-  "inla.CRS()", c("fm_crs()", "fm_CRS()", "fm_crs<-()"),
-  "inla.spTransform()", "fm_transform()",
   "inla.spde.make.A()", c(
     "fm_basis()",
     "fm_row_kron()",
@@ -53,69 +112,75 @@ df <- tribble(
     "fm_block_eval()",
     "inlabru::bru_mapper_aggregate()"
   ),
-  "inla.mesh.deriv()", "fm_basis()",
-  "plot.inla.mesh(rgl = FALSE)", "plot.fm_mesh_2d()",
-  "lines.inla.mesh.segment(rgl = FALSE)", c(
-    "plot.fm_segm()",
-    "lines.fm_segm()"
-  ),
-  "plot.inla.mesh(rgl = TRUE)", "plot_rgl()",
-  "lines.inla.mesh.segment(rgl = TRUE)", c(
-    "plot_rgl()",
-    "lines_rgl()"
-  ),
-  "summary.inla.mesh()", c(
-    "print.fm_mesh_2d()",
-    "print.fm_segm()",
-    "print.fm_mesh_1d()"
-  )
+  "inla.mesh.deriv()", "fm_basis()"
 )
-
-# webref <- "https://inlabru-org.github.io/fmesher/reference/"
-webref <- list(
-  fmesher = "../reference/",
-  inlabru = "https://inlabru-org.github.io/inlabru/reference/"
-)
-for (k in seq_len(nrow(df))) {
-  df$fmesher[[k]] <-
-    vapply(
-      df$fmesher[[k]],
-      function(x) {
-        pkg_name <- sub(
-          pattern = "^(([^:]*)::)?([^(]+)(\\(.*\\))$",
-          replacement = "\\2",
-          x = x
-        )
-        if (identical(pkg_name, "")) {
-          pkg_name <- "fmesher"
-        }
-        nm <- sub(
-          pattern = "^(([^:]*)::)?([^(]+)(\\(.*\\))$",
-          replacement = "\\3",
-          x = x
-        )
-        args <- sub(
-          pattern = "^(([^:]*)::)?([^(]+)(\\(.*\\))$",
-          replacement = "\\4",
-          x = x
-        )
-        help_name <- basename(utils::help((nm), package = (pkg_name)))
-        paste0(
-          '<a href="', webref[[pkg_name]], help_name, '.html">',
-          if (!identical(pkg_name, "fmesher")) {
-            paste0(pkg_name, "::")
-          } else {
-            ""
-          },
-          nm,
-          "</a>", args
-        )
-      },
-      ""
-    )
-}
+df <- convert_fun_links(df)
 ```
 
 ```{r, echo = FALSE}
 knitr::kable(df)
 ```
+
+## Printing
+
+```{r echo = FALSE}
+df <- tribble(
+  ~INLA,
+  ~fmesher,
+  ~Comments,
+  "summary.inla.mesh()",
+  c(
+    "print.fm_mesh_2d()",
+    "print.fm_segm()",
+    "print.fm_mesh_1d()"
+  ),
+  "Use `print(mesh)` etc."
+)
+df <- convert_fun_links(df)
+```
+
+```{r, echo = FALSE}
+knitr::kable(df)
+```
+
+## CRS information and coordinate transformations
+
+```{r, echo = FALSE}
+df <- convert_fun_links(
+  tibble::tribble(
+    ~INLA, ~fmesher, ~Comments,
+    "inla.spTransform()", "fm_transform()", "",
+    "mesh$crs", "fm_CRS(mesh)", "The crs may now be stored in different formats; use `fm_crs()` for `sf` format, and `fm_CRS()` for `sp` format. `fmesher` will attempt to convert when needed.",
+    "mesh$crs<-", "fm_crs(mesh)<-", "Direct assignment of crs information should be avoided, but is allowed as long as its compatible with the actual mesh coordinates."
+  )
+)
+```
+
+```{r, echo = FALSE}
+knitr::kable(df)
+```
+
+## Plotting
+
+```{r echo = FALSE}
+df <- tribble(
+  ~INLA, ~fmesher, ~Comment,
+  "plot.inla.mesh(rgl = FALSE)", "plot.fm_mesh_2d()", "Use `plot()`",
+  "lines.inla.mesh.segment(rgl = FALSE)", c(
+    "plot.fm_segm()",
+    "lines.fm_segm()"
+  ), "Use `plot()` or `lines()`",
+  "plot.inla.mesh(rgl = TRUE)", "plot_rgl()", "",
+  "lines.inla.mesh.segment(rgl = TRUE)", c(
+    "plot_rgl()",
+    "lines_rgl()"
+  ),
+  ""
+)
+df <- convert_fun_links(df)
+```
+
+```{r, echo = FALSE}
+knitr::kable(df)
+```
+
