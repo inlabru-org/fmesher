@@ -82,11 +82,23 @@ fmesher_install(repo = "inlabru-org/fmesher", debug = TRUE)
 suppressPackageStartupMessages(library(fmesher))
 
 # Port of the old inla mesh inla.mesh.create interface:
-plot(fm_rcdt_2d_inla(
+(mesh <- fm_rcdt_2d_inla(
   cbind(0, 0),
   extend = list(offset = 1, n = 16L),
   refine = list(max.edge = 0.5)
-), asp = 1)
+))
+#> fm_mesh_2d object:
+#>   CRS:
+#>     LegacyPROJ4: NA
+#>     WKT: (only shown with verbose = TRUE)
+#>   Manifold:  R2
+#>   V / E / T: 43 / 110 / 68
+#>   Euler char:    1
+#>   Constraints:   16 boundary edges (1 group: 0), 0 interior edges
+#>   Bounding box: (-1, 1) x (-1, 1) x (0,0)
+#>   Basis d.o.f.:  43
+
+plot(mesh)
 ```
 
 <img src="man/figures/README-example-1.png" width="100%" />

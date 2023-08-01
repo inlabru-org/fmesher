@@ -85,11 +85,13 @@ fmesher_install(repo = "inlabru-org/fmesher", debug = TRUE)
 suppressPackageStartupMessages(library(fmesher))
 
 # Port of the old inla mesh inla.mesh.create interface:
-plot(fm_rcdt_2d_inla(
+(mesh <- fm_rcdt_2d_inla(
   cbind(0, 0),
   extend = list(offset = 1, n = 16L),
   refine = list(max.edge = 0.5)
-), asp = 1)
+))
+
+plot(mesh)
 
 # longlat for a spherical version of the Earth
 print(fm_crs("longlat_globe"))
