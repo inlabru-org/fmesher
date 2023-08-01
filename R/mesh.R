@@ -1625,6 +1625,9 @@ fm_nonconvex_hull.sfg <- function(x, ...) {
 #' fm_diameter(matrix(c(0, 1, 1, 0, 0, 0, 1, 1), 4, 2))
 #' @export
 fm_diameter <- function(x, ...) {
+  if (is.null(x)) {
+    return(0.0)
+  }
   UseMethod("fm_diameter")
 }
 
@@ -3140,6 +3143,12 @@ fm_mesh_2d_inla <- function(loc = NULL, ## Points to include in final triangulat
     } else {
       offset <- c(-0.05, -0.15)
     }
+  }
+  if (any(offset < 0) &&
+      (fm_diameter(loc) +
+       fm_diameter(loc.domain) +
+       fm_diameter(interior) == 0.0)) {
+    offset[offset < 0] <- 1
   }
   if (missing(n) || is.null(n)) {
     n <- c(8)
