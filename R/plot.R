@@ -16,6 +16,7 @@
 #' @param xlim X axis limits for a new plot.
 #' @param ylim Y axis limits for a new plot.
 #' @param rgl If `TRUE`, use `rgl` for plotting.
+#' @param asp Aspect ratio for new plots. Default 1.
 #' @param \dots Additional parameters, passed on to graphics methods.
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
 #' @seealso [fm_segm()]
@@ -29,7 +30,7 @@ plot.fm_segm <- function(x, ..., add = FALSE) {
 lines.fm_segm <- function(x, loc = NULL, col = NULL,
                           colors = c("black", "blue", "red", "green"),
                           add = TRUE, xlim = NULL, ylim = NULL,
-                          rgl = FALSE, ...) {
+                          rgl = FALSE, asp = 1, ...) {
   segm <- x
   if (!is.null(segm$loc)) {
     loc <- segm$loc
@@ -57,7 +58,7 @@ lines.fm_segm <- function(x, loc = NULL, col = NULL,
       ylim <- range(loc[idx, 2])
     }
     plot.new()
-    plot.window(xlim = xlim, ylim = ylim, ...)
+    plot.window(xlim = xlim, ylim = ylim, asp = asp, ...)
   }
 
   grps <- if (is.null(segm$grp)) rep(0L, nrow(segm$idx)) else segm$grp
@@ -387,6 +388,7 @@ plot_rgl.fm_mesh_2d <- function(x, col = "white", color.axis = NULL,
 #' edges more prominently.
 #' @param visibility If "front" only display mesh faces with normal pointing
 #' towards the camera.
+#' @param asp Aspect ratio for new plots. Default 1.
 #' @param \dots Further graphics parameters, interpreted by the respective
 #' plotting systems.
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
@@ -444,6 +446,7 @@ plot.fm_mesh_2d <- function(
     draw.segments = draw.edges,
     rgl = deprecated(),
     visibility = "front",
+    asp = 1,
     ...) {
   force(t.sub)
   force(xlim)
@@ -497,7 +500,7 @@ plot.fm_mesh_2d <- function(
 
   if (!add) {
     plot.new()
-    plot.window(xlim = xlim, ylim = ylim, ...)
+    plot.window(xlim = xlim, ylim = ylim, asp = asp, ...)
   }
   if (draw.edges) {
     lines(Ec[, 1], Ec[, 2], type = "l", col = edge.color, lwd = lwd)

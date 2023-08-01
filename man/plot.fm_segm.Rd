@@ -16,6 +16,7 @@
   xlim = NULL,
   ylim = NULL,
   rgl = FALSE,
+  asp = 1,
   ...
 )
 }
@@ -38,6 +39,8 @@ plot.}
 \item{ylim}{Y axis limits for a new plot.}
 
 \item{rgl}{If \code{TRUE}, use \code{rgl} for plotting.}
+
+\item{asp}{Aspect ratio for new plots. Default 1.}
 }
 \description{
 Draws a \code{\link[=fm_segm]{fm_segm()}} object with generic or \code{rgl}

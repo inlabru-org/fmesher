@@ -24,6 +24,7 @@
   draw.segments = draw.edges,
   rgl = deprecated(),
   visibility = "front",
+  asp = 1,
   ...
 )
 }
@@ -66,6 +67,8 @@ edges more prominently.}
 
 \item{visibility}{If "front" only display mesh faces with normal pointing
 towards the camera.}
+
+\item{asp}{Aspect ratio for new plots. Default 1.}
 }
 \description{
 Plots an \code{\link[=fm_mesh_2d]{fm_mesh_2d()}} object using standard graphics.
