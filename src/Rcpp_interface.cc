@@ -370,7 +370,10 @@ Rcpp::List fmesher_rcdt(Rcpp::List options,
     if (M.nT() == 0) {
       FMLOG("cet_sides = " << rcdt_options.cet_sides << std::endl);
       FMLOG("cet_margin = " << rcdt_options.cet_margin << std::endl);
-      MC.CET(rcdt_options.cet_sides, rcdt_options.cet_margin);
+      if (!MC.CET(rcdt_options.cet_sides, rcdt_options.cet_margin)) {
+        FMLOG_("CET creation failed, exiting." << std::endl);
+        return Rcpp::wrap(matrices);
+      }
     }
 
     /* It is more robust to add the constraints before the rest of the
