@@ -53,7 +53,7 @@ Computes the basis mapping matrix between a function space on a mesh, and locati
 }
 \examples{
 \dontrun{
-if (fm_safe_inla(quietly = TRUE)) {
+if (TRUE) {
   # Load Gorilla data
 
   data("gorillas", package = "inlabru")

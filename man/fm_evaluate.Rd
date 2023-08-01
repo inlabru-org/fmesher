@@ -138,7 +138,7 @@ if no \code{loc} or \code{lattice} is provided.
 
 }}
 \examples{
-if (fm_safe_inla()) {
+if (TRUE) {
   n <- 20
   loc <- matrix(runif(n * 2), n, 2)
   mesh <- fm_rcdt_2d_inla(loc, refine = list(max.edge = 0.05))
@@ -147,7 +147,7 @@ if (fm_safe_inla()) {
   image(proj$x, proj$y, fm_evaluate(proj, field))
 }
 \donttest{
-if (fm_safe_inla() &&
+if (TRUE &&
   require("ggplot2") &&
   fm_safe_sp() &&
   require("ggpolypath") &&

@@ -96,7 +96,7 @@ inp <- matrix(rnorm(20), 10, 2)
 out <- fm_nonconvex_hull(inp, convex = 1)
 plot(out)
 points(inp, pch = 20)
-if (fm_safe_inla()) {
+if (TRUE) {
   inp <- sf::st_as_sf(as.data.frame(matrix(1:6, 3, 2)), coords = 1:2)
   bnd <- fm_extensions(inp, convex = c(0.75, 2))
   plot(fm_mesh_2d(boundary = bnd, max.edge = c(0.25, 1)), asp = 1)

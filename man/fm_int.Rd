@@ -117,7 +117,7 @@ associated \code{\link[=fm_int_mesh_2d]{fm_int_mesh_2d()}} method is supported.
 
 }}
 \examples{
-if (fm_safe_inla() && fm_safe_sp()) {
+if (TRUE && fm_safe_sp()) {
   # Integration on the interval (2, 3.5) with Simpson's rule
   ips <- fm_int(fm_mesh_1d(0:4), samplers = cbind(2, 3.5))
   plot(ips)

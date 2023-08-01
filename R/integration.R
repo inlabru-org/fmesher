@@ -42,7 +42,7 @@ split_lines <- function(mesh, sp, ep, filter.zero.length = TRUE) {
 #' @examples
 #' \donttest{
 #' # fm_int needs INLA
-#' if (fm_safe_inla() &&
+#' if (TRUE &&
 #'   require("ggplot2")) {
 #'   # Create integration points in dimension 'myDim' and 'myDiscreteDim'
 #'   ips1 <- fm_int(fm_mesh_1d(1:20),
@@ -199,7 +199,7 @@ fm_cprod <- function(..., na.rm = NULL, .blockwise = FALSE) {
 #'
 #' @export
 #' @examples
-#' if (fm_safe_inla() && fm_safe_sp()) {
+#' if (TRUE && fm_safe_sp()) {
 #'   # Integration on the interval (2, 3.5) with Simpson's rule
 #'   ips <- fm_int(fm_mesh_1d(0:4), samplers = cbind(2, 3.5))
 #'   plot(ips)

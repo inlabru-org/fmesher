@@ -32,7 +32,7 @@ weights attached to it all weights are assumed to be 1.
 \examples{
 \donttest{
 # fm_int needs INLA
-if (fm_safe_inla() &&
+if (TRUE &&
   require("ggplot2")) {
   # Create integration points in dimension 'myDim' and 'myDiscreteDim'
   ips1 <- fm_int(fm_mesh_1d(1:20),

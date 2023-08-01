@@ -35,7 +35,7 @@ Wrapper for the \code{\link[sf:geos_binary_pred]{sf::st_contains()}} (previously
 or vertices inside \code{sf} or \code{sp} polygon objects
 }
 \examples{
-if (fm_safe_inla() &&
+if (TRUE &&
   fm_safe_sp()) {
   # Create a polygon and a mesh
   obj <- sp::SpatialPolygons(

@@ -28,7 +28,7 @@
 #' @seealso [fm_mesh_2d()], [fm_mesh_1d()],
 #' [fm_lattice_2d()]
 #' @examples
-#' if (fm_safe_inla()) {
+#' if (TRUE) {
 #'   n <- 20
 #'   loc <- matrix(runif(n * 2), n, 2)
 #'   mesh <- fm_rcdt_2d_inla(loc, refine = list(max.edge = 0.05))
@@ -37,7 +37,7 @@
 #'   image(proj$x, proj$y, fm_evaluate(proj, field))
 #' }
 #' \donttest{
-#' if (fm_safe_inla() &&
+#' if (TRUE &&
 #'   require("ggplot2") &&
 #'   fm_safe_sp() &&
 #'   require("ggpolypath") &&
@@ -776,7 +776,7 @@ fm_evaluator.fm_tensor <- function(x,
 #' @author Haakon Bakka, \email{bakka@@r-inla.org}, and Finn Lindgren \email{finn.lindgren@@gmail.com}
 #'
 #' @examples
-#' if (fm_safe_inla() &&
+#' if (TRUE &&
 #'   fm_safe_sp()) {
 #'   # Create a polygon and a mesh
 #'   obj <- sp::SpatialPolygons(
@@ -889,7 +889,7 @@ fm_contains.sfc <- function(x, y, ..., type = c("centroid", "vertex")) {
 #' @returns A logical vector
 #' @examples
 #' \dontrun{
-#' if (fm_safe_inla(quietly = TRUE)) {
+#' if (TRUE) {
 #'   # Load Gorilla data
 #'
 #'   data("gorillas", package = "inlabru")
@@ -930,7 +930,7 @@ fm_is_within.default <- function(x, y, ...) {
 #' @returns A `sparseMatrix`
 #' @examples
 #' \dontrun{
-#' if (fm_safe_inla(quietly = TRUE)) {
+#' if (TRUE) {
 #'   # Load Gorilla data
 #'
 #'   data("gorillas", package = "inlabru")
