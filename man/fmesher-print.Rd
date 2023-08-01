@@ -5,23 +5,33 @@
 \alias{print.fm_segm}
 \alias{print.fm_mesh_2d}
 \alias{print.fm_mesh_1d}
+\alias{print.fm_bounding_box}
 \title{Print objects}
 \usage{
-\method{print}{fm_segm}(x, newline = TRUE, ...)
+\method{print}{fm_segm}(x, ..., digits = NULL, verbose = TRUE, newline = TRUE)
 
-\method{print}{fm_mesh_2d}(x, verbose = FALSE, ...)
+\method{print}{fm_mesh_2d}(x, ..., digits = NULL, verbose = FALSE)
 
-\method{print}{fm_mesh_1d}(x, verbose = FALSE, ...)
+\method{print}{fm_mesh_1d}(x, ..., digits = NULL, verbose = FALSE)
+
+\method{print}{fm_bounding_box}(x, ..., digits = NULL, verbose = TRUE, newline = TRUE)
 }
 \arguments{
 \item{x}{an object used to select a method.}
 
-\item{newline}{logical; if \code{TRUE} (default), end the printing with \verb{\\n}}
-
 \item{\dots}{further arguments passed to or from other methods.}
 
+\item{digits}{a positive integer indicating how many significant digits are
+to be used for numeric and complex x. The default, NULL, uses \code{getOption("digits")}.}
+
 \item{verbose}{logical}
+
+\item{newline}{logical; if \code{TRUE} (default), end the printing with \verb{\\n}}
 }
 \description{
 Print objects
+}
+\examples{
+fm_bounding_box(matrix(1:6, 3, 2))
+print(fm_bounding_box(matrix(1:6, 3, 2)), verbose = FALSE)
 }

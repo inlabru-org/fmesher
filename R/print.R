@@ -6,12 +6,15 @@
 #' @param \dots further arguments passed to or from other methods.
 #'
 #' @name fmesher-print
+#' @examples
+#' fm_bounding_box(matrix(1:6, 3, 2))
+#' print(fm_bounding_box(matrix(1:6, 3, 2)), verbose = FALSE)
 NULL
 
 #' @export
 #' @param newline logical; if `TRUE` (default), end the printing with `\n`
 #' @rdname fmesher-print
-print.fm_segm <- function(x, newline = TRUE, ...) {
+print.fm_segm <- function(x, ..., digits = NULL, verbose = TRUE, newline = TRUE) {
   my.segm <- function(x) {
     if (is.null(x)) {
       return(list(n = 0, grps = NULL))
@@ -27,6 +30,26 @@ print.fm_segm <- function(x, newline = TRUE, ...) {
 
   ret <- my.segm(x)
 
+  if (verbose) {
+    cat("fm_segm object:\n", sep = "")
+    crs <- fm_wkt(x$crs)
+    ret <- c(ret, list(crs = as.character(fm_wkt(crs))))
+    ret <- c(ret, list(crs_proj4 = as.character(fm_proj4string(crs))))
+
+    cat("  CRS:\n    LegacyPROJ4:\t", ret$crs_proj4, "\n", sep = "")
+    if (verbose) {
+      if (is.na(ret$crs)) {
+        cat("    WKT:\tNA\n", sep = "")
+      } else {
+        cat("    WKT:\n", ret$crs, "\n", sep = "")
+      }
+    } else {
+      cat("    WKT: (only shown with verbose = TRUE)", "\n", sep = "")
+    }
+  }
+  if (verbose) {
+    cat("  ", sep = "")
+  }
   cat(as.character(ret$n),
     if (isTRUE(x$is.bnd)) {
       " boundary edge"
@@ -46,6 +69,15 @@ print.fm_segm <- function(x, newline = TRUE, ...) {
     }
     cat(")")
   }
+  if (verbose) {
+    cat(", bounding box = ", sep = "")
+    print(
+      fm_bounding_box(x),
+      verbose = FALSE,
+      newline = FALSE,
+      digits = digits
+    )
+  }
   if (newline) {
     cat("\n", sep = "")
   }
@@ -54,10 +86,12 @@ print.fm_segm <- function(x, newline = TRUE, ...) {
 
 
 #' @param verbose logical
+#' @param digits a positive integer indicating how many significant digits are
+#' to be used for numeric and complex x. The default, NULL, uses `getOption("digits")`.
 #'
 #' @export
 #' @rdname fmesher-print
-print.fm_mesh_2d <- function(x, verbose = FALSE, ...) {
+print.fm_mesh_2d <- function(x, ..., digits = NULL, verbose = FALSE) {
   ret <- list(verbose = verbose)
   if (verbose) {
     ret <- c(ret, list(time = x$meta$time, is.refined = x$meta$is.refined))
@@ -68,10 +102,7 @@ print.fm_mesh_2d <- function(x, verbose = FALSE, ...) {
       list(
         manifold = x$manifold,
         nV = x$n,
-        nT = nrow(x$graph$tv),
-        xlim = if (nrow(x$loc) > 0) range(x$loc[, 1]) else NA,
-        ylim = if (nrow(x$loc) > 0) range(x$loc[, 2]) else NA,
-        ylim = if ((nrow(x$loc) > 0) && (ncol(x$loc) >= 3)) range(x$loc[, 3]) else NA
+        nT = nrow(x$graph$tv)
       )
     )
   crs <- fm_wkt(x$crs)
@@ -105,15 +136,18 @@ print.fm_mesh_2d <- function(x, verbose = FALSE, ...) {
       gettext("user"), gettext("system"),
       gettext("elapsed")
     )
-    print(y, ...)
+    print(y, ..., digits = digits)
     invisible(x)
   }
-
 
   cat("fm_mesh_2d object:\n", sep = "")
   cat("  CRS:\n    LegacyPROJ4:\t", ret$crs_proj4, "\n", sep = "")
   if (ret$verbose) {
-    cat("    WKT:\n", ret$crs, "\n", sep = "")
+    if (is.na(ret$crs)) {
+      cat("    WKT:\tNA\n", sep = "")
+    } else {
+      cat("    WKT:\n", ret$crs, "\n", sep = "")
+    }
   } else {
     cat("    WKT: (only shown with verbose = TRUE)", "\n", sep = "")
   }
@@ -134,16 +168,11 @@ print.fm_mesh_2d <- function(x, verbose = FALSE, ...) {
   cat("  Euler char:\t", as.character(nV - nE + nF), "\n", sep = "")
 
   cat("  Constraints:\t")
-  print(ret$segm.bnd, newline = FALSE)
+  print(ret$segm.bnd, newline = FALSE, digits = digits, verbose = FALSE)
   cat(", ")
-  print(ret$segm.int, newline = TRUE)
-  cat("  Bounding box:\n")
-  cat("    xlim: (", paste0(format(ret$xlim), collapse = ", "), ")", sep = "")
-  cat(", ylim: (", paste0(format(ret$ylim), collapse = ", "), ")", sep = "")
-  if (all(is.finite(ret$zlim))) {
-    cat(", zlim: (", paste0(format(ret$zlim), collapse = ", "), ")", sep = "")
-  }
-  cat("\n", sep = "")
+  print(ret$segm.int, newline = TRUE, digits = digits, verbose = FALSE)
+  cat("  ", sep = "")
+  print(fm_bounding_box(x), digits = digits)
   cat("  Basis d.o.f.:\t", ret$nV, "\n", sep = "")
   invisible(x)
 }
@@ -154,12 +183,14 @@ print.fm_mesh_2d <- function(x, verbose = FALSE, ...) {
 #'
 #' @export
 #' @rdname fmesher-print
-print.fm_mesh_1d <- function(x, verbose = FALSE, ...) {
+print.fm_mesh_1d <- function(x, ..., digits = NULL, verbose = FALSE) {
   cat("fm_mesh_1d object:\n", sep = "")
 
   cat("  Manifold:\t", x$manifold, "\n", sep = "")
   cat("  #{knots}:\t", length(x$loc), "\n", sep = "")
-  cat("  Interval:\t(", paste0(x$interval, collapse = ", "), ")\n", sep = "")
+  cat("  Interval:\t(", paste0(format(x$interval, digits = digits),
+    collapse = ", "
+  ), ")\n", sep = "")
   clamped <- x$free.clamped & (x$boundary == "free")
   clamped <- c("", " and clamped")[clamped + 1]
   cat("  Boundary:\t(", paste0(x$boundary, clamped, collapse = ", "), ")\n", sep = "")
@@ -167,4 +198,34 @@ print.fm_mesh_1d <- function(x, verbose = FALSE, ...) {
   cat("  Basis d.o.f.:\t", x$m, "\n", sep = "")
 
   invisible(x)
+}
+
+
+
+#' @export
+#' @rdname fmesher-print
+print.fm_bounding_box <- function(x, ..., digits = NULL, verbose = TRUE, newline = TRUE) {
+  if (verbose) {
+    cat("Bounding box: ", sep = "")
+  }
+  if (length(x$lim) == 0) {
+    cat("NULL")
+  } else {
+    for (k in seq_along(x$lim)) {
+      if (k > 1) {
+        cat(" x ", sep = "")
+      }
+      cat("(",
+        paste0(format(x$lim[[k]], digits = digits),
+          collapse = ","
+        ),
+        ")",
+        sep = ""
+      )
+    }
+  }
+  if (newline) {
+    cat("\n", sep = "")
+  }
+  return(invisible(x))
 }

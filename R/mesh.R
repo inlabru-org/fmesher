@@ -3145,9 +3145,9 @@ fm_mesh_2d_inla <- function(loc = NULL, ## Points to include in final triangulat
     }
   }
   if (any(offset < 0) &&
-      (fm_diameter(loc) +
-       fm_diameter(loc.domain) +
-       fm_diameter(interior) == 0.0)) {
+    (fm_diameter(loc) +
+      fm_diameter(loc.domain) +
+      fm_diameter(interior) == 0.0)) {
     offset[offset < 0] <- 1
   }
   if (missing(n) || is.null(n)) {
@@ -3738,6 +3738,81 @@ fm_as_lattice_2d.inla.mesh.lattice <- function(x, ...) {
   x[["segm"]] <- fm_as_fm(x[["segm"]])
   class(x) <- c("fm_lattice_2d", class(x))
   x
+}
+
+
+
+# fm_bounding_box
+
+
+#' @title Bounding box class
+#'
+#' @description
+#' Simple class for handling bounding box information
+#' @param x Object from which to extract bounding box information
+#' @param ... Passed on to sub-methods
+#' @export
+#' @examples
+#' fm_bounding_box(matrix(1:6, 3, 2))
+fm_bounding_box <- function(...) {
+  UseMethod("fm_bounding_box")
+}
+
+#' @describeIn fm_bounding_box Construct a bounding box from
+#' precomputed interval information, stored as a list,
+#' `list(xlim, ylim, ...)`.
+#' @export
+fm_bounding_box.list <- function(x, ...) {
+  structure(
+    list(
+      lim = x
+    ),
+    class = "fm_bounding_box"
+  )
+}
+
+#' @rdname fm_bounding_box
+#' @export
+fm_bounding_box.matrix <- function(x, ...) {
+  fm_bounding_box(lapply(
+    seq_len(ncol(x)),
+    function(k) {
+      range(x[, k], na.rm = TRUE)
+    }
+  ))
+}
+
+#' @rdname fm_bounding_box
+#' @export
+fm_bounding_box.fm_mesh_2d <- function(x, ...) {
+  fm_bounding_box(x[["loc"]])
+}
+
+#' @rdname fm_bounding_box
+#' @export
+fm_bounding_box.fm_segm <- function(x, ...) {
+  if (is.null(x[["loc"]])) {
+    return(fm_bounding_box(list()))
+  }
+  fm_bounding_box(x[["loc"]])
+}
+
+#' @rdname fm_bounding_box
+#' @export
+fm_bounding_box.fm_lattice_2d <- function(x, ...) {
+  fm_bounding_box(x[["loc"]])
+}
+
+#' @rdname fm_bounding_box
+#' @export
+fm_bounding_box.inla.mesh <- function(x, ...) {
+  fm_bounding_box(fm_as_fm(x))
+}
+
+#' @rdname fm_bounding_box
+#' @export
+fm_bounding_box.inla.mesh.segment <- function(x, ...) {
+  fm_bounding_box(fm_as_fm(x))
 }
 
 
