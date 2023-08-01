@@ -429,6 +429,9 @@ get_tv_sub <- function(tv, loc, t.sub, visibility = "front") {
 #' @rdname plot.fm_mesh_2d
 #' @param rgl Deprecated
 #' @export
+#' @examples
+#' mesh <- fm_mesh_2d(cbind(0, 1), offset = c(1, 1.5), max.edge = 0.5)
+#' plot(mesh)
 plot.fm_mesh_2d <- function(
     x,
     col = "white",

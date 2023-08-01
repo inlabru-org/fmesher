@@ -78,6 +78,8 @@ Plots an \code{\link[=fm_mesh_2d]{fm_mesh_2d()}} object using standard graphics.
 mesh <- fm_rcdt_2d(globe = 10)
 plot(mesh)
 
+mesh <- fm_mesh_2d(cbind(0, 1), offset = c(1, 1.5), max.edge = 0.5)
+plot(mesh)
 }
 \seealso{
 \code{\link[=plot.fm_segm]{plot.fm_segm()}}, \code{\link[=plot_rgl.fm_mesh_2d]{plot_rgl.fm_mesh_2d()}}
