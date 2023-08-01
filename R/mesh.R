@@ -2530,7 +2530,7 @@ fm_as_mesh_1d.inla.mesh.1d <- function(x, ...) {
 # fm_mesh_2d ####
 
 unify_loc_coords <- function(loc, crs = crs) {
-  if (is.null(loc) || (nrow(loc) == 0)) {
+  if (is.null(loc) || (NROW(loc) == 0)) {
     return(matrix(c(0.0), 0, 3))
   }
   if (inherits(loc, c(
@@ -2552,10 +2552,18 @@ unify_loc_coords <- function(loc, crs = crs) {
     )
   }
   if (!is.matrix(loc)) {
-    loc <- as.matrix(loc)
+    if (is.vector(loc)) {
+      loc <- matrix(loc, 1, length(loc))
+    } else {
+      loc <- as.matrix(loc)
+    }
   }
-  if (ncol(loc) == 2) {
-    loc <- cbind(loc, 0.0)
+  if (ncol(loc) < 3) {
+    while (ncol(loc) < 3) {
+      loc <- cbind(loc, 0.0)
+    }
+  } else if (ncol(loc) > 3) {
+    stop("Coordinates can have at mot 3 columns.")
   }
   loc
 }
