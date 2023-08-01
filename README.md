@@ -63,6 +63,15 @@ is merged into the main development branch:
 remotes::install_github("inlabru-org/inlabru@feature/fmesher")
 ```
 
+To install and run `fmesher` in full debug mode (this is quite an
+experience!), use
+
+``` r
+# install.packages("pkgbuild")
+source("https://raw.githubusercontent.com/inlabru-org/fmesher/devel/misc/build.R")
+fmesher_install(repo = "inlabru-org/fmesher", debug = TRUE)
+```
+
 ## Online documentation
 
 <https://inlabru-org.github.io/fmesher/>

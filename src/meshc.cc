@@ -1441,12 +1441,18 @@ bool MeshC::LOP(MCQswapableD &swapable) {
   FMLOG("LOP swapable: " << swapable.countQ() << "/" << swapable.count()
                          << endl);
   /* Swap edges, until none are swapable. */
+  FMESHER_R_INTERRUPT_CHECKER(100);
   Dart dh;
   while (!swapable.emptyQ()) {
     dh = swapable.beginQ()->d_; /* d_ may get erased in swapEdge! */
-    swapEdge(dh, swapable);
+    Dart dnew = swapEdge(dh, swapable);
+    if (swapable.found(dnew)) {
+      FMLOG("LOP swapable: Found swapped dart to still be swapable. Deleting." << endl);
+      swapable.erase(dnew);
+    }
     FMLOG("LOP swapable: " << swapable.countQ() << "/" << swapable.count()
                            << endl);
+    FMESHER_R_INTERRUPT_CHECK;
   }
 
   FMLOG("LOP finished" << endl << *this);
@@ -1679,6 +1685,7 @@ Dart MeshC::CDTInsertSegment(const DartPair &dp, const DartList &trace,
   dh = vd0;
 
   //    CDTMSG("");
+  FMESHER_R_INTERRUPT_CHECKER(100);
   while (true) {
     bool swapable = true;
     int v10 = vd0.vo(); /* The first opposite vertex. */
@@ -1779,6 +1786,7 @@ Dart MeshC::CDTInsertSegment(const DartPair &dp, const DartList &trace,
         CDTMSG("Have swapped, and tried to update location");
         FMLOG((swapable ? "(Restart this vertex)" : "(Leave vertex)") << endl);
       }
+      FMESHER_R_INTERRUPT_CHECK;
     }
 
     CDTMSG("Done with vertex, trying to move on.");
@@ -2120,7 +2128,7 @@ bool MeshC::buildRCDT() {
 
   Dart dh;
 
-  FMESHER_R_INTERRUPT_CHECKER(10000);
+  FMESHER_R_INTERRUPT_CHECKER(1000);
 
   while (!(boundary_.emptyQ() && interior_.emptyQ() && skinny_.emptyQ() &&
            big_.emptyQ())) {
