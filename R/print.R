@@ -129,8 +129,13 @@ print.fm_mesh_2d <- function(x, verbose = FALSE, ...) {
   if (ret$verbose) {
     cat("  Refined:\t", ret$is.refined, "\n", sep = "")
   }
-  cat("  Vertices:\t", as.character(ret$nV), "\n", sep = "")
-  cat("  Triangles:\t", as.character(ret$nT), "\n", sep = "")
+  nV <- ret$nV
+  nE <- as.integer(sum(x$graph$vv) / 2L)
+  nF <- ret$nT
+  cat("  V / E / T:\t", as.character(ret$nV), " / ", sep = "")
+  cat(as.character(nE), " / ", sep = "")
+  cat(as.character(ret$nT), "\n", sep = "")
+  cat("  Euler char:\t", as.character(nV - nE + nF), "\n", sep = "")
 
   cat("  Constraints:\t")
   print(ret$segm.bnd, newline = FALSE)
