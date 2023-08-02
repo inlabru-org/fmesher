@@ -7,6 +7,9 @@
 \alias{fm_bounding_box.fm_mesh_2d}
 \alias{fm_bounding_box.fm_segm}
 \alias{fm_bounding_box.fm_lattice_2d}
+\alias{fm_bounding_box.sf}
+\alias{fm_bounding_box.sfg}
+\alias{fm_bounding_box.sfc}
 \alias{fm_bounding_box.inla.mesh}
 \alias{fm_bounding_box.inla.mesh.segment}
 \title{Bounding box class}
@@ -22,6 +25,12 @@ fm_bounding_box(...)
 \method{fm_bounding_box}{fm_segm}(x, ...)
 
 \method{fm_bounding_box}{fm_lattice_2d}(x, ...)
+
+\method{fm_bounding_box}{sf}(x, ...)
+
+\method{fm_bounding_box}{sfg}(x, ...)
+
+\method{fm_bounding_box}{sfc}(x, ...)
 
 \method{fm_bounding_box}{inla.mesh}(x, ...)
 
@@ -39,7 +48,7 @@ Simple class for handling bounding box information
 \itemize{
 \item \code{fm_bounding_box(list)}: Construct a bounding box from
 precomputed interval information, stored as a list,
-\code{list(xlim, ylim, ...)}.
+\code{list(lim = list(xlim, ylim))}.
 
 }}
 \examples{

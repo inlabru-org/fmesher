@@ -3760,7 +3760,7 @@ fm_bounding_box <- function(...) {
 
 #' @describeIn fm_bounding_box Construct a bounding box from
 #' precomputed interval information, stored as a list,
-#' `list(xlim, ylim, ...)`.
+#' `list(lim = list(xlim, ylim))`.
 #' @export
 fm_bounding_box.list <- function(x, ...) {
   structure(
@@ -3801,6 +3801,26 @@ fm_bounding_box.fm_segm <- function(x, ...) {
 #' @export
 fm_bounding_box.fm_lattice_2d <- function(x, ...) {
   fm_bounding_box(x[["loc"]])
+}
+
+#' @rdname fm_bounding_box
+#' @export
+fm_bounding_box.sf <- function(x, ...) {
+  fm_bounding_box(sf::st_geometry(x))
+}
+
+#' @rdname fm_bounding_box
+#' @export
+fm_bounding_box.sfg <- function(x, ...) {
+  fm_bounding_box(sf::st_sfc(x))
+}
+
+#' @rdname fm_bounding_box
+#' @export
+fm_bounding_box.sfc <- function(x, ...) {
+  loc <- sf::st_coordinates(x)
+  loc <- loc[, intersect(colnames(loc), c("X", "Y", "Z", "M")), drop = FALSE]
+  fm_bounding_box(loc)
 }
 
 #' @rdname fm_bounding_box
