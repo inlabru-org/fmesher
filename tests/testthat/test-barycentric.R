@@ -33,8 +33,6 @@ test_that("point location", {
 })
 
 test_that("point location", {
-  local_fm_safe_inla()
-
   mesh_loc <- rbind(
     c(0, 0),
     c(1, 0),

@@ -43,8 +43,6 @@ test_that("sf standards compliance: basic polygons", {
 
 
 test_that("Conversion from sfc_POINT to fm_segm", {
-  local_fm_safe_inla()
-
   ## sfc_POINT ##
 
   # compare fm_segm with matrix input
@@ -83,8 +81,6 @@ test_that("Conversion from sfc_POINT to fm_segm", {
 
 
 test_that("Conversion between sfc_(MULTI)LINESTRING and fm_segm", {
-  local_fm_safe_inla()
-
   ## sfc_LINESTRING ##
 
   pts1 <- rbind(c(0, 3, 0), c(0, 4, 0), c(1, 5, 0), c(2, 5, 0))
@@ -133,8 +129,6 @@ test_that("Conversion between sfc_(MULTI)LINESTRING and fm_segm", {
 
 
 test_that("Conversion from sfc_POLYGON to fm_segm", {
-  local_fm_safe_inla()
-
   ## sfc_POLYGON ##
 
   pts0 <- rbind(c(-7, -7), c(7, -7), c(7, 7), c(-7, 7), c(-7, -7)) # covering (CCW)
@@ -193,8 +187,6 @@ test_that("Conversion from sfc_POLYGON to fm_segm", {
 
 
 test_that("Conversion from sfc_MULTIPOLYGON to fm_segm", {
-  local_fm_safe_inla()
-
   ## sfc_MULTIPOLYGON ##
 
   pts0 <- rbind(c(-7, -7), c(7, -7), c(7, 7), c(-7, 7), c(-7, -7)) # covering (CCW)
@@ -282,8 +274,6 @@ test_that("Conversion from sfc_MULTIPOLYGON to fm_segm", {
 
 
 test_that("Conversion from sfc_GEOMETRY to fm_segm", {
-  local_fm_safe_inla()
-
   ## sfc_GEOMETRY ##
 
   pts0 <- rbind(c(-7, -7), c(7, -7), c(7, 7), c(-7, 7), c(-7, -7)) # covering (CCW)

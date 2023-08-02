@@ -6,8 +6,6 @@
 # isn't a general fm_as_sp.inla.mesh.segment method, but fm_as_sfc() has partial support.
 
 test_that("Conversion from matrix to inla.mesh.segment", {
-  local_fm_safe_inla()
-
   ## sfc_POINT ##
 
   # compare inla.mesh.segment with matrix input
@@ -33,8 +31,6 @@ test_that("Conversion from matrix to inla.mesh.segment", {
 
 
 test_that("Conversion from Lines to inla.mesh.segment", {
-  local_fm_safe_inla()
-
   ## sp::Lines ##
 
   pts1 <- rbind(c(0, 3), c(0, 4), c(1, 5), c(2, 5))
@@ -86,8 +82,6 @@ test_that("Conversion from Polygons to inla.mesh.segment", {
     }
     sequences
   }
-
-  local_fm_safe_inla()
 
   ## Polygon ##
   pts1 <- rbind(c(0, 0), c(1, 0), c(1, 1), c(0, 1), c(0, 0)) # solid

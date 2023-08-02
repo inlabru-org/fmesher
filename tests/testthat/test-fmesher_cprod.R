@@ -1,6 +1,5 @@
 # sp sf test
 test_that("fm_cprod(..., na.rm = TRUE) sf output can be generated", {
-  local_fm_safe_inla()
   sf_obj1 <- sf::st_as_sf(data.frame(x = 1:3, y = 3:5), coords = c("x", "y"))
   sf_obj2 <- sf::st_as_sf(data.frame(x = 3:6, y = 5:8), coords = c("x", "y"))
   ips <- fm_cprod(sf_obj1, sf_obj2, na.rm = TRUE)
@@ -13,7 +12,6 @@ test_that("fm_cprod(..., na.rm = TRUE) sf output can be generated", {
 })
 
 test_that("fm_cprod(..., na.rm = FALSE) sf output can be generated", {
-  local_fm_safe_inla()
   sf_obj1 <- sf::st_as_sf(data.frame(x = 1:3, y = 3:5), coords = c("x", "y"))
   sf_obj2 <- sf::st_as_sf(data.frame(x = 3:6, y = 5:8), coords = c("x", "y"))
   ips <- fm_cprod(sf_obj1, sf_obj2, na.rm = FALSE)
@@ -29,7 +27,6 @@ test_that("fm_cprod(..., na.rm = FALSE) sf output can be generated", {
 })
 
 test_that("fm_cprod(..., na.rm = FALSE) sf output with different geometry can be generated", {
-  local_fm_safe_inla()
   sf_obj1 <- sf::st_as_sf(data.frame(x = 1:3, y = 3:5),
     coords = c("x", "y")
   )
@@ -55,7 +52,6 @@ test_that("fm_cprod(..., na.rm = FALSE) sf output with different geometry can be
 })
 
 test_that("fm_cprod(na.rm = TRUE) sp output can be generated", {
-  local_fm_safe_inla()
   sf_obj1 <- sf::st_as_sf(data.frame(x = 1:3, y = 3:5), coords = c("x", "y"))
   sf_obj2 <- sf::st_as_sf(data.frame(x = 3:6, y = 5:8), coords = c("x", "y"))
   if (require(sp, quietly = TRUE)) {
@@ -72,7 +68,6 @@ test_that("fm_cprod(na.rm = TRUE) sp output can be generated", {
 })
 
 test_that("fm_cprod(na.rm = FALSE) sp output can be generated", {
-  local_fm_safe_inla()
   sf_obj1 <- sf::st_as_sf(data.frame(x = 1:3, y = 3:5), coords = c("x", "y"))
   sf_obj2 <- sf::st_as_sf(data.frame(x = 3:6, y = 5:8), coords = c("x", "y"))
   if (require(sp, quietly = TRUE)) {

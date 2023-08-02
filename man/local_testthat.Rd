@@ -4,7 +4,6 @@
 \alias{local_testthat}
 \alias{local_fm_testthat_assign}
 \alias{local_fm_testthat_tolerances}
-\alias{local_fm_safe_inla}
 \alias{local_fm_testthat_setup}
 \title{Unit test helpers}
 \usage{
@@ -14,8 +13,6 @@ local_fm_testthat_tolerances(
   tolerances = c(1e-04, 0.01, 0.1),
   envir = parent.frame()
 )
-
-local_fm_safe_inla(multicore = FALSE, quietly = TRUE, envir = parent.frame())
 
 local_fm_testthat_setup(envir = parent.frame())
 }
@@ -27,14 +24,6 @@ local_fm_testthat_setup(envir = parent.frame())
 \item{envir}{environment for exit handlers}
 
 \item{tolerances}{numeric vector of length 3; \verb{[lowtol, midtol, hitol]}}
-
-\item{multicore}{logical; if \code{TRUE}, multiple cores are allowed, and the
-INLA \code{num.threads} option is not checked or altered. Default: \code{FALSE}, multicore
-not allowed (used for examples and unit tests).}
-
-\item{quietly}{logical; if \code{TRUE}, prints diagnostic messages. A message is
-always printed if the INLA \code{num.threads} option is altered, regardless of the
-\code{quietly} argument. Default: TRUE.}
 }
 \description{
 Local helper functions for package unit tests
@@ -52,14 +41,8 @@ Assign local tolerance variables. Useful for easy cleanup
 of global workspace with \code{withr::deferred_run()} when running tests
 interactively.
 
-\item \code{local_fm_safe_inla()}: Tests should set num.threads = "1:1" to ensure
-within-system repeatability by calling \code{local_fm_safe_inla()};
-see also \code{\link[=fm_safe_inla]{fm_safe_inla()}}
-
 \item \code{local_fm_testthat_setup()}: Initialise environment for tests.
 To be called either at the top of a testfile, or inside tests.
-Does \emph{not} call \code{\link[=local_fm_safe_inla]{local_fm_safe_inla()}}, since that may invoke a skip and
-should be called inside each test that relies on INLA.
 
 }}
 \keyword{internal}

@@ -23,20 +23,5 @@ A logical vector
 Queries whether each input point is within a mesh or not.
 }
 \examples{
-\dontrun{
-if (TRUE) {
-  # Load Gorilla data
-
-  data("gorillas", package = "inlabru")
-
-  # Check if all Gorilla nests are inside the mesh
-
-  all(fm_is_within(gorillas$nests, gorillas$mesh))
-
-  # Also works for locations not stored as SpatialPoints object
-
-  loc <- coordinates(gorillas$nests)
-  all(fm_is_within(loc, gorillas$mesh))
-}
-}
+all(fm_is_within(fmexample$loc, fmexample$mesh))
 }

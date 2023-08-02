@@ -18,20 +18,24 @@
 #' @return `sf`, `SpatRaster`, or `SpatialPixelsDataFrame` covering the mesh
 #'
 #' @examples
-#' \donttest{
 #' if (require("ggplot2", quietly = TRUE) &&
-#'   require("inlabru", quietly = TRUE)) {
-#'   data("mrsea", package = "inlabru")
-#'   pxl <- fm_pixels(mrsea$mesh,
-#'     nx = 50, ny = 50, mask = mrsea$boundary,
+#'   require("tidyterra", quietly = TRUE)) {
+#'   pxl <- fm_pixels(fmexample$mesh,
+#'     nx = 50, ny = 50, mask = fmexample$boundary[[1]],
 #'     format = "terra"
 #'   )
+#'   pxl$val <- rnorm(NROW(pxl) * NCOL(pxl))
+#'   pxl <-
+#'     terra::mask(
+#'       pxl,
+#'       mask = pxl$.mask,
+#'       maskvalues = c(FALSE, NA),
+#'       updatevalue = NA
+#'     )
 #'   ggplot() +
-#'     gg(pxl, fill = "grey", alpha = 0.5) +
-#'     gg(mrsea$mesh)
+#'     geom_spatraster(data = pxl, aes(fill = val)) +
+#'     geom_sf(data = fm_as_sfc(fmexample$mesh), alpha = 0.2)
 #' }
-#' }
-#'
 fm_pixels <- function(mesh, nx = 150, ny = 150, mask = TRUE,
                       format = "sf") {
   format <- match.arg(format, c("sf", "terra", "sp"))
@@ -65,7 +69,8 @@ fm_pixels <- function(mesh, nx = 150, ny = 150, mask = TRUE,
     }
     mask <- sf::st_as_sf(mask)
     pixels_within <- sf::st_within(pixels, mask)
-    pixels <- pixels[lengths(pixels_within) > 0, , drop = FALSE]
+    pixels_within <- lengths(pixels_within) > 0
+    pixels <- pixels[pixels_within, , drop = FALSE]
   }
 
   if (identical(format, "sp")) {
@@ -73,9 +78,9 @@ fm_pixels <- function(mesh, nx = 150, ny = 150, mask = TRUE,
     pixels <- as(pixels, "SpatialPixelsDataFrame")
   } else if (identical(format, "terra")) {
     pixels <- as(pixels, "Spatial")
-    pixels <- as(pixels, "SpatialPixels")
+    pixels <- as(pixels, "SpatialPixelsDataFrame")
+    pixels$.mask <- TRUE
     pixels <- terra::rast(pixels)
-    pixels$.mask <- as.vector(as.matrix(pixels_within))
   }
 
   pixels
@@ -421,15 +426,11 @@ fm_store_points <- function(loc, crs = NULL, info = NULL, format = NULL) {
 #' @seealso [fm_centroids()]
 #'
 #' @examples
-#' \donttest{
-#' if (require("ggplot2", quietly = TRUE) &&
-#'   require("inlabru", quietly = TRUE)) {
-#'   data("mrsea", package = "inlabru")
-#'   vrt <- fm_vertices(mrsea$mesh, format = "sp")
+#' if (require("ggplot2", quietly = TRUE)) {
+#'   vrt <- fm_vertices(fmexample$mesh, format = "sf")
 #'   ggplot() +
-#'     gg(mrsea$mesh) +
-#'     gg(vrt, color = "red")
-#' }
+#'     geom_sf(data = fm_as_sfc(fmexample$mesh)) +
+#'     geom_sf(data = vrt, color = "red")
 #' }
 #'
 fm_vertices <- function(x, format = NULL) {
@@ -457,15 +458,11 @@ fm_vertices <- function(x, format = NULL) {
 #' @seealso [fm_vertices()]
 #'
 #' @examples
-#' \donttest{
-#' if (require("ggplot2", quietly = TRUE) &&
-#'   require("inlabru", quietly = TRUE)) {
-#'   data("mrsea", package = "inlabru")
-#'   vrt <- fm_centroids(mrsea$mesh, format = "sp")
+#' if (require("ggplot2", quietly = TRUE)) {
+#'   vrt <- fm_centroids(fmexample$mesh, format = "sf")
 #'   ggplot() +
-#'     gg(mrsea$mesh) +
-#'     gg(vrt, color = "red")
-#' }
+#'     geom_sf(data = fm_as_sfc(fmexample$mesh)) +
+#'     geom_sf(data = vrt, color = "red")
 #' }
 #'
 fm_centroids <- function(x, format = NULL) {

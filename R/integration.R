@@ -199,36 +199,31 @@ fm_cprod <- function(..., na.rm = NULL, .blockwise = FALSE) {
 #'
 #' @export
 #' @examples
-#' if (TRUE && fm_safe_sp()) {
-#'   # Integration on the interval (2, 3.5) with Simpson's rule
-#'   ips <- fm_int(fm_mesh_1d(0:4), samplers = cbind(2, 3.5))
-#'   plot(ips)
+#' # Integration on the interval (2, 3.5) with Simpson's rule
+#' ips <- fm_int(fm_mesh_1d(0:4), samplers = cbind(2, 3.5))
+#' plot(ips$x, ips$weight)
 #'
-#'   # Create integration points for the two intervals [0,3] and [5,10]
+#' # Create integration points for the two intervals [0,3] and [5,10]
 #'
-#'   ips <- fm_int(
-#'     fm_mesh_1d(0:10),
-#'     matrix(c(0, 3, 5, 10), nrow = 2, byrow = TRUE)
-#'   )
-#'   plot(ips)
+#' ips <- fm_int(
+#'   fm_mesh_1d(0:10),
+#'   matrix(c(0, 3, 5, 10), nrow = 2, byrow = TRUE)
+#' )
+#' plot(ips$x, ips$weight)
 #'
-#'   # Convert a 1D mesh into integration points
-#'   mesh <- fm_mesh_1d(seq(0, 10, by = 1))
-#'   ips <- fm_int(mesh, name = "time")
-#'   plot(ips)
+#' # Convert a 1D mesh into integration points
+#' mesh <- fm_mesh_1d(seq(0, 10, by = 1))
+#' ips <- fm_int(mesh, name = "time")
+#' plot(ips$time, ips$weight)
 #'
-#'
-#'   if (require("ggplot2", quietly = TRUE) &&
-#'     require("inlabru", quietly = TRUE)) {
-#'     data("gorillas", package = "inlabru")
-#'     #' Integrate on a 2D mesh with polygon boundary subset
-#'     ips <- fm_int(gorillas$mesh, gorillas$boundary)
-#'     ggplot() +
-#'       gg(gorillas$mesh) +
-#'       gg(gorillas$boundary) +
-#'       gg(ips, aes(size = weight)) +
-#'       scale_size_area()
-#'   }
+#' if (require("ggplot2", quietly = TRUE)) {
+#'   #' Integrate on a 2D mesh with polygon boundary subset
+#'   ips <- fm_int(fmexample$mesh, fmexample$boundary[[1]])
+#'   ggplot() +
+#'     geom_sf(data = fm_as_sfc(fmexample$mesh, multi = TRUE), alpha = 0.5) +
+#'     geom_sf(data = fmexample$boundary[[1]], fill = "red", alpha = 0.5) +
+#'     geom_sf(data = ips, aes(size = weight)) +
+#'     scale_size_area()
 #' }
 #'
 fm_int <- function(domain, samplers = NULL, ...) {

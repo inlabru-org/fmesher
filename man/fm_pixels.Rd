@@ -25,20 +25,24 @@ If \code{mask} is an \code{sf} or \code{Spatial} object, only return pixels cove
 Generate \code{terra}, \code{sf}, or \code{sp} lattice locations
 }
 \examples{
-\donttest{
 if (require("ggplot2", quietly = TRUE) &&
-  require("inlabru", quietly = TRUE)) {
-  data("mrsea", package = "inlabru")
-  pxl <- fm_pixels(mrsea$mesh,
-    nx = 50, ny = 50, mask = mrsea$boundary,
+  require("tidyterra", quietly = TRUE)) {
+  pxl <- fm_pixels(fmexample$mesh,
+    nx = 50, ny = 50, mask = fmexample$boundary[[1]],
     format = "terra"
   )
+  pxl$val <- rnorm(NROW(pxl) * NCOL(pxl))
+  pxl <-
+    terra::mask(
+      pxl,
+      mask = pxl$.mask,
+      maskvalues = c(FALSE, NA),
+      updatevalue = NA
+    )
   ggplot() +
-    gg(pxl, fill = "grey", alpha = 0.5) +
-    gg(mrsea$mesh)
+    geom_spatraster(data = pxl, aes(fill = val)) +
+    geom_sf(data = fm_as_sfc(fmexample$mesh), alpha = 0.2)
 }
-}
-
 }
 \author{
 Fabian E. Bachl \email{bachlfab@gmail.com} and

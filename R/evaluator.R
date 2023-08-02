@@ -37,14 +37,11 @@
 #'   image(proj$x, proj$y, fm_evaluate(proj, field))
 #' }
 #' \donttest{
-#' if (TRUE &&
-#'   require("ggplot2") &&
-#'   fm_safe_sp() &&
-#'   require("ggpolypath") &&
-#'   require("inlabru")) {
-#'   ggplot() +
-#'     gg(mesh, col = field)
-#' }
+#' # if (require("ggplot2") &&
+#' #  require("ggpolypath")) {
+#' #  ggplot() +
+#' #    gg(data = fm_as_sfc(mesh), col = field)
+#' # }
 #' }
 #'
 #' @name fm_evaluate
@@ -888,22 +885,7 @@ fm_contains.sfc <- function(x, y, ..., type = c("centroid", "vertex")) {
 #' @param \dots Currently unused
 #' @returns A logical vector
 #' @examples
-#' \dontrun{
-#' if (TRUE) {
-#'   # Load Gorilla data
-#'
-#'   data("gorillas", package = "inlabru")
-#'
-#'   # Check if all Gorilla nests are inside the mesh
-#'
-#'   all(fm_is_within(gorillas$nests, gorillas$mesh))
-#'
-#'   # Also works for locations not stored as SpatialPoints object
-#'
-#'   loc <- coordinates(gorillas$nests)
-#'   all(fm_is_within(loc, gorillas$mesh))
-#' }
-#' }
+#' all(fm_is_within(fmexample$loc, fmexample$mesh))
 #' @export
 fm_is_within <- function(x, y, ...) {
   UseMethod("fm_is_within")
@@ -929,16 +911,8 @@ fm_is_within.default <- function(x, y, ...) {
 #' @param \dots Currently unused
 #' @returns A `sparseMatrix`
 #' @examples
-#' \dontrun{
-#' if (TRUE) {
-#'   # Load Gorilla data
-#'
-#'   data("gorillas", package = "inlabru")
-#'
-#'   # Compute basis mapping matrix
-#'   str(fm_basis(gorillas$mesh, gorillas$nests))
-#' }
-#' }
+#' # Compute basis mapping matrix
+#' str(fm_basis(fmexample$mesh, fmexample$loc))
 #' @export
 fm_basis <- function(x, ...) {
   UseMethod("fm_basis")

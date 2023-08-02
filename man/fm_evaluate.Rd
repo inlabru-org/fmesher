@@ -147,14 +147,11 @@ if (TRUE) {
   image(proj$x, proj$y, fm_evaluate(proj, field))
 }
 \donttest{
-if (TRUE &&
-  require("ggplot2") &&
-  fm_safe_sp() &&
-  require("ggpolypath") &&
-  require("inlabru")) {
-  ggplot() +
-    gg(mesh, col = field)
-}
+# if (require("ggplot2") &&
+#  require("ggpolypath")) {
+#  ggplot() +
+#    gg(data = fm_as_sfc(mesh), col = field)
+# }
 }
 
 }

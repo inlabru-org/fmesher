@@ -52,14 +52,6 @@ For \code{fm_mesh_2d}, a list with elements
 Computes the basis mapping matrix between a function space on a mesh, and locations.
 }
 \examples{
-\dontrun{
-if (TRUE) {
-  # Load Gorilla data
-
-  data("gorillas", package = "inlabru")
-
-  # Compute basis mapping matrix
-  str(fm_basis(gorillas$mesh, gorillas$nests))
-}
-}
+# Compute basis mapping matrix
+str(fm_basis(fmexample$mesh, fmexample$loc))
 }

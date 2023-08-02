@@ -73,35 +73,28 @@ test_that("Tensor space integration", {
 # From old ipoints tests
 
 test_that("conversion of SpatialPolygon to integration points when domain is defined via a mesh", {
-  skip_if_not_installed("inlabru")
-
-  data(gorillas, package = "inlabru", envir = environment())
-  ips <- fm_int(gorillas$mesh, samplers = gorillas$boundary)
+  ips <- fm_int(fmexample$mesh, samplers = fmexample$boundary_sp[[1]])
 
   expect_s4_class(ips, "SpatialPointsDataFrame")
   expect_equal(
     sort(colnames(as.data.frame(ips))),
     sort(c("weight", ".block", "x", "y", "z"))
   )
-  expect_equal(sum(ips$weight), 19.87366, tolerance = lowtol)
+  expect_equal(sum(ips$weight), 18.33349, tolerance = lowtol)
 })
 
 test_that("conversion of whole 2D mesh to integration points", {
-  skip_if_not_installed("inlabru")
-
-  data(gorillas, package = "inlabru", envir = environment())
-
-  ips <- fm_int(gorillas$mesh, format = "sf")
+  ips <- fm_int(fmexample$mesh, format = "sf")
 
   expect_s3_class(ips, "sf")
   expect_equal(colnames(ips), c("weight", ".block", "geometry"))
-  expect_equal(sum(ips$weight), 27.64229, tolerance = lowtol)
+  expect_equal(sum(ips$weight), 64.58135, tolerance = lowtol)
 
-  ips <- fm_int(gorillas$mesh, format = "sp")
+  ips <- fm_int(fmexample$mesh, format = "sp")
 
   expect_s4_class(ips, "SpatialPointsDataFrame")
   expect_equal(colnames(as.data.frame(ips)), c("weight", ".block", "x", "y", "z"))
-  expect_equal(sum(ips$weight), 27.64229, tolerance = lowtol)
+  expect_equal(sum(ips$weight), 64.58135, tolerance = lowtol)
 })
 
 
@@ -146,19 +139,19 @@ test_that("Polygon integration with holes", {
   ipA3$test <- "A3"
   ipA4$test <- "A4"
 
-  if (FALSE) {
-    pl <- ggplot2::ggplot() +
-      gg(m) +
-      gg(plyA)
-    pl
-
-    pl +
-      gg(ipA1, mapping = aes(col = weight, size = weight)) +
-      gg(ipA2, mapping = aes(col = weight, size = weight)) +
-      gg(ipA3, mapping = aes(col = weight, size = weight)) +
-      gg(ipA4, mapping = aes(col = weight, size = weight)) +
-      ggplot2::facet_wrap(vars(test))
-  }
+  # if (FALSE) {
+  #   pl <- ggplot2::ggplot() +
+  #     gg(m) +
+  #     gg(plyA)
+  #   pl
+  #
+  #   pl +
+  #     gg(ipA1, mapping = aes(col = weight, size = weight)) +
+  #     gg(ipA2, mapping = aes(col = weight, size = weight)) +
+  #     gg(ipA3, mapping = aes(col = weight, size = weight)) +
+  #     gg(ipA4, mapping = aes(col = weight, size = weight)) +
+  #     ggplot2::facet_wrap(vars(test))
+  # }
 
   # > sf::st_area(sf::st_as_sf(plyA))
   # [1] 8.006112
@@ -220,7 +213,6 @@ test_that("Integration line splitting", {
 
 test_that("flat mesh integration", {
   skip_on_cran()
-  local_fm_safe_inla()
 
   mesh <- fm_mesh_2d(cbind(0, 0), offset = 1, max.edge = 2)
 
@@ -232,7 +224,6 @@ test_that("flat mesh integration", {
 
 test_that("sphere and globe mesh integration", {
   skip_on_cran()
-  local_fm_safe_inla()
 
   mesh <- fm_rcdt_2d_inla(globe = 1)
 
@@ -261,9 +252,6 @@ test_that("sphere and globe mesh integration", {
   expect_equal(sum(ips0_2$weight), 4 * pi * 6370.997^2)
   expect_equal(sum(ips9_2$weight), 4 * pi * 6370.997^2)
 
-  # Corrected spherical/globe code updated in INLA fmesher on 22.11.27
-  skip_if_not_installed("INLA", "22.11.28")
-
   ips0_3 <- fm_int(mesh_2, int.args = list(nsub2 = 0))
   ips9_3 <- fm_int(mesh_2, int.args = list(nsub2 = 9))
 
@@ -273,7 +261,6 @@ test_that("sphere and globe mesh integration", {
 
 test_that("flat SpatialPolygons integration", {
   skip_on_cran()
-  local_fm_safe_inla()
   fm_safe_sp()
 
   mesh <- fm_mesh_2d(cbind(0, 0), offset = 2, max.edge = 4)
@@ -302,7 +289,6 @@ test_that("flat SpatialPolygons integration", {
 
 test_that("globe polygon integration", {
   skip_on_cran()
-  local_fm_safe_inla()
 
   suppressWarnings(
     mesh <- fm_rcdt_2d_inla(globe = 1, crs = fm_CRS("globe"))

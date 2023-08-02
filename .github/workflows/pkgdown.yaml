@@ -31,7 +31,6 @@ jobs:
         with:
           use-public-rspm: true
           r-version: "release"
-          extra-repositories: "https://inla.r-inla-download.org/R/testing"
 
       - uses: r-lib/actions/setup-pandoc@v2
 

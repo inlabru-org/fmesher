@@ -20,15 +20,11 @@ Computes the centroids of the triangles of an \code{\link[=fm_mesh_2d]{fm_mesh_2
 object.
 }
 \examples{
-\donttest{
-if (require("ggplot2", quietly = TRUE) &&
-  require("inlabru", quietly = TRUE)) {
-  data("mrsea", package = "inlabru")
-  vrt <- fm_centroids(mrsea$mesh, format = "sp")
+if (require("ggplot2", quietly = TRUE)) {
+  vrt <- fm_centroids(fmexample$mesh, format = "sf")
   ggplot() +
-    gg(mrsea$mesh) +
-    gg(vrt, color = "red")
-}
+    geom_sf(data = fm_as_sfc(fmexample$mesh)) +
+    geom_sf(data = vrt, color = "red")
 }
 
 }

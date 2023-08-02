@@ -1,7 +1,7 @@
 Package: fmesher
 Type: Package
 Title: Triangle Meshes and Related Geometry Tools
-Version: 0.0.9.9010
+Version: 0.0.9.9011
 Authors@R: c(
   person("Finn", "Lindgren", email = "finn.lindgren@gmail.com",
          role = c("aut", "cre", "cph"),
@@ -41,7 +41,6 @@ Suggests:
     covr,
     ggplot2,
     ggpolypath,
-    INLA (>= 22.11.28),
     inlabru (>= 2.8.0),
     knitr,
     testthat (>= 3.0.0),
@@ -49,7 +48,6 @@ Suggests:
     rgl,
     rmarkdown,
     splancs
-Additional_repositories: https://inla.r-inla-download.org/R/testing
 URL: https://inlabru-org.github.io/fmesher/
 BugReports: https://github.com/inlabru-org/fmesher/issues
 License: GPL (>=3)
@@ -72,6 +70,7 @@ Collate:
     'RcppExports.R'
     'deprecated.R'
     'crs.R'
+    'data-fmexample.R'
     'evaluator.R'
     'fmesher-package.R'
     'fmesher.R'
@@ -86,3 +85,4 @@ Collate:
     'sf_utils.R'
     'sp_mesh.R'
     'utils.R'
+LazyData: true
