@@ -22,7 +22,8 @@ fm_as_fm(x, ...)
 
 fm_as_fm_list(x, ...)
 
-\method{fm_as_fm}{`NULL`}(x, ...)
+## S3 method for class 'NULL'
+fm_as_fm(x, ...)
 
 \method{fm_as_fm}{fm_mesh_1d}(x, ...)
 

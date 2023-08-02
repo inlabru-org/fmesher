@@ -26,9 +26,11 @@ fm_crs(x) <- value
 
 fm_crs_oblique(x) <- value
 
-\method{fm_crs}{`NULL`}(x) <- value
+## S3 replacement method for class 'NULL'
+fm_crs(x) <- value
 
-\method{fm_crs_oblique}{`NULL`}(x) <- value
+## S3 replacement method for class 'NULL'
+fm_crs_oblique(x) <- value
 
 \method{fm_crs}{fm_segm}(x) <- value
 

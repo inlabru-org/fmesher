@@ -2235,6 +2235,9 @@ fm_as_fm_list <- function(x, ...) {
   fm_as_list(x, ..., .method = "fm_as_fm")
 }
 #' @rdname fm_as_fm
+#' @usage
+#' ## S3 method for class 'NULL'
+#' fm_as_fm(x, ...)
 #' @export
 fm_as_fm.NULL <- function(x, ...) {
   NULL

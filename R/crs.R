@@ -861,12 +861,18 @@ fm_crs.fm_segm <- function(x, oblique = NULL, ...) {
 }
 
 #' @rdname fm_crs-set
+#' @usage
+#' ## S3 replacement method for class 'NULL'
+#' fm_crs(x) <- value
 #' @export
 `fm_crs<-.NULL` <- function(x, value) {
   fm_crs(value)
 }
 
 #' @rdname fm_crs-set
+#' @usage
+#' ## S3 replacement method for class 'NULL'
+#' fm_crs_oblique(x) <- value
 #' @export
 `fm_crs_oblique<-.NULL` <- function(x, value) {
   `fm_crs_oblique<-`(fm_crs(), value)
