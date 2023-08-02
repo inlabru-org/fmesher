@@ -12,7 +12,7 @@ Local helper functions for package unit tests"><!-- mathjax --><script src="http
     
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.9.9010</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.9.9011</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,8 +72,6 @@ Local helper functions for package unit tests"><!-- mathjax --><script src="http
 <span>  envir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sys.parent.html" class="external-link">parent.frame</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">local_fm_safe_inla</span><span class="op">(</span>multicore <span class="op">=</span> <span class="cn">FALSE</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span>, envir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sys.parent.html" class="external-link">parent.frame</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
 <span><span class="fu">local_fm_testthat_setup</span><span class="op">(</span>envir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sys.parent.html" class="external-link">parent.frame</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -94,18 +92,6 @@ Local helper functions for package unit tests"><!-- mathjax --><script src="http
 <dt>tolerances</dt>
 <dd><p>numeric vector of length 3; <code>[lowtol, midtol, hitol]</code></p></dd>
 
-
-<dt>multicore</dt>
-<dd><p>logical; if <code>TRUE</code>, multiple cores are allowed, and the
-INLA <code>num.threads</code> option is not checked or altered. Default: <code>FALSE</code>, multicore
-not allowed (used for examples and unit tests).</p></dd>
-
-
-<dt>quietly</dt>
-<dd><p>logical; if <code>TRUE</code>, prints diagnostic messages. A message is
-always printed if the INLA <code>num.threads</code> option is altered, regardless of the
-<code>quietly</code> argument. Default: TRUE.</p></dd>
-
 </dl></div>
     <div class="section level2">
     <h2 id="functions">Functions<a class="anchor" aria-label="anchor" href="#functions"></a></h2>
@@ -117,13 +103,8 @@ interactively.</p></li>
 Assign local tolerance variables. Useful for easy cleanup
 of global workspace with <code><a href="https://withr.r-lib.org/reference/defer.html" class="external-link">withr::deferred_run()</a></code> when running tests
 interactively.</p></li>
-<li><p><code>local_fm_safe_inla()</code>: Tests should set num.threads = "1:1" to ensure
-within-system repeatability by calling <code>local_fm_safe_inla()</code>;
-see also <code><a href="fm_safe_inla.html">fm_safe_inla()</a></code></p></li>
 <li><p><code>local_fm_testthat_setup()</code>: Initialise environment for tests.
-To be called either at the top of a testfile, or inside tests.
-Does <em>not</em> call <code>local_fm_safe_inla()</code>, since that may invoke a skip and
-should be called inside each test that relies on INLA.</p></li>
+To be called either at the top of a testfile, or inside tests.</p></li>
 </ul></div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

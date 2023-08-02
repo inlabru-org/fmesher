@@ -166,9 +166,6 @@
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_row_kron.html</loc>
   </url>
   <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_safe_inla.html</loc>
-  </url>
-  <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_safe_sp.html</loc>
   </url>
   <url>
@@ -221,6 +218,9 @@
   </url>
   <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fmesher_split_lines.html</loc>
+  </url>
+  <url>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fmexample.html</loc>
   </url>
   <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/generate_colors.html</loc>
