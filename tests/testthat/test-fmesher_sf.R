@@ -52,7 +52,7 @@ test_that("Conversion from sfc_POINT to fm_segm", {
   loc.bnd <- matrix(c(0, 0, 1, 0, 1, 1, 0, 1), 4, 2, byrow = TRUE)
   segm.bnd <- fm_segm(loc.bnd,
     is.bnd = TRUE,
-    crs = fm_CRS()
+    crs = fm_crs()
   )
 
   # sf version
@@ -89,14 +89,14 @@ test_that("Conversion between sfc_(MULTI)LINESTRING and fm_segm", {
     loc = pts1,
     idx = seq_len(nrow(pts1)),
     is.bnd = FALSE,
-    crs = fm_CRS()
+    crs = fm_crs()
   )
 
   seg2 <- fm_segm(
     loc = pts2,
     idx = seq_len(nrow(pts2)),
     is.bnd = FALSE,
-    crs = fm_CRS()
+    crs = fm_crs()
   )
 
   seg <- fm_segm_join(
@@ -196,24 +196,24 @@ test_that("Conversion from sfc_MULTIPOLYGON to fm_segm", {
   seg0 <- fm_segm(
     loc = pts0[1:4, , drop = FALSE],
     is.bnd = TRUE,
-    crs = fm_CRS()
+    crs = fm_crs()
   )
   seg0b <- fm_segm(
     loc = pts0b[1:4, , drop = FALSE],
     is.bnd = TRUE,
-    crs = fm_CRS()
+    crs = fm_crs()
   )
 
   seg1 <- fm_segm(
     loc = pts1[1:4, , drop = FALSE],
     is.bnd = TRUE,
-    crs = fm_CRS()
+    crs = fm_crs()
   )
 
   seg2 <- fm_segm(
     loc = pts2[1:4, , drop = FALSE],
     is.bnd = TRUE,
-    crs = fm_CRS()
+    crs = fm_crs()
   )
 
   seg_1 <- fm_segm_join(list(seg0, seg1, seg2, seg0b),
@@ -283,24 +283,24 @@ test_that("Conversion from sfc_GEOMETRY to fm_segm", {
   seg0 <- fm_segm(
     loc = pts0[1:4, , drop = FALSE],
     is.bnd = TRUE,
-    crs = fm_CRS()
+    crs = fm_crs()
   )
   seg0b <- fm_segm(
     loc = pts0b[1:4, , drop = FALSE],
     is.bnd = TRUE,
-    crs = fm_CRS()
+    crs = fm_crs()
   )
 
   seg1 <- fm_segm(
     loc = pts1[1:4, , drop = FALSE],
     is.bnd = TRUE,
-    crs = fm_CRS()
+    crs = fm_crs()
   )
 
   seg2 <- fm_segm(
     loc = pts2[1:4, , drop = FALSE],
     is.bnd = TRUE,
-    crs = fm_CRS()
+    crs = fm_crs()
   )
 
   seg_1 <- fm_segm_join(
