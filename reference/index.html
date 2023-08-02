@@ -55,9 +55,9 @@
     </div>
 
     <div class="section level2">
-      <h2 id="all-functions">All functions<a class="anchor" aria-label="anchor" href="#all-functions"></a></h2>
+      <h2 id="mesh-construction">Mesh construction<a class="anchor" aria-label="anchor" href="#mesh-construction"></a></h2>
       
-      
+      <p class="section-desc"></p><p>Functions for contructing meshes and function spaces.</p>
 
       
     </div><div id="" class="section level2">
@@ -67,35 +67,209 @@
 
       <dl><dt>
           
-          <code><a href="C_matrixio_test.html">C_matrixio_test()</a></code> 
+          <code><a href="fm_mesh_1d.html">fm_mesh_1d()</a></code> 
         </dt>
-        <dd>Test the matrix I/O system</dd>
+        <dd>Make a 1D mesh object</dd>
       </dl><dl><dt>
           
-          <code><a href="C_matrixio_test2.html">C_matrixio_test2()</a></code> 
+          <code><a href="fm_mesh_2d.html">fm_mesh_2d()</a></code> <code><a href="fm_mesh_2d.html">fm_mesh_2d_inla()</a></code> 
         </dt>
-        <dd>Test the matrix I/O system</dd>
+        <dd>Make a 2D mesh object</dd>
       </dl><dl><dt>
           
-          <code><a href="C_qinv.html">C_qinv()</a></code> 
+          <code><a href="fm_rcdt_2d.html">fm_rcdt_2d()</a></code> <code><a href="fm_rcdt_2d.html">fm_rcdt_2d_inla()</a></code> <code><a href="fm_rcdt_2d.html">fm_delaunay_2d()</a></code> 
         </dt>
-        <dd>Compute sparse matrix inverse</dd>
+        <dd>Refined Constrained Delaunay Triangulation</dd>
       </dl><dl><dt>
           
-          <code><a href="call-stack.html">fm_caller_name()</a></code> <code><a href="call-stack.html">fm_call_stack()</a></code> <code><a href="call-stack.html">fm_try_callstack()</a></code> 
+          <code><a href="fm_lattice_2d.html">fm_lattice_2d()</a></code> 
         </dt>
-        <dd>Call stack utility functions</dd>
+        <dd>Make a lattice object</dd>
       </dl><dl><dt>
           
-          <code><a href="dot-globeproj.types.html">.globeproj.types()</a></code> 
+          <code><a href="fm_segm.html">fm_segm()</a></code> <code><a href="fm_segm.html">fm_segm_join()</a></code> <code><a href="fm_segm.html">fm_segm_split()</a></code> <code><a href="fm_segm.html">fm_is_bnd()</a></code> <code><a href="fm_segm.html">`fm_is_bnd&lt;-`()</a></code> 
         </dt>
-        <dd>A</dd>
+        <dd>Make a spatial segment object</dd>
       </dl><dl><dt>
           
-          <code><a href="fm_CRS_sp.html">fm_CRS()</a></code> <code><a href="fm_CRS_sp.html">is.na(<i>&lt;fm_CRS&gt;</i>)</a></code> <code><a href="fm_CRS_sp.html">print(<i>&lt;fm_CRS&gt;</i>)</a></code> <code><a href="fm_CRS_sp.html">is.na(<i>&lt;inla.CRS&gt;</i>)</a></code> 
+          <code><a href="fm_nonconvex_hull.html">fm_nonconvex_hull()</a></code> <code><a href="fm_nonconvex_hull.html">fm_extensions()</a></code> 
+        </dt>
+        <dd>Compute an extension of a spatial object</dd>
+      </dl><dl><dt>
+          
+          <code><a href="fm_nonconvex_hull_inla.html">fm_nonconvex_hull_inla()</a></code> <code><a href="fm_nonconvex_hull_inla.html">fm_nonconvex_hull_inla_basic()</a></code> 
+        </dt>
+        <dd>Non-convex hull computation</dd>
+      </dl><dl><dt>
+          
+          <code><a href="fm_tensor.html">fm_tensor()</a></code> 
+        </dt>
+        <dd>Make a tensor product function space</dd>
+      </dl></div><div class="section level2">
+      <h2 id="property-methods">Property methods<a class="anchor" aria-label="anchor" href="#property-methods"></a></h2>
+      
+      <p class="section-desc"></p><p>Functions for computing or accessing object properties</p>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="fm_basis.html">fm_basis()</a></code> 
+        </dt>
+        <dd>Compute mapping matrix between mesh function space and points</dd>
+      </dl><dl><dt>
+          
+          <code><a href="fm_int.html">fm_int()</a></code> 
+        </dt>
+        <dd>Multi-domain integration</dd>
+      </dl><dl><dt>
+          
+          <code><a href="fm_bary.html">fm_bary()</a></code> 
+        </dt>
+        <dd>Compute barycentric coordinates</dd>
+      </dl><dl><dt>
+          
+          <code><a href="fm_evaluate.html">fm_evaluate()</a></code> <code><a href="fm_evaluate.html">fm_evaluator()</a></code> <code><a href="fm_evaluate.html">fm_evaluator_mesh_2d()</a></code> <code><a href="fm_evaluate.html">fm_evaluator_mesh_1d()</a></code> <code><a href="fm_evaluate.html">fm_evaluator_lattice()</a></code> 
+        </dt>
+        <dd>Methods for projecting to/from mesh objects</dd>
+      </dl><dl><dt>
+          
+          <code><a href="fm_fem.html">fm_fem()</a></code> 
+        </dt>
+        <dd>Compute finite element matrices</dd>
+      </dl><dl><dt>
+          
+          <code><a href="fm_diameter.html">fm_diameter()</a></code> 
+        </dt>
+        <dd>Diameter bound for a geometric object</dd>
+      </dl><dl><dt>
+          
+          <code><a href="fm_bounding_box.html">fm_bounding_box()</a></code> 
+        </dt>
+        <dd>Bounding box class</dd>
+      </dl><dl><dt>
+          
+          <code><a href="fm_vertices.html">fm_vertices()</a></code> 
+        </dt>
+        <dd>Extract vertex locations from an <code>fm_mesh_2d</code></dd>
+      </dl><dl><dt>
+          
+          <code><a href="fm_centroids.html">fm_centroids()</a></code> 
+        </dt>
+        <dd>Extract triangle centroids from an <code>fm_mesh_2d</code></dd>
+      </dl><dl><dt>
+          
+          <code><a href="fm_contains.html">fm_contains()</a></code> 
+        </dt>
+        <dd>Check which mesh triangles are inside a polygon</dd>
+      </dl><dl><dt>
+          
+          <code><a href="fm_is_within.html">fm_is_within()</a></code> 
+        </dt>
+        <dd>Query if points are inside a mesh</dd>
+      </dl><dl><dt>
+          
+          <code><a href="fm_manifold.html">fm_manifold()</a></code> <code><a href="fm_manifold.html">fm_manifold_type()</a></code> <code><a href="fm_manifold.html">fm_manifold_dim()</a></code> 
+        </dt>
+        <dd>Query the mesh manifold type</dd>
+      </dl><dl><dt>
+          
+          <code><a href="fm_detect_manifold.html">fm_detect_manifold()</a></code> <code><a href="fm_detect_manifold.html">fm_crs_detect_manifold()</a></code> 
+        </dt>
+        <dd>Detect manifold type</dd>
+      </dl><dl><dt>
+          
+          <code><a href="fm_pixels.html">fm_pixels()</a></code> 
+        </dt>
+        <dd>Generate lattice points covering a mesh</dd>
+      </dl></div><div class="section level2">
+      <h2 id="matrix-helper-functions">Matrix helper functions<a class="anchor" aria-label="anchor" href="#matrix-helper-functions"></a></h2>
+      
+      <p class="section-desc"></p><p>Functions for handling matrix constructions</p>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="fm_block.html">fm_block()</a></code> <code><a href="fm_block.html">fm_block_eval()</a></code> <code><a href="fm_block.html">fm_block_logsumexp_eval()</a></code> <code><a href="fm_block.html">fm_block_weights()</a></code> <code><a href="fm_block.html">fm_block_log_weights()</a></code> <code><a href="fm_block.html">fm_block_log_shift()</a></code> <code><a href="fm_block.html">fm_block_prep()</a></code> 
+        </dt>
+        <dd>Blockwise aggregation matrices</dd>
+      </dl><dl><dt>
+          
+          <code><a href="fm_row_kron.html">fm_row_kron()</a></code> 
+        </dt>
+        <dd>Row-wise Kronecker products</dd>
+      </dl></div><div class="section level2">
+      <h2 id="coordinate-system-tools">Coordinate system tools<a class="anchor" aria-label="anchor" href="#coordinate-system-tools"></a></h2>
+      
+      <p class="section-desc"></p><p>Functions for handling coordinate systems and conversions</p>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="fm_crs-set.html">`fm_crs&lt;-`()</a></code> <code><a href="fm_crs-set.html">`fm_crs_oblique&lt;-`()</a></code> <code><a href="fm_crs-set.html">`fm_crs&lt;-`()</a></code> <code><a href="fm_crs-set.html">`fm_crs_oblique&lt;-`()</a></code> 
+        </dt>
+        <dd>Assignment operators for crs information objects</dd>
+      </dl><dl><dt>
+          
+          <code><a href="fm_crs.html">fm_crs()</a></code> <code><a href="fm_crs.html">is.na(<i>&lt;fm_crs&gt;</i>)</a></code> <code><a href="fm_crs.html">fm_crs_is_null()</a></code> <code><a href="fm_crs.html">fm_crs_oblique()</a></code> <code><a href="fm_crs.html">st_crs(<i>&lt;fm_crs&gt;</i>)</a></code> <code><a href="fm_crs.html">`$`(<i>&lt;fm_crs&gt;</i>)</a></code> <code><a href="fm_crs.html">fm_wkt_predef()</a></code> 
+        </dt>
+        <dd>Obtain coordinate reference system object</dd>
+      </dl><dl><dt>
+          
+          <code><a href="fm_crs_is_identical.html">fm_crs_is_identical()</a></code> <code><a href="fm_crs_is_identical.html">fm_identical_CRS()</a></code> 
+        </dt>
+        <dd>Check if two CRS objects are identical</dd>
+      </dl><dl><dt>
+          
+          <code><a href="fm_crs_wkt.html">fm_wkt_is_geocent()</a></code> <code><a href="fm_crs_wkt.html">fm_crs_is_geocent()</a></code> <code><a href="fm_crs_wkt.html">fm_wkt_get_ellipsoid_radius()</a></code> <code><a href="fm_crs_wkt.html">fm_crs_get_ellipsoid_radius()</a></code> <code><a href="fm_crs_wkt.html">fm_ellipsoid_radius()</a></code> <code><a href="fm_crs_wkt.html">fm_wkt_set_ellipsoid_radius()</a></code> <code><a href="fm_crs_wkt.html">`fm_ellipsoid_radius&lt;-`()</a></code> <code><a href="fm_crs_wkt.html">fm_crs_set_ellipsoid_radius()</a></code> <code><a href="fm_crs_wkt.html">fm_wkt_unit_params()</a></code> <code><a href="fm_crs_wkt.html">fm_wkt_get_lengthunit()</a></code> <code><a href="fm_crs_wkt.html">fm_wkt_set_lengthunit()</a></code> <code><a href="fm_crs_wkt.html">fm_crs_get_lengthunit()</a></code> <code><a href="fm_crs_wkt.html">fm_crs_set_lengthunit()</a></code> <code><a href="fm_crs_wkt.html">fm_length_unit()</a></code> <code><a href="fm_crs_wkt.html">`fm_length_unit&lt;-`()</a></code> <code><a href="fm_crs_wkt.html">fm_wkt()</a></code> <code><a href="fm_crs_wkt.html">fm_proj4string()</a></code> <code><a href="fm_crs_wkt.html">fm_crs_get_wkt()</a></code> <code><a href="fm_crs_wkt.html">fm_wkt_tree_projection_type()</a></code> <code><a href="fm_crs_wkt.html">fm_wkt_projection_type()</a></code> <code><a href="fm_crs_wkt.html">fm_crs_projection_type()</a></code> <code><a href="fm_crs_wkt.html">fm_crs_bounds()</a></code> 
+        </dt>
+        <dd>Handling CRS/WKT</dd>
+      </dl><dl><dt>
+          
+          <code><a href="fm_detect_manifold.html">fm_detect_manifold()</a></code> <code><a href="fm_detect_manifold.html">fm_crs_detect_manifold()</a></code> 
+        </dt>
+        <dd>Detect manifold type</dd>
+      </dl><dl><dt>
+          
+          <code><a href="fm_transform.html">fm_transform()</a></code> 
+        </dt>
+        <dd>Object coordinate transformation</dd>
+      </dl><dl><dt>
+          
+          <code><a href="fm_CRS_sp.html">fm_CRS()</a></code> <code><a href="fm_CRS_sp.html">is.na(<i>&lt;fm_CRS&gt;</i>)</a></code> <code><a href="fm_CRS_sp.html">is.na(<i>&lt;inla.CRS&gt;</i>)</a></code> 
         </dt>
         <dd>Create a coordinate reference system object</dd>
       </dl><dl><dt>
+          
+          <code><a href="wkt_tree.html">fm_wkt_as_wkt_tree()</a></code> <code><a href="wkt_tree.html">fm_wkt_tree_as_wkt()</a></code> <code><a href="wkt_tree.html">fm_wkt_tree_get_item()</a></code> <code><a href="wkt_tree.html">fm_wkt_tree_set_item()</a></code> 
+        </dt>
+        <dd>Internal WKT handling</dd>
+      </dl></div><div class="section level2">
+      <h2 id="conversion-to-fmesher-classes">Conversion to fmesher classes<a class="anchor" aria-label="anchor" href="#conversion-to-fmesher-classes"></a></h2>
+      
+      <p class="section-desc"></p><p>Functions for converting non-fmesher objects to fmesher objects.</p>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
           
           <code><a href="fm_as_fm.html">fm_as_fm()</a></code> <code><a href="fm_as_fm.html">fm_as_fm_list()</a></code> <code><a href="fm_as_fm.html">fm_as_fm()</a></code> 
         </dt>
@@ -132,220 +306,21 @@
         <dd>Convert objects to <code>fm_tensor</code></dd>
       </dl><dl><dt>
           
-          <code><a href="fm_bary.html">fm_bary()</a></code> 
-        </dt>
-        <dd>Compute barycentric coordinates</dd>
-      </dl><dl><dt>
-          
-          <code><a href="fm_basis.html">fm_basis()</a></code> 
-        </dt>
-        <dd>Compute mapping matrix between mesh function space and points</dd>
-      </dl><dl><dt>
-          
-          <code><a href="fm_block.html">fm_block()</a></code> <code><a href="fm_block.html">fm_block_eval()</a></code> <code><a href="fm_block.html">fm_block_logsumexp_eval()</a></code> <code><a href="fm_block.html">fm_block_weights()</a></code> <code><a href="fm_block.html">fm_block_log_weights()</a></code> <code><a href="fm_block.html">fm_block_log_shift()</a></code> <code><a href="fm_block.html">fm_block_prep()</a></code> 
-        </dt>
-        <dd>Blockwise aggregation matrices</dd>
-      </dl><dl><dt>
-          
-          <code><a href="fm_bounding_box.html">fm_bounding_box()</a></code> 
-        </dt>
-        <dd>Bounding box class</dd>
-      </dl><dl><dt>
-          
-          <code><a href="fm_centroids.html">fm_centroids()</a></code> 
-        </dt>
-        <dd>Extract triangle centroids from an <code>fm_mesh_2d</code></dd>
-      </dl><dl><dt>
-          
-          <code><a href="fm_contains.html">fm_contains()</a></code> 
-        </dt>
-        <dd>Check which mesh triangles are inside a polygon</dd>
-      </dl><dl><dt>
-          
-          <code><a href="fm_crs-set.html">`fm_crs&lt;-`()</a></code> <code><a href="fm_crs-set.html">`fm_crs_oblique&lt;-`()</a></code> <code><a href="fm_crs-set.html">`fm_crs&lt;-`()</a></code> <code><a href="fm_crs-set.html">`fm_crs_oblique&lt;-`()</a></code> 
-        </dt>
-        <dd>Assignment operators for crs information objects</dd>
-      </dl><dl><dt>
-          
-          <code><a href="fm_crs.html">fm_crs()</a></code> <code><a href="fm_crs.html">is.na(<i>&lt;fm_crs&gt;</i>)</a></code> <code><a href="fm_crs.html">fm_crs_is_null()</a></code> <code><a href="fm_crs.html">fm_crs_oblique()</a></code> <code><a href="fm_crs.html">st_crs(<i>&lt;fm_crs&gt;</i>)</a></code> <code><a href="fm_crs.html">`$`(<i>&lt;fm_crs&gt;</i>)</a></code> <code><a href="fm_crs.html">print(<i>&lt;fm_crs&gt;</i>)</a></code> <code><a href="fm_crs.html">fm_wkt_predef()</a></code> 
-        </dt>
-        <dd>Obtain coordinate reference system object</dd>
-      </dl><dl><dt>
-          
-          <code><a href="fm_crs_is_identical.html">fm_crs_is_identical()</a></code> <code><a href="fm_crs_is_identical.html">fm_identical_CRS()</a></code> 
-        </dt>
-        <dd>Check if two CRS objects are identical</dd>
-      </dl><dl><dt>
-          
-          <code><a href="fm_crs_wkt.html">fm_wkt_is_geocent()</a></code> <code><a href="fm_crs_wkt.html">fm_crs_is_geocent()</a></code> <code><a href="fm_crs_wkt.html">fm_wkt_get_ellipsoid_radius()</a></code> <code><a href="fm_crs_wkt.html">fm_crs_get_ellipsoid_radius()</a></code> <code><a href="fm_crs_wkt.html">fm_ellipsoid_radius()</a></code> <code><a href="fm_crs_wkt.html">fm_wkt_set_ellipsoid_radius()</a></code> <code><a href="fm_crs_wkt.html">`fm_ellipsoid_radius&lt;-`()</a></code> <code><a href="fm_crs_wkt.html">fm_crs_set_ellipsoid_radius()</a></code> <code><a href="fm_crs_wkt.html">fm_wkt_unit_params()</a></code> <code><a href="fm_crs_wkt.html">fm_wkt_get_lengthunit()</a></code> <code><a href="fm_crs_wkt.html">fm_wkt_set_lengthunit()</a></code> <code><a href="fm_crs_wkt.html">fm_crs_get_lengthunit()</a></code> <code><a href="fm_crs_wkt.html">fm_crs_set_lengthunit()</a></code> <code><a href="fm_crs_wkt.html">fm_length_unit()</a></code> <code><a href="fm_crs_wkt.html">`fm_length_unit&lt;-`()</a></code> <code><a href="fm_crs_wkt.html">fm_wkt()</a></code> <code><a href="fm_crs_wkt.html">fm_proj4string()</a></code> <code><a href="fm_crs_wkt.html">fm_crs_get_wkt()</a></code> <code><a href="fm_crs_wkt.html">fm_wkt_tree_projection_type()</a></code> <code><a href="fm_crs_wkt.html">fm_wkt_projection_type()</a></code> <code><a href="fm_crs_wkt.html">fm_crs_projection_type()</a></code> <code><a href="fm_crs_wkt.html">fm_crs_bounds()</a></code> 
-        </dt>
-        <dd>Handling CRS/WKT</dd>
-      </dl><dl><dt>
-          
-          <code><a href="fm_detect_manifold.html">fm_detect_manifold()</a></code> <code><a href="fm_detect_manifold.html">fm_crs_detect_manifold()</a></code> 
-        </dt>
-        <dd>Detect manifold type</dd>
-      </dl><dl><dt>
-          
-          <code><a href="fm_diameter.html">fm_diameter()</a></code> 
-        </dt>
-        <dd>Diameter bound for a geometric object</dd>
-      </dl><dl><dt>
-          
-          <code><a href="fm_evaluate.html">fm_evaluate()</a></code> <code><a href="fm_evaluate.html">fm_evaluator()</a></code> <code><a href="fm_evaluate.html">fm_evaluator_mesh_2d()</a></code> <code><a href="fm_evaluate.html">fm_evaluator_mesh_1d()</a></code> <code><a href="fm_evaluate.html">fm_evaluator_lattice()</a></code> 
-        </dt>
-        <dd>Methods for projecting to/from an inla.mesh</dd>
-      </dl><dl><dt>
-          
-          <code><a href="fm_fem.html">fm_fem()</a></code> 
-        </dt>
-        <dd>Compute finite element matrices</dd>
-      </dl><dl><dt>
-          
-          <code><a href="fm_int.html">fm_int()</a></code> 
-        </dt>
-        <dd>Multi-domain integration</dd>
-      </dl><dl><dt>
-          
-          <code><a href="fm_is_within.html">fm_is_within()</a></code> 
-        </dt>
-        <dd>Query if points are inside a mesh</dd>
-      </dl><dl><dt>
-          
-          <code><a href="fm_lattice_2d.html">fm_lattice_2d()</a></code> 
-        </dt>
-        <dd>Make a lattice object</dd>
-      </dl><dl><dt>
-          
-          <code><a href="fm_manifold.html">fm_manifold()</a></code> <code><a href="fm_manifold.html">fm_manifold_type()</a></code> <code><a href="fm_manifold.html">fm_manifold_dim()</a></code> 
-        </dt>
-        <dd>Query the mesh manifold type</dd>
-      </dl><dl><dt>
-          
-          <code><a href="fm_mesh_1d.html">fm_mesh_1d()</a></code> 
-        </dt>
-        <dd>Make a 1D mesh object</dd>
-      </dl><dl><dt>
-          
-          <code><a href="fm_mesh_2d.html">fm_mesh_2d()</a></code> <code><a href="fm_mesh_2d.html">fm_mesh_2d_inla()</a></code> 
-        </dt>
-        <dd>Make a 2D mesh object</dd>
-      </dl><dl><dt>
-          
-          <code><a href="fm_nonconvex_hull.html">fm_nonconvex_hull()</a></code> <code><a href="fm_nonconvex_hull.html">fm_extensions()</a></code> 
-        </dt>
-        <dd>Compute an extension of a spatial object</dd>
-      </dl><dl><dt>
-          
-          <code><a href="fm_nonconvex_hull_inla.html">fm_nonconvex_hull_inla()</a></code> <code><a href="fm_nonconvex_hull_inla.html">fm_nonconvex_hull_inla_basic()</a></code> 
-        </dt>
-        <dd>Non-convex hull computation</dd>
-      </dl><dl><dt>
-          
-          <code><a href="fm_pixels.html">fm_pixels()</a></code> 
-        </dt>
-        <dd>Generate lattice points covering a mesh</dd>
-      </dl><dl><dt>
-          
-          <code><a href="fm_qinv.html">fm_qinv()</a></code> 
-        </dt>
-        <dd>Sparse partial inverse</dd>
-      </dl><dl><dt>
-          
-          <code><a href="fm_rcdt_2d.html">fm_rcdt_2d()</a></code> <code><a href="fm_rcdt_2d.html">fm_rcdt_2d_inla()</a></code> <code><a href="fm_rcdt_2d.html">fm_delaunay_2d()</a></code> 
-        </dt>
-        <dd>Refined Constrained Delaunay Triangulation</dd>
-      </dl><dl><dt>
-          
-          <code><a href="fm_row_kron.html">fm_row_kron()</a></code> 
-        </dt>
-        <dd>Row-wise Kronecker products</dd>
-      </dl><dl><dt>
-          
-          <code><a href="fm_safe_sp.html">fm_safe_sp()</a></code> 
-        </dt>
-        <dd>Check for potential <code>sp</code> version compatibility issues</dd>
-      </dl><dl><dt>
-          
-          <code><a href="fm_segm.html">fm_segm()</a></code> <code><a href="fm_segm.html">fm_segm_join()</a></code> <code><a href="fm_segm.html">fm_segm_split()</a></code> <code><a href="fm_segm.html">fm_is_bnd()</a></code> <code><a href="fm_segm.html">`fm_is_bnd&lt;-`()</a></code> 
-        </dt>
-        <dd>Make a spatial segment object</dd>
-      </dl><dl><dt>
-          
-          <code><a href="fm_tensor.html">fm_tensor()</a></code> 
-        </dt>
-        <dd>Make a tensor product function space</dd>
-      </dl><dl><dt>
-          
-          <code><a href="fm_transform.html">fm_transform()</a></code> 
-        </dt>
-        <dd>Object coordinate transformation</dd>
-      </dl><dl><dt>
-          
-          <code><a href="fm_vertices.html">fm_vertices()</a></code> 
-        </dt>
-        <dd>Extract vertex locations from an <code>inla.mesh</code></dd>
-      </dl><dl><dt>
-          
           <code><a href="fmesher-deprecated.html">fm_spTransform()</a></code> <code><a href="fmesher-deprecated.html">fm_has_PROJ6()</a></code> <code><a href="fmesher-deprecated.html">fm_not_for_PROJ6()</a></code> <code><a href="fmesher-deprecated.html">fm_not_for_PROJ4()</a></code> <code><a href="fmesher-deprecated.html">fm_fallback_PROJ6()</a></code> <code><a href="fmesher-deprecated.html">fm_requires_PROJ6()</a></code> <code><a href="fmesher-deprecated.html">fm_as_sp_crs()</a></code> <code><a href="fmesher-deprecated.html">fm_sp_get_crs()</a></code> <code><a href="fmesher-deprecated.html">split_lines()</a></code> <code><a href="fmesher-deprecated.html">fm_as_inla_mesh_segment()</a></code> <code><a href="fmesher-deprecated.html">fm_as_inla_mesh()</a></code> <code><a href="fmesher-deprecated.html">fm_sp2segment()</a></code> 
         </dt>
         <dd>Deprecated functions in fmesher</dd>
-      </dl><dl><dt>
-          
-          <code><a href="fmesher-print.html">print(<i>&lt;fm_segm&gt;</i>)</a></code> <code><a href="fmesher-print.html">print(<i>&lt;fm_mesh_2d&gt;</i>)</a></code> <code><a href="fmesher-print.html">print(<i>&lt;fm_mesh_1d&gt;</i>)</a></code> <code><a href="fmesher-print.html">print(<i>&lt;fm_bounding_box&gt;</i>)</a></code> 
-        </dt>
-        <dd>Print objects</dd>
-      </dl><dl><dt>
-          
-          <code><a href="fmesher_bary.html">fmesher_bary()</a></code> 
-        </dt>
-        <dd>Barycentric coordinate computation</dd>
-      </dl><dl><dt>
-          
-          <code><a href="fmesher_fem.html">fmesher_fem()</a></code> 
-        </dt>
-        <dd>Finite element matrix computation</dd>
-      </dl><dl><dt>
-          
-          <code><a href="fmesher_globe_points.html">fmesher_globe_points()</a></code> 
-        </dt>
-        <dd>Globe points</dd>
-      </dl><dl><dt>
-          
-          <code><a href="fmesher_rcdt.html">fmesher_rcdt()</a></code> 
-        </dt>
-        <dd>Refined Constrained Delaunay Triangulation</dd>
-      </dl><dl><dt>
-          
-          <code><a href="fmesher_split_lines.html">fmesher_split_lines()</a></code> 
-        </dt>
-        <dd>Split lines at triangle edges</dd>
-      </dl><dl><dt>
-          
-          <code><a href="fmexample.html">fmexample</a></code> 
-        </dt>
-        <dd>Example mesh data</dd>
-      </dl><dl><dt>
-          
-          <code><a href="globeproj.html">globeproj()</a></code> 
-        </dt>
-        <dd>A</dd>
-      </dl><dl><dt>
-          
-          <code><a href="graticule.html">graticule(<i>&lt;globeproj&gt;</i>)</a></code> 
-        </dt>
-        <dd>A</dd>
-      </dl><dl><dt>
-          
-          <code><a href="limits.html">limits(<i>&lt;globeproj&gt;</i>)</a></code> 
-        </dt>
-        <dd>Projection axis limits</dd>
-      </dl><dl><dt>
-          
-          <code><a href="outline.html">outline(<i>&lt;globeproj&gt;</i>)</a></code> 
-        </dt>
-        <dd>A</dd>
-      </dl><dl><dt>
+      </dl></div><div class="section level2">
+      <h2 id="plotting-methods">Plotting methods<a class="anchor" aria-label="anchor" href="#plotting-methods"></a></h2>
+      
+      <p class="section-desc"></p><p>Functions for plotting.</p>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
           
           <code><a href="plot.fm_mesh_2d.html">lines(<i>&lt;fm_mesh_2d&gt;</i>)</a></code> <code><a href="plot.fm_mesh_2d.html">plot(<i>&lt;fm_mesh_2d&gt;</i>)</a></code> 
         </dt>
@@ -370,38 +345,93 @@
           <code><a href="plot_rgl.html">plot_rgl()</a></code> <code><a href="plot_rgl.html">lines_rgl()</a></code> 
         </dt>
         <dd>Low level triangulation mesh plotting</dd>
+      </dl></div><div class="section level2">
+      <h2 id="printing-methods">Printing methods<a class="anchor" aria-label="anchor" href="#printing-methods"></a></h2>
+      
+      <p class="section-desc"></p><p>Functions for printing.</p>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="fmesher-print.html">print(<i>&lt;fm_segm&gt;</i>)</a></code> <code><a href="fmesher-print.html">print(<i>&lt;fm_mesh_2d&gt;</i>)</a></code> <code><a href="fmesher-print.html">print(<i>&lt;fm_mesh_1d&gt;</i>)</a></code> <code><a href="fmesher-print.html">print(<i>&lt;fm_bounding_box&gt;</i>)</a></code> <code><a href="fmesher-print.html">print(<i>&lt;fm_crs&gt;</i>)</a></code> <code><a href="fmesher-print.html">print(<i>&lt;fm_CRS&gt;</i>)</a></code> 
+        </dt>
+        <dd>Print objects</dd>
+      </dl></div><div class="section level2">
+      <h2 id="direct-c-interface">Direct C++ interface<a class="anchor" aria-label="anchor" href="#direct-c-interface"></a></h2>
+      
+      <p class="section-desc"></p><p>Direct C++ interface methods, not intended for package users.</p>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="fmesher_bary.html">fmesher_bary()</a></code> 
+        </dt>
+        <dd>Barycentric coordinate computation</dd>
       </dl><dl><dt>
           
-          <code><a href="project.html">project(<i>&lt;globeproj&gt;</i>)</a></code> 
+          <code><a href="fmesher_fem.html">fmesher_fem()</a></code> 
         </dt>
-        <dd>A</dd>
+        <dd>Finite element matrix computation</dd>
       </dl><dl><dt>
           
-          <code><a href="st_check_dim.html">st_check_dim()</a></code> 
+          <code><a href="fmesher_globe_points.html">fmesher_globe_points()</a></code> 
         </dt>
-        <dd>Check for "XYZ", "XYM" and "XYZM" sfg classes</dd>
+        <dd>Globe points</dd>
       </dl><dl><dt>
           
-          <code><a href="st_check_polygon.html">st_check_polygon()</a></code> 
+          <code><a href="fmesher_rcdt.html">fmesher_rcdt()</a></code> 
         </dt>
-        <dd>Check sfg polygon satisfies standards for POLYGON simple features</dd>
+        <dd>Refined Constrained Delaunay Triangulation</dd>
       </dl><dl><dt>
           
-          <code><a href="st_signed_area.html">st_signed_area()</a></code> 
+          <code><a href="fmesher_split_lines.html">fmesher_split_lines()</a></code> 
         </dt>
-        <dd>Calculate signed area for polygon</dd>
-      </dl><dl><dt>
+        <dd>Split lines at triangle edges</dd>
+      </dl></div><div class="section level2">
+      <h2 id="data-objects">Data objects<a class="anchor" aria-label="anchor" href="#data-objects"></a></h2>
+      
+      <p class="section-desc"></p><p>Data objects</p>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
           
-          <code><a href="tissot.html">tissot(<i>&lt;globeproj&gt;</i>)</a></code> 
+          <code><a href="fmexample.html">fmexample</a></code> 
         </dt>
-        <dd>A</dd>
-      </dl><dl><dt>
+        <dd>Example mesh data</dd>
+      </dl></div><div class="section level2">
+      <h2 id="deprecated-methods">Deprecated methods<a class="anchor" aria-label="anchor" href="#deprecated-methods"></a></h2>
+      
+      <p class="section-desc"></p><p>Deprecated methods</p>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
           
-          <code><a href="wkt_tree.html">fm_wkt_as_wkt_tree()</a></code> <code><a href="wkt_tree.html">fm_wkt_tree_as_wkt()</a></code> <code><a href="wkt_tree.html">fm_wkt_tree_get_item()</a></code> <code><a href="wkt_tree.html">fm_wkt_tree_set_item()</a></code> 
+          <code><a href="fmesher-deprecated.html">fm_spTransform()</a></code> <code><a href="fmesher-deprecated.html">fm_has_PROJ6()</a></code> <code><a href="fmesher-deprecated.html">fm_not_for_PROJ6()</a></code> <code><a href="fmesher-deprecated.html">fm_not_for_PROJ4()</a></code> <code><a href="fmesher-deprecated.html">fm_fallback_PROJ6()</a></code> <code><a href="fmesher-deprecated.html">fm_requires_PROJ6()</a></code> <code><a href="fmesher-deprecated.html">fm_as_sp_crs()</a></code> <code><a href="fmesher-deprecated.html">fm_sp_get_crs()</a></code> <code><a href="fmesher-deprecated.html">split_lines()</a></code> <code><a href="fmesher-deprecated.html">fm_as_inla_mesh_segment()</a></code> <code><a href="fmesher-deprecated.html">fm_as_inla_mesh()</a></code> <code><a href="fmesher-deprecated.html">fm_sp2segment()</a></code> 
         </dt>
-        <dd>Internal WKT handling</dd>
+        <dd>Deprecated functions in fmesher</dd>
       </dl></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">

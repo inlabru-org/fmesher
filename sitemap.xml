@@ -37,9 +37,6 @@
     <loc>https://inlabru-org.github.io/fmesher/reference/call-stack.html</loc>
   </url>
   <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/dot-globeproj.types.html</loc>
-  </url>
-  <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_CRS_sp.html</loc>
   </url>
   <url>
@@ -154,9 +151,6 @@
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_pixels.html</loc>
   </url>
   <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_qinv.html</loc>
-  </url>
-  <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_rcdt_2d.html</loc>
   </url>
   <url>
@@ -229,19 +223,10 @@
     <loc>https://inlabru-org.github.io/fmesher/reference/globeproj.html</loc>
   </url>
   <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/graticule.html</loc>
-  </url>
-  <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/index.html</loc>
   </url>
   <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/limits.html</loc>
-  </url>
-  <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/local_testthat.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/outline.html</loc>
   </url>
   <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/plot.fm_mesh_2d.html</loc>
@@ -259,9 +244,6 @@
     <loc>https://inlabru-org.github.io/fmesher/reference/plot_rgl.html</loc>
   </url>
   <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/project.html</loc>
-  </url>
-  <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/st_check_dim.html</loc>
   </url>
   <url>
@@ -269,9 +251,6 @@
   </url>
   <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/st_signed_area.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/tissot.html</loc>
   </url>
   <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/wkt_tree.html</loc>
