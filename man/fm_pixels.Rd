@@ -28,7 +28,7 @@ Generate \code{terra}, \code{sf}, or \code{sp} lattice locations
 if (require("ggplot2", quietly = TRUE) &&
   require("tidyterra", quietly = TRUE)) {
   pxl <- fm_pixels(fmexample$mesh,
-    nx = 50, ny = 50, mask = fmexample$boundary[[1]],
+    nx = 50, ny = 50, mask = fmexample$boundary_sf[[1]],
     format = "terra"
   )
   pxl$val <- rnorm(NROW(pxl) * NCOL(pxl))

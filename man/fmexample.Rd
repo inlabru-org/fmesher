@@ -8,8 +8,11 @@
 The data is a list containing these elements:
 \describe{
 \item{\code{loc}:}{ A \code{matrix} of points.}
-\item{\code{boundary}:}{ An list of \code{sfc} objects.}
-\item{\code{boundary_sp}:}{ An \code{sp} version of \code{boundary}.}
+\item{\code{loc_sf}:}{ An \code{sfc} version of \code{loc}.}
+\item{\code{loc_sp}:}{ A \code{SpatialPoints} version of \code{loc}.}
+\item{\code{boundary_fm}:}{ A list of two \code{fm_segm} objects used in the mesh construction.}
+\item{\code{boundary_sf}:}{ An \code{sfc} list version of \code{boundary}.}
+\item{\code{boundary_sp}:}{ An \code{SpatialPolygons} list version of \code{boundary}.}
 \item{\code{mesh}:}{ An \code{\link[=fm_mesh_2d]{fm_mesh_2d()}} object.}
 }
 }
@@ -26,7 +29,7 @@ This is an example data set used for \code{fmesher} package examples.
 if (require(ggplot2, quietly = TRUE)) {
   ggplot() +
     geom_sf(data = fm_as_sfc(fmexample$mesh)) +
-    geom_sf(data = fmexample$boundary[[1]], fill = "red", alpha = 0.5)
+    geom_sf(data = fmexample$boundary_sf[[1]], fill = "red", alpha = 0.5)
 }
 }
 \keyword{datasets}

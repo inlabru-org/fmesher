@@ -218,10 +218,10 @@ fm_cprod <- function(..., na.rm = NULL, .blockwise = FALSE) {
 #'
 #' if (require("ggplot2", quietly = TRUE)) {
 #'   #' Integrate on a 2D mesh with polygon boundary subset
-#'   ips <- fm_int(fmexample$mesh, fmexample$boundary[[1]])
+#'   ips <- fm_int(fmexample$mesh, fmexample$boundary_sf[[1]])
 #'   ggplot() +
 #'     geom_sf(data = fm_as_sfc(fmexample$mesh, multi = TRUE), alpha = 0.5) +
-#'     geom_sf(data = fmexample$boundary[[1]], fill = "red", alpha = 0.5) +
+#'     geom_sf(data = fmexample$boundary_sf[[1]], fill = "red", alpha = 0.5) +
 #'     geom_sf(data = ips, aes(size = weight)) +
 #'     scale_size_area()
 #' }

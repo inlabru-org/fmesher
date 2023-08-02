@@ -8,8 +8,11 @@
 #' @format The data is a list containing these elements:
 #'  \describe{
 #'    \item{`loc`:}{ A `matrix` of points.}
-#'    \item{`boundary`:}{ An list of `sfc` objects.}
-#'    \item{`boundary_sp`:}{ An `sp` version of `boundary`.}
+#'    \item{`loc_sf`:}{ An `sfc` version of `loc`.}
+#'    \item{`loc_sp`:}{ A `SpatialPoints` version of `loc`.}
+#'    \item{`boundary_fm`:}{ A list of two `fm_segm` objects used in the mesh construction.}
+#'    \item{`boundary_sf`:}{ An `sfc` list version of `boundary`.}
+#'    \item{`boundary_sp`:}{ An `SpatialPolygons` list version of `boundary`.}
 #'    \item{`mesh`:}{ An [fm_mesh_2d()] object.}
 #'  }
 #' @source
@@ -18,6 +21,6 @@
 #' if (require(ggplot2, quietly = TRUE)) {
 #'   ggplot() +
 #'     geom_sf(data = fm_as_sfc(fmexample$mesh)) +
-#'     geom_sf(data = fmexample$boundary[[1]], fill = "red", alpha = 0.5)
+#'     geom_sf(data = fmexample$boundary_sf[[1]], fill = "red", alpha = 0.5)
 #' }
 "fmexample"
