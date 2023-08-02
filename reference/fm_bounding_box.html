@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.9.9011</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.9.9012</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,6 +79,15 @@
 <span><span class="co"># S3 method for fm_lattice_2d</span></span>
 <span><span class="fu">fm_bounding_box</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># S3 method for sf</span></span>
+<span><span class="fu">fm_bounding_box</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for sfg</span></span>
+<span><span class="fu">fm_bounding_box</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for sfc</span></span>
+<span><span class="fu">fm_bounding_box</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
 <span><span class="co"># S3 method for inla.mesh</span></span>
 <span><span class="fu">fm_bounding_box</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
@@ -101,7 +110,7 @@
     
 <ul><li><p><code>fm_bounding_box(list)</code>: Construct a bounding box from
 precomputed interval information, stored as a list,
-<code>list(xlim, ylim, ...)</code>.</p></li>
+<code>list(lim = list(xlim, ylim))</code>.</p></li>
 </ul></div>
 
     <div class="section level2">
