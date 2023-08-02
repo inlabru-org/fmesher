@@ -3742,7 +3742,7 @@ fm_as_lattice_2d.inla.mesh.lattice <- function(x, ...) {
 
 
 
-# fm_bounding_box
+# fm_bbox
 
 
 #' @title Bounding box class
@@ -3753,86 +3753,103 @@ fm_as_lattice_2d.inla.mesh.lattice <- function(x, ...) {
 #' @param ... Passed on to sub-methods
 #' @export
 #' @examples
-#' fm_bounding_box(matrix(1:6, 3, 2))
-fm_bounding_box <- function(...) {
-  UseMethod("fm_bounding_box")
+#' fm_bbox(matrix(1:6, 3, 2))
+fm_bbox <- function(...) {
+  UseMethod("fm_bbox")
 }
 
-#' @describeIn fm_bounding_box Construct a bounding box from
+#' @describeIn fm_bbox Construct a bounding box from
 #' precomputed interval information, stored as a list,
 #' `list(lim = list(xlim, ylim))`.
 #' @export
-fm_bounding_box.list <- function(x, ...) {
+fm_bbox.list <- function(x, ...) {
   structure(
     list(
       lim = x
     ),
-    class = "fm_bounding_box"
+    class = "fm_bbox"
   )
 }
 
-#' @rdname fm_bounding_box
+#' @rdname fm_bbox
 #' @export
-fm_bounding_box.matrix <- function(x, ...) {
-  fm_bounding_box(lapply(
+fm_bbox.matrix <- function(x, ...) {
+  fm_bbox(lapply(
     seq_len(ncol(x)),
     function(k) {
-      range(x[, k], na.rm = TRUE)
+      if (all(is.na(x[, k]))) {
+        c(NA_real_, NA_real_)
+      } else {
+        range(x[, k], na.rm = TRUE)
+      }
     }
   ))
 }
 
-#' @rdname fm_bounding_box
+#' @rdname fm_bbox
 #' @export
-fm_bounding_box.fm_mesh_2d <- function(x, ...) {
-  fm_bounding_box(x[["loc"]])
+fm_bbox.fm_bbox <- function(x, ...) {
+  x
 }
 
-#' @rdname fm_bounding_box
+#' @rdname fm_bbox
 #' @export
-fm_bounding_box.fm_segm <- function(x, ...) {
+fm_bbox.fm_mesh_2d <- function(x, ...) {
+  fm_bbox(x[["loc"]])
+}
+
+#' @rdname fm_bbox
+#' @export
+fm_bbox.fm_segm <- function(x, ...) {
   if (is.null(x[["loc"]])) {
-    return(fm_bounding_box(list()))
+    return(fm_bbox(list()))
   }
-  fm_bounding_box(x[["loc"]])
+  fm_bbox(x[["loc"]])
 }
 
-#' @rdname fm_bounding_box
+#' @rdname fm_bbox
 #' @export
-fm_bounding_box.fm_lattice_2d <- function(x, ...) {
-  fm_bounding_box(x[["loc"]])
+fm_bbox.fm_lattice_2d <- function(x, ...) {
+  fm_bbox(x[["loc"]])
 }
 
-#' @rdname fm_bounding_box
+#' @rdname fm_bbox
 #' @export
-fm_bounding_box.sf <- function(x, ...) {
-  fm_bounding_box(sf::st_geometry(x))
+fm_bbox.sf <- function(x, ...) {
+  fm_bbox(sf::st_geometry(x))
 }
 
-#' @rdname fm_bounding_box
+#' @rdname fm_bbox
 #' @export
-fm_bounding_box.sfg <- function(x, ...) {
-  fm_bounding_box(sf::st_sfc(x))
+fm_bbox.sfg <- function(x, ...) {
+  fm_bbox(sf::st_sfc(x))
 }
 
-#' @rdname fm_bounding_box
+#' @rdname fm_bbox
 #' @export
-fm_bounding_box.sfc <- function(x, ...) {
+fm_bbox.sfc <- function(x, ...) {
   loc <- sf::st_coordinates(x)
   loc <- loc[, intersect(colnames(loc), c("X", "Y", "Z", "M")), drop = FALSE]
-  fm_bounding_box(loc)
+  fm_bbox(loc)
 }
 
-#' @rdname fm_bounding_box
+#' @rdname fm_bbox
 #' @export
-fm_bounding_box.inla.mesh <- function(x, ...) {
-  fm_bounding_box(fm_as_fm(x))
+fm_bbox.bbox <- function(x, ...) {
+  # sf bbox objects are length 4 vectors
+  fm_bbox(matrix(x, 2, 2, byrow = TRUE))
 }
 
-#' @rdname fm_bounding_box
+#' @rdname fm_bbox
 #' @export
-fm_bounding_box.inla.mesh.segment <- function(x, ...) {
-  fm_bounding_box(fm_as_fm(x))
+fm_bbox.inla.mesh <- function(x, ...) {
+  fm_bbox(fm_as_fm(x))
+}
+
+#' @rdname fm_bbox
+#' @export
+fm_bbox.inla.mesh.segment <- function(x, ...) {
+  fm_bbox(fm_as_fm(x))
 }
 
 

@@ -42,7 +42,7 @@ reference:
   - starts_with("fm_evaluator")
   - starts_with("fm_fem")
   - starts_with("fm_diameter")
-  - starts_with("fm_bounding_box")
+  - starts_with("fm_bbox")
   - starts_with("fm_vertices")
   - starts_with("fm_centroids")
   - starts_with("fm_contains")

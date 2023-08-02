@@ -5,7 +5,7 @@
 \alias{print.fm_segm}
 \alias{print.fm_mesh_2d}
 \alias{print.fm_mesh_1d}
-\alias{print.fm_bounding_box}
+\alias{print.fm_bbox}
 \alias{print.fm_crs}
 \alias{print.fm_CRS}
 \title{Print objects}
@@ -16,7 +16,7 @@
 
 \method{print}{fm_mesh_1d}(x, ..., digits = NULL, verbose = FALSE)
 
-\method{print}{fm_bounding_box}(x, ..., digits = NULL, verbose = TRUE, newline = TRUE)
+\method{print}{fm_bbox}(x, ..., digits = NULL, verbose = TRUE, newline = TRUE)
 
 \method{print}{fm_crs}(x, ...)
 
@@ -38,6 +38,6 @@ to be used for numeric and complex x. The default, NULL, uses \code{getOption("d
 Print objects
 }
 \examples{
-fm_bounding_box(matrix(1:6, 3, 2))
-print(fm_bounding_box(matrix(1:6, 3, 2)), verbose = FALSE)
+fm_bbox(matrix(1:6, 3, 2))
+print(fm_bbox(matrix(1:6, 3, 2)), verbose = FALSE)
 }

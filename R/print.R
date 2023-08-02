@@ -7,8 +7,8 @@
 #'
 #' @name fmesher-print
 #' @examples
-#' fm_bounding_box(matrix(1:6, 3, 2))
-#' print(fm_bounding_box(matrix(1:6, 3, 2)), verbose = FALSE)
+#' fm_bbox(matrix(1:6, 3, 2))
+#' print(fm_bbox(matrix(1:6, 3, 2)), verbose = FALSE)
 NULL
 
 #' @export
@@ -72,7 +72,7 @@ print.fm_segm <- function(x, ..., digits = NULL, verbose = TRUE, newline = TRUE)
   if (verbose) {
     cat(", bounding box = ", sep = "")
     print(
-      fm_bounding_box(x),
+      fm_bbox(x),
       verbose = FALSE,
       newline = FALSE,
       digits = digits
@@ -172,7 +172,7 @@ print.fm_mesh_2d <- function(x, ..., digits = NULL, verbose = FALSE) {
   cat(", ")
   print(ret$segm.int, newline = TRUE, digits = digits, verbose = FALSE)
   cat("  ", sep = "")
-  print(fm_bounding_box(x), digits = digits)
+  print(fm_bbox(x), digits = digits)
   cat("  Basis d.o.f.:\t", ret$nV, "\n", sep = "")
   invisible(x)
 }
@@ -204,7 +204,7 @@ print.fm_mesh_1d <- function(x, ..., digits = NULL, verbose = FALSE) {
 
 #' @export
 #' @rdname fmesher-print
-print.fm_bounding_box <- function(x, ..., digits = NULL, verbose = TRUE, newline = TRUE) {
+print.fm_bbox <- function(x, ..., digits = NULL, verbose = TRUE, newline = TRUE) {
   if (verbose) {
     cat("Bounding box: ", sep = "")
   }
