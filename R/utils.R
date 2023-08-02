@@ -8,6 +8,7 @@
 #' @export
 #' @name call-stack
 #' @rdname call-stack
+#' @keywords internal
 fm_caller_name <- function(which = 0L, override = NULL) {
   if (is.null(override)) {
     which <- -abs(which) - 1L

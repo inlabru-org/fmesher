@@ -68,6 +68,7 @@ Remotes:
     inlabru-org/inlabru@feature/fmesher
 Collate: 
     'RcppExports.R'
+    'print.R'
     'deprecated.R'
     'crs.R'
     'data-fmexample.R'
@@ -80,7 +81,6 @@ Collate:
     'mesh.R'
     'onload.R'
     'plot.R'
-    'print.R'
     'sf_mesh.R'
     'sf_utils.R'
     'sp_mesh.R'

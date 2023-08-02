@@ -1,4 +1,5 @@
 #' @include deprecated.R
+#' @include print.R
 
 #' @importFrom sp coordinates proj4string `proj4string<-`
 
@@ -657,7 +658,7 @@ st_crs.fm_crs <- function(x, ...) {
 }
 
 #' @export
-#' @rdname fm_crs
+#' @rdname fmesher-print
 print.fm_crs <- function(x, ...) {
   print(x[["crs"]], ...)
   cat(paste0("Oblique: c(", paste0(x[["oblique"]], collapse = ", "), ")\n"))
@@ -1516,7 +1517,7 @@ fm_CRSargs_as_list <- function(x, ...) {
 
 
 #' @export
-#' @rdname fm_CRS_sp
+#' @rdname fmesher-print
 print.fm_CRS <- function(x, ...) {
   print(x[["crs"]], ...)
   cat(paste0("Oblique: c(", paste0(x[["oblique"]], collapse = ", "), ")\n"))

@@ -184,6 +184,7 @@ Mesh Rcpp_import_mesh(Rcpp::NumericMatrix mesh_loc,
 //' Compute sparse matrix inverse
 //'
 //' @param AA A sparse matrix
+//' @keywords internal
 // [[Rcpp::export]]
 Rcpp::List C_qinv(SEXP AA) {
 #ifdef FMESHER_WITH_EIGEN
@@ -709,6 +710,7 @@ Rcpp::List fmesher_split_lines(
 //' out <- C_matrixio_test2(args_input = inp)
 //' str(out)
 //' @export
+//' @keywords internal
 // [[Rcpp::export]]
 Rcpp::List C_matrixio_test2(Rcpp::List args_input) {
   MatrixC matrices(args_input);
@@ -735,6 +737,7 @@ Rcpp::List C_matrixio_test2(Rcpp::List args_input) {
 //' A
 //' Aout
 //' @export
+//' @keywords internal
 // [[Rcpp::export]]
      Rcpp::List C_matrixio_test(Rcpp::List args_input) {
        MatrixC matrices;

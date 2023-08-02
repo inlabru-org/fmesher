@@ -2,7 +2,7 @@
 
 # fm_evaluate ####
 
-#' @title Methods for projecting to/from an inla.mesh
+#' @title Methods for projecting to/from mesh objects
 #'
 #' @description Calculate evaluation information and/or evaluate a function
 #' defined on a mesh or function space.

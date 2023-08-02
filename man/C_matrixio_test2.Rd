@@ -26,3 +26,4 @@ inp[["BdM"]] <- as(inp[["Bd"]], "unpackedMatrix")
 out <- C_matrixio_test2(args_input = inp)
 str(out)
 }
+\keyword{internal}

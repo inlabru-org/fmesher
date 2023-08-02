@@ -17,7 +17,7 @@
 \alias{fm_evaluator.inla.mesh.1d}
 \alias{fm_evaluator.fm_mesh_1d}
 \alias{fm_evaluator.fm_tensor}
-\title{Methods for projecting to/from an inla.mesh}
+\title{Methods for projecting to/from mesh objects}
 \usage{
 fm_evaluate(...)
 

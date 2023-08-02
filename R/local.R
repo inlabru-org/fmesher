@@ -105,6 +105,8 @@ check_package_version_and_load <-
 #'
 #' Loads the sp package with `requireNamespace("sp", quietly = TRUE)`, and
 #' checks and optionally sets the `sp` evolution status flag if `rgdal` is unavailable.
+#' This function is only needed for backwards compatibility with `sp` versions
+#' before `2.0-0`.
 #'
 #' @param quietly logical; if `TRUE`, prints diagnostic messages. Default `FALSE`
 #' @param force logical; If `rgdal` is unavailable
@@ -112,7 +114,7 @@ check_package_version_and_load <-
 #' If `force` is `TRUE`, return `TRUE` if the package configuration is safe,
 #' potentially after forcing the evolution status to `2L`.
 #' Default `FALSE`
-#' @param minimum_version character; the minimum required INLA version.
+#' @param minimum_version character; the minimum required sp version.
 #' Default 1.4-5 (should always match the requirement in the package
 #' DESCRIPTION)
 #' @return Returns (invisibly) `FALSE` if a potential issue is detected, and give a
@@ -124,7 +126,7 @@ check_package_version_and_load <-
 #'   # Run sp dependent calculations
 #' }
 #' }
-#'
+#' @keywords internal
 fm_safe_sp <- function(quietly = FALSE,
                        force = FALSE,
                        minimum_version = "1.4-5") {

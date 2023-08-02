@@ -15,7 +15,7 @@ If \code{force} is \code{TRUE}, return \code{TRUE} if the package configuration 
 potentially after forcing the evolution status to \code{2L}.
 Default \code{FALSE}}
 
-\item{minimum_version}{character; the minimum required INLA version.
+\item{minimum_version}{character; the minimum required sp version.
 Default 1.4-5 (should always match the requirement in the package
 DESCRIPTION)}
 }
@@ -26,6 +26,8 @@ message if \code{quietly} is \code{FALSE}. Otherwise returns \code{TRUE}
 \description{
 Loads the sp package with \code{requireNamespace("sp", quietly = TRUE)}, and
 checks and optionally sets the \code{sp} evolution status flag if \code{rgdal} is unavailable.
+This function is only needed for backwards compatibility with \code{sp} versions
+before \code{2.0-0}.
 }
 \examples{
 \dontrun{
@@ -33,5 +35,5 @@ if (fm_safe_sp()) {
   # Run sp dependent calculations
 }
 }
-
 }
+\keyword{internal}

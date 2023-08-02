@@ -279,14 +279,6 @@ fm_as_segm.sfc_POINT <-
     sfc <- x
     crs <- sf::st_crs(sfc)
 
-    #    if (st_check_dim(sfc)) {
-    #      warning(
-    #        "XYZ, XYM and XYZM sfg classes are not fully supported. In general the Z and M coordinates will be ignored"
-    #      )
-    #    }
-
-    crs <- fm_CRS(crs) # required for INLA::inla.mesh.segment
-
     loc <- sf::st_coordinates(sfc)
     coord_names <- intersect(c("X", "Y", "Z"), colnames(loc))
     loc <- unname(loc[, coord_names, drop = FALSE])
@@ -316,15 +308,6 @@ fm_as_segm.sfc_POINT <-
 fm_as_segm.sfc_LINESTRING <-
   function(x, join = TRUE, grp = NULL, reverse = FALSE, ...) {
     sfc <- x
-    # Note: Z should be fully supported in what we do with 3D coordinates ourselves.
-    # It's when applying st_ methods that the check needs to be done, not when crating
-    # objects, as we _do_ support 3D meshes in inla.mesh, and _should_ support those
-    # in inlabru.
-    #    if (st_check_dim(sfc)) {
-    #      warning(
-    #        "XYZ, XYM and XYZM sfg classes are not fully supported. In general the Z and M coordinates will be ignored"
-    #      )
-    #    }
 
     crs <- sf::st_crs(sfc)
 
@@ -367,15 +350,6 @@ fm_as_segm.sfc_LINESTRING <-
 fm_as_segm.sfc_MULTILINESTRING <-
   function(x, join = TRUE, grp = NULL, reverse = FALSE, ...) {
     sfc <- x
-    # Note: Z should be fully supported in what we do with 3D coordinates ourselves.
-    # It's when applying st_ methods that the check needs to be done, not when crating
-    # objects, as we _do_ support 3D meshes in inla.mesh, and _should_ support those
-    # in inlabru.
-    #    if (st_check_dim(sfc)) {
-    #      warning(
-    #        "XYZ, XYM and XYZM sfg classes are not fully supported. In general the Z and M coordinates will be ignored"
-    #      )
-    #    }
 
     crs <- sf::st_crs(sfc)
 

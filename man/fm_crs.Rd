@@ -7,7 +7,6 @@
 \alias{fm_crs_oblique}
 \alias{st_crs.fm_crs}
 \alias{$.fm_crs}
-\alias{print.fm_crs}
 \alias{fm_crs.default}
 \alias{fm_crs.crs}
 \alias{fm_crs.fm_crs}
@@ -40,8 +39,6 @@ fm_crs_oblique(x)
 \method{st_crs}{fm_crs}(x, ...)
 
 \method{$}{fm_crs}(x, name)
-
-\method{print}{fm_crs}(x, ...)
 
 \method{fm_crs}{default}(x, oblique = NULL, ...)
 

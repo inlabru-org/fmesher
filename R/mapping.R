@@ -15,10 +15,81 @@
 ##   You should have received a copy of the GNU General Public License
 ##   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-##' @title A
+#' @title Old globe projection methods
+#' @description Deprecated globe projection methods that may be removed in the
+#' future
+#' @keywords internal
+#' @param type Projection type, see [.globeproj.types()]
+#' @param orient long,lat,rotation
+#' @param xlim x-axis limits
+#' @param ylim y-axis limits
+#' @param scale x- and y- scaling factors
+#' @author Finn Lindgren
+#' @export
+globeproj <- function(type = NULL,
+                      orient = NULL,
+                      xlim = NULL,
+                      ylim = NULL,
+                      scale = NULL) {
+  if (missing(type)) {
+    return(.globeproj.types())
+  }
+  type <- match.arg(type, .globeproj.types())
+
+  name <- type
+  if (identical(type, "lambert")) {
+    type <- "orthocyl"
+    if (is.null(scale)) scale <- c(1, 1)
+    if (is.null(orient)) orient <- c(0, 0, 0, 0)
+  } else if (identical(type, "gall-peters")) {
+    type <- "orthocyl"
+    if (is.null(scale)) scale <- c(1, 1)
+    scale <- scale * c(1 * cos(pi / 4), 1 / cos(pi / 4))
+    if (is.null(orient)) orient <- c(0, 0, 0, 0)
+  }
+
+  if (identical(type, "longlat")) {
+    if (is.null(orient)) orient <- c(0, 0, 0, 0)
+    if (is.null(scale)) scale <- c(1, 1)
+    if (is.null(xlim)) xlim <- c(-180, 180) * scale[1]
+    if (is.null(ylim)) ylim <- c(-90, 90) * scale[2]
+  } else if (identical(type, "orthocyl")) {
+    if (is.null(orient)) orient <- c(0, 0, 0, 0)
+    if (is.null(scale)) scale <- c(1, 1)
+    if (is.null(xlim)) xlim <- c(-pi, pi) * scale[1]
+    if (is.null(ylim)) ylim <- c(-1, 1) * scale[2]
+  } else if (identical(type, "mollweide")) {
+    if (is.null(orient)) orient <- c(0, 0, 0, 0)
+    if (is.null(scale)) scale <- c(1, 1) / sqrt(2)
+    if (is.null(xlim)) xlim <- c(-2, 2) * sqrt(2) * scale[1]
+    if (is.null(ylim)) ylim <- c(-1, 1) * sqrt(2) * scale[2]
+  } else if (identical(type, "hammer")) {
+    if (is.null(orient)) orient <- c(0, 0, 0, 0)
+    if (is.null(scale)) scale <- c(1, 1) / sqrt(2)
+    if (is.null(xlim)) xlim <- c(-2, 2) * sqrt(2) * scale[1]
+    if (is.null(ylim)) ylim <- c(-1, 1) * sqrt(2) * scale[2]
+  }
+  while (length(orient) < 4) {
+    orient <- c(orient, 0)
+  }
+
+  x <- structure(
+    list(
+      name = name, type = type,
+      orient = orient,
+      xlim = xlim, ylim = ylim, scale = scale
+    ),
+    class = "globeproj"
+  )
+  .validobject(x)
+  x
+}
+
+
+##' @describeIn globeproj Types of globe projections
 ##' @param x A [globeproj] object.
 ##' @param \dots Not used.
-##' @return A vector of names of avaliable projection types; "longlat",
+##' @return A vector of names of available projection types; "longlat",
 ##' "mollweide", "hammer", "orthocyl", "lambert", "gall-peters"
 ##' @author Finn Lindgren
 .globeproj.types <-
@@ -98,75 +169,6 @@ setMethodS3(
 }
 
 
-##' @title A
-##' @param type Projection type, see [.globeproj.types()]
-##' @param orient long,lat,rotation
-##' @param xlim x-axis limits
-##' @param ylim y-axis limits
-##' @param scale x- and y- scaling factors
-##' @return B
-##' @author Finn Lindgren
-##' @export
-globeproj <- function(type = NULL,
-                      orient = NULL,
-                      xlim = NULL,
-                      ylim = NULL,
-                      scale = NULL) {
-  if (missing(type)) {
-    return(.globeproj.types())
-  }
-  type <- match.arg(type, .globeproj.types())
-
-  name <- type
-  if (identical(type, "lambert")) {
-    type <- "orthocyl"
-    if (is.null(scale)) scale <- c(1, 1)
-    if (is.null(orient)) orient <- c(0, 0, 0, 0)
-  } else if (identical(type, "gall-peters")) {
-    type <- "orthocyl"
-    if (is.null(scale)) scale <- c(1, 1)
-    scale <- scale * c(1 * cos(pi / 4), 1 / cos(pi / 4))
-    if (is.null(orient)) orient <- c(0, 0, 0, 0)
-  }
-
-  if (identical(type, "longlat")) {
-    if (is.null(orient)) orient <- c(0, 0, 0, 0)
-    if (is.null(scale)) scale <- c(1, 1)
-    if (is.null(xlim)) xlim <- c(-180, 180) * scale[1]
-    if (is.null(ylim)) ylim <- c(-90, 90) * scale[2]
-  } else if (identical(type, "orthocyl")) {
-    if (is.null(orient)) orient <- c(0, 0, 0, 0)
-    if (is.null(scale)) scale <- c(1, 1)
-    if (is.null(xlim)) xlim <- c(-pi, pi) * scale[1]
-    if (is.null(ylim)) ylim <- c(-1, 1) * scale[2]
-  } else if (identical(type, "mollweide")) {
-    if (is.null(orient)) orient <- c(0, 0, 0, 0)
-    if (is.null(scale)) scale <- c(1, 1) / sqrt(2)
-    if (is.null(xlim)) xlim <- c(-2, 2) * sqrt(2) * scale[1]
-    if (is.null(ylim)) ylim <- c(-1, 1) * sqrt(2) * scale[2]
-  } else if (identical(type, "hammer")) {
-    if (is.null(orient)) orient <- c(0, 0, 0, 0)
-    if (is.null(scale)) scale <- c(1, 1) / sqrt(2)
-    if (is.null(xlim)) xlim <- c(-2, 2) * sqrt(2) * scale[1]
-    if (is.null(ylim)) ylim <- c(-1, 1) * sqrt(2) * scale[2]
-  }
-  while (length(orient) < 4) {
-    orient <- c(orient, 0)
-  }
-
-  x <- structure(
-    list(
-      name = name, type = type,
-      orient = orient,
-      xlim = xlim, ylim = ylim, scale = scale
-    ),
-    class = "globeproj"
-  )
-  .validobject(x)
-  x
-}
-
-
 
 
 
@@ -238,7 +240,6 @@ plot_PolySet <- function(x, projection, add = FALSE, ...) {
 
 # outline ####
 
-#' @title A
 #' @param x A [globeproj] object
 #' @param add logical; If TRUE, add to existing plot
 #' @param do.plot logical; If try, do plotting
@@ -248,7 +249,7 @@ plot_PolySet <- function(x, projection, add = FALSE, ...) {
 #' @export
 #' @export outline
 #' @aliases outline
-#' @rdname outline
+#' @rdname globeproj
 
 setMethodS3(
   "outline", "globeproj",
@@ -303,7 +304,7 @@ setMethodS3(
 
 # graticule ####
 
-#' @title A
+#' @rdname globeproj
 #' @param x A [globeproj] object
 #' @param n The number of graticules (n-long, n-lat) to compute
 #' @param add logical; If TRUE, add to existing plot
@@ -314,7 +315,6 @@ setMethodS3(
 #' @export
 #' @export graticule
 #' @aliases graticule
-#' @rdname graticule
 setMethodS3(
   "graticule", "globeproj",
   function(x, n = c(24, 12), add = FALSE, do.plot = TRUE,
@@ -408,7 +408,7 @@ setMethodS3(
 
 # tissot ####
 
-##' @title A
+##' @rdname globeproj
 ##' @param x A [globeproj] object
 ##' @param n The number of Tissot indicatrices (n-long, n-lat) to compute
 ##' @param add logical; If TRUE, add to existing plot
@@ -419,7 +419,6 @@ setMethodS3(
 ##' @export
 ##' @export tissot
 ##' @aliases tissot
-##' @rdname tissot
 setMethodS3(
   "tissot", "globeproj",
   function(x, n = c(12, 6), add = FALSE, do.plot = TRUE,
@@ -474,9 +473,8 @@ plot_globeproj <-
 
 # limits ####
 
-##' Calculates projection axis limits
+##' @describeIn globeproj Calculates projection axis limits
 ##'
-##' @title Projection axis limits
 ##' @param x A [globeproj] object
 ##' @param loc Coordinates to be mapped.
 ##' @param \dots Additional parameters passed on to other methods
@@ -484,7 +482,6 @@ plot_globeproj <-
 ##' \item{xlim }{X axis limits in the map domain}
 ##' \item{ylim }{Y axis limits in the map domain}
 ##' @author Finn Lindgren
-##' @rdname limits
 ##' @export
 ##' @export limits
 ##' @aliases limits
@@ -575,7 +572,7 @@ rotmat3123 <- function(rot) {
 
 # project ####
 
-#' @title A
+#' @rdname globeproj
 #' @param x A [globeproj] object
 #' @param loc Coordinates to be mapped.
 #' @param inverse logical
@@ -583,7 +580,6 @@ rotmat3123 <- function(rot) {
 #' @return B
 #' @author Finn Lindgren
 #'
-#' @rdname project
 #' @export
 #' @export project
 #' @aliases project

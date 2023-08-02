@@ -1,8 +1,9 @@
-#' Sparse partial inverse
-#'
-#' @param A A symmetric matrix
-#'
-#' @export
+# Sparse partial inverse
+#
+# @param A A symmetric matrix
+#
+# @export
+# @keywords internal
 
 fm_qinv <- function(A) {
   A_C <- fm_as_dgCMatrix(A)

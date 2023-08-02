@@ -4,6 +4,7 @@
 #' Compute sparse matrix inverse
 #'
 #' @param AA A sparse matrix
+#' @keywords internal
 C_qinv <- function(AA) {
     .Call(`_fmesher_C_qinv`, AA)
 }
@@ -109,6 +110,7 @@ fmesher_split_lines <- function(mesh_loc, mesh_tv, loc, idx, options) {
 #' out <- C_matrixio_test2(args_input = inp)
 #' str(out)
 #' @export
+#' @keywords internal
 C_matrixio_test2 <- function(args_input) {
     .Call(`_fmesher_C_matrixio_test2`, args_input)
 }
@@ -130,6 +132,7 @@ C_matrixio_test2 <- function(args_input) {
 #' A
 #' Aout
 #' @export
+#' @keywords internal
 C_matrixio_test <- function(args_input) {
     .Call(`_fmesher_C_matrixio_test`, args_input)
 }

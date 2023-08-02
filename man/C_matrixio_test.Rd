@@ -26,3 +26,4 @@ Aout <- fm_as_dgTMatrix(out[["Ad"]])
 A
 Aout
 }
+\keyword{internal}

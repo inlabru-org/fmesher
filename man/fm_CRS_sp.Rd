@@ -15,7 +15,6 @@
 \alias{fm_CRS.fm_segm}
 \alias{fm_CRS.CRS}
 \alias{fm_CRS.default}
-\alias{print.fm_CRS}
 \alias{is.na.inla.CRS}
 \alias{fm_CRS.inla.CRS}
 \alias{fm_CRS.inla.mesh}
@@ -58,8 +57,6 @@ fm_CRS(x, oblique = NULL, ...)
   SRS_string = NULL,
   ...
 )
-
-\method{print}{fm_CRS}(x, ...)
 
 \method{is.na}{inla.CRS}(x)
 

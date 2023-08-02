@@ -38,3 +38,4 @@ Helper functions for displaying call stack information
 \item \code{fm_try_callstack()}: Inspired by \code{berryFunctions::tryStack}
 
 }}
+\keyword{internal}

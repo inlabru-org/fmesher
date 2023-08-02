@@ -2,7 +2,7 @@
 % Please edit documentation in R/mesh.R
 \name{fm_vertices}
 \alias{fm_vertices}
-\title{Extract vertex locations from an \code{inla.mesh}}
+\title{Extract vertex locations from an \code{fm_mesh_2d}}
 \usage{
 fm_vertices(x, format = NULL)
 }
@@ -16,7 +16,7 @@ An \code{sf}, \code{data.frame}, or \code{SpatialPointsDataFrame} object, with t
 coordinates, and a \code{.vertex} column with the vertex indices.
 }
 \description{
-Extracts the vertices of an \code{inla.mesh} object.
+Extracts the vertices of an \code{fm_mesh_2d} object.
 }
 \examples{
 if (require("ggplot2", quietly = TRUE)) {

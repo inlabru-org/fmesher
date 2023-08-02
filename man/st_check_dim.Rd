@@ -17,3 +17,4 @@ dimensional objects.
 \description{
 Check for "XYZ", "XYM" and "XYZM" sfg classes
 }
+\keyword{internal}

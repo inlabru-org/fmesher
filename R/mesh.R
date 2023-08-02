@@ -410,9 +410,9 @@ fm_store_points <- function(loc, crs = NULL, info = NULL, format = NULL) {
 }
 
 
-#' @title Extract vertex locations from an `inla.mesh`
+#' @title Extract vertex locations from an `fm_mesh_2d`
 #'
-#' @description Extracts the vertices of an `inla.mesh` object.
+#' @description Extracts the vertices of an `fm_mesh_2d` object.
 #'
 #' @export
 #' @param x An `inla.mesh` object.

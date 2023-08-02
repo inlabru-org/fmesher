@@ -15,6 +15,8 @@ are disjoint, otherwise \code{FALSE}. When \code{FALSE}, the attribute \code{Mes
 to a character vector describing the detected reasons.
 }
 \description{
-It seems as though st_polygon does not check this.
-For now only implements a basic check for disjoint regions using st_within()
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+\code{sf::st_polygon()} doesn't fully check polygon construction validity.
+For now only implements a basic check for disjoint regions using \code{st_within()}
 }
+\keyword{internal}

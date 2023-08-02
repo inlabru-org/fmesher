@@ -12,3 +12,4 @@ C_qinv(AA)
 \description{
 Compute sparse matrix inverse
 }
+\keyword{internal}
