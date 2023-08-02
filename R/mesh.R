@@ -1945,6 +1945,17 @@ fm_segm.fm_segm <- function(..., grp = NULL, grp.default = 0L) {
   segm <- fm_as_segm_list(list(...))
   fm_segm_join(segm, grp = grp, grp.default = grp.default)
 }
+#' @describeIn fm_segm Join `fm_segm` objects from a `fm_segm_list` into
+#' a single `fm_segm` object. Equivalent to `fm_segm_join(x)`
+#' @param grp When joining segments, use these group labels for segments
+#' instead of the original group labels.
+#' @param grp.default If `grp.default` is `NULL`, use these group labels for segments
+#' with NULL group.
+#' @param x A `fm_segm_list` object
+#' @export
+fm_segm.fm_segm_list <- function(x, grp = NULL, grp.default = 0L, ...) {
+  fm_segm_join(x, grp = grp, grp.default = grp.default)
+}
 #' @describeIn fm_segm Join multiple `fm_segm` objects into a single `fm_segm`
 #' object.
 #' @export
@@ -2144,10 +2155,18 @@ fm_as_segm <- function(x, ...) {
   UseMethod("fm_as_segm")
 }
 
-#' @describeIn fm_as_segm Convert each element of a list
+#' @describeIn fm_as_segm Convert each element, making a `fm_segm_list` object
+#' @seealso [c.fm_segm()], [c.fm_segm_list()],
+#' \code{\link[=[.fm_segm_list]{[.fm_segm_list()}}
 #' @export
 fm_as_segm_list <- function(x, ...) {
-  fm_as_list(x, ..., .method = "fm_as_segm")
+  if (inherits(x, c("fm_segm_list", "NULL"))) {
+    return(x)
+  }
+  structure(
+    fm_as_list(x, ..., .method = "fm_as_segm"),
+    class = "fm_segm_list"
+  )
 }
 
 #' @rdname fm_as_segm
@@ -2181,6 +2200,50 @@ fm_as_segm.inla.mesh.segment <- function(x, ...) {
   x[["is.bnd"]] <- rep(value, length(x[["is.bnd"]]))
   invisible(x)
 }
+
+
+
+
+#' Methods for fm_segm lists
+#'
+#' `fm_segm` lists can be combined into `fm_segm_list` list objects.
+#' @name fm_segm_list
+#' @param \dots Objects to be combined.
+#' @seealso [fm_as_segm_list()]
+NULL
+
+#' @export
+#' @describeIn fm_segm_list The `...` arguments should be `fm_segm`
+#' objects, or coercible with `fm_as_segm_list(list(...))`.
+#' @returns A `fm_segm_list` object
+#' @examples
+#' m <- c(A = fm_segm(1:2), B = fm_segm(3:4))
+#' str(m)
+#' str(m[2])
+`c.fm_segm` <- function(...) {
+  fm_as_segm_list(list(...))
+}
+
+#' @export
+#' @describeIn fm_segm_list The `...` arguments should be `fm_segm_list`
+#' objects.
+`c.fm_segm_list` <- function(...) {
+  y <- lapply(list(...), fm_as_segm_list)
+  object <- do.call(NextMethod, list("c", y))
+  class(object) <- "fm_segm_list"
+  object
+}
+
+#' @export
+#' @param x `fm_segm_list` object from which to extract element(s)
+#' @param i indices specifying elements to extract
+#' @describeIn fm_segm_list Extract sub-list
+`[.fm_segm_list` <- function(x, i) {
+  object <- NextMethod()
+  class(object) <- "fm_segm_list"
+  object
+}
+
 
 
 
@@ -2232,7 +2295,11 @@ fm_as_list <- function(x, ..., .method) {
 #' object and return in a list
 #' @export
 fm_as_fm_list <- function(x, ...) {
-  fm_as_list(x, ..., .method = "fm_as_fm")
+  y <- fm_as_list(x, ..., .method = "fm_as_fm")
+  if (all(vapply(y, function(xx) inherits(xx, "fm_segm"), TRUE))) {
+    y <- fm_as_segm_list(y)
+  }
+  y
 }
 #' @rdname fm_as_fm
 #' @usage
@@ -2566,7 +2633,7 @@ unify_loc_coords <- function(loc, crs = crs) {
       loc <- cbind(loc, 0.0)
     }
   } else if (ncol(loc) > 3) {
-    stop("Coordinates can have at mot 3 columns.")
+    stop("Coordinates can have at mots 3 columns.")
   }
   loc
 }

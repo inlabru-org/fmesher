@@ -4,6 +4,7 @@
 \alias{fm_segm}
 \alias{fm_segm.default}
 \alias{fm_segm.fm_segm}
+\alias{fm_segm.fm_segm_list}
 \alias{fm_segm_join}
 \alias{fm_segm_split}
 \alias{fm_segm.inla.mesh.segment}
@@ -18,6 +19,8 @@ fm_segm(...)
 \method{fm_segm}{default}(loc = NULL, idx = NULL, grp = NULL, is.bnd = TRUE, crs = NULL, ...)
 
 \method{fm_segm}{fm_segm}(..., grp = NULL, grp.default = 0L)
+
+\method{fm_segm}{fm_segm_list}(x, grp = NULL, grp.default = 0L, ...)
 
 fm_segm_join(x, grp = NULL, grp.default = 0L)
 
@@ -71,6 +74,9 @@ Make a spatial segment object
 \itemize{
 \item \code{fm_segm(fm_segm)}: Join multiple \code{fm_segm} objects into a single \code{fm_segm}
 object.
+
+\item \code{fm_segm(fm_segm_list)}: Join \code{fm_segm} objects from a \code{fm_segm_list} into
+a single \code{fm_segm} object. Equivalent to \code{fm_segm_join(x)}
 
 \item \code{fm_segm(fm_mesh_2d)}: Extract the boundary or interior segments of a 2d mesh.
 If \code{grp} is non-NULL, extracts only segments matching the matching the set

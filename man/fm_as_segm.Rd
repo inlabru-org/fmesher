@@ -110,10 +110,13 @@ Convert objects to \code{fm_segm}
 \itemize{
 \item \code{fm_as_segm()}: Convert an object to \code{fm_segm}.
 
-\item \code{fm_as_segm_list()}: Convert each element of a list
+\item \code{fm_as_segm_list()}: Convert each element, making a \code{fm_segm_list} object
 
 }}
 \seealso{
+\code{\link[=c.fm_segm]{c.fm_segm()}}, \code{\link[=c.fm_segm_list]{c.fm_segm_list()}},
+\code{\link[=[.fm_segm_list]{[.fm_segm_list()}}
+
 Other object creation and conversion: 
 \code{\link{fm_as_fm}()},
 \code{\link{fm_as_lattice_2d}()},
