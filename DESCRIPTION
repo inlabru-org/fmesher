@@ -9,7 +9,9 @@ Authors@R: c(
                      "Finn Lindgren wrote the main code")),
   person("Seaton", "Andy", email = "andy.e.seaton@gmail.com",
          role = c("ctb", "cph"),
-         comment = "Andy Seaton developed sf support")
+         comment = "Andy Seaton developed parts of the sf support"),
+  person("Suen", "Man Ho", email = "M.H.Suen@sms.ed.ac.uk", role = c("ctb", "cph"),
+         comment = "Man Ho Suen contributed features for the integration methods")
   )
 Description: Functions that generate planar and spherical triangle meshes,
     computes finite element calculations for 1- and 2-dimensional flat and curved
