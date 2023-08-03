@@ -828,7 +828,7 @@ fm_fem.fm_mesh_1d <- function(mesh, order = 2, ...) {
         x = c(c1.l, c1.r, c1.0),
         dims = c(mesh$m, mesh$m)
       )
-    g2 <- t(g1) %*% Matrix::Diagonal(mesh$m, 1 / c0) %*% g1
+    g2 <- Matrix::t(g1) %*% Matrix::Diagonal(mesh$m, 1 / c0) %*% g1
     c0 <- Matrix::Diagonal(mesh$m, c0)
   } else if (mesh$degree == 2) {
     if (mesh$cyclic) {
@@ -852,15 +852,15 @@ fm_fem.fm_mesh_1d <- function(mesh, order = 2, ...) {
           c(knots.d * 8 / 9, knots.d * 5 / 9, knots.d * 5 / 9)^0.5,
         derivatives = TRUE
       )
-    c1 <- t(info$A) %*% info$A
-    g1 <- t(info$dA) %*% info$dA
-    g2 <- t(info$d2A) %*% info$d2A
+    c1 <- Matrix::t(info$A) %*% info$A
+    g1 <- Matrix::t(info$dA) %*% info$dA
+    g2 <- Matrix::t(info$d2A) %*% info$d2A
 
-    g01 <- t(info$A) %*% info$dA
-    g02 <- t(info$A) %*% info$d2A
-    g12 <- t(info$dA) %*% info$d2A
+    g01 <- Matrix::t(info$A) %*% info$dA
+    g02 <- Matrix::t(info$A) %*% info$d2A
+    g12 <- Matrix::t(info$dA) %*% info$d2A
 
-    c0 <- Matrix::Diagonal(nrow(c1), rowSums(c1))
+    c0 <- Matrix::Diagonal(nrow(c1), Matrix::rowSums(c1))
 
     return(list(c0 = c0, c1 = c1, g1 = g1, g2 = g2, g01 = g01, g02 = g02, g12 = g12))
   } else {
