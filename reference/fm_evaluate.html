@@ -101,7 +101,7 @@ defined on a mesh or function space.</p>
 <span>  <span class="va">loc</span>,</span>
 <span>  weights <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  derivatives <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"default"</span>, <span class="st">"nearest"</span>, <span class="st">"linear"</span>, <span class="st">"quadratic"</span><span class="op">)</span>,</span>
+<span>  method <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -170,7 +170,8 @@ and/or <code>lattice</code>.</p></dd>
 
 
 <dt>method</dt>
-<dd><p>character; with "default", uses the object definition of the
+<dd><p>character; either "default", "nearest", "linear", or
+"quadratic". With <code>NULL</code> or "default", uses the object definition of the
 function space. Otherwise overrides the object definition.</p></dd>
 
 
