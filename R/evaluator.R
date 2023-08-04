@@ -252,7 +252,8 @@ fm_evaluator_mesh_2d <- function(mesh,
 }
 
 
-#' @param method character; with "default", uses the object definition of the
+#' @param method character; either "default", "nearest", "linear", or
+#' "quadratic". With `NULL` or "default", uses the object definition of the
 #' function space. Otherwise overrides the object definition.
 #' @export
 #' @rdname fm_evaluate
@@ -260,14 +261,12 @@ fm_evaluator_mesh_1d <- function(mesh,
                                  loc,
                                  weights = NULL,
                                  derivatives = NULL,
-                                 method = c(
-                                   "default",
-                                   "nearest",
-                                   "linear",
-                                   "quadratic"
-                                 ),
+                                 method = NULL,
                                  ...) {
-  method <- match.arg(method)
+  method <- match.arg(method, c("default",
+                                "nearest",
+                                "linear",
+                                "quadratic"))
   ok <- (loc >= mesh$interval[1]) & (loc <= mesh$interval[2])
   if (identical(method, "default")) {
     ## Compute basis based on mesh$degree and mesh$boundary

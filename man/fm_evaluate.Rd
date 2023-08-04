@@ -49,7 +49,7 @@ fm_evaluator_mesh_1d(
   loc,
   weights = NULL,
   derivatives = NULL,
-  method = c("default", "nearest", "linear", "quadratic"),
+  method = NULL,
   ...
 )
 
@@ -94,7 +94,8 @@ for \code{fm_mesh_1d} objects, and \code{dx}, \code{dy}, \code{dz} for \code{fm_
 \item{crs}{An optional CRS or inla.CRS object associated with \code{loc}
 and/or \code{lattice}.}
 
-\item{method}{character; with "default", uses the object definition of the
+\item{method}{character; either "default", "nearest", "linear", or
+"quadratic". With \code{NULL} or "default", uses the object definition of the
 function space. Otherwise overrides the object definition.}
 
 \item{xlim}{X-axis limits for a lattice. For R2 meshes, defaults to covering
