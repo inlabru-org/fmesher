@@ -2206,8 +2206,8 @@ fm_transform.fm_mesh_2d <- function(x,
                                     ...,
                                     passthrough = FALSE,
                                     crs0 = fm_crs(x)) {
-  x$loc <- fm_transform(x$loc, crs = crs, ..., crs0 = x$crs, passthrough = passthrough)
-  x$crs <- fm_CRS(crs)
+  x$loc <- fm_transform(x$loc, crs = crs, ..., crs0 = crs0, passthrough = passthrough)
+  x$crs <- fm_crs(crs)
   x$manifold <- fm_detect_manifold(x)
   x
 }
@@ -2219,18 +2219,22 @@ fm_transform.fm_lattice_2d <- function(x,
                                        ...,
                                        passthrough = FALSE,
                                        crs0 = fm_crs(x)) {
-  x$segm <- fm_transform(x$segm, crs = crs, crs0 = x$crs, ..., passthrough = passthrough)
-  x$loc <- fm_transform(x$loc, crs = crs, crs0 = x$crs, ..., passthrough = passthrough)
-  x$crs <- fm_CRS(crs)
+  x$segm <- fm_transform(x$segm, crs = crs, crs0 = crs0, ..., passthrough = passthrough)
+  x$loc <- fm_transform(x$loc, crs = crs, crs0 = crs0, ..., passthrough = passthrough)
+  x$crs <- fm_crs(crs)
   invisible(x)
 }
 
 
 #' @export
 #' @rdname fm_transform
-fm_transform.fm_segm <- function(x, crs = fm_crs(x), ..., passthrough = FALSE) {
-  x$loc <- fm_transform(x$loc, crs = crs, crs0 = x$crs, ..., passthrough = passthrough)
-  x$crs <- fm_CRS(crs)
+fm_transform.fm_segm <- function(x,
+                                 crs = fm_crs(x),
+                                 ...,
+                                 passthrough = FALSE,
+                                 crs0 = fm_crs(x)) {
+  x$loc <- fm_transform(x$loc, crs = crs, crs0 = crs0, ..., passthrough = passthrough)
+  x$crs <- fm_crs(crs)
   invisible(x)
 }
 

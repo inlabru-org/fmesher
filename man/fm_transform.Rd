@@ -37,7 +37,7 @@ fm_transform(x, crs = fm_crs(x), ...)
 
 \method{fm_transform}{fm_lattice_2d}(x, crs = fm_crs(x), ..., passthrough = FALSE, crs0 = fm_crs(x))
 
-\method{fm_transform}{fm_segm}(x, crs = fm_crs(x), ..., passthrough = FALSE)
+\method{fm_transform}{fm_segm}(x, crs = fm_crs(x), ..., passthrough = FALSE, crs0 = fm_crs(x))
 
 \method{fm_transform}{inla.mesh}(x, crs = fm_crs(x), ...)
 
