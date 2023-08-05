@@ -63,17 +63,46 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// fmesher_spherical_bsplines1
+SEXP fmesher_spherical_bsplines1(Rcpp::NumericVector loc, int n, int degree, Rcpp::LogicalVector uniform);
+RcppExport SEXP _fmesher_fmesher_spherical_bsplines1(SEXP locSEXP, SEXP nSEXP, SEXP degreeSEXP, SEXP uniformSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type loc(locSEXP);
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< int >::type degree(degreeSEXP);
+    Rcpp::traits::input_parameter< Rcpp::LogicalVector >::type uniform(uniformSEXP);
+    rcpp_result_gen = Rcpp::wrap(fmesher_spherical_bsplines1(loc, n, degree, uniform));
+    return rcpp_result_gen;
+END_RCPP
+}
+// fmesher_spherical_bsplines
+SEXP fmesher_spherical_bsplines(Rcpp::NumericMatrix loc, int n, int degree, Rcpp::LogicalVector uniform);
+RcppExport SEXP _fmesher_fmesher_spherical_bsplines(SEXP locSEXP, SEXP nSEXP, SEXP degreeSEXP, SEXP uniformSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type loc(locSEXP);
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< int >::type degree(degreeSEXP);
+    Rcpp::traits::input_parameter< Rcpp::LogicalVector >::type uniform(uniformSEXP);
+    rcpp_result_gen = Rcpp::wrap(fmesher_spherical_bsplines(loc, n, degree, uniform));
+    return rcpp_result_gen;
+END_RCPP
+}
 // fmesher_fem
-Rcpp::List fmesher_fem(Rcpp::NumericMatrix mesh_loc, Rcpp::IntegerMatrix mesh_tv, int fem_order_max, Rcpp::List options);
-RcppExport SEXP _fmesher_fmesher_fem(SEXP mesh_locSEXP, SEXP mesh_tvSEXP, SEXP fem_order_maxSEXP, SEXP optionsSEXP) {
+Rcpp::List fmesher_fem(Rcpp::NumericMatrix mesh_loc, Rcpp::IntegerMatrix mesh_tv, int fem_order_max, Rcpp::Nullable<Rcpp::List> aniso, Rcpp::List options);
+RcppExport SEXP _fmesher_fmesher_fem(SEXP mesh_locSEXP, SEXP mesh_tvSEXP, SEXP fem_order_maxSEXP, SEXP anisoSEXP, SEXP optionsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type mesh_loc(mesh_locSEXP);
     Rcpp::traits::input_parameter< Rcpp::IntegerMatrix >::type mesh_tv(mesh_tvSEXP);
     Rcpp::traits::input_parameter< int >::type fem_order_max(fem_order_maxSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::List> >::type aniso(anisoSEXP);
     Rcpp::traits::input_parameter< Rcpp::List >::type options(optionsSEXP);
-    rcpp_result_gen = Rcpp::wrap(fmesher_fem(mesh_loc, mesh_tv, fem_order_max, options));
+    rcpp_result_gen = Rcpp::wrap(fmesher_fem(mesh_loc, mesh_tv, fem_order_max, aniso, options));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -120,7 +149,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_fmesher_fmesher_globe_points", (DL_FUNC) &_fmesher_fmesher_globe_points, 1},
     {"_fmesher_fmesher_rcdt", (DL_FUNC) &_fmesher_fmesher_rcdt, 7},
     {"_fmesher_fmesher_bary", (DL_FUNC) &_fmesher_fmesher_bary, 4},
-    {"_fmesher_fmesher_fem", (DL_FUNC) &_fmesher_fmesher_fem, 4},
+    {"_fmesher_fmesher_spherical_bsplines1", (DL_FUNC) &_fmesher_fmesher_spherical_bsplines1, 4},
+    {"_fmesher_fmesher_spherical_bsplines", (DL_FUNC) &_fmesher_fmesher_spherical_bsplines, 4},
+    {"_fmesher_fmesher_fem", (DL_FUNC) &_fmesher_fmesher_fem, 5},
     {"_fmesher_fmesher_split_lines", (DL_FUNC) &_fmesher_fmesher_split_lines, 5},
     {"_fmesher_C_matrixio_test2", (DL_FUNC) &_fmesher_C_matrixio_test2, 1},
     {"_fmesher_C_matrixio_test", (DL_FUNC) &_fmesher_C_matrixio_test, 1},

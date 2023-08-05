@@ -321,12 +321,7 @@ fm_mesh_intersection <- function(mesh, poly) {
     interior = list(all_edges)
   )
 
-  split <- fm_split_lines(mesh_cover, loc = poly$loc, idx = poly$idx)
-  split_segm <- fm_segm(
-    loc = split$split.loc,
-    idx = split$split.idx,
-    is.bnd = FALSE
-  )
+  split_segm <- fm_split_lines(mesh_cover, segm = poly)
 
   joint_segm <- join_segm(split_segm, all_edges)
 
@@ -874,12 +869,20 @@ fm_fem.fm_mesh_1d <- function(mesh, order = 2, ...) {
 }
 
 #' @rdname fm_fem
+#' @param aniso If non-NULL, a `list(gamma, v)`. Calculates anisotropic structure
+#' matrices (in addition to the regular) for \eqn{\gamma}{gamma} and \eqn{v}{v} for
+#' an anisotropic operator \eqn{\nabla\cdot H \nabla}{div H grad}, where
+#' \eqn{H=\gamma I + v v^\top}{H = gamma I + v v'}.
+#' Currently (2023-08-05) the fields need to be given per vertex.
 #' @export
-fm_fem.fm_mesh_2d <- function(mesh, order = 2, ...) {
+fm_fem.fm_mesh_2d <- function(mesh, order = 2,
+                              aniso = NULL,
+                              ...) {
   result <- fmesher_fem(
     mesh_loc = mesh$loc,
     mesh_tv = mesh$graph$tv - 1L,
     fem_order_max = order,
+    aniso = aniso,
     options = list()
   )
   result
@@ -909,11 +912,10 @@ fm_fem.inla.mesh <- function(mesh, order = 2, ...) {
 #' and filter out segment of length zero.
 #'
 #' @param mesh An `fm_mesh_2d` or `inla.mesh` object
-#' @param sp Start points of lines
-#' @param ep End points of lines
-#' @param ... Passed on to the method for `fm_mesh_2d`.
-#' @return List of start and end points resulting from splitting the given lines:
-#' `list(sp, ep, split.origin, idx, split.loc)`
+#' @param segm An [fm_segm()] object with segments to be split
+#' @param ... Unused.
+#' @return An [fm_segm()] object with an added field `origin`, that
+#' for each new segment gives the originator index into to original `segm` object.
 #'
 #' @author Fabian E. Bachl \email{f.e.bachl@@bath.ac.uk}
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
@@ -927,71 +929,65 @@ fm_split_lines <- function(mesh, ...) {
 
 #' @rdname fm_split_lines
 #' @export
-fm_split_lines.fm_mesh_2d <- function(mesh, sp, ep, ...) {
-  idx <- seq_len(NROW(sp))
-  if (NROW(sp) > 0) {
+fm_split_lines.fm_mesh_2d <- function(mesh, segm, ...) {
+  origin <- seq_len(NROW(segm$idx))
+  if (NROW(segm$loc) > 0) {
     # Filter out segments not on the mesh
-    t1 <- fm_bary(mesh, loc = as.matrix(sp))$t
-    t2 <- fm_bary(mesh, loc = as.matrix(ep))$t
-    keep <- !(is.na(t1) | is.na(t2))
+    t1 <- fm_bary(mesh, loc = segm$loc, crs = fm_crs(segm))$t
+    keep <- !(is.na(t1[segm$idx[, 1]]) | is.na(t1[segm$idx[, 2]]))
     # if (any(!keep)) { warning("points outside boundary! filtering...")}
-    sp <- sp[keep, , drop = FALSE]
-    ep <- ep[keep, , drop = FALSE]
-    idx <- idx[keep]
+    segm <- fm_segm(loc = segm$loc,
+                    idx = segm$idx[keep, , drop = FALSE],
+                    grp = segm$grp[keep],
+                    is.bnd = segm$is.bnd,
+                    crs = fm_crs(segm))
+    origin <- origin[keep]
   }
 
-  if (NROW(sp) == 0) {
-    return(list(
-      sp = sp, ep = ep,
-      split.origin = NULL,
-      idx = idx,
-      split.loc = NULL
-    ))
+  if (NROW(segm$idx) == 0) {
+    segm$origin <- origin
+    return(segm)
   }
-
-  loc <- as.matrix(rbind(sp, ep))
 
   # Split the segments into parts
-  if (NCOL(loc) == 2) {
-    loc <- cbind(loc, rep(0, NROW(loc)))
+  if (NCOL(segm$loc) == 2) {
+    segm$loc <- cbind(segm$loc, rep(0, NROW(segm$loc)))
   }
-  np <- dim(sp)[1]
-  sp.idx <- cbind(seq_len(np), np + seq_len(np))
   splt <- fmesher_split_lines(
     mesh_loc = mesh$loc,
     mesh_tv = mesh$graph$tv - 1L,
-    loc = loc,
-    idx = sp.idx - 1L,
+    loc = segm$loc,
+    idx = segm$idx - 1L,
     options = list()
   )
   indexoutput <- list("split.idx", "split.t", "split.origin")
   for (name in intersect(names(splt), indexoutput)) {
     splt[[name]] <- splt[[name]] + 1L
   }
-  # plot(data$mesh)
-  # points(loc)
-  # points(splt$split.loc,col="blue)
 
-  # Start points of new segments
-  sp <- splt$split.loc[splt$split.idx[, 1], seq_len(dim(sp)[2]), drop = FALSE]
-  # End points of new segments
-  ep <- splt$split.loc[splt$split.idx[, 2], seq_len(dim(ep)[2]), drop = FALSE]
-  idx <- idx[splt$split.idx[, 1]]
-  origin <- splt$split.origin
+  segm.split <- fm_segm(loc = splt$split.loc,
+                        idx = splt$split.idx,
+                        grp = segm$grp[splt$split.origin],
+                        is.bnd = segm$is.bnd,
+                        crs = fm_crs(segm))
+  origin <- origin[splt$split.origin]
+
+  #  plot(mesh)
+  #  lines(segm)
+  #  points(segm.split$loc[, 1:2], col="red", pch = 20)
+  #  points(segm$loc[, 1:2], col="blue", pch = 20)
 
   # Filter out zero length segments
-  sl <- apply((ep - sp)^2, MARGIN = 1, sum)
-  sp <- sp[!(sl == 0), , drop = FALSE]
-  ep <- ep[!(sl == 0), , drop = FALSE]
-  origin <- origin[!(sl == 0)]
-  idx <- idx[!(sl == 0)]
+  keep <- rowSums((segm.split$loc[segm.split$idx[, 2], , drop = FALSE] -
+                     segm.split$loc[segm.split$idx[, 1], , drop = FALSE])^2) > 0
+  segm.split <- fm_segm(loc = segm.split$loc,
+                        idx = segm.split$idx[keep, , drop = FALSE],
+                        grp = segm.split$grp[keep],
+                        is.bnd = segm.split$is.bnd,
+                        crs = fm_crs(segm))
+  segm.split$origin <- origin[keep]
 
-  return(list(
-    sp = sp, ep = ep,
-    split.origin = origin,
-    idx = idx,
-    split.loc = splt$split.loc
-  ))
+  return(segm.split)
 }
 
 #' @rdname fm_split_lines

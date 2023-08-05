@@ -4,7 +4,7 @@
 \alias{fmesher_fem}
 \title{Finite element matrix computation}
 \usage{
-fmesher_fem(mesh_loc, mesh_tv, fem_order_max, options)
+fmesher_fem(mesh_loc, mesh_tv, fem_order_max, aniso, options)
 }
 \arguments{
 \item{mesh_loc}{numeric matrix; mesh vertex coordinates}
@@ -13,12 +13,18 @@ fmesher_fem(mesh_loc, mesh_tv, fem_order_max, options)
 
 \item{fem_order_max}{integer; the highest operator order to compute}
 
+\item{aniso}{If non-NULL, a \code{list(gamma, v)}. Calculates anisotropic structure
+matrices (in addition to the regular) for \eqn{\gamma}{gamma} and \eqn{v}{v} for
+an anisotropic operator \eqn{\nabla\cdot H \nabla}{div H grad}, where
+\eqn{H=\gamma I + v v^\top}{H = gamma I + v v'}.
+Currently (2023-08-05) the fields need to be given per vertex.}
+
 \item{options}{list of triangulation options (\code{sphere_tolerance})}
 }
 \description{
-(...)
+Construct finite element structure matrices
 }
 \examples{
 m <- fmesher_rcdt(list(cet_margin = 1), matrix(0, 1, 2))
-b <- fmesher_fem(m$s, m$tv, fem_order_max = 2, list())
+b <- fmesher_fem(m$s, m$tv, fem_order_max = 2, aniso = NULL, options = list())
 }

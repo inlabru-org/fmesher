@@ -8,22 +8,20 @@
 \usage{
 fm_split_lines(mesh, ...)
 
-\method{fm_split_lines}{fm_mesh_2d}(mesh, sp, ep, ...)
+\method{fm_split_lines}{fm_mesh_2d}(mesh, segm, ...)
 
 \method{fm_split_lines}{inla.mesh}(mesh, ...)
 }
 \arguments{
 \item{mesh}{An \code{fm_mesh_2d} or \code{inla.mesh} object}
 
-\item{...}{Passed on to the method for \code{fm_mesh_2d}.}
+\item{...}{Unused.}
 
-\item{sp}{Start points of lines}
-
-\item{ep}{End points of lines}
+\item{segm}{An \code{\link[=fm_segm]{fm_segm()}} object with segments to be split}
 }
 \value{
-List of start and end points resulting from splitting the given lines:
-\code{list(sp, ep, split.origin, idx, split.loc)}
+An \code{\link[=fm_segm]{fm_segm()}} object with an added field \code{origin}, that
+for each new segment gives the originator index into to original \code{segm} object.
 }
 \description{
 Compute intersections between line segments and triangle edges,

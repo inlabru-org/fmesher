@@ -1,19 +1,5 @@
 #' @include deprecated.R
 
-#' @describeIn fmesher-deprecated Split lines at mesh edges.
-#' @inheritParams fm_split_lines
-#' @param filter.zero.length logical; if `TRUE`, remove line segments of length zero
-#' `r lifecycle::badge("deprecated")` in favour of [fm_split_lines()].
-split_lines <- function(mesh, sp, ep, filter.zero.length = TRUE) {
-  if (!isTRUE(filter.zero.length)) {
-    lifecycle::deprecate_soft(
-      "0.0.1",
-      "split_lines(filter.zero.length = 'is assumed to be TRUE')"
-    )
-  }
-  fm_split_lines(mesh, sp = sp, ep = ep)
-}
-
 
 #' @title (Blockwise) cross product of integration points
 #'
@@ -985,7 +971,13 @@ fm_int_mesh_2d_lines <- function(samplers,
 
   sp <- coords[-c(segment, nrow(coords)), coordnames, drop = FALSE]
   ep <- coords[-c(1L, 1L + segment), coordnames, drop = FALSE]
-  idx <- feature[-c(segment, nrow(coords))]
+  origin <- feature[-c(segment, nrow(coords))]
+  segm <- fm_segm(
+    rbind(sp, ep),
+    idx = cbind(seq_len(nrow(sp)), seq_len(nrow(sp)) + nrow(sp)),
+    grp = origin,
+    crs = fm_crs(samplers)
+  )
 
   sampler_crs <- fm_crs(samplers)
   target_crs <- fm_crs(domain)
@@ -995,37 +987,28 @@ fm_int_mesh_2d_lines <- function(samplers,
   }
 
   # Filter out points outside the mesh...
-  sp <- fm_transform(sp, crs = target_crs, crs0 = sampler_crs, passthrough = TRUE)
-  ep <- fm_transform(ep, crs = target_crs, crs0 = sampler_crs, passthrough = TRUE)
-  proj1 <- fm_evaluator(domain, loc = sp, crs = target_crs)
-  proj2 <- fm_evaluator(domain, loc = ep, crs = target_crs)
-  ok <- (proj1$proj$ok & proj2$proj$ok)
-  if (!all(ok)) {
-    warning("Found spatial lines with start or end point ouside of the mesh. Omitting.")
-  }
-  sp <- sp[ok, , drop = FALSE]
-  ep <- ep[ok, , drop = FALSE]
-  idx <- idx[ok]
+  segm <- fm_transform(segm, crs = target_crs, passthrough = TRUE)
 
   # Split at mesh edges
-  line.spl <- fm_split_lines(domain, sp, ep)
-  sp <- line.spl$sp
-  ep <- line.spl$ep
-  idx <- idx[line.spl$split.origin]
+  line.spl <- fm_split_lines(domain, segm)
+  origin <- line.spl$origin
 
-  # At this point, sp and ep are in the target_crs
+  # At this point, segm is in the target_crs
 
   # Determine integration points along lines
 
   if (fm_crs_is_null(sampler_crs)) {
+    sp <- segm$loc[segm$idx[, 1], , drop = FALSE]
+    ep <- segm$loc[segm$idx[, 2], , drop = FALSE]
     ips <- (sp + ep) / 2
     w <- rowSums((ep - sp)^2)^0.5
   } else {
     # Has CRS
     longlat.crs <- fm_crs("longlat_globe")
     geocentric.crs <- fm_crs("sphere")
-    sp3d <- fm_transform(sp, crs = geocentric.crs, crs0 = target_crs)
-    ep3d <- fm_transform(ep, crs = geocentric.crs, crs0 = target_crs)
+    segm3d <- fm_transform(segm, crs = geocentric.crs, crs0 = target_crs)
+    sp3d <- segm$loc[segm$idx[, 1], , drop = FALSE]
+    ep3d <- segm$loc[segm$idx[, 2], , drop = FALSE]
     mp3d <- (sp3d + ep3d) / rowSums((sp3d + ep3d)^2)^0.5
 
     ips <- fm_transform(mp3d, crs = target_crs, crs0 = geocentric.crs)
@@ -1044,8 +1027,8 @@ fm_int_mesh_2d_lines <- function(samplers,
 
   # Weights
   ips <- cbind(ips, weight = w)
-  ips$weight <- ips$weight * weight[idx]
-  ips$.block <- .block[idx]
+  ips$weight <- ips$weight * weight[origin]
+  ips$.block <- .block[origin]
 
   ips <- sf::st_as_sf(as.data.frame(ips),
     coords = seq_len(d_ips),

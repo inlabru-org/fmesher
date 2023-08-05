@@ -16,7 +16,7 @@ fmesher_bary(mesh_loc, mesh_tv, loc, options)
 \item{options}{list of triangulation options}
 }
 \description{
-(...)
+Locate points and compute triangular barycentric coordinates
 }
 \examples{
 m <- fmesher_rcdt(list(cet_margin = 1), matrix(0, 1, 2))

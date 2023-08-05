@@ -55,3 +55,6 @@ Computes the basis mapping matrix between a function space on a mesh, and locati
 # Compute basis mapping matrix
 str(fm_basis(fmexample$mesh, fmexample$loc))
 }
+\seealso{
+\code{\link[=fm_raw_basis]{fm_raw_basis()}}
+}

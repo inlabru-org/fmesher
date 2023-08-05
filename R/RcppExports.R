@@ -44,7 +44,7 @@ fmesher_rcdt <- function(options, loc, tv = NULL, boundary = NULL, interior = NU
 #' @title Barycentric coordinate computation
 #'
 #' @description
-#' (...)
+#' Locate points and compute triangular barycentric coordinates
 #'
 #' @param loc numeric matrix; coordinates of points to locate in the mesh
 #' @param mesh_loc numeric matrix; mesh vertex coordinates
@@ -61,21 +61,54 @@ fmesher_bary <- function(mesh_loc, mesh_tv, loc, options) {
     .Call(`_fmesher_fmesher_bary`, mesh_loc, mesh_tv, loc, options)
 }
 
+#' @title Rotationally invariant spherical B-splines
+#'
+#' @description
+#' Compute rotationally invariant spherical B-splines on the unit sphere
+#'
+#' @param loc numeric vector/matrix; coordinates of points to locate in the mesh,
+#' only the z-coordinates are used (`sin(latitude)`)
+#' @param n The number of basis functions
+#' @param degree The polynomial basis degree
+#' @param uniform logical; If `TRUE`, the knots are spaced uniformly by latitude,
+#' if `FALSE`, the knots are spaced uniformly by `sin(latitude)`
+#' @rdname fmesher_spherical_bsplines
+#' @examples
+#' m <- fm_rcdt_2d(globe = 1)
+#' fmesher_spherical_bsplines(m$loc, n = 3, degree = 2, uniform = FALSE)
+#' fmesher_spherical_bsplines1(m$loc[, 3], n = 3, degree = 2, uniform = FALSE)
+#' @export
+#' @keywords internal
+fmesher_spherical_bsplines1 <- function(loc, n, degree, uniform) {
+    .Call(`_fmesher_fmesher_spherical_bsplines1`, loc, n, degree, uniform)
+}
+
+#' @rdname fmesher_spherical_bsplines
+#' @export
+fmesher_spherical_bsplines <- function(loc, n, degree, uniform) {
+    .Call(`_fmesher_fmesher_spherical_bsplines`, loc, n, degree, uniform)
+}
+
 #' @title Finite element matrix computation
 #'
 #' @description
-#' (...)
+#' Construct finite element structure matrices
 #'
 #' @param mesh_loc numeric matrix; mesh vertex coordinates
 #' @param mesh_tv 3-column integer matrix with 0-based vertex indices for each triangle
 #' @param fem_order_max integer; the highest operator order to compute
+#' @param aniso If non-NULL, a `list(gamma, v)`. Calculates anisotropic structure
+#' matrices (in addition to the regular) for \eqn{\gamma}{gamma} and \eqn{v}{v} for
+#' an anisotropic operator \eqn{\nabla\cdot H \nabla}{div H grad}, where
+#' \eqn{H=\gamma I + v v^\top}{H = gamma I + v v'}.
+#' Currently (2023-08-05) the fields need to be given per vertex.
 #' @param options list of triangulation options (`sphere_tolerance`)
 #' @examples
 #' m <- fmesher_rcdt(list(cet_margin = 1), matrix(0, 1, 2))
-#' b <- fmesher_fem(m$s, m$tv, fem_order_max = 2, list())
+#' b <- fmesher_fem(m$s, m$tv, fem_order_max = 2, aniso = NULL, options = list())
 #' @export
-fmesher_fem <- function(mesh_loc, mesh_tv, fem_order_max, options) {
-    .Call(`_fmesher_fmesher_fem`, mesh_loc, mesh_tv, fem_order_max, options)
+fmesher_fem <- function(mesh_loc, mesh_tv, fem_order_max, aniso, options) {
+    .Call(`_fmesher_fmesher_fem`, mesh_loc, mesh_tv, fem_order_max, aniso, options)
 }
 
 #' @title Split lines at triangle edges

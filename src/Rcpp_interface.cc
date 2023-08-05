@@ -472,7 +472,7 @@ Rcpp::List fmesher_rcdt(Rcpp::List options,
 //' @title Barycentric coordinate computation
 //'
 //' @description
-//' (...)
+//' Locate points and compute triangular barycentric coordinates
 //'
 //' @param loc numeric matrix; coordinates of points to locate in the mesh
 //' @param mesh_loc numeric matrix; mesh vertex coordinates
@@ -522,25 +522,128 @@ Rcpp::List fmesher_bary(Rcpp::NumericMatrix mesh_loc,
 
 
 
+//' @title Rotationally invariant spherical B-splines
+//'
+//' @description
+//' Compute rotationally invariant spherical B-splines on the unit sphere
+//'
+//' @param loc numeric vector/matrix; coordinates of points to locate in the mesh,
+//' only the z-coordinates are used (`sin(latitude)`)
+//' @param n The number of basis functions
+//' @param degree The polynomial basis degree
+//' @param uniform logical; If `TRUE`, the knots are spaced uniformly by latitude,
+//' if `FALSE`, the knots are spaced uniformly by `sin(latitude)`
+//' @rdname fmesher_spherical_bsplines
+//' @examples
+//' m <- fm_rcdt_2d(globe = 1)
+//' fmesher_spherical_bsplines(m$loc, n = 3, degree = 2, uniform = FALSE)
+//' fmesher_spherical_bsplines1(m$loc[, 3], n = 3, degree = 2, uniform = FALSE)
+//' @export
+//' @keywords internal
+// [[Rcpp::export]]
+SEXP fmesher_spherical_bsplines1(Rcpp::NumericVector loc,
+                                 int n,
+                                 int degree,
+                                 Rcpp::LogicalVector uniform) {
+  if (n < 0) {
+    Rcpp::stop("'n' must be at least 1.");
+  }
+  if (degree < 1) {
+    Rcpp::stop("'degree' must be at least 0.");
+  }
+  if (n <= degree) {
+    Rcpp::stop("'n' must be larger than 'degree'");
+  }
+
+  MatrixC matrices;
+  matrices.attach("loc", new Matrix<double>(loc), true);
+
+  FMLOG("bspline output." << std::endl);
+
+  bool bool_uniform = Rcpp::is_true(Rcpp::all(uniform));
+  if (bool_uniform) {
+    FMLOG("uniform = TRUE" << std::endl);
+  } else {
+    FMLOG("uniform = FALSE" << std::endl);
+  }
+  matrices.attach(
+    string("bspline"),
+    spherical_bsplines1(matrices.DD("loc"), n, degree, bool_uniform),
+    true);
+  matrices.matrixtype("bspline", fmesh::IOMatrixtype_general);
+  matrices.output("bspline");
+
+  return Rcpp::wrap(matrices.DD("bspline"));
+}
+
+//' @rdname fmesher_spherical_bsplines
+//' @export
+// [[Rcpp::export]]
+SEXP fmesher_spherical_bsplines(Rcpp::NumericMatrix loc,
+                                int n,
+                                int degree,
+                                Rcpp::LogicalVector uniform) {
+  if (n < 0) {
+    Rcpp::stop("'n' must be at least 1.");
+  }
+  if (degree < 1) {
+    Rcpp::stop("'degree' must be at least 0.");
+  }
+  if (n <= degree) {
+    Rcpp::stop("'n' must be larger than 'degree'");
+  }
+  if (loc.cols() < 3) {
+    Rcpp::stop("'ncol(loc)' must be at least 3.");
+  }
+
+  MatrixC matrices;
+  matrices.attach("loc", new Matrix3double(Matrix<double>(loc)), true);
+
+  FMLOG("bspline output." << std::endl);
+
+  bool bool_uniform = Rcpp::is_true(Rcpp::all(uniform));
+  if (bool_uniform) {
+    FMLOG("uniform = TRUE" << std::endl);
+  } else {
+    FMLOG("uniform = FALSE" << std::endl);
+  }
+  matrices.attach(
+    string("bspline"),
+    spherical_bsplines(matrices.DD("loc"), n, degree, bool_uniform),
+    true);
+  matrices.matrixtype("bspline", fmesh::IOMatrixtype_general);
+  matrices.output("bspline");
+
+  return Rcpp::wrap(matrices.DD("bspline"));
+  //  return Rcpp::wrap(matrices);
+}
+
+
 
 
 //' @title Finite element matrix computation
 //'
 //' @description
-//' (...)
+//' Construct finite element structure matrices
 //'
 //' @param mesh_loc numeric matrix; mesh vertex coordinates
 //' @param mesh_tv 3-column integer matrix with 0-based vertex indices for each triangle
 //' @param fem_order_max integer; the highest operator order to compute
+//' @param aniso If non-NULL, a `list(gamma, v)`. Calculates anisotropic structure
+//' matrices (in addition to the regular) for \eqn{\gamma}{gamma} and \eqn{v}{v} for
+//' an anisotropic operator \eqn{\nabla\cdot H \nabla}{div H grad}, where
+//' \eqn{H=\gamma I + v v^\top}{H = gamma I + v v'}.
+//' Currently (2023-08-05) the fields need to be given per vertex.
 //' @param options list of triangulation options (`sphere_tolerance`)
 //' @examples
 //' m <- fmesher_rcdt(list(cet_margin = 1), matrix(0, 1, 2))
-//' b <- fmesher_fem(m$s, m$tv, fem_order_max = 2, list())
+//' b <- fmesher_fem(m$s, m$tv, fem_order_max = 2, aniso = NULL, options = list())
 //' @export
 // [[Rcpp::export]]
 Rcpp::List fmesher_fem(Rcpp::NumericMatrix mesh_loc,
                        Rcpp::IntegerMatrix mesh_tv,
                        int fem_order_max,
+                       Rcpp::Nullable<Rcpp::List> aniso,
                        Rcpp::List options) {
   MatrixC matrices;
   Mesh M = Rcpp_import_mesh(mesh_loc, mesh_tv, matrices, options);
@@ -606,29 +709,58 @@ Rcpp::List fmesher_fem(Rcpp::NumericMatrix mesh_loc,
       }
     }
 
-    // if (aniso_names.size() > 0) {
-    //   SparseMatrix<double> &Gani = matrices.SD("g1aniso").clear();
-    //   M.calcQblocksAni(Gani, matrices.DD(aniso_names[0]),
-    //                    matrices.DD(aniso_names[1]));
-    //   matrices.output("g1aniso");
-    //
-    //   // Protect temporary local variables
-    //   {
-    //     SparseMatrix<double> tmp = Gani * C0inv;
-    //     SparseMatrix<double> *a;
-    //     SparseMatrix<double> *b = &Gani;
-    //     for (size_t i = 1; int(i) < fem_order_max; i++) {
-    //       std::stringstream ss;
-    //       ss << i + 1;
-    //       std::string Gname = "g" + ss.str() + "aniso";
-    //       a = b;
-    //       b = &(matrices.SD(Gname).clear());
-    //       *b = tmp * (*a);
-    //       matrices.matrixtype(Gname, fmesh::IOMatrixtype_symmetric);
-    //       matrices.output(Gname);
-    //     }
-    //   }
-    // }
+    if (!aniso.isNull()) {
+      FMLOG("Compute anisotropic finite element matrices." << std::endl);
+      if (Rcpp::as<Rcpp::List>(aniso).size() < 2) {
+        Rcpp::stop("'aniso' list must have at least two elements.");
+      }
+      matrices.attach("gamma_field",
+                      new Matrix<double>(
+                          Rcpp::as<Rcpp::NumericVector>(
+                            Rcpp::as<Rcpp::List>(aniso)[0]
+                          )
+                      ),
+                      true);
+      FMLOG("'gamma_field' imported." << std::endl);
+      matrices.attach("vector_field",
+                      new Matrix<double>(
+                          Rcpp::as<Rcpp::NumericMatrix>(
+                            Rcpp::as<Rcpp::List>(aniso)[1]
+                          )
+                      ),
+                      true);
+      FMLOG("'vector_field' imported." << std::endl);
+      if (matrices.DD("gamma_field").rows() < M.nV()) {
+        Rcpp::stop("'aniso[[1]]' length should match the number of vertices.");
+      }
+      if (matrices.DD("vector_field").rows() < M.nV()) {
+        Rcpp::stop("'aniso[[2]]' rows should match the number of vertices.");
+      }
+
+      SparseMatrix<double> &Gani = matrices.SD("g1aniso").clear();
+      M.calcQblocksAni(Gani,
+                       matrices.DD("gamma_field"),
+                       matrices.DD("vector_field"));
+      matrices.output("g1aniso");
+
+      // Protect temporary local variables
+      {
+        SparseMatrix<double> tmp = Gani * C0inv;
+        SparseMatrix<double> *a;
+        SparseMatrix<double> *b = &Gani;
+        for (size_t i = 1; int(i) < fem_order_max; i++) {
+          std::stringstream ss;
+          ss << i + 1;
+          std::string Gname = "g" + ss.str() + "aniso";
+          a = b;
+          b = &(matrices.SD(Gname).clear());
+          *b = tmp * (*a);
+          matrices.matrixtype(Gname, fmesh::IOMatrixtype_symmetric);
+          matrices.output(Gname);
+        }
+      }
+    }
+
   }
 
   matrices.output("-");

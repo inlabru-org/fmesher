@@ -30,7 +30,7 @@ print.fm_segm <- function(x, ..., digits = NULL, verbose = TRUE, newline = TRUE)
 
   ret <- my.segm(x)
 
-  if (verbose) {
+  if (verbose && !fm_crs_is_null(fm_crs(x))) {
     cat("fm_segm object:\n", sep = "")
     crs <- fm_wkt(x$crs)
     ret <- c(ret, list(crs = as.character(fm_wkt(crs))))
@@ -141,15 +141,17 @@ print.fm_mesh_2d <- function(x, ..., digits = NULL, verbose = FALSE) {
   }
 
   cat("fm_mesh_2d object:\n", sep = "")
-  cat("  CRS:\n    LegacyPROJ4:\t", ret$crs_proj4, "\n", sep = "")
-  if (ret$verbose) {
-    if (is.na(ret$crs)) {
-      cat("    WKT:\tNA\n", sep = "")
+  if (!fm_crs_is_null(x$crs)) {
+    cat("  CRS:\n    LegacyPROJ4:\t", ret$crs_proj4, "\n", sep = "")
+    if (ret$verbose) {
+      if (is.na(ret$crs)) {
+        cat("    WKT:\tNA\n", sep = "")
+      } else {
+        cat("    WKT:\n", ret$crs, "\n", sep = "")
+      }
     } else {
-      cat("    WKT:\n", ret$crs, "\n", sep = "")
+      cat("    WKT: (only shown with verbose = TRUE)", "\n", sep = "")
     }
-  } else {
-    cat("    WKT: (only shown with verbose = TRUE)", "\n", sep = "")
   }
   if (ret$verbose) {
     cat("  Timings:\n")

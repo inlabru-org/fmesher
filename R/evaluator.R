@@ -461,22 +461,23 @@ fm_evaluator_mesh_1d <- function(mesh,
         knots <- mesh$loc
       }
 
-      if (FALSE) { ## Only for debugging.
-        ## Using bs():
-        ## Note: Intermediate step constructs dense matrix.
-        bsobj <-
-          splines::bs(
-            x = loc,
-            knots = knots,
-            degree = 2,
-            Boundary.knots = Boundary.knots
-          )
-        bsobj <-
-          Matrix::Matrix(
-            as.vector(bsobj[, 1:(mesh$n + mesh$cyclic + 1)]),
-            nrow(bsobj), mesh$n + mesh$cyclic + 1
-          )
-      }
+      # if (FALSE) { ## Only for debugging.
+      #   requireNamespace("splines")
+      #   ## Using bs():
+      #   ## Note: Intermediate step constructs dense matrix.
+      #   bsobj <-
+      #     splines::bs(
+      #       x = loc,
+      #       knots = knots,
+      #       degree = 2,
+      #       Boundary.knots = Boundary.knots
+      #     )
+      #   bsobj <-
+      #     Matrix::Matrix(
+      #       as.vector(bsobj[, 1:(mesh$n + mesh$cyclic + 1)]),
+      #       nrow(bsobj), mesh$n + mesh$cyclic + 1
+      #     )
+      # }
 
       ## Direct calculation:
       knots <- c(Boundary.knots[1], knots)
@@ -752,6 +753,9 @@ fm_evaluator.fm_tensor <- function(x,
 
 
 
+
+
+
 # fm_contains ####
 
 #' Check which mesh triangles are inside a polygon
@@ -909,6 +913,7 @@ fm_is_within.default <- function(x, y, ...) {
 #' @param loc A set of points of a class supported by `fm_evaluator(x, loc = loc)`
 #' @param \dots Currently unused
 #' @returns A `sparseMatrix`
+#' @seealso [fm_raw_basis()]
 #' @examples
 #' # Compute basis mapping matrix
 #' str(fm_basis(fmexample$mesh, fmexample$loc))
@@ -989,6 +994,235 @@ fm_basis.fm_evaluator <- function(x, ...) {
 
 
 
+
+
+
+
+
+
+internal_spline_mesh_1d <- function(interval, m, degree, boundary, free.clamped) {
+  boundary <-
+    match.arg(
+      boundary,
+      c("neumann", "dirichlet", "free", "cyclic")
+    )
+  if (degree <= 1) {
+    n <- (switch(boundary,
+                 neumann = m,
+                 dirichlet = m + 2,
+                 free = m,
+                 cyclic = m + 1
+    ))
+    if (n < 2) {
+      n <- 2
+      degree <- 0
+      boundary <- "c"
+    }
+  } else {
+    stopifnot(degree == 2)
+    n <- (switch(boundary,
+                 neumann = m + 1,
+                 dirichlet = m + 1,
+                 free = m - 1,
+                 cyclic = m
+    ))
+    if (boundary == "free") {
+      if (m <= 1) {
+        n <- 2
+        degree <- 0
+        boundary <- "c"
+      } else if (m == 2) {
+        n <- 2
+        degree <- 1
+      }
+    } else if (boundary == "cyclic") {
+      if (m <= 1) {
+        n <- 2
+        degree <- 0
+      }
+    }
+  }
+  return(fm_mesh_1d(seq(interval[1], interval[2], length.out = n),
+                    degree = degree,
+                    boundary = boundary,
+                    free.clamped = free.clamped
+  ))
+}
+
+
+#' Basis functions for mesh manifolds
+#'
+#' Calculate basis functions on [fm_mesh_1d()] or [fm_mesh_2d()],
+#' without necessarily matching the default function space of the given mesh
+#' object.
+#'
+#' @param mesh An [fm_mesh_1d()] or [fm_mesh_2d()] object.
+#' @param type `b.spline` (default) for B-spline basis functions,
+#' `sph.harm` for spherical harmonics (available only for meshes on the
+#' sphere)
+#' @param n For B-splines, the number of basis functions in each direction (for
+#' 1d meshes `n` must be a scalar, and for planar 2d meshes a 2-vector).
+#' For spherical harmonics, `n` is the maximal harmonic order.
+#' @param degree Degree of B-spline polynomials.  See
+#' [fm_mesh_1d()].
+#' @param knot.placement For B-splines on the sphere, controls the latitudinal
+#' placements of knots. `"uniform.area"` (default) gives uniform spacing
+#' in `sin(latitude)`, `"uniform.latitude"` gives uniform spacing in
+#' latitudes.
+#' @param rot.inv For spherical harmonics on a sphere, `rot.inv=TRUE`
+#' gives the rotationally invariant subset of basis functions.
+#' @param boundary Boundary specification, default is free boundaries.  See
+#' [fm_mesh_1d()] for more information.
+#' @param free.clamped If `TRUE` and `boundary` is `"free"`, the
+#' boundary basis functions are clamped to 0/1 at the interval boundary by
+#' repeating the boundary knots. See
+#' [fm_mesh_1d()] for more information.
+#' @param ... Unused
+#'
+#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @seealso [fm_mesh_1d()], [fm_mesh_2d()], [fm_basis()]
+#' @examples
+#'
+#' n <- 100
+#' loc <- matrix(runif(n * 2), n, 2)
+#' mesh <- fm_mesh_2d(loc, max.edge = 0.05)
+#' basis <- fm_raw_basis(mesh, n = c(4, 5))
+#'
+#' proj <- fm_evaluator(mesh)
+#' image(proj$x, proj$y, fm_evaluate(proj, basis[, 7]))
+#' \donttest{
+#' if (require(rgl)) {
+#'     plot_rgl(mesh, col = basis[, 7], draw.edges = FALSE, draw.vertices = FALSE)
+#' }
+#' }
+#'
+#' @export
+fm_raw_basis <- function(mesh,
+                         type = "b.spline",
+                         n = 3,
+                         degree = 2,
+                         knot.placement = "uniform.area",
+                         rot.inv = TRUE,
+                         boundary = "free",
+                         free.clamped = TRUE,
+                         ...) {
+  type <- match.arg(type, c("b.spline", "sph.harm"))
+  knot.placement <- (match.arg(
+    knot.placement,
+    c(
+      "uniform.area",
+      "uniform.latitude"
+    )
+  ))
+
+  if (identical(type, "b.spline")) {
+    if (fm_manifold(mesh, c("R1", "S1"))) {
+      mesh1 <-
+        internal_spline_mesh_1d(
+          mesh$interval, n, degree,
+          boundary, free.clamped
+        )
+      basis <- fm_basis(mesh1, mesh$loc)
+    } else if (identical(mesh$manifold, "R2")) {
+      if (length(n) == 1) {
+        n <- rep(n, 2)
+      }
+      if (length(degree) == 1) {
+        degree <- rep(degree, 2)
+      }
+      if (length(boundary) == 1) {
+        boundary <- rep(boundary, 2)
+      }
+      mesh1x <-
+        internal_spline_mesh_1d(
+          range(mesh$loc[, 1]),
+          n[1], degree[1],
+          boundary[1], free.clamped
+        )
+      mesh1y <-
+        internal_spline_mesh_1d(
+          range(mesh$loc[, 2]),
+          n[2], degree[2],
+          boundary[2], free.clamped
+        )
+      basis <-
+        fm_row_kron(
+          fm_basis(mesh1y, mesh$loc[, 2]),
+          fm_basis(mesh1x, mesh$loc[, 1])
+        )
+    } else if (identical(mesh$manifold, "S2")) {
+      loc <- mesh$loc
+      uniform.lat <- identical(knot.placement, "uniform.latitude")
+      degree <- max(0L, min(n - 1L, degree))
+      basis <- fmesher_spherical_bsplines1(
+        loc[, 3],
+        n = n,
+        degree = degree,
+        uniform = uniform.lat
+      )
+      if (!rot.inv) {
+        warning("Currently only 'rot.inv=TRUE' is supported for B-splines.")
+      }
+    } else {
+      stop("Only know how to make B-splines on R2 and S2.")
+    }
+  } else if (identical(type, "sph.harm")) {
+    if (!identical(mesh$manifold, "S2")) {
+      stop("Only know how to make spherical harmonics on S2.")
+    }
+    # With GSL activated:
+    #        if (rot.inv) {
+    #            basis <- (inla.fmesher.smorg(
+    #                mesh$loc,
+    #                mesh$graph$tv,
+    #                sph0 = n
+    #            )$sph0)
+    #        } else {
+    #            basis <- (inla.fmesher.smorg(
+    #                mesh$loc,
+    #                mesh$graph$tv,
+    #                sph = n
+    #            )$sph)
+    #        }
+
+    if (!requireNamespace("gsl", quietly = TRUE)) {
+      stop(
+        paste0(
+          "The 'gsl' R package is needed for spherical harmonics, ",
+          "but it is not installed.\n",
+          "Please install it and try again."
+        )
+      )
+    }
+    # Make sure we have radius-1 coordinates
+    loc <- mesh$loc / rowSums(mesh$loc^2)^0.5
+    if (rot.inv) {
+      basis <- matrix(0, nrow(loc), n + 1)
+      for (l in seq(0, n)) {
+        basis[, l + 1] <- sqrt(2 * l + 1) *
+          gsl::legendre_Pl(l = l, x = loc[, 3])
+      }
+    } else {
+      angle <- atan2(loc[, 2], loc[, 1])
+      basis <- matrix(0, nrow(loc), (n + 1)^2)
+      for (l in seq(0, n)) {
+        basis[, 1 + l * (l + 1)] <-
+          sqrt(2 * l + 1) *
+          gsl::legendre_Pl(l = l, x = loc[, 3])
+        for (m in seq_len(l)) {
+          scaling <- sqrt(2 * (2 * l + 1) * exp(lgamma(l - m + 1) - lgamma(l + m + 1)))
+          poly <- gsl::legendre_Plm(l = l, m = m, x = loc[, 3])
+          basis[, 1 + l * (l + 1) - m] <-
+            scaling * sin(-m * angle) * poly
+          basis[, 1 + l * (l + 1) + m] <-
+            scaling * cos(m * angle) * poly
+        }
+      }
+    }
+  }
+
+  return(basis)
+}
 
 
 

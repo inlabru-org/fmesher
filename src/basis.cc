@@ -93,6 +93,71 @@ Matrix<double> *spherical_harmonics(const Matrix3<double> &S, size_t max_order,
   return sph;
 }
 
+Matrix<double> *spherical_bsplines1(const Matrix<double> &S, size_t n_basis,
+                                    size_t degree,
+                                    bool uniform_knot_angle_spacing) {
+  Matrix<double> *basis = new Matrix<double>(n_basis);
+  std::vector<double> knots(n_basis + degree + 1);
+  double s, s1, s2;
+  std::vector<Matrix<double>> control(n_basis);
+  std::vector<Matrix<double>> control_work(degree + 1);
+  size_t interval;
+
+  for (size_t i = 0; i <= degree; i++) {
+    knots[i] = -1.0;
+  }
+  for (size_t i = degree + 1; i < n_basis; i++) {
+    knots[i] = (double(i - degree) / double(n_basis - degree)) * 2.0 - 1.0;
+    if (uniform_knot_angle_spacing) {
+      knots[i] = sin(knots[i] * M_PI / 2.0);
+    }
+  }
+  for (size_t i = n_basis; i <= n_basis + degree; i++) {
+    knots[i] = 1.0;
+  }
+
+  for (size_t i = 0; i < n_basis; i++) {
+    control[i] = Matrix<double>(n_basis);
+    control[i](0, i) = 1.0;
+  }
+
+  FMLOG("degree\t" << degree << endl);
+  FMLOG("n_basis\t" << n_basis << endl);
+  FMLOG("n_basis+degree+1\t" << n_basis + degree + 1 << endl);
+
+  for (size_t coord_idx = 0; coord_idx < S.rows(); coord_idx++) {
+    s = S[coord_idx][0];
+
+    FMLOG("step 1, coord_idx\t" << coord_idx << endl);
+    interval = degree;
+    while ((interval + 1 < n_basis) & (s >= knots[interval + 1]))
+      interval++;
+
+    FMLOG("step 2" << endl);
+    for (size_t i = 0; i <= degree; i++)
+      control_work[i] = control[i + interval - degree];
+
+    FMLOG("step 3" << endl);
+    for (size_t k = 1; k <= degree; k++) {
+      for (size_t i = degree; i >= k; i--) {
+        s1 = (knots[i + interval - k + 1] - s) /
+          (knots[i + interval - k + 1] - knots[i + interval - degree]);
+        s2 = 1.0 - s1;
+
+        for (size_t j = 0; j < n_basis; j++)
+          control_work[i](0, j) =
+            (s1 * control_work[i - 1](0, j) + s2 * control_work[i](0, j));
+      }
+    }
+
+    for (size_t j = 0; j < n_basis; j++) {
+      (*basis)(coord_idx, j) = control_work[degree](0, j);
+    }
+  }
+
+  return basis;
+}
+
 Matrix<double> *spherical_bsplines(const Matrix3<double> &S, size_t n_basis,
                                    size_t degree,
                                    bool uniform_knot_angle_spacing) {
@@ -138,19 +203,21 @@ Matrix<double> *spherical_bsplines(const Matrix3<double> &S, size_t n_basis,
       control_work[i] = control[i + interval - degree];
 
     FMLOG("step 3" << endl);
-    for (size_t k = 1; k <= degree; k++)
+    for (size_t k = 1; k <= degree; k++) {
       for (size_t i = degree; i >= k; i--) {
         s1 = (knots[i + interval - k + 1] - s) /
-             (knots[i + interval - k + 1] - knots[i + interval - degree]);
+          (knots[i + interval - k + 1] - knots[i + interval - degree]);
         s2 = 1.0 - s1;
 
         for (size_t j = 0; j < n_basis; j++)
           control_work[i](0, j) =
-              (s1 * control_work[i - 1](0, j) + s2 * control_work[i](0, j));
+            (s1 * control_work[i - 1](0, j) + s2 * control_work[i](0, j));
       }
+    }
 
-    for (size_t j = 0; j < n_basis; j++)
+    for (size_t j = 0; j < n_basis; j++) {
       (*basis)(coord_idx, j) = control_work[degree](0, j);
+    }
   }
 
   return basis;
