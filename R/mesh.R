@@ -1119,6 +1119,7 @@ fm_simplify_helper <- function(loc, idx, eps) {
 #' lines(fm_simplify(segm, eps = 0.05), col = 2)
 #' lines(fm_simplify(segm, eps = 0.1), col = 3)
 #' @export
+#' @family object creation and conversion
 fm_simplify <- function(x, eps, ...) {
   if ((nrow(x$idx) == 1) || (eps == 0)) {
     return(x)

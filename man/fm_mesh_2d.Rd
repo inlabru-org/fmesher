@@ -106,6 +106,7 @@ Other object creation and conversion:
 \code{\link{fm_lattice_2d}()},
 \code{\link{fm_mesh_1d}()},
 \code{\link{fm_segm}()},
+\code{\link{fm_simplify}()},
 \code{\link{fm_tensor}()}
 }
 \author{

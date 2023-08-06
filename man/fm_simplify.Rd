@@ -41,6 +41,22 @@ plot(segm)
 lines(fm_simplify(segm, eps = 0.05), col = 2)
 lines(fm_simplify(segm, eps = 0.1), col = 3)
 }
+\seealso{
+Other object creation and conversion: 
+\code{\link{fm_as_fm}()},
+\code{\link{fm_as_lattice_2d}()},
+\code{\link{fm_as_mesh_1d}()},
+\code{\link{fm_as_mesh_2d}()},
+\code{\link{fm_as_segm}()},
+\code{\link{fm_as_sfc}()},
+\code{\link{fm_as_tensor}()},
+\code{\link{fm_lattice_2d}()},
+\code{\link{fm_mesh_1d}()},
+\code{\link{fm_mesh_2d}()},
+\code{\link{fm_segm}()},
+\code{\link{fm_tensor}()}
+}
 \author{
 Finn Lindgren \email{finn.lindgren@gmail.com}
 }
+\concept{object creation and conversion}
