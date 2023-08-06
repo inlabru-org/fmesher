@@ -990,18 +990,29 @@ fm_int_mesh_2d_lines <- function(samplers,
   segm <- fm_transform(segm, crs = target_crs, passthrough = TRUE)
 
   # Split at mesh edges
-  line.spl <- fm_split_lines(domain, segm)
-  origin <- line.spl$origin
+  segm <- fm_split_lines(domain, segm)
+  origin <- origin[segm$origin]
 
   # At this point, segm is in the target_crs
 
   # Determine integration points along lines
 
-  if (fm_crs_is_null(sampler_crs)) {
+  if (fm_crs_is_null(sampler_crs) || !fm_crs_is_geocent(fm_crs(domain))) {
     sp <- segm$loc[segm$idx[, 1], , drop = FALSE]
     ep <- segm$loc[segm$idx[, 2], , drop = FALSE]
-    ips <- (sp + ep) / 2
-    w <- rowSums((ep - sp)^2)^0.5
+    if (fm_manifold(domain, "S2")) {
+      sp <- sp / rowSums(sp^2)^0.5
+      ep <- ep / rowSums(ep^2)^0.5
+      ips <- (sp + ep) / 2
+      w <- rowSums((ep - sp)^2)^0.5
+
+      radius <- mean(rowSums(domain$loc^2)^0.5)
+      w <- asin(pmin(1, pmax(-1, w / 2))) * radius
+      ips <- ips * (radius / rowSums(ips^2)^0.5)
+    } else {
+      ips <- (sp + ep) / 2
+      w <- rowSums((ep - sp)^2)^0.5
+    }
   } else {
     # Has CRS
     longlat.crs <- fm_crs("longlat_globe")

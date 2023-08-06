@@ -20,8 +20,9 @@ fm_split_lines(mesh, ...)
 \item{segm}{An \code{\link[=fm_segm]{fm_segm()}} object with segments to be split}
 }
 \value{
-An \code{\link[=fm_segm]{fm_segm()}} object with an added field \code{origin}, that
-for each new segment gives the originator index into to original \code{segm} object.
+An \code{\link[=fm_segm]{fm_segm()}} object with the same crs as the mesh,
+with an added field \code{origin}, that for each new segment gives the
+originator index into to original \code{segm} object for each new line segment.
 }
 \description{
 Compute intersections between line segments and triangle edges,

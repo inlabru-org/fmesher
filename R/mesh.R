@@ -914,8 +914,9 @@ fm_fem.inla.mesh <- function(mesh, order = 2, ...) {
 #' @param mesh An `fm_mesh_2d` or `inla.mesh` object
 #' @param segm An [fm_segm()] object with segments to be split
 #' @param ... Unused.
-#' @return An [fm_segm()] object with an added field `origin`, that
-#' for each new segment gives the originator index into to original `segm` object.
+#' @return An [fm_segm()] object with the same crs as the mesh,
+#' with an added field `origin`, that for each new segment gives the
+#' originator index into to original `segm` object for each new line segment.
 #'
 #' @author Fabian E. Bachl \email{f.e.bachl@@bath.ac.uk}
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
@@ -930,6 +931,13 @@ fm_split_lines <- function(mesh, ...) {
 #' @rdname fm_split_lines
 #' @export
 fm_split_lines.fm_mesh_2d <- function(mesh, segm, ...) {
+  segm <-
+    fm_transform(
+      segm,
+      crs = fm_crs(mesh),
+      crs0 = fm_crs(segm),
+      passthrough = TRUE
+    )
   origin <- seq_len(NROW(segm$idx))
   if (NROW(segm$loc) > 0) {
     # Filter out segments not on the mesh
