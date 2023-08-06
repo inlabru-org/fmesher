@@ -68,6 +68,7 @@
 <span>  concave <span class="op">=</span> <span class="va">convex</span>,</span>
 <span>  resolution <span class="op">=</span> <span class="fl">40</span>,</span>
 <span>  eps <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  eps_rel <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  crs <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
@@ -101,9 +102,9 @@ issued when this needs to be increased for higher accuracy, with the
 required resolution stated.</p></dd>
 
 
-<dt>eps</dt>
-<dd><p>The polygonal curve simplification tolerance used for simplifying
-the resulting boundary curve.  See <code><a href="fm_simplify_helper.html">fm_simplify_helper()</a></code> for
+<dt>eps, eps_rel</dt>
+<dd><p>The polygonal curve simplification tolerances used for
+simplifying the resulting boundary curve.  See <code><a href="fm_simplify_helper.html">fm_simplify_helper()</a></code> for
 details.</p></dd>
 
 
