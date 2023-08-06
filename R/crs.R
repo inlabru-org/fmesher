@@ -901,6 +901,17 @@ fm_crs.matrix <- function(x, oblique = NULL, ...) {
 
 #' @rdname fm_crs-set
 #' @export
+`fm_crs<-.fm_segm_list` <- function(x, value) {
+  y <- fm_as_segm_list(lapply(x,
+                              function(xx) {
+                                xx[["crs"]] <- fm_crs(value)
+                                xx
+                              }))
+  y
+}
+
+#' @rdname fm_crs-set
+#' @export
 `fm_crs<-.fm_mesh_2d` <- function(x, value) {
   x[["crs"]] <- fm_crs(value)
   x

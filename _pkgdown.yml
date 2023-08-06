@@ -30,7 +30,7 @@ reference:
   - starts_with("fm_segm")
   - starts_with("fm_nonconvex")
   - starts_with("fm_extensions")
-  - starts_with("fm_simplify_helper")
+  - starts_with("fm_simplify")
   - starts_with("fm_tensor")
   - starts_with("fm_split_lines")
 - title: "Property methods"

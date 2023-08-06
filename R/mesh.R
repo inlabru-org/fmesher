@@ -1086,6 +1086,100 @@ fm_simplify_helper <- function(loc, idx, eps) {
   ))
 }
 
+#' @title Recursive curve simplification.
+#'
+#' @description
+#' Attempts to simplify polygonal curve segments by joining nearly
+#' co-linear segments.
+#'
+#' Uses a variation of the binary splitting Ramer-Douglas-Peucker algorithm,
+#' with a width `eps` ellipse instead of a rectangle, motivated by
+#' prediction ellipse for Brownian bridge.
+#'
+#' @param x An [fm_segm()] object.
+#' @param eps Straightness tolerance.
+#' @return The simplified [fm_segm()] object.
+#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @details
+#' Variation of Ramer-Douglas-Peucker.
+#' Uses width epsilon ellipse instead of rectangle,
+#' motivated by prediction ellipse for Brownian bridge.
+#'
+#' @examples
+#' theta <- seq(0, 2 * pi, length.out = 1000)
+#' segm <- fm_segm(cbind(cos(theta), sin(theta)),
+#'                 idx = seq_along(theta))
+#' plot(segm)
+#' lines(fm_simplify(segm, eps = 0.05), col = 2)
+#' lines(fm_simplify(segm, eps = 0.1), col = 3)
+#'
+#' segm <- fm_segm(cbind(theta, sin(theta * 4)),
+#'                 idx = seq_along(theta))
+#' plot(segm)
+#' lines(fm_simplify(segm, eps = 0.05), col = 2)
+#' lines(fm_simplify(segm, eps = 0.1), col = 3)
+#' @export
+fm_simplify <- function(x, eps, ...) {
+  if ((nrow(x$idx) == 1) || (eps == 0)) {
+    return(x)
+  }
+
+  segm_split <- list()
+  k <- 0L
+
+  not_handled_seg <- seq_len(nrow(x$idx))
+  while (length(not_handled_seg) > 0) {
+    next_seg <- not_handled_seg[1]
+    seq_seg <- integer(0)
+    seq_vtx <- x$idx[next_seg, 1]
+    next_vtx <- x$idx[next_seg, 2]
+    while (TRUE) {
+      final <- next_vtx %in% seq_vtx
+      seq_vtx <- c(seq_vtx, next_vtx)
+      seq_seg <- c(seq_seg, next_seg)
+      not_handled_seg <- setdiff(not_handled_seg, next_seg)
+      if (final) {
+        break
+      }
+      if (x$is.bnd) {
+        next_seg <- not_handled_seg[which(x$idx[not_handled_seg, 1] == next_vtx)]
+        if (length(next_seg) == 0) {
+          break
+        }
+        next_seg <- next_seg[1]
+        next_vtx <- x$idx[next_seg, 2]
+      } else {
+        next_seg1 <- not_handled_seg[which(x$idx[not_handled_seg, 1] == next_vtx)]
+        next_seg2 <- not_handled_seg[which(x$idx[not_handled_seg, 2] == next_vtx)]
+        if ((length(next_seg1) == 0) && (length(next_seg2) == 0)) {
+          break
+        }
+        if (length(next_seg1) > 0) {
+          next_seg <- next_seg1[1]
+          next_vtx <- x$idx[next_seg, 2]
+        } else {
+          next_seg <- next_seg2[1]
+          next_vtx <- x$idx[next_seg, 1]
+        }
+      }
+    }
+
+    # seq_vtx and seq_seg
+    k <- k + 1
+    # TODO: handle geocent data
+    idx <- fm_simplify_helper(loc = x$loc, idx = seq_vtx, eps = eps)
+    # TODO: improve granularity of group information.
+    segm_split[[k]] <- fm_segm(loc = x$loc,
+                               idx = idx,
+                               grp = x$grp[seq_seg[1]],
+                               is.bnd = x$is.bnd,
+                               crs = fm_crs(x))
+  }
+  segm_split <- fm_segm_join(fm_as_segm_list(segm_split))
+
+  segm_split
+}
+
 
 #' Contour segment
 #'
