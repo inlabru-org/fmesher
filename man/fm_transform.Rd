@@ -3,6 +3,7 @@
 \name{fm_transform}
 \alias{fm_transform}
 \alias{fm_transform.default}
+\alias{fm_transform.NULL}
 \alias{fm_transform.matrix}
 \alias{fm_transform.list}
 \alias{fm_transform.sf}
@@ -12,6 +13,7 @@
 \alias{fm_transform.fm_mesh_2d}
 \alias{fm_transform.fm_lattice_2d}
 \alias{fm_transform.fm_segm}
+\alias{fm_transform.fm_segm_list}
 \alias{fm_transform.inla.mesh}
 \alias{fm_transform.inla.mesh.lattice}
 \alias{fm_transform.inla.mesh.segment}
@@ -20,6 +22,9 @@
 fm_transform(x, crs = fm_crs(x), ...)
 
 \method{fm_transform}{default}(x, crs = fm_crs(x), ..., crs0 = NULL)
+
+## S3 method for class 'NULL'
+fm_transform(x, crs = fm_crs(x), ...)
 
 \method{fm_transform}{matrix}(x, crs = NULL, ..., passthrough = FALSE, crs0 = NULL)
 
@@ -38,6 +43,8 @@ fm_transform(x, crs = fm_crs(x), ...)
 \method{fm_transform}{fm_lattice_2d}(x, crs = fm_crs(x), ..., passthrough = FALSE, crs0 = fm_crs(x))
 
 \method{fm_transform}{fm_segm}(x, crs = fm_crs(x), ..., passthrough = FALSE, crs0 = fm_crs(x))
+
+\method{fm_transform}{fm_segm_list}(x, crs = fm_crs(x), ...)
 
 \method{fm_transform}{inla.mesh}(x, crs = fm_crs(x), ...)
 
@@ -60,7 +67,7 @@ through without transformation. Use with care!}
 }
 \description{
 Handle transformation of various inla objects according to coordinate
-reference systems of \code{crs} (from \code{sf::st_crs()}), \code{fm_crs},¬\code{sp::CRS} or
+reference systems of \code{crs} (from \code{sf::st_crs()}), \code{fm_crs}, \code{sp::CRS} or
 \code{INLA::inla.CRS} class.
 }
 \seealso{

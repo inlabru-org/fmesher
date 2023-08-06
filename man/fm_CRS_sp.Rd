@@ -13,6 +13,7 @@
 \alias{fm_CRS.fm_mesh_2d}
 \alias{fm_CRS.fm_lattice}
 \alias{fm_CRS.fm_segm}
+\alias{fm_CRS.matrix}
 \alias{fm_CRS.CRS}
 \alias{fm_CRS.default}
 \alias{is.na.inla.CRS}
@@ -45,6 +46,8 @@ fm_CRS(x, oblique = NULL, ...)
 \method{fm_CRS}{fm_lattice}(x, oblique = NULL, ...)
 
 \method{fm_CRS}{fm_segm}(x, oblique = NULL, ...)
+
+\method{fm_CRS}{matrix}(x, oblique = NULL, ...)
 
 \method{fm_CRS}{CRS}(x, oblique = NULL, ...)
 
