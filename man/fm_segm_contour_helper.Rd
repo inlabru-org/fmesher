@@ -13,6 +13,7 @@ fm_segm_contour_helper(
   groups = seq_len(length(levels)),
   positive = TRUE,
   eps = NULL,
+  eps_rel = NULL,
   crs = NULL
 )
 }

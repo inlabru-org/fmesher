@@ -12,6 +12,8 @@ fm_simplify(x, eps = NULL, eps_rel = NULL, ...)
 \item{eps}{Absolute straightness tolerance. Default \code{NULL}, no constraint.}
 
 \item{eps_rel}{Relative straightness tolerance. Default \code{NULL}, no constraint.}
+
+\item{...}{Currently unused.}
 }
 \value{
 The simplified \code{\link[=fm_segm]{fm_segm()}} object.

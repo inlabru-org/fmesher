@@ -11,6 +11,7 @@ fm_nonconvex_hull_inla(
   concave = convex,
   resolution = 40,
   eps = NULL,
+  eps_rel = NULL,
   crs = NULL,
   ...
 )
@@ -34,8 +35,8 @@ fm_nonconvex_hull_inla_basic(
 issued when this needs to be increased for higher accuracy, with the
 required resolution stated.}
 
-\item{eps}{The polygonal curve simplification tolerance used for simplifying
-the resulting boundary curve.  See \code{\link[=fm_simplify_helper]{fm_simplify_helper()}} for
+\item{eps, eps_rel}{The polygonal curve simplification tolerances used for
+simplifying the resulting boundary curve.  See \code{\link[=fm_simplify_helper]{fm_simplify_helper()}} for
 details.}
 
 \item{crs}{Options crs object for the resulting polygon}

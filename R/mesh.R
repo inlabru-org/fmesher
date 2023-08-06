@@ -1108,6 +1108,7 @@ fm_simplify_helper <- function(loc, idx, eps = NULL, eps_rel = NULL) {
 #' @param x An [fm_segm()] object.
 #' @param eps Absolute straightness tolerance. Default `NULL`, no constraint.
 #' @param eps_rel Relative straightness tolerance. Default `NULL`, no constraint.
+#' @param ... Currently unused.
 #' @return The simplified [fm_segm()] object.
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
 #' @details
@@ -1230,6 +1231,7 @@ fm_segm_contour_helper <- function(x = seq(0, 1, length.out = nrow(z)),
                                    groups = seq_len(length(levels)),
                                    positive = TRUE,
                                    eps = NULL,
+                                   eps_rel = NULL,
                                    crs = NULL) {
   ## Input checking from contourLines:
   if (missing(z)) {
@@ -1321,7 +1323,8 @@ fm_segm_contour_helper <- function(x = seq(0, 1, length.out = nrow(z)),
     curve.idx <-
       fm_simplify_helper(curve.loc,
         curve.idx,
-        eps = eps
+        eps = eps,
+        eps_rel = eps_rel
       )
 
     ## Reorder, making sure any unused points are removed:
@@ -1353,8 +1356,8 @@ fm_segm_contour_helper <- function(x = seq(0, 1, length.out = nrow(z)),
 #' @param resolution The internal computation resolution.  A warning will be
 #' issued when this needs to be increased for higher accuracy, with the
 #' required resolution stated.
-#' @param eps The polygonal curve simplification tolerance used for simplifying
-#' the resulting boundary curve.  See [fm_simplify_helper()] for
+#' @param eps,eps_rel The polygonal curve simplification tolerances used for
+#' simplifying the resulting boundary curve.  See [fm_simplify_helper()] for
 #' details.
 #' @param \dots Unused.
 #' @inheritParams fm_nonconvex_hull
@@ -1367,6 +1370,7 @@ fm_nonconvex_hull_inla <- function(x,
                                    concave = convex,
                                    resolution = 40,
                                    eps = NULL,
+                                   eps_rel = NULL,
                                    crs = NULL,
                                    ...) {
   stopifnot(!is.null(x))
@@ -1461,7 +1465,8 @@ fm_nonconvex_hull_inla <- function(x,
       ax[[1]], ax[[2]], z,
       levels = c(concave),
       positive = TRUE,
-      eps = eps
+      eps = eps,
+      eps_rel = eps_rel
     )
 
   segm.closing$crs <- crs
