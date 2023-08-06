@@ -50,6 +50,16 @@ plot(segm)
 lines(segm1, col = 2)
 lines(segm2, col = 3)
 }
+\references{
+Ramer, Urs (1972). "An iterative procedure for the polygonal approximation
+of plane curves". \emph{Computer Graphics and Image Processing}. \strong{1} (3): 244–256.
+\href{https://doi.org/10.1016/S0146-664X(72)80017-0}{doi:10.1016/S0146-664X(72)80017-0}
+
+Douglas, David; Peucker, Thomas (1973). "Algorithms for the reduction of
+the number of points required to represent a digitized line or its
+caricature". \emph{The Canadian Cartographer}. \strong{10} (2): 112–122.
+\href{https://doi.org/10.3138/FM57-6770-U75U-7727}{doi:10.3138/FM57-6770-U75U-7727}
+}
 \seealso{
 Other object creation and conversion: 
 \code{\link{fm_as_fm}()},

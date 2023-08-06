@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 [![inlabru status badge](https://inlabru-org.r-universe.dev/badges/fmesher)](https://inlabru-org.r-universe.dev)
 [![R build status](https://github.com/inlabru-org/fmesher/workflows/R-CMD-check/badge.svg)](https://github.com/inlabru-org/fmesher/actions)
 [![test-coverage](https://github.com/inlabru-org/fmesher/workflows/test-coverage/badge.svg)](https://github.com/inlabru-org/fmesher/actions)
-[![Codecov test coverage](https://codecov.io/gh/inlabru-org/fmesher/branch/devel/graph/badge.svg)](https://codecov.io/gh/inlabru-org/fmesher?branch=devel)
+[![Codecov test coverage](https://codecov.io/gh/inlabru-org/fmesher/branch/devel/graph/badge.svg)](https://app.codecov.io/gh/inlabru-org/fmesher?branch=devel)
 <!-- badges: end -->
 
 Functions that generate planar and spherical triangle meshes,

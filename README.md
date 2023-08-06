@@ -11,7 +11,7 @@ badge](https://inlabru-org.r-universe.dev/badges/fmesher)](https://inlabru-org.r
 status](https://github.com/inlabru-org/fmesher/workflows/R-CMD-check/badge.svg)](https://github.com/inlabru-org/fmesher/actions)
 [![test-coverage](https://github.com/inlabru-org/fmesher/workflows/test-coverage/badge.svg)](https://github.com/inlabru-org/fmesher/actions)
 [![Codecov test
-coverage](https://codecov.io/gh/inlabru-org/fmesher/branch/devel/graph/badge.svg)](https://codecov.io/gh/inlabru-org/fmesher?branch=devel)
+coverage](https://codecov.io/gh/inlabru-org/fmesher/branch/devel/graph/badge.svg)](https://app.codecov.io/gh/inlabru-org/fmesher?branch=devel)
 <!-- badges: end -->
 
 Functions that generate planar and spherical triangle meshes, computes
@@ -88,9 +88,6 @@ suppressPackageStartupMessages(library(fmesher))
   refine = list(max.edge = 0.5)
 ))
 #> fm_mesh_2d object:
-#>   CRS:
-#>     LegacyPROJ4: NA
-#>     WKT: (only shown with verbose = TRUE)
 #>   Manifold:  R2
 #>   V / E / T: 43 / 110 / 68
 #>   Euler char:    1

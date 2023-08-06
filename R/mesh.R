@@ -1114,6 +1114,15 @@ fm_simplify_helper <- function(loc, idx, eps = NULL, eps_rel = NULL) {
 #' Variation of Ramer-Douglas-Peucker.
 #' Uses width epsilon ellipse instead of rectangle,
 #' motivated by prediction ellipse for Brownian bridge.
+#' @references
+#' Ramer, Urs (1972). "An iterative procedure for the polygonal approximation
+#' of plane curves". *Computer Graphics and Image Processing*. **1** (3): 244–256.
+#' [doi:10.1016/S0146-664X(72)80017-0](https://doi.org/10.1016/S0146-664X(72)80017-0)
+#'
+#' Douglas, David; Peucker, Thomas (1973). "Algorithms for the reduction of
+#' the number of points required to represent a digitized line or its
+#' caricature". *The Canadian Cartographer*. **10** (2): 112–122.
+#' [doi:10.3138/FM57-6770-U75U-7727](https://doi.org/10.3138/FM57-6770-U75U-7727)
 #'
 #' @examples
 #' theta <- seq(0, 2 * pi, length.out = 1000)
