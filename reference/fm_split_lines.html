@@ -12,7 +12,7 @@ and filter out segment of length zero."><!-- mathjax --><script src="https://cdn
     
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.9.9013</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.9.9014</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,7 +68,7 @@ and filter out segment of length zero.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fm_split_lines</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for fm_mesh_2d</span></span>
-<span><span class="fu">fm_split_lines</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">sp</span>, <span class="va">ep</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">fm_split_lines</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">segm</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for inla.mesh</span></span>
 <span><span class="fu">fm_split_lines</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
@@ -81,25 +81,20 @@ and filter out segment of length zero.</p>
 
 
 <dt>...</dt>
-<dd><p>Passed on to the method for <code>fm_mesh_2d</code>.</p></dd>
+<dd><p>Unused.</p></dd>
 
 
-<dt>sp</dt>
-<dd><p>Start points of lines</p></dd>
-
-
-<dt>ep</dt>
-<dd><p>End points of lines</p></dd>
+<dt>segm</dt>
+<dd><p>An <code><a href="fm_segm.html">fm_segm()</a></code> object with segments to be split</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>List of start and end points resulting from splitting the given lines:
-<code>list(sp, ep, split.origin, idx, split.loc)</code></p>
-
-
+<p>An <code><a href="fm_segm.html">fm_segm()</a></code> object with the same crs as the mesh,
+with an added field <code>origin</code>, that for each new segment gives the
+originator index into to original <code>segm</code> object for each new line segment.</p>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>

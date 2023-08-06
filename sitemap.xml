@@ -151,6 +151,9 @@
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_pixels.html</loc>
   </url>
   <url>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fm_raw_basis.html</loc>
+  </url>
+  <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_rcdt_2d.html</loc>
   </url>
   <url>
@@ -212,6 +215,9 @@
   </url>
   <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fmesher_sparse.html</loc>
+  </url>
+  <url>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fmesher_spherical_bsplines.html</loc>
   </url>
   <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fmesher_split_lines.html</loc>
