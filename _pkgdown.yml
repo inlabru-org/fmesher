@@ -32,10 +32,12 @@ reference:
   - starts_with("fm_extensions")
   - starts_with("fm_simplify_helper")
   - starts_with("fm_tensor")
+  - starts_with("fm_split_lines")
 - title: "Property methods"
   desc: "Functions for computing or accessing object properties"
   contents:
   - starts_with("fm_basis")
+  - starts_with("fm_raw_basis")
   - starts_with("fm_int")
   - starts_with("fm_bary")
   - starts_with("fm_evaluate")
@@ -82,14 +84,14 @@ reference:
   desc: "Functions for printing."
   contents:
   - starts_with("print")
-- title: "Direct C++ interface"
-  desc: "Direct C++ interface methods, not intended for package users."
-  contents:
-  - starts_with("fmesher_")
 - title: "Data objects"
   desc: "Data objects"
   contents:
   - matches("fmexample")
+- title: "Direct C++ interface"
+  desc: "Direct C++ interface methods, not intended for package users."
+  contents:
+  - starts_with("fmesher_")
 - title: "Deprecated methods"
   desc: "Deprecated methods"
   contents:

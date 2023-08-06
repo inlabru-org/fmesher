@@ -920,7 +920,6 @@ fm_fem.inla.mesh <- function(mesh, order = 2, ...) {
 #'
 #' @author Fabian E. Bachl \email{f.e.bachl@@bath.ac.uk}
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
-#' @keywords internal
 #'
 #' @export
 fm_split_lines <- function(mesh, ...) {
@@ -933,7 +932,7 @@ fm_split_lines <- function(mesh, ...) {
 fm_split_lines.fm_mesh_2d <- function(mesh, segm, ...) {
   segm <-
     fm_transform(
-      segm,
+      fm_as_segm(segm),
       crs = fm_crs(mesh),
       crs0 = fm_crs(segm),
       passthrough = TRUE
