@@ -4,22 +4,25 @@
 \alias{fm_simplify}
 \title{Recursive curve simplification.}
 \usage{
-fm_simplify(x, eps, ...)
+fm_simplify(x, eps = NULL, eps_rel = NULL, ...)
 }
 \arguments{
 \item{x}{An \code{\link[=fm_segm]{fm_segm()}} object.}
 
-\item{eps}{Straightness tolerance.}
+\item{eps}{Absolute straightness tolerance. Default \code{NULL}, no constraint.}
+
+\item{eps_rel}{Relative straightness tolerance. Default \code{NULL}, no constraint.}
 }
 \value{
 The simplified \code{\link[=fm_segm]{fm_segm()}} object.
 }
 \description{
-Attempts to simplify polygonal curve segments by joining nearly
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+Simplifies polygonal curve segments by joining nearly
 co-linear segments.
 
 Uses a variation of the binary splitting Ramer-Douglas-Peucker algorithm,
-with a width \code{eps} ellipse instead of a rectangle, motivated by
+with an ellipse of half-width \code{eps} ellipse instead of a rectangle, motivated by
 prediction ellipse for Brownian bridge.
 }
 \details{
@@ -29,17 +32,23 @@ motivated by prediction ellipse for Brownian bridge.
 }
 \examples{
 theta <- seq(0, 2 * pi, length.out = 1000)
-segm <- fm_segm(cbind(cos(theta), sin(theta)),
-                idx = seq_along(theta))
+(segm <- fm_segm(cbind(cos(theta), sin(theta)),
+  idx = seq_along(theta)
+))
+(segm1 <- fm_simplify(segm, eps_rel = 0.1))
+(segm2 <- fm_simplify(segm, eps_rel = 0.2))
 plot(segm)
-lines(fm_simplify(segm, eps = 0.05), col = 2)
-lines(fm_simplify(segm, eps = 0.1), col = 3)
+lines(segm1, col = 2)
+lines(segm2, col = 3)
 
-segm <- fm_segm(cbind(theta, sin(theta * 4)),
-                idx = seq_along(theta))
+(segm <- fm_segm(cbind(theta, sin(theta * 4)),
+  idx = seq_along(theta)
+))
+(segm1 <- fm_simplify(segm, eps_rel = 0.1))
+(segm2 <- fm_simplify(segm, eps_rel = 0.2))
 plot(segm)
-lines(fm_simplify(segm, eps = 0.05), col = 2)
-lines(fm_simplify(segm, eps = 0.1), col = 3)
+lines(segm1, col = 2)
+lines(segm2, col = 3)
 }
 \seealso{
 Other object creation and conversion: 

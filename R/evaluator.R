@@ -263,10 +263,12 @@ fm_evaluator_mesh_1d <- function(mesh,
                                  derivatives = NULL,
                                  method = NULL,
                                  ...) {
-  method <- match.arg(method, c("default",
-                                "nearest",
-                                "linear",
-                                "quadratic"))
+  method <- match.arg(method, c(
+    "default",
+    "nearest",
+    "linear",
+    "quadratic"
+  ))
   ok <- (loc >= mesh$interval[1]) & (loc <= mesh$interval[2])
   if (identical(method, "default")) {
     ## Compute basis based on mesh$degree and mesh$boundary
@@ -1008,10 +1010,10 @@ internal_spline_mesh_1d <- function(interval, m, degree, boundary, free.clamped)
     )
   if (degree <= 1) {
     n <- (switch(boundary,
-                 neumann = m,
-                 dirichlet = m + 2,
-                 free = m,
-                 cyclic = m + 1
+      neumann = m,
+      dirichlet = m + 2,
+      free = m,
+      cyclic = m + 1
     ))
     if (n < 2) {
       n <- 2
@@ -1021,10 +1023,10 @@ internal_spline_mesh_1d <- function(interval, m, degree, boundary, free.clamped)
   } else {
     stopifnot(degree == 2)
     n <- (switch(boundary,
-                 neumann = m + 1,
-                 dirichlet = m + 1,
-                 free = m - 1,
-                 cyclic = m
+      neumann = m + 1,
+      dirichlet = m + 1,
+      free = m - 1,
+      cyclic = m
     ))
     if (boundary == "free") {
       if (m <= 1) {
@@ -1043,9 +1045,9 @@ internal_spline_mesh_1d <- function(interval, m, degree, boundary, free.clamped)
     }
   }
   return(fm_mesh_1d(seq(interval[1], interval[2], length.out = n),
-                    degree = degree,
-                    boundary = boundary,
-                    free.clamped = free.clamped
+    degree = degree,
+    boundary = boundary,
+    free.clamped = free.clamped
   ))
 }
 
@@ -1092,7 +1094,7 @@ internal_spline_mesh_1d <- function(interval, m, degree, boundary, free.clamped)
 #' image(proj$x, proj$y, fm_evaluate(proj, basis[, 7]))
 #' \donttest{
 #' if (require(rgl)) {
-#'     plot_rgl(mesh, col = basis[, 7], draw.edges = FALSE, draw.vertices = FALSE)
+#'   plot_rgl(mesh, col = basis[, 7], draw.edges = FALSE, draw.vertices = FALSE)
 #' }
 #' }
 #'
@@ -1208,7 +1210,7 @@ fm_raw_basis <- function(mesh,
       for (l in seq(0, n)) {
         basis[, 1 + l * (l + 1)] <-
           sqrt(2 * l + 1) *
-          gsl::legendre_Pl(l = l, x = loc[, 3])
+            gsl::legendre_Pl(l = l, x = loc[, 3])
         for (m in seq_len(l)) {
           scaling <- sqrt(2 * (2 * l + 1) * exp(lgamma(l - m + 1) - lgamma(l + m + 1)))
           poly <- gsl::legendre_Plm(l = l, m = m, x = loc[, 3])

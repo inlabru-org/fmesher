@@ -170,9 +170,11 @@ test_that("Integration line splitting", {
     max.edge = 0.5
   )
 
-  segm <- fm_segm(loc = rbind(c(-1, 0), c(-1, 1), c(1, 0), c(1, 1)),
-                  idx = rbind(c(1, 2), c(3, 4)),
-                  is.bnd = FALSE)
+  segm <- fm_segm(
+    loc = rbind(c(-1, 0), c(-1, 1), c(1, 0), c(1, 1)),
+    idx = rbind(c(1, 2), c(3, 4)),
+    is.bnd = FALSE
+  )
 
   expect_error(
     object = {
@@ -182,9 +184,11 @@ test_that("Integration line splitting", {
   )
 
   # Check inlabru issue #63 (problem for single line input), fixed
-  segm <- fm_segm(loc = rbind(c(-1, 0), c(1, 0)),
-                  idx = 1:2,
-                  is.bnd = FALSE)
+  segm <- fm_segm(
+    loc = rbind(c(-1, 0), c(1, 0)),
+    idx = 1:2,
+    is.bnd = FALSE
+  )
   expect_error(
     object = {
       sl <- fm_split_lines(mesh, segm)
@@ -193,9 +197,11 @@ test_that("Integration line splitting", {
   )
 
   # Check if empty input is ok
-  segm <- fm_segm(loc = NULL,
-                  idx = integer(0),
-                  is.bnd = FALSE)
+  segm <- fm_segm(
+    loc = NULL,
+    idx = integer(0),
+    is.bnd = FALSE
+  )
   expect_error(
     object = {
       sl <- fm_split_lines(mesh, segm)

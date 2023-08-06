@@ -943,11 +943,13 @@ fm_split_lines.fm_mesh_2d <- function(mesh, segm, ...) {
     t1 <- fm_bary(mesh, loc = segm$loc, crs = fm_crs(segm))$t
     keep <- !(is.na(t1[segm$idx[, 1]]) | is.na(t1[segm$idx[, 2]]))
     # if (any(!keep)) { warning("points outside boundary! filtering...")}
-    segm <- fm_segm(loc = segm$loc,
-                    idx = segm$idx[keep, , drop = FALSE],
-                    grp = segm$grp[keep],
-                    is.bnd = segm$is.bnd,
-                    crs = fm_crs(segm))
+    segm <- fm_segm(
+      loc = segm$loc,
+      idx = segm$idx[keep, , drop = FALSE],
+      grp = segm$grp[keep],
+      is.bnd = segm$is.bnd,
+      crs = fm_crs(segm)
+    )
     origin <- origin[keep]
   }
 
@@ -972,11 +974,13 @@ fm_split_lines.fm_mesh_2d <- function(mesh, segm, ...) {
     splt[[name]] <- splt[[name]] + 1L
   }
 
-  segm.split <- fm_segm(loc = splt$split.loc,
-                        idx = splt$split.idx,
-                        grp = segm$grp[splt$split.origin],
-                        is.bnd = segm$is.bnd,
-                        crs = fm_crs(segm))
+  segm.split <- fm_segm(
+    loc = splt$split.loc,
+    idx = splt$split.idx,
+    grp = segm$grp[splt$split.origin],
+    is.bnd = segm$is.bnd,
+    crs = fm_crs(segm)
+  )
   origin <- origin[splt$split.origin]
 
   #  plot(mesh)
@@ -986,12 +990,14 @@ fm_split_lines.fm_mesh_2d <- function(mesh, segm, ...) {
 
   # Filter out zero length segments
   keep <- rowSums((segm.split$loc[segm.split$idx[, 2], , drop = FALSE] -
-                     segm.split$loc[segm.split$idx[, 1], , drop = FALSE])^2) > 0
-  segm.split <- fm_segm(loc = segm.split$loc,
-                        idx = segm.split$idx[keep, , drop = FALSE],
-                        grp = segm.split$grp[keep],
-                        is.bnd = segm.split$is.bnd,
-                        crs = fm_crs(segm))
+    segm.split$loc[segm.split$idx[, 1], , drop = FALSE])^2) > 0
+  segm.split <- fm_segm(
+    loc = segm.split$loc,
+    idx = segm.split$idx[keep, , drop = FALSE],
+    grp = segm.split$grp[keep],
+    is.bnd = segm.split$is.bnd,
+    crs = fm_crs(segm)
+  )
   segm.split$origin <- origin[keep]
 
   return(segm.split)
@@ -1017,12 +1023,13 @@ fm_split_lines.inla.mesh <- function(mesh, ...) {
 #' Attempts to simplify a polygonal curve by joining nearly colinear segments.
 #'
 #' Uses a variation of the binary splitting Ramer-Douglas-Peucker algorithm,
-#' with a width `eps` ellipse instead of a rectangle, motivated by
+#' with an ellipse of half-width `eps` ellipse instead of a rectangle, motivated by
 #' prediction ellipse for Brownian bridge.
 #'
 #' @param loc Coordinate matrix.
 #' @param idx Index vector into `loc` specifying a polygonal curve.
-#' @param eps Straightness tolerance.
+#' @param eps Absolute straightness tolerance. Default `NULL`, no constraint.
+#' @param eps_rel Relative straightness tolerance. Default `NULL`, no constraint.
 #' @return An index vector into `loc` specifying the simplified polygonal
 #' curve.
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
@@ -1042,9 +1049,11 @@ fm_split_lines.inla.mesh <- function(mesh, ...) {
 #' @export
 #' @keywords internal
 #' @family nonconvex inla legacy support
-fm_simplify_helper <- function(loc, idx, eps) {
+fm_simplify_helper <- function(loc, idx, eps = NULL, eps_rel = NULL) {
   n <- length(idx)
-  if ((n == 2) || (eps == 0)) {
+  if ((n <= 2) ||
+    (is.null(eps) && is.null(eps_rel)) ||
+    (min(eps, eps_rel) == 0)) {
     return(idx)
   }
   segm <- loc[idx[n], ] - loc[idx[1], ]
@@ -1063,13 +1072,13 @@ fm_simplify_helper <- function(loc, idx, eps) {
       loc[idx[2:(n - 1)], 2] - segm.mid[2]
     ))
     ## Always split if any point is outside the circle
-    epsi <- min(c(eps, segm.len / 2))
+    epsi <- min(c(eps, eps_rel * segm.len / 2, segm.len / 2))
     dist1 <- abs(vec[, 1] * segm[1] + vec[, 2] * segm[2]) / (segm.len / 2) * epsi
     dist2 <- abs(vec[, 1] * segm.perp[1] + vec[, 2] * segm.perp[2])
     dist <- (dist1^2 + dist2^2)^0.5
 
     ## Find the furthest point, in the ellipse metric, and
-    ## check if it inside the radius (radius=segm.len/2)
+    ## check if it inside the ellipse (radius=segm.len/2)
     split <- which.max(dist) + 1L
     if (dist[split - 1L] < epsi) {
       ## Flat segment, eliminate.
@@ -1081,23 +1090,24 @@ fm_simplify_helper <- function(loc, idx, eps) {
 
   ## Do the split recursively:
   return(c(
-    fm_simplify_helper(loc, idx[1L:split], eps),
-    fm_simplify_helper(loc, idx[split:n], eps)[-1L]
+    fm_simplify_helper(loc, idx[1L:split], eps = eps, eps_rel = eps_rel),
+    fm_simplify_helper(loc, idx[split:n], eps = eps, eps_rel = eps_rel)[-1L]
   ))
 }
 
 #' @title Recursive curve simplification.
 #'
-#' @description
-#' Attempts to simplify polygonal curve segments by joining nearly
+#' @description `r lifecycle::badge("experimental")`
+#' Simplifies polygonal curve segments by joining nearly
 #' co-linear segments.
 #'
 #' Uses a variation of the binary splitting Ramer-Douglas-Peucker algorithm,
-#' with a width `eps` ellipse instead of a rectangle, motivated by
+#' with an ellipse of half-width `eps` ellipse instead of a rectangle, motivated by
 #' prediction ellipse for Brownian bridge.
 #'
 #' @param x An [fm_segm()] object.
-#' @param eps Straightness tolerance.
+#' @param eps Absolute straightness tolerance. Default `NULL`, no constraint.
+#' @param eps_rel Relative straightness tolerance. Default `NULL`, no constraint.
 #' @return The simplified [fm_segm()] object.
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
 #' @details
@@ -1107,21 +1117,29 @@ fm_simplify_helper <- function(loc, idx, eps) {
 #'
 #' @examples
 #' theta <- seq(0, 2 * pi, length.out = 1000)
-#' segm <- fm_segm(cbind(cos(theta), sin(theta)),
-#'                 idx = seq_along(theta))
+#' (segm <- fm_segm(cbind(cos(theta), sin(theta)),
+#'   idx = seq_along(theta)
+#' ))
+#' (segm1 <- fm_simplify(segm, eps_rel = 0.1))
+#' (segm2 <- fm_simplify(segm, eps_rel = 0.2))
 #' plot(segm)
-#' lines(fm_simplify(segm, eps = 0.05), col = 2)
-#' lines(fm_simplify(segm, eps = 0.1), col = 3)
+#' lines(segm1, col = 2)
+#' lines(segm2, col = 3)
 #'
-#' segm <- fm_segm(cbind(theta, sin(theta * 4)),
-#'                 idx = seq_along(theta))
+#' (segm <- fm_segm(cbind(theta, sin(theta * 4)),
+#'   idx = seq_along(theta)
+#' ))
+#' (segm1 <- fm_simplify(segm, eps_rel = 0.1))
+#' (segm2 <- fm_simplify(segm, eps_rel = 0.2))
 #' plot(segm)
-#' lines(fm_simplify(segm, eps = 0.05), col = 2)
-#' lines(fm_simplify(segm, eps = 0.1), col = 3)
+#' lines(segm1, col = 2)
+#' lines(segm2, col = 3)
 #' @export
 #' @family object creation and conversion
-fm_simplify <- function(x, eps, ...) {
-  if ((nrow(x$idx) == 1) || (eps == 0)) {
+fm_simplify <- function(x, eps = NULL, eps_rel = NULL, ...) {
+  if ((nrow(x$idx) <= 1) ||
+    (is.null(eps) && is.null(eps_rel)) ||
+    (min(eps, eps_rel) == 0)) {
     return(x)
   }
 
@@ -1168,13 +1186,20 @@ fm_simplify <- function(x, eps, ...) {
     # seq_vtx and seq_seg
     k <- k + 1
     # TODO: handle geocent data
-    idx <- fm_simplify_helper(loc = x$loc, idx = seq_vtx, eps = eps)
+    idx <- fm_simplify_helper(
+      loc = x$loc,
+      idx = seq_vtx,
+      eps = eps,
+      eps_rel = eps_rel
+    )
     # TODO: improve granularity of group information.
-    segm_split[[k]] <- fm_segm(loc = x$loc,
-                               idx = idx,
-                               grp = x$grp[seq_seg[1]],
-                               is.bnd = x$is.bnd,
-                               crs = fm_crs(x))
+    segm_split[[k]] <- fm_segm(
+      loc = x$loc,
+      idx = idx,
+      grp = x$grp[seq_seg[1]],
+      is.bnd = x$is.bnd,
+      crs = fm_crs(x)
+    )
   }
   segm_split <- fm_segm_join(fm_as_segm_list(segm_split))
 

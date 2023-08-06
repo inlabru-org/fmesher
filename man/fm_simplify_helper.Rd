@@ -4,14 +4,16 @@
 \alias{fm_simplify_helper}
 \title{Recursive curve simplification.}
 \usage{
-fm_simplify_helper(loc, idx, eps)
+fm_simplify_helper(loc, idx, eps = NULL, eps_rel = NULL)
 }
 \arguments{
 \item{loc}{Coordinate matrix.}
 
 \item{idx}{Index vector into \code{loc} specifying a polygonal curve.}
 
-\item{eps}{Straightness tolerance.}
+\item{eps}{Absolute straightness tolerance. Default \code{NULL}, no constraint.}
+
+\item{eps_rel}{Relative straightness tolerance. Default \code{NULL}, no constraint.}
 }
 \value{
 An index vector into \code{loc} specifying the simplified polygonal
@@ -23,7 +25,7 @@ Helper from legacy \code{INLA::inla.simplify.curve()}
 Attempts to simplify a polygonal curve by joining nearly colinear segments.
 
 Uses a variation of the binary splitting Ramer-Douglas-Peucker algorithm,
-with a width \code{eps} ellipse instead of a rectangle, motivated by
+with an ellipse of half-width \code{eps} ellipse instead of a rectangle, motivated by
 prediction ellipse for Brownian bridge.
 }
 \details{

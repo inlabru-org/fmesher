@@ -64,7 +64,7 @@ proj <- fm_evaluator(mesh)
 image(proj$x, proj$y, fm_evaluate(proj, basis[, 7]))
 \donttest{
 if (require(rgl)) {
-    plot_rgl(mesh, col = basis[, 7], draw.edges = FALSE, draw.vertices = FALSE)
+  plot_rgl(mesh, col = basis[, 7], draw.edges = FALSE, draw.vertices = FALSE)
 }
 }
 

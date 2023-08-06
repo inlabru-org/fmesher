@@ -902,11 +902,13 @@ fm_crs.matrix <- function(x, oblique = NULL, ...) {
 #' @rdname fm_crs-set
 #' @export
 `fm_crs<-.fm_segm_list` <- function(x, value) {
-  y <- fm_as_segm_list(lapply(x,
-                              function(xx) {
-                                xx[["crs"]] <- fm_crs(value)
-                                xx
-                              }))
+  y <- fm_as_segm_list(lapply(
+    x,
+    function(xx) {
+      xx[["crs"]] <- fm_crs(value)
+      xx
+    }
+  ))
   y
 }
 
@@ -2286,10 +2288,11 @@ fm_transform.fm_segm <- function(x,
   if (!is.null(x$loc)) {
     x$loc <-
       fm_transform(x$loc,
-                   crs = crs,
-                   crs0 = crs0,
-                   ...,
-                   passthrough = passthrough)
+        crs = crs,
+        crs0 = crs0,
+        ...,
+        passthrough = passthrough
+      )
   }
   x$crs <- fm_crs(crs)
 

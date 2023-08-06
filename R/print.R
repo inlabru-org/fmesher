@@ -70,7 +70,8 @@ print.fm_segm <- function(x, ..., digits = NULL, verbose = TRUE, newline = TRUE)
     cat(")")
   }
   if (verbose) {
-    cat(", bounding box = ", sep = "")
+    cat("\n  ", sep = "")
+    cat("Bounding box = ", sep = "")
     print(
       fm_bbox(x),
       verbose = FALSE,
