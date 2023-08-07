@@ -778,7 +778,7 @@ fm_vertex_projection <- function(points, mesh) {
 
   if (inherits(points, "Spatial")) {
     ret <- sp::SpatialPointsDataFrame(
-      coords[, seq_along(sp::coordnames(points)), drop = FALSE],
+      coords[, seq_len(min(ncol(coords)), ncol(sp::coordinates(points))), drop = FALSE],
       proj4string = fm_CRS(mesh),
       data = data,
       match.ID = FALSE
@@ -786,7 +786,7 @@ fm_vertex_projection <- function(points, mesh) {
     sp::coordnames(ret) <- sp::coordnames(points)
   } else if (inherits(points, "sf")) {
     colnames(coords) <- c("X", "Y", "Z")[seq_len(ncol(coords))]
-    d <- length(intersect(colnames(sf::st_coordinates(points)), c("X", "Y", "Z")))
+    d <- min(ncol(coords), length(intersect(colnames(sf::st_coordinates(points)), c("X", "Y", "Z"))))
     data <- cbind(
       tibble::as_tibble(coords[, seq_len(d), drop = FALSE]),
       tibble::as_tibble(data)

@@ -58,6 +58,9 @@ fm_pixels <- function(mesh, nx = 150, ny = 150, mask = TRUE,
   pixels <- sf::st_as_sf(pixels, coords = c("x", "y"), crs = fm_crs(mesh))
 
   pixels_within <- rep(TRUE, NROW(pixels))
+  if (is.null(mask)) {
+    mask <- FALSE
+  }
   if (is.logical(mask)) {
     if (mask) {
       pixels_within <- fm_is_within(pixels, mesh)
