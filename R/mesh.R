@@ -1952,6 +1952,163 @@ fm_manifold_dim <- function(x) {
 }
 
 
+# fm_list ####
+
+fm_class_stubs <- function() {
+  c("segm", "mesh_1d", "mesh_2d", "lattice_2d", "tensor")
+}
+
+fm_class_stub <- function(x) {
+  if (!is.character(x)) {
+    x <- class(x)[1]
+  }
+  if (!grepl("^fm_", x)) {
+    return(NULL)
+  }
+  x <- sub("^fm_", "", x)
+  if (grepl("^list$", x)) {
+    return(NULL)
+  }
+  x <- sub("_list$", "", x)
+  if (!(x %in% fm_class_stubs())) {
+    return(NULL)
+  }
+  x
+}
+
+#' @title Handle lists of fmesher objects
+#'
+#' @description
+#' Methods for constructing and manipulating `fm_list` objects.
+#'
+#' @describeIn fm_list Convert each element of a list, or convert a single
+#'   non-list object and return in a list
+#' @param x list of objects to be converted.
+#' @param ... Arguments passed to each individual conversion call.
+#' @param .class_stub character; class stub name of class to convert each list
+#'   element to. If `NULL`, uses `fm_as_fm` and auto-detects if the resulting
+#'   list has consistent class, and then adds that to the class list.  If
+#'   non-null, uses `paste0("fm_as_", .class_stub)` for conversion, and verifies
+#'   that the resulting list has elements consistent with that class.
+#' @returns An `fm_list` object, potentially with `fm_{class_stub}_list`
+#'   added.
+#' @export
+fm_list <- function(x, ..., .class_stub = NULL) {
+  fm_as_list(x, ..., .class_stub = NULL)
+}
+#' @describeIn fm_list Convert each element of a list, or convert a single
+#'   non-list object and return in a list
+#' @export
+fm_as_list <- function(x, ..., .class_stub = NULL) {
+  if (is.null(.class_stub)) {
+    .method <- "fm_as_fm"
+    .class_name <- NULL
+    .class_list_name <- NULL
+  } else {
+    .method <- paste0("fm_as_", .class_stub)
+    .class_name <- paste0("fm_", .class_stub)
+    .class_list_name <- paste0(.class_name, "_list")
+    if (!missing(x) && inherits(x, .class_list_name)) {
+      return(x)
+    }
+  }
+  if (missing(x) || is.null(x) || (length(x) == 0)) {
+    return(structure(list(),
+                     class = c(.class_list_name, "fm_list")))
+  }
+
+  if (inherits(x, paste0("fm_", fm_class_stubs(), "_list"))) {
+    return(x)
+  }
+
+  if (!inherits(x, "fm_list")) {
+    m_c <- intersect(
+      setdiff(method_classes(.method), "list"),
+      paste0("fm_", fm_class_stubs())
+    )
+    if (!is.null(.class_stub)) {
+      m_c <- intersect(m_c, paste0("fm_ ", .class_stub))
+    }
+    if (inherits(x, paste0("fm_", fm_class_stubs())) ||
+        (!is.null(m_c) && inherits(x, m_c))) {
+      # Single element of known or coercible non-list type
+#      y <- do.call(.method, list(x, ...))
+      return(fm_as_list(list(x), ..., .class_stub = .class_stub))
+    }
+  }
+
+  if (!inherits(x, "list")) {
+    stop(paste0(
+      "'list' object expected. Received '",
+      paste0(class(x), collapse = ", "),
+      "'."
+    ))
+  }
+
+  y <- lapply(x, function(xx) do.call(.method, list(xx, ...)))
+
+  if ((length(y) > 0) && is.null(.class_stub)) {
+    stubs <- fm_class_stubs()
+    is_stub <- vapply(stubs, function(stub) {
+      all(vapply(y, function(yy)
+        is.null(yy) || inherits(yy, paste0("fm_", stub)), TRUE))
+    },
+    TRUE)
+    if (any(is_stub)) {
+      .class_stub <- stubs[is_stub][1]
+    }
+  }
+  if (!is.null(.class_stub)) {
+    .class_name <- paste0("fm_", .class_stub)
+    if (length(y) > 0) {
+      is_stub <-
+        all(vapply(y,
+                   function(yy)
+                     is.null(yy) || inherits(yy, .class_name),
+                   TRUE))
+      if (!is_stub) {
+        stop("Inconsistent element classes for 'fm_list' for class '",
+             .class_name, "'")
+      }
+    }
+    .class_list_name <- paste0(.class_name, "_list")
+    class(y) <- c(.class_list_name, "fm_list")
+    return(y)
+  }
+
+  class(y) <- "fm_list"
+  return(y)
+}
+
+
+
+#' @export
+#' @describeIn fm_list The `...` arguments should be coercible to `fm_list`
+#' objects.
+`c.fm_list` <- function(...) {
+  if (!all(vapply(list(...),
+                  function(xx) is.null(xx) || inherits(xx, "fm_list"),
+                  TRUE))) {
+    y <- lapply(list(...), fm_as_list)
+    return(do.call("c", y))
+  }
+  object <- NextMethod()
+  fm_as_list(object)
+}
+
+#' @export
+#' @param x `fm_list` object from which to extract element(s)
+#' @param i indices specifying elements to extract
+#' @describeIn fm_list Extract sub-list
+`[.fm_list` <- function(x, i) {
+  object <- NextMethod()
+  class(object) <- class(x)
+  object
+}
+
+
+
+
 # fm_segm ####
 
 #' @title Make a spatial segment object
@@ -2188,8 +2345,8 @@ fm_segm_join <- function(x, grp = NULL, grp.default = 0L) {
     crs = crs
   )
 }
-#' @describeIn fm_segm Split an `fm_segm` object by `grp` into a list of `fm_segm`
-#' objects, optionally keeping only some groups.
+#' @describeIn fm_segm Split an `fm_segm` object by `grp` into an `fm_segm_list`
+#' object, optionally keeping only some groups.
 #' @export
 fm_segm_split <- function(x, grp = NULL, grp.default = 0L) {
   if (is.null(x[["grp"]])) {
@@ -2211,7 +2368,7 @@ fm_segm_split <- function(x, grp = NULL, grp.default = 0L) {
       )
     }
   )
-  return(segm_list)
+  return(fm_as_segm_list(segm_list))
 }
 #' @rdname fm_segm
 #' @export
@@ -2282,6 +2439,8 @@ fm_segm.fm_mesh_2d <- function(x, boundary = TRUE, grp = NULL, ...) {
 }
 
 
+# fm_as_segm ####
+
 #' @title Convert objects to `fm_segm`
 #' @describeIn fm_as_segm Convert an object to `fm_segm`.
 #' @param x Object to be converted.
@@ -2300,13 +2459,7 @@ fm_as_segm <- function(x, ...) {
 #' \code{\link[=[.fm_segm_list]{[.fm_segm_list()}}
 #' @export
 fm_as_segm_list <- function(x, ...) {
-  if (inherits(x, c("fm_segm_list", "NULL"))) {
-    return(x)
-  }
-  structure(
-    fm_as_list(x, ..., .method = "fm_as_segm"),
-    class = "fm_segm_list"
-  )
+  fm_as_list(x, ..., .class_stub = "segm")
 }
 
 #' @rdname fm_as_segm
@@ -2322,6 +2475,8 @@ fm_as_segm.inla.mesh.segment <- function(x, ...) {
   class(x) <- c("fm_segm", class(x))
   x
 }
+
+# fm_is_bnd ####
 
 #' @rdname fm_segm
 #' @export
@@ -2361,16 +2516,22 @@ NULL
 #' str(m)
 #' str(m[2])
 `c.fm_segm` <- function(...) {
-  fm_as_segm_list(list(...))
+  y <- lapply(list(...), fm_as_segm_list)
+  return(do.call("c", y))
 }
 
 #' @export
-#' @describeIn fm_segm_list The `...` arguments should be `fm_segm_list`
+#' @describeIn fm_segm_list The `...` arguments should be coercible to `fm_segm_list`
 #' objects.
 `c.fm_segm_list` <- function(...) {
-  y <- lapply(list(...), fm_as_segm_list)
-  object <- do.call(NextMethod, list("c", y))
-  class(object) <- "fm_segm_list"
+  if (!all(vapply(list(...),
+                  function(xx) is.null(xx) || inherits(xx, "fm_segm_list"),
+                  TRUE))) {
+    y <- lapply(list(...), fm_as_segm_list)
+    return(do.call("c", y))
+  }
+  object <- NextMethod()
+  class(object) <- c("fm_segm_list", "fm_list")
   object
 }
 
@@ -2380,7 +2541,7 @@ NULL
 #' @describeIn fm_segm_list Extract sub-list
 `[.fm_segm_list` <- function(x, i) {
   object <- NextMethod()
-  class(object) <- "fm_segm_list"
+  class(object) <- class(x)
   object
 }
 
@@ -2405,42 +2566,8 @@ fm_as_fm <- function(x, ...) {
   UseMethod("fm_as_fm")
 }
 
-# @description fm_as_list Convert each element of a list, or convert a single
-# object and return in a list
-# @param x list of objects to be converted.
-# @param ... Arguments passed to each individual conversion call.
-# @param .method character; name of a conversion generic to apply to each list
-# element.
-fm_as_list <- function(x, ..., .method) {
-  if (is.null(x)) {
-    return(list())
-  }
-  m_c <- method_classes(.method)
-  if (inherits(x, setdiff(m_c, "list"))) {
-    return(list(do.call(.method, list(x, ...))))
-  }
-  if (!inherits(x, "list")) {
-    stop(paste0(
-      "'list' object expected. Received '",
-      paste0(class(x), collapse = ", "),
-      "'."
-    ))
-  }
-  if ("list" %in% m_c) {
-    return(do.call(.method, list(x, ...)))
-  }
-  lapply(x, function(xx) do.call(.method, list(xx, ...)))
-}
-#' @describeIn fm_as_fm Convert each element of a list, or convert a single
-#' object and return in a list
-#' @export
-fm_as_fm_list <- function(x, ...) {
-  y <- fm_as_list(x, ..., .method = "fm_as_fm")
-  if (all(vapply(y, function(xx) inherits(xx, "fm_segm"), TRUE))) {
-    y <- fm_as_segm_list(y)
-  }
-  y
-}
+
+
 #' @rdname fm_as_fm
 #' @usage
 #' ## S3 method for class 'NULL'
@@ -2718,7 +2845,7 @@ fm_as_mesh_1d <- function(x, ...) {
 #' @describeIn fm_as_mesh_1d Convert each element of a list
 #' @export
 fm_as_mesh_1d_list <- function(x, ...) {
-  fm_as_list(x, ..., .method = "fm_as_mesh_1d")
+  fm_as_list(x, ..., .class_stub = "mesh_1d")
 }
 #' @rdname fm_as_mesh_1d
 #' @param x Object to be converted
@@ -3563,7 +3690,7 @@ fm_as_mesh_2d <- function(x, ...) {
 #' @describeIn fm_as_mesh_2d Convert each element of a list
 #' @export
 fm_as_mesh_2d_list <- function(x, ...) {
-  fm_as_list(x, ..., .method = "fm_as_mesh_2d")
+  fm_as_list(x, ..., .class_stub = "mesh_2d")
 }
 #' @rdname fm_as_mesh_2d
 #' @param x Object to be converted
@@ -3624,7 +3751,7 @@ fm_as_tensor <- function(x, ...) {
 #' @describeIn fm_as_tensor Convert each element of a list
 #' @export
 fm_as_tensor_list <- function(x, ...) {
-  fm_as_list(x, ..., .method = "fm_as_tensor")
+  fm_as_list(x, ..., .class_stub = "tensor")
 }
 #' @rdname fm_as_tensor
 #' @param x Object to be converted
@@ -3927,7 +4054,7 @@ fm_as_lattice_2d <- function(...) {
 #' @describeIn fm_as_lattice_2d Convert each element of a list
 #' @export
 fm_as_lattice_2d_list <- function(x, ...) {
-  fm_as_list(x, ..., .method = "fm_as_lattice_2d")
+  fm_as_list(x, ..., .class_stub = "lattice_2d")
 }
 #' @rdname fm_as_lattice_2d
 #' @param x Object to be converted

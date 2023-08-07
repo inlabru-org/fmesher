@@ -86,6 +86,36 @@ print.fm_segm <- function(x, ..., digits = NULL, verbose = TRUE, newline = TRUE)
 }
 
 
+#' @export
+#' @param newline logical; if `TRUE` (default), end the printing with `\n`
+#' @rdname fmesher-print
+print.fm_segm_list <- function(x, ..., digits = NULL, verbose = FALSE, newline = TRUE) {
+  if (verbose) {
+    cat("list of ", length(x), " fm_segm objects:\n", sep = "")
+    lapply(x, function(xx)
+      print(
+        xx,
+        digits = digits,
+        verbose = TRUE,
+        newline = TRUE
+      ))
+  } else {
+    for (k in seq_along(x)) {
+      print(
+        x[[k]],
+        digits = digits,
+        verbose = FALSE,
+        newline = newline
+      )
+      if (!newline && (k < length(x))) {
+        cat(", ", sep = "")
+      }
+    }
+  }
+  return(invisible(x))
+}
+
+
 #' @param verbose logical
 #' @param digits a positive integer indicating how many significant digits are
 #' to be used for numeric and complex x. The default, NULL, uses `getOption("digits")`.
@@ -111,9 +141,10 @@ print.fm_mesh_2d <- function(x, ..., digits = NULL, verbose = FALSE) {
   ret <- c(ret, list(crs_proj4 = as.character(fm_proj4string(crs))))
 
   if (!is.null(x$segm)) {
-    ret <- c(ret, list(segm.bnd = x$segm$bnd, segm.int = x$segm$int))
+    ret$segm <- fm_as_segm_list(list(x$segm$bnd, x$segm$int))
   } else {
-    ret <- c(ret, list(segm.bnd = fm_segm(is.bnd = TRUE), segm.int = fm_segm(is.bnd = FALSE)))
+    ret$segm <- fm_as_segm_list(list(segm.bnd = fm_segm(is.bnd = TRUE),
+                                     segm.int = fm_segm(is.bnd = FALSE)))
   }
 
   my.print.proc_time <- function(x, ...) {
@@ -171,10 +202,8 @@ print.fm_mesh_2d <- function(x, ..., digits = NULL, verbose = FALSE) {
   cat("  Euler char:\t", as.character(nV - nE + nF), "\n", sep = "")
 
   cat("  Constraints:\t")
-  print(ret$segm.bnd, newline = FALSE, digits = digits, verbose = FALSE)
-  cat(", ")
-  print(ret$segm.int, newline = TRUE, digits = digits, verbose = FALSE)
-  cat("  ", sep = "")
+  print(ret$segm, newline = FALSE, digits = digits, verbose = FALSE)
+  cat("\n  ", sep = "")
   print(fm_bbox(x), digits = digits)
   cat("  Basis d.o.f.:\t", ret$nV, "\n", sep = "")
   invisible(x)

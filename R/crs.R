@@ -830,7 +830,7 @@ fm_crs.fm_segm <- function(x, oblique = NULL, ...) {
 
 #' @describeIn fm_crs returns a list of 'crs' objects, one for each list element
 #' @export
-fm_crs.fm_segm_list <- function(x, oblique = NULL, ...) {
+fm_crs.fm_list <- function(x, oblique = NULL, ...) {
   lapply(x, function(xx) fm_crs(xx, oblique = oblique, ...))
 }
 
@@ -901,14 +901,15 @@ fm_crs.matrix <- function(x, oblique = NULL, ...) {
 
 #' @rdname fm_crs-set
 #' @export
-`fm_crs<-.fm_segm_list` <- function(x, value) {
-  y <- fm_as_segm_list(lapply(
-    x,
-    function(xx) {
-      xx[["crs"]] <- fm_crs(value)
-      xx
-    }
-  ))
+`fm_crs<-.fm_list` <- function(x, value) {
+  y <- fm_as_list(lapply(x,
+                         function(xx) {
+                           if (!is.null(xx)) {
+                             fm_crs(xx) <- fm_crs(value)
+                           }
+                           xx
+                         }),
+                  .class_stub = fm_class_stub(x))
   y
 }
 
@@ -1176,7 +1177,7 @@ fm_CRS.fm_segm <- function(x, oblique = NULL, ...) {
 
 #' @describeIn fm_crs returns a list of 'CRS' objects, one for each list element
 #' @export
-fm_CRS.fm_segm_list <- function(x, oblique = NULL, ...) {
+fm_CRS.fm_list <- function(x, oblique = NULL, ...) {
   lapply(x, function(xx) fm_CRS(xx, oblique = oblique, ...))
 }
 
@@ -1973,13 +1974,13 @@ fm_detect_manifold.fm_mesh_2d <- function(x) {
 #' Potential additional arguments
 #' @seealso [fm_CRS()]
 #' @export
-fm_transform <- function(x, crs = fm_crs(x), ...) {
+fm_transform <- function(x, crs, ...) {
   UseMethod("fm_transform")
 }
 
 #' @rdname fm_transform
 #' @export
-fm_transform.default <- function(x, crs = fm_crs(x), ..., crs0 = NULL) {
+fm_transform.default <- function(x, crs, ..., crs0 = NULL) {
   stop(paste0(
     "fm_transform() for '",
     paste0(class(x), sep = ", "),
@@ -1990,9 +1991,9 @@ fm_transform.default <- function(x, crs = fm_crs(x), ..., crs0 = NULL) {
 #' @rdname fm_transform
 #' @usage
 #' ## S3 method for class 'NULL'
-#' fm_transform(x, crs = fm_crs(x), ...)
+#' fm_transform(x, crs, ...)
 #' @export
-fm_transform.NULL <- function(x, crs = fm_crs(x), ...) {
+fm_transform.NULL <- function(x, crs, ...) {
   NULL
 }
 
@@ -2040,7 +2041,7 @@ fm_transform_raw <- function(x, from, to) {
 
 #' @rdname fm_transform
 #' @export
-fm_transform.matrix <- function(x, crs = NULL, ..., passthrough = FALSE, crs0 = NULL) {
+fm_transform.matrix <- function(x, crs, ..., passthrough = FALSE, crs0 = NULL) {
   crs1 <- fm_crs(crs)
   crs0 <- fm_crs(crs0)
   if (fm_crs_is_null(crs0) || fm_crs_is_null(crs1)) {
@@ -2152,15 +2153,6 @@ fm_transform.matrix <- function(x, crs = NULL, ..., passthrough = FALSE, crs0 = 
   x
 }
 
-#' @rdname fm_transform
-#' @export
-fm_transform.list <- function(x, crs = fm_crs(x), ...) {
-  if (!fm_crs_is_null(crs)) {
-    x <- lapply(x, function(xx) fm_transform(xx, crs = crs, ...))
-  }
-  x
-}
-
 
 # Internal helper function for fm_transform.sf/sfc/sfg
 fm_transform_sf <- function(x, crs, ..., passthrough) {
@@ -2215,25 +2207,25 @@ fm_transform_sf <- function(x, crs, ..., passthrough) {
 
 #' @export
 #' @rdname fm_transform
-fm_transform.sf <- function(x, crs = fm_crs(x), ..., passthrough = FALSE) {
+fm_transform.sf <- function(x, crs, ..., passthrough = FALSE) {
   geo <- fm_transform(sf::st_geometry(x), crs = crs, ..., passthrough = passthrough)
   sf::st_geometry(x) <- geo
   x
 }
 #' @export
 #' @rdname fm_transform
-fm_transform.sfc <- function(x, crs = fm_crs(x), ..., passthrough = FALSE) {
+fm_transform.sfc <- function(x, crs, ..., passthrough = FALSE) {
   fm_transform_sf(x, crs = crs, ..., passthrough = passthrough)
 }
 #' @export
 #' @rdname fm_transform
-fm_transform.sfg <- function(x, crs = fm_crs(x), ..., passthrough = FALSE) {
+fm_transform.sfg <- function(x, crs, ..., passthrough = FALSE) {
   fm_transform_sf(x, crs = crs, ..., passthrough = passthrough)
 }
 
 #' @export
 #' @rdname fm_transform
-fm_transform.Spatial <- function(x, crs = fm_crs(x), ..., passthrough = FALSE) {
+fm_transform.Spatial <- function(x, crs, ..., passthrough = FALSE) {
   orig_class <- class(x)
   as(
     as(
@@ -2302,10 +2294,16 @@ fm_transform.fm_segm <- function(x,
 
 #' @rdname fm_transform
 #' @export
-fm_transform.fm_segm_list <- function(x, crs = fm_crs(x), ...) {
-  x <- NextMethod("fm_transform")
-  class(x) <- "fm_segm_list"
-  x
+fm_transform.fm_list <- function(x, crs, ...) {
+  cl <- class(x)
+  y <- lapply(x, function(xx) {
+    if (is.null(crs)) {
+      crs <- fm_crs(xx)
+    }
+    fm_transform(xx, crs = crs, ...)
+  })
+  class(y) <- cl
+  y
 }
 
 
@@ -2411,14 +2409,12 @@ fm_transform.inla.mesh <- function(x,
 
 #' @export
 #' @rdname fm_transform
-fm_transform.inla.mesh.lattice <- function(x,
-                                           crs = fm_crs(x),
-                                           ...) {
+fm_transform.inla.mesh.lattice <- function(x, crs, ...) {
   fm_transform.fm_lattice_2d(fm_as_lattice_2d(x), crs = crs, ...)
 }
 #' @export
 #' @rdname fm_transform
-fm_transform.inla.mesh.segment <- function(x, crs = fm_crs(x), ...) {
+fm_transform.inla.mesh.segment <- function(x, crs, ...) {
   fm_transform.fm_segm(fm_as_segm(x), crs = crs, ...)
 }
 

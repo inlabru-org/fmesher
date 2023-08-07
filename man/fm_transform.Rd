@@ -5,7 +5,6 @@
 \alias{fm_transform.default}
 \alias{fm_transform.NULL}
 \alias{fm_transform.matrix}
-\alias{fm_transform.list}
 \alias{fm_transform.sf}
 \alias{fm_transform.sfc}
 \alias{fm_transform.sfg}
@@ -13,30 +12,28 @@
 \alias{fm_transform.fm_mesh_2d}
 \alias{fm_transform.fm_lattice_2d}
 \alias{fm_transform.fm_segm}
-\alias{fm_transform.fm_segm_list}
+\alias{fm_transform.fm_list}
 \alias{fm_transform.inla.mesh}
 \alias{fm_transform.inla.mesh.lattice}
 \alias{fm_transform.inla.mesh.segment}
 \title{Object coordinate transformation}
 \usage{
-fm_transform(x, crs = fm_crs(x), ...)
+fm_transform(x, crs, ...)
 
-\method{fm_transform}{default}(x, crs = fm_crs(x), ..., crs0 = NULL)
+\method{fm_transform}{default}(x, crs, ..., crs0 = NULL)
 
 ## S3 method for class 'NULL'
-fm_transform(x, crs = fm_crs(x), ...)
+fm_transform(x, crs, ...)
 
-\method{fm_transform}{matrix}(x, crs = NULL, ..., passthrough = FALSE, crs0 = NULL)
+\method{fm_transform}{matrix}(x, crs, ..., passthrough = FALSE, crs0 = NULL)
 
-\method{fm_transform}{list}(x, crs = fm_crs(x), ...)
+\method{fm_transform}{sf}(x, crs, ..., passthrough = FALSE)
 
-\method{fm_transform}{sf}(x, crs = fm_crs(x), ..., passthrough = FALSE)
+\method{fm_transform}{sfc}(x, crs, ..., passthrough = FALSE)
 
-\method{fm_transform}{sfc}(x, crs = fm_crs(x), ..., passthrough = FALSE)
+\method{fm_transform}{sfg}(x, crs, ..., passthrough = FALSE)
 
-\method{fm_transform}{sfg}(x, crs = fm_crs(x), ..., passthrough = FALSE)
-
-\method{fm_transform}{Spatial}(x, crs = fm_crs(x), ..., passthrough = FALSE)
+\method{fm_transform}{Spatial}(x, crs, ..., passthrough = FALSE)
 
 \method{fm_transform}{fm_mesh_2d}(x, crs = fm_crs(x), ..., passthrough = FALSE, crs0 = fm_crs(x))
 
@@ -44,13 +41,13 @@ fm_transform(x, crs = fm_crs(x), ...)
 
 \method{fm_transform}{fm_segm}(x, crs = fm_crs(x), ..., passthrough = FALSE, crs0 = fm_crs(x))
 
-\method{fm_transform}{fm_segm_list}(x, crs = fm_crs(x), ...)
+\method{fm_transform}{fm_list}(x, crs, ...)
 
 \method{fm_transform}{inla.mesh}(x, crs = fm_crs(x), ...)
 
-\method{fm_transform}{inla.mesh.lattice}(x, crs = fm_crs(x), ...)
+\method{fm_transform}{inla.mesh.lattice}(x, crs, ...)
 
-\method{fm_transform}{inla.mesh.segment}(x, crs = fm_crs(x), ...)
+\method{fm_transform}{inla.mesh.segment}(x, crs, ...)
 }
 \arguments{
 \item{x}{The object that should be transformed from it's current CRS to a new CRS}

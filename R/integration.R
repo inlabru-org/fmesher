@@ -778,7 +778,8 @@ fm_vertex_projection <- function(points, mesh) {
 
   if (inherits(points, "Spatial")) {
     ret <- sp::SpatialPointsDataFrame(
-      coords[, seq_len(min(ncol(coords)), ncol(sp::coordinates(points))), drop = FALSE],
+      coords[, seq_len(min(ncol(coords),
+                           ncol(sp::coordinates(points)))), drop = FALSE],
       proj4string = fm_CRS(mesh),
       data = data,
       match.ID = FALSE

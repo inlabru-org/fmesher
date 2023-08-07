@@ -90,8 +90,8 @@ of groups given by \code{grp}.
 \item \code{fm_segm_join()}: Join multiple \code{fm_segm} objects into a single \code{fm_segm}
 object.
 
-\item \code{fm_segm_split()}: Split an \code{fm_segm} object by \code{grp} into a list of \code{fm_segm}
-objects, optionally keeping only some groups.
+\item \code{fm_segm_split()}: Split an \code{fm_segm} object by \code{grp} into an \code{fm_segm_list}
+object, optionally keeping only some groups.
 
 }}
 \seealso{

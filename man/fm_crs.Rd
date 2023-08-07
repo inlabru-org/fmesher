@@ -21,9 +21,9 @@
 \alias{fm_crs.fm_mesh_2d}
 \alias{fm_crs.fm_lattice_2d}
 \alias{fm_crs.fm_segm}
-\alias{fm_crs.fm_segm_list}
+\alias{fm_crs.fm_list}
 \alias{fm_crs.matrix}
-\alias{fm_CRS.fm_segm_list}
+\alias{fm_CRS.fm_list}
 \alias{fm_wkt_predef}
 \alias{fm_crs.inla.CRS}
 \alias{fm_crs.inla.mesh}
@@ -71,11 +71,11 @@ fm_crs_oblique(x)
 
 \method{fm_crs}{fm_segm}(x, oblique = NULL, ...)
 
-\method{fm_crs}{fm_segm_list}(x, oblique = NULL, ...)
+\method{fm_crs}{fm_list}(x, oblique = NULL, ...)
 
 \method{fm_crs}{matrix}(x, oblique = NULL, ...)
 
-\method{fm_CRS}{fm_segm_list}(x, oblique = NULL, ...)
+\method{fm_CRS}{fm_list}(x, oblique = NULL, ...)
 
 fm_wkt_predef()
 
@@ -152,7 +152,7 @@ projection is only correct for perfect spheres.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{fm_crs(fm_segm_list)}: returns a list of 'crs' objects, one for each list element
+\item \code{fm_crs(fm_list)}: returns a list of 'crs' objects, one for each list element
 
 }}
 \section{Methods (by generic)}{
@@ -179,7 +179,7 @@ its argument on to \code{sf::st_crs()}.
 \item \code{fm_crs_oblique()}: Return \code{NA} for object with no oblique information,
 and otherwise a length 4 numeric vector.
 
-\item \code{fm_CRS(fm_segm_list)}: returns a list of 'CRS' objects, one for each list element
+\item \code{fm_CRS(fm_list)}: returns a list of 'CRS' objects, one for each list element
 
 }}
 \examples{

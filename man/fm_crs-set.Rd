@@ -6,7 +6,7 @@
 \alias{fm_crs<-.NULL}
 \alias{fm_crs_oblique<-.NULL}
 \alias{fm_crs<-.fm_segm}
-\alias{fm_crs<-.fm_segm_list}
+\alias{fm_crs<-.fm_list}
 \alias{fm_crs<-.fm_mesh_2d}
 \alias{fm_crs<-.fm_lattice_2d}
 \alias{fm_crs<-.sf}
@@ -35,7 +35,7 @@ fm_crs_oblique(x) <- value
 
 \method{fm_crs}{fm_segm}(x) <- value
 
-\method{fm_crs}{fm_segm_list}(x) <- value
+\method{fm_crs}{fm_list}(x) <- value
 
 \method{fm_crs}{fm_mesh_2d}(x) <- value
 
