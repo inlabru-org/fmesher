@@ -4,31 +4,73 @@
 \alias{fm_pixels}
 \title{Generate lattice points covering a mesh}
 \usage{
-fm_pixels(mesh, nx = 150, ny = 150, mask = TRUE, format = "sf")
+fm_pixels(
+  mesh,
+  dims = c(150, 150),
+  xlim = NULL,
+  ylim = NULL,
+  mask = TRUE,
+  format = "sf",
+  minimal = TRUE,
+  nx = deprecated(),
+  ny = deprecated()
+)
 }
 \arguments{
 \item{mesh}{An \code{inla.mesh} object}
 
-\item{nx}{Number of pixels in x direction}
+\item{dims}{A length 2 integer vector giving the dimensions of
+the target lattice.}
 
-\item{ny}{Number of pixels in y direction}
+\item{xlim, ylim}{Length 2 numeric vectors of x- and y- axis limits.
+Defaults taken from the range of the mesh or mask; see \code{minimal}.}
 
 \item{mask}{If logical and TRUE, remove pixels that are outside the mesh.
-If \code{mask} is an \code{sf} or \code{Spatial} object, only return pixels covered by this object.}
+If \code{mask} is an \code{sf} or \code{Spatial} object, only return pixels covered by this
+object.}
 
 \item{format}{character; "sf", "terra" or "sp"}
+
+\item{minimal}{logical; if \code{TRUE} (default), the default range is determined
+by the minimum of the ranges of the mesh and mask, otherwise only the mesh.}
+
+\item{nx}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Number of pixels in x direction,
+or a numeric vector of x-values}
+
+\item{ny}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Number of pixels in y direction,
+or a numeric vector of y-values}
 }
 \value{
-\code{sf}, \code{SpatRaster}, or \code{SpatialPixelsDataFrame} covering the mesh
+\code{sf}, \code{SpatRaster}, or \code{SpatialPixelsDataFrame} covering the mesh or
+mask.
 }
 \description{
 Generate \code{terra}, \code{sf}, or \code{sp} lattice locations
 }
 \examples{
+if (require("ggplot2", quietly = TRUE)) {
+  dims <- c(50, 50)
+  pxl <- fm_pixels(
+    fmexample$mesh,
+    dims = dims,
+    mask = fmexample$boundary_sf[[1]],
+    minimal = TRUE
+  )
+  pxl$val <- rnorm(NROW(pxl)) +
+    fm_evaluate(fmexample$mesh, pxl, field = 2 * fmexample$mesh$loc[, 1])
+  ggplot() +
+    geom_tile(
+      data = pxl,
+      aes(geometry = geometry, fill = val),
+      stat = "sf_coordinates"
+    ) +
+    geom_sf(data = fm_as_sfc(fmexample$mesh), alpha = 0.2)
+}
+
 if (require("ggplot2", quietly = TRUE) &&
   require("tidyterra", quietly = TRUE)) {
   pxl <- fm_pixels(fmexample$mesh,
-    nx = 50, ny = 50, mask = fmexample$boundary_sf[[1]],
+    dims = c(50, 50), mask = fmexample$boundary_sf[[1]],
     format = "terra"
   )
   pxl$val <- rnorm(NROW(pxl) * NCOL(pxl))

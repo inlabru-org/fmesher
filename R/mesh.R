@@ -10,18 +10,47 @@
 #'  Finn Lindgren \email{finn.lindgren@@gmail.com}
 #'
 #' @param mesh An `inla.mesh` object
-#' @param nx Number of pixels in x direction
-#' @param ny Number of pixels in y direction
+#' @param dims A length 2 integer vector giving the dimensions of
+#' the target lattice.
+#' @param xlim,ylim Length 2 numeric vectors of x- and y- axis limits.
+#' Defaults taken from the range of the mesh or mask; see `minimal`.
 #' @param mask If logical and TRUE, remove pixels that are outside the mesh.
-#' If `mask` is an `sf` or `Spatial` object, only return pixels covered by this object.
+#' If `mask` is an `sf` or `Spatial` object, only return pixels covered by this
+#' object.
 #' @param format character; "sf", "terra" or "sp"
-#' @return `sf`, `SpatRaster`, or `SpatialPixelsDataFrame` covering the mesh
+#' @param minimal logical; if `TRUE` (default), the default range is determined
+#' by the minimum of the ranges of the mesh and mask, otherwise only the mesh.
+#' @param nx `r lifecycle::badge("deprecated")` Number of pixels in x direction,
+#' or a numeric vector of x-values
+#' @param ny `r lifecycle::badge("deprecated")` Number of pixels in y direction,
+#' or a numeric vector of y-values
+#' @return `sf`, `SpatRaster`, or `SpatialPixelsDataFrame` covering the mesh or
+#' mask.
 #'
 #' @examples
+#' if (require("ggplot2", quietly = TRUE)) {
+#'   dims <- c(50, 50)
+#'   pxl <- fm_pixels(
+#'     fmexample$mesh,
+#'     dims = dims,
+#'     mask = fmexample$boundary_sf[[1]],
+#'     minimal = TRUE
+#'   )
+#'   pxl$val <- rnorm(NROW(pxl)) +
+#'     fm_evaluate(fmexample$mesh, pxl, field = 2 * fmexample$mesh$loc[, 1])
+#'   ggplot() +
+#'     geom_tile(
+#'       data = pxl,
+#'       aes(geometry = geometry, fill = val),
+#'       stat = "sf_coordinates"
+#'     ) +
+#'     geom_sf(data = fm_as_sfc(fmexample$mesh), alpha = 0.2)
+#' }
+#'
 #' if (require("ggplot2", quietly = TRUE) &&
 #'   require("tidyterra", quietly = TRUE)) {
 #'   pxl <- fm_pixels(fmexample$mesh,
-#'     nx = 50, ny = 50, mask = fmexample$boundary_sf[[1]],
+#'     dims = c(50, 50), mask = fmexample$boundary_sf[[1]],
 #'     format = "terra"
 #'   )
 #'   pxl$val <- rnorm(NROW(pxl) * NCOL(pxl))
@@ -36,22 +65,72 @@
 #'     geom_spatraster(data = pxl, aes(fill = val)) +
 #'     geom_sf(data = fm_as_sfc(fmexample$mesh), alpha = 0.2)
 #' }
-fm_pixels <- function(mesh, nx = 150, ny = 150, mask = TRUE,
-                      format = "sf") {
+fm_pixels <- function(mesh,
+                      dims = c(150, 150),
+                      xlim = NULL,
+                      ylim = NULL,
+                      mask = TRUE,
+                      format = "sf",
+                      minimal = TRUE,
+                      nx = deprecated(),
+                      ny = deprecated()) {
   format <- match.arg(format, c("sf", "terra", "sp"))
   if (!fm_manifold(mesh, "R2")) {
     stop("fmesher::fm_pixels() currently works for R2 meshes only.")
   }
 
-  if (length(nx) == 1) {
-    x <- seq(min(mesh$loc[, 1]), max(mesh$loc[, 1]), length.out = nx)
-  } else {
-    x <- nx
+  x <- NULL
+  if (lifecycle::is_present(nx)) {
+    lifecycle::deprecate_soft(
+     "0.0.1",
+     "fm_pixels(nx)",
+     "fm_pixels(dim)"
+    )
+    if (length(nx) == 1) {
+      dims[1] <- nx
+    } else {
+      x <- nx
+    }
   }
-  if (length(ny) == 1) {
-    y <- seq(min(mesh$loc[, 2]), max(mesh$loc[, 2]), length.out = ny)
-  } else {
-    y <- ny
+  y <- NULL
+  if (lifecycle::is_present(ny)) {
+    lifecycle::deprecate_soft(
+     "0.0.1",
+     "fm_pixels(ny)",
+     "fm_pixels(dim)"
+    )
+    if (length(ny) == 1) {
+      dims[2] <- ny
+    } else {
+      y <- ny
+    }
+  }
+
+  if (!is.logical(mask)) {
+    if (inherits(mask, "SpatialPolygonsDataFrame")) {
+      mask <- as(mask, "SpatialPolygons")
+    }
+    mask <- sf::st_as_sf(mask)
+    mask_bbox <- sf::st_bbox(mask)
+  }
+
+  if (is.null(x)) {
+    if (is.null(xlim)) {
+      xlim <- range(mesh$loc[, 1])
+      if (!is.logical(mask) && minimal) {
+        xlim <- c(max(xlim[1], mask_bbox[1]), min(xlim[2], mask_bbox[3]))
+      }
+    }
+    x <- seq(xlim[1], xlim[2], length.out = dims[1])
+  }
+  if (is.null(y)) {
+    if (is.null(ylim)) {
+      ylim <- range(mesh$loc[, 2])
+      if (!is.logical(mask) && minimal) {
+        ylim <- c(max(ylim[1], mask_bbox[2]), min(ylim[2], mask_bbox[4]))
+      }
+    }
+    y <- seq(ylim[1], ylim[2], length.out = dims[2])
   }
 
   pixels <- expand.grid(x = x, y = y)

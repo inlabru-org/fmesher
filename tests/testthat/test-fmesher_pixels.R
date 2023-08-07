@@ -14,11 +14,11 @@ test_that("fm_pixels sp vs sf", {
   )
 
   system.time({
-    surface1 <- fm_pixels(mesh, nx = 5, ny = 5, mask = TRUE, format = "sp")
+    surface1 <- fm_pixels(mesh, dims = c(5, 5), mask = TRUE, format = "sp")
   })
 
   system.time({
-    surface2 <- fm_pixels(mesh, nx = 5, ny = 5, mask = TRUE, format = "sf")
+    surface2 <- fm_pixels(mesh, dims = c(5, 5), mask = TRUE, format = "sf")
   })
 
   expect_equal(
