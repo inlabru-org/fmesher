@@ -92,13 +92,14 @@ print.fm_segm <- function(x, ..., digits = NULL, verbose = TRUE, newline = TRUE)
 print.fm_segm_list <- function(x, ..., digits = NULL, verbose = FALSE, newline = TRUE) {
   if (verbose) {
     cat("list of ", length(x), " fm_segm objects:\n", sep = "")
-    lapply(x, function(xx)
+    lapply(x, function(xx) {
       print(
         xx,
         digits = digits,
         verbose = TRUE,
         newline = TRUE
-      ))
+      )
+    })
   } else {
     for (k in seq_along(x)) {
       print(
@@ -143,8 +144,10 @@ print.fm_mesh_2d <- function(x, ..., digits = NULL, verbose = FALSE) {
   if (!is.null(x$segm)) {
     ret$segm <- fm_as_segm_list(list(x$segm$bnd, x$segm$int))
   } else {
-    ret$segm <- fm_as_segm_list(list(segm.bnd = fm_segm(is.bnd = TRUE),
-                                     segm.int = fm_segm(is.bnd = FALSE)))
+    ret$segm <- fm_as_segm_list(list(
+      segm.bnd = fm_segm(is.bnd = TRUE),
+      segm.int = fm_segm(is.bnd = FALSE)
+    ))
   }
 
   my.print.proc_time <- function(x, ...) {

@@ -902,14 +902,18 @@ fm_crs.matrix <- function(x, oblique = NULL, ...) {
 #' @rdname fm_crs-set
 #' @export
 `fm_crs<-.fm_list` <- function(x, value) {
-  y <- fm_as_list(lapply(x,
-                         function(xx) {
-                           if (!is.null(xx)) {
-                             fm_crs(xx) <- fm_crs(value)
-                           }
-                           xx
-                         }),
-                  .class_stub = fm_class_stub(x))
+  y <- fm_as_list(
+    lapply(
+      x,
+      function(xx) {
+        if (!is.null(xx)) {
+          fm_crs(xx) <- fm_crs(value)
+        }
+        xx
+      }
+    ),
+    .class_stub = fm_class_stub(x)
+  )
   y
 }
 

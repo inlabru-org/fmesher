@@ -2014,7 +2014,8 @@ fm_as_list <- function(x, ..., .class_stub = NULL) {
   }
   if (missing(x) || is.null(x) || (length(x) == 0)) {
     return(structure(list(),
-                     class = c(.class_list_name, "fm_list")))
+      class = c(.class_list_name, "fm_list")
+    ))
   }
 
   if (inherits(x, paste0("fm_", fm_class_stubs(), "_list"))) {
@@ -2030,9 +2031,9 @@ fm_as_list <- function(x, ..., .class_stub = NULL) {
       m_c <- intersect(m_c, paste0("fm_ ", .class_stub))
     }
     if (inherits(x, paste0("fm_", fm_class_stubs())) ||
-        (!is.null(m_c) && inherits(x, m_c))) {
+      (!is.null(m_c) && inherits(x, m_c))) {
       # Single element of known or coercible non-list type
-#      y <- do.call(.method, list(x, ...))
+      #      y <- do.call(.method, list(x, ...))
       return(fm_as_list(list(x), ..., .class_stub = .class_stub))
     }
   }
@@ -2049,11 +2050,14 @@ fm_as_list <- function(x, ..., .class_stub = NULL) {
 
   if ((length(y) > 0) && is.null(.class_stub)) {
     stubs <- fm_class_stubs()
-    is_stub <- vapply(stubs, function(stub) {
-      all(vapply(y, function(yy)
-        is.null(yy) || inherits(yy, paste0("fm_", stub)), TRUE))
-    },
-    TRUE)
+    is_stub <- vapply(
+      stubs, function(stub) {
+        all(vapply(y, function(yy) {
+          is.null(yy) || inherits(yy, paste0("fm_", stub))
+        }, TRUE))
+      },
+      TRUE
+    )
     if (any(is_stub)) {
       .class_stub <- stubs[is_stub][1]
     }
@@ -2062,13 +2066,18 @@ fm_as_list <- function(x, ..., .class_stub = NULL) {
     .class_name <- paste0("fm_", .class_stub)
     if (length(y) > 0) {
       is_stub <-
-        all(vapply(y,
-                   function(yy)
-                     is.null(yy) || inherits(yy, .class_name),
-                   TRUE))
+        all(vapply(
+          y,
+          function(yy) {
+            is.null(yy) || inherits(yy, .class_name)
+          },
+          TRUE
+        ))
       if (!is_stub) {
-        stop("Inconsistent element classes for 'fm_list' for class '",
-             .class_name, "'")
+        stop(
+          "Inconsistent element classes for 'fm_list' for class '",
+          .class_name, "'"
+        )
       }
     }
     .class_list_name <- paste0(.class_name, "_list")
@@ -2086,9 +2095,11 @@ fm_as_list <- function(x, ..., .class_stub = NULL) {
 #' @describeIn fm_list The `...` arguments should be coercible to `fm_list`
 #' objects.
 `c.fm_list` <- function(...) {
-  if (!all(vapply(list(...),
-                  function(xx) is.null(xx) || inherits(xx, "fm_list"),
-                  TRUE))) {
+  if (!all(vapply(
+    list(...),
+    function(xx) is.null(xx) || inherits(xx, "fm_list"),
+    TRUE
+  ))) {
     y <- lapply(list(...), fm_as_list)
     return(do.call("c", y))
   }
@@ -2524,9 +2535,11 @@ NULL
 #' @describeIn fm_segm_list The `...` arguments should be coercible to `fm_segm_list`
 #' objects.
 `c.fm_segm_list` <- function(...) {
-  if (!all(vapply(list(...),
-                  function(xx) is.null(xx) || inherits(xx, "fm_segm_list"),
-                  TRUE))) {
+  if (!all(vapply(
+    list(...),
+    function(xx) is.null(xx) || inherits(xx, "fm_segm_list"),
+    TRUE
+  ))) {
     y <- lapply(list(...), fm_as_segm_list)
     return(do.call("c", y))
   }
