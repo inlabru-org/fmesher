@@ -78,6 +78,9 @@ fm_pixels <- function(mesh,
   if (!fm_manifold(mesh, "R2")) {
     stop("fmesher::fm_pixels() currently works for R2 meshes only.")
   }
+  if (is.null(mask)) {
+    mask <- FALSE
+  }
 
   x <- NULL
   if (lifecycle::is_present(nx)) {
@@ -2102,13 +2105,7 @@ fm_as_list <- function(x, ..., .class_stub = NULL) {
   }
 
   if (!inherits(x, "fm_list")) {
-    m_c <- intersect(
-      setdiff(method_classes(.method), "list"),
-      paste0("fm_", fm_class_stubs())
-    )
-    if (!is.null(.class_stub)) {
-      m_c <- intersect(m_c, paste0("fm_ ", .class_stub))
-    }
+    m_c <- setdiff(method_classes(.method), "list")
     if (inherits(x, paste0("fm_", fm_class_stubs())) ||
       (!is.null(m_c) && inherits(x, m_c))) {
       # Single element of known or coercible non-list type
