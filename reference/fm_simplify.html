@@ -147,12 +147,15 @@ caricature". <em>The Canadian Cartographer</em>. <strong>10</strong> (2): 112–
 <span class="r-in"><span><span class="op">(</span><span class="va">segm</span> <span class="op">&lt;-</span> <span class="fu"><a href="fm_segm.html">fm_segm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">cos</a></span><span class="op">(</span><span class="va">theta</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">sin</a></span><span class="op">(</span><span class="va">theta</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  idx <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">theta</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fm_segm object:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   999 boundary edges</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Bounding box = (-0.9999951, 1.0000000) x (-0.9999988, 0.9999988) x (0,0)</span>
 <span class="r-in"><span><span class="op">(</span><span class="va">segm1</span> <span class="op">&lt;-</span> <span class="fu">fm_simplify</span><span class="op">(</span><span class="va">segm</span>, eps_rel <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fm_segm object:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   16 boundary edges (1 group: 0)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Bounding box = (-0.9999951, 1.0000000) x (-0.9999988, 0.9999889) x (0,0)</span>
 <span class="r-in"><span><span class="op">(</span><span class="va">segm2</span> <span class="op">&lt;-</span> <span class="fu">fm_simplify</span><span class="op">(</span><span class="va">segm</span>, eps_rel <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fm_segm object:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   8 boundary edges (1 group: 0)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Bounding box = (-0.9999951, 1.0000000) x (-0.9999988, 0.9999889) x (0,0)</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">segm</span><span class="op">)</span></span></span>
@@ -163,12 +166,15 @@ caricature". <em>The Canadian Cartographer</em>. <strong>10</strong> (2): 112–
 <span class="r-in"><span><span class="op">(</span><span class="va">segm</span> <span class="op">&lt;-</span> <span class="fu"><a href="fm_segm.html">fm_segm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">theta</span>, <span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">sin</a></span><span class="op">(</span><span class="va">theta</span> <span class="op">*</span> <span class="fl">4</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  idx <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">theta</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fm_segm object:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   999 boundary edges</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Bounding box = (0.000000,6.283185) x (-0.9999988, 0.9999988) x (0,0)</span>
 <span class="r-in"><span><span class="op">(</span><span class="va">segm1</span> <span class="op">&lt;-</span> <span class="fu">fm_simplify</span><span class="op">(</span><span class="va">segm</span>, eps_rel <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fm_segm object:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   73 boundary edges (1 group: 0)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Bounding box = (0.000000,6.283185) x (-0.9999988, 0.9999988) x (0,0)</span>
 <span class="r-in"><span><span class="op">(</span><span class="va">segm2</span> <span class="op">&lt;-</span> <span class="fu">fm_simplify</span><span class="op">(</span><span class="va">segm</span>, eps_rel <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fm_segm object:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   17 boundary edges (1 group: 0)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Bounding box = (0.000000,6.283185) x (-0.9995538, 0.9994549) x (0,0)</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">segm</span><span class="op">)</span></span></span>

@@ -122,12 +122,9 @@ by closing (dilation + erosion) by <code>concave</code>.</p>
 
 
 <dt>dTolerance</dt>
-<dd><p>If not null, the <code>dTolerance</code> argument to <code><a href="https://r-spatial.github.io/sf/reference/geos_unary.html" class="external-link">sf::st_simplify()</a></code>,
-passed on to <code>fm_nonconvex_hull()</code>.
-The default for <code>fm_extensions()</code> is <code>pmin(convex, concave) / 40</code>, chosen to
-give approximately 4 or more subsegments per circular quadrant.
-For <code>fm_nonconvex_hull()</code>, the default is <code>NULL</code>
-(i.e. not to call <code><a href="https://r-spatial.github.io/sf/reference/geos_unary.html" class="external-link">sf::st_simplify()</a></code>)</p></dd>
+<dd><p>If not zero, controls the <code>dTolerance</code> argument to <code><a href="https://r-spatial.github.io/sf/reference/geos_unary.html" class="external-link">sf::st_simplify()</a></code>.
+The default is <code>pmin(convex, concave) / 40</code>, chosen to
+give approximately 4 or more subsegments per circular quadrant.</p></dd>
 
 
 <dt>crs</dt>
@@ -157,6 +154,8 @@ and \(2\text{concave}\), then the minimum convex curvature radius is
 <p>The implementation is based on the identity $$\text{dilation}(a) \&amp;
 \text{closing}(b) = \text{dilation}(a+b) \&amp; \text{erosion}(b)$$ where all operations
 are with respect to disks with the specified radii.</p>
+<p>When <code>convex</code>, <code>concave</code>, or <code>dTolerance</code> are negative,
+<code>fm_diameter * abs(...)</code> is used instead.</p>
 <p>Differs from <code>sf::st_buffer(x, convex)</code> followed by
 <code><a href="https://r-spatial.github.io/sf/reference/geos_unary.html" class="external-link">sf::st_concave_hull()</a></code> (available from GEOS 3.11)
 in how the amount of allowed concavity is controlled.</p>
