@@ -30,8 +30,10 @@ print.fm_segm <- function(x, ..., digits = NULL, verbose = TRUE, newline = TRUE)
 
   ret <- my.segm(x)
 
-  if (verbose && !fm_crs_is_null(fm_crs(x))) {
+  if (verbose) {
     cat("fm_segm object:\n", sep = "")
+  }
+  if (verbose && !fm_crs_is_null(fm_crs(x))) {
     crs <- fm_wkt(x$crs)
     ret <- c(ret, list(crs = as.character(fm_wkt(crs))))
     ret <- c(ret, list(crs_proj4 = as.character(fm_proj4string(crs))))

@@ -43,12 +43,9 @@ fm_extensions(x, convex = -0.15, concave = convex, dTolerance = NULL, ...)
 
 \item{preserveTopology}{logical; argument to \code{sf::st_simplify()}}
 
-\item{dTolerance}{If not null, the \code{dTolerance} argument to \code{sf::st_simplify()},
-passed on to \code{\link[=fm_nonconvex_hull]{fm_nonconvex_hull()}}.
-The default for \code{fm_extensions()} is \code{pmin(convex, concave) / 40}, chosen to
-give approximately 4 or more subsegments per circular quadrant.
-For \code{fm_nonconvex_hull()}, the default is \code{NULL}
-(i.e. not to call \code{sf::st_simplify()})}
+\item{dTolerance}{If not zero, controls the \code{dTolerance} argument to \code{sf::st_simplify()}.
+The default is \code{pmin(convex, concave) / 40}, chosen to
+give approximately 4 or more subsegments per circular quadrant.}
 
 \item{crs}{Options crs object for the resulting polygon}
 }
@@ -76,6 +73,9 @@ The implementation is based on the identity \deqn{\text{dilation}(a) \&
 \text{closing}(b) = \text{dilation}(a+b) \& \text{erosion}(b)}{
 dilation(a) & closing(b) = dilation(a+b) & erosion(b)} where all operations
 are with respect to disks with the specified radii.
+
+When \code{convex}, \code{concave}, or \code{dTolerance} are negative,
+\code{fm_diameter * abs(...)} is used instead.
 
 Differs from \code{sf::st_buffer(x, convex)} followed by
 \code{sf::st_concave_hull()} (available from GEOS 3.11)

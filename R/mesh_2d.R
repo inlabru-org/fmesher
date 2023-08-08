@@ -2,44 +2,106 @@
 
 # fm_mesh_2d ####
 
-unify_loc_coords <- function(loc, crs = crs) {
-  if (is.null(loc) || (NROW(loc) == 0)) {
-    return(matrix(c(0.0), 0, 3))
-  }
-  if (inherits(loc, c(
-    "SpatialPoints",
-    "SpatialPointsDataFrame"
-  ))) {
-    loc <- fm_transform(
-      sp::coordinates(loc),
-      crs0 = fm_crs(loc),
-      crs = crs,
-      passthrough = TRUE
-    )
-  } else if (inherits(loc, c("sf", "sfg", "sfc"))) {
-    loc <- fm_transform(
-      sf::st_coordinates(loc),
-      crs0 = fm_crs(loc),
-      crs = crs,
-      passthrough = TRUE
-    )
-  }
-  if (!is.matrix(loc)) {
-    if (is.vector(loc)) {
-      loc <- matrix(loc, 1, length(loc))
+#' @title Unify coordinates to 3-column matrix
+#'
+#' @description Convert coordinate information to a 3-column matrix.
+#' This is mainly an internal function, and the interface may change.
+#'
+#' @param x A object with coordinate information
+#' @param crs A optional crs object to convert the coordinates to
+#' @keywords internal
+#' @export
+
+fm_unify_coords <- function(x, crs = NULL) {
+  UseMethod("fm_unify_coords")
+}
+
+#' @rdname fm_unify_coords
+#' @usage
+#' ## S3 method for class 'NULL'
+#' fm_unify_coords(x, crs = NULL)
+#' @export
+fm_unify_coords.NULL <- function(x, crs = NULL) {
+  return(matrix(0.0, 0, 3))
+}
+
+#' @rdname fm_unify_coords
+#' @export
+fm_unify_coords.default <- function(x, crs = NULL) {
+  if (!is.matrix(x)) {
+    if (is.vector(x)) {
+      x <- matrix(x, 1, length(x))
     } else {
-      loc <- as.matrix(loc)
+      x <- as.matrix(x)
     }
   }
-  if (ncol(loc) < 3) {
-    while (ncol(loc) < 3) {
-      loc <- cbind(loc, 0.0)
+  if (ncol(x) < 3) {
+    while (ncol(x) < 3) {
+      x <- cbind(x, 0.0)
     }
-  } else if (ncol(loc) > 3) {
+  } else if (ncol(x) > 3) {
+    stop("Coordinates can have at most 3 columns.")
+  }
+  x
+}
+
+#' @rdname fm_unify_coords
+#' @export
+fm_unify_coords.Spatial <- function(x, crs = NULL) {
+  loc <- fm_transform(
+    sp::coordinates(x),
+    crs0 = fm_crs(x),
+    crs = crs,
+    passthrough = TRUE
+  )
+  if (ncol(x) < 3) {
+    while (ncol(x) < 3) {
+      loc <- cbind(x, 0.0)
+    }
+  } else if (ncol(x) > 3) {
     stop("Coordinates can have at mots 3 columns.")
   }
-  loc
+  x
 }
+
+#' @rdname fm_unify_coords
+#' @export
+fm_unify_coords.sf <- function(x, crs = NULL) {
+  fm_unify_coords.sfc(sf::st_geometry(x), crs = crs)
+}
+#' @rdname fm_unify_coords
+#' @export
+fm_unify_coords.sf <- function(x, crs = NULL) {
+  fm_unify_coords.sfc(sf::st_sfc(x), crs = crs)
+}
+#' @rdname fm_unify_coords
+#' @export
+fm_unify_coords.sfc <- function(x, crs = NULL) {
+  loc <- sf::st_coordinates(x)
+  loc <- loc[, intersect(colnames(loc), c("X", "Y", "Z")), drop = FALSE]
+  x <- fm_transform(
+    loc,
+    crs0 = fm_crs(x),
+    crs = crs,
+    passthrough = TRUE
+  )
+  if (ncol(x) < 3) {
+    while (ncol(x) < 3) {
+      x <- cbind(x, 0.0)
+    }
+  } else if (ncol(x) > 3) {
+    stop("Coordinates can have at most 3 columns.")
+  }
+  x
+}
+
+
+
+
+
+
+
+
 
 unify_segm_coords <- function(segm, crs = NULL) {
   if (is.null(segm)) {
@@ -217,269 +279,268 @@ fm_rcdt_2d <-
 #' @describeIn fm_rcdt_2d Legacy method for the `INLA::inla.mesh.create()`
 #' interface
 #' @export
-fm_rcdt_2d_inla <-
-  function(loc = NULL,
-           tv = NULL,
-           boundary = NULL,
-           interior = NULL,
-           extend = (missing(tv) || is.null(tv)),
-           refine = FALSE,
-           lattice = NULL,
-           globe = NULL,
-           cutoff = 1e-12,
-           quality.spec = NULL,
-           crs = NULL,
-           ...) {
-    crs.target <- crs
-    if (!fm_crs_is_null(crs) &&
+fm_rcdt_2d_inla <- function(loc = NULL,
+                            tv = NULL,
+                            boundary = NULL,
+                            interior = NULL,
+                            extend = (missing(tv) || is.null(tv)),
+                            refine = FALSE,
+                            lattice = NULL,
+                            globe = NULL,
+                            cutoff = 1e-12,
+                            quality.spec = NULL,
+                            crs = NULL,
+                            ...) {
+  crs.target <- crs
+  if (!fm_crs_is_null(crs) &&
       fm_crs_is_geocent(crs)) {
-      ## Build all geocentric meshes on a sphere, and transform afterwards,
-      ## to allow general geoids.
-      crs <- fm_crs("sphere")
-    }
-
-    if (!is.null(loc) && !is.matrix(loc)) {
-      crs.loc <- fm_crs(loc)
-    } else {
-      crs.loc <- NULL
-    }
-    loc <- unify_loc_coords(loc)
-    if (!fm_crs_is_null(crs.loc) && !fm_crs_is_null(crs)) {
-      loc <- fm_transform(loc, crs = crs, passthrough = TRUE, crs0 = crs.loc)
-      loc <- unify_loc_coords(loc)
-    }
-
-    if (!is.null(globe)) {
-      loc.globe <- fmesher_globe_points(globe = globe)
-      crs.globe <- fm_crs("sphere")
-      if (!fm_crs_is_null(crs.globe) && !fm_crs_is_null(crs)) {
-        loc.globe <- fm_transform(loc.globe, crs = crs, passthrough = TRUE, crs0 = crs.globe)
-        loc.globe <- unify_loc_coords(loc.globe)
-      }
-      loc <- rbind(loc, loc.globe)
-    }
-    loc.n <- max(0L, nrow(loc))
-
-    lattice.boundary <- NULL
-    if (is.null(lattice) || !is.null(tv)) {
-      if (!is.null(lattice)) {
-        warning("Both 'lattice' and 'tv' specified.  Ignoring 'lattice'.")
-      }
-      lattice <- list(loc = NULL, segm = NULL)
-      lattice.n <- 0L
-    } else {
-      lattice <- fm_as_lattice_2d(lattice)
-
-      if (!fm_crs_is_null(fm_crs(lattice))) {
-        lattice <- fm_transform(
-          lattice,
-          crs = crs,
-          passthrough = TRUE
-        )
-      }
-      if (NCOL(lattice$loc) == 2) {
-        lattice$loc <- cbind(lattice$loc, 0.0)
-      }
-      if (NCOL(lattice$segm$loc) == 2) {
-        lattice$segm$loc <- cbind(lattice$segm$loc, 0.0)
-      }
-
-      if (is.logical(extend) && !extend) {
-        lattice.boundary <- lattice$segm
-      }
-    }
-    lattice.n <- max(0L, nrow(lattice$loc))
-
-    segm.n <- 0L
-    if (!is.null(lattice.boundary) && is.null(boundary)) {
-      boundary <- lattice.boundary
-      lattice.boundary <- NULL
-    }
-    if (is.null(boundary)) {
-      bnd <- NULL
-      bnd_grp <- NULL
-      loc.bnd <- matrix(0.0, 0, 3)
-    } else {
-      if (is.numeric(boundary)) {
-        boundary <- fm_nonconvex_hull(loc, convex = boundary)
-      } else {
-        boundary <- fm_as_segm(boundary)
-      }
-      if (is.null(boundary$loc)) {
-        boundary$loc <- loc
-        boundary$crs <- fm_crs(crs)
-      } else if (!fm_crs_is_null(crs)) {
-        boundary <- fm_transform(boundary, crs = crs, passthrough = TRUE)
-      }
-      if (!is.null(lattice.boundary)) {
-        boundary <-
-          fm_segm_join(fm_as_segm_list(list(boundary, lattice.boundary)))
-      }
-
-      bnd <- segm.n + boundary$idx
-      bnd_grp <- boundary$grp
-      if (ncol(boundary$loc) == 2) {
-        boundary$loc <- cbind(boundary$loc, 0.0)
-      }
-      segm.n <- segm.n + max(0L, nrow(boundary$loc))
-      loc.bnd <- boundary$loc
-    }
-
-    if (is.null(interior)) {
-      int <- NULL
-      int_grp <- NULL
-      loc.int <- matrix(0.0, 0, 3)
-    } else {
-      interior <- fm_as_segm(interior)
-      if (is.null(interior$loc)) {
-        interior$loc <- loc
-        interior$crs <- fm_crs(crs)
-      } else if (!fm_crs_is_null(crs)) {
-        interior <- fm_transform(interior, crs = crs, passthrough = TRUE)
-      }
-      int <- segm.n + interior$idx
-      int_grp <- interior$grp
-      if (ncol(interior$loc) == 2) {
-        interior$loc <- cbind(interior$loc, 0.0)
-      }
-      segm.n <- segm.n + max(0L, nrow(interior$loc))
-      loc.int <- interior$loc
-    }
-
-    loc <- rbind(loc.bnd, loc.int, lattice$loc, loc)
-
-    options <- handle_rcdt_options_inla(
-      extend = extend,
-      refine = refine,
-      cutoff = cutoff,
-      qulity.spec = quality.spec,
-      ...,
-      .n = list(
-        segm = segm.n,
-        lattice = lattice.n,
-        loc = loc.n
-      ),
-      .loc = loc
-    )
-
-    if (!is.null(tv)) {
-      tv <- tv + segm.n + lattice.n - 1L
-    }
-    if (!is.null(bnd)) {
-      bnd <- bnd - 1L
-    }
-    if (!is.null(int)) {
-      int <- int - 1L
-    }
-    result <- fmesher_rcdt(
-      options = options,
-      loc = loc, tv = tv,
-      boundary = bnd, interior = int,
-      boundary_grp = bnd_grp, interior_grp = int_grp
-    )
-
-    idx_C2R <- function(x) {
-      x <- x + 1L
-      x[x == 0] <- NA
-      x
-    }
-
-    if (!fm_crs_is_null(crs) &&
-      !fm_crs_is_identical(crs, crs.target)) {
-      ## Target is a non-spherical geoid
-      result[["s"]] <- fm_transform(result[["s"]], crs0 = crs, crs = crs.target)
-      crs <- crs.target
-    }
-
-    split_idx <- function(idx, splits) {
-      cumulative_splits <- c(0L, cumsum(splits))
-      idx <- lapply(
-        seq_along(splits),
-        function(k) {
-          if (splits[k] > 0) {
-            idx[cumulative_splits[k] + seq_len(splits[k])]
-          } else {
-            NULL
-          }
-        }
-      )
-      names(idx) <- names(splits)
-      idx
-    }
-    idx.all <- idx_C2R(result[["idx"]])
-    idx <- split_idx(idx.all, c(segm = segm.n, lattice = lattice.n, loc = loc.n))
-
-    m <- structure(
-      list(
-        meta = list(
-          is.refined = !is.null(options[["rcdt_max_edge"]])
-        ),
-        manifold = result[["manifold"]],
-        n = nrow(result[["s"]]),
-        loc = result[["s"]],
-        graph = list(
-          tv = idx_C2R(result[["tv"]]),
-          vt = idx_C2R(result[["vt"]]),
-          tt = idx_C2R(result[["tt"]]),
-          tti = idx_C2R(result[["tti"]]),
-          vv = fm_as_dgCMatrix(result[["vv"]])
-        ),
-        segm = list(
-          int = fm_segm(
-            idx = idx_C2R(result[["segm.int.idx"]]),
-            grp = result[["segm.int.grp"]],
-            is.bnd = FALSE
-          ),
-          bnd = fm_segm(
-            idx = idx_C2R(result[["segm.bnd.idx"]]),
-            grp = result[["segm.bnd.grp"]],
-            is.bnd = TRUE
-          )
-        ),
-        idx = idx,
-        crs = fm_crs(crs),
-        n = nrow(result[["s"]])
-      ),
-      class = c("fm_mesh_2d", "inla.mesh")
-    )
-
-    remap_unused <- function(mesh) {
-      ## Remap indices to remove unused vertices
-      used <- !is.na(mesh$graph$vt)
-      if (!all(used)) {
-        used <- which(used)
-        idx.map <- rep(NA, nrow(mesh$loc))
-        idx.map[used] <- seq_len(length(used))
-        mesh$loc <- mesh$loc[used, , drop = FALSE]
-        mesh$graph$tv <-
-          matrix(idx.map[as.vector(mesh$graph$tv)], nrow(mesh$graph$tv), 3)
-        mesh$graph$vt <- mesh$graph$vt[used, , drop = FALSE]
-        ## graph$tt  ## No change needed
-        ## graph$tti ## No change needed
-        mesh$graph$vv <- mesh$graph$vv[used, used, drop = FALSE]
-        if (!is.null(mesh$idx$loc)) {
-          mesh$idx$loc <- idx.map[mesh$idx$loc]
-        }
-        if (!is.null(mesh$idx$lattice)) {
-          mesh$idx$lattice <- idx.map[mesh$idx$lattice]
-        }
-        if (!is.null(mesh$idx$segm)) {
-          mesh$idx$segm <- idx.map[mesh$idx$segm]
-        }
-        mesh$segm$bnd$idx <-
-          matrix(idx.map[mesh$segm$bnd$idx], nrow(mesh$segm$bnd$idx), 2)
-        mesh$segm$int$idx <-
-          matrix(idx.map[mesh$segm$int$idx], nrow(mesh$segm$int$idx), 2)
-        mesh$segm$bnd$idx[mesh$segm$bnd$idx == 0L] <- NA
-        mesh$segm$int$idx[mesh$segm$int$idx == 0L] <- NA
-      }
-      mesh
-    }
-
-    m <- remap_unused(m)
-
-    m
+    ## Build all geocentric meshes on a sphere, and transform afterwards,
+    ## to allow general geoids.
+    crs <- fm_crs("sphere")
   }
+
+  if (!is.null(loc) && !is.matrix(loc)) {
+    crs.loc <- fm_crs(loc)
+  } else {
+    crs.loc <- NULL
+  }
+  loc <- fm_unify_coords(loc)
+  if (!fm_crs_is_null(crs.loc) && !fm_crs_is_null(crs)) {
+    loc <- fm_transform(loc, crs = crs, passthrough = TRUE, crs0 = crs.loc)
+    loc <- fm_unify_coords(loc)
+  }
+
+  if (!is.null(globe)) {
+    loc.globe <- fmesher_globe_points(globe = globe)
+    crs.globe <- fm_crs("sphere")
+    if (!fm_crs_is_null(crs.globe) && !fm_crs_is_null(crs)) {
+      loc.globe <- fm_transform(loc.globe, crs = crs, passthrough = TRUE, crs0 = crs.globe)
+      loc.globe <- fm_unify_coords(loc.globe)
+    }
+    loc <- rbind(loc, loc.globe)
+  }
+  loc.n <- max(0L, nrow(loc))
+
+  lattice.boundary <- NULL
+  if (is.null(lattice) || !is.null(tv)) {
+    if (!is.null(lattice)) {
+      warning("Both 'lattice' and 'tv' specified.  Ignoring 'lattice'.")
+    }
+    lattice <- list(loc = NULL, segm = NULL)
+    lattice.n <- 0L
+  } else {
+    lattice <- fm_as_lattice_2d(lattice)
+
+    if (!fm_crs_is_null(fm_crs(lattice))) {
+      lattice <- fm_transform(
+        lattice,
+        crs = crs,
+        passthrough = TRUE
+      )
+    }
+    if (NCOL(lattice$loc) == 2) {
+      lattice$loc <- cbind(lattice$loc, 0.0)
+    }
+    if (NCOL(lattice$segm$loc) == 2) {
+      lattice$segm$loc <- cbind(lattice$segm$loc, 0.0)
+    }
+
+    if (is.logical(extend) && !extend) {
+      lattice.boundary <- lattice$segm
+    }
+  }
+  lattice.n <- max(0L, nrow(lattice$loc))
+
+  segm.n <- 0L
+  if (!is.null(lattice.boundary) && is.null(boundary)) {
+    boundary <- lattice.boundary
+    lattice.boundary <- NULL
+  }
+  if (is.null(boundary)) {
+    bnd <- NULL
+    bnd_grp <- NULL
+    loc.bnd <- matrix(0.0, 0, 3)
+  } else {
+    if (is.numeric(boundary)) {
+      boundary <- fm_nonconvex_hull(loc, convex = boundary)
+    } else {
+      boundary <- fm_as_segm(boundary)
+    }
+    if (is.null(boundary$loc)) {
+      boundary$loc <- loc
+      boundary$crs <- fm_crs(crs)
+    } else if (!fm_crs_is_null(crs)) {
+      boundary <- fm_transform(boundary, crs = crs, passthrough = TRUE)
+    }
+    if (!is.null(lattice.boundary)) {
+      boundary <-
+        fm_segm_join(fm_as_segm_list(list(boundary, lattice.boundary)))
+    }
+
+    bnd <- segm.n + boundary$idx
+    bnd_grp <- boundary$grp
+    if (ncol(boundary$loc) == 2) {
+      boundary$loc <- cbind(boundary$loc, 0.0)
+    }
+    segm.n <- segm.n + max(0L, nrow(boundary$loc))
+    loc.bnd <- boundary$loc
+  }
+
+  if (is.null(interior)) {
+    int <- NULL
+    int_grp <- NULL
+    loc.int <- matrix(0.0, 0, 3)
+  } else {
+    interior <- fm_as_segm(interior)
+    if (is.null(interior$loc)) {
+      interior$loc <- loc
+      interior$crs <- fm_crs(crs)
+    } else if (!fm_crs_is_null(crs)) {
+      interior <- fm_transform(interior, crs = crs, passthrough = TRUE)
+    }
+    int <- segm.n + interior$idx
+    int_grp <- interior$grp
+    if (ncol(interior$loc) == 2) {
+      interior$loc <- cbind(interior$loc, 0.0)
+    }
+    segm.n <- segm.n + max(0L, nrow(interior$loc))
+    loc.int <- interior$loc
+  }
+
+  loc <- rbind(loc.bnd, loc.int, lattice$loc, loc)
+
+  options <- handle_rcdt_options_inla(
+    extend = extend,
+    refine = refine,
+    cutoff = cutoff,
+    qulity.spec = quality.spec,
+    ...,
+    .n = list(
+      segm = segm.n,
+      lattice = lattice.n,
+      loc = loc.n
+    ),
+    .loc = loc
+  )
+
+  if (!is.null(tv)) {
+    tv <- tv + segm.n + lattice.n - 1L
+  }
+  if (!is.null(bnd)) {
+    bnd <- bnd - 1L
+  }
+  if (!is.null(int)) {
+    int <- int - 1L
+  }
+  result <- fmesher_rcdt(
+    options = options,
+    loc = loc, tv = tv,
+    boundary = bnd, interior = int,
+    boundary_grp = bnd_grp, interior_grp = int_grp
+  )
+
+  idx_C2R <- function(x) {
+    x <- x + 1L
+    x[x == 0] <- NA
+    x
+  }
+
+  if (!fm_crs_is_null(crs) &&
+      !fm_crs_is_identical(crs, crs.target)) {
+    ## Target is a non-spherical geoid
+    result[["s"]] <- fm_transform(result[["s"]], crs0 = crs, crs = crs.target)
+    crs <- crs.target
+  }
+
+  split_idx <- function(idx, splits) {
+    cumulative_splits <- c(0L, cumsum(splits))
+    idx <- lapply(
+      seq_along(splits),
+      function(k) {
+        if (splits[k] > 0) {
+          idx[cumulative_splits[k] + seq_len(splits[k])]
+        } else {
+          NULL
+        }
+      }
+    )
+    names(idx) <- names(splits)
+    idx
+  }
+  idx.all <- idx_C2R(result[["idx"]])
+  idx <- split_idx(idx.all, c(segm = segm.n, lattice = lattice.n, loc = loc.n))
+
+  m <- structure(
+    list(
+      meta = list(
+        is.refined = !is.null(options[["rcdt_max_edge"]])
+      ),
+      manifold = result[["manifold"]],
+      n = nrow(result[["s"]]),
+      loc = result[["s"]],
+      graph = list(
+        tv = idx_C2R(result[["tv"]]),
+        vt = idx_C2R(result[["vt"]]),
+        tt = idx_C2R(result[["tt"]]),
+        tti = idx_C2R(result[["tti"]]),
+        vv = fm_as_dgCMatrix(result[["vv"]])
+      ),
+      segm = list(
+        int = fm_segm(
+          idx = idx_C2R(result[["segm.int.idx"]]),
+          grp = result[["segm.int.grp"]],
+          is.bnd = FALSE
+        ),
+        bnd = fm_segm(
+          idx = idx_C2R(result[["segm.bnd.idx"]]),
+          grp = result[["segm.bnd.grp"]],
+          is.bnd = TRUE
+        )
+      ),
+      idx = idx,
+      crs = fm_crs(crs),
+      n = nrow(result[["s"]])
+    ),
+    class = c("fm_mesh_2d", "inla.mesh")
+  )
+
+  remap_unused <- function(mesh) {
+    ## Remap indices to remove unused vertices
+    used <- !is.na(mesh$graph$vt)
+    if (!all(used)) {
+      used <- which(used)
+      idx.map <- rep(NA, nrow(mesh$loc))
+      idx.map[used] <- seq_len(length(used))
+      mesh$loc <- mesh$loc[used, , drop = FALSE]
+      mesh$graph$tv <-
+        matrix(idx.map[as.vector(mesh$graph$tv)], nrow(mesh$graph$tv), 3)
+      mesh$graph$vt <- mesh$graph$vt[used, , drop = FALSE]
+      ## graph$tt  ## No change needed
+      ## graph$tti ## No change needed
+      mesh$graph$vv <- mesh$graph$vv[used, used, drop = FALSE]
+      if (!is.null(mesh$idx$loc)) {
+        mesh$idx$loc <- idx.map[mesh$idx$loc]
+      }
+      if (!is.null(mesh$idx$lattice)) {
+        mesh$idx$lattice <- idx.map[mesh$idx$lattice]
+      }
+      if (!is.null(mesh$idx$segm)) {
+        mesh$idx$segm <- idx.map[mesh$idx$segm]
+      }
+      mesh$segm$bnd$idx <-
+        matrix(idx.map[mesh$segm$bnd$idx], nrow(mesh$segm$bnd$idx), 2)
+      mesh$segm$int$idx <-
+        matrix(idx.map[mesh$segm$int$idx], nrow(mesh$segm$int$idx), 2)
+      mesh$segm$bnd$idx[mesh$segm$bnd$idx == 0L] <- NA
+      mesh$segm$int$idx[mesh$segm$int$idx == 0L] <- NA
+    }
+    mesh
+  }
+
+  m <- remap_unused(m)
+
+  m
+}
 
 #' @describeIn fm_rcdt_2d Construct a plain Delaunay triangulation.
 #' @export
@@ -487,7 +548,7 @@ fm_delaunay_2d <- function(loc, crs = NULL, ...) {
   if (is.null(crs) && !is.matrix(loc)) {
     crs <- fm_crs(loc)
   }
-  loc <- unify_loc_coords(loc, crs = crs)
+  loc <- fm_unify_coords(loc, crs = crs)
 
   hull <- grDevices::chull(loc[, 1], loc[, 2])
   bnd <- fm_segm(
@@ -597,8 +658,8 @@ fm_mesh_2d_inla <- function(loc = NULL, ## Points to include in final triangulat
     }
   }
 
-  loc <- unify_loc_coords(loc, crs = crs)
-  loc.domain <- unify_loc_coords(loc.domain, crs = crs)
+  loc <- fm_unify_coords(loc, crs = crs)
+  loc.domain <- fm_unify_coords(loc.domain, crs = crs)
 
   boundary <- fm_as_segm_list(boundary)
   interior <- fm_as_segm(interior)

@@ -370,12 +370,17 @@ fm_nonconvex_hull_inla_basic <- function(x, convex = -0.15, resolution = 40,
 #' are with respect to disks with the specified radii.
 #'
 #' @param x A spatial object
-#' @param ... Arguments passed on to the [fm_nonconvex_hull()] sub-methods
-#' @param convex How much to extend
-#' @param concave The minimum allowed reentrant curvature. Default equal to `convex`
+#' @param x A spatial object
+#' @param convex numeric vector; How much to extend
+#' @param concave numeric vector; The minimum allowed reentrant curvature. Default equal to `convex`
 #' @param preserveTopology logical; argument to `sf::st_simplify()`
-#' @param dTolerance If not null, the `dTolerance` argument to `sf::st_simplify()`
+#' @param dTolerance If not zero, controls the `dTolerance` argument to `sf::st_simplify()`.
+#' The default is `pmin(convex, concave) / 40`, chosen to
+#' give approximately 4 or more subsegments per circular quadrant.
 #' @param crs Options crs object for the resulting polygon
+#' @param ... Arguments passed on to the [fm_nonconvex_hull()] sub-methods
+#' @details When `convex`, `concave`, or `dTolerance` are negative,
+#' `fm_diameter * abs(...)` is used instead.
 #' @returns `fm_nonconvex_hull()` returns an extended object as an `sfc`
 #' polygon object (regardless of the `x` class).
 #' @references Gonzalez and Woods (1992), Digital Image Processing
@@ -402,14 +407,19 @@ fm_nonconvex_hull.sfc <- function(x,
                                   dTolerance = NULL,
                                   crs = fm_crs(x),
                                   ...) {
-  if ((convex < 0) || (concave < 0)) {
-    diameter_bound <- fm_diameter(x)
-    if (convex < 0) {
-      convex <- diameter_bound * abs(convex)
+  diameter_bound <- fm_diameter(x)
+  scale_fun <- function(val) {
+    if (val < 0) {
+      val <- diameter_bound * abs(val)
     }
-    if (concave < 0) {
-      concave <- diameter_bound * abs(concave)
-    }
+    val
+  }
+  convex <- scale_fun(convex)
+  concave <- scale_fun(concave)
+  if (is.null(dTolerance)) {
+    dTolerance <- min(convex, concave) / 40
+  } else {
+    dTolerance <- scale_fun(dTolerance)
   }
 
   nQuadSegs <- 64
@@ -418,7 +428,8 @@ fm_nonconvex_hull.sfc <- function(x,
   if (concave > 0) {
     y <- sf::st_buffer(y, dist = -concave, nQuadSegs = nQuadSegs)
   }
-  if (!is.null(dTolerance)) {
+
+  if (dTolerance > 0) {
     y <- sf::st_simplify(y,
       preserveTopology = preserveTopology,
       dTolerance = dTolerance
@@ -439,15 +450,6 @@ fm_nonconvex_hull.sfc <- function(x,
 #' erosion by `concave`. This is equivalent to dilation by `convex` followed
 #' by closing (dilation + erosion) by `concave`.
 #'
-#' @param x A spatial object
-#' @param convex numeric vector; How much to extend
-#' @param concave numeric vector; The minimum allowed reentrant curvature. Default equal to `convex`
-#' @param dTolerance If not null, the `dTolerance` argument to `sf::st_simplify()`,
-#' passed on to [fm_nonconvex_hull()].
-#' The default for `fm_extensions()` is `pmin(convex, concave) / 40`, chosen to
-#' give approximately 4 or more subsegments per circular quadrant.
-#' For `fm_nonconvex_hull()`, the default is `NULL`
-#' (i.e. not to call `sf::st_simplify()`)
 #' @returns `fm_extensions()` returns a list of `sfc` objects.
 #' @export
 #' @examples

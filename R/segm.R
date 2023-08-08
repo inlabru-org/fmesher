@@ -33,7 +33,7 @@ fm_segm.default <- function(loc = NULL, idx = NULL, grp = NULL, is.bnd = TRUE,
     idx <- matrix(0L, 0, 2)
   }
   if (!is.null(loc)) {
-    loc <- unify_loc_coords(loc)
+    loc <- fm_unify_coords(loc)
     if (is.null(idx)) {
       idx <- if (is.bnd) {
         c(seq_len(nrow(loc)), 1)
