@@ -3,6 +3,7 @@
 \name{fm_bbox}
 \alias{fm_bbox}
 \alias{fm_bbox.list}
+\alias{fm_bbox.NULL}
 \alias{fm_bbox.matrix}
 \alias{fm_bbox.fm_bbox}
 \alias{fm_bbox.fm_mesh_2d}
@@ -14,12 +15,17 @@
 \alias{fm_bbox.bbox}
 \alias{fm_bbox.inla.mesh}
 \alias{fm_bbox.inla.mesh.segment}
+\alias{fm_as_bbox}
 \alias{[.fm_bbox}
+\alias{c.fm_bbox}
 \title{Bounding box class}
 \usage{
 fm_bbox(...)
 
 \method{fm_bbox}{list}(x, ...)
+
+## S3 method for class 'NULL'
+fm_bbox(...)
 
 \method{fm_bbox}{matrix}(x, ...)
 
@@ -43,7 +49,11 @@ fm_bbox(...)
 
 \method{fm_bbox}{inla.mesh.segment}(x, ...)
 
+fm_as_bbox(x, ...)
+
 \method{[}{fm_bbox}(x, i)
+
+\method{c}{fm_bbox}(...)
 }
 \arguments{
 \item{...}{Passed on to sub-methods}
@@ -51,6 +61,9 @@ fm_bbox(...)
 \item{x}{\code{fm_bbox} object from which to extract element(s)}
 
 \item{i}{indices specifying elements to extract}
+}
+\value{
+A \code{fm_bbox_list} object
 }
 \description{
 Simple class for handling bounding box information
@@ -66,7 +79,13 @@ precomputed interval information, stored as a list of 2-vector ranges,
 \itemize{
 \item \code{[}: Extract sub-list
 
+\item \code{c(fm_bbox)}: The \code{...} arguments should be \code{fm_bbox}
+objects, or coercible with \code{fm_as_bbox(list(...))}.
+
 }}
 \examples{
 fm_bbox(matrix(1:6, 3, 2))
+m <- c(A = fm_bbox(cbind(1, 2), B = fm_bbox(cbind(3, 4))))
+str(m)
+str(m[2])
 }

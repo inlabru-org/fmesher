@@ -53,6 +53,11 @@ fm_as_fm.fm_lattice_2d <- function(x, ...) {
 }
 #' @rdname fm_as_fm
 #' @export
+fm_as_fm.fm_bbox <- function(x, ...) {
+  x
+}
+#' @rdname fm_as_fm
+#' @export
 fm_as_fm.crs <- function(x, ...) {
   fm_crs(x)
 }

@@ -28,6 +28,15 @@ fm_bbox.list <- function(x, ...) {
 }
 
 #' @rdname fm_bbox
+#' @usage
+#' ## S3 method for class 'NULL'
+#' fm_bbox(...)
+#' @export
+fm_bbox.NULL <- function(...) {
+  fm_bbox(list())
+}
+
+#' @rdname fm_bbox
 #' @export
 fm_bbox.matrix <- function(x, ...) {
   fm_bbox(lapply(
@@ -108,6 +117,13 @@ fm_bbox.inla.mesh.segment <- function(x, ...) {
   fm_bbox(fm_as_fm(x))
 }
 
+#' @rdname fm_bbox
+#' @export
+fm_as_bbox <- function(x, ...) {
+  fm_bbox(x, ...)
+}
+
+
 #' @export
 #' @param x `fm_bbox` object from which to extract element(s)
 #' @param i indices specifying elements to extract
@@ -118,4 +134,15 @@ fm_bbox.inla.mesh.segment <- function(x, ...) {
   object
 }
 
-
+#' @export
+#' @describeIn fm_bbox The `...` arguments should be `fm_bbox`
+#' objects, or coercible with `fm_as_bbox(list(...))`.
+#' @returns A `fm_bbox_list` object
+#' @examples
+#' m <- c(A = fm_bbox(cbind(1, 2), B = fm_bbox(cbind(3, 4))))
+#' str(m)
+#' str(m[2])
+`c.fm_bbox` <- function(...) {
+  y <- lapply(list(...), function(xx) fm_as_list(xx, .class_stub = "bbox"))
+  return(do.call("c", y))
+}

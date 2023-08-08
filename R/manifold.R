@@ -59,4 +59,3 @@ fm_manifold_dim <- function(x) {
   }
   as.integer(d)
 }
-

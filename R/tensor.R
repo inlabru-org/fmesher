@@ -45,5 +45,3 @@ fm_as_tensor.fm_tensor <- function(x, ...) {
   #  class(x) <- c("fm_tensor", setdiff(class(x), "fm_tensor"))
   x
 }
-
-

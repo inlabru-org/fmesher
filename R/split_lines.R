@@ -86,7 +86,7 @@ fm_split_lines.fm_mesh_2d <- function(mesh, segm, ...) {
 
   # Filter out zero length segments
   keep <- rowSums((segm.split$loc[segm.split$idx[, 2], , drop = FALSE] -
-                     segm.split$loc[segm.split$idx[, 1], , drop = FALSE])^2) > 0
+    segm.split$loc[segm.split$idx[, 1], , drop = FALSE])^2) > 0
   segm.split <- fm_segm(
     loc = segm.split$loc,
     idx = segm.split$idx[keep, , drop = FALSE],
@@ -104,5 +104,3 @@ fm_split_lines.fm_mesh_2d <- function(mesh, segm, ...) {
 fm_split_lines.inla.mesh <- function(mesh, ...) {
   fm_split_lines(fm_as_mesh_2d(mesh), ...)
 }
-
-

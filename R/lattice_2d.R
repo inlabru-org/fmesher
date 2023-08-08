@@ -85,8 +85,8 @@ fm_mesh_2d_map <- function(loc,
         if (any(nook)) {
           delta <-
             (atan2(sin.theta[nook], cos.theta[nook]) +
-               sin.theta[nook] * cos.theta[nook] - pi / 2 * z[nook]) /
-            (2 * cos.theta[nook])
+              sin.theta[nook] * cos.theta[nook] - pi / 2 * z[nook]) /
+              (2 * cos.theta[nook])
           sin.theta[nook] <- sin.theta[nook] - delta
           cos.theta[nook] <- sqrt(1 - sin.theta[nook]^2)
           nook[nook] <- (abs(delta) > 1e-14)
@@ -222,8 +222,8 @@ fm_lattice_2d.default <- function(
 
   if (is.matrix(x)) {
     if (!identical(dims, dim(x)) ||
-        !identical(dims, dim(y)) ||
-        (is.matrix(z) && !identical(dims, dim(z)))) {
+      !identical(dims, dim(y)) ||
+      (is.matrix(z) && !identical(dims, dim(z)))) {
       stop("The size of matrices 'x', 'y', and 'z' must match 'dims'.")
     }
     loc <- cbind(as.vector(x), as.vector(y), as.vector(z))
@@ -231,11 +231,11 @@ fm_lattice_2d.default <- function(
     y <- NULL
   } else {
     if (!identical(dims[1], length(x)) ||
-        !identical(dims[2], length(y))) {
+      !identical(dims[2], length(y))) {
       stop(paste("The lengths of vectors 'x' and 'y' (",
-                 length(x), ",", length(y),
-                 ") must match 'dims' (", dims[1], ",", dims[2], ").",
-                 sep = ""
+        length(x), ",", length(y),
+        ") must match 'dims' (", dims[1], ",", dims[2], ").",
+        sep = ""
       ))
     }
     loc <- (cbind(

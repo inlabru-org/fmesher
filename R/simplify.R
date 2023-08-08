@@ -37,8 +37,8 @@
 fm_simplify_helper <- function(loc, idx, eps = NULL, eps_rel = NULL) {
   n <- length(idx)
   if ((n <= 2) ||
-      (is.null(eps) && is.null(eps_rel)) ||
-      (min(eps, eps_rel) == 0)) {
+    (is.null(eps) && is.null(eps_rel)) ||
+    (min(eps, eps_rel) == 0)) {
     return(idx)
   }
   segm <- loc[idx[n], ] - loc[idx[1], ]
@@ -46,7 +46,7 @@ fm_simplify_helper <- function(loc, idx, eps = NULL, eps_rel = NULL) {
   if (segm.len <= 1e-12) {
     ## End point same as start; closed curve.  Split.
     len2 <- ((loc[idx[2:(n - 1)], 1] - loc[idx[1], 1])^2 +
-               (loc[idx[2:(n - 1)], 2] - loc[idx[1], 2])^2)
+      (loc[idx[2:(n - 1)], 2] - loc[idx[1], 2])^2)
     split <- which.max(len2) + 1L
   } else {
     segm.mid <- (loc[idx[n], ] + loc[idx[1], ]) / 2
@@ -133,8 +133,8 @@ fm_simplify_helper <- function(loc, idx, eps = NULL, eps_rel = NULL) {
 #' @family object creation and conversion
 fm_simplify <- function(x, eps = NULL, eps_rel = NULL, ...) {
   if ((nrow(x$idx) <= 1) ||
-      (is.null(eps) && is.null(eps_rel)) ||
-      (min(eps, eps_rel) == 0)) {
+    (is.null(eps) && is.null(eps_rel)) ||
+    (min(eps, eps_rel) == 0)) {
     return(x)
   }
 

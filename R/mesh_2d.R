@@ -110,9 +110,9 @@ handle_rcdt_options_inla <- function(
     max.edge.default <- fm_diameter(.loc) * 2
     if ((inherits(extend, "list")) && (!is.null(extend$offset))) {
       max.edge.default <- (max.edge.default +
-                             max(0, 2 * extend$offset))
+        max(0, 2 * extend$offset))
       max.edge.default <- (max.edge.default *
-                             (1 + max(0, -2 * extend$offset)))
+        (1 + max(0, -2 * extend$offset)))
     }
     rcdt_min_angle <- ifelse(is.null(refine$min.angle), 21, refine$min.angle)
     rcdt_max_edge <- ifelse(
@@ -129,13 +129,13 @@ handle_rcdt_options_inla <- function(
     )
 
     if (!is.null(refine[["max.n.strict"]]) &&
-        !is.na(refine$max.n.strict)) {
+      !is.na(refine$max.n.strict)) {
       rcdt_max_n0 <- as.integer(refine$max.n.strict)
     } else {
       rcdt_max_n0 <- -1L
     }
     if (!is.null(refine[["max.n"]]) &&
-        !is.na(refine$max.n)) {
+      !is.na(refine$max.n)) {
       rcdt_max_n1 <- as.integer(refine$max.n)
     } else {
       rcdt_max_n1 <- -1L
@@ -232,7 +232,7 @@ fm_rcdt_2d_inla <-
            ...) {
     crs.target <- crs
     if (!fm_crs_is_null(crs) &&
-        fm_crs_is_geocent(crs)) {
+      fm_crs_is_geocent(crs)) {
       ## Build all geocentric meshes on a sphere, and transform afterwards,
       ## to allow general geoids.
       crs <- fm_crs("sphere")
@@ -385,7 +385,7 @@ fm_rcdt_2d_inla <-
     }
 
     if (!fm_crs_is_null(crs) &&
-        !fm_crs_is_identical(crs, crs.target)) {
+      !fm_crs_is_identical(crs, crs.target)) {
       ## Target is a non-spherical geoid
       result[["s"]] <- fm_transform(result[["s"]], crs0 = crs, crs = crs.target)
       crs <- crs.target
@@ -582,8 +582,8 @@ fm_mesh_2d_inla <- function(loc = NULL, ## Points to include in final triangulat
 
 
   if ((missing(max.edge) || is.null(max.edge)) &&
-      (missing(max.n.strict) || is.null(max.n.strict)) &&
-      (missing(max.n) || is.null(max.n))) {
+    (missing(max.n.strict) || is.null(max.n.strict)) &&
+    (missing(max.n) || is.null(max.n))) {
     max.edge <- NA
     #    stop("At least one of max.edge, max.n.strict, and max.n must be specified")
   }
@@ -615,9 +615,9 @@ fm_mesh_2d_inla <- function(loc = NULL, ## Points to include in final triangulat
     }
   }
   if (any(offset < 0) &&
-      (fm_diameter(loc) +
-       fm_diameter(loc.domain) +
-       fm_diameter(interior) == 0.0)) {
+    (fm_diameter(loc) +
+      fm_diameter(loc.domain) +
+      fm_diameter(interior) == 0.0)) {
     offset[offset < 0] <- 1
   }
   if (missing(n) || is.null(n)) {
@@ -650,8 +650,8 @@ fm_mesh_2d_inla <- function(loc = NULL, ## Points to include in final triangulat
     ))
   if (num.layers > 2) {
     warning(paste("num.layers=", num.layers, " > 2 detected.  ",
-                  "Excess information ignored.",
-                  sep = ""
+      "Excess information ignored.",
+      sep = ""
     ))
     num.layers <- 2
   }
@@ -788,7 +788,7 @@ fm_mesh_2d_inla <- function(loc = NULL, ## Points to include in final triangulat
     if (any(proj$ok)) {
       t.idx <- proj$t[proj$ok]
       tv.idx <- max.col(proj$bary[proj$ok, , drop = FALSE],
-                        ties.method = "first"
+        ties.method = "first"
       )
       mesh3$idx$segm[proj$ok] <-
         mesh3$graph$tv[t.idx + nrow(mesh3$graph$tv) * (tv.idx - 1)]

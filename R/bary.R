@@ -51,7 +51,7 @@ fm_bary.fm_mesh_1d <- function(mesh, loc, method = c("linear", "nearest"), ...) 
         c(
           0,
           (mesh$loc[1:(mesh$n - 1L)] +
-             mesh$loc[2:mesh$n]) / 2 - mesh$loc[1],
+            mesh$loc[2:mesh$n]) / 2 - mesh$loc[1],
           diff(mesh$interval)
         )
       loc <- pmax(0, pmin(diff(mesh$interval), loc - mesh$loc[1]))
@@ -153,5 +153,3 @@ fm_bary.inla.mesh <- function(mesh, ...) {
 fm_bary.inla.mesh.1d <- function(mesh, ...) {
   fm_bary.fm_mesh_1d(fm_as_mesh_1d(mesh), ...)
 }
-
-

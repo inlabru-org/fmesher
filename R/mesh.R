@@ -85,9 +85,9 @@ fm_pixels <- function(mesh,
   x <- NULL
   if (lifecycle::is_present(nx)) {
     lifecycle::deprecate_soft(
-     "0.0.1",
-     "fm_pixels(nx)",
-     "fm_pixels(dim)"
+      "0.0.1",
+      "fm_pixels(nx)",
+      "fm_pixels(dim)"
     )
     if (length(nx) == 1) {
       dims[1] <- nx
@@ -98,9 +98,9 @@ fm_pixels <- function(mesh,
   y <- NULL
   if (lifecycle::is_present(ny)) {
     lifecycle::deprecate_soft(
-     "0.0.1",
-     "fm_pixels(ny)",
-     "fm_pixels(dim)"
+      "0.0.1",
+      "fm_pixels(ny)",
+      "fm_pixels(dim)"
     )
     if (length(ny) == 1) {
       dims[2] <- ny

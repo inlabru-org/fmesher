@@ -54,8 +54,8 @@ fm_mesh_1d <- function(loc,
   cyclic <- !is.na(pmatch(boundary[1], "cyclic"))
   if (cyclic && is.na(pmatch(boundary[2], "cyclic"))) {
     stop("Inconsistent boundary specification 'boundary=c(",
-         paste(boundary, collapse = ","), ")'.",
-         sep = ""
+      paste(boundary, collapse = ","), ")'.",
+      sep = ""
     )
   }
 
@@ -63,7 +63,7 @@ fm_mesh_1d <- function(loc,
   if (cyclic) {
     loc <-
       (sort(unique(c(0, loc - interval[1]) %% diff(interval))) +
-         interval[1])
+        interval[1])
   } else {
     loc <-
       (sort(unique(c(
@@ -83,9 +83,9 @@ fm_mesh_1d <- function(loc,
 
   if ((degree < 0) || (degree > 2)) {
     stop(paste("'degree' must be 0, 1, or 2.  'degree=",
-               degree,
-               "' is not supported.",
-               sep = ""
+      degree,
+      "' is not supported.",
+      sep = ""
     ))
   }
 
@@ -103,14 +103,14 @@ fm_mesh_1d <- function(loc,
     basis.reduction <- c(1, 1, 0, 1)
   }
   m <- (n + cyclic + (degree == 2) * 1
-        - basis.reduction[pmatch(boundary[1], boundary.options)]
-        - basis.reduction[pmatch(boundary[2], boundary.options)])
+    - basis.reduction[pmatch(boundary[1], boundary.options)]
+    - basis.reduction[pmatch(boundary[2], boundary.options)])
   ## if (m < 1+max(1,degree)) {
   if (m < 1L) {
     stop("Degree ", degree,
-         " meshes must have at least ", 1L,
-         " basis functions, not 'm=", m, "'.",
-         sep = ""
+      " meshes must have at least ", 1L,
+      " basis functions, not 'm=", m, "'.",
+      sep = ""
     )
   }
 
@@ -130,15 +130,15 @@ fm_mesh_1d <- function(loc,
       mid <- c(loc[1], (loc[-n] + loc[-1]) / 2, loc[n])
       mid <-
         switch(boundary[1],
-               neumann = mid[-1],
-               dirichlet = mid[-1],
-               free = mid
+          neumann = mid[-1],
+          dirichlet = mid[-1],
+          free = mid
         )
       mid <-
         switch(boundary[2],
-               neumann = mid[-(m + 1)],
-               dirichlet = mid[-(m + 1)],
-               free = mid
+          neumann = mid[-(m + 1)],
+          dirichlet = mid[-(m + 1)],
+          free = mid
         )
     }
   }
@@ -168,8 +168,8 @@ fm_mesh_1d <- function(loc,
     if (length(mid) >= 2) {
       mesh$idx$loc <-
         fm_bary(fm_mesh_1d(mid, degree = 0),
-                loc.orig,
-                method = "nearest"
+          loc.orig,
+          method = "nearest"
         )$index[, 1]
     } else {
       mesh$idx$loc <- rep(1, length(loc.orig))

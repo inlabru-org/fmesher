@@ -148,14 +148,14 @@ fm_fem.fm_mesh_1d <- function(mesh, order = 2, ...) {
     ## 3-point Gaussian quadrature
     info <-
       fm_basis(mesh,
-               loc = (c(
-                 knots.m,
-                 knots.m - knots.d * sqrt(3 / 5),
-                 knots.m + knots.d * sqrt(3 / 5)
-               )),
-               weights =
-                 c(knots.d * 8 / 9, knots.d * 5 / 9, knots.d * 5 / 9)^0.5,
-               derivatives = TRUE
+        loc = (c(
+          knots.m,
+          knots.m - knots.d * sqrt(3 / 5),
+          knots.m + knots.d * sqrt(3 / 5)
+        )),
+        weights =
+          c(knots.d * 8 / 9, knots.d * 5 / 9, knots.d * 5 / 9)^0.5,
+        derivatives = TRUE
       )
     c1 <- Matrix::t(info$A) %*% info$A
     g1 <- Matrix::t(info$dA) %*% info$dA
@@ -170,8 +170,8 @@ fm_fem.fm_mesh_1d <- function(mesh, order = 2, ...) {
     return(list(c0 = c0, c1 = c1, g1 = g1, g2 = g2, g01 = g01, g02 = g02, g12 = g12))
   } else {
     stop(paste("Mesh basis degree=", mesh$degree,
-               " is not supported by fm_fem.fm_mesh_1d.",
-               sep = ""
+      " is not supported by fm_fem.fm_mesh_1d.",
+      sep = ""
     ))
   }
 
@@ -211,5 +211,3 @@ fm_fem.inla.mesh.1d <- function(mesh, order = 2, ...) {
 fm_fem.inla.mesh <- function(mesh, order = 2, ...) {
   fm_fem(fm_as_fm(mesh), order = order, ...)
 }
-
-

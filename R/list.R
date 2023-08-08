@@ -3,7 +3,7 @@
 # fm_list ####
 
 fm_class_stubs <- function() {
-  c("segm", "mesh_1d", "mesh_2d", "lattice_2d", "tensor")
+  c("segm", "mesh_1d", "mesh_2d", "lattice_2d", "tensor", "bbox")
 }
 
 fm_class_stub <- function(x) {
@@ -62,7 +62,7 @@ fm_as_list <- function(x, ..., .class_stub = NULL) {
   }
   if (missing(x) || is.null(x) || (length(x) == 0)) {
     return(structure(list(),
-                     class = c(.class_list_name, "fm_list")
+      class = c(.class_list_name, "fm_list")
     ))
   }
 
@@ -73,7 +73,7 @@ fm_as_list <- function(x, ..., .class_stub = NULL) {
   if (!inherits(x, "fm_list")) {
     m_c <- setdiff(method_classes(.method), "list")
     if (inherits(x, paste0("fm_", fm_class_stubs())) ||
-        (!is.null(m_c) && inherits(x, m_c))) {
+      (!is.null(m_c) && inherits(x, m_c))) {
       # Single element of known or coercible non-list type
       #      y <- do.call(.method, list(x, ...))
       return(fm_as_list(list(x), ..., .class_stub = .class_stub))
@@ -158,5 +158,3 @@ fm_as_list <- function(x, ..., .class_stub = NULL) {
   class(object) <- class(x)
   object
 }
-
-

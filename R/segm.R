@@ -62,8 +62,8 @@ fm_segm.default <- function(loc = NULL, idx = NULL, grp = NULL, is.bnd = TRUE,
     }
     storage.mode(idx) <- "integer"
     if (!is.null(loc) &&
-        (nrow(idx) > 0) &&
-        (max(idx, na.rm = TRUE) > nrow(loc))) {
+      (nrow(idx) > 0) &&
+      (max(idx, na.rm = TRUE) > nrow(loc))) {
       warning(
         "Segment indices (max=", max(idx, na.rm = TRUE),
         ") exceed specified location list length (",
@@ -112,8 +112,8 @@ fm_segm.default <- function(loc = NULL, idx = NULL, grp = NULL, is.bnd = TRUE,
     loc <- loc[idx.new == 1L, , drop = FALSE]
     idx.new[idx.new == 1L] <- seq_len(sum(idx.new))
     idx <- matrix(idx.new[as.vector(idx)],
-                  nrow = nrow(idx),
-                  ncol = ncol(idx)
+      nrow = nrow(idx),
+      ncol = ncol(idx)
     )
   }
 
@@ -437,6 +437,3 @@ NULL
   class(object) <- class(x)
   object
 }
-
-
-

@@ -108,9 +108,9 @@ fm_segm_contour_helper <- function(x = seq(0, 1, length.out = nrow(z)),
     ## Filter short line segments:
     curve.idx <-
       fm_simplify_helper(curve.loc,
-                         curve.idx,
-                         eps = eps,
-                         eps_rel = eps_rel
+        curve.idx,
+        eps = eps,
+        eps_rel = eps_rel
       )
 
     ## Reorder, making sure any unused points are removed:
@@ -190,7 +190,7 @@ fm_nonconvex_hull_inla <- function(x,
   }
   if (concave == 0) {
     return(fm_nonconvex_hull_inla_basic(x, convex, resolution, eps,
-                                        crs = crs
+      crs = crs
     ))
   }
 
@@ -200,14 +200,14 @@ fm_nonconvex_hull_inla <- function(x,
   if (max(dif) > min(convex, concave)) {
     req.res <- ceiling(domain / min(convex, concave) + 1)
     warning(paste("Resolution (",
-                  paste(resolution, collapse = ","),
-                  ") too small for convex/concave radius (",
-                  convex, ",", concave,
-                  ").\n",
-                  "Resolution >=(",
-                  paste(req.res, collapse = ","),
-                  ") required for more accurate results.",
-                  sep = ""
+      paste(resolution, collapse = ","),
+      ") too small for convex/concave radius (",
+      convex, ",", concave,
+      ").\n",
+      "Resolution >=(",
+      paste(req.res, collapse = ","),
+      ") required for more accurate results.",
+      sep = ""
     ))
   }
   ax <-
@@ -306,14 +306,14 @@ fm_nonconvex_hull_inla_basic <- function(x, convex = -0.15, resolution = 40,
   if (any(dif > min(convex))) {
     req.res <- ceiling(domain / convex + 1)
     warning(paste("Resolution (",
-                  paste(resolution, collapse = ","),
-                  ") too small for convex (",
-                  paste(convex, collapse = ","),
-                  ").\n",
-                  "Resolution >=(",
-                  paste(req.res, collapse = ","),
-                  ") required for more accurate results.",
-                  sep = ""
+      paste(resolution, collapse = ","),
+      ") too small for convex (",
+      paste(convex, collapse = ","),
+      ").\n",
+      "Resolution >=(",
+      paste(req.res, collapse = ","),
+      ") required for more accurate results.",
+      sep = ""
     ))
   }
 
@@ -420,8 +420,8 @@ fm_nonconvex_hull.sfc <- function(x,
   }
   if (!is.null(dTolerance)) {
     y <- sf::st_simplify(y,
-                         preserveTopology = preserveTopology,
-                         dTolerance = dTolerance
+      preserveTopology = preserveTopology,
+      dTolerance = dTolerance
     )
   }
   y <- sf::st_union(y)
@@ -522,4 +522,3 @@ fm_nonconvex_hull.Spatial <- function(x, ...) {
 fm_nonconvex_hull.sfg <- function(x, ...) {
   fm_nonconvex_hull.sfc(sf::st_sfc(x), ...)
 }
-

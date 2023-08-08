@@ -7,6 +7,7 @@
 \alias{fm_as_fm.fm_mesh_2d}
 \alias{fm_as_fm.fm_segm}
 \alias{fm_as_fm.fm_lattice_2d}
+\alias{fm_as_fm.fm_bbox}
 \alias{fm_as_fm.crs}
 \alias{fm_as_fm.CRS}
 \alias{fm_as_fm.fm_crs}
@@ -29,6 +30,8 @@ fm_as_fm(x, ...)
 \method{fm_as_fm}{fm_segm}(x, ...)
 
 \method{fm_as_fm}{fm_lattice_2d}(x, ...)
+
+\method{fm_as_fm}{fm_bbox}(x, ...)
 
 \method{fm_as_fm}{crs}(x, ...)
 

@@ -143,7 +143,3 @@ fm_diameter.inla.mesh.lattice <- function(x, ...) {
 fm_diameter.inla.mesh <- function(x, ...) {
   fm_diameter(fm_as_fm(x), ...)
 }
-
-
-
-
