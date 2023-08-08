@@ -82,6 +82,7 @@ Collate:
     'fm.R'
     'fmesher-package.R'
     'fmesher.R'
+    'ggplot.R'
     'integration.R'
     'lattice_2d.R'
     'list.R'

@@ -293,7 +293,7 @@ fm_rcdt_2d_inla <- function(loc = NULL,
                             ...) {
   crs.target <- crs
   if (!fm_crs_is_null(crs) &&
-      fm_crs_is_geocent(crs)) {
+    fm_crs_is_geocent(crs)) {
     ## Build all geocentric meshes on a sphere, and transform afterwards,
     ## to allow general geoids.
     crs <- fm_crs("sphere")
@@ -446,7 +446,7 @@ fm_rcdt_2d_inla <- function(loc = NULL,
   }
 
   if (!fm_crs_is_null(crs) &&
-      !fm_crs_is_identical(crs, crs.target)) {
+    !fm_crs_is_identical(crs, crs.target)) {
     ## Target is a non-spherical geoid
     result[["s"]] <- fm_transform(result[["s"]], crs0 = crs, crs = crs.target)
     crs <- crs.target
