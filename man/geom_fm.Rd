@@ -49,6 +49,9 @@ A combination of \code{ggplot2} geoms.
 The function invokes particular methods which depend
 on the \link{class} of the \code{data} argument.
 Requires the \code{ggplot2} package.
+
+Note: \code{geom_fm} is not yet a "proper" \code{ggplot2} geom method; the interface
+may therefore change in the future.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -68,10 +71,25 @@ if (require("ggplot2", quietly = TRUE)) {
 if (require("ggplot2", quietly = TRUE)) {
   m <- fm_mesh_2d(
     cbind(10, 20),
-    max.edge = c(0.1, 0.5),
+    boundary = fm_extensions(cbind(10, 20), c(25, 65)),
+    max.edge = c(2, 5),
     crs = fm_crs("+proj=longlat")
   )
   ggplot() +
+    geom_fm(data = m)
+  ggplot() +
     geom_fm(data = m, crs = fm_crs("epsg:27700"))
+
+  # Compute a mesh vertex based function on a different grid
+  px <- fm_pixels(fm_transform(m, fm_crs("mollweide_globe")))
+  px$fun <- fm_evaluate(m,
+                        loc = px,
+                        field = sin(m$loc[, 1] / 5) * sin(m$loc[, 2] / 5))
+  ggplot() +
+    geom_tile(aes(geometry = geometry, fill = fun),
+              data = px,
+              stat = "sf_coordinates") +
+    geom_fm(data = m, alpha = 0.2, linewidth = 0.05,
+            crs = fm_crs("mollweide_globe"))
 }
 }

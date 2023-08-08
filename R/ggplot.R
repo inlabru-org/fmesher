@@ -9,6 +9,9 @@
 #' on the [class] of the `data` argument.
 #' Requires the `ggplot2` package.
 #'
+#' Note: `geom_fm` is not yet a "proper" `ggplot2` geom method; the interface
+#' may therefore change in the future.
+#'
 #' @export
 #' @param mapping an object for which to generate a geom.
 #' @param data an object for which to generate a geom.
@@ -42,11 +45,26 @@ geom_fm <- function(mapping = NULL, data = NULL, ...) {
 #' if (require("ggplot2", quietly = TRUE)) {
 #'   m <- fm_mesh_2d(
 #'     cbind(10, 20),
-#'     max.edge = c(0.1, 0.5),
+#'     boundary = fm_extensions(cbind(10, 20), c(25, 65)),
+#'     max.edge = c(2, 5),
 #'     crs = fm_crs("+proj=longlat")
 #'   )
 #'   ggplot() +
+#'     geom_fm(data = m)
+#'   ggplot() +
 #'     geom_fm(data = m, crs = fm_crs("epsg:27700"))
+#'
+#'   # Compute a mesh vertex based function on a different grid
+#'   px <- fm_pixels(fm_transform(m, fm_crs("mollweide_globe")))
+#'   px$fun <- fm_evaluate(m,
+#'                         loc = px,
+#'                         field = sin(m$loc[, 1] / 5) * sin(m$loc[, 2] / 5))
+#'   ggplot() +
+#'     geom_tile(aes(geometry = geometry, fill = fun),
+#'               data = px,
+#'               stat = "sf_coordinates") +
+#'     geom_fm(data = m, alpha = 0.2, linewidth = 0.05,
+#'             crs = fm_crs("mollweide_globe"))
 #' }
 geom_fm.fm_mesh_2d <- function(mapping = NULL,
                                data = NULL,
