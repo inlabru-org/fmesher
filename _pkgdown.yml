@@ -78,6 +78,7 @@ reference:
 - title: "Plotting methods"
   desc: "Functions for plotting."
   contents:
+  - starts_with("geom_fm")
   - starts_with("plot")
   - starts_with("lines")
 - title: "Printing methods"
