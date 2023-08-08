@@ -66,8 +66,6 @@ LinkingTo:
     Rcpp
 VignetteBuilder: knitr
 BuildVignettes: true
-Remotes:
-    inlabru-org/inlabru
 Collate: 
     'RcppExports.R'
     'deprecated.R'
