@@ -56,7 +56,7 @@ fm_unify_coords.Spatial <- function(x, crs = NULL) {
   )
   if (ncol(x) < 3) {
     while (ncol(x) < 3) {
-      loc <- cbind(x, 0.0)
+      x <- cbind(x, 0.0)
     }
   } else if (ncol(x) > 3) {
     stop("Coordinates can have at mots 3 columns.")
