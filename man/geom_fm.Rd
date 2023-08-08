@@ -75,21 +75,21 @@ if (require("ggplot2", quietly = TRUE)) {
     max.edge = c(2, 5),
     crs = fm_crs("+proj=longlat")
   )
-  ggplot() +
-    geom_fm(data = m)
-  ggplot() +
-    geom_fm(data = m, crs = fm_crs("epsg:27700"))
+  print(ggplot() +
+    geom_fm(data = m))
+  print(ggplot() +
+    geom_fm(data = m, crs = fm_crs("epsg:27700")))
 
   # Compute a mesh vertex based function on a different grid
   px <- fm_pixels(fm_transform(m, fm_crs("mollweide_globe")))
   px$fun <- fm_evaluate(m,
                         loc = px,
                         field = sin(m$loc[, 1] / 5) * sin(m$loc[, 2] / 5))
-  ggplot() +
+  print(ggplot() +
     geom_tile(aes(geometry = geometry, fill = fun),
               data = px,
               stat = "sf_coordinates") +
     geom_fm(data = m, alpha = 0.2, linewidth = 0.05,
-            crs = fm_crs("mollweide_globe"))
+            crs = fm_crs("mollweide_globe")))
 }
 }
