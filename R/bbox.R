@@ -17,14 +17,12 @@ fm_bbox <- function(...) {
 }
 
 #' @describeIn fm_bbox Construct a bounding box from
-#' precomputed interval information, stored as a list,
-#' `list(lim = list(xlim, ylim, ...))`.
+#' precomputed interval information, stored as a list of 2-vector ranges,
+#' `list(xlim, ylim, ...)`.
 #' @export
 fm_bbox.list <- function(x, ...) {
   structure(
-    list(
-      lim = x
-    ),
+    x,
     class = "fm_bbox"
   )
 }
@@ -109,4 +107,15 @@ fm_bbox.inla.mesh <- function(x, ...) {
 fm_bbox.inla.mesh.segment <- function(x, ...) {
   fm_bbox(fm_as_fm(x))
 }
+
+#' @export
+#' @param x `fm_bbox` object from which to extract element(s)
+#' @param i indices specifying elements to extract
+#' @describeIn fm_bbox Extract sub-list
+`[.fm_bbox` <- function(x, i) {
+  object <- NextMethod()
+  class(object) <- class(x)
+  object
+}
+
 

@@ -243,15 +243,15 @@ print.fm_bbox <- function(x, ..., digits = NULL, verbose = TRUE, newline = TRUE)
   if (verbose) {
     cat("Bounding box: ", sep = "")
   }
-  if (length(x$lim) == 0) {
+  if (length(x) == 0) {
     cat("NULL")
   } else {
-    for (k in seq_along(x$lim)) {
+    for (k in seq_along(x)) {
       if (k > 1) {
         cat(" x ", sep = "")
       }
       cat("(",
-        paste0(format(x$lim[[k]], digits = digits),
+        paste0(format(x[[k]], digits = digits),
           collapse = ","
         ),
         ")",

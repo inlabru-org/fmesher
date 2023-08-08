@@ -763,8 +763,6 @@ Rcpp::List fmesher_fem(Rcpp::NumericMatrix mesh_loc,
 
   }
 
-  matrices.output("-");
-
   return Rcpp::wrap(matrices);
 }
 
