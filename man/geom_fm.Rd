@@ -4,6 +4,7 @@
 \alias{geom_fm}
 \alias{geom_fm.fm_mesh_2d}
 \alias{geom_fm.fm_segm}
+\alias{geom_fm.fm_mesh_1d}
 \title{ggplot2 geomes for fmesher related objects}
 \usage{
 geom_fm(mapping = NULL, data = NULL, ...)
@@ -20,6 +21,15 @@ geom_fm(mapping = NULL, data = NULL, ...)
 )
 
 \method{geom_fm}{fm_segm}(mapping = NULL, data = NULL, ..., crs = NULL)
+
+\method{geom_fm}{fm_mesh_1d}(
+  mapping = NULL,
+  data = NULL,
+  ...,
+  xlim = NULL,
+  knots = TRUE,
+  derivatives = FALSE
+)
 }
 \arguments{
 \item{mapping}{an object for which to generate a geom.}
@@ -55,11 +65,13 @@ may therefore change in the future.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{geom_fm(fm_mesh_2d)}: Extracts converts an \code{\link[=fm_mesh_2d]{fm_mesh_2d()}} object to \code{sf} with \code{\link[=fm_as_sfc]{fm_as_sfc()}} and uses
+\item \code{geom_fm(fm_mesh_2d)}: Converts an \code{\link[=fm_mesh_2d]{fm_mesh_2d()}} object to \code{sf} with \code{\link[=fm_as_sfc]{fm_as_sfc()}} and uses
 \code{geom_sf} to visualize the triangles and edges.
 
-\item \code{geom_fm(fm_segm)}: Extracts converts an \code{\link[=fm_segm]{fm_segm()}} object to \code{sf} with \code{\link[=fm_as_sfc]{fm_as_sfc()}} and uses
+\item \code{geom_fm(fm_segm)}: Converts an \code{\link[=fm_segm]{fm_segm()}} object to \code{sf} with \code{\link[=fm_as_sfc]{fm_as_sfc()}} and uses
 \code{geom_sf} to visualize it.
+
+\item \code{geom_fm(fm_mesh_1d)}: Evaluates and plots the basis functions defined by an \code{\link[=fm_mesh_1d]{fm_mesh_1d()}} object.
 
 }}
 \examples{
@@ -91,5 +103,13 @@ if (require("ggplot2", quietly = TRUE)) {
               stat = "sf_coordinates") +
     geom_fm(data = m, alpha = 0.2, linewidth = 0.05,
             crs = fm_crs("mollweide_globe")))
+}
+if (require("ggplot2", quietly = TRUE)) {
+  m <- fm_mesh_1d(
+    c(1, 2, 3, 5, 7),
+    boundary = c("dirichlet", "neumann")
+  )
+  print(ggplot() +
+    geom_fm(data = m))
 }
 }

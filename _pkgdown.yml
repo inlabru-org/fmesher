@@ -15,7 +15,7 @@ navbar:
       - text: Concepts
       - text: Conversion from legacy INLA package methods
         href: articles/inla_conversion.html
-      - text: The fmesher backend library
+      - text: The fmesher C++ library
         href: articles/fmesher_library.html
 
 
@@ -51,6 +51,7 @@ reference:
   - starts_with("fm_is_within")
   - starts_with("fm_manifold")
   - starts_with("fm_detect_manifold")
+  - starts_with("fm_dof")
   - starts_with("fm_pixels")
 - title: "Matrix helper functions"
   desc: "Functions for handling matrix constructions"

@@ -18,84 +18,84 @@ fm_bary <- function(mesh, loc, ...) {
 }
 
 
+## Binary split method, returning the index of the left knot for the
+## interval containing each location. Points to the left are assigned index 1,
+## and points to the right are assigned index length(knots)-1.
+do.the.split <- function(knots, loc) {
+  n <- length(knots)
+  if (n <= 2L) {
+    return(rep(1L, length(loc)))
+  }
+  split <- 1L + (n - 1L) %/% 2L ## Split point
+  upper <- (loc >= knots[split])
+  idx <- rep(0, length(loc))
+  idx[!upper] <- do.the.split(knots[1:split], loc[!upper])
+  idx[upper] <- split - 1L + do.the.split(knots[split:n], loc[upper])
+  return(idx)
+}
+
+
+
 #' @describeIn fm_bary Return a list with elements
 #' `t` (start and endpoint knot indices) and `bary` (barycentric coordinates), both
 #' 2-column matrices. For backwards compatibility with old inla code, a copy `index=t`
 #' is also included in the list.
-#' @param method character; method for defining the barycentric coordinates
+#'
+#' For `method = "nearest"`, `t[,1]` contains the index of the nearest mesh knot,
+#' and each row of `bary` contains `c(1, 0)`.
+#' @param method character; method for defining the barycentric coordinates,
+#' "linear" (default) or "nearest"
+#' @param restricted logical, used for `method="linear"`.
+#' If `FALSE` (default), points outside the mesh interval will be given
+#' barycentric weights less than 0 and greater than 1, according to linear
+#' extrapolation. If `TRUE`, the barycentric weights are clamped to the (0, 1)
+#' interval.
 #' @export
-fm_bary.fm_mesh_1d <- function(mesh, loc, method = c("linear", "nearest"), ...) {
+fm_bary.fm_mesh_1d <- function(mesh,
+                               loc,
+                               method = c("linear", "nearest"),
+                               restricted = FALSE, ...) {
   method <- match.arg(method)
 
-  if (method == "linear") {
-    if (mesh$cyclic) {
-      mloc <- c(mesh$loc - mesh$loc[1], diff(mesh$interval))
-      loc <- (loc - mesh$loc[1]) %% diff(mesh$interval)
-    } else {
-      mloc <- c(mesh$loc - mesh$loc[1], diff(mesh$interval))
-      loc <- pmax(0, pmin(diff(mesh$interval), loc - mesh$loc[1]))
-    }
+  if (mesh$cyclic) {
+    knots <- c(mesh$loc - mesh$loc[1], diff(mesh$interval))
+    loc <- (loc - mesh$loc[1]) %% diff(mesh$interval)
   } else {
-    if (mesh$cyclic) {
-      mloc <-
-        c(
-          mesh$loc[mesh$n] - diff(mesh$interval),
-          mesh$loc,
-          diff(mesh$interval)
-        )
-      mloc <- (mloc[-(mesh$n + 2)] + mloc[-1]) / 2
-      loc <- (loc - mloc[1]) %% diff(mesh$interval)
-      mloc <- mloc - mloc[1]
-    } else {
-      mloc <-
-        c(
-          0,
-          (mesh$loc[1:(mesh$n - 1L)] +
-            mesh$loc[2:mesh$n]) / 2 - mesh$loc[1],
-          diff(mesh$interval)
-        )
-      loc <- pmax(0, pmin(diff(mesh$interval), loc - mesh$loc[1]))
-    }
+    knots <- mesh$loc - mesh$loc[1]
+    loc <- loc - mesh$loc[1]
   }
 
-  ## Binary split method:
-  do.the.split <- function(knots, loc) {
-    n <- length(knots)
-    if (n <= 2L) {
-      return(rep(1L, length(loc)))
-    }
-    split <- 1L + (n - 1L) %/% 2L ## Split point
-    upper <- (loc >= knots[split])
-    idx <- rep(0, length(loc))
-    idx[!upper] <- do.the.split(knots[1:split], loc[!upper])
-    idx[upper] <- split - 1L + do.the.split(knots[split:n], loc[upper])
-    return(idx)
-  }
-
-  idx <- do.the.split(mloc, loc)
+  idx <- do.the.split(knots, loc)
+  u <- (loc - knots[idx]) / (knots[idx + 1L] - knots[idx])
 
   if (method == "nearest") {
-    u <- rep(0, length(loc))
     if (mesh$cyclic) {
-      found <- which(idx == (mesh$n + 1L))
-      idx[found] <- 1L
+      idx <- idx + (u > 0.5)
+      u <- numeric(length(loc))
+      idx <- (idx - 1L) %% mesh$n + 1L
+      idx_next <- idx %% mesh$n + 1L
+    } else { # !cyclic
+      idx <- idx + (u > 0.5)
+      idx_next <- idx + 1L
+      u <- numeric(length(loc))
+      found <- (idx == mesh$n)
+      idx_next[found] <- mesh$n - 1L
+      u[found] <- 0.0
     }
   } else { ## (method=="linear") {
-    u <- pmax(0, pmin(1, (loc - mloc[idx]) / (mloc[idx + 1L] - mloc[idx])))
-    if (!mesh$cyclic) {
-      found <- which(idx == mesh$n)
-      idx[found] <- mesh$n - 1L
-      u[found] <- 1
+    if (mesh$cyclic) {
+      idx_next <- idx %% mesh$n + 1L
+    } else { # !cyclic
+      idx_next <- idx + 1L
+      if (restricted) {
+        u[u < 0.0] <- 0.0
+        u[u > 1.0] <- 1.0
+      }
     }
   }
 
-  if (mesh$cyclic) {
-    index <- matrix(c(idx, (idx %% mesh$n) + 1L), length(idx), 2)
-    bary <- matrix(c(1 - u, u), length(idx), 2)
-  } else {
-    index <- matrix(c(idx, idx + 1L), length(idx), 2)
-    bary <- matrix(c(1 - u, u), length(idx), 2)
-  }
+  index <- cbind(idx, idx_next)
+  bary <- cbind(1 - u, u)
 
   return(list(t = index, bary = bary, index = index))
 }

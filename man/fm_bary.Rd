@@ -10,7 +10,7 @@
 \usage{
 fm_bary(mesh, loc, ...)
 
-\method{fm_bary}{fm_mesh_1d}(mesh, loc, method = c("linear", "nearest"), ...)
+\method{fm_bary}{fm_mesh_1d}(mesh, loc, method = c("linear", "nearest"), restricted = FALSE, ...)
 
 \method{fm_bary}{fm_mesh_2d}(mesh, loc, crs = NULL, ...)
 
@@ -27,7 +27,14 @@ raw matrix coordinates, \code{sf}, or \code{sp} point information (for 2d).}
 
 \item{\dots}{Arguments forwarded to sub-methods.}
 
-\item{method}{character; method for defining the barycentric coordinates}
+\item{method}{character; method for defining the barycentric coordinates,
+"linear" (default) or "nearest"}
+
+\item{restricted}{logical, used for \code{method="linear"}.
+If \code{FALSE} (default), points outside the mesh interval will be given
+barycentric weights less than 0 and greater than 1, according to linear
+extrapolation. If \code{TRUE}, the barycentric weights are clamped to the (0, 1)
+interval.}
 
 \item{crs}{Optional crs information for \code{loc}}
 }
@@ -40,6 +47,9 @@ Identify knot intervals or triangles and compute barycentric coordinates
 \code{t} (start and endpoint knot indices) and \code{bary} (barycentric coordinates), both
 2-column matrices. For backwards compatibility with old inla code, a copy \code{index=t}
 is also included in the list.
+
+For \code{method = "nearest"}, \code{t[,1]} contains the index of the nearest mesh knot,
+and each row of \code{bary} contains \code{c(1, 0)}.
 
 \item \code{fm_bary(fm_mesh_2d)}: A list with elements \code{t} (vector of triangle indices) and \code{bary}
 (3-column matrix of barycentric coordinates). Points that were not found

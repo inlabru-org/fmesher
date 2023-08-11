@@ -1,4 +1,5 @@
 SHELL   = /bin/bash
+MAKE = make
 
 # USER OPTIONS
 
@@ -35,17 +36,17 @@ $(FMESHER) : src/$(FMESHER)
 	cp src/$(FMESHER) .
 
 src/$(FMESHER) :
-	make -C src CC=$(CC) CXX=$(CXX) FLAGS="$(FLAGS)" $(FMESHER)
+	$(MAKE) -C src CC=$(CC) CXX=$(CXX) FLAGS="$(FLAGS)" $(FMESHER)
 
 debug :
-##	make clean
+##	$(MAKE) clean
 	CXX="\"$(CXX) -DDEBUG\"" make $(FMESHER)
 
 $(FMESHER_TEST) : src/$(FMESHER_TEST)
 	cp src/$(FMESHER_TEST) .
 
 src/$(FMESHER_TEST) :
-	make -C src CC=$(CC) CXX=$(CXX) FLAGS="$(FLAGS)" $(FMESHER_TEST)
+	$(MAKE) -C src CC=$(CC) CXX=$(CXX) FLAGS="$(FLAGS)" $(FMESHER_TEST)
 
 doc:
 	$(SED) 's/^\(PROJECT_NUMBER[^=]*=\)\(.*\)/\1 $(shell date)/' \
@@ -68,16 +69,16 @@ install: $(FMESHER)
 	 $(RSYNC) -auv --no-p --no-o --no-g --chmod=ugo=rwX --delete examples/ $(PREFIX)/doc/fmesher/examples/; 
 
 clean:
-	make -C src clean
+	$(MAKE) -C src clean
 	-$(RM) $(FMESHER) $(FMESHER_TEST)
 	-$(RM) examples/koala.out.*
 clean-doc:
 	-$(RMR) doc/
 	-$(RM) example-doxygen-*.txt
 clean-deps:
-	make -C src clean-deps
+	$(MAKE) -C src clean-deps
 depend:
-	make -C src depend
+	$(MAKE) -C src depend
 
 gitstamp: dummytarget
 	[ -f $@ ] || touch $@

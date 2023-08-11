@@ -25,6 +25,9 @@
   rgl = deprecated(),
   visibility = "front",
   asp = 1,
+  axes = FALSE,
+  xlab = "",
+  ylab = "",
   ...
 )
 }
@@ -69,6 +72,11 @@ edges more prominently.}
 towards the camera.}
 
 \item{asp}{Aspect ratio for new plots. Default 1.}
+
+\item{axes}{logical; whether axes should be drawn on the plot.
+Default FALSE.}
+
+\item{xlab, ylab}{character; labels for the axes.}
 }
 \description{
 Plots an \code{\link[=fm_mesh_2d]{fm_mesh_2d()}} object using standard graphics.

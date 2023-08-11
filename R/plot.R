@@ -13,10 +13,12 @@
 #' @param colors Colors to cycle through if `col` is `NULL`.
 #' @param add If `TRUE`, add to the current plot, otherwise start a new
 #' plot.
-#' @param xlim X axis limits for a new plot.
-#' @param ylim Y axis limits for a new plot.
+#' @param xlim,ylim X and Y axis limits for a new plot.
 #' @param rgl If `TRUE`, use `rgl` for plotting.
 #' @param asp Aspect ratio for new plots. Default 1.
+#' @param axes logical; whether axes should be drawn on the plot.
+#' Default FALSE.
+#' @param xlab,ylab character; labels for the axes.
 #' @param \dots Additional parameters, passed on to graphics methods.
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
 #' @seealso [fm_segm()]
@@ -30,7 +32,11 @@ plot.fm_segm <- function(x, ..., add = FALSE) {
 lines.fm_segm <- function(x, loc = NULL, col = NULL,
                           colors = c("black", "blue", "red", "green"),
                           add = TRUE, xlim = NULL, ylim = NULL,
-                          rgl = FALSE, asp = 1, ...) {
+                          rgl = FALSE, asp = 1,
+                          axes = FALSE,
+                          xlab = "",
+                          ylab = "",
+                          ...) {
   segm <- x
   if (!is.null(segm$loc)) {
     loc <- segm$loc
@@ -57,8 +63,11 @@ lines.fm_segm <- function(x, loc = NULL, col = NULL,
     if (is.null(ylim)) {
       ylim <- range(loc[idx, 2])
     }
-    plot.new()
-    plot.window(xlim = xlim, ylim = ylim, asp = asp, ...)
+    plot(NA, type = "n",
+         xlim = xlim, ylim = ylim, asp = asp,
+         axes = axes,
+         xlab = xlab, ylab = ylab,
+         ...)
   }
 
   grps <- if (is.null(segm$grp)) rep(0L, nrow(segm$idx)) else segm$grp
@@ -428,6 +437,7 @@ get_tv_sub <- function(tv, loc, t.sub, visibility = "front") {
 
 #' @rdname plot.fm_mesh_2d
 #' @param rgl Deprecated
+#' @inheritParams plot.fm_segm
 #' @export
 #' @examples
 #' mesh <- fm_mesh_2d(cbind(0, 1), offset = c(1, 1.5), max.edge = 0.5)
@@ -450,6 +460,9 @@ plot.fm_mesh_2d <- function(
     rgl = deprecated(),
     visibility = "front",
     asp = 1,
+    axes = FALSE,
+    xlab = "",
+    ylab = "",
     ...) {
   force(t.sub)
   force(xlim)
@@ -502,8 +515,11 @@ plot.fm_mesh_2d <- function(
 
 
   if (!add) {
-    plot.new()
-    plot.window(xlim = xlim, ylim = ylim, asp = asp, ...)
+    plot(NA, type = "n",
+         xlim = xlim, ylim = ylim, asp = asp,
+         axes = axes,
+         xlab = xlab, ylab = ylab,
+         ...)
   }
   if (draw.edges) {
     lines(Ec[, 1], Ec[, 2], type = "l", col = edge.color, lwd = lwd)

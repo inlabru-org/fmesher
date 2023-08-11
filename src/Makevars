@@ -1,33 +1,28 @@
 # CXX_STD = CXX17
-# PKG_LIBS=-lgsl -lgslcblas
 
-# Note 1: remove the no-ign-attr and unk-pragmas flags before submitting to CRAN,
-#         and disable the first like of flags, as they are non-portable
-# Note 2: -Wextra causes spurious warnings
-# Note 3: -Wimplicit-fallthrough causes spurious Rcpp/algo.h warnings
-# Note 4: -Wno-ignored-attributes gives spurious warnings in RccpEigen itself
 PKG_CPPFLAGS= \
   -DFMESHER_WITH_R \
   -DNO_SPHERICAL_HARMONICS
+
 #  -DFMESHER_DEBUG=1
-#  -DFMESHER_WITH_EIGEN \
-#  -DEIGEN_PERMANENTLY_DISABLE_STUPID_WARNINGS
+#  -DFMESHER_WITH_EIGEN -DEIGEN_PERMANENTLY_DISABLE_STUPID_WARNINGS
 
+## GSL flags
 #  -DFMESHER_WITH_GSL
-# PKG_CXXFLAGS=  -Wno-ignored-attributes -Wunknown-pragmas \
-# -Os -Wall -Wsign-compare -Wundef -fdiagnostics-color
+# PKG_LIBS=-lgsl -lgslcblas
 
-#PKG_CPPFLAGS=-DFMESHER_DEBUG=1 -DFMESHER_WITH_X
-#PKG_LIBS -L/usr/X11R6/lib -L/usr/X11/lib -lX11
+## Extra code to reduce the library size, but not allowed on CRAN, see
+## https://cran.r-project.org/doc/manuals/r-release/R-exts.html#Writing-portable-packages:
+## http://dirk.eddelbuettel.com/blog/2017/08/14/#009_compact_shared_libraries
+## 	if test -e "/usr/bin/strip"; then /usr/bin/strip --strip-debug $(SHLIB); fi
+## Variant here:
+## https://stat.ethz.ch/pipermail/r-package-devel/2017q4/002024.html
+#
+#strippedLib: $(SHLIB)
+#	@if test -f "/usr/bin/strip" & \
+#	  test -f "/bin/uname" & \
+#	  [[ `uname` == "Linux" ]]; then \
+#	  /usr/bin/strip --strip-debug $(SHLIB); \
+#	fi
+#.phony: strippedLib
 
-# http://dirk.eddelbuettel.com/blog/2017/08/14/#009_compact_shared_libraries
-# 	if test -e "/usr/bin/strip"; then /usr/bin/strip --strip-debug $(SHLIB); fi
-# Variant here:
-# https://stat.ethz.ch/pipermail/r-package-devel/2017q4/002024.html
-strippedLib: $(SHLIB)
-	@if test -e "/usr/bin/strip" & \
-	  test -e "/bin/uname" & \
-	  [[ `uname` == "Linux" ]]; then \
-	  /usr/bin/strip --strip-debug $(SHLIB); \
-	fi
-.phony: strippedLib

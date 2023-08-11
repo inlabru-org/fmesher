@@ -31,7 +31,7 @@ geom_fm <- function(mapping = NULL, data = NULL, ...) {
 
 
 #' @describeIn geom_fm
-#' Extracts converts an [fm_mesh_2d()] object to `sf` with [fm_as_sfc()] and uses
+#' Converts an [fm_mesh_2d()] object to `sf` with [fm_as_sfc()] and uses
 #' `geom_sf` to visualize the triangles and edges.
 #'
 #' @export
@@ -148,7 +148,7 @@ geom_fm.fm_mesh_2d <- function(mapping = NULL,
 
 
 #' @describeIn geom_fm
-#' Extracts converts an [fm_segm()] object to `sf` with [fm_as_sfc()] and uses
+#' Converts an [fm_segm()] object to `sf` with [fm_as_sfc()] and uses
 #' `geom_sf` to visualize it.
 #' @export
 geom_fm.fm_segm <- function(mapping = NULL,
@@ -204,3 +204,120 @@ geom_fm.fm_segm <- function(mapping = NULL,
     list(mapping = maps$segm, data = segm_sf), defs$segm
   ))
 }
+
+
+
+
+
+#' @describeIn geom_fm
+#' Evaluates and plots the basis functions defined by an [fm_mesh_1d()] object.
+#'
+#' @export
+#' @importFrom utils modifyList
+#' @examples
+#' if (require("ggplot2", quietly = TRUE)) {
+#'   m <- fm_mesh_1d(
+#'     c(1, 2, 3, 5, 7),
+#'     boundary = c("dirichlet", "neumann")
+#'   )
+#'   print(ggplot() +
+#'     geom_fm(data = m))
+#' }
+geom_fm.fm_mesh_1d <- function(mapping = NULL,
+                               data = NULL,
+                               ...,
+                               xlim = NULL,
+                               knots = TRUE,
+                               derivatives = FALSE) {
+  if (is.null(xlim)) {
+    xlim <- data$interval
+  }
+  x <- seq(xlim[1], xlim[2], length.out = data$n * 100)
+  A <- as.matrix(fm_basis(data, loc = x))
+  df <- data.frame(
+    x = rep(x, times = data$m),
+    basis = factor(rep(seq_len(data$m), each = length(x))),
+    value = as.vector(A),
+    derivative = as.vector(rbind(
+      A[2, , drop = FALSE] - A[1, , drop = FALSE],
+      (A[seq_len(nrow(A)-2)+2, , drop = FALSE] - A[seq_len(nrow(A)-2), , drop = FALSE]),
+      A[nrow(A), ] - A[nrow(A)-1, , drop = FALSE]
+    ) / c(x[2]-x[1], x[seq_len(nrow(A)-2)+2] - x[seq_len(nrow(A)-2)],
+          x[length(x)]-x[length(x)-1])
+    )
+  )
+  knots_ <- if (data$cyclic) {
+    c(data$loc, data$interval[2])
+  } else {
+    data$loc
+  }
+  df_knots <- data.frame(
+    knots = knots_[(knots_ >= xlim[1]) & (knots_ <= xlim[2])]
+  )
+
+  maps <-
+    list(
+      basis = mapping,
+      basis = ggplot2::aes()
+    )
+  if (derivatives) {
+    maps_def <- list(basis = ggplot2::aes(x = .data[["x"]],
+                                          y = .data[["derivative"]],
+                                          color = .data[["basis"]]))
+  } else {
+    maps_def <- list(basis = ggplot2::aes(x = .data[["x"]],
+                                          y = .data[["value"]],
+                                          color = .data[["basis"]]))
+  }
+  maps_def$knots <- ggplot2::aes(xintercept = .data[["knots"]])
+  maps <- lapply(
+    names(maps_def),
+    function(x) {
+      if (is.null(maps[[x]])) {
+        maps_def[[x]]
+      } else {
+        modifyList(maps_def[[x]], maps[[x]])
+      }
+    }
+  )
+  names(maps) <- names(maps_def)
+
+  defs <-
+    list(
+      basis = list(...),
+      knots = list()
+    )
+  defs_def <- list(
+    basis = list(),
+    knots = list(linewidth = 0.5, alpha = 0.5)
+#    basis = list(linewidth = 0.25),
+#    knots = list(linewidth = 0.25)
+  )
+  defs <- lapply(
+    names(defs_def),
+    function(x) {
+      if (is.null(defs[[x]])) {
+        defs_def[[x]]
+      } else {
+        modifyList(defs_def[[x]], defs[[x]])
+      }
+    }
+  )
+  names(defs) <- names(defs_def)
+
+  c(
+    do.call(ggplot2::geom_line, c(
+      list(mapping = maps$basis, data = df), defs$basis
+    )),
+    if (!knots) {
+      NULL
+    } else {
+      do.call(ggplot2::geom_vline, c(
+        list(mapping = maps$knots, data = df_knots), defs$knots
+      ))
+    }
+  )
+}
+
+
+

@@ -210,7 +210,7 @@ print.fm_mesh_2d <- function(x, ..., digits = NULL, verbose = FALSE) {
   print(ret$segm, newline = FALSE, digits = digits, verbose = FALSE)
   cat("\n  ", sep = "")
   print(fm_bbox(x), digits = digits)
-  cat("  Basis d.o.f.:\t", ret$nV, "\n", sep = "")
+  cat("  Basis d.o.f.:\t", fm_dof(x), "\n", sep = "")
   invisible(x)
 }
 
@@ -232,7 +232,7 @@ print.fm_mesh_1d <- function(x, ..., digits = NULL, verbose = FALSE) {
   clamped <- c("", " and clamped")[clamped + 1]
   cat("  Boundary:\t(", paste0(x$boundary, clamped, collapse = ", "), ")\n", sep = "")
   cat("  B-spline degree:\t", x$degree, "\n", sep = "")
-  cat("  Basis d.o.f.:\t", x$m, "\n", sep = "")
+  cat("  Basis d.o.f.:\t", fm_dof(x), "\n", sep = "")
 
   invisible(x)
 }

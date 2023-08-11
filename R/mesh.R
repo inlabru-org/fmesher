@@ -643,6 +643,31 @@ fm_onto_mesh <- function(mesh, loc, crs = NULL) {
 
 
 
+#' @title Function spece degrees of freedom
+#'
+#' @description
+#' Obtain the degrees of freedom of a function space, i.e.
+#' the number of basis functions it uses.
+#'
+#' @param x A function space object, such as [fm_mesh_1d()] or
+#' [fm_mesh_2d()]
+#'
+#' @export
+fm_dof <- function(x) {
+  UseMethod("fm_dof")
+}
+
+#' @rdname fm_dof
+#' @export
+fm_dof.fm_mesh_1d <- function(x) {
+  x[["m"]]
+}
+
+#' @rdname fm_dof
+#' @export
+fm_dof.fm_mesh_2d <- function(x) {
+  x[["n"]]
+}
 
 
 

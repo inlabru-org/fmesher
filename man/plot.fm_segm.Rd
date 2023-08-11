@@ -17,6 +17,9 @@
   ylim = NULL,
   rgl = FALSE,
   asp = 1,
+  axes = FALSE,
+  xlab = "",
+  ylab = "",
   ...
 )
 }
@@ -34,13 +37,16 @@ plot.}
 
 \item{colors}{Colors to cycle through if \code{col} is \code{NULL}.}
 
-\item{xlim}{X axis limits for a new plot.}
-
-\item{ylim}{Y axis limits for a new plot.}
+\item{xlim, ylim}{X and Y axis limits for a new plot.}
 
 \item{rgl}{If \code{TRUE}, use \code{rgl} for plotting.}
 
 \item{asp}{Aspect ratio for new plots. Default 1.}
+
+\item{axes}{logical; whether axes should be drawn on the plot.
+Default FALSE.}
+
+\item{xlab, ylab}{character; labels for the axes.}
 }
 \description{
 Draws a \code{\link[=fm_segm]{fm_segm()}} object with generic or \code{rgl}

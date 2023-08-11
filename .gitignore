@@ -7,3 +7,5 @@ src/.deps
 inst/doc
 src/gitstamp
 src/mymake
+/doc/
+/Meta/

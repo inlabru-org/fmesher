@@ -77,6 +77,9 @@ fm_mesh_1d <- function(loc,
   if (loc[1] < interval[1]) {
     stop("All 'loc' must be >= interval[1].")
   }
+  if (loc[1] > interval[1]) {
+    warning("fm_mesh_1d behaviour is undefined behaviour when 'loc' > interval[1].")
+  }
   if (loc[n] > interval[2]) {
     stop("All 'loc' must be <= interval[2].")
   }
