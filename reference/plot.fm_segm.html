@@ -31,7 +31,7 @@ graphics."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/m
     <div class="dropdown-divider"></div>
     <h6 class="dropdown-header" data-toc-skip>Concepts</h6>
     <a class="dropdown-item" href="../articles/inla_conversion.html">Conversion from legacy INLA package methods</a>
-    <a class="dropdown-item" href="../articles/fmesher_library.html">The fmesher backend library</a>
+    <a class="dropdown-item" href="../articles/fmesher_library.html">The fmesher C++ library</a>
   </div>
 </li>
 <li class="nav-item">
@@ -79,6 +79,9 @@ graphics.</p>
 <span>  ylim <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  rgl <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  asp <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  axes <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  xlab <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  ylab <span class="op">=</span> <span class="st">""</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -110,12 +113,8 @@ plot.</p></dd>
 <dd><p>Colors to cycle through if <code>col</code> is <code>NULL</code>.</p></dd>
 
 
-<dt>xlim</dt>
-<dd><p>X axis limits for a new plot.</p></dd>
-
-
-<dt>ylim</dt>
-<dd><p>Y axis limits for a new plot.</p></dd>
+<dt>xlim, ylim</dt>
+<dd><p>X and Y axis limits for a new plot.</p></dd>
 
 
 <dt>rgl</dt>
@@ -124,6 +123,15 @@ plot.</p></dd>
 
 <dt>asp</dt>
 <dd><p>Aspect ratio for new plots. Default 1.</p></dd>
+
+
+<dt>axes</dt>
+<dd><p>logical; whether axes should be drawn on the plot.
+Default FALSE.</p></dd>
+
+
+<dt>xlab, ylab</dt>
+<dd><p>character; labels for the axes.</p></dd>
 
 </dl></div>
     <div class="section level2">

@@ -46,7 +46,7 @@
     <div class="dropdown-divider"></div>
     <h6 class="dropdown-header" data-toc-skip>Concepts</h6>
     <a class="dropdown-item" href="../articles/inla_conversion.html">Conversion from legacy INLA package methods</a>
-    <a class="dropdown-item" href="../articles/fmesher_library.html">The fmesher backend library</a>
+    <a class="dropdown-item" href="../articles/fmesher_library.html">The fmesher C++ library</a>
   </div>
 </li>
 <li class="nav-item">
@@ -88,16 +88,144 @@ Lindgren</h4>
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://inlabru-org.github.io/fmesher/">fmesher</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; The legacy packages maptools, rgdal, and rgeos, underpinning the sp package,</span></span>
-<span><span class="co">#&gt; which was just loaded, will retire in October 2023.</span></span>
-<span><span class="co">#&gt; Please refer to R-spatial evolution reports for details, especially</span></span>
-<span><span class="co">#&gt; https://r-spatial.org/r/2023/05/15/evolution4.html.</span></span>
-<span><span class="co">#&gt; It may be desirable to make the sf package available;</span></span>
-<span><span class="co">#&gt; package maintainers should consider adding sf to Suggests:.</span></span>
-<span><span class="co">#&gt; The sp package is now running under evolution status 2</span></span>
-<span><span class="co">#&gt;      (status 2 uses the sf package in place of rgdal)</span></span></code></pre></div>
-  </main>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://inlabru-org.github.io/fmesher/">fmesher</a></span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1234L</span><span class="op">)</span></span></code></pre></div>
+<div class="section level2">
+<h2 id="mesh-construction">Mesh construction<a class="anchor" aria-label="anchor" href="#mesh-construction"></a>
+</h2>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">domain</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">4</span>, sd <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">(</span><span class="va">mesh2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_mesh_2d.html">fm_mesh_2d</a></span><span class="op">(</span></span>
+<span>  boundary <span class="op">=</span> <span class="fu"><a href="../reference/fm_nonconvex_hull.html">fm_extensions</a></span><span class="op">(</span><span class="va">domain</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2.5</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  max.edge <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; fm_mesh_2d object:</span></span>
+<span><span class="co">#&gt;   Manifold:  R2</span></span>
+<span><span class="co">#&gt;   V / E / T: 888 / 2622 / 1735</span></span>
+<span><span class="co">#&gt;   Euler char:    1</span></span>
+<span><span class="co">#&gt;   Constraints:   39 boundary edges (1 group: 1), 115 interior edges (1 group: 1)</span></span>
+<span><span class="co">#&gt;   Bounding box: (-11.963110,  8.246925) x (-5.522181, 5.499657) x (0,0)</span></span>
+<span><span class="co">#&gt;   Basis d.o.f.:  888</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mesh2</span>, axes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p><img src="basic_use_files/figure-html/basic2-1.png" width="672"></p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="op">(</span><span class="va">mesh1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_mesh_1d.html">fm_mesh_1d</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">10</span>, by <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span>,</span>
+<span>  boundary <span class="op">=</span> <span class="st">"free"</span>, <span class="co"># c("neumann", "dirichlet"),</span></span>
+<span>  degree <span class="op">=</span> <span class="fl">2</span> <span class="co"># need to fix fm_bary and fm_evaluator_1d to work correctly for degree = 2</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; fm_mesh_1d object:</span></span>
+<span><span class="co">#&gt;   Manifold:  R1</span></span>
+<span><span class="co">#&gt;   #{knots}:  5</span></span>
+<span><span class="co">#&gt;   Interval:  ( 0, 10)</span></span>
+<span><span class="co">#&gt;   Boundary:  (free, free)</span></span>
+<span><span class="co">#&gt;   B-spline degree:   2</span></span>
+<span><span class="co">#&gt;   Basis d.o.f.:  6</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="point-lookup-and-evaluation">Point lookup and evaluation<a class="anchor" aria-label="anchor" href="#point-lookup-and-evaluation"></a>
+</h2>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">pts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">400</span>, sd <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">400</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Find what triangle each point is in, and it's triangular Barycentric coordinates</span></span>
+<span><span class="va">bary</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_bary.html">fm_bary</a></span><span class="op">(</span><span class="va">mesh2</span>, loc <span class="op">=</span> <span class="va">pts</span><span class="op">)</span></span>
+<span><span class="co"># How many points are outside the mesh?</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">bary</span><span class="op">$</span><span class="va">t</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 2</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">bary</span><span class="op">$</span><span class="va">bary</span><span class="op">)</span></span>
+<span><span class="co">#&gt;            [,1]      [,2]      [,3]</span></span>
+<span><span class="co">#&gt; [1,] 0.04720217 0.5813611 0.3714367</span></span>
+<span><span class="co">#&gt; [2,] 0.13950532 0.7212692 0.1392255</span></span>
+<span><span class="co">#&gt; [3,] 0.43189448 0.1384910 0.4296145</span></span>
+<span><span class="co">#&gt; [4,] 0.20031702 0.3721526 0.4275303</span></span>
+<span><span class="co">#&gt; [5,] 0.21259133 0.3686084 0.4188003</span></span>
+<span><span class="co">#&gt; [6,] 0.44390951 0.1739205 0.3821700</span></span>
+<span></span>
+<span><span class="co"># Construct an evaluator object</span></span>
+<span><span class="va">evaluator</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_evaluate.html">fm_evaluator</a></span><span class="op">(</span><span class="va">mesh2</span>, loc <span class="op">=</span> <span class="va">pts</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="op">!</span><span class="va">evaluator</span><span class="op">$</span><span class="va">proj</span><span class="op">$</span><span class="va">ok</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 2</span></span>
+<span></span>
+<span><span class="co"># Values for the basis function weights; for ordinary 2d meshes this coincides</span></span>
+<span><span class="co"># with the resulting values at the vertices, but this is not true for e.g.</span></span>
+<span><span class="co"># 2nd order B-splines on 1d meshes.</span></span>
+<span><span class="va">field</span> <span class="op">&lt;-</span> <span class="va">mesh2</span><span class="op">$</span><span class="va">loc</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span></span>
+<span><span class="va">value</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_evaluate.html">fm_evaluate</a></span><span class="op">(</span><span class="va">evaluator</span>, field <span class="op">=</span> <span class="va">field</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">pts</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span> <span class="op">-</span> <span class="va">value</span><span class="op">)</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 5.704812e-14</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">pts1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2</span>, <span class="fl">12</span>, length.out <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Find what segment, and its interval Barycentric coordinates</span></span>
+<span><span class="va">bary1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_bary.html">fm_bary</a></span><span class="op">(</span><span class="va">mesh1</span>, loc <span class="op">=</span> <span class="va">pts1</span><span class="op">)</span></span>
+<span><span class="co"># Points outside the interval are treated differently depending on the</span></span>
+<span><span class="co"># boundary conditions:</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">bary1</span><span class="op">$</span><span class="va">t</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">bary1</span><span class="op">$</span><span class="va">bary</span><span class="op">)</span></span>
+<span><span class="co">#&gt;                        u</span></span>
+<span><span class="co">#&gt; [1,] 1.800000 -0.8000000</span></span>
+<span><span class="co">#&gt; [2,] 1.794394 -0.7943944</span></span>
+<span><span class="co">#&gt; [3,] 1.788789 -0.7887888</span></span>
+<span><span class="co">#&gt; [4,] 1.783183 -0.7831832</span></span>
+<span><span class="co">#&gt; [5,] 1.777578 -0.7775776</span></span>
+<span><span class="co">#&gt; [6,] 1.771972 -0.7719720</span></span>
+<span></span>
+<span><span class="co"># Construct an evaluator object.</span></span>
+<span><span class="va">evaluator1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_evaluate.html">fm_evaluator</a></span><span class="op">(</span><span class="va">mesh1</span>, loc <span class="op">=</span> <span class="va">pts1</span><span class="op">)</span></span>
+<span><span class="co"># mesh_1d basis functions are defined everywhere</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="op">!</span><span class="va">evaluator1</span><span class="op">$</span><span class="va">proj</span><span class="op">$</span><span class="va">ok</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0</span></span>
+<span></span>
+<span><span class="co"># Values for the basis function weights; for ordinary 2d meshes this coincides</span></span>
+<span><span class="co"># with the resulting values at the vertices, but this is not true for e.g.</span></span>
+<span><span class="co"># 2nd order B-splines on 1d meshes.</span></span>
+<span><span class="va">field1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fu"><a href="../reference/fm_dof.html">fm_dof</a></span><span class="op">(</span><span class="va">mesh1</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">value1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_evaluate.html">fm_evaluate</a></span><span class="op">(</span><span class="va">evaluator1</span>, field <span class="op">=</span> <span class="va">field1</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pts1</span>, <span class="va">value1</span>, type <span class="op">=</span> <span class="st">"l"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="basic_use_files/figure-html/lookup1-1.png" width="672"></p>
+</div>
+<div class="section level2">
+<h2 id="plotting">Plotting<a class="anchor" aria-label="anchor" href="#plotting"></a>
+</h2>
+<div class="section level3">
+<h3 id="base-graphics">Base graphics<a class="anchor" aria-label="anchor" href="#base-graphics"></a>
+</h3>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mesh2</span><span class="op">)</span></span></code></pre></div>
+<p><img src="basic_use_files/figure-html/unnamed-chunk-2-1.png" width="672"></p>
+</div>
+<div class="section level3">
+<h3 id="ggplot-graphics">
+<code>ggplot</code> graphics<a class="anchor" aria-label="anchor" href="#ggplot-graphics"></a>
+</h3>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/geom_fm.html">geom_fm</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mesh2</span><span class="op">)</span></span></code></pre></div>
+<p><img src="basic_use_files/figure-html/unnamed-chunk-3-1.png" width="672"></p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/geom_fm.html">geom_fm</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mesh1</span>, weights <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fu"><a href="../reference/fm_dof.html">fm_dof</a></span><span class="op">(</span><span class="va">mesh1</span><span class="op">)</span>, <span class="fl">5</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/geom_fm.html">geom_fm</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mesh1</span>, linetype <span class="op">=</span> <span class="fl">2</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></code></pre></div>
+<p><img src="basic_use_files/figure-html/unnamed-chunk-3-2.png" width="672"></p>
+</div>
+<div class="section level3">
+<h3 id="rgl-graphics">
+<code>rgl</code> graphics<a class="anchor" aria-label="anchor" href="#rgl-graphics"></a>
+</h3>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_rgl.html">plot_rgl</a></span><span class="op">(</span><span class="va">mesh2</span><span class="op">)</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="finite-element-calculations">Finite element calculations<a class="anchor" aria-label="anchor" href="#finite-element-calculations"></a>
+</h2>
+</div>
+  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
 

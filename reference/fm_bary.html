@@ -29,7 +29,7 @@
     <div class="dropdown-divider"></div>
     <h6 class="dropdown-header" data-toc-skip>Concepts</h6>
     <a class="dropdown-item" href="../articles/inla_conversion.html">Conversion from legacy INLA package methods</a>
-    <a class="dropdown-item" href="../articles/fmesher_library.html">The fmesher backend library</a>
+    <a class="dropdown-item" href="../articles/fmesher_library.html">The fmesher C++ library</a>
   </div>
 </li>
 <li class="nav-item">
@@ -65,7 +65,7 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fm_bary</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">loc</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for fm_mesh_1d</span></span>
-<span><span class="fu">fm_bary</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">loc</span>, method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"linear"</span>, <span class="st">"nearest"</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">fm_bary</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">loc</span>, method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"linear"</span>, <span class="st">"nearest"</span><span class="op">)</span>, restricted <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for fm_mesh_2d</span></span>
 <span><span class="fu">fm_bary</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">loc</span>, crs <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
@@ -94,7 +94,16 @@ raw matrix coordinates, <code>sf</code>, or <code>sp</code> point information (f
 
 
 <dt>method</dt>
-<dd><p>character; method for defining the barycentric coordinates</p></dd>
+<dd><p>character; method for defining the barycentric coordinates,
+"linear" (default) or "nearest"</p></dd>
+
+
+<dt>restricted</dt>
+<dd><p>logical, used for <code>method="linear"</code>.
+If <code>FALSE</code> (default), points outside the mesh interval will be given
+barycentric weights less than 0 and greater than 1, according to linear
+extrapolation. If <code>TRUE</code>, the barycentric weights are clamped to the (0, 1)
+interval.</p></dd>
 
 
 <dt>crs</dt>
@@ -107,7 +116,9 @@ raw matrix coordinates, <code>sf</code>, or <code>sp</code> point information (f
 <ul><li><p><code>fm_bary(fm_mesh_1d)</code>: Return a list with elements
 <code>t</code> (start and endpoint knot indices) and <code>bary</code> (barycentric coordinates), both
 2-column matrices. For backwards compatibility with old inla code, a copy <code>index=t</code>
-is also included in the list.</p></li>
+is also included in the list.</p>
+<p>For <code>method = "nearest"</code>, <code>t[,1]</code> contains the index of the nearest mesh knot,
+and each row of <code>bary</code> contains <code>c(1, 0)</code>.</p></li>
 <li><p><code>fm_bary(fm_mesh_2d)</code>: A list with elements <code>t</code> (vector of triangle indices) and <code>bary</code>
 (3-column matrix of barycentric coordinates). Points that were not found
 give <code>NA</code> entries in <code>t</code> and <code>bary</code>.</p></li>
