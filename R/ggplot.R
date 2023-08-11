@@ -57,14 +57,18 @@ geom_fm <- function(mapping = NULL, data = NULL, ...) {
 #'   # Compute a mesh vertex based function on a different grid
 #'   px <- fm_pixels(fm_transform(m, fm_crs("mollweide_globe")))
 #'   px$fun <- fm_evaluate(m,
-#'                         loc = px,
-#'                         field = sin(m$loc[, 1] / 5) * sin(m$loc[, 2] / 5))
+#'     loc = px,
+#'     field = sin(m$loc[, 1] / 5) * sin(m$loc[, 2] / 5)
+#'   )
 #'   print(ggplot() +
 #'     geom_tile(aes(geometry = geometry, fill = fun),
-#'               data = px,
-#'               stat = "sf_coordinates") +
-#'     geom_fm(data = m, alpha = 0.2, linewidth = 0.05,
-#'             crs = fm_crs("mollweide_globe")))
+#'       data = px,
+#'       stat = "sf_coordinates"
+#'     ) +
+#'     geom_fm(
+#'       data = m, alpha = 0.2, linewidth = 0.05,
+#'       crs = fm_crs("mollweide_globe")
+#'     ))
 #' }
 geom_fm.fm_mesh_2d <- function(mapping = NULL,
                                data = NULL,
@@ -212,6 +216,11 @@ geom_fm.fm_segm <- function(mapping = NULL,
 #' @describeIn geom_fm
 #' Evaluates and plots the basis functions defined by an [fm_mesh_1d()] object.
 #'
+#' @param knots logical; if true, show the spline knot locations
+#' @param derivatives logical; if true, draw first order derivatives instead of
+#' function values
+#' @param weights numeric vector; if provided, draw weighted basis functions and
+#' the resulting function.
 #' @export
 #' @importFrom utils modifyList
 #' @examples
@@ -228,24 +237,45 @@ geom_fm.fm_mesh_1d <- function(mapping = NULL,
                                ...,
                                xlim = NULL,
                                knots = TRUE,
-                               derivatives = FALSE) {
+                               derivatives = FALSE,
+                               weights = NULL) {
   if (is.null(xlim)) {
     xlim <- data$interval
   }
   x <- seq(xlim[1], xlim[2], length.out = data$n * 100)
   A <- as.matrix(fm_basis(data, loc = x))
+  A_d1 <- rbind(
+    A[2, , drop = FALSE] - A[1, , drop = FALSE],
+    (A[seq_len(nrow(A) - 2) + 2, , drop = FALSE] -
+      A[seq_len(nrow(A) - 2), , drop = FALSE]),
+    A[nrow(A), ] - A[nrow(A) - 1, , drop = FALSE]
+  ) / c(
+    x[2] - x[1], x[seq_len(nrow(A) - 2) + 2] - x[seq_len(nrow(A) - 2)],
+    x[length(x)] - x[length(x) - 1]
+  )
+
   df <- data.frame(
     x = rep(x, times = data$m),
     basis = factor(rep(seq_len(data$m), each = length(x))),
     value = as.vector(A),
-    derivative = as.vector(rbind(
-      A[2, , drop = FALSE] - A[1, , drop = FALSE],
-      (A[seq_len(nrow(A)-2)+2, , drop = FALSE] - A[seq_len(nrow(A)-2), , drop = FALSE]),
-      A[nrow(A), ] - A[nrow(A)-1, , drop = FALSE]
-    ) / c(x[2]-x[1], x[seq_len(nrow(A)-2)+2] - x[seq_len(nrow(A)-2)],
-          x[length(x)]-x[length(x)-1])
-    )
+    derivative = as.vector(A_d1)
   )
+  if (!is.null(weights)) {
+    df$value <- as.vector(A %*% Matrix::Diagonal(ncol(A), weights))
+    df$derivative <- as.vector(A_d1 %*% Matrix::Diagonal(ncol(A), weights))
+    if (derivatives) {
+      df_fun <- data.frame(
+        x = x,
+        value = as.vector(A_d1 %*% weights)
+      )
+    } else {
+      df_fun <- data.frame(
+        x = x,
+        value = as.vector(A %*% weights)
+      )
+    }
+  }
+
   knots_ <- if (data$cyclic) {
     c(data$loc, data$interval[2])
   } else {
@@ -258,18 +288,24 @@ geom_fm.fm_mesh_1d <- function(mapping = NULL,
   maps <-
     list(
       basis = mapping,
-      basis = ggplot2::aes()
+      knots = ggplot2::aes(),
+      fun = ggplot2::aes()
     )
   if (derivatives) {
-    maps_def <- list(basis = ggplot2::aes(x = .data[["x"]],
-                                          y = .data[["derivative"]],
-                                          color = .data[["basis"]]))
+    maps_def <- list(basis = ggplot2::aes(
+      x = .data[["x"]],
+      y = .data[["derivative"]],
+      color = .data[["basis"]]
+    ))
   } else {
-    maps_def <- list(basis = ggplot2::aes(x = .data[["x"]],
-                                          y = .data[["value"]],
-                                          color = .data[["basis"]]))
+    maps_def <- list(basis = ggplot2::aes(
+      x = .data[["x"]],
+      y = .data[["value"]],
+      color = .data[["basis"]]
+    ))
   }
   maps_def$knots <- ggplot2::aes(xintercept = .data[["knots"]])
+  maps_def$fun <- ggplot2::aes(x = .data[["x"]], y = .data[["value"]])
   maps <- lapply(
     names(maps_def),
     function(x) {
@@ -290,8 +326,8 @@ geom_fm.fm_mesh_1d <- function(mapping = NULL,
   defs_def <- list(
     basis = list(),
     knots = list(linewidth = 0.5, alpha = 0.5)
-#    basis = list(linewidth = 0.25),
-#    knots = list(linewidth = 0.25)
+    #    basis = list(linewidth = 0.25),
+    #    knots = list(linewidth = 0.25)
   )
   defs <- lapply(
     names(defs_def),
@@ -305,19 +341,28 @@ geom_fm.fm_mesh_1d <- function(mapping = NULL,
   )
   names(defs) <- names(defs_def)
 
-  c(
-    do.call(ggplot2::geom_line, c(
-      list(mapping = maps$basis, data = df), defs$basis
-    )),
-    if (!knots) {
-      NULL
-    } else {
+  result <-
+    c(
+      do.call(ggplot2::geom_line, c(
+        list(mapping = maps$basis, data = df), defs$basis
+      ))
+    )
+  if (knots) {
+    result <- c(
+      result,
       do.call(ggplot2::geom_vline, c(
         list(mapping = maps$knots, data = df_knots), defs$knots
       ))
-    }
-  )
+    )
+  }
+  if (!is.null(weights)) {
+    result <- c(
+      result,
+      do.call(ggplot2::geom_line, c(
+        list(mapping = maps$fun, data = df_fun), defs$fun
+      ))
+    )
+  }
+
+  result
 }
-
-
-

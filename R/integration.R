@@ -592,15 +592,19 @@ fm_int.fm_mesh_1d <- function(domain, samplers = NULL, name = "x", int.args = NU
           )
         )))
       } else {
-        loc_trap <- sort(unique(pmin(
-          domain$interval[2],
-          pmax(
-            domain$interval[1],
-            c(
-              domain$loc,
-              as.vector(subsampler)
-            )
-          )
+        ## Old code required integration only over the main interval:
+        #        loc_trap <- sort(unique(pmin(
+        #          domain$interval[2],
+        #          pmax(
+        #            domain$interval[1],
+        #            c(domain$loc,
+        #              as.vector(subsampler)
+        #              )))))
+        ## New code allows extrapolated integration:
+        loc_trap <- sort(unique(c(
+          domain$interval,
+          domain$loc,
+          as.vector(subsampler)
         )))
       }
 
@@ -621,11 +625,9 @@ fm_int.fm_mesh_1d <- function(domain, samplers = NULL, name = "x", int.args = NU
       loc_simpson <- c(loc_trap, loc_mid)
       weight_simpson <- c(weight_trap / 3, weight_mid * 2 / 3)
 
-      ok <- Matrix::rowSums(fm_evaluator(domain, loc_simpson)$proj$A) > 0
-
       ips[[j]] <- data.frame(
-        x = loc_simpson[ok & (weight_simpson > 0)],
-        weight = weight_simpson[ok & (weight_simpson > 0)] * theweight,
+        x = loc_simpson[(weight_simpson > 0)],
+        weight = weight_simpson[(weight_simpson > 0)] * theweight,
         .block = the.block
       )
       colnames(ips[[j]])[1] <- name

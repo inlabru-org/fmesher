@@ -63,11 +63,13 @@ lines.fm_segm <- function(x, loc = NULL, col = NULL,
     if (is.null(ylim)) {
       ylim <- range(loc[idx, 2])
     }
-    plot(NA, type = "n",
-         xlim = xlim, ylim = ylim, asp = asp,
-         axes = axes,
-         xlab = xlab, ylab = ylab,
-         ...)
+    plot(NA,
+      type = "n",
+      xlim = xlim, ylim = ylim, asp = asp,
+      axes = axes,
+      xlab = xlab, ylab = ylab,
+      ...
+    )
   }
 
   grps <- if (is.null(segm$grp)) rep(0L, nrow(segm$idx)) else segm$grp
@@ -515,11 +517,13 @@ plot.fm_mesh_2d <- function(
 
 
   if (!add) {
-    plot(NA, type = "n",
-         xlim = xlim, ylim = ylim, asp = asp,
-         axes = axes,
-         xlab = xlab, ylab = ylab,
-         ...)
+    plot(NA,
+      type = "n",
+      xlim = xlim, ylim = ylim, asp = asp,
+      axes = axes,
+      xlab = xlab, ylab = ylab,
+      ...
+    )
   }
   if (draw.edges) {
     lines(Ec[, 1], Ec[, 2], type = "l", col = edge.color, lwd = lwd)

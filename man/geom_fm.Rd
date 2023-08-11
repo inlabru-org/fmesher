@@ -28,7 +28,8 @@ geom_fm(mapping = NULL, data = NULL, ...)
   ...,
   xlim = NULL,
   knots = TRUE,
-  derivatives = FALSE
+  derivatives = FALSE,
+  weights = NULL
 )
 }
 \arguments{
@@ -47,6 +48,14 @@ geom_fm(mapping = NULL, data = NULL, ...)
 \item{defs_bnd}{additional settings for boundary edges.}
 
 \item{crs}{Optional crs to transform the object to before plotting.}
+
+\item{knots}{logical; if true, show the spline knot locations}
+
+\item{derivatives}{logical; if true, draw first order derivatives instead of
+function values}
+
+\item{weights}{numeric vector; if provided, draw weighted basis functions and
+the resulting function.}
 }
 \value{
 A combination of \code{ggplot2} geoms.
@@ -95,14 +104,18 @@ if (require("ggplot2", quietly = TRUE)) {
   # Compute a mesh vertex based function on a different grid
   px <- fm_pixels(fm_transform(m, fm_crs("mollweide_globe")))
   px$fun <- fm_evaluate(m,
-                        loc = px,
-                        field = sin(m$loc[, 1] / 5) * sin(m$loc[, 2] / 5))
+    loc = px,
+    field = sin(m$loc[, 1] / 5) * sin(m$loc[, 2] / 5)
+  )
   print(ggplot() +
     geom_tile(aes(geometry = geometry, fill = fun),
-              data = px,
-              stat = "sf_coordinates") +
-    geom_fm(data = m, alpha = 0.2, linewidth = 0.05,
-            crs = fm_crs("mollweide_globe")))
+      data = px,
+      stat = "sf_coordinates"
+    ) +
+    geom_fm(
+      data = m, alpha = 0.2, linewidth = 0.05,
+      crs = fm_crs("mollweide_globe")
+    ))
 }
 if (require("ggplot2", quietly = TRUE)) {
   m <- fm_mesh_1d(

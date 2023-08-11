@@ -14,10 +14,10 @@ knitr::opts_chunk$set(
   comment = "#>",
   dev = "png",
   dev.args = list(type = "cairo-png"),
-    fig.width = 7,
-    fig.height = 5
-#  out.width = 250,
-#  out.height = 250
+  fig.width = 7,
+  fig.height = 5
+  #  out.width = 250,
+  #  out.height = 250
 )
 rgl::setupKnitr(autoprint = TRUE)
 ```
@@ -63,14 +63,14 @@ sum(!evaluator$proj$ok)
 
 # Values for the basis function weights; for ordinary 2d meshes this coincides
 # with the resulting values at the vertices, but this is not true for e.g.
-# 2nd order B-splines on 1d meshes. 
+# 2nd order B-splines on 1d meshes.
 field <- mesh2$loc[, 1]
 value <- fm_evaluate(evaluator, field = field)
 sum(abs(pts[, 1] - value), na.rm = TRUE)
 ```
 
 ```{r lookup1}
-pts1 <- seq(-5, 15, length.out = 1000)
+pts1 <- seq(-2, 12, length.out = 1000)
 
 # Find what segment, and its interval Barycentric coordinates
 bary1 <- fm_bary(mesh1, loc = pts1)
@@ -79,14 +79,14 @@ bary1 <- fm_bary(mesh1, loc = pts1)
 sum(is.na(bary1$t))
 head(bary1$bary)
 
-# Construct an evaluator object. Function evaluation outside the interval
-# is ill-defined.
+# Construct an evaluator object.
 evaluator1 <- fm_evaluator(mesh1, loc = pts1)
+# mesh_1d basis functions are defined everywhere
 sum(!evaluator1$proj$ok)
 
 # Values for the basis function weights; for ordinary 2d meshes this coincides
 # with the resulting values at the vertices, but this is not true for e.g.
-# 2nd order B-splines on 1d meshes. 
+# 2nd order B-splines on 1d meshes.
 field1 <- rnorm(fm_dof(mesh1))
 value1 <- fm_evaluate(evaluator1, field = field1)
 plot(pts1, value1, type = "l")
@@ -104,7 +104,12 @@ plot(mesh2)
 
 ```{r}
 suppressPackageStartupMessages(library(ggplot2))
-ggplot() + geom_fm(data = mesh2)
+ggplot() +
+  geom_fm(data = mesh2)
+
+ggplot() +
+  geom_fm(data = mesh1, weights = rnorm(fm_dof(mesh1), 5, 2)) +
+  geom_fm(data = mesh1, linetype = 2, alpha = 0.5)
 ```
 
 ### `rgl` graphics
