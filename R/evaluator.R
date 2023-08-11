@@ -261,6 +261,323 @@ fm_evaluator_mesh_1d <- function(mesh,
                                  loc,
                                  weights = NULL,
                                  derivatives = NULL,
+                                 method = deprecated(),
+                                 ...) {
+  if (lifecycle::is_present(method)) {
+    lifecycle::deprecate_soft(
+      "0.0.9.9020",
+      "fm_evaluator_mesh_1d(method)",
+      details = c("Create a separate fm_mesh_1d() object instead.")
+    )
+    method <- match.arg(method, c(
+      "default",
+      "nearest",
+      "linear",
+      "quadratic"
+    ))
+
+    if (!(method %in% "default") &&
+        (mesh$degree != c(nearest = 0, linear = 1, quadratic = 2)[method])) {
+      deg <- c(nearest = 0, linear = 1, quadratic = 2)[method]
+      info <- fm_evaluator_mesh_1d(
+        fm_mesh_1d(mesh$loc,
+                   interval = mesh$interval,
+                   boundary = mesh$boundary,
+                   free.clamped = mesh$free.clamped,
+                   degree = deg),
+        loc = loc,
+        weights = weights,
+        derivatives = derivatives
+      )
+      return(info)
+    }
+  }
+
+  if (is.null(weights)) {
+    weights <- rep(1.0, NROW(loc))
+  } else if (length(weights) == 1L) {
+    weights <- rep(weights, NROW(loc))
+  }
+
+  derivatives <- !is.null(derivatives) && derivatives
+  info <- list()
+
+  ## Compute basis based on mesh$degree and mesh$boundary
+  if (mesh$degree == 0) {
+    info <- fm_bary(mesh, loc = loc, method = "nearest")
+    i_ <- seq_along(loc)
+    j_ <- info$t[, 1]
+    x_ <- info$bary[, 1]
+    if (derivatives) {
+      if (mesh$cyclic) {
+        j_prev <- (j_ - 2L) %% mesh$n + 1L
+        j_next <- j_ %% mesh$n + 1L
+        ok <- rep(TRUE, length(j_))
+        dist <- (mesh$loc[j_next] - mesh$loc[j_prev]) %% diff(mesh$interval)
+      } else {
+        j_prev <- j_ - 1L
+        j_next <- j_ + 1L
+        ok <- (j_prev >= 1L) & (j_next <= mesh$n)
+        dist <- mesh$loc[j_next] - mesh$loc[j_prev]
+      }
+      i_d <- c(i_[ok], i_[ok])
+      j_d <- c(j_prev[ok], j_next[ok])
+      x_d <- c(-x_[ok], x_[ok]) / dist
+    }
+
+    if (mesh$boundary[1] == "dirichlet") {
+      ok <- j_ > 1L
+      i_ <- i_[ok]
+      j_ <- j_[ok] - 1L
+      x_ <- x_[ok]
+      if (derivatives) {
+        ok <- j_d > 1L
+        i_d <- i_d[ok]
+        j_d <- j_d[ok] - 1L
+        x_d <- x_d[ok]
+      }
+    }
+    if (mesh$boundary[2] == "dirichlet") {
+      ok <- j_ <= mesh$m
+      i_ <- i_[ok]
+      j_ <- j_[ok]
+      x_ <- x_[ok]
+      if (derivatives) {
+        ok <- j_d <= mesh$m
+        i_d <- i_d[ok]
+        j_d <- j_d[ok]
+        x_d <- x_d[ok]
+      }
+    }
+  } else if (mesh$degree == 1) {
+    info <- fm_bary(mesh, loc = loc, method = "linear")
+    i_ <- c(seq_along(loc), seq_along(loc))
+    j_ <- as.vector(info$t)
+    x_ <- as.vector(info$bary)
+    if (derivatives) {
+      j_curr <- info$t[, 1]
+      j_next <- info$t[, 2]
+      if (mesh$cyclic) {
+        if (mesh$n > 1) {
+          dist <- (mesh$loc[j_next] - mesh$loc[j_curr]) %% diff(mesh$interval)
+        } else {
+          dist <- rep(diff(mesh$interval), length(j_curr))
+        }
+      } else {
+        dist <- mesh$loc[j_next] - mesh$loc[j_curr]
+      }
+      i_d <- i_
+      j_d <- c(j_curr, j_next)
+      x_d <- rep(c(-1, 1), each = length(loc)) / rep(dist, times = 2)
+    }
+
+    if (mesh$boundary[1] == "dirichlet") {
+      ok <- j_ > 1L
+      i_ <- i_[ok]
+      j_ <- j_[ok] - 1L
+      x_ <- x_[ok]
+      if (derivatives) {
+        ok <- j_d > 1L
+        i_d <- i_d[ok]
+        j_d <- j_d[ok] - 1L
+        x_d <- x_d[ok]
+      }
+    } else if (mesh$boundary[1] == "neumann") {
+      if (derivatives) {
+        x_d[(j_ == 1) & (x_ > 1)] <- 0.0
+        x_d[(j_ == 2) & (x_ < 0)] <- 0.0
+      }
+      # Set Anew[, 1] = 1 on the left
+      # Set Anew[, 2] = 0 on the left
+      x_[(j_ == 1) & (x_ > 1)] <- 1.0
+      x_[(j_ == 2) & (x_ < 0)] <- 0.0
+    }
+    if (mesh$boundary[2] == "dirichlet") {
+      ok <- j_ <= mesh$m
+      i_ <- i_[ok]
+      j_ <- j_[ok]
+      x_ <- x_[ok]
+      if (derivatives) {
+        ok <- j_d <= mesh$m
+        i_d <- i_d[ok]
+        j_d <- j_d[ok]
+        x_d <- x_d[ok]
+      }
+    } else if (mesh$boundary[2] == "neumann") {
+      if (derivatives) {
+        x_d[(j_ == mesh$m) & (x_ > 1)] <- 0.0
+        x_d[(j_ == mesh$m - 1L) & (x_ < 0)] <- 0.0
+      }
+      # Set Anew[, m] = 1 on the right
+      # Set Anew[, m-1] = 0 on the right
+      x_[(j_ == mesh$m) & (x_ > 1)] <- 1.0
+      x_[(j_ == mesh$m - 1L) & (x_ < 0)] <- 0.0
+    }
+  } else if (mesh$degree == 2) {
+    if (mesh$cyclic) {
+      knots <- mesh$loc - mesh$loc[1]
+      loc <- loc - mesh$loc[1]
+      inter <- diff(mesh$interval)
+    } else {
+      knots <-
+        c(
+#          mesh$loc[1] - 2 * (mesh$loc[2] - mesh$loc[1]),
+#          mesh$loc[1] - (mesh$loc[2] - mesh$loc[1]),
+          mesh$loc#,
+#          mesh$loc[mesh$n] + (mesh$loc[mesh$n] - mesh$loc[mesh$n - 1])#,
+#          mesh$loc[mesh$n] + 2 * (mesh$loc[mesh$n] - mesh$loc[mesh$n - 1])
+        )
+      loc <- loc - knots[1]
+      knots <- knots - knots[1]
+      inter <- range(knots)
+    }
+
+    info <-
+      fm_bary(
+        fm_mesh_1d(
+          knots,
+          interval = inter,
+          boundary = if (mesh$cyclic) "cyclic" else "free",
+          degree = 1
+        ),
+        loc = loc,
+        method = "linear"
+      )
+
+    if (mesh$cyclic) {
+      d <-
+        (knots[c(seq_len(length(knots) - 1L) + 1L, 1)] - knots) %%
+        diff(mesh$interval)
+      d2 <- (knots[c(seq_len(length(knots) - 2L) + 2L, seq_len(2))] -
+               knots) %% diff(mesh$interval)
+      d <- d[c(length(d), seq_len(length(d) - 1L))]
+      d2 <- d2[c(length(d2), seq_len(length(d2) - 1L))]
+    } else {
+      d <- knots[-1] - knots[-length(knots)]
+      d2 <- knots[-seq_len(2)] - knots[seq_len(length(knots) - 2L)]
+    }
+
+    if (mesh$cyclic) {
+      ## Left intervals for each basis function:
+      i.l <- seq_along(info$t[, 1])
+      j.l <- info$t[, 1] + 2L
+      x.l <- (info$bary[, 2] * d[info$t[, 2]] / d2[info$t[, 2]] * info$bary[, 2])
+      ## Right intervals for each basis function:
+      i.r <- seq_along(info$t[, 1])
+      j.r <- info$t[, 1]
+      x.r <- (info$bary[, 1] * d[info$t[, 2]] / d2[info$t[, 1]] * info$bary[, 1])
+      ## Middle intervals for each basis function:
+      i.m <- seq_along(info$t[, 1])
+      j.m <- info$t[, 1] + 1L
+      x.m <- (1 - (info$bary[, 1] * d[info$t[, 2]] / d2[info$t[, 1]] * info$bary[, 1] +
+                     info$bary[, 2] * d[info$t[, 2]] / d2[info$t[, 2]] * info$bary[, 2]
+      ))
+    } else {
+      d2 <- c(2 * d[1], 2 * d[1], d2, 2 * d[length(d)], 2 * d[length(d)])
+      d <- c(d[1], d[2], d, d[length(d)], d[length(d)])
+      ok <- (info$t[, 1] >= 1L) & (info$t[, 2] <= length(knots))
+      index <- info$t[ok, , drop = FALSE] + 1L
+      bary <- info$bary[ok, , drop = FALSE]
+      ## Left intervals for each basis function:
+      i.l <- seq_along(loc)[ok]
+      j.l <- index[, 1] + 1L
+      x.l <- (bary[, 2] * d[index[, 2]] / d2[index[, 2]] * bary[, 2])
+      ## Right intervals for each basis function:
+      i.r <- seq_along(loc)[ok]
+      j.r <- index[, 1] - 1L
+      x.r <- (bary[, 1] * d[index[, 2]] / d2[index[, 1]] * bary[, 1])
+      ## Middle intervals for each basis function:
+      i.m <- seq_along(loc)[ok]
+      j.m <- index[, 1]
+      x.m <- (1 - (bary[, 1] * d[index[, 2]] / d2[index[, 1]] * bary[, 1] +
+                     bary[, 2] * d[index[, 2]] / d2[index[, 2]] * bary[, 2]
+      ))
+      if (any(!ok)) {
+        # Handle points outside the interval
+      }
+    }
+
+    i_ <- c(i.l, i.r, i.m)
+    j_ <- c(j.l, j.r, j.m)
+    x_ <- c(x.l, x.r, x.m)
+
+    if (!mesh$cyclic) {
+      # Convert boundary basis functions to linear
+      # First remove anything from above outside the interval, then add back in
+      # the appropriate values
+      ok <- (loc >= inter[1]) & (loc <= inter[2])
+      i_ <- i_[ok]
+      j_ <- j_[ok]
+      x_ <- x_[ok]
+
+      # left
+      ok <- (loc < 0) & (info$t[, 1] == 1L)
+      i_l <- c(seq_along(loc)[ok], seq_along(loc)[ok])
+      j_l <- c(info$t[ok, 1], info$t[ok, 2])
+      x_l <- c(0.5 + (info$bary[ok, 1] - 1),
+               0.5 - (info$bary[ok, 1] - 1))
+
+      # right
+      ok <- (loc > inter[2]) & (info$t[, 2] == length(knots))
+      i_r <- c(seq_along(loc)[ok], seq_along(loc)[ok])
+      j_r <- c(info$t[ok, 2], info$t[ok, 1]) + 1L
+      x_r <- c(0.5 + (info$bary[ok, 2] - 1),
+               0.5 - (info$bary[ok, 2] - 1))
+
+      i_ <- c(i_, i_l, i_r)
+      j_ <- c(j_, j_l, j_r)
+      x_ <- c(x_, x_l, x_r)
+
+      if (mesh$boundary[1] == "dirichlet") {
+        ok <- j_ > 1L
+        j_[ok] <- j_[ok] - 1L
+        x_[!ok] <- -x_[!ok]
+      } else if (mesh$boundary[1] == "neumann") {
+        ok <- j_ > 1L
+        j_[ok] <- j_[ok] - 1L
+      }
+      if (mesh$boundary[2] == "dirichlet") {
+        ok <- j_ > mesh$m
+        j_[ok] <- j_[ok] - 1L
+        x_[ok] <- -x_[ok]
+      } else if (mesh$boundary[2] == "neumann") {
+        ok <- j_ > mesh$m
+        j_[ok] <- mesh$m
+      }
+    }
+
+    if (mesh$cyclic) {
+      j_ <- (j_ - 1L - 1L) %% mesh$m + 1L
+    }
+  } else {
+    stop("Unsupported B-spline degree = ", mesh$degree)
+  }
+
+  ok <- (j_ >= 1) & (j_ <= mesh$m)
+  info$A <- Matrix::sparseMatrix(
+    i = i_[ok],
+    j = j_[ok],
+    x = (weights[i_] * x_)[ok],
+    dims = c(length(loc), mesh$m)
+  )
+  if (derivatives) {
+    info$dA <- Matrix::sparseMatrix(
+      i = i_d,
+      j = j_d,
+      x = weights[i_d] * x_d,
+      dims = c(length(loc), mesh$m)
+    )
+  }
+
+  info[["ok"]] <- rep(TRUE, length(loc))
+  return(info)
+}
+
+
+fm_evaluator_mesh_1d_old <- function(mesh,
+                                 loc,
+                                 weights = NULL,
+                                 derivatives = NULL,
                                  method = NULL,
                                  ...) {
   method <- match.arg(method, c(
@@ -302,7 +619,7 @@ fm_evaluator_mesh_1d <- function(mesh,
         weights = weights,
         derivatives =
           ifelse(is.null(derivatives),
-            FALSE, TRUE
+                 FALSE, TRUE
           )
       )
       if (mesh$boundary[1] == "dirichlet") {
@@ -328,7 +645,7 @@ fm_evaluator_mesh_1d <- function(mesh,
           weights = weights,
           derivatives =
             ifelse(is.null(derivatives),
-              FALSE, TRUE
+                   FALSE, TRUE
             )
         )
       adjust.matrix <- function(mesh, A) {
@@ -349,7 +666,7 @@ fm_evaluator_mesh_1d <- function(mesh,
             j[j == 1L] <- 2L
             j <- j - 1L
           } else if ((mesh$boundary[1] == "free") &&
-            mesh$free.clamped[1]) {
+                     mesh$free.clamped[1]) {
             j1 <- which(j == 1L)
             i <- c(i, i[j1])
             j <- c(j, j[j1] + 1L)
@@ -362,7 +679,7 @@ fm_evaluator_mesh_1d <- function(mesh,
             x[j == (mesh$m + 1L)] <- -x[j == (mesh$m + 1L)]
             j[j == (mesh$m + 1L)] <- mesh$m
           } else if ((mesh$boundary[2] == "free") &&
-            mesh$free.clamped[2]) {
+                     mesh$free.clamped[2]) {
             j1 <- which(j == (mesh$m))
             i <- c(i, i[j1])
             j <- c(j, j[j1] - 1L)
@@ -390,9 +707,9 @@ fm_evaluator_mesh_1d <- function(mesh,
       }
     } else {
       stop(paste("'degree' must be 0, 1, or 2.  'degree=",
-        mesh$degree,
-        "' is not supported.",
-        sep = ""
+                 mesh$degree,
+                 "' is not supported.",
+                 sep = ""
       ))
     }
   } else {
@@ -417,7 +734,7 @@ fm_evaluator_mesh_1d <- function(mesh,
         if (!is.null(derivatives) && derivatives) {
           if (mesh$cyclic) {
             d <- (c(mesh$loc[-1], mesh$interval[2]) -
-              mesh$loc)
+                    mesh$loc)
           } else {
             d <- (mesh$loc[-1] - mesh$loc[-mesh$n])
           }
@@ -450,17 +767,22 @@ fm_evaluator_mesh_1d <- function(mesh,
       ## Compute the n+1 2nd order B-splines.
 
       if (mesh$cyclic) {
-        Boundary.knots <-
-          (c(mesh$loc, mesh$interval[2])[c(mesh$n, 2)] +
-            diff(mesh$interval) * c(-1, 1))
+        extra.knots <- 1L
         knots <- c(mesh$loc, mesh$interval[2])
+        knots <-
+          c(knots[mesh$n] - diff(mesh$interval),
+            knots,
+            knots[2] + diff(mesh$interval))
       } else {
-        Boundary.knots <-
+        extra.knots <- 2L
+        knots <-
           c(
+            mesh$loc[1] - 2 * (mesh$loc[2] - mesh$loc[1]),
             mesh$loc[1] - (mesh$loc[2] - mesh$loc[1]),
-            mesh$loc[mesh$n] + (mesh$loc[mesh$n] - mesh$loc[mesh$n - 1])
+            mesh$loc,
+            mesh$loc[mesh$n] + (mesh$loc[mesh$n] - mesh$loc[mesh$n - 1]),
+            mesh$loc[mesh$n] + 2 * (mesh$loc[mesh$n] - mesh$loc[mesh$n - 1])
           )
-        knots <- mesh$loc
       }
 
       # if (FALSE) { ## Only for debugging.
@@ -482,7 +804,6 @@ fm_evaluator_mesh_1d <- function(mesh,
       # }
 
       ## Direct calculation:
-      knots <- c(Boundary.knots[1], knots)
       if (mesh$cyclic) {
         idx <-
           fm_bary(
@@ -492,31 +813,31 @@ fm_evaluator_mesh_1d <- function(mesh,
             method = "linear"
           )
       } else {
+        # Use extrapolation for the outer parts
         idx <-
-          fm_bary(fm_mesh_1d(knots, boundary = "free"),
-            loc,
-            method = "linear"
+          fm_bary(fm_mesh_1d(knots[-c(1, length(knots))], boundary = "free"),
+                  loc,
+                  method = "linear"
           )
+        idx$index <- idx$index + 1L
       }
-      knots <- c(knots, Boundary.knots[2])
-      idx$index <- idx$index[, 1] - 1L ## Indices into mesh intervals.
 
       d <- knots[2:length(knots)] - knots[1:(length(knots) - 1)]
       d2 <- knots[3:length(knots)] - knots[1:(length(knots) - 2)]
 
       ## Left intervals for each basis function:
-      i.l <- seq_along(idx$index)
-      j.l <- idx$index + 2L
-      x.l <- (idx$bary[, 2] * d[idx$index + 1] / d2[idx$index + 1] * idx$bary[, 2])
+      i.l <- seq_along(idx$index[, 1])
+      j.l <- idx$index[, 1] + 2L
+      x.l <- (idx$bary[, 2] * d[idx$index[, 2]] / d2[idx$index[, 2]] * idx$bary[, 2])
       ## Right intervals for each basis function:
-      i.r <- seq_along(idx$index)
-      j.r <- idx$index
-      x.r <- (idx$bary[, 1] * d[idx$index + 1] / d2[idx$index] * idx$bary[, 1])
+      i.r <- seq_along(idx$index[, 1])
+      j.r <- idx$index[, 1]
+      x.r <- (idx$bary[, 1] * d[idx$index[, 2]] / d2[idx$index[, 1]] * idx$bary[, 1])
       ## Middle intervals for each basis function:
-      i.m <- seq_along(idx$index)
-      j.m <- idx$index + 1L
-      x.m <- (1 - (idx$bary[, 1] * d[idx$index + 1] / d2[idx$index] * idx$bary[, 1] +
-        idx$bary[, 2] * d[idx$index + 1] / d2[idx$index + 1] * idx$bary[, 2]
+      i.m <- seq_along(idx$index[, 1])
+      j.m <- idx$index[, 1] + 1L
+      x.m <- (1 - (idx$bary[, 1] * d[idx$index[, 2]] / d2[idx$index[, 1]] * idx$bary[, 1] +
+                     idx$bary[, 2] * d[idx$index[, 2]] / d2[idx$index[, 2]] * idx$bary[, 2]
       ))
 
       i <- c(i.l, i.r, i.m)
@@ -526,8 +847,10 @@ fm_evaluator_mesh_1d <- function(mesh,
       A <- (Matrix::sparseMatrix(
         i = i, j = j,
         x = weights.i * c(x.l, x.r, x.m),
-        dims = c(length(idx$index), mesh$n + mesh$cyclic + 1L)
+        dims = c(length(idx$index), mesh$n + mesh$cyclic + extra.knots)
       ))
+
+      # TODO: clear up indexing and matrix size...
 
       dA <- NULL
       d2A <- NULL
@@ -537,7 +860,7 @@ fm_evaluator_mesh_1d <- function(mesh,
         x.l <- (2 / d2[idx$index + 1] * idx$bary[, 2])
         x.r <- (-2 / d2[idx$index] * idx$bary[, 1])
         x.m <- (-(-2 / d2[idx$index] * idx$bary[, 1] +
-          2 / d2[idx$index + 1] * idx$bary[, 2]
+                    2 / d2[idx$index + 1] * idx$bary[, 2]
         ))
         dA <- (Matrix::sparseMatrix(
           i = i, j = j,
@@ -553,7 +876,7 @@ fm_evaluator_mesh_1d <- function(mesh,
         x.l <- (2 / d[idx$index + 1] / d2[idx$index + 1])
         x.r <- (2 / d[idx$index + 1] / d2[idx$index])
         x.m <- (-(2 / d[idx$index + 1] / d2[idx$index] +
-          2 / d[idx$index + 1] / d2[idx$index + 1]))
+                    2 / d[idx$index + 1] / d2[idx$index + 1]))
         d2A <- (Matrix::sparseMatrix(
           i = i, j = j,
           x = weights.i * c(x.l, x.r, x.m),

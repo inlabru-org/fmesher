@@ -49,7 +49,7 @@ fm_evaluator_mesh_1d(
   loc,
   weights = NULL,
   derivatives = NULL,
-  method = NULL,
+  method = deprecated(),
   ...
 )
 
