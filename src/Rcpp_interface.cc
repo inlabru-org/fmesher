@@ -179,32 +179,34 @@ Mesh Rcpp_import_mesh(Rcpp::NumericMatrix mesh_loc,
 
 
 
-#include "qtool.h"
+// #include "qtool.h"
+//
+// //' @title Compute sparse matrix inverse
+// //'
+// //' @description
+// //' Requires RcppEigen which is not compiled in by default
+// //'
+// //' @param AA A sparse matrix
+// //' @keywords internal
+// // [[Rcpp::export]]
+// Rcpp::List C_qinv(SEXP AA) {
+// #ifdef FMESHER_WITH_EIGEN
+//   const EigenMSM<double> A(Rcpp::as<EigenMSM<double>>(AA));
+//
+//   QTool<double> Q;
+//   Q.Q(A);
+//
+//   Rcpp::List ret;
+//   ret["Qinv"] = Q.S();
+//   return ret;
+// #else
+//   Rcpp::stop("Unsupported method C_qinv; fmesher was built without FMESHER_WITH_EIGEN");
+//   Rcpp::List ret;
+//   return ret;
+// #endif
+// }
 
-//' @title Compute sparse matrix inverse
-//'
-//' @description
-//' Requires RcppEigen which is not compiled in by default
-//'
-//' @param AA A sparse matrix
-//' @keywords internal
-// [[Rcpp::export]]
-Rcpp::List C_qinv(SEXP AA) {
-#ifdef FMESHER_WITH_EIGEN
-  const EigenMSM<double> A(Rcpp::as<EigenMSM<double>>(AA));
 
-  QTool<double> Q;
-  Q.Q(A);
-
-  Rcpp::List ret;
-  ret["Qinv"] = Q.S();
-  return ret;
-#else
-  Rcpp::stop("Unsupported method C_qinv; fmesher was built without FMESHER_WITH_EIGEN");
-  Rcpp::List ret;
-  return ret;
-#endif
-}
 
 //' @title Globe points
 //'
@@ -826,138 +828,138 @@ Rcpp::List fmesher_split_lines(
 
 
 
-//' @title Test the matrix I/O system
-//'
-//' @param args_input Input argument list
-//' @examples
-//' \dontrun{
-//' A <- Matrix::sparseMatrix(i=1:4,j=4:1,x=2:5,dims=c(4,4))
-//' inp <- list(
-//'   A = fm_as_dgTMatrix(A),
-//'   Bd = matrix((11:22)+0.5,4,3),
-//'   Bi = matrix(121L:132L,4,3),
-//'   B1d=as.matrix((31:34)+0.5),
-//'   B1i=as.matrix(41L:44L),
-//'   Ad = fm_as_fmesher_sparse(A)
-//' )
-//' inp[["BdM"]] <- as(inp[["Bd"]], "unpackedMatrix")
-//' out <- C_matrixio_test2(args_input = inp)
-//' str(out)
-//' }
-//' @keywords internal
-// [[Rcpp::export]]
-Rcpp::List C_matrixio_test2(Rcpp::List args_input) {
-  MatrixC matrices(args_input);
-  Rcpp::List ret = Rcpp::wrap(matrices.output("-"));
-  return (ret);
-}
+// //' @title Test the matrix I/O system
+// //'
+// //' @param args_input Input argument list
+// //' @examples
+// //' \dontrun{
+// //' A <- Matrix::sparseMatrix(i=1:4,j=4:1,x=2:5,dims=c(4,4))
+// //' inp <- list(
+// //'   A = fm_as_dgTMatrix(A),
+// //'   Bd = matrix((11:22)+0.5,4,3),
+// //'   Bi = matrix(121L:132L,4,3),
+// //'   B1d=as.matrix((31:34)+0.5),
+// //'   B1i=as.matrix(41L:44L),
+// //'   Ad = fm_as_fmesher_sparse(A)
+// //' )
+// //' inp[["BdM"]] <- as(inp[["Bd"]], "unpackedMatrix")
+// //' out <- C_matrixio_test2(args_input = inp)
+// //' str(out)
+// //' }
+// //' @keywords internal
+// // [[Rcpp::export]]
+// Rcpp::List C_matrixio_test2(Rcpp::List args_input) {
+//   MatrixC matrices(args_input);
+//   Rcpp::List ret = Rcpp::wrap(matrices.output("-"));
+//   return (ret);
+// }
 
 
 
-//' @title Test the matrix I/O system
-//'
-//' @param args_input Input argument list
-//' @examples
-//' \dontrun{
-//' A <- Matrix::sparseMatrix(i=1:4,j=4:1,x=2:5,dims=c(4,4))
-//' out <- C_matrixio_test(args_input=list(
-//'   A = fm_as_dgTMatrix(A),
-//'   Bd = matrix((11:22)+0.5,4,3),
-//'   Bi = matrix(121L:132L,4,3),
-//'   B1d=as.matrix((31:34)+0.5),
-//'   B1i=as.matrix(41L:44L),
-//'   Ad = fm_as_fmesher_sparse(A)
-//' ))
-//' Aout <- fm_as_dgTMatrix(out[["Ad"]])
-//' A
-//' Aout
-//' }
-//' @keywords internal
-// [[Rcpp::export]]
-     Rcpp::List C_matrixio_test(Rcpp::List args_input) {
-       MatrixC matrices;
-
-       //  matrices.attach("loc", new Matrix<double>(Rcpp::as<EigenMM<double>>(args_input["loc"])), true);
-       //  matrices.attach("tv", new Matrix<int>(Rcpp::as<EigenMM<int>>(args_input["tv"])), true);
-
-       bool is_list = Rcpp::is<Rcpp::List>(args_input);
-       bool is_numeric_matrix = Rcpp::is<Rcpp::NumericMatrix>(args_input["A"]);
-       bool is_numeric_vector = Rcpp::is<Rcpp::NumericVector>(args_input["A"]);
-       bool is_integer_matrix = Rcpp::is<Rcpp::IntegerMatrix>(args_input["A"]);
-       bool is_integer_vector = Rcpp::is<Rcpp::IntegerVector>(args_input["A"]);
-
-       Rcpp::NumericMatrix Bd = Rcpp::as<Rcpp::NumericMatrix>(args_input["Bd"]);
-       Rcpp::IntegerMatrix Bi = Rcpp::as<Rcpp::IntegerMatrix>(args_input["Bi"]);
-       Rcpp::NumericVector B1d = Rcpp::as<Rcpp::NumericVector>(args_input["B1d"]);
-       Rcpp::IntegerVector B1i = Rcpp::as<Rcpp::IntegerVector>(args_input["B1i"]);
-
-
-       fmesh::Matrix<double> Bdd = Bd;
-       fmesh::Matrix<int> Bdi(Rcpp::as<Rcpp::IntegerMatrix>(Bd));
-       fmesh::Matrix<double> Bid(Rcpp::as<Rcpp::NumericMatrix>(Bi));
-       fmesh::Matrix<int> Bii(Bi);
-
-       FMLOG_("Bdd: " << Bdd << std::endl);
-       FMLOG_("Bdi: " << Bdi << std::endl);
-       FMLOG_("Bid: " << Bid << std::endl);
-       FMLOG_("Bii: " << Bii << std::endl);
-
-       fmesh::Matrix1<double> Bdd1 = B1d;
-       fmesh::Matrix1<double> Bdd_1 = Rcpp::NumericVector(Bd(Rcpp::_, 1));
-       fmesh::Matrix1<int> Bdi1(Rcpp::as<Rcpp::IntegerVector>(B1d));
-       fmesh::Matrix1<double> Bid1(Rcpp::as<Rcpp::NumericVector>(B1i));
-       fmesh::Matrix1<int> Bii1(B1i);
-
-       FMLOG_("Bdd1: " << Bdd1 << std::endl);
-       FMLOG_("Bdd_1: " << Bdd_1 << std::endl);
-       FMLOG_("Bdi1: " << Bdi1 << std::endl);
-       FMLOG_("Bid1: " << Bid1 << std::endl);
-       FMLOG_("Bii1: " << Bii1 << std::endl);
-
-       fmesh::Matrix3<double> Bdd3 = Bd;
-       fmesh::Matrix3<int> Bdi3(Rcpp::as<Rcpp::IntegerMatrix>(Bd));
-       fmesh::Matrix3<double> Bid3(Rcpp::as<Rcpp::NumericMatrix>(Bi));
-       fmesh::Matrix3<int> Bii3(Bi);
-
-       FMLOG_("Bdd3: " << Bdd3 << std::endl);
-       FMLOG_("Bdi3: " << Bdi3 << std::endl);
-       FMLOG_("Bid3: " << Bid3 << std::endl);
-       FMLOG_("Bii3: " << Bii3 << std::endl);
-
-       const Rcpp::List Ad(Rcpp::as<Rcpp::List>(args_input["Ad"]));
-
-       fmesh::SparseMatrix<double> Ad_fm(Ad);
-
-       //  const EigenMSM<int> Ai(Rcpp::as<EigenMSM<int>>(args_input["Ai"]));
-
-       //  bool is_msm = Rcpp::is<Eigen::SparseMatrix<double>>(args_input["a"]);
-
-       matrices.attach("Ad_fm", &Ad_fm, false);
-       matrices.output("Ad_fm");
-
-       MatrixC mat2(args_input);
-
-       FMLOG_(mat2.DI("tv"))
-
-         Rcpp::List ret;
-       ret["is_list"] = is_list;
-       ret["is_numeric_matrix"] = is_numeric_matrix;
-       ret["is_numeric_vector"] = is_numeric_vector;
-       ret["is_integer_matrix"] = is_integer_matrix;
-       ret["is_integer_vector"] = is_integer_vector;
-       //  ret["A"] = A;
-       ret["Ad"] = Ad;
-#ifdef FMESHER_WITH_EIGEN
-       ret["Ad_fm"] = Ad_fm.EigenSparseMatrix();
-#endif
-       ret["Ad_fm_auto"] = Ad_fm;
-       ret["Ad_fm_ijx"] = Ad_fm.fmesher_sparse();
-       ret["Bid3"] = Bid3;
-       ret["Bdi3"] = Bdi3;
-       ret["matrices"] = matrices;
-       ret["mat2"] = mat2.output("-");
-       return (ret);
-     }
+// //' @title Test the matrix I/O system
+// //'
+// //' @param args_input Input argument list
+// //' @examples
+// //' \dontrun{
+// //' A <- Matrix::sparseMatrix(i=1:4,j=4:1,x=2:5,dims=c(4,4))
+// //' out <- C_matrixio_test(args_input=list(
+// //'   A = fm_as_dgTMatrix(A),
+// //'   Bd = matrix((11:22)+0.5,4,3),
+// //'   Bi = matrix(121L:132L,4,3),
+// //'   B1d=as.matrix((31:34)+0.5),
+// //'   B1i=as.matrix(41L:44L),
+// //'   Ad = fm_as_fmesher_sparse(A)
+// //' ))
+// //' Aout <- fm_as_dgTMatrix(out[["Ad"]])
+// //' A
+// //' Aout
+// //' }
+// //' @keywords internal
+// // [[Rcpp::export]]
+//      Rcpp::List C_matrixio_test(Rcpp::List args_input) {
+//        MatrixC matrices;
+//
+//        //  matrices.attach("loc", new Matrix<double>(Rcpp::as<EigenMM<double>>(args_input["loc"])), true);
+//        //  matrices.attach("tv", new Matrix<int>(Rcpp::as<EigenMM<int>>(args_input["tv"])), true);
+//
+//        bool is_list = Rcpp::is<Rcpp::List>(args_input);
+//        bool is_numeric_matrix = Rcpp::is<Rcpp::NumericMatrix>(args_input["A"]);
+//        bool is_numeric_vector = Rcpp::is<Rcpp::NumericVector>(args_input["A"]);
+//        bool is_integer_matrix = Rcpp::is<Rcpp::IntegerMatrix>(args_input["A"]);
+//        bool is_integer_vector = Rcpp::is<Rcpp::IntegerVector>(args_input["A"]);
+//
+//        Rcpp::NumericMatrix Bd = Rcpp::as<Rcpp::NumericMatrix>(args_input["Bd"]);
+//        Rcpp::IntegerMatrix Bi = Rcpp::as<Rcpp::IntegerMatrix>(args_input["Bi"]);
+//        Rcpp::NumericVector B1d = Rcpp::as<Rcpp::NumericVector>(args_input["B1d"]);
+//        Rcpp::IntegerVector B1i = Rcpp::as<Rcpp::IntegerVector>(args_input["B1i"]);
+//
+//
+//        fmesh::Matrix<double> Bdd = Bd;
+//        fmesh::Matrix<int> Bdi(Rcpp::as<Rcpp::IntegerMatrix>(Bd));
+//        fmesh::Matrix<double> Bid(Rcpp::as<Rcpp::NumericMatrix>(Bi));
+//        fmesh::Matrix<int> Bii(Bi);
+//
+//        FMLOG_("Bdd: " << Bdd << std::endl);
+//        FMLOG_("Bdi: " << Bdi << std::endl);
+//        FMLOG_("Bid: " << Bid << std::endl);
+//        FMLOG_("Bii: " << Bii << std::endl);
+//
+//        fmesh::Matrix1<double> Bdd1 = B1d;
+//        fmesh::Matrix1<double> Bdd_1 = Rcpp::NumericVector(Bd(Rcpp::_, 1));
+//        fmesh::Matrix1<int> Bdi1(Rcpp::as<Rcpp::IntegerVector>(B1d));
+//        fmesh::Matrix1<double> Bid1(Rcpp::as<Rcpp::NumericVector>(B1i));
+//        fmesh::Matrix1<int> Bii1(B1i);
+//
+//        FMLOG_("Bdd1: " << Bdd1 << std::endl);
+//        FMLOG_("Bdd_1: " << Bdd_1 << std::endl);
+//        FMLOG_("Bdi1: " << Bdi1 << std::endl);
+//        FMLOG_("Bid1: " << Bid1 << std::endl);
+//        FMLOG_("Bii1: " << Bii1 << std::endl);
+//
+//        fmesh::Matrix3<double> Bdd3 = Bd;
+//        fmesh::Matrix3<int> Bdi3(Rcpp::as<Rcpp::IntegerMatrix>(Bd));
+//        fmesh::Matrix3<double> Bid3(Rcpp::as<Rcpp::NumericMatrix>(Bi));
+//        fmesh::Matrix3<int> Bii3(Bi);
+//
+//        FMLOG_("Bdd3: " << Bdd3 << std::endl);
+//        FMLOG_("Bdi3: " << Bdi3 << std::endl);
+//        FMLOG_("Bid3: " << Bid3 << std::endl);
+//        FMLOG_("Bii3: " << Bii3 << std::endl);
+//
+//        const Rcpp::List Ad(Rcpp::as<Rcpp::List>(args_input["Ad"]));
+//
+//        fmesh::SparseMatrix<double> Ad_fm(Ad);
+//
+//        //  const EigenMSM<int> Ai(Rcpp::as<EigenMSM<int>>(args_input["Ai"]));
+//
+//        //  bool is_msm = Rcpp::is<Eigen::SparseMatrix<double>>(args_input["a"]);
+//
+//        matrices.attach("Ad_fm", &Ad_fm, false);
+//        matrices.output("Ad_fm");
+//
+//        MatrixC mat2(args_input);
+//
+//        FMLOG_(mat2.DI("tv"))
+//
+//          Rcpp::List ret;
+//        ret["is_list"] = is_list;
+//        ret["is_numeric_matrix"] = is_numeric_matrix;
+//        ret["is_numeric_vector"] = is_numeric_vector;
+//        ret["is_integer_matrix"] = is_integer_matrix;
+//        ret["is_integer_vector"] = is_integer_vector;
+//        //  ret["A"] = A;
+//        ret["Ad"] = Ad;
+// #ifdef FMESHER_WITH_EIGEN
+//        ret["Ad_fm"] = Ad_fm.EigenSparseMatrix();
+// #endif
+//        ret["Ad_fm_auto"] = Ad_fm;
+//        ret["Ad_fm_ijx"] = Ad_fm.fmesher_sparse();
+//        ret["Bid3"] = Bid3;
+//        ret["Bdi3"] = Bdi3;
+//        ret["matrices"] = matrices;
+//        ret["mat2"] = mat2.output("-");
+//        return (ret);
+//      }
 
 
 

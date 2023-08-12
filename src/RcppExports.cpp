@@ -10,17 +10,6 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// C_qinv
-Rcpp::List C_qinv(SEXP AA);
-RcppExport SEXP _fmesher_C_qinv(SEXP AASEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< SEXP >::type AA(AASEXP);
-    rcpp_result_gen = Rcpp::wrap(C_qinv(AA));
-    return rcpp_result_gen;
-END_RCPP
-}
 // fmesher_globe_points
 Rcpp::NumericMatrix fmesher_globe_points(Rcpp::IntegerVector globe);
 RcppExport SEXP _fmesher_fmesher_globe_points(SEXP globeSEXP) {
@@ -121,31 +110,8 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// C_matrixio_test2
-Rcpp::List C_matrixio_test2(Rcpp::List args_input);
-RcppExport SEXP _fmesher_C_matrixio_test2(SEXP args_inputSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::List >::type args_input(args_inputSEXP);
-    rcpp_result_gen = Rcpp::wrap(C_matrixio_test2(args_input));
-    return rcpp_result_gen;
-END_RCPP
-}
-// C_matrixio_test
-Rcpp::List C_matrixio_test(Rcpp::List args_input);
-RcppExport SEXP _fmesher_C_matrixio_test(SEXP args_inputSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::List >::type args_input(args_inputSEXP);
-    rcpp_result_gen = Rcpp::wrap(C_matrixio_test(args_input));
-    return rcpp_result_gen;
-END_RCPP
-}
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_fmesher_C_qinv", (DL_FUNC) &_fmesher_C_qinv, 1},
     {"_fmesher_fmesher_globe_points", (DL_FUNC) &_fmesher_fmesher_globe_points, 1},
     {"_fmesher_fmesher_rcdt", (DL_FUNC) &_fmesher_fmesher_rcdt, 7},
     {"_fmesher_fmesher_bary", (DL_FUNC) &_fmesher_fmesher_bary, 4},
@@ -153,8 +119,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_fmesher_fmesher_spherical_bsplines", (DL_FUNC) &_fmesher_fmesher_spherical_bsplines, 4},
     {"_fmesher_fmesher_fem", (DL_FUNC) &_fmesher_fmesher_fem, 5},
     {"_fmesher_fmesher_split_lines", (DL_FUNC) &_fmesher_fmesher_split_lines, 5},
-    {"_fmesher_C_matrixio_test2", (DL_FUNC) &_fmesher_C_matrixio_test2, 1},
-    {"_fmesher_C_matrixio_test", (DL_FUNC) &_fmesher_C_matrixio_test, 1},
     {NULL, NULL, 0}
 };
 
