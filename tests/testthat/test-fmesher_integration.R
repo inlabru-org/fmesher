@@ -23,21 +23,44 @@ test_that("Discrete integration", {
 test_that("Continuous integration", {
   domain <- fm_mesh_1d(2:5)
 
-  samplers <- c(3, 7)
+  samplers <- c(3, 5)
   ips_ <- data.frame(
     x = c(3:5, 3.5, 4.5),
     weight = c(1 / 6, 1 / 3, 1 / 6, 2 / 3, 2 / 3),
     .block = 1L
   )
+  ips_ <- ips_[order(ips_$x), ]
 
   ips <- fm_int(domain, samplers = samplers)
+  ips <- ips[order(ips$x), ]
   expect_identical(ips, ips_)
 
   # Check blockwise integration
-  samplers <- rbind(c(3, 7), c(0, 10))
+  samplers <- rbind(c(3, 5), c(2, 4.5))
   ips <- fm_int(domain, samplers = samplers)
   sums <- as.vector(by(ips$weight, ips$.block, sum))
-  expect_equal(sums, c(2, 3))
+  expect_equal(sums, c(2, 2.5))
+
+  # degree = 2
+  domain <- fm_mesh_1d(2:5, degree = 2)
+
+  samplers <- c(3, 5)
+  ips_ <- data.frame(
+    x = c(3:5, 3.5, 4.5),
+    weight = c(1 / 6, 1 / 3, 1 / 6, 2 / 3, 2 / 3),
+    .block = 1L
+  )
+  ips_ <- ips_[order(ips_$x), ]
+
+  ips <- fm_int(domain, samplers = samplers)
+  ips <- ips[order(ips$x), ]
+  expect_identical(ips, ips_)
+
+  # Check blockwise integration
+  samplers <- rbind(c(3, 5), c(2, 4.5))
+  ips <- fm_int(domain, samplers = samplers)
+  sums <- as.vector(by(ips$weight, ips$.block, sum))
+  expect_equal(sums, c(2, 2.5))
 })
 
 
