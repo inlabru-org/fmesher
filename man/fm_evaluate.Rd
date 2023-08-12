@@ -2,56 +2,30 @@
 % Please edit documentation in R/evaluator.R
 \name{fm_evaluate}
 \alias{fm_evaluate}
-\alias{fm_evaluate.inla.mesh}
-\alias{fm_evaluate.fm_mesh_2d}
-\alias{fm_evaluate.fm_tensor}
-\alias{fm_evaluate.inla.mesh.1d}
-\alias{fm_evaluate.fm_mesh_1d}
+\alias{fm_evaluate.default}
 \alias{fm_evaluate.fm_evaluator}
 \alias{fm_evaluator}
-\alias{fm_evaluator_mesh_2d}
-\alias{fm_evaluator_mesh_1d}
-\alias{fm_evaluator_lattice}
-\alias{fm_evaluator.inla.mesh}
 \alias{fm_evaluator.fm_mesh_2d}
-\alias{fm_evaluator.inla.mesh.1d}
 \alias{fm_evaluator.fm_mesh_1d}
 \alias{fm_evaluator.fm_tensor}
+\alias{fm_evaluator_lattice}
+\alias{fm_evaluator.inla.mesh}
+\alias{fm_evaluator.inla.mesh.1d}
 \title{Methods for projecting to/from mesh objects}
 \usage{
 fm_evaluate(...)
 
-\method{fm_evaluate}{inla.mesh}(mesh, field, ...)
-
-\method{fm_evaluate}{fm_mesh_2d}(mesh, field, ...)
-
-\method{fm_evaluate}{fm_tensor}(mesh, field, ...)
-
-\method{fm_evaluate}{inla.mesh.1d}(mesh, field, ...)
-
-\method{fm_evaluate}{fm_mesh_1d}(mesh, field, ...)
+\method{fm_evaluate}{default}(mesh, field, ...)
 
 \method{fm_evaluate}{fm_evaluator}(projector, field, ...)
 
 fm_evaluator(...)
 
-fm_evaluator_mesh_2d(
-  mesh,
-  loc = NULL,
-  weights = NULL,
-  derivatives = NULL,
-  crs = NULL,
-  ...
-)
+\method{fm_evaluator}{fm_mesh_2d}(mesh, loc = NULL, lattice = NULL, crs = NULL, ...)
 
-fm_evaluator_mesh_1d(
-  mesh,
-  loc,
-  weights = NULL,
-  derivatives = NULL,
-  method = deprecated(),
-  ...
-)
+\method{fm_evaluator}{fm_mesh_1d}(mesh, loc = NULL, xlim = mesh$interval, dims = 100, ...)
+
+\method{fm_evaluator}{fm_tensor}(x, loc, ...)
 
 fm_evaluator_lattice(
   mesh,
@@ -65,13 +39,7 @@ fm_evaluator_lattice(
 
 \method{fm_evaluator}{inla.mesh}(mesh, loc = NULL, lattice = NULL, crs = NULL, ...)
 
-\method{fm_evaluator}{fm_mesh_2d}(mesh, loc = NULL, lattice = NULL, crs = NULL, ...)
-
 \method{fm_evaluator}{inla.mesh.1d}(mesh, loc = NULL, xlim = mesh$interval, dims = 100, ...)
-
-\method{fm_evaluator}{fm_mesh_1d}(mesh, loc = NULL, xlim = mesh$interval, dims = 100, ...)
-
-\method{fm_evaluator}{fm_tensor}(x, loc, ...)
 }
 \arguments{
 \item{\dots}{Additional arguments passed on to methods.}
@@ -86,36 +54,33 @@ the function to be evaluated at the projection locations}
 \item{loc}{Projection locations.  Can be a matrix, \code{SpatialPoints},
 \code{SpatialPointsDataFrame}, \code{sf}, \code{sfc}, or \code{sfg} object.}
 
-\item{weights}{Optional weight vector}
-
-\item{derivatives}{logical; If true, also return matrices \code{dA} and \code{d2A}
-for \code{fm_mesh_1d} objects, and \code{dx}, \code{dy}, \code{dz} for \code{fm_mesh_2d}.}
+\item{lattice}{An \code{\link[=fm_lattice_2d]{fm_lattice_2d()}} object.}
 
 \item{crs}{An optional CRS or inla.CRS object associated with \code{loc}
 and/or \code{lattice}.}
 
-\item{method}{character; either "default", "nearest", "linear", or
-"quadratic". With \code{NULL} or "default", uses the object definition of the
-function space. Otherwise overrides the object definition.}
-
 \item{xlim}{X-axis limits for a lattice. For R2 meshes, defaults to covering
-the domain.}
-
-\item{ylim}{Y-axis limits for a lattice. For R2 meshes, defaults to covering
 the domain.}
 
 \item{dims}{Lattice dimensions.}
 
-\item{projection}{One of \code{c("default", "longlat", "longsinlat", "mollweide")}.}
-
-\item{lattice}{An \code{\link[=fm_lattice_2d]{fm_lattice_2d()}} object.}
-
 \item{x}{\code{\link[=fm_tensor]{fm_tensor()}} object}
+
+\item{ylim}{Y-axis limits for a lattice. For R2 meshes, defaults to covering
+the domain.}
+
+\item{projection}{One of \code{c("default", "longlat", "longsinlat", "mollweide")}.}
 }
 \description{
 Calculate evaluation information and/or evaluate a function
 defined on a mesh or function space.
 }
+\section{Methods (by class)}{
+\itemize{
+\item \code{fm_evaluate(default)}: The default method calls
+\code{proj = fm_evaluator(mesh, ...)}, followed by \code{fm_evaluate(proj, field)}.
+
+}}
 \section{Functions}{
 \itemize{
 \item \code{fm_evaluate()}: Returns the field function evaluated at the locations determined by an
@@ -129,12 +94,12 @@ For \code{fm_mesh_2d} and \code{inla.mesh}
 input, \code{proj} also contains a matrix \code{bary} and vector \code{t}, with the
 barycentric coordinates within the triangle each input location falls in.
 
+\item \code{fm_evaluator(fm_mesh_2d)}: The \code{...} arguments are passed on to \code{fm_evaluator_lattice()}
+if no \code{loc} or \code{lattice} is provided.
+
 \item \code{fm_evaluator_lattice()}: Creates an \code{\link[=fm_lattice_2d]{fm_lattice_2d()}} object, by default covering the input mesh.
 
 \item \code{fm_evaluator(inla.mesh)}: The \code{...} arguments are passed on to \code{fm_evaluator_lattice()}
-if no \code{loc} or \code{lattice} is provided.
-
-\item \code{fm_evaluator(fm_mesh_2d)}: The \code{...} arguments are passed on to \code{fm_evaluator_lattice()}
 if no \code{loc} or \code{lattice} is provided.
 
 }}

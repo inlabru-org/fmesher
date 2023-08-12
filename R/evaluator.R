@@ -58,13 +58,9 @@ fm_evaluate <- function(...) {
 }
 
 #' @export
-#' @rdname fm_evaluate
-fm_evaluate.inla.mesh <- function(mesh, field, ...) {
-  fm_evaluate.fm_mesh_2d(fm_as_mesh_2d(mesh), field = field, ...)
-}
-#' @export
-#' @rdname fm_evaluate
-fm_evaluate.fm_mesh_2d <- function(mesh, field, ...) {
+#' @describeIn fm_evaluate The default method calls
+#' `proj = fm_evaluator(mesh, ...)`, followed by `fm_evaluate(proj, field)`.
+fm_evaluate.default <- function(mesh, field, ...) {
   if (missing(field) || is.null(field)) {
     lifecycle::deprecate_stop(
       "0.0.1",
@@ -76,42 +72,6 @@ fm_evaluate.fm_mesh_2d <- function(mesh, field, ...) {
   proj <- fm_evaluator(mesh, ...)
   fm_evaluate(proj, field = field)
 }
-#' @export
-#' @rdname fm_evaluate
-fm_evaluate.fm_tensor <- function(mesh, field, ...) {
-  if (missing(field) || is.null(field)) {
-    lifecycle::deprecate_stop(
-      "0.0.1",
-      "fm_evaluate(field = ' must not be missing or NULL.')",
-      "fm_evaluator()"
-    )
-  }
-
-  proj <- fm_evaluator(mesh, ...)
-  fm_evaluate(proj, field = field)
-}
-
-
-#' @export
-#' @rdname fm_evaluate
-fm_evaluate.inla.mesh.1d <- function(mesh, field, ...) {
-  fm_evaluate.fm_mesh_1d(fm_as_mesh_1d(mesh), field = field, ...)
-}
-#' @export
-#' @rdname fm_evaluate
-fm_evaluate.fm_mesh_1d <- function(mesh, field, ...) {
-  if (missing(field) || is.null(field)) {
-    lifecycle::deprecate_stop(
-      "0.0.1",
-      "fm_evaluate(field = ' must not be missing or NULL.')",
-      "fm_evaluator()"
-    )
-  }
-
-  proj <- fm_evaluator(mesh, ...)
-  fm_evaluate(proj, field)
-}
-
 
 #' @export
 #' @rdname fm_evaluate
@@ -161,12 +121,16 @@ fm_evaluator <- function(...) {
   UseMethod("fm_evaluator")
 }
 
-
-#' @param weights Optional weight vector
+#' @title Internal helper functions for mesh field evaluation
+#'
+#' @description Methods called internally by [fm_evaluator()] methods.
+#' @param weights Optional weight vector, one weight for each location
 #' @param derivatives logical; If true, also return matrices `dA` and `d2A`
 #' for `fm_mesh_1d` objects, and `dx`, `dy`, `dz` for `fm_mesh_2d`.
+#' @inheritParams fm_evaluate
 #' @export
-#' @rdname fm_evaluate
+#' @keywords internal
+#' @name fm_evaluator_helpers
 fm_evaluator_mesh_2d <- function(mesh,
                                  loc = NULL,
                                  weights = NULL,
@@ -256,7 +220,7 @@ fm_evaluator_mesh_2d <- function(mesh,
 #' "quadratic". With `NULL` or "default", uses the object definition of the
 #' function space. Otherwise overrides the object definition.
 #' @export
-#' @rdname fm_evaluate
+#' @rdname fm_evaluator_helpers
 fm_evaluator_mesh_1d <- function(mesh,
                                  loc,
                                  weights = NULL,
@@ -658,78 +622,7 @@ fm_evaluator_mesh_1d <- function(mesh,
 
 
 
-#' @describeIn fm_evaluate
-#' Creates an [fm_lattice_2d()] object, by default covering the input mesh.
-#' @export
-fm_evaluator_lattice <- function(mesh,
-                                 xlim = NULL,
-                                 ylim = NULL,
-                                 dims = c(100, 100),
-                                 projection = NULL,
-                                 crs = NULL,
-                                 ...) {
-  stopifnot(inherits(mesh, c("fm_mesh_2d", "inla.mesh")))
-  if (fm_manifold(mesh, "R2") &&
-    (is.null(mesh$crs) || is.null(crs))) {
-    units <- "default"
-    lim <- list(
-      xlim = if (is.null(xlim)) range(mesh$loc[, 1]) else xlim,
-      ylim = if (is.null(ylim)) range(mesh$loc[, 2]) else ylim
-    )
-  } else if (fm_manifold(mesh, "S2") &&
-    (is.null(mesh$crs) || is.null(crs))) {
-    projection <-
-      match.arg(projection, c(
-        "longlat", "longsinlat",
-        "mollweide"
-      ))
-    units <- projection
-    lim <- fm_mesh_2d_map_lim(loc = mesh$loc, projection = projection)
-  } else {
-    lim <- fm_crs_bounds(crs)
-    if (fm_manifold(mesh, "R2")) {
-      lim0 <- list(
-        xlim = if (is.null(xlim)) range(mesh$loc[, 1]) else xlim,
-        ylim = if (is.null(ylim)) range(mesh$loc[, 2]) else ylim
-      )
-      lim$xlim[1] <- max(lim$xlim[1], lim0$xlim[1])
-      lim$xlim[2] <- min(lim$xlim[2], lim0$xlim[2])
-      lim$ylim[1] <- max(lim$ylim[1], lim0$ylim[1])
-      lim$ylim[2] <- min(lim$ylim[2], lim0$ylim[2])
-    }
-  }
-  if (missing(xlim) && is.null(xlim)) {
-    xlim <- lim$xlim
-  }
-  if (missing(ylim) && is.null(ylim)) {
-    ylim <- lim$ylim
-  }
-  x <- seq(xlim[1], xlim[2], length.out = dims[1])
-  y <- seq(ylim[1], ylim[2], length.out = dims[2])
-  if (is.null(mesh$crs) || is.null(crs)) {
-    lattice <- fm_lattice_2d(x = x, y = y, units = units)
-  } else {
-    lattice <- fm_lattice_2d(x = x, y = y, crs = crs)
-  }
-  lattice
-}
 
-#' @export
-#' @describeIn fm_evaluate The `...` arguments are passed on to `fm_evaluator_lattice()`
-#' if no `loc` or `lattice` is provided.
-fm_evaluator.inla.mesh <- function(mesh,
-                                   loc = NULL,
-                                   lattice = NULL,
-                                   crs = NULL,
-                                   ...) {
-  fm_evaluator.fm_mesh_2d(
-    fm_as_mesh_2d(mesh),
-    loc = loc,
-    lattice = lattice,
-    crs = crs,
-    ...
-  )
-}
 #' @export
 #' @describeIn fm_evaluate The `...` arguments are passed on to `fm_evaluator_lattice()`
 #' if no `loc` or `lattice` is provided.
@@ -770,15 +663,6 @@ fm_evaluator.fm_mesh_2d <- function(mesh,
 }
 
 
-#' @export
-#' @rdname fm_evaluate
-fm_evaluator.inla.mesh.1d <- function(mesh,
-                                      loc = NULL,
-                                      xlim = mesh$interval,
-                                      dims = 100,
-                                      ...) {
-  fm_evaluator.fm_mesh_1d(fm_as_mesh_1d(mesh), loc = loc, xlim = xlim, dims = dims, ...)
-}
 #' @export
 #' @rdname fm_evaluate
 fm_evaluator.fm_mesh_1d <- function(mesh,
@@ -835,6 +719,88 @@ fm_evaluator.fm_tensor <- function(x,
 }
 
 
+#' @describeIn fm_evaluate
+#' Creates an [fm_lattice_2d()] object, by default covering the input mesh.
+#' @export
+fm_evaluator_lattice <- function(mesh,
+                                 xlim = NULL,
+                                 ylim = NULL,
+                                 dims = c(100, 100),
+                                 projection = NULL,
+                                 crs = NULL,
+                                 ...) {
+  stopifnot(inherits(mesh, c("fm_mesh_2d", "inla.mesh")))
+  if (fm_manifold(mesh, "R2") &&
+      (is.null(mesh$crs) || is.null(crs))) {
+    units <- "default"
+    lim <- list(
+      xlim = if (is.null(xlim)) range(mesh$loc[, 1]) else xlim,
+      ylim = if (is.null(ylim)) range(mesh$loc[, 2]) else ylim
+    )
+  } else if (fm_manifold(mesh, "S2") &&
+             (is.null(mesh$crs) || is.null(crs))) {
+    projection <-
+      match.arg(projection, c(
+        "longlat", "longsinlat",
+        "mollweide"
+      ))
+    units <- projection
+    lim <- fm_mesh_2d_map_lim(loc = mesh$loc, projection = projection)
+  } else {
+    lim <- fm_crs_bounds(crs)
+    if (fm_manifold(mesh, "R2")) {
+      lim0 <- list(
+        xlim = if (is.null(xlim)) range(mesh$loc[, 1]) else xlim,
+        ylim = if (is.null(ylim)) range(mesh$loc[, 2]) else ylim
+      )
+      lim$xlim[1] <- max(lim$xlim[1], lim0$xlim[1])
+      lim$xlim[2] <- min(lim$xlim[2], lim0$xlim[2])
+      lim$ylim[1] <- max(lim$ylim[1], lim0$ylim[1])
+      lim$ylim[2] <- min(lim$ylim[2], lim0$ylim[2])
+    }
+  }
+  if (missing(xlim) && is.null(xlim)) {
+    xlim <- lim$xlim
+  }
+  if (missing(ylim) && is.null(ylim)) {
+    ylim <- lim$ylim
+  }
+  x <- seq(xlim[1], xlim[2], length.out = dims[1])
+  y <- seq(ylim[1], ylim[2], length.out = dims[2])
+  if (is.null(mesh$crs) || is.null(crs)) {
+    lattice <- fm_lattice_2d(x = x, y = y, units = units)
+  } else {
+    lattice <- fm_lattice_2d(x = x, y = y, crs = crs)
+  }
+  lattice
+}
+
+
+#' @export
+#' @describeIn fm_evaluate The `...` arguments are passed on to `fm_evaluator_lattice()`
+#' if no `loc` or `lattice` is provided.
+fm_evaluator.inla.mesh <- function(mesh,
+                                   loc = NULL,
+                                   lattice = NULL,
+                                   crs = NULL,
+                                   ...) {
+  fm_evaluator.fm_mesh_2d(
+    fm_as_mesh_2d(mesh),
+    loc = loc,
+    lattice = lattice,
+    crs = crs,
+    ...
+  )
+}
+#' @export
+#' @rdname fm_evaluate
+fm_evaluator.inla.mesh.1d <- function(mesh,
+                                      loc = NULL,
+                                      xlim = mesh$interval,
+                                      dims = 100,
+                                      ...) {
+  fm_evaluator.fm_mesh_1d(fm_as_mesh_1d(mesh), loc = loc, xlim = xlim, dims = dims, ...)
+}
 
 
 
