@@ -47,6 +47,7 @@
 #'     geom_sf(data = fm_as_sfc(fmexample$mesh), alpha = 0.2)
 #' }
 #'
+#' \dontrun{
 #' if (require("ggplot2", quietly = TRUE) &&
 #'   require("tidyterra", quietly = TRUE)) {
 #'   pxl <- fm_pixels(fmexample$mesh,
@@ -64,6 +65,7 @@
 #'   ggplot() +
 #'     geom_spatraster(data = pxl, aes(fill = val)) +
 #'     geom_sf(data = fm_as_sfc(fmexample$mesh), alpha = 0.2)
+#' }
 #' }
 fm_pixels <- function(mesh,
                       dims = c(150, 150),

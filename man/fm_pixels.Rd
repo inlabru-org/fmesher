@@ -67,6 +67,7 @@ if (require("ggplot2", quietly = TRUE)) {
     geom_sf(data = fm_as_sfc(fmexample$mesh), alpha = 0.2)
 }
 
+\dontrun{
 if (require("ggplot2", quietly = TRUE) &&
   require("tidyterra", quietly = TRUE)) {
   pxl <- fm_pixels(fmexample$mesh,
@@ -84,6 +85,7 @@ if (require("ggplot2", quietly = TRUE) &&
   ggplot() +
     geom_spatraster(data = pxl, aes(fill = val)) +
     geom_sf(data = fm_as_sfc(fmexample$mesh), alpha = 0.2)
+}
 }
 }
 \author{
