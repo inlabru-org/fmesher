@@ -553,9 +553,19 @@ fm_evaluator_mesh_1d <- function(mesh,
         j2 <- j_[ok1] + 1L
         x2 <- -x_[ok1]
         x_[ok1] <- 2 * x_[ok1]
+        if (derivatives) {
+          x2_d1 <- -x_d1[ok1]
+          x_d1[ok1] <- 2 * x_d1[ok1]
+          x2_d2 <- -x_d2[ok1]
+          x_d2[ok1] <- 2 * x_d2[ok1]
+        }
         i_ <- c(i_, i2)
         j_ <- c(j_, j2)
         x_ <- c(x_, x2)
+        if (derivatives) {
+          x_d1 <- c(x_d1, x2_d1)
+          x_d2 <- c(x_d2, x2_d1)
+        }
       }
       if (mesh$boundary[2] == "dirichlet") {
         ok <- j_ > mesh$m
@@ -579,9 +589,19 @@ fm_evaluator_mesh_1d <- function(mesh,
         j2 <- j_[ok1] - 1L
         x2 <- -x_[ok1]
         x_[ok1] <- 2 * x_[ok1]
+        if (derivatives) {
+          x2_d1 <- -x_d1[ok1]
+          x_d1[ok1] <- 2 * x_d1[ok1]
+          x2_d2 <- -x_d2[ok1]
+          x_d2[ok1] <- 2 * x_d2[ok1]
+        }
         i_ <- c(i_, i2)
         j_ <- c(j_, j2)
         x_ <- c(x_, x2)
+        if (derivatives) {
+          x_d1 <- c(x_d1, x2_d1)
+          x_d2 <- c(x_d2, x2_d1)
+        }
       }
     }
 

@@ -10,14 +10,14 @@
 #' @param order integer
 #' @param ... Currently unused
 #'
-#' @return A list with elements `...`
-#'
 #' @export
 fm_fem <- function(mesh, order = 2, ...) {
   UseMethod("fm_fem")
 }
 
 #' @rdname fm_fem
+#' @return `fm_fem.fm_mesh_1d`: A list with elements `c0`, `c1`, `g1`, `g2`.
+#' When `mesh$degree == 2`, also `g01`, `g02`, and `g12`.
 #' @export
 fm_fem.fm_mesh_1d <- function(mesh, order = 2, ...) {
   if (order > 2) {
@@ -184,10 +184,21 @@ fm_fem.fm_mesh_1d <- function(mesh, order = 2, ...) {
 #' an anisotropic operator \eqn{\nabla\cdot H \nabla}{div H grad}, where
 #' \eqn{H=\gamma I + v v^\top}{H = gamma I + v v'}.
 #' Currently (2023-08-05) the fields need to be given per vertex.
+#' @return `fm_fem.fm_mesh_2d`: A list with elements `c0`, `c1`, `g1`, `va`, `ta`,
+#' and more if `order > 1`. When `aniso` is non-NULL, also `g1aniso` matrices, etc.
+#'
 #' @export
 fm_fem.fm_mesh_2d <- function(mesh, order = 2,
                               aniso = NULL,
                               ...) {
+  if (length(order) != 1) {
+    stop("'order' must have length 1.")
+  }
+  if (!is.null(aniso)) {
+    if (!is.list(aniso) || length(aniso) != 2) {
+      stop("'aniso' must be NULL or a list of length 2.")
+    }
+  }
   result <- fmesher_fem(
     mesh_loc = mesh$loc,
     mesh_tv = mesh$graph$tv - 1L,
