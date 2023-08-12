@@ -4,4 +4,8 @@ test_that("Spherical CDT works", {
   expect_equal(fm_dof(mesh), 108)
 
   expect_equal(fm_diameter(mesh), pi)
+
+  expect_equal(fm_manifold(mesh), "S2")
+  expect_equal(fm_manifold_type(mesh), "S")
+  expect_equal(fm_manifold_dim(mesh), 2)
 })
