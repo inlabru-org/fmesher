@@ -788,16 +788,16 @@ public:
     cols(dims[1]);
     rows(dims[0]);
     if (matrixt == IOMatrixtype_symmetric) {
-      for (size_t i = 0; i < Tr.size(); i++) {
+      for (int i = 0; i < Tr.size(); i++) {
         operator()(Tr[i], Tc[i], Tv[i]);
         operator()(Tc[i], Tr[i], Tv[i]);
       }
     } else if (matrixt == IOMatrixtype_diagonal) {
-      for (size_t i = 0; i < Tr.size(); i++) {
+      for (int i = 0; i < Tr.size(); i++) {
         operator()(Tr[i], Tr[i], Tv[i]);
       }
     } else {
-      for (size_t i = 0; i < Tr.size(); i++) {
+      for (int i = 0; i < Tr.size(); i++) {
         operator()(Tr[i], Tc[i], Tv[i]);
       }
     }

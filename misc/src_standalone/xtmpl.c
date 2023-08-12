@@ -366,11 +366,15 @@ int press_ret(const char *do_what) {
   int how_long;
   if (do_what)
     printf("press return to [%s] ", do_what);
-  fgets(str, sizeof(str), stdin);
-  if (1 == sscanf(str, "%d", &how_long)) {
-    char s[10];
-    sprintf(s, "sleep %d", how_long);
-    system(s);
+  if (fgets(str, sizeof(str), stdin)) {
+    if (1 == sscanf(str, "%d", &how_long)) {
+      char s[10];
+      sprintf(s, "sleep %d", how_long);
+      int sys_result = system(s);
+      if (sys_result) {
+        return XTMPL_OK;
+      }
+    }
   }
   return XTMPL_OK;
 }
@@ -385,7 +389,10 @@ int my_fread(void *ptr, size_t size, size_t nitems, FILE *stream) {
   position = ftell(stream);
   while ((i = fread(ptr, size, nitems, stream)) != (int)nitems) {
     fseek(stream, position, SEEK_SET);
-    system("sleep 1");
+    int sys_result = system("sleep 1");
+    if (sys_result) {
+      return -1;
+    }
   }
   return i;
 }
@@ -395,7 +402,7 @@ int xtmpl_playback(const char *filename, const char *channels, double magnify) {
   int ix[4];
   int eno = 0;
   int sti = 0;
-  char *title = NULL, w[2];
+  char *title = NULL, w[7];
   int view = 1;
   char c[16];
   short int si[6], len;

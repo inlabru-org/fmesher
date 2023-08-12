@@ -12,14 +12,7 @@
 #include <vector>
 
 #ifdef FMESHER_WITH_X
-#ifdef FMESHER_NO_X
-#undef FMESHER_NO_X
-#endif
 #include "x11utils.h"
-#else
-#ifndef FMESHER_NO_X
-#define FMESHER_NO_X
-#endif
 #endif
 #include "fmesher_debuglog.h"
 #include "vector.h"
@@ -62,7 +55,7 @@ private:
                      t == TT[ TT[t][i] ][ TTi[t][i] ] */
   Matrix3double S_;
 #ifdef FMESHER_WITH_X
-  Xtmpl(*X11_);
+  Xtmpl *X11_;
   int X11_v_big_limit_;
   int verbose_;
 #endif

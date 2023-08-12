@@ -10,7 +10,9 @@
 #include "mesh.h"
 #include "meshc.h"
 #include "predicates.h"
+#ifdef FMESHER_WITH_X
 #include "x11utils.h"
+#endif
 
 #include "fmesher_debuglog.h"
 

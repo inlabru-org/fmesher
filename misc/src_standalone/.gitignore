@@ -1,0 +1,7 @@
+*.o
+*.so
+*.dll
+.deps/
+fmesher
+cmdline.c
+cmdline.h

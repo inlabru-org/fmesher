@@ -10,6 +10,6 @@ C_qinv(AA)
 \item{AA}{A sparse matrix}
 }
 \description{
-Compute sparse matrix inverse
+Requires RcppEigen which is not compiled in by default
 }
 \keyword{internal}

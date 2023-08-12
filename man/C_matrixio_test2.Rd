@@ -13,6 +13,7 @@ C_matrixio_test2(args_input)
 Test the matrix I/O system
 }
 \examples{
+\dontrun{
 A <- Matrix::sparseMatrix(i=1:4,j=4:1,x=2:5,dims=c(4,4))
 inp <- list(
   A = fm_as_dgTMatrix(A),
@@ -25,5 +26,6 @@ inp <- list(
 inp[["BdM"]] <- as(inp[["Bd"]], "unpackedMatrix")
 out <- C_matrixio_test2(args_input = inp)
 str(out)
+}
 }
 \keyword{internal}

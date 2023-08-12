@@ -18,8 +18,5 @@ _config.yml
 ^src/gitstamp$
 ^\.lintr$
 ^data-raw$
-^src/x11utils\.c$
-^src/xtmpl\.c$
-^src/cmdline\.c$
 ^doc$
 ^Meta$

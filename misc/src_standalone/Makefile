@@ -25,8 +25,8 @@ LEXTPREFIX = $(PREFIX)
 # The external libraries to link with
 #EXTLIBS1 = -L$(PREFIX)/lib -L$(LEXTPREFIX)/lib -lgsl -lgslcblas
 EXTLIBS1 = -L$(PREFIX)/lib -L$(LEXTPREFIX)/lib
-EXTLIBS2 = 
-EXTLIBS3 = 
+EXTLIBS2 =
+EXTLIBS3 =
 
 EXTLIBS = $(EXTLIBS1) $(EXTLIBS2) $(EXTLIBS3)
 
@@ -36,40 +36,34 @@ OS_TYPE:=$(shell uname -s)
 ifeq ($(OS_TYPE), Linux)
   OS_FLAGS=-DLINUX
 # Only activate X if specifically asked for:
-ifeq ($(FMESHER_USE_X), 1)
+ifeq ($(FMESHER_WITH_X), 1)
   OS_LDFLAGS=-lX11
+  OS_FLAGS:=$(OS_FLAGS) -DFMESHER_WITH_X
+  ADD_X_O = xtmpl.o x11utils.o
 else
   OS_LDFLAGS=
+  ADD_X_O =
 endif
 endif
 # What does uname -s say on Mac/OSX: Darwin.
 ifeq ($(OS_TYPE), Darwin)
   OS_FLAGS=-DMAC
-# Only activate X if specifically asked for:
-ifeq ($(FMESHER_USE_X), 1)
-    OS_LDFLAGS=-L/usr/X11R6/lib -L/usr/X11/lib -lX11
+# Activate X if specifically asked for:
+ifeq ($(FMESHER_WITH_X), 1)
+  OS_LDFLAGS=-L/usr/X11R6/lib -L/usr/X11/lib -lX11
+  OS_FLAGS:=$(OS_FLAGS) -DFMESHER_WITH_X
+  ADD_X_O = xtmpl.o x11utils.o
 else
   OS_LDFLAGS=
+  ADD_X_O =
 endif
 endif
 ifeq ($(OS_TYPE), Windows)
-  OS_FLAGS=-DWINDOWS -DFMESHER_NO_X
+  OS_FLAGS=-DWINDOWS
   OS_LDFLAGS=
+  ADD_X_O =
 endif
 
-# Deactivate X if not specifically asked for:
-ifeq ($(FMESHER_USE_X), 1)
-  OS_FLAGS:=$(OS_FLAGS) -DFMESHER_WITH_X
-else
-  ifeq ($(FMESHER_WITH_X), 1)
-    OS_FLAGS:=$(OS_FLAGS) -DFMESHER_WITH_X
-  else
-    OS_FLAGS:=$(OS_FLAGS) -DFMESHER_NO_X
-  endif
-endif
-ifeq ($(FMESHER_NO_X), 1)
-  OS_FLAGS:=$(OS_FLAGS) -DFMESHER_NO_X
-endif
 
 # Activate GSL, only needed for spherical harmonics, which can be computed with the R gsl package instead
 # OS_FLAGS:=$(OS_FLAGS) -DFMESHER_WITH_GSL
@@ -87,7 +81,7 @@ RMDIR = rmdir
 GITCOMMIT:= $(shell git log --pretty=format:"%H - %cd" | head -n1)
 INCL    = -I$(PREFIX)/include
 ##LDFLAGS = $(FLAGS) $(OS_LDFLAGS) -lgsl -lgslcblas
-LDFLAGSXX = $(FLAGS) $(OS_LDFLAGS) 
+LDFLAGSXX = $(FLAGS) $(OS_LDFLAGS)
 FFLAGS  = $(FLAGS) $(FCEXTRAFLAGS) $(INCL)
 CFLAGS  = -std=gnu99 $(FLAGS) $(OS_FLAGS) $(INCL) -I$(LEXTPREFIX)/include -DCMDLINE_VERSION="\"${GITCOMMIT}\""
 CXXFLAGS  = -std=c++14 $(FLAGS) $(OS_FLAGS) $(INCL) -I$(LEXTPREFIX)/include -DCMDLINE_VERSION="\"${GITCOMMIT}\""
@@ -95,7 +89,9 @@ CXXFLAGS  = -std=c++14 $(FLAGS) $(OS_FLAGS) $(INCL) -I$(LEXTPREFIX)/include -DCM
 FMESHER = fmesher
 FMESHER_TEST = fmesher_test
 FMESHER_TEST2 = treetest
-OBJ = xtmpl.o x11utils.o predicates.o mesh.o meshc.o vector.o ioutils.o cmdline.o basis.o locator.o trees.o fmesher_helpers.o
+
+OBJ = $(ADD_X_O) predicates.o mesh.o meshc.o vector.o ioutils.o cmdline.o \
+  basis.o locator.o trees.o fmesher_helpers.o
 CMDLINE_CH = cmdline.h cmdline.c
 all: $(FMESHER)
 
@@ -144,7 +140,7 @@ clean-deps:
 	-$(RMR) $(dir $(DEPDIR))
 
 depend: $(dir $(DEPDIR))dependencies.d
-$(dir $(DEPDIR))dependencies.d: Makefile-inla $(DEPDIR) $(wildcard *.c) $(wildcard *.cc) $(wildcard *.h)
+$(dir $(DEPDIR))dependencies.d: Makefile $(DEPDIR) $(wildcard *.c) $(wildcard *.cc) $(wildcard *.h)
 	-$(RM) $(dir $(DEPDIR))dependencies.d
 	touch $(dir $(DEPDIR))dependencies.d
 	for file in *.c *.h *.cc *.h *.tcc ; do \

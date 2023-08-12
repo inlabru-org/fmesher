@@ -116,12 +116,12 @@ public:
     /* Construct quality info */
     if (Rcpp_is_element<Rcpp::NumericVector>(options, "quality")) {
       quality = Rcpp::as<Rcpp::NumericVector>(options["quality"]);
-      for (int r = quality.rows(); r < rows; r++)
+      for (size_t r = quality.rows(); r < rows; r++)
         quality(r, 0) = rcdt_max_edge;
       quality.rows(rows); /* Make sure we have the right number of rows */
     } else {
       quality.rows(rows);
-      for (int r = 0; r < rows; r++)
+      for (size_t r = 0; r < rows; r++)
         quality(r, 0) = rcdt_max_edge;
     }
 
@@ -181,7 +181,10 @@ Mesh Rcpp_import_mesh(Rcpp::NumericMatrix mesh_loc,
 
 #include "qtool.h"
 
-//' Compute sparse matrix inverse
+//' @title Compute sparse matrix inverse
+//'
+//' @description
+//' Requires RcppEigen which is not compiled in by default
 //'
 //' @param AA A sparse matrix
 //' @keywords internal
@@ -827,6 +830,7 @@ Rcpp::List fmesher_split_lines(
 //'
 //' @param args_input Input argument list
 //' @examples
+//' \dontrun{
 //' A <- Matrix::sparseMatrix(i=1:4,j=4:1,x=2:5,dims=c(4,4))
 //' inp <- list(
 //'   A = fm_as_dgTMatrix(A),
@@ -839,7 +843,7 @@ Rcpp::List fmesher_split_lines(
 //' inp[["BdM"]] <- as(inp[["Bd"]], "unpackedMatrix")
 //' out <- C_matrixio_test2(args_input = inp)
 //' str(out)
-//' @export
+//' }
 //' @keywords internal
 // [[Rcpp::export]]
 Rcpp::List C_matrixio_test2(Rcpp::List args_input) {
@@ -854,6 +858,7 @@ Rcpp::List C_matrixio_test2(Rcpp::List args_input) {
 //'
 //' @param args_input Input argument list
 //' @examples
+//' \dontrun{
 //' A <- Matrix::sparseMatrix(i=1:4,j=4:1,x=2:5,dims=c(4,4))
 //' out <- C_matrixio_test(args_input=list(
 //'   A = fm_as_dgTMatrix(A),
@@ -866,7 +871,7 @@ Rcpp::List C_matrixio_test2(Rcpp::List args_input) {
 //' Aout <- fm_as_dgTMatrix(out[["Ad"]])
 //' A
 //' Aout
-//' @export
+//' }
 //' @keywords internal
 // [[Rcpp::export]]
      Rcpp::List C_matrixio_test(Rcpp::List args_input) {
