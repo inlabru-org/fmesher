@@ -20,6 +20,8 @@ test_that("fm_nonconvex_hull works", {
 })
 
 test_that("fm_nonconvex_hull_inla works", {
+  skip_if_not_installed("splancs")
+
   mat <- matrix(c(1:6, 6:1), 6, 2, byrow = TRUE)
   expect_error(
     {
