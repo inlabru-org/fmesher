@@ -79,20 +79,35 @@ fmesher_install(repo = "inlabru-org/fmesher", debug = TRUE)
 
 [https://inlabru-org.github.io/fmesher/](https://inlabru-org.github.io/fmesher/)
 
-## Example
+## Examples
 
-```{r example}
+### 2D triangular meshes
+
+Includes a port of inla mesh `inla.mesh.create` (as `fm_rcdt_2d_inla()`) and
+`inla.mesh.2d` interfaces.
+```{r example2}
 suppressPackageStartupMessages(library(fmesher))
+suppressPackageStartupMessages(library(ggplot2))
 
-# Port of the old inla mesh inla.mesh.create interface:
-(mesh <- fm_rcdt_2d_inla(
-  cbind(0, 0),
-  extend = list(offset = 1, n = 16L),
-  refine = list(max.edge = 0.5)
+(mesh <- fm_mesh_2d_inla(
+  boundary = fm_extensions(cbind(0, 0), convex = c(1, 1.5)),
+  max.edge = c(0.5, 1)
 ))
 
-plot(mesh)
+ggplot() + geom_fm(data = mesh) + theme_minimal()
+```
 
+### 1D B-spline function spaces
+
+```{r example1}
+(mesh <- fm_mesh_1d(c(1, 2, 3, 4, 6), boundary = "free", degree = 2))
+
+ggplot() + geom_fm(data = mesh)
+```
+
+### Extended helper methods for CRS handling
+
+```{r crs}
 # longlat for a spherical version of the Earth
 print(fm_crs("longlat_globe"))
 

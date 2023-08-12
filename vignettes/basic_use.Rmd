@@ -42,7 +42,7 @@ plot(mesh2, axes = TRUE)
 (mesh1 <- fm_mesh_1d(
   seq(0, 10, by = 2.5),
   boundary = "free", # c("neumann", "dirichlet"),
-  degree = 2 # need to fix fm_bary and fm_evaluator_1d to work correctly for degree = 2
+  degree = 2
 ))
 ```
 

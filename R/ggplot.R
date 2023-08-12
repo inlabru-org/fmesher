@@ -216,18 +216,21 @@ geom_fm.fm_segm <- function(mapping = NULL,
 #' @describeIn geom_fm
 #' Evaluates and plots the basis functions defined by an [fm_mesh_1d()] object.
 #'
+#' @param xlim numeric 2-vector; specifies the interval for which to compute
+#' functions. Default is `data$interval`
 #' @param knots logical; if true, show the spline knot locations
 #' @param derivatives logical; if true, draw first order derivatives instead of
 #' function values
 #' @param weights numeric vector; if provided, draw weighted basis functions and
-#' the resulting function.
+#' the resulting weighted sum.
 #' @export
 #' @importFrom utils modifyList
 #' @examples
 #' if (require("ggplot2", quietly = TRUE)) {
 #'   m <- fm_mesh_1d(
 #'     c(1, 2, 3, 5, 7),
-#'     boundary = c("dirichlet", "neumann")
+#'     boundary = c("dirichlet", "neumann"),
+#'     degree = 2
 #'   )
 #'   print(ggplot() +
 #'     geom_fm(data = m))

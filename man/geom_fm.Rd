@@ -49,13 +49,16 @@ geom_fm(mapping = NULL, data = NULL, ...)
 
 \item{crs}{Optional crs to transform the object to before plotting.}
 
+\item{xlim}{numeric 2-vector; specifies the interval for which to compute
+functions. Default is \code{data$interval}}
+
 \item{knots}{logical; if true, show the spline knot locations}
 
 \item{derivatives}{logical; if true, draw first order derivatives instead of
 function values}
 
 \item{weights}{numeric vector; if provided, draw weighted basis functions and
-the resulting function.}
+the resulting weighted sum.}
 }
 \value{
 A combination of \code{ggplot2} geoms.
@@ -120,7 +123,8 @@ if (require("ggplot2", quietly = TRUE)) {
 if (require("ggplot2", quietly = TRUE)) {
   m <- fm_mesh_1d(
     c(1, 2, 3, 5, 7),
-    boundary = c("dirichlet", "neumann")
+    boundary = c("dirichlet", "neumann"),
+    degree = 2
   )
   print(ggplot() +
     geom_fm(data = m))

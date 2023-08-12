@@ -76,32 +76,54 @@ fmesher_install(repo = "inlabru-org/fmesher", debug = TRUE)
 
 <https://inlabru-org.github.io/fmesher/>
 
-## Example
+## Examples
+
+### 2D triangular meshes
+
+Includes a port of inla mesh `inla.mesh.create` (as `fm_rcdt_2d_inla()`)
+and `inla.mesh.2d` interfaces.
 
 ``` r
 suppressPackageStartupMessages(library(fmesher))
+suppressPackageStartupMessages(library(ggplot2))
 
-# Port of the old inla mesh inla.mesh.create interface:
-(mesh <- fm_rcdt_2d_inla(
-  cbind(0, 0),
-  extend = list(offset = 1, n = 16L),
-  refine = list(max.edge = 0.5)
+(mesh <- fm_mesh_2d_inla(
+  boundary = fm_extensions(cbind(0, 0), convex = c(1, 1.5)),
+  max.edge = c(0.5, 1)
 ))
 #> fm_mesh_2d object:
 #>   Manifold:  R2
-#>   V / E / T: 43 / 110 / 68
+#>   V / E / T: 57 / 152 / 96
 #>   Euler char:    1
-#>   Constraints:   16 boundary edges (1 group: 0), 0 interior edges
-#>   Bounding box: (-1, 1) x (-1, 1) x (0,0)
-#>   Basis d.o.f.:  43
+#>   Constraints:   16 boundary edges (1 group: 1), 16 interior edges (1 group: 1)
+#>   Bounding box: (-1.499887, 1.499887) x (-1.499887, 1.499887) x (0,0)
+#>   Basis d.o.f.:  57
 
-plot(mesh)
+ggplot() + geom_fm(data = mesh) + theme_minimal()
 ```
 
-<img src="man/figures/README-example-1.png" width="100%" />
+<img src="man/figures/README-example2-1.png" width="100%" />
+
+### 1D B-spline function spaces
 
 ``` r
+(mesh <- fm_mesh_1d(c(1, 2, 3, 4, 6), boundary = "free", degree = 2))
+#> fm_mesh_1d object:
+#>   Manifold:  R1
+#>   #{knots}:  5
+#>   Interval:  (1, 6)
+#>   Boundary:  (free, free)
+#>   B-spline degree:   2
+#>   Basis d.o.f.:  6
 
+ggplot() + geom_fm(data = mesh)
+```
+
+<img src="man/figures/README-example1-1.png" width="100%" />
+
+### Extended helper methods for CRS handling
+
+``` r
 # longlat for a spherical version of the Earth
 print(fm_crs("longlat_globe"))
 #> Coordinate Reference System:
