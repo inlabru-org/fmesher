@@ -110,7 +110,7 @@ Lindgren</h4>
 <p><img src="basic_use_files/figure-html/basic2-1.png" width="672"></p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">(</span><span class="va">mesh1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_mesh_1d.html">fm_mesh_1d</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">10</span>, by <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">7</span>, <span class="fl">10</span><span class="op">)</span>,</span>
 <span>  boundary <span class="op">=</span> <span class="st">"free"</span>, <span class="co"># c("neumann", "dirichlet"),</span></span>
 <span>  degree <span class="op">=</span> <span class="fl">2</span></span>
 <span><span class="op">)</span><span class="op">)</span></span>
@@ -164,13 +164,13 @@ Lindgren</h4>
 <span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">bary1</span><span class="op">$</span><span class="va">t</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">bary1</span><span class="op">$</span><span class="va">bary</span><span class="op">)</span></span>
-<span><span class="co">#&gt;                        u</span></span>
-<span><span class="co">#&gt; [1,] 1.800000 -0.8000000</span></span>
-<span><span class="co">#&gt; [2,] 1.794394 -0.7943944</span></span>
-<span><span class="co">#&gt; [3,] 1.788789 -0.7887888</span></span>
-<span><span class="co">#&gt; [4,] 1.783183 -0.7831832</span></span>
-<span><span class="co">#&gt; [5,] 1.777578 -0.7775776</span></span>
-<span><span class="co">#&gt; [6,] 1.771972 -0.7719720</span></span>
+<span><span class="co">#&gt;                       u</span></span>
+<span><span class="co">#&gt; [1,] 2.000000 -1.000000</span></span>
+<span><span class="co">#&gt; [2,] 1.992993 -0.992993</span></span>
+<span><span class="co">#&gt; [3,] 1.985986 -0.985986</span></span>
+<span><span class="co">#&gt; [4,] 1.978979 -0.978979</span></span>
+<span><span class="co">#&gt; [5,] 1.971972 -0.971972</span></span>
+<span><span class="co">#&gt; [6,] 1.964965 -0.964965</span></span>
 <span></span>
 <span><span class="co"># Construct an evaluator object.</span></span>
 <span><span class="va">evaluator1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_evaluate.html">fm_evaluator</a></span><span class="op">(</span><span class="va">mesh1</span>, loc <span class="op">=</span> <span class="va">pts1</span><span class="op">)</span></span>
@@ -208,8 +208,8 @@ Lindgren</h4>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="../reference/geom_fm.html">geom_fm</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mesh1</span>, weights <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fu"><a href="../reference/fm_dof.html">fm_dof</a></span><span class="op">(</span><span class="va">mesh1</span><span class="op">)</span>, <span class="fl">5</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="../reference/geom_fm.html">geom_fm</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mesh1</span>, linetype <span class="op">=</span> <span class="fl">2</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="../reference/geom_fm.html">geom_fm</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mesh1</span>, weights <span class="op">=</span> <span class="va">field1</span> <span class="op">+</span> <span class="fl">2</span>, xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2</span>, <span class="fl">12</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/geom_fm.html">geom_fm</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mesh1</span>, linetype <span class="op">=</span> <span class="fl">2</span>, alpha <span class="op">=</span> <span class="fl">0.5</span>, xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2</span>, <span class="fl">12</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="basic_use_files/figure-html/unnamed-chunk-3-2.png" width="672"></p>
 </div>
 <div class="section level3">
