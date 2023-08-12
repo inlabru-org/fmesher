@@ -67,19 +67,7 @@ defined on a mesh or function space.</p>
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fm_evaluate</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># S3 method for inla.mesh</span></span>
-<span><span class="fu">fm_evaluate</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">field</span>, <span class="va">...</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S3 method for fm_mesh_2d</span></span>
-<span><span class="fu">fm_evaluate</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">field</span>, <span class="va">...</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S3 method for fm_tensor</span></span>
-<span><span class="fu">fm_evaluate</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">field</span>, <span class="va">...</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S3 method for inla.mesh.1d</span></span>
-<span><span class="fu">fm_evaluate</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">field</span>, <span class="va">...</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S3 method for fm_mesh_1d</span></span>
+<span><span class="co"># S3 method for default</span></span>
 <span><span class="fu">fm_evaluate</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">field</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for fm_evaluator</span></span>
@@ -87,23 +75,14 @@ defined on a mesh or function space.</p>
 <span></span>
 <span><span class="fu">fm_evaluator</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">fm_evaluator_mesh_2d</span><span class="op">(</span></span>
-<span>  <span class="va">mesh</span>,</span>
-<span>  loc <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  weights <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  derivatives <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  crs <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  <span class="va">...</span></span>
-<span><span class="op">)</span></span>
+<span><span class="co"># S3 method for fm_mesh_2d</span></span>
+<span><span class="fu">fm_evaluator</span><span class="op">(</span><span class="va">mesh</span>, loc <span class="op">=</span> <span class="cn">NULL</span>, lattice <span class="op">=</span> <span class="cn">NULL</span>, crs <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">fm_evaluator_mesh_1d</span><span class="op">(</span></span>
-<span>  <span class="va">mesh</span>,</span>
-<span>  <span class="va">loc</span>,</span>
-<span>  weights <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  derivatives <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  method <span class="op">=</span> <span class="fu">deprecated</span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  <span class="va">...</span></span>
-<span><span class="op">)</span></span>
+<span><span class="co"># S3 method for fm_mesh_1d</span></span>
+<span><span class="fu">fm_evaluator</span><span class="op">(</span><span class="va">mesh</span>, loc <span class="op">=</span> <span class="cn">NULL</span>, xlim <span class="op">=</span> <span class="va">mesh</span><span class="op">$</span><span class="va">interval</span>, dims <span class="op">=</span> <span class="fl">100</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for fm_tensor</span></span>
+<span><span class="fu">fm_evaluator</span><span class="op">(</span><span class="va">x</span>, <span class="va">loc</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">fm_evaluator_lattice</span><span class="op">(</span></span>
 <span>  <span class="va">mesh</span>,</span>
@@ -118,17 +97,8 @@ defined on a mesh or function space.</p>
 <span><span class="co"># S3 method for inla.mesh</span></span>
 <span><span class="fu">fm_evaluator</span><span class="op">(</span><span class="va">mesh</span>, loc <span class="op">=</span> <span class="cn">NULL</span>, lattice <span class="op">=</span> <span class="cn">NULL</span>, crs <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># S3 method for fm_mesh_2d</span></span>
-<span><span class="fu">fm_evaluator</span><span class="op">(</span><span class="va">mesh</span>, loc <span class="op">=</span> <span class="cn">NULL</span>, lattice <span class="op">=</span> <span class="cn">NULL</span>, crs <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
-<span></span>
 <span><span class="co"># S3 method for inla.mesh.1d</span></span>
-<span><span class="fu">fm_evaluator</span><span class="op">(</span><span class="va">mesh</span>, loc <span class="op">=</span> <span class="cn">NULL</span>, xlim <span class="op">=</span> <span class="va">mesh</span><span class="op">$</span><span class="va">interval</span>, dims <span class="op">=</span> <span class="fl">100</span>, <span class="va">...</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S3 method for fm_mesh_1d</span></span>
-<span><span class="fu">fm_evaluator</span><span class="op">(</span><span class="va">mesh</span>, loc <span class="op">=</span> <span class="cn">NULL</span>, xlim <span class="op">=</span> <span class="va">mesh</span><span class="op">$</span><span class="va">interval</span>, dims <span class="op">=</span> <span class="fl">100</span>, <span class="va">...</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S3 method for fm_tensor</span></span>
-<span><span class="fu">fm_evaluator</span><span class="op">(</span><span class="va">x</span>, <span class="va">loc</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">fm_evaluator</span><span class="op">(</span><span class="va">mesh</span>, loc <span class="op">=</span> <span class="cn">NULL</span>, xlim <span class="op">=</span> <span class="va">mesh</span><span class="op">$</span><span class="va">interval</span>, dims <span class="op">=</span> <span class="fl">100</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -155,13 +125,8 @@ the function to be evaluated at the projection locations</p></dd>
 <code>SpatialPointsDataFrame</code>, <code>sf</code>, <code>sfc</code>, or <code>sfg</code> object.</p></dd>
 
 
-<dt>weights</dt>
-<dd><p>Optional weight vector</p></dd>
-
-
-<dt>derivatives</dt>
-<dd><p>logical; If true, also return matrices <code>dA</code> and <code>d2A</code>
-for <code>fm_mesh_1d</code> objects, and <code>dx</code>, <code>dy</code>, <code>dz</code> for <code>fm_mesh_2d</code>.</p></dd>
+<dt>lattice</dt>
+<dd><p>An <code><a href="fm_lattice_2d.html">fm_lattice_2d()</a></code> object.</p></dd>
 
 
 <dt>crs</dt>
@@ -169,19 +134,8 @@ for <code>fm_mesh_1d</code> objects, and <code>dx</code>, <code>dy</code>, <code
 and/or <code>lattice</code>.</p></dd>
 
 
-<dt>method</dt>
-<dd><p>character; either "default", "nearest", "linear", or
-"quadratic". With <code>NULL</code> or "default", uses the object definition of the
-function space. Otherwise overrides the object definition.</p></dd>
-
-
 <dt>xlim</dt>
 <dd><p>X-axis limits for a lattice. For R2 meshes, defaults to covering
-the domain.</p></dd>
-
-
-<dt>ylim</dt>
-<dd><p>Y-axis limits for a lattice. For R2 meshes, defaults to covering
 the domain.</p></dd>
 
 
@@ -189,18 +143,25 @@ the domain.</p></dd>
 <dd><p>Lattice dimensions.</p></dd>
 
 
-<dt>projection</dt>
-<dd><p>One of <code>c("default", "longlat", "longsinlat", "mollweide")</code>.</p></dd>
-
-
-<dt>lattice</dt>
-<dd><p>An <code><a href="fm_lattice_2d.html">fm_lattice_2d()</a></code> object.</p></dd>
-
-
 <dt>x</dt>
 <dd><p><code><a href="fm_tensor.html">fm_tensor()</a></code> object</p></dd>
 
+
+<dt>ylim</dt>
+<dd><p>Y-axis limits for a lattice. For R2 meshes, defaults to covering
+the domain.</p></dd>
+
+
+<dt>projection</dt>
+<dd><p>One of <code>c("default", "longlat", "longsinlat", "mollweide")</code>.</p></dd>
+
 </dl></div>
+    <div class="section level2">
+    <h2 id="methods-by-class-">Methods (by class)<a class="anchor" aria-label="anchor" href="#methods-by-class-"></a></h2>
+    
+<ul><li><p><code>fm_evaluate(default)</code>: The default method calls
+<code>proj = fm_evaluator(mesh, ...)</code>, followed by <code>fm_evaluate(proj, field)</code>.</p></li>
+</ul></div>
     <div class="section level2">
     <h2 id="functions">Functions<a class="anchor" aria-label="anchor" href="#functions"></a></h2>
     
@@ -213,10 +174,10 @@ that indicates which locations were mappable to the input mesh.
 For <code>fm_mesh_2d</code> and <code>inla.mesh</code>
 input, <code>proj</code> also contains a matrix <code>bary</code> and vector <code>t</code>, with the
 barycentric coordinates within the triangle each input location falls in.</p></li>
+<li><p><code>fm_evaluator(fm_mesh_2d)</code>: The <code>...</code> arguments are passed on to <code>fm_evaluator_lattice()</code>
+if no <code>loc</code> or <code>lattice</code> is provided.</p></li>
 <li><p><code>fm_evaluator_lattice()</code>: Creates an <code><a href="fm_lattice_2d.html">fm_lattice_2d()</a></code> object, by default covering the input mesh.</p></li>
 <li><p><code>fm_evaluator(inla.mesh)</code>: The <code>...</code> arguments are passed on to <code>fm_evaluator_lattice()</code>
-if no <code>loc</code> or <code>lattice</code> is provided.</p></li>
-<li><p><code>fm_evaluator(fm_mesh_2d)</code>: The <code>...</code> arguments are passed on to <code>fm_evaluator_lattice()</code>
 if no <code>loc</code> or <code>lattice</code> is provided.</p></li>
 </ul></div>
     <div class="section level2">
