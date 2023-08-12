@@ -1,5 +1,5 @@
 test_that("Basic 2d FEM works", {
-  mesh <- fm_rcdt_2d_inla(globe = 1, refine = list(max.edge = 0.25))
+  mesh <- fm_rcdt_2d_inla(globe = 1, refine = list(max.edge = 0.5))
 
   fem1 <- fm_fem(mesh, order = 2)
   names_fem <- c("b1", "c0", "c1", "g1", "g2", "k1", "k2", "ta", "va")
