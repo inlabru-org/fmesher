@@ -103,9 +103,12 @@ Currently (2023-08-05) the fields need to be given per vertex.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>A list with elements <code>...</code></p>
+<p><code>fm_fem.fm_mesh_1d</code>: A list with elements <code>c0</code>, <code>c1</code>, <code>g1</code>, <code>g2</code>.
+When <code>mesh$degree == 2</code>, also <code>g01</code>, <code>g02</code>, and <code>g12</code>.</p>
 
 
+<p><code>fm_fem.fm_mesh_2d</code>: A list with elements <code>c0</code>, <code>c1</code>, <code>g1</code>, <code>va</code>, <code>ta</code>,
+and more if <code>order &gt; 1</code>. When <code>aniso</code> is non-NULL, also <code>g1aniso</code> matrices, etc.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
