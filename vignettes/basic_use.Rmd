@@ -40,7 +40,7 @@ plot(mesh2, axes = TRUE)
 
 ```{r basic1}
 (mesh1 <- fm_mesh_1d(
-  seq(0, 10, by = 2.5),
+  c(0, 2, 4, 7, 10),
   boundary = "free", # c("neumann", "dirichlet"),
   degree = 2
 ))
@@ -108,8 +108,8 @@ ggplot() +
   geom_fm(data = mesh2)
 
 ggplot() +
-  geom_fm(data = mesh1, weights = rnorm(fm_dof(mesh1), 5, 2)) +
-  geom_fm(data = mesh1, linetype = 2, alpha = 0.5)
+  geom_fm(data = mesh1, weights = field1 + 2, xlim = c(-2, 12)) +
+  geom_fm(data = mesh1, linetype = 2, alpha = 0.5, xlim = c(-2, 12))
 ```
 
 ### `rgl` graphics

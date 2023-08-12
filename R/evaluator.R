@@ -546,17 +546,16 @@ fm_evaluator_mesh_1d <- function(mesh,
         j_[ok] <- j_[ok] - 1L
       } else if ((mesh$boundary[1] == "free") &&
         (mesh$free.clamped[1])) {
-        # new1 <- 1 + 2
-        # new2 <- 2 - 1
+        # new1 <- 2 * basis1
+        # new2 <- basis2 - basis1
         ok1 <- j_ == 1L
-        ok2 <- j_ == 2L
-        j1 <- j_[ok2] - 1L
-        x1 <- x_[ok2]
+        i2 <- i_[ok1]
         j2 <- j_[ok1] + 1L
         x2 <- -x_[ok1]
-        i_ <- c(i_, i_[ok2], i_[ok1])
-        j_ <- c(j_, j1, j2)
-        x_ <- c(x_, x1, x2)
+        x_[ok1] <- 2 * x_[ok1]
+        i_ <- c(i_, i2)
+        j_ <- c(j_, j2)
+        x_ <- c(x_, x2)
       }
       if (mesh$boundary[2] == "dirichlet") {
         ok <- j_ > mesh$m
@@ -573,15 +572,16 @@ fm_evaluator_mesh_1d <- function(mesh,
         (mesh$free.clamped[2])) {
         # new_m <- m + {m-1};     m = 1, m - 1 = 2
         # new_{m-1} <- {m-1} - m; m = 1, m - 1 = 2
+        # new1 <- 2 * basis1
+        # new2 <- basis2 - basis1
         ok1 <- j_ == mesh$m
-        ok2 <- j_ == mesh$m - 1L
-        j1 <- j_[ok2] + 1L
-        x1 <- x_[ok2]
+        i2 <- i_[ok1]
         j2 <- j_[ok1] - 1L
         x2 <- -x_[ok1]
-        i_ <- c(i_, i_[ok2], i_[ok1])
-        j_ <- c(j_, j1, j2)
-        x_ <- c(x_, x1, x2)
+        x_[ok1] <- 2 * x_[ok1]
+        i_ <- c(i_, i2)
+        j_ <- c(j_, j2)
+        x_ <- c(x_, x2)
       }
     }
 
@@ -1183,17 +1183,20 @@ fm_raw_basis <- function(mesh,
       if (length(boundary) == 1) {
         boundary <- rep(boundary, 2)
       }
+      if (length(free.clamped) == 1) {
+        free.clamped <- rep(free.clamped, 2)
+      }
       mesh1x <-
         internal_spline_mesh_1d(
           range(mesh$loc[, 1]),
           n[1], degree[1],
-          boundary[1], free.clamped
+          boundary[1], free.clamped[1]
         )
       mesh1y <-
         internal_spline_mesh_1d(
           range(mesh$loc[, 2]),
           n[2], degree[2],
-          boundary[2], free.clamped
+          boundary[2], free.clamped[2]
         )
       basis <-
         fm_row_kron(
