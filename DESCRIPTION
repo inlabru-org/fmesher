@@ -39,7 +39,6 @@ Imports:
     withr,
     Rcpp
 Suggests:
-    covr,
     ggplot2,
     ggpolypath,
     inlabru (>= 2.8.0),
