@@ -463,12 +463,22 @@ fm_evaluator_mesh_1d <- function(mesh,
       i.r <- seq_along(info$t[, 1])
       j.r <- info$t[, 1]
       x.r <- (info$bary[, 1] * d[info$t[, 2]] / d2[info$t[, 1]] * info$bary[, 1])
+      if (derivatives) {
+        x.d1.r <- -(2 / d2[info$t[, 2]] * info$bary[, 1])
+        x.d2.r <- (2 / d2[info$t[, 1]] / d[info$t[, 2]])
+      }
       ## Middle intervals for each basis function:
       i.m <- seq_along(info$t[, 1])
       j.m <- info$t[, 1] + 1L
       x.m <- (1 - (info$bary[, 1] * d[info$t[, 2]] / d2[info$t[, 1]] * info$bary[, 1] +
         info$bary[, 2] * d[info$t[, 2]] / d2[info$t[, 2]] * info$bary[, 2]
       ))
+      if (derivatives) {
+        x.d1.m <- (2 / d2[info$t[, 1]] * info$bary[, 1]) -
+          (2 / d2[info$t[, 2]] * info$bary[, 2])
+        x.d2.m <- -(2 / d2[info$t[, 1]] / info$t[, 2]) -
+          (2 / d2[info$t[, 2]] / info$t[, 2])
+      }
     } else {
       d2 <- c(2 * d[1], 2 * d[1], d2, 2 * d[length(d)], 2 * d[length(d)])
       d <- c(d[1], d[2], d, d[length(d)], d[length(d)])
@@ -487,14 +497,20 @@ fm_evaluator_mesh_1d <- function(mesh,
       i.r <- seq_along(loc)[ok]
       j.r <- index[, 1] - 1L
       x.r <- (bary[, 1] * d[index[, 2]] / d2[index[, 1]] * bary[, 1])
+      if (derivatives) {
+        x.d1.r <- -(2 / d2[index[, 1]] * bary[, 1])
+        x.d2.r <- (2 / d2[index[, 1]] / d[index[, 2]])
+      }
       ## Middle intervals for each basis function:
       i.m <- seq_along(loc)[ok]
       j.m <- index[, 1]
       x.m <- (1 - (bary[, 1] * d[index[, 2]] / d2[index[, 1]] * bary[, 1] +
         bary[, 2] * d[index[, 2]] / d2[index[, 2]] * bary[, 2]
       ))
-      if (any(!ok)) {
-        # Handle points outside the interval
+      if (derivatives) {
+        x.d1.m <- (2 / d2[index[, 1]] * bary[, 1]) -  (2 / d2[index[, 2]] * bary[, 2])
+        x.d2.m <-  -(2 / d2[index[, 1]] / d[index[, 2]]) -
+          (2 / d2[index[, 2]] / d[index[, 2]])
       }
     }
 
@@ -541,7 +557,7 @@ fm_evaluator_mesh_1d <- function(mesh,
         0.5 - (info$bary[ok, 2] - 1)
       )
       if (derivatives) {
-        x_d1_r <- rep(c(1, 1) / d[length(d)], each = sum(ok))
+        x_d1_r <- rep(c(1, -1) / d[length(d)], each = sum(ok))
         x_d2_r <- rep(c(0, 0), each = sum(ok))
       }
 
