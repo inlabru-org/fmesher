@@ -1,7 +1,8 @@
 test_that("Flat CDT works", {
   mesh <- fm_rcdt_2d_inla(cbind(0, 0),
-                          extend = list(offset = 1, n = 16),
-                          refine = list(max.edge = 0.25))
+    extend = list(offset = 1, n = 16),
+    refine = list(max.edge = 0.25)
+  )
 
   expect_equal(fm_dof(mesh), 135)
 

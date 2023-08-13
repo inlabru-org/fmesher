@@ -99,7 +99,9 @@ suppressPackageStartupMessages(library(ggplot2))
 #>   Bounding box: (-1.499887, 1.499887) x (-1.499887, 1.499887) x (0,0)
 #>   Basis d.o.f.:  57
 
-ggplot() + geom_fm(data = mesh) + theme_minimal()
+ggplot() +
+  geom_fm(data = mesh) +
+  theme_minimal()
 ```
 
 <img src="man/figures/README-example2-1.png" width="100%" />
@@ -116,7 +118,8 @@ ggplot() + geom_fm(data = mesh) + theme_minimal()
 #>   B-spline degree:   2
 #>   Basis d.o.f.:  6
 
-ggplot() + geom_fm(data = mesh)
+ggplot() +
+  geom_fm(data = mesh)
 ```
 
 <img src="man/figures/README-example1-1.png" width="100%" />

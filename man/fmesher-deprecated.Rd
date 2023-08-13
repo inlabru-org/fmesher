@@ -130,11 +130,9 @@ is required but not available
 
 }}
 \examples{
-\dontrun{
-if (interactive()) {
+if (fm_safe_sp()) {
   s <- sp::SpatialPoints(matrix(1:6, 3, 2), proj4string = fm_CRS("sphere"))
   fm_CRS(s)
-}
 }
 }
 \seealso{

@@ -121,10 +121,8 @@ check_package_version_and_load <-
 #' message if `quietly` is `FALSE`. Otherwise returns `TRUE`
 #' @export
 #' @examples
-#' \dontrun{
 #' if (fm_safe_sp()) {
 #'   # Run sp dependent calculations
-#' }
 #' }
 #' @keywords internal
 fm_safe_sp <- function(quietly = FALSE,

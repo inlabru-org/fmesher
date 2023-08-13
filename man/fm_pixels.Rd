@@ -67,7 +67,7 @@ if (require("ggplot2", quietly = TRUE)) {
     geom_sf(data = fm_as_sfc(fmexample$mesh), alpha = 0.2)
 }
 
-\dontrun{
+\donttest{
 if (require("ggplot2", quietly = TRUE) &&
   require("tidyterra", quietly = TRUE)) {
   pxl <- fm_pixels(fmexample$mesh,

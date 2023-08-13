@@ -19,9 +19,7 @@ plot_PolySet(x, projection, add = FALSE, ...)
 Plot a projected PolySet
 }
 \examples{
-\dontrun{
-data(worldLL, package = "PBSmapping")
-plot_PolySet(worldLL, globeproj("longlat"), add = FALSE)
+# data(worldLL, package = "PBSmapping")
+# plot_PolySet(worldLL, globeproj("longlat"), add = FALSE)
 }
-
-}
+\keyword{internal}

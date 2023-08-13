@@ -30,10 +30,8 @@ This function is only needed for backwards compatibility with \code{sp} versions
 before \code{2.0-0}.
 }
 \examples{
-\dontrun{
 if (fm_safe_sp()) {
   # Run sp dependent calculations
-}
 }
 }
 \keyword{internal}

@@ -94,7 +94,9 @@ suppressPackageStartupMessages(library(ggplot2))
   max.edge = c(0.5, 1)
 ))
 
-ggplot() + geom_fm(data = mesh) + theme_minimal()
+ggplot() +
+  geom_fm(data = mesh) +
+  theme_minimal()
 ```
 
 ### 1D B-spline function spaces
@@ -102,7 +104,8 @@ ggplot() + geom_fm(data = mesh) + theme_minimal()
 ```{r example1}
 (mesh <- fm_mesh_1d(c(1, 2, 3, 4, 6), boundary = "free", degree = 2))
 
-ggplot() + geom_fm(data = mesh)
+ggplot() +
+  geom_fm(data = mesh)
 ```
 
 ### Extended helper methods for CRS handling

@@ -472,8 +472,8 @@ fm_evaluator_mesh_1d <- function(mesh,
         bary[, 2] * d[index[, 2]] / d2[index[, 2]] * bary[, 2]
       ))
       if (derivatives) {
-        x.d1.m <- (2 / d2[index[, 1]] * bary[, 1]) -  (2 / d2[index[, 2]] * bary[, 2])
-        x.d2.m <-  -(2 / d2[index[, 1]] / d[index[, 2]]) -
+        x.d1.m <- (2 / d2[index[, 1]] * bary[, 1]) - (2 / d2[index[, 2]] * bary[, 2])
+        x.d2.m <- -(2 / d2[index[, 1]] / d[index[, 2]]) -
           (2 / d2[index[, 2]] / d[index[, 2]])
       }
     }
@@ -751,14 +751,14 @@ fm_evaluator_lattice <- function(mesh,
                                  ...) {
   stopifnot(inherits(mesh, c("fm_mesh_2d", "inla.mesh")))
   if (fm_manifold(mesh, "R2") &&
-      (is.null(mesh$crs) || is.null(crs))) {
+    (is.null(mesh$crs) || is.null(crs))) {
     units <- "default"
     lim <- list(
       xlim = if (is.null(xlim)) range(mesh$loc[, 1]) else xlim,
       ylim = if (is.null(ylim)) range(mesh$loc[, 2]) else ylim
     )
   } else if (fm_manifold(mesh, "S2") &&
-             (is.null(mesh$crs) || is.null(crs))) {
+    (is.null(mesh$crs) || is.null(crs))) {
     projection <-
       match.arg(projection, c(
         "longlat", "longsinlat",

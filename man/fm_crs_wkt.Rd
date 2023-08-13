@@ -189,7 +189,7 @@ a list with elements \code{type} ("rectangle" or "ellipse"), \code{xlim}, \code{
 
 }}
 \examples{
-\dontrun{
+\donttest{
 c1 <- fm_crs("globe")
 fm_crs_get_lengthunit(c1)
 c2 <- fm_crs_set_lengthunit(c1, "m")

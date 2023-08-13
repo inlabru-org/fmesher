@@ -10,8 +10,10 @@ test_that("Basic 2d FEM works", {
     regexp = "must be NULL or a list of length 2"
   )
 
-  fem2 <- fm_fem(mesh, order = 2, aniso = list(gamma = rep(1, mesh$n),
-                                               v = matrix(1, mesh$n, 3)))
+  fem2 <- fm_fem(mesh, order = 2, aniso = list(
+    gamma = rep(1, mesh$n),
+    v = matrix(1, mesh$n, 3)
+  ))
   names_aniso <- union(names_fem, c("g1aniso", "g2aniso"))
   expect_setequal(names(fem2), names_aniso)
 })

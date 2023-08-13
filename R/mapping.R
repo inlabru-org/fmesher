@@ -206,11 +206,9 @@ setMethodS3(
 #' @param \dots Additional parameters passed on to `sp::plot`
 #' @export
 #' @examples
-#' \dontrun{
-#' data(worldLL, package = "PBSmapping")
-#' plot_PolySet(worldLL, globeproj("longlat"), add = FALSE)
-#' }
-#'
+#' # data(worldLL, package = "PBSmapping")
+#' # plot_PolySet(worldLL, globeproj("longlat"), add = FALSE)
+#' @keywords internal
 plot_PolySet <- function(x, projection, add = FALSE, ...) {
   coords <- project(projection, cbind(x$X, x$Y))
   proj <-

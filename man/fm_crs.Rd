@@ -189,9 +189,7 @@ crs3 <- fm_crs("mollweide_norm")
 crs4 <- fm_crs("hammer_globe")
 crs5 <- fm_crs("sphere")
 crs6 <- fm_crs("globe")
-\dontrun{
 names(fm_wkt_predef())
-}
 }
 \seealso{
 \code{\link[sf:st_crs]{sf::st_crs()}}, \code{\link{fm_crs_wkt}}

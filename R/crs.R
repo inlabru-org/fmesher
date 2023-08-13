@@ -255,7 +255,7 @@ fm_crs_set_ellipsoid_radius <- function(crs, radius) {
 #' list of named unit definitions
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' c1 <- fm_crs("globe")
 #' fm_crs_get_lengthunit(c1)
 #' c2 <- fm_crs_set_lengthunit(c1, "m")
@@ -310,7 +310,7 @@ fm_wkt_get_lengthunit <- function(wkt) {
       result <- list(wt[["params"]])
     } else if (wt[["label"]] != "ELLIPSOID") {
       result <- list()
-      for (k in seq_along(wt$param)) {
+      for (k in seq_along(wt$params)) {
         if (is.list(wt[["params"]][[k]])) {
           result <- c(result, extract(wt[["params"]][[k]]))
         }
@@ -364,7 +364,7 @@ fm_wkt_set_lengthunit <- function(wkt, unit, params = NULL) {
           }
         }
       }
-      for (k in seq_along(wt$param)) {
+      for (k in seq_along(wt$params)) {
         if (is.list(wt[["params"]][[k]])) {
           wt[["params"]][[k]] <- convert(wt[["params"]][[k]], unit)
         }
@@ -1292,9 +1292,7 @@ fm_CRS.default <- function(x, oblique = NULL,
 
 #' @return `fm_wkt_predef` returns a WKT2 string defining a projection
 #' @examples
-#' \dontrun{
 #' names(fm_wkt_predef())
-#' }
 #' @export
 #' @rdname fm_crs
 
@@ -2579,11 +2577,9 @@ fm_as_sp_crs <- function(x, ...) {
 #' For newer code, use [fm_crs()] instead, that returns `crs` objects,
 #' and use [fm_CRS()] to extract/construct/convert to old style `sp::CRS` objects.
 #' @examples
-#' \dontrun{
-#' if (interactive()) {
+#' if (fm_safe_sp()) {
 #'   s <- sp::SpatialPoints(matrix(1:6, 3, 2), proj4string = fm_CRS("sphere"))
 #'   fm_CRS(s)
-#' }
 #' }
 #' @export
 

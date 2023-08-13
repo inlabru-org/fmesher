@@ -54,7 +54,7 @@ geom_fm <- function(mapping = NULL, data = NULL, ...) {
 #'   print(ggplot() +
 #'     geom_fm(data = m, crs = fm_crs("epsg:27700")))
 #' }
-#' \dontrun{
+#' \donttest{
 #' if (require("ggplot2", quietly = TRUE)) {
 #'   # Compute a mesh vertex based function on a different grid
 #'   px <- fm_pixels(fm_transform(m, fm_crs("mollweide_globe")))
@@ -161,7 +161,8 @@ geom_fm.fm_mesh_2d <- function(mapping = NULL,
 #' @examples
 #' if (require("ggplot2", quietly = TRUE)) {
 #'   m <- fm_mesh_1d(c(1, 2, 4, 6, 10), boundary = c("n", "d"), degree = 2)
-#'   ggplot() + geom_fm(data = m, weights = c(4, 2, 4, -1))
+#'   ggplot() +
+#'     geom_fm(data = m, weights = c(4, 2, 4, -1))
 #' }
 #'
 geom_fm.fm_segm <- function(mapping = NULL,
