@@ -14,9 +14,9 @@ fm_call_stack(start = 0L, end = 0L, with_numbers = TRUE, ...)
 fm_try_callstack(expr)
 }
 \arguments{
-\item{which}{TODO}
+\item{which}{The number of frames to go back from the caller}
 
-\item{override}{TODO}
+\item{override}{character; Overrides the automated function name logic}
 
 \item{start}{TODO}
 

@@ -49,6 +49,7 @@
 #'
 #' \donttest{
 #' if (require("ggplot2", quietly = TRUE) &&
+#'   require("terra", quietly = TRUE) &&
 #'   require("tidyterra", quietly = TRUE)) {
 #'   pxl <- fm_pixels(fmexample$mesh,
 #'     dims = c(50, 50), mask = fmexample$boundary_sf[[1]],
@@ -164,6 +165,7 @@ fm_pixels <- function(mesh,
     pixels <- as(pixels, "Spatial")
     pixels <- as(pixels, "SpatialPixelsDataFrame")
   } else if (identical(format, "terra")) {
+    fm_require_stop("terra")
     pixels <- as(pixels, "Spatial")
     pixels <- as(pixels, "SpatialPixelsDataFrame")
     pixels$.mask <- TRUE

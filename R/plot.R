@@ -48,7 +48,7 @@ lines.fm_segm <- function(x, loc = NULL, col = NULL,
   color <- col
   dev <- NULL
   if (rgl) {
-    requireNamespace("rgl", quietly = FALSE)
+    fm_require_stop("rgl")
     if (!add) {
       dev <- rgl::open3d()
       rgl::view3d(0, 0, fov = 0)
@@ -247,7 +247,7 @@ plot_rgl.fm_mesh_2d <- function(x, col = "white", color.axis = NULL,
                                 S = deprecated(),
                                 add = FALSE,
                                 ...) {
-  requireNamespace("rgl", quietly = FALSE)
+  fm_require_stop("rgl")
   mesh <- x
 
   if (!add) {

@@ -217,7 +217,7 @@ fm_nonconvex_hull_inla <- function(x,
     )
   xy <- as.matrix(expand.grid(ax[[1]], ax[[2]]))
 
-  requireNamespace("splancs")
+  fm_require_stop("splancs")
   z <- (matrix(
     splancs::nndistF(x, xy),
     resolution[1], resolution[2]
@@ -324,7 +324,7 @@ fm_nonconvex_hull_inla_basic <- function(x, convex = -0.15, resolution = 40,
   xy <- as.matrix(expand.grid(ax[[1]], ax[[2]]))
   tr <- diag(c(1 / ex[1], 1 / ex[2]), nrow = 2, ncol = 2)
 
-  requireNamespace("splancs")
+  fm_require_stop("splancs")
   z <- matrix(
     splancs::nndistF(x %*% tr, xy %*% tr),
     resolution[1], resolution[2]

@@ -69,6 +69,7 @@ if (require("ggplot2", quietly = TRUE)) {
 
 \donttest{
 if (require("ggplot2", quietly = TRUE) &&
+  require("terra", quietly = TRUE) &&
   require("tidyterra", quietly = TRUE)) {
   pxl <- fm_pixels(fmexample$mesh,
     dims = c(50, 50), mask = fmexample$boundary_sf[[1]],

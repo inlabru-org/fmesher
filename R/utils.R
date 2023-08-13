@@ -2,8 +2,8 @@
 #' @description
 #' Helper functions for displaying call stack information
 #'
-#' @param which TODO
-#' @param override TODO
+#' @param which The number of frames to go back from the caller
+#' @param override character; Overrides the automated function name logic
 #'
 #' @export
 #' @name call-stack
@@ -123,6 +123,53 @@ fm_try_callstack <- function(expr) {
     )
   }
   invisible(result)
+}
+
+
+
+fm_require_message <- function(pkg, msg = NULL, override = NULL) {
+  if (requireNamespace(pkg, quietly = TRUE)) {
+    return(TRUE)
+  }
+  name <- fm_caller_name(1L, override = override)
+  if (is.null(msg)) {
+    msg <- paste0("Please install '", pkg, "'.")
+  }
+  message(
+    paste0(
+      "The function `",
+      name,
+      "()` requested the package '",
+      pkg,
+      "' but it is unavailable.",
+      "\n",
+      msg
+    )
+  )
+  return(FALSE)
+}
+fm_require_stop <- function(pkg, msg = NULL, override = NULL) {
+  if (requireNamespace(pkg, quietly = TRUE)) {
+    return(TRUE)
+  }
+  name <- fm_caller_name(1L, override = override)
+  msg0 <- paste0("Please install '", pkg, "'.")
+  if (is.null(msg)) {
+    msg <- msg0
+  } else {
+    msg <- paste0(msg, "\n", msg0)
+  }
+  stop(
+    paste0(
+      "The function `",
+      name,
+      "()` requested the package '",
+      pkg,
+      "' but it is unavailable.",
+      "\n",
+      msg
+    )
+  )
 }
 
 

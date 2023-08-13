@@ -771,6 +771,7 @@ fm_crs.Spatial <- function(x, oblique = NULL, ...) {
 #' @rdname fm_crs
 #' @export
 fm_crs.SpatVector <- function(x, oblique = NULL, ...) {
+  fm_require_stop("terra")
   tcrs <- terra::crs(x)
   if (is.null(tcrs) || is.na(tcrs) || identical(tcrs, "")) {
     y <- fm_crs(oblique = oblique)
@@ -783,6 +784,7 @@ fm_crs.SpatVector <- function(x, oblique = NULL, ...) {
 #' @rdname fm_crs
 #' @export
 fm_crs.SpatRaster <- function(x, oblique = NULL, ...) {
+  fm_require_stop("terra")
   tcrs <- terra::crs(x)
   if (is.null(tcrs) || is.na(tcrs) || identical(tcrs, "")) {
     y <- fm_crs(oblique = oblique)
