@@ -1258,8 +1258,10 @@ fm_raw_basis <- function(mesh,
     #            )$sph)
     #        }
 
-    fm_require_stop("gsl",
-                    "The 'gsl' R package is needed for spherical harmonics.")
+    fm_require_stop(
+      "gsl",
+      "The 'gsl' R package is needed for spherical harmonics."
+    )
 
     # Make sure we have radius-1 coordinates
     loc <- mesh$loc / rowSums(mesh$loc^2)^0.5

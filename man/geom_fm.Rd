@@ -27,6 +27,7 @@ geom_fm(mapping = NULL, data = NULL, ...)
   data = NULL,
   ...,
   xlim = NULL,
+  basis = TRUE,
   knots = TRUE,
   derivatives = FALSE,
   weights = NULL

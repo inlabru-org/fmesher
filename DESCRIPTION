@@ -86,6 +86,7 @@ Collate:
     'local.R'
     'manifold.R'
     'mapping.R'
+    'matern.R'
     'mesh.R'
     'mesh_1d.R'
     'mesh_2d.R'

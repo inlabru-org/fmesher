@@ -121,7 +121,7 @@ plot_rgl(mesh2)
 ## Finite element calculations
 
 ```{r}
-fem1 <- fm_fem(mesh1)
+fem1 <- fm_fem(mesh1, order = 2)
 names(fem1)
 fem2 <- fm_fem(mesh2, order = 2)
 names(fem2)

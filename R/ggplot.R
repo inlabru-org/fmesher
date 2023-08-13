@@ -249,6 +249,7 @@ geom_fm.fm_mesh_1d <- function(mapping = NULL,
                                data = NULL,
                                ...,
                                xlim = NULL,
+                               basis = TRUE,
                                knots = TRUE,
                                derivatives = FALSE,
                                weights = NULL) {
@@ -359,12 +360,15 @@ geom_fm.fm_mesh_1d <- function(mapping = NULL,
   )
   names(defs) <- names(defs_def)
 
-  result <-
-    c(
+  result <- list()
+  if (basis) {
+    result <- c(
+      result,
       do.call(ggplot2::geom_line, c(
         list(mapping = maps$basis, data = df), defs$basis
       ))
     )
+  }
   if (knots) {
     result <- c(
       result,
