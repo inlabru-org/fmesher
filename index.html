@@ -8,9 +8,9 @@
 <meta name="description" content="Functions that generate planar and spherical triangle meshes,
     computes finite element calculations for 1- and 2-dimensional flat and curved
     manifolds, functions for lines and polygons, and transparent handling of
-    crs information and coordinate transformation, including and interoperability
-    with sf and sp geometries. Experimental package that will take over these
-    features from the INLA and inlabru packages.">
+    coordinate reference systems and coordinate transformation, including and
+    inter-operability with sf and sp geometries. Experimental package that
+    will take over these features from the INLA and inlabru packages.">
 <title>Triangle Meshes and Related Geometry Tools • fmesher</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
@@ -20,9 +20,9 @@
 <meta property="og:description" content="Functions that generate planar and spherical triangle meshes,
     computes finite element calculations for 1- and 2-dimensional flat and curved
     manifolds, functions for lines and polygons, and transparent handling of
-    crs information and coordinate transformation, including and interoperability
-    with sf and sp geometries. Experimental package that will take over these
-    features from the INLA and inlabru packages.">
+    coordinate reference systems and coordinate transformation, including and
+    inter-operability with sf and sp geometries. Experimental package that
+    will take over these features from the INLA and inlabru packages.">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -146,7 +146,9 @@
 <span><span class="co">#&gt;   Bounding box: (-1.499887, 1.499887) x (-1.499887, 1.499887) x (0,0)</span></span>
 <span><span class="co">#&gt;   Basis d.o.f.:  57</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="reference/geom_fm.html">geom_fm</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mesh</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="reference/geom_fm.html">geom_fm</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mesh</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-example2-1.png" width="100%"></p>
 </div>
 <div class="section level3">
@@ -162,7 +164,8 @@
 <span><span class="co">#&gt;   B-spline degree:   2</span></span>
 <span><span class="co">#&gt;   Basis d.o.f.:  6</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="reference/geom_fm.html">geom_fm</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mesh</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="reference/geom_fm.html">geom_fm</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mesh</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-example1-1.png" width="100%"></p>
 </div>
 <div class="section level3">

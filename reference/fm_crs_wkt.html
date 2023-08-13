@@ -253,12 +253,54 @@ a list with elements <code>type</code> ("rectangle" or "ellipse"), <code>xlim</c
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="va">c1</span> <span class="op">&lt;-</span> <span class="fu"><a href="fm_crs.html">fm_crs</a></span><span class="op">(</span><span class="st">"globe"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">fm_crs_get_lengthunit</span><span class="op">(</span><span class="va">c1</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $kilometre</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $kilometre[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "\"kilometre\""</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $kilometre[[2]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "1000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $kilometre[[3]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $kilometre[[3]]$label</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ID"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $kilometre[[3]]$params</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $kilometre[[3]]$params[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "\"EPSG\""</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $kilometre[[3]]$params[[2]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "9036"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="va">c2</span> <span class="op">&lt;-</span> <span class="fu">fm_crs_set_lengthunit</span><span class="op">(</span><span class="va">c1</span>, <span class="st">"m"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">fm_crs_get_lengthunit</span><span class="op">(</span><span class="va">c2</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $metre</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $metre[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "\"metre\""</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $metre[[2]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "1"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $metre[[3]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $metre[[3]]$label</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ID"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $metre[[3]]$params</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $metre[[3]]$params[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "\"EPSG\""</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $metre[[3]]$params[[2]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "9001"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
