@@ -18,7 +18,7 @@ Description: Functions that generate planar and spherical triangle meshes,
     manifolds with associated basis function spaces, functions for lines and
     polygons, and transparent handling of coordinate reference systems and
     coordinate transformation, including 'sf' and 'sp' geometries. The core
-    'fmesher' library code was originally part of the 'INLA'package.
+    'fmesher' library code was originally part of the 'INLA' package.
 Depends:
     R (>= 3.6),
     methods
