@@ -223,6 +223,13 @@ Lindgren</h4>
 <div class="section level2">
 <h2 id="finite-element-calculations">Finite element calculations<a class="anchor" aria-label="anchor" href="#finite-element-calculations"></a>
 </h2>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">fem1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_fem.html">fm_fem</a></span><span class="op">(</span><span class="va">mesh1</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">fem1</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "c0"  "c1"  "g1"  "g2"  "g01" "g02" "g12"</span></span>
+<span><span class="va">fem2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_fem.html">fm_fem</a></span><span class="op">(</span><span class="va">mesh2</span>, order <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">fem2</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "b1" "c0" "c1" "g1" "g2" "k1" "k2" "ta" "va"</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
