@@ -93,7 +93,8 @@ suppressPackageStartupMessages(library(ggplot2))
   boundary = fm_extensions(cbind(0, 0), convex = c(1, 1.5)),
   max.edge = c(0.5, 1)
 ))
-
+```
+```{r example2-plot}
 ggplot() +
   geom_fm(data = mesh) +
   theme_minimal()
@@ -102,13 +103,24 @@ ggplot() +
 ### 1D B-spline function spaces
 
 ```{r example1}
-(mesh <- fm_mesh_1d(c(1, 2, 3, 4, 6), boundary = "free", degree = 2))
-
+(mesh <- fm_mesh_1d(c(1, 2, 3, 4, 6),
+  boundary = c("neumann", "free"),
+  degree = 2
+))
+```
+```{r example1-plot}
 ggplot() +
-  geom_fm(data = mesh)
+  geom_fm(data = mesh, xlim = c(0, 7))
 ```
 
 ### Extended helper methods for CRS handling
+
+The package provides methods `fm_crs()` and `fm_CRS()` for extracting CRS
+information from `sf` and `sp` objects and automatically converts to the
+desired output format. The `fm_transform()` wrapper similarly handles a variety
+of objects, as well as special handling for converting between spheres and globes
+of different radii, e.g. used to map between the Earth and a unit radius sphere
+uses as a model of the Earth.
 
 ```{r crs}
 # longlat for a spherical version of the Earth

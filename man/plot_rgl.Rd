@@ -87,7 +87,7 @@ Plots a triangulation mesh using \code{rgl}.
 }
 \examples{
 \donttest{
-if (require(rgl)) {
+if (interactive() && require("rgl")) {
   mesh <- fm_rcdt_2d(globe = 10)
   plot_rgl(mesh, col = mesh$loc[, 1])
 }

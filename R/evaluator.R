@@ -407,6 +407,7 @@ fm_evaluator_mesh_1d <- function(mesh,
         diff(mesh$interval)
       d2 <- (knots[c(seq_len(length(knots) - 2L) + 2L, seq_len(2))] -
         knots) %% diff(mesh$interval)
+      d2[d2 == 0] <- diff(mesh$interval)
       d <- d[c(length(d), seq_len(length(d) - 1L))]
       d2 <- d2[c(length(d2), seq_len(length(d2) - 1L))]
     } else {
@@ -1153,15 +1154,14 @@ internal_spline_mesh_1d <- function(interval, m, degree, boundary, free.clamped)
 #' @seealso [fm_mesh_1d()], [fm_mesh_2d()], [fm_basis()]
 #' @examples
 #'
-#' n <- 100
-#' loc <- matrix(runif(n * 2), n, 2)
-#' mesh <- fm_mesh_2d(loc, max.edge = 0.05)
+#' loc <- rbind(c(0, 0), c(1, 0), c(1, 1), c(0, 1))
+#' mesh <- fm_mesh_2d(loc, max.edge = 0.15)
 #' basis <- fm_raw_basis(mesh, n = c(4, 5))
 #'
-#' proj <- fm_evaluator(mesh)
-#' image(proj$x, proj$y, fm_evaluate(proj, basis[, 7]))
+#' proj <- fm_evaluator(mesh, dims = c(10, 10))
+#' image(proj$x, proj$y, fm_evaluate(proj, basis[, 7]), asp = 1)
 #' \donttest{
-#' if (require(rgl)) {
+#' if (interactive() && require("rgl")) {
 #'   plot_rgl(mesh, col = basis[, 7], draw.edges = FALSE, draw.vertices = FALSE)
 #' }
 #' }

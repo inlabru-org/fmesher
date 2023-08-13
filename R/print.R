@@ -204,7 +204,7 @@ print.fm_mesh_2d <- function(x, ..., digits = NULL, verbose = FALSE) {
   cat("  V / E / T:\t", as.character(ret$nV), " / ", sep = "")
   cat(as.character(nE), " / ", sep = "")
   cat(as.character(ret$nT), "\n", sep = "")
-  cat("  Euler char:\t", as.character(nV - nE + nF), "\n", sep = "")
+  cat("  Euler char.:\t", as.character(nV - nE + nF), "\n", sep = "")
 
   cat("  Constraints:\t")
   print(ret$segm, newline = FALSE, digits = digits, verbose = FALSE)

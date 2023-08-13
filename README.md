@@ -94,37 +94,51 @@ suppressPackageStartupMessages(library(ggplot2))
 #> fm_mesh_2d object:
 #>   Manifold:  R2
 #>   V / E / T: 57 / 152 / 96
-#>   Euler char:    1
+#>   Euler char.:   1
 #>   Constraints:   16 boundary edges (1 group: 1), 16 interior edges (1 group: 1)
 #>   Bounding box: (-1.499887, 1.499887) x (-1.499887, 1.499887) x (0,0)
 #>   Basis d.o.f.:  57
+```
 
+``` r
 ggplot() +
   geom_fm(data = mesh) +
   theme_minimal()
 ```
 
-<img src="man/figures/README-example2-1.png" width="100%" />
+<img src="man/figures/README-example2-plot-1.png" width="100%" />
 
 ### 1D B-spline function spaces
 
 ``` r
-(mesh <- fm_mesh_1d(c(1, 2, 3, 4, 6), boundary = "free", degree = 2))
+(mesh <- fm_mesh_1d(c(1, 2, 3, 4, 6),
+  boundary = c("neumann", "free"),
+  degree = 2
+))
 #> fm_mesh_1d object:
 #>   Manifold:  R1
 #>   #{knots}:  5
 #>   Interval:  (1, 6)
-#>   Boundary:  (free, free)
+#>   Boundary:  (neumann, free)
 #>   B-spline degree:   2
-#>   Basis d.o.f.:  6
-
-ggplot() +
-  geom_fm(data = mesh)
+#>   Basis d.o.f.:  5
 ```
 
-<img src="man/figures/README-example1-1.png" width="100%" />
+``` r
+ggplot() +
+  geom_fm(data = mesh, xlim = c(0, 7))
+```
+
+<img src="man/figures/README-example1-plot-1.png" width="100%" />
 
 ### Extended helper methods for CRS handling
+
+The package provides methods `fm_crs()` and `fm_CRS()` for extracting
+CRS information from `sf` and `sp` objects and automatically converts to
+the desired output format. The `fm_transform()` wrapper similarly
+handles a variety of objects, as well as special handling for converting
+between spheres and globes of different radii, e.g. used to map between
+the Earth and a unit radius sphere uses as a model of the Earth.
 
 ``` r
 # longlat for a spherical version of the Earth

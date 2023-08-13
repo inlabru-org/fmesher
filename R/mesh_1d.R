@@ -40,6 +40,16 @@
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
 #' @export
 #' @family object creation and conversion
+#' @examples
+#' if (require("ggplot2")) {
+#'   m <- fm_mesh_1d(c(1, 2, 3, 5, 8, 10),
+#'     boundary = c("neumann", "free"),
+#'     degree = 2
+#'   )
+#'   ggplot() +
+#'     geom_fm(data = m, xlim = c(0.5, 10.5))
+#' }
+#'
 fm_mesh_1d <- function(loc,
                        interval = range(loc),
                        boundary = NULL,
@@ -61,28 +71,42 @@ fm_mesh_1d <- function(loc,
 
   loc.orig <- loc
   if (cyclic) {
-    loc <-
-      (sort(unique(c(0, loc - interval[1]) %% diff(interval))) +
-        interval[1])
+    if (diff(interval) < diff(range(loc))) {
+      warning("Given cyclic interval is narrower than the range of knot locations.")
+    }
+    loc_1 <- min(loc)
+    if (loc_1 < interval[1]) {
+      # Keep the point to the left of the interval, but adjacent
+      loc_1 <- (loc_1 - interval[1]) %% diff(interval) - diff(interval) + interval[1]
+    }
+    if (loc_1 > interval[2]) {
+      # Move the point into the interval
+      loc_1 <- (loc_1 - interval[1]) %% diff(interval) + interval[1]
+    }
+    loc <- sort(unique((loc - loc_1) %% diff(interval))) + loc_1
   } else {
+    if (loc[1] < interval[1]) {
+      warning("fm_mesh_1d: All 'loc' should be >= interval[1]. Moving to interval edge.")
+    }
+    if (loc[2] > interval[2]) {
+      warning("fm_mesh_1d: All 'loc' should be <= interval[2]. Moving to interval edge.")
+    }
+    if (min(loc) > interval[1]) {
+      warning("fm_mesh_1d: 'min(loc)' should be == interval[1]. Adding knot at interval edge.")
+    }
+    if (max(loc) < interval[2]) {
+      warning("fm_mesh_1d: 'max(loc)' should be == interval[2]. Adding knot at interval edge.")
+    }
     loc <-
-      (sort(unique(c(
+      sort(unique(c(
         interval,
-        pmax(interval[1], pmin(interval[2], loc))
-      ))))
+        pmax(
+          interval[1], pmin(interval[2], loc)
+        )
+      )))
   }
 
   n <- length(loc)
-
-  if (loc[1] < interval[1]) {
-    stop("All 'loc' must be >= interval[1].")
-  }
-  if (loc[1] > interval[1]) {
-    warning("fm_mesh_1d behaviour is undefined behaviour when 'loc' > interval[1].")
-  }
-  if (loc[n] > interval[2]) {
-    stop("All 'loc' must be <= interval[2].")
-  }
 
   if ((degree < 0) || (degree > 2)) {
     stop(paste("'degree' must be 0, 1, or 2.  'degree=",

@@ -55,15 +55,14 @@ object.
 }
 \examples{
 
-n <- 100
-loc <- matrix(runif(n * 2), n, 2)
-mesh <- fm_mesh_2d(loc, max.edge = 0.05)
+loc <- rbind(c(0, 0), c(1, 0), c(1, 1), c(0, 1))
+mesh <- fm_mesh_2d(loc, max.edge = 0.15)
 basis <- fm_raw_basis(mesh, n = c(4, 5))
 
-proj <- fm_evaluator(mesh)
-image(proj$x, proj$y, fm_evaluate(proj, basis[, 7]))
+proj <- fm_evaluator(mesh, dims = c(10, 10))
+image(proj$x, proj$y, fm_evaluate(proj, basis[, 7]), asp = 1)
 \donttest{
-if (require(rgl)) {
+if (interactive() && require("rgl")) {
   plot_rgl(mesh, col = basis[, 7], draw.edges = FALSE, draw.vertices = FALSE)
 }
 }

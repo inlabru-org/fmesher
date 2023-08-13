@@ -290,7 +290,12 @@ geom_fm.fm_mesh_1d <- function(mapping = NULL,
   }
 
   knots_ <- if (data$cyclic) {
-    c(data$loc, data$interval[2])
+    knots_ <- sort(unique((data$loc - data$interval[1]) %% diff(data$interval)))
+    c(
+      knots_[length(knots_)] - diff(data$interval),
+      knots_,
+      knots_[1] + diff(data$interval)
+    ) + data$interval[1]
   } else {
     data$loc
   }

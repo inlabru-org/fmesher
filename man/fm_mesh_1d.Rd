@@ -32,6 +32,17 @@ basis functions to the interval endpoints.}
 \description{
 Create a \code{fm_mesh_1d} object.
 }
+\examples{
+if (require("ggplot2")) {
+  m <- fm_mesh_1d(c(1, 2, 3, 5, 8, 10),
+    boundary = c("neumann", "free"),
+    degree = 2
+  )
+  ggplot() +
+    geom_fm(data = m, xlim = c(0.5, 10.5))
+}
+
+}
 \seealso{
 Other object creation and conversion: 
 \code{\link{fm_as_fm}()},
