@@ -141,37 +141,41 @@
 <span><span class="co">#&gt; fm_mesh_2d object:</span></span>
 <span><span class="co">#&gt;   Manifold:  R2</span></span>
 <span><span class="co">#&gt;   V / E / T: 57 / 152 / 96</span></span>
-<span><span class="co">#&gt;   Euler char:    1</span></span>
+<span><span class="co">#&gt;   Euler char.:   1</span></span>
 <span><span class="co">#&gt;   Constraints:   16 boundary edges (1 group: 1), 16 interior edges (1 group: 1)</span></span>
 <span><span class="co">#&gt;   Bounding box: (-1.499887, 1.499887) x (-1.499887, 1.499887) x (0,0)</span></span>
-<span><span class="co">#&gt;   Basis d.o.f.:  57</span></span>
-<span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span><span class="co">#&gt;   Basis d.o.f.:  57</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="reference/geom_fm.html">geom_fm</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mesh</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-example2-1.png" width="100%"></p>
+<p><img src="reference/figures/README-example2-plot-1.png" width="100%"></p>
 </div>
 <div class="section level3">
 <h3 id="id_1d-b-spline-function-spaces">1D B-spline function spaces<a class="anchor" aria-label="anchor" href="#id_1d-b-spline-function-spaces"></a>
 </h3>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="op">(</span><span class="va">mesh</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/fm_mesh_1d.html">fm_mesh_1d</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">6</span><span class="op">)</span>, boundary <span class="op">=</span> <span class="st">"free"</span>, degree <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="op">(</span><span class="va">mesh</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/fm_mesh_1d.html">fm_mesh_1d</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">6</span><span class="op">)</span>,</span>
+<span>  boundary <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"neumann"</span>, <span class="st">"free"</span><span class="op">)</span>,</span>
+<span>  degree <span class="op">=</span> <span class="fl">2</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; fm_mesh_1d object:</span></span>
 <span><span class="co">#&gt;   Manifold:  R1</span></span>
 <span><span class="co">#&gt;   #{knots}:  5</span></span>
 <span><span class="co">#&gt;   Interval:  (1, 6)</span></span>
-<span><span class="co">#&gt;   Boundary:  (free, free)</span></span>
+<span><span class="co">#&gt;   Boundary:  (neumann, free)</span></span>
 <span><span class="co">#&gt;   B-spline degree:   2</span></span>
-<span><span class="co">#&gt;   Basis d.o.f.:  6</span></span>
-<span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="reference/geom_fm.html">geom_fm</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mesh</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-example1-1.png" width="100%"></p>
+<span><span class="co">#&gt;   Basis d.o.f.:  5</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="reference/geom_fm.html">geom_fm</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mesh</span>, xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">7</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-example1-plot-1.png" width="100%"></p>
 </div>
 <div class="section level3">
 <h3 id="extended-helper-methods-for-crs-handling">Extended helper methods for CRS handling<a class="anchor" aria-label="anchor" href="#extended-helper-methods-for-crs-handling"></a>
 </h3>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<p>The package provides methods <code><a href="reference/fm_crs.html">fm_crs()</a></code> and <code><a href="reference/fm_CRS_sp.html">fm_CRS()</a></code> for extracting CRS information from <code>sf</code> and <code>sp</code> objects and automatically converts to the desired output format. The <code><a href="reference/fm_transform.html">fm_transform()</a></code> wrapper similarly handles a variety of objects, as well as special handling for converting between spheres and globes of different radii, e.g. used to map between the Earth and a unit radius sphere uses as a model of the Earth.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># longlat for a spherical version of the Earth</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="reference/fm_crs.html">fm_crs</a></span><span class="op">(</span><span class="st">"longlat_globe"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Coordinate Reference System:</span></span>
