@@ -6,14 +6,19 @@
 \alias{.globeproj.types}
 \alias{old_outline.globeproj}
 \alias{outline}
+\alias{old_outline}
 \alias{old_graticule.globeproj}
 \alias{graticule}
+\alias{old_graticule}
 \alias{old_tissot.globeproj}
 \alias{tissot}
+\alias{old_tissot}
 \alias{old_limits.globeproj}
 \alias{limits}
+\alias{old_limits}
 \alias{old_project.globeproj}
 \alias{project}
+\alias{old_project}
 \title{Old globe projection methods}
 \usage{
 old_globeproj(

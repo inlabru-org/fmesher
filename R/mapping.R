@@ -249,6 +249,7 @@ plot_PolySet <- function(x, projection, add = FALSE, ...) {
 #' @author Finn Lindgren
 #' @export old_outline
 #' @aliases outline
+#' @aliases old_outline
 #' @rdname globeproj
 
 setMethodS3(
@@ -314,6 +315,7 @@ setMethodS3(
 #' @author Finn Lindgren
 #' @export old_graticule
 #' @aliases graticule
+#' @aliases old_graticule
 setMethodS3(
   "old_graticule", "globeproj",
   function(x, n = c(24, 12), add = FALSE, do.plot = TRUE,
@@ -417,6 +419,7 @@ setMethodS3(
 ##' @author Finn Lindgren
 ##' @export old_tissot
 ##' @aliases tissot
+##' @aliases old_tissot
 setMethodS3(
   "old_tissot", "globeproj",
   function(x, n = c(12, 6), add = FALSE, do.plot = TRUE,
@@ -482,6 +485,7 @@ plot_globeproj <-
 ##' @author Finn Lindgren
 ##' @export old_limits
 ##' @aliases limits
+##' @aliases old_limits
 setMethodS3(
   "old_limits", "globeproj",
   function(x,
@@ -516,6 +520,7 @@ setMethodS3(
 #'
 #' @export old_project
 #' @aliases project
+#' @aliases old_project
 setMethodS3(
   "old_project", "globeproj",
   function(x, loc, inverse = FALSE, ...) {

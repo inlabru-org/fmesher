@@ -53,10 +53,12 @@ geom_fm(mapping = NULL, data = NULL, ...)
 \item{xlim}{numeric 2-vector; specifies the interval for which to compute
 functions. Default is \code{data$interval}}
 
-\item{knots}{logical; if true, show the spline knot locations}
+\item{basis}{logical; if \code{TRUE} (default), show the spline basis functions}
 
-\item{derivatives}{logical; if true, draw first order derivatives instead of
-function values}
+\item{knots}{logical; if \code{TRUE} (default), show the spline knot locations}
+
+\item{derivatives}{logical; if \code{TRUE} (not default), draw first order
+derivatives instead of function values}
 
 \item{weights}{numeric vector; if provided, draw weighted basis functions and
 the resulting weighted sum.}

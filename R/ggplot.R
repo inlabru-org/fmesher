@@ -228,9 +228,10 @@ geom_fm.fm_segm <- function(mapping = NULL,
 #'
 #' @param xlim numeric 2-vector; specifies the interval for which to compute
 #' functions. Default is `data$interval`
-#' @param knots logical; if true, show the spline knot locations
-#' @param derivatives logical; if true, draw first order derivatives instead of
-#' function values
+#' @param basis logical; if `TRUE` (default), show the spline basis functions
+#' @param knots logical; if `TRUE` (default), show the spline knot locations
+#' @param derivatives logical; if `TRUE` (not default), draw first order
+#' derivatives instead of function values
 #' @param weights numeric vector; if provided, draw weighted basis functions and
 #' the resulting weighted sum.
 #' @export
