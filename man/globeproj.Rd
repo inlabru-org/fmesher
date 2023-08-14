@@ -2,32 +2,39 @@
 % Please edit documentation in R/mapping.R
 \name{globeproj}
 \alias{globeproj}
+\alias{old_globeproj}
 \alias{.globeproj.types}
-\alias{outline.globeproj}
+\alias{old_outline.globeproj}
 \alias{outline}
-\alias{graticule.globeproj}
+\alias{old_graticule.globeproj}
 \alias{graticule}
-\alias{tissot.globeproj}
+\alias{old_tissot.globeproj}
 \alias{tissot}
-\alias{limits.globeproj}
+\alias{old_limits.globeproj}
 \alias{limits}
-\alias{project.globeproj}
+\alias{old_project.globeproj}
 \alias{project}
 \title{Old globe projection methods}
 \usage{
-globeproj(type = NULL, orient = NULL, xlim = NULL, ylim = NULL, scale = NULL)
+old_globeproj(
+  type = NULL,
+  orient = NULL,
+  xlim = NULL,
+  ylim = NULL,
+  scale = NULL
+)
 
 .globeproj.types(x, ...)
 
-\method{outline}{globeproj}(x, add = FALSE, do.plot = TRUE, ...)
+\method{old_outline}{globeproj}(x, add = FALSE, do.plot = TRUE, ...)
 
-\method{graticule}{globeproj}(x, n = c(24, 12), add = FALSE, do.plot = TRUE, ...)
+\method{old_graticule}{globeproj}(x, n = c(24, 12), add = FALSE, do.plot = TRUE, ...)
 
-\method{tissot}{globeproj}(x, n = c(12, 6), add = FALSE, do.plot = TRUE, ...)
+\method{old_tissot}{globeproj}(x, n = c(12, 6), add = FALSE, do.plot = TRUE, ...)
 
-\method{limits}{globeproj}(x, loc = NULL, ...)
+\method{old_limits}{globeproj}(x, loc = NULL, ...)
 
-\method{project}{globeproj}(x, loc, inverse = FALSE, ...)
+\method{old_project}{globeproj}(x, loc, inverse = FALSE, ...)
 }
 \arguments{
 \item{type}{Projection type, see \code{\link[=.globeproj.types]{.globeproj.types()}}}
@@ -76,7 +83,7 @@ future
 }
 \section{Methods (by generic)}{
 \itemize{
-\item \code{limits(globeproj)}: Calculates projection axis limits
+\item \code{old_limits(globeproj)}: Calculates projection axis limits
 
 }}
 \section{Functions}{

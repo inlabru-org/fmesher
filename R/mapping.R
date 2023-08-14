@@ -15,6 +15,8 @@
 ##   You should have received a copy of the GNU General Public License
 ##   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+# old_globeproj ####
+
 #' @title Old globe projection methods
 #' @description Deprecated globe projection methods that may be removed in the
 #' future
@@ -25,12 +27,13 @@
 #' @param ylim y-axis limits
 #' @param scale x- and y- scaling factors
 #' @author Finn Lindgren
+#' @name globeproj
 #' @export
-globeproj <- function(type = NULL,
-                      orient = NULL,
-                      xlim = NULL,
-                      ylim = NULL,
-                      scale = NULL) {
+old_globeproj <- function(type = NULL,
+                          orient = NULL,
+                          xlim = NULL,
+                          ylim = NULL,
+                          scale = NULL) {
   if (missing(type)) {
     return(.globeproj.types())
   }
@@ -207,10 +210,10 @@ setMethodS3(
 #' @export
 #' @examples
 #' # data(worldLL, package = "PBSmapping")
-#' # plot_PolySet(worldLL, globeproj("longlat"), add = FALSE)
+#' # plot_PolySet(worldLL, old_globeproj("longlat"), add = FALSE)
 #' @keywords internal
 plot_PolySet <- function(x, projection, add = FALSE, ...) {
-  coords <- project(projection, cbind(x$X, x$Y))
+  coords <- old_project(projection, cbind(x$X, x$Y))
   proj <-
     sp::SpatialLines(list(sp::Lines(
       unlist(
@@ -236,7 +239,7 @@ plot_PolySet <- function(x, projection, add = FALSE, ...) {
   invisible(proj)
 }
 
-# outline ####
+# old_outline ####
 
 #' @param x A [globeproj] object
 #' @param add logical; If TRUE, add to existing plot
@@ -244,13 +247,12 @@ plot_PolySet <- function(x, projection, add = FALSE, ...) {
 #' @param \dots Additional parameters passed to other methods
 #' @return A
 #' @author Finn Lindgren
-#' @export
-#' @export outline
+#' @export old_outline
 #' @aliases outline
 #' @rdname globeproj
 
 setMethodS3(
-  "outline", "globeproj",
+  "old_outline", "globeproj",
   function(x, add = FALSE, do.plot = TRUE,
            ...) {
     thebox <-
@@ -300,7 +302,7 @@ setMethodS3(
   }
 )
 
-# graticule ####
+# old_graticule ####
 
 #' @rdname globeproj
 #' @param x A [globeproj] object
@@ -310,11 +312,10 @@ setMethodS3(
 #' @param \dots Additional parameters passed on to other methods
 #' @return A
 #' @author Finn Lindgren
-#' @export
-#' @export graticule
+#' @export old_graticule
 #' @aliases graticule
 setMethodS3(
-  "graticule", "globeproj",
+  "old_graticule", "globeproj",
   function(x, n = c(24, 12), add = FALSE, do.plot = TRUE,
            ...) {
     ## Graticule
@@ -324,7 +325,7 @@ setMethodS3(
       lat <- seq(-90, 90, by = 2)
       meridians <- expand.grid(lat, lon)[, 2:1]
       ## TODO: Add oblique support (requires cutting), etc
-      proj.mer.coords <- project(x, meridians)
+      proj.mer.coords <- old_project(x, meridians)
       proj.mer.coords1 <- matrix(
         proj.mer.coords[, 1], length(lat),
         length(lon)
@@ -365,7 +366,7 @@ setMethodS3(
       lon <- seq(-180, 180, by = 2)
       lat <- seq(-90, 90, length = 1 + n[2])[-c(1, 1 + n[2])]
       parallels <- expand.grid(lon, lat)
-      proj.par.coords <- project(x, parallels)
+      proj.par.coords <- old_project(x, parallels)
       proj.par.coords1 <- matrix(
         proj.par.coords[, 1], length(lon),
         length(lat)
@@ -404,7 +405,7 @@ setMethodS3(
   }
 )
 
-# tissot ####
+# old_tissot ####
 
 ##' @rdname globeproj
 ##' @param x A [globeproj] object
@@ -414,11 +415,10 @@ setMethodS3(
 ##' @param \dots Additional parameters passed on to other methods
 ##' @return A
 ##' @author Finn Lindgren
-##' @export
-##' @export tissot
+##' @export old_tissot
 ##' @aliases tissot
 setMethodS3(
-  "tissot", "globeproj",
+  "old_tissot", "globeproj",
   function(x, n = c(12, 6), add = FALSE, do.plot = TRUE,
            ...) {
     ## Tissot
@@ -441,7 +441,7 @@ setMethodS3(
 #' @author Finn Lindgren
 #' @export
 #' @examples
-#' proj <- globeproj("moll", orient = c(0, 0, 45))
+#' proj <- old_globeproj("moll", orient = c(0, 0, 45))
 #' plot_globeproj(proj, graticule = c(24, 12), add = FALSE, asp = 1, lty = 2, lwd = 0.5)
 plot_globeproj <-
   function(x, xlim = NULL, ylim = NULL,
@@ -459,17 +459,17 @@ plot_globeproj <-
     }
     ## Outline
     if (outline) {
-      outline(x, add = TRUE, ...)
+      old_outline(x, add = TRUE, ...)
     }
     ## Graticule
-    graticule(x, n = graticule, add = TRUE, ...)
+    old_graticule(x, n = graticule, add = TRUE, ...)
     ## Tissot
-    tissot(x, n = tissot, add = TRUE, asp = asp, ...)
+    old_tissot(x, n = tissot, add = TRUE, asp = asp, ...)
     invisible(NULL)
   }
 
 
-# limits ####
+# old_limits ####
 
 ##' @describeIn globeproj Calculates projection axis limits
 ##'
@@ -480,11 +480,10 @@ plot_globeproj <-
 ##' \item{xlim }{X axis limits in the map domain}
 ##' \item{ylim }{Y axis limits in the map domain}
 ##' @author Finn Lindgren
-##' @export
-##' @export limits
+##' @export old_limits
 ##' @aliases limits
 setMethodS3(
-  "limits", "globeproj",
+  "old_limits", "globeproj",
   function(x,
            loc = NULL,
            ...) {
@@ -493,7 +492,7 @@ setMethodS3(
     }
     lim <- list(xlim = x$xlim, ylim = x$ylim)
     if (!is.null(loc)) {
-      locproj <- project(x, loc)
+      locproj <- old_project(x, loc)
       xlim <- range(locproj[, 1], na.rm = TRUE)
       ylim <- range(locproj[, 2], na.rm = TRUE)
       lim$xlim <- c(max(lim$xlim[1], xlim[1]), min(lim$xlim[2], xlim[2]))
@@ -504,71 +503,8 @@ setMethodS3(
 )
 
 
-rotmat3213 <- function(rot) {
-  cs <- cos(rot[1])
-  sn <- sin(rot[1])
-  R <- matrix(c(
-    cs, -sn, 0,
-    sn, cs, 0,
-    0, 0, 1
-  ), 3, 3)
-  cs <- cos(rot[2])
-  sn <- sin(rot[2])
-  R <- R %*% matrix(c(
-    cs, 0, sn,
-    0, 1, 0,
-    -sn, 0, cs
-  ), 3, 3)
-  cs <- cos(rot[3])
-  sn <- sin(rot[3])
-  R <- R %*% matrix(c(
-    1, 0, 0,
-    0, cs, -sn,
-    0, sn, cs
-  ), 3, 3)
-  cs <- cos(rot[4])
-  sn <- sin(rot[4])
-  R <- R %*% matrix(c(
-    cs, -sn, 0,
-    sn, cs, 0,
-    0, 0, 1
-  ), 3, 3)
-  R
-}
 
-rotmat3123 <- function(rot) {
-  cs <- cos(rot[4])
-  sn <- sin(rot[4])
-  R <- matrix(c(
-    cs, -sn, 0,
-    sn, cs, 0,
-    0, 0, 1
-  ), 3, 3)
-  cs <- cos(rot[3])
-  sn <- sin(rot[3])
-  R <- R %*% matrix(c(
-    1, 0, 0,
-    0, cs, -sn,
-    0, sn, cs
-  ), 3, 3)
-  cs <- cos(rot[2])
-  sn <- sin(rot[2])
-  R <- R %*% matrix(c(
-    cs, 0, sn,
-    0, 1, 0,
-    -sn, 0, cs
-  ), 3, 3)
-  cs <- cos(rot[1])
-  sn <- sin(rot[1])
-  R <- R %*% matrix(c(
-    cs, -sn, 0,
-    sn, cs, 0,
-    0, 0, 1
-  ), 3, 3)
-  R
-}
-
-# project ####
+# old_project ####
 
 #' @rdname globeproj
 #' @param x A [globeproj] object
@@ -578,11 +514,10 @@ rotmat3123 <- function(rot) {
 #' @return B
 #' @author Finn Lindgren
 #'
-#' @export
-#' @export project
+#' @export old_project
 #' @aliases project
 setMethodS3(
-  "project", "globeproj",
+  "old_project", "globeproj",
   function(x, loc, inverse = FALSE, ...) {
     if (!is(x, "globeproj")) {
       stop("'x' must be a 'globeproj'")
@@ -605,7 +540,7 @@ setMethodS3(
       ## 2) Rotate +orient[2] around (0,1,0)
       ## 3) Rotate -orient[3] around (1,0,0)
       ## 3) Rotate -orient[4] around (0,0,1)
-      loc <- loc %*% rotmat3213(c(-1, 1, -1, -1) * x$orient * pi / 180)
+      loc <- loc %*% fm_rotmat3213(c(-1, 1, -1, -1) * x$orient * pi / 180)
     }
     if (identical(x$type, "longlat")) {
       if (inverse) {
@@ -712,7 +647,7 @@ setMethodS3(
       ## 2) Rotate +orient[3] around (1,0,0)
       ## 3) Rotate -orient[2] around (0,1,0)
       ## 4) Rotate +orient[1] around (0,0,1)
-      proj <- proj %*% rotmat3123(c(1, -1, 1, 1) * x$orient * pi / 180)
+      proj <- proj %*% fm_rotmat3123(c(1, -1, 1, 1) * x$orient * pi / 180)
     } else {
       proj <- cbind(x = proj[, 1] * x$scale[1], y = proj[, 2] * x$scale[2])
     }

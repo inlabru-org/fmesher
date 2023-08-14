@@ -1,24 +1,34 @@
-#' @title Mat\'ern process precision
+#' @title Matérn process precision
 #' @description
 #' `r lifecycle::badge("experimental")`
 #' Construct the (sparse) precision matrix for the basis weights for
-#' Whittle-Mat\'ern SPDE models.
+#' Whittle-Matérn SPDE models.
 #'
 #' @param x A mesh object
 #' @param alpha The SPDE operator order. The smoothness index is `alpha - dim/2`.
 #' @param rho The range parameter.
 #' @param sigma The nominal standard deviation.
 #'
+#' @name fm_gmrf
 #' @export
 #' @examples
 #' library(Matrix)
-#' mesh <- fm_mesh_1d((0:10)^2, degree = 2)
+#' mesh <- fm_mesh_1d(-20:120, degree = 2)
 #' Q <- fm_matern_precision(mesh, alpha = 2, rho = 15, sigma = 1)
-#' x <- seq(0, 100, length.out = 301)
+#' x <- seq(0, 100, length.out = 601)
 #' A <- fm_basis(mesh, x)
-#' plot(x, as.vector(Matrix::diag(A %*% solve(Q, t(A)))), type = "l")
+#' plot(x,
+#'   as.vector(Matrix::diag(fm_covariance(Q, A))),
+#'   type = "l",
+#'   ylab = "marginal variances"
+#' )
 #'
-#' plot(x, fm_evaluate(mesh, loc = x, field = fm_gmrf_sample(1, Q)[, 1]), type = "l")
+#' plot(x,
+#'   fm_evaluate(mesh, loc = x, field = fm_sample(1, Q)[, 1]),
+#'   type = "l",
+#'   ylab = "process sample"
+#' )
+#'
 fm_matern_precision <- function(x, alpha, rho, sigma) {
   mesh <- x
   d <- fm_manifold_dim(mesh)
@@ -45,20 +55,127 @@ fm_matern_precision <- function(x, alpha, rho, sigma) {
 }
 
 
-#' @describeIn fm_matern_precision
+#' @describeIn fm_gmrf Compute the covariance between "A1 x" and "A2 x", when
+#' x is a basis vector with precision matrix `Q`.
+#' @param A1,A2 Matrices, typically obtained from [fm_basis()] and/or [fm_block()].
+#' @param partial `r lifecycle::badge("experimental")` If `TRUE`, compute the
+#' partial inverse of `Q`, i.e. the elements of the inverse corresponding to
+#' the non-zero pattern of `Q`. (Note: This can be done efficiently with
+#' the Takahashi recursion method, but to avoid an RcppEigen dependency this
+#' is currently disabled, and a slower method is used until the efficient method
+#' is reimplemented.)
+#' @export
+fm_covariance <- function(Q, A1 = NULL, A2 = NULL, partial = FALSE) {
+  if (is.null(A2)) {
+    A2 <- A1
+  }
+  if (partial) {
+    if (!is.null(A1)) {
+      warning("'partial=TRUE', but `A1` is not NULL; ignoring `A1` and `A2`.")
+    }
+    fact <- Matrix::Cholesky(as(Q, "sparseMatrix"))
+    Q <- fm_as_dgTMatrix(Q)
+    Q_idx <- data.frame(i = Q@i, j = Q@j)
+    block_size <- 50
+    n_blocks <- (nrow(Q) %/% block_size) + (nrow(Q) %% block_size > 0L)
+    output <- list(i = integer(0), j = integer(0), x = numeric(0))
+    for (k in seq_len(n_blocks)) {
+      i_offset <- (k - 1L) * block_size
+      i_len <- min(i_offset + block_size, nrow(Q)) - i_offset
+      e <- Matrix::sparseMatrix(
+        i = seq_len(i_len) + i_offset,
+        j = seq_len(i_len),
+        x = rep(1, i_len),
+        dims = c(nrow(Q), i_len)
+      )
+      Q_idx_block <-
+        Q_idx[(Q_idx$j + 1L > i_offset) &
+          (Q_idx$j + 1L <= i_offset + block_size), , drop = FALSE]
+      result <- fm_as_dgTMatrix(Matrix::solve(fact, e))
+      ok <- (result@i %in% Q_idx_block$i)
+      ok[ok] <- ((result@j[ok] + i_offset) %in% Q_idx_block$j)
+      idx <-
+        base::merge(
+          Q_idx_block,
+          data.frame(
+            i = result@i[ok],
+            j = result@j[ok] + i_offset,
+            x = result@x[ok]
+          ),
+          sort = FALSE
+        )
+      output$i <- c(output$i, idx$i + 1L)
+      output$j <- c(output$j, idx$j + 1L)
+      output$x <- c(output$x, idx$x)
+    }
+    return(Matrix::sparseMatrix(
+      i = output$i,
+      j = output$j,
+      x = output$x,
+      dims = c(nrow(Q), nrow(Q))
+    ))
+  }
+
+  if (is.null(A1) || is.null(A2)) {
+    return(Matrix::solve(Q))
+  }
+  A1 %*% Matrix::solve(Q, Matrix::t(A2))
+}
+
+
+#' @describeIn fm_gmrf
 #' Generate `n` samples based on a sparse precision matrix `Q`
 #' @param n The number of samples to generate
 #' @param Q A precision matrix
+#' @param mu Optional mean vector
+#' @param constr Optional list of constraint information, with elements
+#' `A` and `e`. Should only be used for a small number of exact constraints.
 #' @export
-fm_gmrf_sample <- function(n, Q) {
+fm_sample <- function(n, Q, mu = 0, constr = NULL) {
+  L_solve <- function(fact, b) {
+    Matrix::solve(fact$L, fact$P %*% b)
+  }
+  Lt_solve <- function(fact, b) {
+    Matrix::t(fact$P) %*% Matrix::solve(Matrix::t(fact$L), b)
+  }
+
   # Find P and L such that P Q P' = L L',
-  # i.e. Q = P' L L' P and Q^-1 = P' solve(L L') P
-  fact <- Matrix::expand(Matrix::Cholesky(Q, perm = TRUE))
+  # i.e. Q = P' L L' P and Q^-1 = P' solve(L L') P = P' L^-T L^-1 P
+  fact <- Matrix::Cholesky(Q, perm = TRUE)
+  fact_exp <- Matrix::expand(fact)
   # L' P x = w gives L' P S_x P' L = I, S_x = P' (L L')^-1 P
   # so we need to solve L' x0 = w and then compute x = P' x0
-  x0 <- Matrix::solve(
-    fact$L,
+  x <- Lt_solve(
+    fact_exp,
     Matrix::Matrix(stats::rnorm(n * nrow(Q)), nrow(Q), n)
   )
-  as.matrix(Matrix::solve(fact$P * 1, x0))
+  result <- mu + x
+  if (!is.null(constr) && !is.null(constr[["A"]])) {
+    if (is.null(constr[["e"]])) {
+      constr$e <- matrix(0, nrow(constr$A), 1)
+    } else {
+      constr$e <- as.matrix(constr$e)
+    }
+    # See gmrf.pdf section 4.2
+    A_tilde_T <- L_solve(fact_exp, Matrix::t(constr$A))
+    result <-
+      result - Lt_solve(
+        fact_exp,
+        qr.solve(
+          Matrix::t(A_tilde_T),
+          constr$A %*% result - constr$e
+        )
+      )
+    # Keeping this version for when soft constraints are added, as it is closer
+    # to what's needed for that:
+    # result <- result - Lt_solve(
+    #   fact_exp,
+    #   A_tilde_T %*%
+    #     Matrix::solve(
+    #       Matrix::t(A_tilde_T) %*% A_tilde_T,
+    #       constr$A %*% result - constr$e
+    #     )
+    # )
+  }
+  return(as.matrix(result))
 }

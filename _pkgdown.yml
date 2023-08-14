@@ -42,7 +42,6 @@ reference:
   - starts_with("fm_bary")
   - starts_with("fm_evaluate")
   - starts_with("fm_evaluator")
-  - starts_with("fm_fem")
   - starts_with("fm_diameter")
   - starts_with("fm_bbox")
   - starts_with("fm_vertices")
@@ -53,6 +52,11 @@ reference:
   - starts_with("fm_detect_manifold")
   - starts_with("fm_dof")
   - starts_with("fm_pixels")
+- title: "Stochastic process methods"
+  desc: "Functions for constructing stochastic PDE models"
+  contents:
+  - starts_with("fm_fem")
+  - starts_with("fm_gmrf")
 - title: "Matrix helper functions"
   desc: "Functions for handling matrix constructions"
   contents:

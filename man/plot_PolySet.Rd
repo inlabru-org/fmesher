@@ -20,6 +20,6 @@ Plot a projected PolySet
 }
 \examples{
 # data(worldLL, package = "PBSmapping")
-# plot_PolySet(worldLL, globeproj("longlat"), add = FALSE)
+# plot_PolySet(worldLL, old_globeproj("longlat"), add = FALSE)
 }
 \keyword{internal}
