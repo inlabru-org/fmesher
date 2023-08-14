@@ -38,7 +38,7 @@ fm_matern_precision <- function(x, alpha, rho, sigma) {
 
   fem <- fm_fem(mesh, order = ceiling(alpha))
 
-  if (inherits(mesh, "fm_mesh_1d") && (mesh$degree <- 2)) {
+  if (inherits(mesh, "fm_mesh_1d") && (mesh$degree == 2)) {
     C <- fem$c1
   } else {
     C <- fem$c0
