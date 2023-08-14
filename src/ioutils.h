@@ -125,8 +125,8 @@ public:
 
 public:
   /* Constructors: */
-  IOHelperM() : IOHelper<T>(){};
-  IOHelperM(const IOHeader &h) : IOHelper<T>(h){};
+  IOHelperM() : IOHelper<T>(), cM_(NULL), M_(NULL) {};
+  IOHelperM(const IOHeader &h) : IOHelper<T>(h), cM_(NULL), M_(NULL) {};
   IOHelperM<T> &cD(const Matrix<T> *M) {
     cM_ = M;
     M_ = NULL;
@@ -199,8 +199,8 @@ public:
 
 public:
   /* Constructors: */
-  IOHelperSM() : IOHelper<T>(){};
-  IOHelperSM(const IOHeader &h) : IOHelper<T>(h){};
+  IOHelperSM() : IOHelper<T>(), cM_(NULL), M_(NULL){};
+  IOHelperSM(const IOHeader &h) : IOHelper<T>(h), cM_(NULL), M_(NULL){};
   IOHelperSM<T> &cD(const SparseMatrix<T> *M) {
     cM_ = M;
     M_ = NULL;
@@ -280,8 +280,8 @@ public:
 
 public:
   /* Constructors: */
-  IOHelperC() : IOHelper<int>(IOHeader()){};
-  IOHelperC(const IOHeader &h) : IOHelper<int>(h){};
+  IOHelperC() : IOHelper<int>(IOHeader()), cM_(NULL), M_(NULL){};
+  IOHelperC(const IOHeader &h) : IOHelper<int>(h), cM_(NULL), M_(NULL){};
   IOHelperC &cD(const MatrixC *M) {
     cM_ = M;
     M_ = NULL;

@@ -112,7 +112,7 @@ const Matrix<T> &Matrix<T>::operator=(const Matrix<T> &from) {
   cols(from.cols_);
   capacity(from.cap_);
   rows_ = from.rows_;
-  if (data_) {
+  if (data_ && from.data_) {
     std::memcpy(data_, from.data_, sizeof(T) * rows_ * cols_);
   }
   return *this;
@@ -138,7 +138,7 @@ template <class T> bool Matrix<T>::capacity(size_t cap) {
 
   T *data_new_ = new T[cap_ * cols_];
 
-  if (data_) { /* Copy existing data: */
+  if (data_ && data_new_) { /* Copy existing data: */
     std::memcpy(data_new_, data_, sizeof(T) * old_cap * cols_);
     delete[] data_;
   }
@@ -157,9 +157,11 @@ template <class T> bool Matrix<T>::append(const Matrix<T> &toappend) {
   }
   if (!capacity(rows_ + toappend.rows_))
     return false;
-  std::memcpy(data_ + rows_ * cols_, toappend.data_,
-              sizeof(T) * toappend.rows_ * cols_);
-  rows_ += toappend.rows_;
+  if (data_ && toappend.data_) {
+    std::memcpy(data_ + rows_ * cols_, toappend.data_,
+                sizeof(T) * toappend.rows_ * cols_);
+    rows_ += toappend.rows_;
+  }
   return true;
 }
 

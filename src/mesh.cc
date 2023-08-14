@@ -1997,7 +1997,6 @@ Dart Mesh::find_path_direction(const Point &s0, const Point &s1,
 DartPair Mesh::trace_path(const Dart &d0, const Point &s1, const int v1,
                           DartList *trace) const {
   Dart dh;
-  bool found, other;
   int trace_index = 0;
   if (d0.isnull())
     dh = Dart(*this, 0);
@@ -2038,13 +2037,12 @@ DartPair Mesh::trace_path(const Dart &d0, const Point &s1, const int v1,
       FMLOG("Found vertex at " << d << endl);
       return DartPair(dstart, d);
     }
-    found = (d.inLeftHalfspace(s1) >= -MESH_EPSILON);
-    other = (inLeftHalfspace(S_[v0], s1, S_[d.v()]) > 0.0);
+    bool found = (d.inLeftHalfspace(s1) >= -MESH_EPSILON);
+    bool other = (inLeftHalfspace(S_[v0], s1, S_[d.v()]) > 0.0);
     d.orbit2rev();
-    if (found && (d.inLeftHalfspace(s1) >= -MESH_EPSILON))
+    if (found && (d.inLeftHalfspace(s1) >= -MESH_EPSILON)) {
       return DartPair(dstart, d);
-    else
-      found = false;
+    }
     if (!other)
       d.orbit2();
     FMLOG("Go to next triangle, from " << d << endl);
@@ -2082,7 +2080,6 @@ DartPair Mesh::trace_path(const Dart &d0, const Point &s1, const int v1,
 DartPair Mesh::trace_path(const Point &s0, const Point &s1, const Dart &d0,
                           DartList *trace) const {
   Dart dh;
-  bool found, other;
   int trace_index = 0;
   if (d0.isnull()) {
     return DartPair(Dart(), Dart());
@@ -2112,13 +2109,12 @@ DartPair Mesh::trace_path(const Point &s0, const Point &s1, const Dart &d0,
     }
     d.orbit1().orbit2rev();
     FMLOG("In triangle " << d << endl);
-    found = (d.inLeftHalfspace(s1) >= -MESH_EPSILON);
-    other = (inLeftHalfspace(s0, s1, S_[d.v()]) > 0.0);
+    bool found = (d.inLeftHalfspace(s1) >= -MESH_EPSILON);
+    bool other = (inLeftHalfspace(s0, s1, S_[d.v()]) > 0.0);
     d.orbit2rev();
-    if (found && (d.inLeftHalfspace(s1) >= -MESH_EPSILON))
+    if (found && (d.inLeftHalfspace(s1) >= -MESH_EPSILON)) {
       return DartPair(dstart, d);
-    else
-      found = false;
+    }
     if (!other)
       d.orbit2();
     FMLOG("Go to next triangle, from " << d << endl);
