@@ -133,20 +133,20 @@ fm_covariance <- function(Q, A1 = NULL, A2 = NULL, partial = FALSE) {
 #' @export
 fm_sample <- function(n, Q, mu = 0, constr = NULL) {
   L_solve <- function(fact, b) {
-    Matrix::solve(fact$L, fact$P %*% b)
+    Matrix::solve(fact, Matrix::solve(fact, b, system = "P"), system = "L")
   }
   Lt_solve <- function(fact, b) {
-    Matrix::t(fact$P) %*% Matrix::solve(Matrix::t(fact$L), b)
+    Matrix::solve(fact, Matrix::solve(fact, b, system = "Lt"), system = "Pt")
   }
 
   # Find P and L such that P Q P' = L L',
   # i.e. Q = P' L L' P and Q^-1 = P' solve(L L') P = P' L^-T L^-1 P
   fact <- Matrix::Cholesky(Q, perm = TRUE)
-  fact_exp <- Matrix::expand(fact)
+  # Not currently needed: fact_exp <- Matrix::expand(fact)
   # L' P x = w gives L' P S_x P' L = I, S_x = P' (L L')^-1 P
   # so we need to solve L' x0 = w and then compute x = P' x0
   x <- Lt_solve(
-    fact_exp,
+    fact,
     Matrix::Matrix(stats::rnorm(n * nrow(Q)), nrow(Q), n)
   )
   result <- mu + x
@@ -157,10 +157,10 @@ fm_sample <- function(n, Q, mu = 0, constr = NULL) {
       constr$e <- as.matrix(constr$e)
     }
     # See gmrf.pdf section 4.2
-    A_tilde_T <- L_solve(fact_exp, Matrix::t(constr$A))
+    A_tilde_T <- L_solve(fact, Matrix::t(constr$A))
     result <-
       result - Lt_solve(
-        fact_exp,
+        fact,
         qr.solve(
           Matrix::t(A_tilde_T),
           constr$A %*% result - constr$e
@@ -169,7 +169,7 @@ fm_sample <- function(n, Q, mu = 0, constr = NULL) {
     # Keeping this version for when soft constraints are added, as it is closer
     # to what's needed for that:
     # result <- result - Lt_solve(
-    #   fact_exp,
+    #   fact,
     #   A_tilde_T %*%
     #     Matrix::solve(
     #       Matrix::t(A_tilde_T) %*% A_tilde_T,
