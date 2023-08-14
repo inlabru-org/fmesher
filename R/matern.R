@@ -73,7 +73,7 @@ fm_covariance <- function(Q, A1 = NULL, A2 = NULL, partial = FALSE) {
     if (!is.null(A1)) {
       warning("'partial=TRUE', but `A1` is not NULL; ignoring `A1` and `A2`.")
     }
-    fact <- Matrix::Cholesky(as(Q, "sparseMatrix"))
+    fact <- Matrix::Cholesky(as(Q, "sparseMatrix"), perm = TRUE)
     Q <- fm_as_dgTMatrix(Q)
     Q_idx <- data.frame(i = Q@i, j = Q@j)
     block_size <- 50
@@ -139,9 +139,11 @@ fm_sample <- function(n, Q, mu = 0, constr = NULL) {
     Matrix::solve(fact, Matrix::solve(fact, b, system = "Lt"), system = "Pt")
   }
 
+  # TODO: Work out how to use LDLt factorisations; How to access D^(0.5) ?
+  #
   # Find P and L such that P Q P' = L L',
   # i.e. Q = P' L L' P and Q^-1 = P' solve(L L') P = P' L^-T L^-1 P
-  fact <- Matrix::Cholesky(Q, perm = TRUE)
+  fact <- Matrix::Cholesky(Q, perm = TRUE, LDL = FALSE)
   # Not currently needed: fact_exp <- Matrix::expand(fact)
   # L' P x = w gives L' P S_x P' L = I, S_x = P' (L L')^-1 P
   # so we need to solve L' x0 = w and then compute x = P' x0
