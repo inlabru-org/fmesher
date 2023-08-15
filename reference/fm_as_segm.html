@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.9.9024</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.9.9025</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -209,6 +209,34 @@ Default: <code>FALSE</code></p></dd>
 <code><a href="fm_tensor.html">fm_tensor</a>()</code></p></div>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">fm_as_segm_list</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="fm_segm.html">fm_segm</a></span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="fu"><a href="fm_segm.html">fm_segm</a></span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span>, boundary <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31 boundary edges (1 group: 1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 56 interior edges (1 group: 1)</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">(</span><span class="va">segm</span> <span class="op">&lt;-</span> <span class="fu"><a href="fm_segm.html">fm_segm</a></span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span>, boundary <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fm_segm object:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   56 interior edges (1 group: 1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Bounding box = (-3.344418, 2.076846) x (-1.995602, 3.404937) x (0,0)</span>
+<span class="r-in"><span><span class="op">(</span><span class="va">segm_sfc</span> <span class="op">&lt;-</span> <span class="fu"><a href="fm_as_sfc.html">fm_as_sfc</a></span><span class="op">(</span><span class="va">segm</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Geometry set for 1 feature </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: LINESTRING</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Dimension:     XYZ</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: -3.344418 ymin: -1.995602 xmax: 2.076846 ymax: 3.404937</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> z_range:       zmin: 0 zmax: 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> CRS:           NA</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> LINESTRING Z (-2.591451 1.033681 0, -2.817059 0...</span>
+<span class="r-in"><span><span class="op">(</span><span class="fu">fm_as_segm</span><span class="op">(</span><span class="va">segm_sfc</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fm_segm object:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   56 interior edges (1 group: 1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Bounding box = (-3.344418, 2.076846) x (-1.995602, 3.404937) x (0,0)</span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 

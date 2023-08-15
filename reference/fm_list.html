@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.9.9024</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.9.9025</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -120,6 +120,28 @@ non-list object and return in a list</p></li>
 non-list object and return in a list</p></li>
 </ul></div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">fm_as_list</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span>, <span class="fu"><a href="fm_segm.html">fm_segm_join</a></span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">boundary_fm</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fm_mesh_2d object:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Manifold:	R2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   V / E / T:	298 / 860 / 563</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Euler char.:	1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Constraints:	31 boundary edges (1 group: 1), 56 interior edges (1 group: 1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Bounding box: (-5.331027, 4.061656) x (-3.998161, 5.415609) x (0,0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Basis d.o.f.:	298</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fm_segm object:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   74 boundary edges (1 group: 1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Bounding box = (-5.331027, 4.061656) x (-3.998161, 5.415609) x (0,0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "fm_list"</span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 

@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.9.9024</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.9.9025</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -182,10 +182,25 @@ interface</p></li>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu">fm_rcdt_2d</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  boundary <span class="op">=</span> <span class="fu"><a href="fm_nonconvex_hull.html">fm_nonconvex_hull</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, convex <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  rcdt_max_edge <span class="op">=</span> <span class="fl">1</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="op">(</span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu">fm_rcdt_2d_inla</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  boundary <span class="op">=</span> <span class="fu"><a href="fm_nonconvex_hull.html">fm_nonconvex_hull</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, convex <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fm_mesh_2d object:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Manifold:	R2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   V / E / T:	16 / 29 / 14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Euler char.:	1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Constraints:	16 boundary edges (1 group: 1), 0 interior edges</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Bounding box: (-4.999623, 4.999623) x (-4.999623, 4.999623) x (0,0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Basis d.o.f.:	16</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">fm_delaunay_2d</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">30</span><span class="op">)</span>, <span class="fl">15</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fm_mesh_2d object:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Manifold:	R2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   V / E / T:	15 / 36 / 22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Euler char.:	1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Constraints:	6 boundary edges (1 group: 1), 0 interior edges</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Bounding box: (-1.546151, 2.137035) x (-1.703901, 2.233516) x (0,0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Basis d.o.f.:	15</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

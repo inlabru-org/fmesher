@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.9.9024</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.9.9025</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -115,6 +115,94 @@ indicates the index number of the desired version. Default: 1</p></dd>
 <p><code>fm_wkt_tree_set_item</code> returns the modified tree</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu">fm_wkt_as_wkt_tree</span><span class="op">(</span><span class="fu"><a href="fm_crs.html">fm_crs</a></span><span class="op">(</span><span class="st">"longlat_norm"</span><span class="op">)</span><span class="op">$</span><span class="va">wkt</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> List of 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ label : chr "GEOGCRS"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ params:List of 6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ : chr "\"unknown\""</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ :List of 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ label : chr "DATUM"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ params:List of 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : chr "\"unknown\""</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ :List of 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ label : chr "ELLIPSOID"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ params:List of 4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. ..$ : chr "\"unknown\""</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. ..$ : chr "1"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. ..$ : chr "0"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. ..$ :List of 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. .. ..$ label : chr "LENGTHUNIT"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. .. ..$ params:List of 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. .. .. ..$ : chr "\"metre\""</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. .. .. ..$ : chr "1"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. .. .. ..$ :List of 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. .. .. .. ..$ label : chr "ID"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. .. .. .. ..$ params:List of 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. .. .. .. .. ..$ : chr "\"EPSG\""</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. .. .. .. .. ..$ : chr "9001"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ :List of 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ label : chr "PRIMEM"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ params:List of 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : chr "\"Reference meridian\""</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : chr "0"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ :List of 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ label : chr "ANGLEUNIT"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ params:List of 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. ..$ : chr "\"degree\""</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. ..$ : chr "0.0174532925199433"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. ..$ :List of 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. .. ..$ label : chr "ID"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. .. ..$ params:List of 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. .. .. ..$ : chr "\"EPSG\""</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. .. .. ..$ : chr "9122"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ :List of 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ label : chr "CS"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ params:List of 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : chr "ellipsoidal"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : chr "2"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ :List of 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ label : chr "AXIS"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ params:List of 4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : chr "\"longitude\""</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : chr "east"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ :List of 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ label : chr "ORDER"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ params:List of 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. ..$ : chr "1"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ :List of 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ label : chr "ANGLEUNIT"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ params:List of 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. ..$ : chr "\"degree\""</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. ..$ : chr "0.0174532925199433"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. ..$ :List of 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. .. ..$ label : chr "ID"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. .. ..$ params:List of 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. .. .. ..$ : chr "\"EPSG\""</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. .. .. ..$ : chr "9122"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ :List of 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ label : chr "AXIS"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ params:List of 4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : chr "\"latitude\""</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : chr "north"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ :List of 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ label : chr "ORDER"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ params:List of 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. ..$ : chr "2"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ :List of 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ label : chr "ANGLEUNIT"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ params:List of 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. ..$ : chr "\"degree\""</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. ..$ : chr "0.0174532925199433"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. ..$ :List of 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. .. ..$ label : chr "ID"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. .. ..$ params:List of 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. .. .. ..$ : chr "\"EPSG\""</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. .. .. ..$ : chr "9122"</span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 
