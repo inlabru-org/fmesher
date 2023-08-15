@@ -80,25 +80,39 @@
 
 
 <dt>start</dt>
-<dd><p>TODO</p></dd>
+<dd><p>The stack starting point</p></dd>
 
 
 <dt>end</dt>
-<dd><p>TODO</p></dd>
+<dd><p>The stack end point</p></dd>
 
 
 <dt>with_numbers</dt>
-<dd><p>TODO</p></dd>
+<dd><p>INclude call stack location numbers</p></dd>
 
 
 <dt>...</dt>
-<dd><p>TODO</p></dd>
+<dd><p>Currently unused</p></dd>
 
 
 <dt>expr</dt>
 <dd><p>An <code>expression</code> to evaluate</p></dd>
 
 </dl></div>
+    <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    
+
+<p><code>fm_caller_name</code> returns a string with the the name of a calling function</p>
+
+
+<p><code>fm_call_stack</code> returns a character vector</p>
+
+
+<p><code>fm_try_callstack</code> If successful, returns (invisibly) the value from the
+evaluated expression, otherwise an error object with call stack information attached
+to the error message.</p>
+    </div>
     <div class="section level2">
     <h2 id="functions">Functions<a class="anchor" aria-label="anchor" href="#functions"></a></h2>
     
