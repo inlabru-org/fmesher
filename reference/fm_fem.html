@@ -111,6 +111,78 @@ When <code>mesh$degree == 2</code>, also <code>g01</code>, <code>g02</code>, and
 and more if <code>order &gt; 1</code>. When <code>aniso</code> is non-NULL, also <code>g1aniso</code> matrices, etc.</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu">fm_fem</span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> List of 9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ b1:Formal class 'dgTMatrix' [package "Matrix"] with 6 slots</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ i       : int [1:147] 0 0 0 0 0 1 1 1 1 2 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ j       : int [1:147] 0 1 26 244 256 0 1 2 256 1 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ Dim     : int [1:2] 298 298</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ Dimnames:List of 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ x       : num [1:147] 0.3248 0.2506 0.0245 -0.2576 -0.3424 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ factors : list()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ c0:Formal class 'dgTMatrix' [package "Matrix"] with 6 slots</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ i       : int [1:298] 0 1 2 3 4 5 6 7 8 9 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ j       : int [1:298] 0 1 2 3 4 5 6 7 8 9 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ Dim     : int [1:2] 298 298</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ Dimnames:List of 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ x       : num [1:298] 0.558 0.397 0.666 0.427 0.564 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ factors : list()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ c1:Formal class 'dgTMatrix' [package "Matrix"] with 6 slots</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ i       : int [1:2018] 0 0 0 0 0 1 1 1 1 2 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ j       : int [1:2018] 0 1 26 244 256 0 1 2 256 1 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ Dim     : int [1:2] 298 298</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ Dimnames:List of 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ x       : num [1:2018] 0.2789 0.0502 0.0458 0.0893 0.0937 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ factors : list()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ g1:Formal class 'dgTMatrix' [package "Matrix"] with 6 slots</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ i       : int [1:2018] 0 0 0 0 0 1 1 1 1 2 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ j       : int [1:2018] 0 1 26 244 256 0 1 2 256 1 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ Dim     : int [1:2] 298 298</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ Dimnames:List of 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ x       : num [1:2018] 2.193 -0.663 -0.948 -0.376 -0.205 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ factors : list()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ g2:Formal class 'dgTMatrix' [package "Matrix"] with 6 slots</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ i       : int [1:5548] 0 0 0 0 0 0 0 0 0 0 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ j       : int [1:5548] 0 1 2 25 26 28 31 244 245 248 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ Dim     : int [1:2] 298 298</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ Dimnames:List of 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ x       : num [1:5548] 10.794 -5.666 1.248 0.291 -5.639 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ factors : list()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ k1:Formal class 'dgTMatrix' [package "Matrix"] with 6 slots</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ i       : int [1:2018] 0 0 0 0 0 1 1 1 1 2 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ j       : int [1:2018] 0 1 26 244 256 0 1 2 256 1 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ Dim     : int [1:2] 298 298</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ Dimnames:List of 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ x       : num [1:2018] 1.868 -0.914 -0.973 -0.119 0.137 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ factors : list()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ k2:Formal class 'dgTMatrix' [package "Matrix"] with 6 slots</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ i       : int [1:5548] 0 0 0 0 0 0 0 0 0 0 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ j       : int [1:5548] 0 1 2 25 26 28 31 244 245 248 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ Dim     : int [1:2] 298 298</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ Dimnames:List of 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ x       : num [1:5548] 9.119 -6.296 1.735 0.784 -5.17 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ factors : list()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ ta: num [1:563, 1] 0.0733 0.0499 0.0794 0.0461 0.0274 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ va: num [1:298, 1] 0.558 0.397 0.666 0.427 0.564 ...</span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 

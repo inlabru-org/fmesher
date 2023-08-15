@@ -117,6 +117,46 @@ representation has a single entry for each non-zero matrix element.</p></dd>
 <p><code>fm_as_fmesher_sparse</code> returns an <code>fmesher_sparse</code> object.</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://Matrix.R-forge.R-project.org" class="external-link">Matrix</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">A</span> <span class="op">&lt;-</span> <span class="fu">fm_as_dgCMatrix</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span>, <span class="fl">3</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Formal class 'dgCMatrix' [package "Matrix"] with 6 slots</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..@ i       : int [1:5] 0 1 2 0 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..@ p       : int [1:4] 0 2 3 5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..@ Dim     : int [1:2] 3 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..@ Dimnames:List of 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..@ x       : num [1:5] 1 2 3 4 5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..@ factors : list()</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu">fm_as_dgTMatrix</span><span class="op">(</span><span class="va">A</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Formal class 'dgTMatrix' [package "Matrix"] with 6 slots</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..@ i       : int [1:5] 0 1 2 0 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..@ j       : int [1:5] 0 0 1 2 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..@ Dim     : int [1:2] 3 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..@ Dimnames:List of 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..@ x       : num [1:5] 1 2 3 4 5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..@ factors : list()</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu">fm_as_unpackedMatrix</span><span class="op">(</span><span class="va">A</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Formal class 'dgeMatrix' [package "Matrix"] with 4 slots</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..@ Dim     : int [1:2] 3 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..@ Dimnames:List of 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..@ x       : num [1:9] 1 2 0 0 0 3 4 0 5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..@ factors : list()</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu">fm_as_fmesher_sparse</span><span class="op">(</span><span class="va">A</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> List of 4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ i   : int [1:5] 0 1 2 0 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ j   : int [1:5] 0 0 1 2 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ x   : num [1:5] 1 2 3 4 5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ dims: int [1:2] 3 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - attr(*, "class")= chr "fmesher_sparse"</span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 

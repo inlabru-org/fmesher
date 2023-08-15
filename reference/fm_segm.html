@@ -186,6 +186,28 @@ object, optionally keeping only some groups.</p></li>
 <code><a href="fm_tensor.html">fm_tensor</a>()</code></p></div>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">fm_segm</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>, is.bnd <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fm_segm object:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3 interior edges</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Bounding box = (0,1) x (0,1) x (0,0)</span>
+<span class="r-in"><span><span class="fu">fm_segm</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>, is.bnd <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fm_segm object:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4 boundary edges</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Bounding box = (0,1) x (0,1) x (0,0)</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">fm_segm</span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span>, boundary <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fm_segm object:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   31 boundary edges (1 group: 1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Bounding box = (-5.331027, 4.061656) x (-3.998161, 5.415609) x (0,0)</span>
+<span class="r-in"><span><span class="fu">fm_segm</span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span>, boundary <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fm_segm object:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   56 interior edges (1 group: 1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Bounding box = (-3.344418, 2.076846) x (-1.995602, 3.404937) x (0,0)</span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 

@@ -87,6 +87,63 @@ to intersect with the mesh</p></dd>
     <p>Finn Lindgren <a href="mailto:finn.lindgren@gmail.com">finn.lindgren@gmail.com</a></p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">segm</span> <span class="op">&lt;-</span> <span class="fu"><a href="fm_segm.html">fm_segm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">4</span>, <span class="op">-</span><span class="fl">4</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="op">-</span><span class="fl">4</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  is.bnd <span class="op">=</span> <span class="cn">TRUE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu">fm_mesh_intersection</span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span>, <span class="va">segm</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> List of 9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ meta    :List of 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ is.refined: logi FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ manifold: chr "R2"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ n       : int 256</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ loc     : num [1:256, 1:3] 3.36 2.99 2.63 2.62 2.61 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ graph   :List of 5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ tv : int [1:429, 1:3] 8 5 148 89 127 143 90 3 88 2 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ vt : int [1:256, 1] 248 289 8 82 2 2 84 1 1 189 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ tt : int [1:429, 1:3] 11 199 NA 309 266 149 199 309 359 8 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ tti: int [1:429, 1:3] 2 1 NA 3 3 2 3 1 3 2 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ vv :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..@ i       : int [1:1368] 1 78 0 2 78 238 253 1 3 238 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..@ p       : int [1:257] 0 2 7 11 14 17 21 25 28 32 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..@ Dim     : int [1:2] 256 256</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..@ Dimnames:List of 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..@ x       : num [1:1368] 1 1 1 1 1 1 1 1 1 1 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..@ factors : list()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ segm    :List of 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ int:List of 5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ loc   : NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ idx   : int[0 , 1:2] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ grp   : int(0) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ is.bnd: logi FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ crs   : NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..- attr(*, "class")= chr [1:2] "fm_segm" "inla.mesh.segment"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ bnd:List of 5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ loc   : NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ idx   : int [1:81, 1:2] 1 2 3 4 5 6 7 8 9 10 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ grp   : int [1:81] 0 0 0 0 0 0 0 0 0 0 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ is.bnd: logi TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ crs   : NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..- attr(*, "class")= chr [1:2] "fm_segm" "inla.mesh.segment"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ idx     :List of 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ segm   : NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ lattice: NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ loc    : int [1:256] 1 2 3 4 5 6 7 8 9 10 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ crs     :List of 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ input: chr NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ wkt  : chr NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..- attr(*, "class")= chr "crs"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ n       : int 256</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - attr(*, "class")= chr [1:2] "fm_mesh_2d" "inla.mesh"</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="va">segm</span>, col <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m</span>, edge.color <span class="op">=</span> <span class="fl">2</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="fm_mesh_intersection-1.png" alt="" width="700" height="433"></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 

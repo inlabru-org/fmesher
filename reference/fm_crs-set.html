@@ -152,6 +152,14 @@ the <code>oblique</code> argument for <code><a href="fm_crs.html">fm_crs()</a></
     <div class="dont-index"><p><code><a href="fm_crs.html">fm_crs()</a></code></p></div>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="fm_segm.html">fm_segm</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="fm_crs.html">fm_crs</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="fm_crs.html">fm_crs</a></span><span class="op">(</span><span class="st">"+proj=longlat"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="fm_crs.html">fm_crs</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">$</span><span class="va">proj4string</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "+proj=longlat +datum=WGS84 +no_defs"</span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 
