@@ -23,8 +23,10 @@ transparent handling of coordinate reference systems and coordinate
 transformation, including ‘sf’ and ‘sp’ geometries. The core ‘fmesher’
 library code was originally part of the [`INLA`](https://www.r-inla.org)
 package, and also distributed in the [EUSTACE Horizon 2020
-project](https://github.com/eustace-data/eustace-ambitious). The
-expanded crs/CRS support started as an add-on feature of
+project](https://github.com/eustace-data/eustace-ambitious), and
+implements parts of “Triangulations and Applications” by [Hjelle and
+Dæhlen (2006)](https://doi.org/10.1007/3-540-33261-8). The expanded
+crs/CRS support started as an add-on feature of
 [`inlabru`](https://inlabru-org.github.io/inlabru/).
 
 ## Installation
