@@ -15,7 +15,9 @@ fm_tensor(x, ...)
 A \code{fm_tensor} or \code{fm_tensor_list} object
 }
 \description{
-Make a tensor product function space
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+Tensor product function spaces. The interface and object storage model
+is experimental and may change.
 }
 \examples{
 m <- fm_tensor(list(

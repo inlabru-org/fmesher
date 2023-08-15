@@ -3,6 +3,9 @@
 # fm_tensor ####
 
 #' @title Make a tensor product function space
+#' @description `r lifecycle::badge("experimental")`
+#' Tensor product function spaces. The interface and object storage model
+#' is experimental and may change.
 #' @export
 #' @param x list of function space objects, such as [fm_mesh_2d()].
 #' @param ... Currently unused
