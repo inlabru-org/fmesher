@@ -111,7 +111,7 @@ fmesher_fem <- function(mesh_loc, mesh_tv, fem_order_max, aniso, options) {
 #' @title Split lines at triangle edges
 #'
 #' @description
-#' (...)
+#' Split a sequence of line segments at triangle edges
 #'
 #' @param mesh_loc numeric matrix; mesh vertex coordinates
 #' @param mesh_tv 3-column integer matrix with 0-based vertex indices for each triangle
@@ -120,6 +120,13 @@ fmesher_fem <- function(mesh_loc, mesh_tv, fem_order_max, aniso, options) {
 #' @param options list of triangulation options (`sphere_tolerance`)
 #' @export
 #' @returns A list of line splitting information objects
+#' @seealso [fm_split_lines()]
+#' @examples
+#' mesh <- fm_mesh_2d(
+#'   boundary = fm_segm(rbind(c(0,0), c(1,0), c(1,1), c(0, 1)), is.bnd = TRUE)
+#' )
+#' splitter <- fm_segm(rbind(c(0.8, 0.2), c(0.2, 0.8)))
+#' segm_split <- fm_split_lines(mesh, splitter)
 fmesher_split_lines <- function(mesh_loc, mesh_tv, loc, idx, options) {
     .Call(`_fmesher_fmesher_split_lines`, mesh_loc, mesh_tv, loc, idx, options)
 }

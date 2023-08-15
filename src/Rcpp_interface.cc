@@ -778,11 +778,10 @@ Rcpp::List fmesher_fem(Rcpp::NumericMatrix mesh_loc,
 
 
 
-
 //' @title Split lines at triangle edges
 //'
 //' @description
-//' (...)
+//' Split a sequence of line segments at triangle edges
 //'
 //' @param mesh_loc numeric matrix; mesh vertex coordinates
 //' @param mesh_tv 3-column integer matrix with 0-based vertex indices for each triangle
@@ -791,6 +790,13 @@ Rcpp::List fmesher_fem(Rcpp::NumericMatrix mesh_loc,
 //' @param options list of triangulation options (`sphere_tolerance`)
 //' @export
 //' @returns A list of line splitting information objects
+//' @seealso [fm_split_lines()]
+//' @examples
+//' mesh <- fm_mesh_2d(
+//'   boundary = fm_segm(rbind(c(0,0), c(1,0), c(1,1), c(0, 1)), is.bnd = TRUE)
+//' )
+//' splitter <- fm_segm(rbind(c(0.8, 0.2), c(0.2, 0.8)))
+//' segm_split <- fm_split_lines(mesh, splitter)
 // [[Rcpp::export]]
 Rcpp::List fmesher_split_lines(
     Rcpp::NumericMatrix mesh_loc,
