@@ -118,11 +118,11 @@ lines.fm_segm <- function(x, loc = NULL, col = NULL,
 #' fm_generate_colors(1:4, color.axis = c(1, 4))
 #'
 fm_generate_colors <- function(color,
-                            color.axis = NULL,
-                            color.n = 512,
-                            color.palette = cm.colors,
-                            color.truncate = FALSE,
-                            alpha = NULL) {
+                               color.axis = NULL,
+                               color.n = 512,
+                               color.palette = cm.colors,
+                               color.truncate = FALSE,
+                               alpha = NULL) {
   if (is.character(color)) {
     colors <- color
   } else if (is.vector(color) || (is.matrix(color) && (ncol(color) == 1))) {
