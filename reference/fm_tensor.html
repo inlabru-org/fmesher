@@ -98,6 +98,32 @@
 <code><a href="fm_simplify.html">fm_simplify</a>()</code></p></div>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu">fm_tensor</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  space <span class="op">=</span> <span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span>,</span></span>
+<span class="r-in"><span>  time <span class="op">=</span> <span class="fu"><a href="fm_mesh_1d.html">fm_mesh_1d</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">m2</span> <span class="op">&lt;-</span> <span class="fu"><a href="fm_as_tensor.html">fm_as_tensor</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">m3</span> <span class="op">&lt;-</span> <span class="fu"><a href="fm_as_tensor.html">fm_as_tensor_list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">m</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="fm_dof.html">fm_dof</a></span><span class="op">(</span><span class="va">m</span><span class="op">$</span><span class="va">fun_spaces</span><span class="op">$</span><span class="va">space</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="fm_dof.html">fm_dof</a></span><span class="op">(</span><span class="va">m</span><span class="op">$</span><span class="va">fun_spaces</span><span class="op">$</span><span class="va">time</span><span class="op">)</span>, <span class="fu"><a href="fm_dof.html">fm_dof</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1490 1490</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu"><a href="fm_evaluate.html">fm_evaluator</a></span><span class="op">(</span><span class="va">m</span>, loc <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>space <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, time <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> List of 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ proj:List of 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ A :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..@ i       : int [1:6] 0 0 0 0 0 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..@ p       : int [1:1491] 0 0 0 0 0 0 0 0 0 0 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..@ Dim     : int [1:2] 1 1490</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..@ Dimnames:List of 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..@ x       : num [1:6] 0.2394 0.2112 0.0494 0.2394 0.2112 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..@ factors : list()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ok: logi TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - attr(*, "class")= chr "fm_evaluator"</span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 
