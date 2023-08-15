@@ -52,3 +52,7 @@ non-list object and return in a list
 non-list object and return in a list
 
 }}
+\examples{
+fm_as_list(list(fmexample$mesh, fm_segm_join(fmexample$boundary_fm)))
+
+}

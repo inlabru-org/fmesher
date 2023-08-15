@@ -10,6 +10,9 @@
 #' @export
 #' @keywords internal
 #' @family nonconvex inla legacy support
+#' @examples
+#' fm_segm_contour_helper(z = matrix(1:16, 4, 4))
+#'
 fm_segm_contour_helper <- function(x = seq(0, 1, length.out = nrow(z)),
                                    y = seq(0, 1, length.out = ncol(z)),
                                    z, nlevels = 10,
@@ -90,7 +93,8 @@ fm_segm_contour_helper <- function(x = seq(0, 1, length.out = nrow(z)),
     curve.n <- nrow(curve.loc)
 
     ## Extract the rotated gradients along the curve
-    curve.mid <- (curve.loc[1:(curve.n - 1), ] + curve.loc[2:curve.n, ]) / 2
+    curve.mid <- (curve.loc[1:(curve.n - 1), , drop = FALSE] +
+                    curve.loc[2:curve.n, , drop = FALSE]) / 2
     A <- fm_basis(mesh, loc = curve.mid, derivatives = TRUE)
     ## Gradients rotated 90 degrees CW, i.e. to the direction
     ## of CCW curves around positive excursions:
@@ -119,7 +123,7 @@ fm_segm_contour_helper <- function(x = seq(0, 1, length.out = nrow(z)),
     curve.idx <- cbind(seq_len(curve.n - 1L), seq_len(curve.n - 1L) + 1L)
 
     ## Check if the curve is closed, and adjust if it is:
-    if (max(abs(curve.loc[1, ] - curve.loc[curve.n, ])) < 1e-12) {
+    if (max(abs(curve.loc[1, , drop = FALSE] - curve.loc[curve.n, , drop = FALSE])) < 1e-12) {
       curve.loc <- curve.loc[-curve.n, , drop = FALSE]
       curve.n <- nrow(curve.loc)
       curve.idx <-

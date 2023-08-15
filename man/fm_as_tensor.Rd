@@ -30,6 +30,10 @@ Convert objects to \code{fm_tensor}
 \item \code{fm_as_tensor_list()}: Convert each element of a list
 
 }}
+\examples{
+fm_as_tensor_list(list(fm_tensor(list())))
+
+}
 \seealso{
 Other object creation and conversion: 
 \code{\link{fm_as_fm}()},

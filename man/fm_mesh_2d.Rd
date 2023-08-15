@@ -91,6 +91,10 @@ Create a triangle mesh based on initial point locations, specified or
 automatic boundaries, and mesh quality parameters.
 
 }}
+\examples{
+fm_mesh_2d_inla(boundary = fm_extensions(cbind(2, 1), convex = 1, 2))
+
+}
 \seealso{
 \code{\link[=fm_rcdt_2d]{fm_rcdt_2d()}}, \code{\link[=fm_mesh_2d]{fm_mesh_2d()}}, \code{\link[=fm_delaunay_2d]{fm_delaunay_2d()}},
 \code{\link[=fm_nonconvex_hull]{fm_nonconvex_hull()}}, \code{\link[=fm_extensions]{fm_extensions()}}, \code{\link[=fm_refine]{fm_refine()}}

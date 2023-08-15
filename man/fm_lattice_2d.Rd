@@ -44,8 +44,10 @@ An \code{fm_lattice_2d} object.
 Construct a lattice grid for \code{\link[=fm_mesh_2d]{fm_mesh_2d()}}
 }
 \examples{
-
-lattice <- fm_lattice_2d(seq(0, 1, length.out = 17), seq(0, 1, length.out = 10))
+lattice <- fm_lattice_2d(
+  seq(0, 1, length.out = 17),
+  seq(0, 1, length.out = 10)
+)
 
 ## Use the lattice "as-is", without refinement:
 mesh <- fm_rcdt_2d_inla(lattice = lattice, boundary = lattice$segm)

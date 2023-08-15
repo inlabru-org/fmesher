@@ -55,6 +55,11 @@ Conversion methods from mesh related objects to sfc
 \item \code{fm_as_sfc(fm_segm)}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 }}
+\examples{
+fm_as_sfc(fmexample$mesh)
+fm_as_sfc(fmexample$mesh, multi = TRUE)
+
+}
 \seealso{
 Other object creation and conversion: 
 \code{\link{fm_as_fm}()},

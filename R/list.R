@@ -41,6 +41,9 @@ fm_class_stub <- function(x) {
 #' @returns An `fm_list` object, potentially with `fm_{class_stub}_list`
 #'   added.
 #' @export
+#' @examples
+#' fm_as_list(list(fmexample$mesh, fm_segm_join(fmexample$boundary_fm)))
+#'
 fm_list <- function(x, ..., .class_stub = NULL) {
   fm_as_list(x, ..., .class_stub = NULL)
 }

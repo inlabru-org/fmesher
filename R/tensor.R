@@ -41,6 +41,9 @@ fm_tensor <- function(x, ...) {
 #' @export
 #' @family object creation and conversion
 #' @export
+#' @examples
+#' fm_as_tensor_list(list(fm_tensor(list())))
+#'
 fm_as_tensor <- function(x, ...) {
   if (is.null(x)) {
     return(NULL)

@@ -152,6 +152,9 @@ fm_segm.fm_segm_list <- function(x, grp = NULL, grp.default = 0L, ...) {
 #' @describeIn fm_segm Join multiple `fm_segm` objects into a single `fm_segm`
 #' object.
 #' @export
+#' @examples
+#' fm_segm_join(fmexample$boundary_fm)
+#'
 fm_segm_join <- function(x, grp = NULL, grp.default = 0L) {
   segm <- fm_as_segm_list(x)
   segm <- lapply(seq_along(segm), function(k) {
@@ -348,6 +351,12 @@ fm_segm.fm_mesh_2d <- function(x, boundary = TRUE, grp = NULL, ...) {
 #' @returns An `fm_segm` or `fm_segm_list` object
 #' @export
 #' @family object creation and conversion
+#' @examples
+#' fm_as_segm_list(list(
+#'   fm_segm(fmexample$mesh),
+#'   fm_segm(fmexample$mesh, boundary = FALSE)
+#' ))
+#'
 fm_as_segm <- function(x, ...) {
   if (is.null(x)) {
     return(NULL)

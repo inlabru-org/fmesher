@@ -748,9 +748,12 @@ fm_int.fm_mesh_2d <- function(domain,
 #' @importFrom rlang .data
 #' @keywords internal
 #' @export
-
+#' @examples
+#' head(fm_vertex_projection(list(loc = fmexample$loc), fmexample$mesh))
+#' head(fm_vertex_projection(fmexample$loc_sf, fmexample$mesh))
+#'
 fm_vertex_projection <- function(points, mesh) {
-  if (inherits(points, "sf") ||
+  if (inherits(points, c("sf", "sfc")) ||
     inherits(points, "Spatial")) {
     n_points <- NROW(points)
     res <- fm_evaluator(mesh, points)

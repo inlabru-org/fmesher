@@ -12,7 +12,9 @@
 #' @returns A coordinate matrix
 #' @keywords internal
 #' @export
-
+#' @examples
+#' fm_unify_coords(fmexample$loc_sf)
+#'
 fm_unify_coords <- function(x, crs = NULL) {
   UseMethod("fm_unify_coords")
 }
@@ -43,6 +45,7 @@ fm_unify_coords.default <- function(x, crs = NULL) {
   } else if (ncol(x) > 3) {
     stop("Coordinates can have at most 3 columns.")
   }
+  colnames(x) <- NULL
   x
 }
 
@@ -62,6 +65,7 @@ fm_unify_coords.Spatial <- function(x, crs = NULL) {
   } else if (ncol(x) > 3) {
     stop("Coordinates can have at mots 3 columns.")
   }
+  colnames(x) <- NULL
   x
 }
 
@@ -93,6 +97,7 @@ fm_unify_coords.sfc <- function(x, crs = NULL) {
   } else if (ncol(x) > 3) {
     stop("Coordinates can have at most 3 columns.")
   }
+  colnames(x) <- NULL
   x
 }
 
@@ -267,10 +272,9 @@ handle_rcdt_options_inla <- function(
 #' [fmesher_rcdt()] options.
 #' @returns An `fm_mesh_2d` object
 #' @examples
-#' m <- fm_rcdt_2d(
-#'   boundary = fm_nonconvex_hull(cbind(0, 0), convex = 5),
-#'   rcdt_max_edge = 1
-#' )
+#' (m <- fm_rcdt_2d_inla(
+#'   boundary = fm_nonconvex_hull(cbind(0, 0), convex = 5)
+#' ))
 #'
 #' @export
 fm_rcdt_2d <-
@@ -546,6 +550,9 @@ fm_rcdt_2d_inla <- function(loc = NULL,
 
 #' @describeIn fm_rcdt_2d Construct a plain Delaunay triangulation.
 #' @export
+#' @examples
+#' fm_delaunay_2d(matrix(rnorm(30), 15, 2))
+#'
 fm_delaunay_2d <- function(loc, crs = NULL, ...) {
   if (is.null(crs) && !is.matrix(loc)) {
     crs <- fm_crs(loc)
@@ -573,6 +580,9 @@ fm_delaunay_2d <- function(loc, crs = NULL, ...) {
 #' @export
 #' @param ... Currently passed on to `fm_mesh_2d_inla`
 #' @family object creation and conversion
+#' @examples
+#' fm_mesh_2d_inla(boundary = fm_extensions(cbind(2, 1), convex = 1, 2))
+#'
 fm_mesh_2d <- function(...) {
   fm_mesh_2d_inla(...)
 }
@@ -881,6 +891,8 @@ fm_mesh_2d_inla <- function(loc = NULL, ## Points to include in final triangulat
 #' @export
 #' @family object creation and conversion
 #' @export
+#' @examples
+#' fm_as_mesh_2d_list(list(fm_mesh_2d(cbind(2, 1))))
 fm_as_mesh_2d <- function(x, ...) {
   if (is.null(x)) {
     return(NULL)

@@ -29,6 +29,9 @@
 #' @author Finn Lindgren
 #' @name globeproj
 #' @export
+#' @examples
+#' old_globeproj("mollweide")
+#'
 old_globeproj <- function(type = NULL,
                           orient = NULL,
                           xlim = NULL,

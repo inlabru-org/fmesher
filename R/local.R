@@ -5,6 +5,18 @@
 #' @rdname local_testthat
 #' @keywords internal
 #' @returns None
+#' @examples
+#' outer_fun <- function() {
+#'   fun <- function(envir = parent.frame()) {
+#'     local_fm_testthat_assign("local_var_name", 1:4, envir = envir)
+#'   }
+#'   fun()
+#'   local_var_name
+#' }
+#' exists("local_var_name")
+#' outer_fun()
+#' exists("local_var_name")
+#'
 NULL
 
 #' @param x character; Name of variable to assign to

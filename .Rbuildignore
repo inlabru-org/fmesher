@@ -20,3 +20,6 @@ _config.yml
 ^data-raw$
 ^doc$
 ^Meta$
+^man/chk$
+^man/chk_all$
+^man/chk_found$

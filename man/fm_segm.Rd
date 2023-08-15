@@ -101,6 +101,8 @@ object, optionally keeping only some groups.
 fm_segm(rbind(c(0, 0), c(1, 0), c(1, 1), c(0, 1)), is.bnd = FALSE)
 fm_segm(rbind(c(0, 0), c(1, 0), c(1, 1), c(0, 1)), is.bnd = TRUE)
 
+fm_segm_join(fmexample$boundary_fm)
+
 fm_segm(fmexample$mesh, boundary = TRUE)
 fm_segm(fmexample$mesh, boundary = FALSE)
 

@@ -33,6 +33,9 @@ Convert objects to \code{fm_segm}
 \item \code{fm_as_mesh_1d_list()}: Convert each element of a list
 
 }}
+\examples{
+fm_as_mesh_1d_list(list(fm_mesh_1d(1:4)))
+}
 \seealso{
 Other object creation and conversion: 
 \code{\link{fm_as_fm}()},

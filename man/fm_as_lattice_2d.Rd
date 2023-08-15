@@ -33,6 +33,10 @@ Convert objects to \code{fm_lattice_2d}
 \item \code{fm_as_lattice_2d_list()}: Convert each element of a list
 
 }}
+\examples{
+str(fm_as_lattice_2d_list(list(fm_lattice_2d(), fm_lattice_2d())))
+
+}
 \seealso{
 Other object creation and conversion: 
 \code{\link{fm_as_fm}()},

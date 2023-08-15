@@ -170,10 +170,10 @@ fm_evaluator_mesh_2d <- function(mesh,
 
     ii <- which(info$ok)
     n.ok <- sum(info$ok)
-    tv <- mesh$graph$tv[info$t[ii, 1L], ]
-    e1 <- mesh$loc[tv[, 3], ] - mesh$loc[tv[, 2], ]
-    e2 <- mesh$loc[tv[, 1], ] - mesh$loc[tv[, 3], ]
-    e3 <- mesh$loc[tv[, 2], ] - mesh$loc[tv[, 1], ]
+    tv <- mesh$graph$tv[info$t[ii, 1L], , drop = FALSE]
+    e1 <- mesh$loc[tv[, 3], , drop = FALSE] - mesh$loc[tv[, 2], , drop = FALSE]
+    e2 <- mesh$loc[tv[, 1], , drop = FALSE] - mesh$loc[tv[, 3], , drop = FALSE]
+    e3 <- mesh$loc[tv[, 2], , drop = FALSE] - mesh$loc[tv[, 1], , drop = FALSE]
     n1 <- e2 - e1 * matrix(rowSums(e1 * e2) / rowSums(e1 * e1), n.ok, 3)
     n2 <- e3 - e2 * matrix(rowSums(e2 * e3) / rowSums(e2 * e2), n.ok, 3)
     n3 <- e1 - e3 * matrix(rowSums(e3 * e1) / rowSums(e3 * e3), n.ok, 3)

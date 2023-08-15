@@ -9,6 +9,13 @@
 #' @name call-stack
 #' @rdname call-stack
 #' @keywords internal
+#' @examples
+#' fun <- function() {
+#'   print(fm_caller_name())
+#'   nm <- fm_caller_name()
+#'   print(nm)
+#' }
+#' fun()
 fm_caller_name <- function(which = 0L, override = NULL) {
   if (is.null(override)) {
     which <- -abs(which) - 1L

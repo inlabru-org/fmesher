@@ -49,8 +49,7 @@ Identify knot intervals or triangles and compute barycentric coordinates
 \itemize{
 \item \code{fm_bary(fm_mesh_1d)}: Return a list with elements
 \code{t} (start and endpoint knot indices) and \code{bary} (barycentric coordinates), both
-2-column matrices. For backwards compatibility with old inla code, a copy \code{index=t}
-is also included in the list.
+2-column matrices.
 
 For \code{method = "nearest"}, \code{t[,1]} contains the index of the nearest mesh knot,
 and each row of \code{bary} contains \code{c(1, 0)}.
@@ -60,3 +59,7 @@ and each row of \code{bary} contains \code{c(1, 0)}.
 give \code{NA} entries in \code{t} and \code{bary}.
 
 }}
+\examples{
+str(fm_bary(fmexample$mesh, fmexample$loc_sf))
+str(fm_bary(fm_mesh_1d(1:4), seq(0, 5, by = 0.5)))
+}

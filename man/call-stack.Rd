@@ -47,4 +47,12 @@ Helper functions for displaying call stack information
 \item \code{fm_try_callstack()}: Inspired by \code{berryFunctions::tryStack}
 
 }}
+\examples{
+fun <- function() {
+  print(fm_caller_name())
+  nm <- fm_caller_name()
+  print(nm)
+}
+fun()
+}
 \keyword{internal}

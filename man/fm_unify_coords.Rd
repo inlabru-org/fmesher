@@ -36,4 +36,8 @@ A coordinate matrix
 Convert coordinate information to a 3-column matrix.
 This is mainly an internal function, and the interface may change.
 }
+\examples{
+fm_unify_coords(fmexample$loc_sf)
+
+}
 \keyword{internal}

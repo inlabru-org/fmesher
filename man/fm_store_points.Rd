@@ -2,11 +2,17 @@
 % Please edit documentation in R/mesh.R
 \name{fm_store_points}
 \alias{fm_store_points}
-\title{store points in different formats}
+\title{Store points in different formats}
 \usage{
 fm_store_points(loc, crs = NULL, info = NULL, format = NULL)
 }
 \arguments{
+\item{loc}{a coordinate matrix}
+
+\item{crs}{CRS information to associate with the coordinates}
+
+\item{info}{An optional data.frame of additional data}
+
 \item{format}{character; \code{"sf"}, \code{"df"}, \code{"sp"}}
 }
 \value{
@@ -15,5 +21,9 @@ optional added information.
 }
 \description{
 Convert a matrix of points into different formats.
+}
+\examples{
+fm_store_points(fmexample$loc, format = "sf")
+
 }
 \keyword{internal}

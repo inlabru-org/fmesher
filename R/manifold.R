@@ -14,6 +14,10 @@
 #' @returns `fm_manifold()`: Either logical (matching manifold type yes/no),
 #' or character (the stored manifold, when `is.null(type)` is `TRUE`)
 #' @export
+#' @examples
+#' fm_manifold(fmexample$mesh)
+#' fm_manifold_type(fmexample$mesh)
+#' fm_manifold_dim(fmexample$mesh)
 fm_manifold <- function(x, type = NULL) {
   if (is.null(type)) {
     return(x[["manifold"]])

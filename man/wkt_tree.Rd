@@ -42,4 +42,8 @@ A hierarchical list, describing WKT information as a tree
 \description{
 Conversion between WKT and a tree representation
 }
+\examples{
+str(fm_wkt_as_wkt_tree(fm_crs("longlat_norm")$wkt))
+
+}
 \keyword{internal}

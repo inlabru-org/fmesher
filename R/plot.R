@@ -113,6 +113,9 @@ lines.fm_segm <- function(x, loc = NULL, col = NULL,
 #' @param alpha Transparency/opaqueness values.
 #' @returns A list with character vector `colors` and numeric vector `alpha`
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @examples
+#' generate_colors(1:4, color.axis = c(1, 4))
+#'
 generate_colors <- function(color,
                             color.axis = NULL,
                             color.n = 512,

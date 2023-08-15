@@ -15,6 +15,9 @@
 #' interval knot indices), and `bary`, a matrix of barycentric coordinates.
 #'
 #' @export
+#' @examples
+#' str(fm_bary(fmexample$mesh, fmexample$loc_sf))
+#' str(fm_bary(fm_mesh_1d(1:4), seq(0, 5, by = 0.5)))
 fm_bary <- function(mesh, loc, ...) {
   UseMethod("fm_bary")
 }
@@ -40,8 +43,7 @@ do.the.split <- function(knots, loc) {
 
 #' @describeIn fm_bary Return a list with elements
 #' `t` (start and endpoint knot indices) and `bary` (barycentric coordinates), both
-#' 2-column matrices. For backwards compatibility with old inla code, a copy `index=t`
-#' is also included in the list.
+#' 2-column matrices.
 #'
 #' For `method = "nearest"`, `t[,1]` contains the index of the nearest mesh knot,
 #' and each row of `bary` contains `c(1, 0)`.
@@ -96,10 +98,10 @@ fm_bary.fm_mesh_1d <- function(mesh,
     }
   }
 
-  index <- cbind(idx, idx_next)
-  bary <- cbind(1 - u, u)
+  index <- cbind(idx, idx_next, deparse.level = 0)
+  bary <- cbind(1 - u, u, deparse.level = 0)
 
-  return(list(t = index, bary = bary, index = index))
+  return(list(t = index, bary = bary))
 }
 
 

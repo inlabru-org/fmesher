@@ -191,14 +191,14 @@ fm_mesh_1d <- function(loc,
 
   if (degree < 2) {
     mesh$idx$loc <-
-      fm_bary(mesh, loc.orig, method = "nearest")$index[, 1]
+      fm_bary(mesh, loc.orig, method = "nearest")$t[, 1]
   } else {
     if (length(mid) >= 2) {
       mesh$idx$loc <-
         fm_bary(fm_mesh_1d(mid, degree = 0),
           loc.orig,
           method = "nearest"
-        )$index[, 1]
+        )$t[, 1]
     } else {
       mesh$idx$loc <- rep(1, length(loc.orig))
     }
@@ -217,6 +217,8 @@ fm_mesh_1d <- function(loc,
 #' @export
 #' @family object creation and conversion
 #' @export
+#' @examples
+#' fm_as_mesh_1d_list(list(fm_mesh_1d(1:4)))
 fm_as_mesh_1d <- function(x, ...) {
   if (is.null(x)) {
     return(NULL)

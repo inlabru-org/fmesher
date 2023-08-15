@@ -32,3 +32,8 @@ or character (the stored manifold, when \code{is.null(type)} is \code{TRUE})
 Extract a manifold definition string, or a logical for matching
 manifold type
 }
+\examples{
+fm_manifold(fmexample$mesh)
+fm_manifold_type(fmexample$mesh)
+fm_manifold_dim(fmexample$mesh)
+}

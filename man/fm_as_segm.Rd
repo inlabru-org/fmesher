@@ -116,6 +116,17 @@ Convert objects to \code{fm_segm}
 \item \code{fm_as_segm_list()}: Convert each element, making a \code{fm_segm_list} object
 
 }}
+\examples{
+fm_as_segm_list(list(
+  fm_segm(fmexample$mesh),
+  fm_segm(fmexample$mesh, boundary = FALSE)
+))
+
+(segm <- fm_segm(fmexample$mesh, boundary = FALSE))
+(segm_sfc <- fm_as_sfc(segm))
+(fm_as_segm(segm_sfc))
+
+}
 \seealso{
 \code{\link[=c.fm_segm]{c.fm_segm()}}, \code{\link[=c.fm_segm_list]{c.fm_segm_list()}},
 \code{\link[=[.fm_segm_list]{[.fm_segm_list()}}

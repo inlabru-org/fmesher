@@ -12,6 +12,10 @@
 #' @param ... Arguments passed on to other methods
 #' @export
 #' @family object creation and conversion
+#' @examples
+#' fm_as_sfc(fmexample$mesh)
+#' fm_as_sfc(fmexample$mesh, multi = TRUE)
+#'
 fm_as_sfc <- function(x, ...) {
   UseMethod("fm_as_sfc")
 }
@@ -305,6 +309,11 @@ fm_as_segm.sfc_POINT <-
 #' @param join logical; if `TRUE`, join input segments with common vertices.
 #'    Default `TRUE`
 #' @export
+#' @examples
+#' (segm <- fm_segm(fmexample$mesh, boundary = FALSE))
+#' (segm_sfc <- fm_as_sfc(segm))
+#' (fm_as_segm(segm_sfc))
+#'
 fm_as_segm.sfc_LINESTRING <-
   function(x, join = TRUE, grp = NULL, reverse = FALSE, ...) {
     sfc <- x

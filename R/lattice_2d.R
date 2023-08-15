@@ -5,16 +5,16 @@
 #' @title Special coordinate mappings for `fm_mesh_2d` projections.
 #'
 #' @description
-#' Calculates coordinate mappings for `fm_mesh_2d` projections.
+#' Calculates coordinate mappings for spherical `fm_mesh_2d` projections.
 #' This is an internal function not intended for general use.
 #'
 #' @keywords internal
 #' @param loc Coordinates to be mapped.
 #' @param projection The projection type.
 #' @param inverse If `TRUE`, `loc` are map coordinates and
-#' coordinates in the mesh domain are calculated.  If `FALSE`, `loc`
-#' are coordinates in the mesh domain and the forward map projection is
-#' calculated.
+#' coordinates in the spherical domain are calculated.  If `FALSE`, `loc`
+#' are coordinates in the spherical domain and the forward map projection is
+#' calculated. Default: `TRUE`
 #' @return For `fm_mesh_2d_map_lim`, a list:
 #' \item{xlim }{X axis limits in the map domain}
 #' \item{ylim }{Y axis limits in the map domain}
@@ -23,6 +23,10 @@
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
 #' @seealso [fm_evaluator()]
 #' @export
+#' @examples
+#' (loc <- fm_mesh_2d_map(cbind(20, 10), "longlat"))
+#' fm_mesh_2d_map(loc, "longlat", inverse = FALSE)
+#'
 fm_mesh_2d_map <- function(loc,
                            projection =
                              c("default", "longlat", "longsinlat", "mollweide"),
@@ -155,8 +159,10 @@ fm_lattice_2d <- function(...) {
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
 #' @seealso [fm_mesh_2d()]
 #' @examples
-#'
-#' lattice <- fm_lattice_2d(seq(0, 1, length.out = 17), seq(0, 1, length.out = 10))
+#' lattice <- fm_lattice_2d(
+#'   seq(0, 1, length.out = 17),
+#'   seq(0, 1, length.out = 10)
+#' )
 #'
 #' ## Use the lattice "as-is", without refinement:
 #' mesh <- fm_rcdt_2d_inla(lattice = lattice, boundary = lattice$segm)
@@ -285,6 +291,9 @@ fm_lattice_2d.default <- function(
 #' @export
 #' @family object creation and conversion
 #' @export
+#' @examples
+#' str(fm_as_lattice_2d_list(list(fm_lattice_2d(), fm_lattice_2d())))
+#'
 fm_as_lattice_2d <- function(...) {
   UseMethod("fm_as_lattice_2d")
 }

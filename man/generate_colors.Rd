@@ -33,6 +33,10 @@ A list with character vector \code{colors} and numeric vector \code{alpha}
 \description{
 Generates a text RGB color specification matrix based on a color palette.
 }
+\examples{
+generate_colors(1:4, color.axis = c(1, 4))
+
+}
 \author{
 Finn Lindgren \email{finn.lindgren@gmail.com}
 }

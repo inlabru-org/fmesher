@@ -45,6 +45,9 @@ Convert objects to \code{fm_mesh_2d}
 \item \code{fm_as_mesh_2d_list()}: Convert each element of a list
 
 }}
+\examples{
+fm_as_mesh_2d_list(list(fm_mesh_2d(cbind(2, 1))))
+}
 \seealso{
 Other object creation and conversion: 
 \code{\link{fm_as_fm}()},

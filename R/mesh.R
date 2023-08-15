@@ -465,16 +465,22 @@ fm_mesh_intersection <- function(mesh, poly) {
 
 
 
-#' @title store points in different formats
+#' @title Store points in different formats
 #'
 #' @description Convert a matrix of points into different formats.
 #'
+#' @param loc a coordinate matrix
+#' @param crs CRS information to associate with the coordinates
+#' @param info An optional data.frame of additional data
 #' @param format character; `"sf"`, `"df"`, `"sp"`
 #' @return
 #' An `sf`, `data.frame`, or `SpatialPointsDataFrame` object, with
 #' optional added information.
 #' @export
 #' @keywords internal
+#' @examples
+#' fm_store_points(fmexample$loc, format = "sf")
+#'
 fm_store_points <- function(loc, crs = NULL, info = NULL, format = NULL) {
   format <- match.arg(
     format,
@@ -490,7 +496,9 @@ fm_store_points <- function(loc, crs = NULL, info = NULL, format = NULL) {
   }
 
   if (identical(format, "df")) {
-    points <- cbind(points, info)
+    if (!is.null(info)) {
+      points <- cbind(points, info)
+    }
   } else if (identical(format, "sp")) {
     points <- sp::SpatialPointsDataFrame(
       points,
@@ -498,11 +506,19 @@ fm_store_points <- function(loc, crs = NULL, info = NULL, format = NULL) {
       proj4string = fm_CRS(crs)
     )
   } else if (identical(format, "sf")) {
-    points <- sf::st_as_sf(
-      cbind(points, info),
-      coords = seq_len(ncol(points)),
-      crs = crs
-    )
+    if (is.null(info)) {
+      points <- sf::st_as_sf(
+        points,
+        coords = seq_len(ncol(points)),
+        crs = crs
+      )
+    } else {
+      points <- sf::st_as_sf(
+        cbind(points, info),
+        coords = seq_len(ncol(points)),
+        crs = crs
+      )
+    }
   }
 
   points # return

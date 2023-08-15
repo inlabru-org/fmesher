@@ -23,6 +23,10 @@ An \code{fm_segm} object
 \description{
 Helper from legacy \code{INLA::inla.contour.segment()}
 }
+\examples{
+fm_segm_contour_helper(z = matrix(1:16, 4, 4))
+
+}
 \seealso{
 Other nonconvex inla legacy support: 
 \code{\link{fm_nonconvex_hull_inla}()},

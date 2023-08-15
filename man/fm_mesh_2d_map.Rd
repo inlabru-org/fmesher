@@ -22,9 +22,9 @@ fm_mesh_2d_map_lim(
 \item{projection}{The projection type.}
 
 \item{inverse}{If \code{TRUE}, \code{loc} are map coordinates and
-coordinates in the mesh domain are calculated.  If \code{FALSE}, \code{loc}
-are coordinates in the mesh domain and the forward map projection is
-calculated.}
+coordinates in the spherical domain are calculated.  If \code{FALSE}, \code{loc}
+are coordinates in the spherical domain and the forward map projection is
+calculated. Default: \code{TRUE}}
 }
 \value{
 For \code{fm_mesh_2d_map_lim}, a list:
@@ -34,7 +34,7 @@ No attempt is
 made to find minimal limits for partial spherical domains.
 }
 \description{
-Calculates coordinate mappings for \code{fm_mesh_2d} projections.
+Calculates coordinate mappings for spherical \code{fm_mesh_2d} projections.
 This is an internal function not intended for general use.
 }
 \section{Functions}{
@@ -42,6 +42,11 @@ This is an internal function not intended for general use.
 \item \code{fm_mesh_2d_map_lim()}: Projection extent limit calculations
 
 }}
+\examples{
+(loc <- fm_mesh_2d_map(cbind(20, 10), "longlat"))
+fm_mesh_2d_map(loc, "longlat", inverse = FALSE)
+
+}
 \seealso{
 \code{\link[=fm_evaluator]{fm_evaluator()}}
 }

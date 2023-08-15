@@ -1332,7 +1332,9 @@ fm_wkt_predef <- function() {
 #' @rdname wkt_tree
 #' @export
 #' @keywords internal
-
+#' @examples
+#' str(fm_wkt_as_wkt_tree(fm_crs("longlat_norm")$wkt))
+#'
 fm_wkt_as_wkt_tree <- function(x, ...) {
   # Basic parsing of WKT string
   # ITEM[Param1, Param2, ...]

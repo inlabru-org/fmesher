@@ -96,6 +96,10 @@ future
 \item \code{.globeproj.types()}: Types of globe projections
 
 }}
+\examples{
+old_globeproj("mollweide")
+
+}
 \author{
 Finn Lindgren
 }
