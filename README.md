@@ -5,8 +5,10 @@
 
 <!-- badges: start -->
 
-[![inlabru status
-badge](https://inlabru-org.r-universe.dev/badges/fmesher)](https://inlabru-org.r-universe.dev)
+[![CRAN
+status](http://www.r-pkg.org/badges/version-last-release/fmesher)](https://cran.r-project.org/package=fmesher)
+[![inlabru-org r-universe
+status](https://inlabru-org.r-universe.dev/badges/fmesher)](https://inlabru-org.r-universe.dev)
 [![R build
 status](https://github.com/inlabru-org/fmesher/workflows/R-CMD-check/badge.svg)](https://github.com/inlabru-org/fmesher/actions)
 [![test-coverage](https://github.com/inlabru-org/fmesher/workflows/test-coverage/badge.svg)](https://github.com/inlabru-org/fmesher/actions)
@@ -14,17 +16,25 @@ status](https://github.com/inlabru-org/fmesher/workflows/R-CMD-check/badge.svg)]
 coverage](https://codecov.io/gh/inlabru-org/fmesher/branch/devel/graph/badge.svg)](https://app.codecov.io/gh/inlabru-org/fmesher?branch=devel)
 <!-- badges: end -->
 
-Functions that generate planar and spherical triangle meshes, computes
-finite element calculations for 1- and 2-dimensional flat and curved
-manifolds, functions for lines and polygons, and transparent handling of
-crs information and coordinate transformation, including and
-interoperability with `sf` and `sp` geometries. Experimental package
-that will take over the relevant subset of features from the
-[INLA](https://www.r-inla.org) and
-[inlabru](https://inlabru-org.github.io/inlabru/) packages, as well as
-extend them.
+Generate planar and spherical triangle meshes, compute finite element
+calculations for 1- and 2-dimensional flat and curved manifolds with
+associated basis function spaces, methods for lines and polygons, and
+transparent handling of coordinate reference systems and coordinate
+transformation, including ‘sf’ and ‘sp’ geometries. The core ‘fmesher’
+library code was originally part of the [`INLA`](https://www.r-inla.org)
+package, and also distributed in the [EUSTACE Horizon 2020
+project](https://github.com/eustace-data/eustace-ambitious). The
+expanded crs/CRS support started as an add-on feature of
+[`inlabru`](https://inlabru-org.github.io/inlabru/).
 
 ## Installation
+
+You can install the current [CRAN](https://CRAN.R-project.org) version
+of `fmesher`:
+
+``` r
+install.packages("fmesher")
+```
 
 You can install the latest stable release of `fmesher` from
 [GitHub](https://github.com/):
