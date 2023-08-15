@@ -109,6 +109,9 @@
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_fem.html</loc>
   </url>
   <url>
+    <loc>https://inlabru-org.github.io/fmesher/reference/fm_generate_colors.html</loc>
+  </url>
+  <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fm_gmrf.html</loc>
   </url>
   <url>
@@ -236,9 +239,6 @@
   </url>
   <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/fmexample.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/generate_colors.html</loc>
   </url>
   <url>
     <loc>https://inlabru-org.github.io/fmesher/reference/geom_fm.html</loc>
