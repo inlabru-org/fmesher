@@ -113,10 +113,11 @@ lines.fm_segm <- function(x, loc = NULL, col = NULL,
 #' @param alpha Transparency/opaqueness values.
 #' @returns A list with character vector `colors` and numeric vector `alpha`
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @export
 #' @examples
-#' generate_colors(1:4, color.axis = c(1, 4))
+#' fm_generate_colors(1:4, color.axis = c(1, 4))
 #'
-generate_colors <- function(color,
+fm_generate_colors <- function(color,
                             color.axis = NULL,
                             color.n = 512,
                             color.palette = cm.colors,
@@ -300,10 +301,10 @@ plot_rgl.fm_mesh_2d <- function(x, col = "white", color.axis = NULL,
   S <- mesh$loc
   TV <- tv
 
-  colors <- (generate_colors(
+  colors <- fm_generate_colors(
     col, color.axis, color.n,
     color.palette, color.truncate, alpha
-  ))
+  )
 
   tTV <- t(TV)
   Tx <- S[tTV, 1]
