@@ -21,6 +21,9 @@ Currently (2023-08-05) the fields need to be given per vertex.}
 
 \item{options}{list of triangulation options (\code{sphere_tolerance})}
 }
+\value{
+A list of matrices
+}
 \description{
 Construct finite element structure matrices
 }

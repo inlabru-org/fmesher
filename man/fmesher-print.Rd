@@ -37,6 +37,9 @@ to be used for numeric and complex x. The default, NULL, uses \code{getOption("d
 
 \item{newline}{logical; if \code{TRUE} (default), end the printing with \verb{\\n}}
 }
+\value{
+The input object \code{x}
+}
 \description{
 Print objects
 }

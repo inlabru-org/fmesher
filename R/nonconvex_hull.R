@@ -6,7 +6,7 @@
 #'
 #' @description
 #' Helper from legacy `INLA::inla.contour.segment()`
-#'
+#' @returns An `fm_segm` object
 #' @export
 #' @keywords internal
 #' @family nonconvex inla legacy support

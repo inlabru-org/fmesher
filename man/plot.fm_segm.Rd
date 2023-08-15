@@ -48,12 +48,15 @@ Default FALSE.}
 
 \item{xlab, ylab}{character; labels for the axes.}
 }
+\value{
+None
+}
 \description{
 Draws a \code{\link[=fm_segm]{fm_segm()}} object with generic or \code{rgl}
 graphics.
 }
 \seealso{
-\code{\link[=fm_segm]{fm_segm()}}
+\code{\link[=fm_segm]{fm_segm()}}, \link{plot.fm_mesh_2d}
 }
 \author{
 Finn Lindgren \email{finn.lindgren@gmail.com}

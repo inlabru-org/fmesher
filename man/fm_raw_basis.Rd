@@ -48,6 +48,9 @@ repeating the boundary knots. See
 
 \item{...}{Unused}
 }
+\value{
+A matrix with evaluated basis function
+}
 \description{
 Calculate basis functions on \code{\link[=fm_mesh_1d]{fm_mesh_1d()}} or \code{\link[=fm_mesh_2d]{fm_mesh_2d()}},
 without necessarily matching the default function space of the given mesh

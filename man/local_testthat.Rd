@@ -25,9 +25,10 @@ local_fm_testthat_setup(envir = parent.frame())
 
 \item{tolerances}{numeric vector of length 3; \verb{[lowtol, midtol, hitol]}}
 }
+\value{
+None
+}
 \description{
-Local helper functions for package unit tests
-
 Local helper functions for package unit tests
 }
 \section{Functions}{

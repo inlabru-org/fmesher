@@ -73,6 +73,9 @@ fm_crs_oblique(x) <- value
 For \verb{fm_crs_oblique<-()}, \code{NA} or a numeric vector, see
 the \code{oblique} argument for \code{\link[=fm_crs]{fm_crs()}}. For assignment, \code{NULL} is treated as \code{NA}.}
 }
+\value{
+The modified object
+}
 \description{
 Assigns new crs information.
 }

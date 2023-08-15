@@ -82,6 +82,9 @@ towards the camera.}
 
 \item{S}{Deprecated.}
 }
+\value{
+An rgl device identifier, invisibly.
+}
 \description{
 Plots a triangulation mesh using \code{rgl}.
 }

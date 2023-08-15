@@ -39,6 +39,16 @@ fm_as_fmesher_sparse(x)
 \item{pretty}{logical; if \code{TRUE}, ensures that the sparse triplet
 representation has a single entry for each non-zero matrix element.}
 }
+\value{
+\code{fm_as_dgCMatrix} returns a \link[Matrix:dgCMatrix-class]{Matrix::dgCMatrix} object.
+
+\code{fm_as_dgTMatrix} returns a \link[Matrix:dgTMatrix-class]{Matrix::dgTMatrix} object.
+
+\code{fm_as_unpackedMatrix} returns an object of virtual class
+\link[Matrix:unpackedMatrix-class]{Matrix::unpackedMatrix}.
+
+\code{fm_as_fmesher_sparse} returns an \code{fmesher_sparse} object.
+}
 \description{
 Conversion between sparse matrix types
 }

@@ -38,6 +38,7 @@
 #' basis functions to the interval endpoints.
 #' @param \dots Additional options, currently unused.
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @returns An `fm_mesh_1d` object
 #' @export
 #' @family object creation and conversion
 #' @examples
@@ -212,6 +213,7 @@ fm_mesh_1d <- function(loc,
 #' @describeIn fm_as_mesh_1d Convert an object to `fm_mesh_1d`.
 #' @param x Object to be converted.
 #' @param ... Arguments passed on to submethods
+#' @returns An `fm_mesh_1d` or `fm_mesh_1d_list` object
 #' @export
 #' @family object creation and conversion
 #' @export

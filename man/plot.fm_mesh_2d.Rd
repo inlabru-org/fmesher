@@ -78,6 +78,9 @@ Default FALSE.}
 
 \item{xlab, ylab}{character; labels for the axes.}
 }
+\value{
+None
+}
 \description{
 Plots an \code{\link[=fm_mesh_2d]{fm_mesh_2d()}} object using standard graphics.
 }

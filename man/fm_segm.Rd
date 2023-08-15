@@ -67,6 +67,9 @@ otherwise interior constrain segments.}
 
 \item{value}{logical}
 }
+\value{
+An \code{fm_segm} or \code{fm_segm_list} object
+}
 \description{
 Make a spatial segment object
 }

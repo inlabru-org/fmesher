@@ -44,6 +44,10 @@ and/or \code{lattice}.}
 "quadratic". With \code{NULL} or "default", uses the object definition of the
 function space. Otherwise overrides the object definition.}
 }
+\value{
+A list of evaluator information objects, at least a matrix \code{A} and
+logical vector \code{ok}.
+}
 \description{
 Methods called internally by \code{\link[=fm_evaluator]{fm_evaluator()}} methods.
 }

@@ -220,6 +220,10 @@ fm_int <- function(domain, samplers = NULL, ...) {
 #'
 #' Combine integration over different domains
 #'
+#' @param domain A list of named domains
+#' @param samplers A named list of samplers
+#' @param ... Passed on to each [fm_int()] call.
+#' @returns An object with integration points and weights
 #' @export
 #' @keywords internal
 fm_int_multi_sampler <- function(domain, samplers, ...) {

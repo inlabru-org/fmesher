@@ -15,6 +15,10 @@ fm_identical_CRS(crs0, crs1, crsonly = FALSE)
 \item{crsonly}{logical. If \code{TRUE} and any of \code{crs0} and \code{crs1} are \code{fm_crs} or \code{inla.CRS}
 objects, extract and compare only the \code{sf::crs} or \code{sp::CRS} aspects. Default: \code{FALSE}}
 }
+\value{
+logical, indicating if the two crs objects are identical in the
+specified sense (see the \code{crsonly} argument)
+}
 \description{
 Check if two CRS objects are identical
 }

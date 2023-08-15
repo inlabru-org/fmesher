@@ -4,6 +4,7 @@
 #' @param envir environment for exit handlers
 #' @rdname local_testthat
 #' @keywords internal
+#' @returns None
 NULL
 
 #' @param x character; Name of variable to assign to
@@ -35,13 +36,6 @@ local_fm_testthat_tolerances <- function(tolerances = c(1e-4, 1e-2, 1e-1),
   local_fm_testthat_assign("midtol", tolerances[2], envir = envir)
   local_fm_testthat_assign("hitol", tolerances[3], envir = envir)
 }
-#' @title Unit test helpers
-#' @name local_testthat
-#' @description Local helper functions for package unit tests
-#' @param envir environment for exit handlers
-#' @rdname local_testthat
-#' @keywords internal
-NULL
 
 
 

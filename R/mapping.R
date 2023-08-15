@@ -212,6 +212,7 @@ setMethodS3(
 #' # data(worldLL, package = "PBSmapping")
 #' # plot_PolySet(worldLL, old_globeproj("longlat"), add = FALSE)
 #' @keywords internal
+#' @returns An (invisible) `sp` object of projected lines
 plot_PolySet <- function(x, projection, add = FALSE, ...) {
   coords <- old_project(projection, cbind(x$X, x$Y))
   proj <-

@@ -17,6 +17,9 @@ fm_segm_contour_helper(
   crs = NULL
 )
 }
+\value{
+An \code{fm_segm} object
+}
 \description{
 Helper from legacy \code{INLA::inla.contour.segment()}
 }

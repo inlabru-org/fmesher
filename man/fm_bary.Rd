@@ -38,6 +38,10 @@ interval.}
 
 \item{crs}{Optional crs information for \code{loc}}
 }
+\value{
+A list with elements \code{t} (vector of triangle indices or matrix of
+interval knot indices), and \code{bary}, a matrix of barycentric coordinates.
+}
 \description{
 Identify knot intervals or triangles and compute barycentric coordinates
 }

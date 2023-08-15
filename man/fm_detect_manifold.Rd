@@ -5,6 +5,7 @@
 \alias{fm_crs_detect_manifold}
 \alias{fm_detect_manifold.crs}
 \alias{fm_detect_manifold.CRS}
+\alias{fm_detect_manifold.numeric}
 \alias{fm_detect_manifold.matrix}
 \alias{fm_detect_manifold.fm_mesh_2d}
 \title{Detect manifold type}
@@ -17,12 +18,17 @@ fm_crs_detect_manifold(x)
 
 \method{fm_detect_manifold}{CRS}(x)
 
+\method{fm_detect_manifold}{numeric}(x)
+
 \method{fm_detect_manifold}{matrix}(x)
 
 \method{fm_detect_manifold}{fm_mesh_2d}(x)
 }
 \arguments{
 \item{x}{Object to investigate}
+}
+\value{
+A string containing the detected manifold classification
 }
 \description{
 Detect if a 2d object is on "R2", "S2", or "M2"
@@ -34,3 +40,9 @@ Detect if a 2d object is on "R2", "S2", or "M2"
 is NULL or NA.
 
 }}
+\examples{
+fm_detect_manifold(1:4)
+fm_detect_manifold(rbind(c(1, 0, 0), c(0, 1, 0), c(1, 1, 0)))
+fm_detect_manifold(rbind(c(1, 0, 0), c(0, 1, 0), c(0, 0, 1)))
+
+}

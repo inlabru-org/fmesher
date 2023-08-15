@@ -15,6 +15,9 @@ fmesher_bary(mesh_loc, mesh_tv, loc, options)
 
 \item{options}{list of triangulation options}
 }
+\value{
+A list with vector \code{t} and matrix \code{bary}
+}
 \description{
 Locate points and compute triangular barycentric coordinates
 }

@@ -103,6 +103,9 @@ Default \code{TRUE}}
 \item{closed}{logical; whether to treat a point sequence as a closed polygon.
 Default: \code{FALSE}}
 }
+\value{
+An \code{fm_segm} or \code{fm_segm_list} object
+}
 \description{
 Convert objects to \code{fm_segm}
 }

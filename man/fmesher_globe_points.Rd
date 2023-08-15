@@ -9,6 +9,9 @@ fmesher_globe_points(globe)
 \arguments{
 \item{globe}{integer; the number of edge subdivision segments, 1 or higher}
 }
+\value{
+A matrix of points on a unit radius globe
+}
 \description{
 Create points on a globe
 }

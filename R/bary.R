@@ -11,6 +11,8 @@
 #' corresponding barycentric coordinates. May be a vector (for 1d) or
 #' raw matrix coordinates, `sf`, or `sp` point information (for 2d).
 #' @param \dots Arguments forwarded to sub-methods.
+#' @returns A list with elements `t` (vector of triangle indices or matrix of
+#' interval knot indices), and `bary`, a matrix of barycentric coordinates.
 #'
 #' @export
 fm_bary <- function(mesh, loc, ...) {

@@ -214,6 +214,7 @@ Mesh Rcpp_import_mesh(Rcpp::NumericMatrix mesh_loc,
 //' Create points on a globe
 //'
 //' @param globe integer; the number of edge subdivision segments, 1 or higher
+//' @returns A matrix of points on a unit radius globe
 //' @export
 // [[Rcpp::export]]
 Rcpp::NumericMatrix fmesher_globe_points(Rcpp::IntegerVector globe) {
@@ -247,6 +248,7 @@ Rcpp::NumericMatrix fmesher_globe_points(Rcpp::IntegerVector globe) {
 //' @param interior_grp integer vector with group labels
 //' @examples
 //' m <- fmesher_rcdt(list(cet_margin = 1), matrix(0, 1, 2))
+//' @returns A list of information objects for a generated triangulation
 //' @export
 // [[Rcpp::export]]
 Rcpp::List fmesher_rcdt(Rcpp::List options,
@@ -489,6 +491,7 @@ Rcpp::List fmesher_rcdt(Rcpp::List options,
 //'                   m$tv,
 //'                   matrix(c(0.5, 0.5), 1, 2),
 //'                   list())
+//' @returns A list with vector `t` and matrix `bary`
 //' @export
 // [[Rcpp::export]]
 Rcpp::List fmesher_bary(Rcpp::NumericMatrix mesh_loc,
@@ -545,6 +548,7 @@ Rcpp::List fmesher_bary(Rcpp::NumericMatrix mesh_loc,
 //' fmesher_spherical_bsplines1(m$loc[, 3], n = 3, degree = 2, uniform = FALSE)
 //' @export
 //' @keywords internal
+//' @returns A matrix of evaluated b-spline basis functions
 // [[Rcpp::export]]
 SEXP fmesher_spherical_bsplines1(Rcpp::NumericVector loc,
                                  int n,
@@ -643,6 +647,7 @@ SEXP fmesher_spherical_bsplines(Rcpp::NumericMatrix loc,
 //' @examples
 //' m <- fmesher_rcdt(list(cet_margin = 1), matrix(0, 1, 2))
 //' b <- fmesher_fem(m$s, m$tv, fem_order_max = 2, aniso = NULL, options = list())
+//' @returns A list of matrices
 //' @export
 // [[Rcpp::export]]
 Rcpp::List fmesher_fem(Rcpp::NumericMatrix mesh_loc,
@@ -785,6 +790,7 @@ Rcpp::List fmesher_fem(Rcpp::NumericMatrix mesh_loc,
 //' @param idx 2-column integer matrix
 //' @param options list of triangulation options (`sphere_tolerance`)
 //' @export
+//' @returns A list of line splitting information objects
 // [[Rcpp::export]]
 Rcpp::List fmesher_split_lines(
     Rcpp::NumericMatrix mesh_loc,

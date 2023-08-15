@@ -18,15 +18,24 @@ fm_try_callstack(expr)
 
 \item{override}{character; Overrides the automated function name logic}
 
-\item{start}{TODO}
+\item{start}{The stack starting point}
 
-\item{end}{TODO}
+\item{end}{The stack end point}
 
-\item{with_numbers}{TODO}
+\item{with_numbers}{INclude call stack location numbers}
 
-\item{\dots}{TODO}
+\item{\dots}{Currently unused}
 
 \item{expr}{An \code{expression} to evaluate}
+}
+\value{
+\code{fm_caller_name} returns a string with the the name of a calling function
+
+\code{fm_call_stack} returns a character vector
+
+\code{fm_try_callstack} If successful, returns (invisibly) the value from the
+evaluated expression, otherwise an error object with call stack information attached
+to the error message.
 }
 \description{
 Helper functions for displaying call stack information

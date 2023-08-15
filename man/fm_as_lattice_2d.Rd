@@ -20,6 +20,9 @@ fm_as_lattice_2d_list(x, ...)
 
 \item{x}{Object to be converted}
 }
+\value{
+An \code{fm_lattice_2d} or \code{fm_lattice_2d_list} object
+}
 \description{
 Convert objects to \code{fm_lattice_2d}
 }

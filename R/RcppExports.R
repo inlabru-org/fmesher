@@ -7,6 +7,7 @@
 #' Create points on a globe
 #'
 #' @param globe integer; the number of edge subdivision segments, 1 or higher
+#' @returns A matrix of points on a unit radius globe
 #' @export
 fmesher_globe_points <- function(globe) {
     .Call(`_fmesher_fmesher_globe_points`, globe)
@@ -28,6 +29,7 @@ fmesher_globe_points <- function(globe) {
 #' @param interior_grp integer vector with group labels
 #' @examples
 #' m <- fmesher_rcdt(list(cet_margin = 1), matrix(0, 1, 2))
+#' @returns A list of information objects for a generated triangulation
 #' @export
 fmesher_rcdt <- function(options, loc, tv = NULL, boundary = NULL, interior = NULL, boundary_grp = NULL, interior_grp = NULL) {
     .Call(`_fmesher_fmesher_rcdt`, options, loc, tv, boundary, interior, boundary_grp, interior_grp)
@@ -48,6 +50,7 @@ fmesher_rcdt <- function(options, loc, tv = NULL, boundary = NULL, interior = NU
 #'                   m$tv,
 #'                   matrix(c(0.5, 0.5), 1, 2),
 #'                   list())
+#' @returns A list with vector `t` and matrix `bary`
 #' @export
 fmesher_bary <- function(mesh_loc, mesh_tv, loc, options) {
     .Call(`_fmesher_fmesher_bary`, mesh_loc, mesh_tv, loc, options)
@@ -71,6 +74,7 @@ fmesher_bary <- function(mesh_loc, mesh_tv, loc, options) {
 #' fmesher_spherical_bsplines1(m$loc[, 3], n = 3, degree = 2, uniform = FALSE)
 #' @export
 #' @keywords internal
+#' @returns A matrix of evaluated b-spline basis functions
 fmesher_spherical_bsplines1 <- function(loc, n, degree, uniform) {
     .Call(`_fmesher_fmesher_spherical_bsplines1`, loc, n, degree, uniform)
 }
@@ -98,6 +102,7 @@ fmesher_spherical_bsplines <- function(loc, n, degree, uniform) {
 #' @examples
 #' m <- fmesher_rcdt(list(cet_margin = 1), matrix(0, 1, 2))
 #' b <- fmesher_fem(m$s, m$tv, fem_order_max = 2, aniso = NULL, options = list())
+#' @returns A list of matrices
 #' @export
 fmesher_fem <- function(mesh_loc, mesh_tv, fem_order_max, aniso, options) {
     .Call(`_fmesher_fmesher_fem`, mesh_loc, mesh_tv, fem_order_max, aniso, options)
@@ -114,6 +119,7 @@ fmesher_fem <- function(mesh_loc, mesh_tv, fem_order_max, aniso, options) {
 #' @param idx 2-column integer matrix
 #' @param options list of triangulation options (`sphere_tolerance`)
 #' @export
+#' @returns A list of line splitting information objects
 fmesher_split_lines <- function(mesh_loc, mesh_tv, loc, idx, options) {
     .Call(`_fmesher_fmesher_split_lines`, mesh_loc, mesh_tv, loc, idx, options)
 }

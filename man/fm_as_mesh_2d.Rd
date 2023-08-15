@@ -32,6 +32,9 @@ fm_as_mesh_2d_list(x, ...)
 
 \item{...}{Arguments passed on to submethods}
 }
+\value{
+An \code{fm_mesh_2d} or \code{fm_mesh_2d_list} object
+}
 \description{
 Convert objects to \code{fm_mesh_2d}
 }

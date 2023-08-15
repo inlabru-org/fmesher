@@ -281,6 +281,7 @@ fm_lattice_2d.default <- function(
 #' @describeIn fm_as_lattice_2d Convert an object to `fm_lattice_2d`.
 #' @param x Object to be converted.
 #' @param ... Arguments passed on to submethods
+#' @returns An `fm_lattice_2d` or `fm_lattice_2d_list` object
 #' @export
 #' @family object creation and conversion
 #' @export

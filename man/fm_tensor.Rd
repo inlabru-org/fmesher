@@ -11,6 +11,9 @@ fm_tensor(x, ...)
 
 \item{...}{Currently unused}
 }
+\value{
+A \code{fm_tensor} or \code{fm_tensor_list} object
+}
 \description{
 Make a tensor product function space
 }

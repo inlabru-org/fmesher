@@ -4,7 +4,7 @@
 #'
 #' @param x an object used to select a method.
 #' @param \dots further arguments passed to or from other methods.
-#'
+#' @returns The input object `x`
 #' @name fmesher-print
 #' @examples
 #' fm_bbox(matrix(1:6, 3, 2))

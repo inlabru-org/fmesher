@@ -16,6 +16,9 @@ fm_dof(x)
 \item{x}{A function space object, such as \code{\link[=fm_mesh_1d]{fm_mesh_1d()}} or
 \code{\link[=fm_mesh_2d]{fm_mesh_2d()}}}
 }
+\value{
+An integer
+}
 \description{
 Obtain the degrees of freedom of a function space, i.e.
 the number of basis functions it uses.

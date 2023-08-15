@@ -20,6 +20,14 @@ fm_manifold_dim(x)
 If \code{character}, returns \code{TRUE} if the manifold type of \code{x} matches at least
 one of the character vector elements.}
 }
+\value{
+\code{fm_manifold()}: Either logical (matching manifold type yes/no),
+or character (the stored manifold, when \code{is.null(type)} is \code{TRUE})
+
+\code{fm_manifold_type()}: character or NULL; "M", "R", or "S"
+
+\code{fm_manifold_dim()}: integer or NULL
+}
 \description{
 Extract a manifold definition string, or a logical for matching
 manifold type

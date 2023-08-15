@@ -11,6 +11,8 @@
 #' @param type `character`; if `NULL` (the default), returns the manifold definition string.
 #' If `character`, returns `TRUE` if the manifold type of `x` matches at least
 #' one of the character vector elements.
+#' @returns `fm_manifold()`: Either logical (matching manifold type yes/no),
+#' or character (the stored manifold, when `is.null(type)` is `TRUE`)
 #' @export
 fm_manifold <- function(x, type = NULL) {
   if (is.null(type)) {
@@ -33,6 +35,7 @@ fm_manifold <- function(x, type = NULL) {
 }
 
 #' @rdname fm_manifold
+#' @returns `fm_manifold_type()`: character or NULL; "M", "R", or "S"
 #' @export
 fm_manifold_type <- function(x) {
   if (is.null(x) || is.null(x[["manifold"]])) {
@@ -47,6 +50,7 @@ fm_manifold_type <- function(x) {
 }
 
 #' @rdname fm_manifold
+#' @returns `fm_manifold_dim()`: integer or NULL
 #' @export
 fm_manifold_dim <- function(x) {
   if (is.null(x) || is.null(x[["manifold"]])) {

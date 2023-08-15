@@ -9,6 +9,7 @@
 #'
 #' @param x A object with coordinate information
 #' @param crs A optional crs object to convert the coordinates to
+#' @returns A coordinate matrix
 #' @keywords internal
 #' @export
 
@@ -264,6 +265,7 @@ handle_rcdt_options_inla <- function(
 #' @param crs Optional crs object
 #' @param ... Currently passed on to `fm_mesh_2d_inla` or converted to
 #' [fmesher_rcdt()] options.
+#' @returns An `fm_mesh_2d` object
 #' @examples
 #' m <- fm_rcdt_2d(
 #'   boundary = fm_nonconvex_hull(cbind(0, 0), convex = 5),
@@ -875,6 +877,7 @@ fm_mesh_2d_inla <- function(loc = NULL, ## Points to include in final triangulat
 #' @describeIn fm_as_mesh_2d Convert an object to `fm_mesh_2d`.
 #' @param x Object to be converted.
 #' @param ... Arguments passed on to submethods
+#' @returns An `fm_mesh_2d` or `fm_mesh_2d_list` object
 #' @export
 #' @family object creation and conversion
 #' @export

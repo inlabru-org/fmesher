@@ -12,6 +12,9 @@ fm_mesh_intersection(mesh, poly)
 \item{poly}{\code{fm_segm} object with a closed polygon
 to intersect with the mesh}
 }
+\value{
+An \link{fm_mesh_2d} object
+}
 \description{
 Construct the intersection mesh of a mesh and a polygon
 }

@@ -864,6 +864,7 @@ fm_crs.matrix <- function(x, oblique = NULL, ...) {
 #'
 #' For `fm_crs_oblique<-()`, `NA` or a numeric vector, see
 #' the `oblique` argument for [fm_crs()]. For assignment, `NULL` is treated as `NA`.
+#' @returns The modified object
 #' @seealso [fm_crs()]
 #' @export
 `fm_crs<-` <- function(x, value) {
@@ -1323,9 +1324,10 @@ fm_wkt_predef <- function() {
 #'
 #' @param x A WKT2 string, or a `wkt_tree` list structure
 #' @param \dots Unused
-#'
+#' @returns A hierarchical list, describing WKT information as a tree
 #' @rdname wkt_tree
 #' @export
+#' @keywords internal
 
 fm_wkt_as_wkt_tree <- function(x, ...) {
   # Basic parsing of WKT string
@@ -1373,6 +1375,7 @@ fm_wkt_as_wkt_tree <- function(x, ...) {
 
 #' @param pretty logical; If TRUE, use pretty formatting. Default: FALSE
 #' @rdname wkt_tree
+#' @returns `fm_wkt_tree_as_wkt` character; the WKT corresponding to the tree.
 #' @export
 
 fm_wkt_tree_as_wkt <- function(x, pretty = FALSE, ...) {
@@ -1419,6 +1422,7 @@ fm_wkt_tree_as_wkt <- function(x, pretty = FALSE, ...) {
 #' @param duplicate For items that have more than one match, `duplicate`
 #' indicates the index number of the desired version. Default: 1
 #' @rdname wkt_tree
+#' @returns `fm_wkt_tree_get_item` returns the value of an item found in the tree
 #' @export
 
 fm_wkt_tree_get_item <- function(x, item, duplicate = 1) {
@@ -1437,6 +1441,7 @@ fm_wkt_tree_get_item <- function(x, item, duplicate = 1) {
 
 #' @param item_tree An item tree identifying a parameter item entry
 #' @rdname wkt_tree
+#' @returns `fm_wkt_tree_set_item` returns the modified tree
 #' @export
 
 fm_wkt_tree_set_item <- function(x, item_tree, duplicate = 1) {
@@ -1841,6 +1846,8 @@ fm_internal_update_crs <- function(crs, newcrs, mismatch.allowed) {
 #' @param crsonly logical. If `TRUE` and any of `crs0` and `crs1` are `fm_crs` or `inla.CRS`
 #' objects, extract and compare only the `sf::crs` or `sp::CRS` aspects. Default: `FALSE`
 #' @export
+#' @returns logical, indicating if the two crs objects are identical in the
+#' specified sense (see the `crsonly` argument)
 #' @seealso [fm_crs()], [fm_CRS()]
 #' @examples
 #'
@@ -1882,7 +1889,13 @@ fm_identical_CRS <- function(crs0, crs1, crsonly = FALSE) {
 #' @description
 #' Detect if a 2d object is on "R2", "S2", or "M2"
 #' @param x Object to investigate
+#' @returns A string containing the detected manifold classification
 #' @export
+#' @examples
+#' fm_detect_manifold(1:4)
+#' fm_detect_manifold(rbind(c(1, 0, 0), c(0, 1, 0), c(1, 1, 0)))
+#' fm_detect_manifold(rbind(c(1, 0, 0), c(0, 1, 0), c(0, 0, 1)))
+#'
 fm_detect_manifold <- function(x) {
   UseMethod("fm_detect_manifold")
 }
@@ -1915,8 +1928,17 @@ fm_detect_manifold.CRS <- function(x) {
 
 #' @rdname fm_detect_manifold
 #' @export
+fm_detect_manifold.numeric <- function(x) {
+  return("R1")
+}
+
+#' @rdname fm_detect_manifold
+#' @export
 fm_detect_manifold.matrix <- function(x) {
-  if (ncol(x) <= 2) {
+  if (ncol(x) <= 1) {
+    return("R1")
+  }
+  if (ncol(x) == 2) {
     return("R2")
   }
   tol <- 1e-10
@@ -1976,6 +1998,8 @@ fm_detect_manifold.fm_mesh_2d <- function(x) {
 #' through without transformation. Use with care!
 #' @param \dots
 #' Potential additional arguments
+#' @returns A transformed object, normally of the same class as
+#' the input object.
 #' @seealso [fm_CRS()]
 #' @export
 fm_transform <- function(x, crs, ...) {

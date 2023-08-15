@@ -11,6 +11,7 @@
 #' @param x Object to be converted
 #' @param ... Arguments forwarded to submethods
 #' @rdname fm_as_fm
+#' @returns An object of some `fm_*` class
 #' @export
 #' @family object creation and conversion
 fm_as_fm <- function(x, ...) {

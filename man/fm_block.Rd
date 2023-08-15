@@ -98,6 +98,9 @@ passes either \code{weights} and \code{log_weights} on, if provided, with \code{
 taking precedence. If \code{TRUE}, forces the computation of \code{log_weights},
 whether given in the input or not.}
 }
+\value{
+A (sparse) matrix
+}
 \description{
 Creates an aggregation matrix for blockwise aggregation, with optional
 weighting.

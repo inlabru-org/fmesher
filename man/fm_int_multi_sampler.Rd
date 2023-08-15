@@ -6,6 +6,16 @@
 \usage{
 fm_int_multi_sampler(domain, samplers, ...)
 }
+\arguments{
+\item{domain}{A list of named domains}
+
+\item{samplers}{A named list of samplers}
+
+\item{...}{Passed on to each \code{\link[=fm_int]{fm_int()}} call.}
+}
+\value{
+An object with integration points and weights
+}
 \description{
 Combine integration over different domains
 }

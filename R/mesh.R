@@ -388,6 +388,7 @@ join_segm <- function(...) {
 #' @param mesh `fm_mesh_2d` object to be intersected
 #' @param poly `fm_segm` object with a closed polygon
 #'   to intersect with the mesh
+#' @returns An [fm_mesh_2d] object
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
 #' @keywords internal
 fm_mesh_intersection <- function(mesh, poly) {
@@ -653,7 +654,7 @@ fm_onto_mesh <- function(mesh, loc, crs = NULL) {
 #'
 #' @param x A function space object, such as [fm_mesh_1d()] or
 #' [fm_mesh_2d()]
-#'
+#' @returns An integer
 #' @export
 fm_dof <- function(x) {
   UseMethod("fm_dof")

@@ -71,6 +71,11 @@ the domain.}
 
 \item{projection}{One of \code{c("default", "longlat", "longsinlat", "mollweide")}.}
 }
+\value{
+A vector or matrix of the evaluated function
+
+An \code{fm_evaluator} object
+}
 \description{
 Calculate evaluation information and/or evaluate a function
 defined on a mesh or function space.

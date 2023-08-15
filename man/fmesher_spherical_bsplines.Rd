@@ -20,6 +20,9 @@ only the z-coordinates are used (\code{sin(latitude)})}
 \item{uniform}{logical; If \code{TRUE}, the knots are spaced uniformly by latitude,
 if \code{FALSE}, the knots are spaced uniformly by \code{sin(latitude)}}
 }
+\value{
+A matrix of evaluated b-spline basis functions
+}
 \description{
 Compute rotationally invariant spherical B-splines on the unit sphere
 }

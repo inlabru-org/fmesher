@@ -6,6 +6,7 @@
 #' @export
 #' @param x list of function space objects, such as [fm_mesh_2d()].
 #' @param ... Currently unused
+#' @returns A `fm_tensor` or `fm_tensor_list` object
 #' @family object creation and conversion
 fm_tensor <- function(x, ...) {
   nn <- names(x)
@@ -24,6 +25,7 @@ fm_tensor <- function(x, ...) {
 #' @describeIn fm_as_tensor Convert an object to `fm_tensor`.
 #' @param x Object to be converted.
 #' @param ... Arguments passed on to submethods
+#' @returns An `fm_tensor` object
 #' @export
 #' @family object creation and conversion
 #' @export

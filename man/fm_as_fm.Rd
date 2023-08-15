@@ -54,6 +54,9 @@ fm_as_fm(x, ...)
 
 \item{...}{Arguments forwarded to submethods}
 }
+\value{
+An object of some \verb{fm_*} class
+}
 \description{
 Used for conversion from general objects
 (usually \code{inla.mesh} and other INLA specific classes)

@@ -17,6 +17,9 @@ fm_as_tensor_list(x, ...)
 
 \item{...}{Arguments passed on to submethods}
 }
+\value{
+An \code{fm_tensor} object
+}
 \description{
 Convert objects to \code{fm_tensor}
 }

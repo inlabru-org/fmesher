@@ -62,6 +62,10 @@ fm_transform(x, crs, ...)
 Setting to TRUE allows objects with no CRS information to be passed
 through without transformation. Use with care!}
 }
+\value{
+A transformed object, normally of the same class as
+the input object.
+}
 \description{
 Handle transformation of various inla objects according to coordinate
 reference systems of \code{crs} (from \code{sf::st_crs()}), \code{fm_crs}, \code{sp::CRS} or

@@ -27,8 +27,11 @@ limits.}
 
 \item{alpha}{Transparency/opaqueness values.}
 }
+\value{
+A list with character vector \code{colors} and numeric vector \code{alpha}
+}
 \description{
-Generates a tex RGB color specification matrix based on a color palette.
+Generates a text RGB color specification matrix based on a color palette.
 }
 \author{
 Finn Lindgren \email{finn.lindgren@gmail.com}

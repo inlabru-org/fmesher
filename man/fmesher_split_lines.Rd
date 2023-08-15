@@ -17,6 +17,9 @@ fmesher_split_lines(mesh_loc, mesh_tv, loc, idx, options)
 
 \item{options}{list of triangulation options (\code{sphere_tolerance})}
 }
+\value{
+A list of line splitting information objects
+}
 \description{
 (...)
 }

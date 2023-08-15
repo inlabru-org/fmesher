@@ -31,6 +31,9 @@ interior edge constraint}
 
 \item{interior_grp}{integer vector with group labels}
 }
+\value{
+A list of information objects for a generated triangulation
+}
 \description{
 (...)
 }

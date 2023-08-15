@@ -4,7 +4,7 @@
 #'
 #' @param which The number of frames to go back from the caller
 #' @param override character; Overrides the automated function name logic
-#'
+#' @returns `fm_caller_name` returns a string with the the name of a calling function
 #' @export
 #' @name call-stack
 #' @rdname call-stack
@@ -30,11 +30,11 @@ fm_caller_name <- function(which = 0L, override = NULL) {
 
 #' @describeIn call-stack
 #'
-#' @param start TODO
-#' @param end TODO
-#' @param with_numbers TODO
-#' @param \dots TODO
-#'
+#' @param start The stack starting point
+#' @param end The stack end point
+#' @param with_numbers INclude call stack location numbers
+#' @param \dots Currently unused
+#' @returns `fm_call_stack` returns a character vector
 #' @export
 fm_call_stack <- function(start = 0L, end = 0L, with_numbers = TRUE, ...) {
   stack <- sys.calls()
@@ -85,7 +85,9 @@ fm_call_stack <- function(start = 0L, end = 0L, with_numbers = TRUE, ...) {
 #' @describeIn call-stack Inspired by `berryFunctions::tryStack`
 #'
 #' @param expr An `expression` to evaluate
-#'
+#' @returns `fm_try_callstack` If successful, returns (invisibly) the value from the
+#' evaluated expression, otherwise an error object with call stack information attached
+#' to the error message.
 #' @export
 fm_try_callstack <- function(expr) {
   try_envir <- new.env()
@@ -181,6 +183,7 @@ fm_require_stop <- function(pkg, msg = NULL, override = NULL) {
 # Explicit import of something from Matrix to appease automated checks:
 #' @importFrom Matrix as.matrix
 #' @keywords internal
+#' @returns `fm_as_dgCMatrix` returns a [Matrix::dgCMatrix-class] object.
 #' @export
 fm_as_dgCMatrix <- function(x) {
   UseMethod("fm_as_dgCMatrix")
@@ -189,18 +192,22 @@ fm_as_dgCMatrix <- function(x) {
 #' @param pretty logical; if `TRUE`, ensures that the sparse triplet
 #' representation has a single entry for each non-zero matrix element.
 #' @rdname fmesher_sparse
+#' @returns `fm_as_dgTMatrix` returns a [Matrix::dgTMatrix-class] object.
 #' @export
 fm_as_dgTMatrix <- function(x, unique = TRUE, ...) {
   UseMethod("fm_as_dgTMatrix")
 }
 
 #' @rdname fmesher_sparse
+#' @returns `fm_as_unpackedMatrix` returns an object of virtual class
+#'  [Matrix::unpackedMatrix-class].
 #' @export
 fm_as_unpackedMatrix <- function(x) {
   UseMethod("fm_as_unpackedMatrix")
 }
 
 #' @rdname fmesher_sparse
+#' @returns `fm_as_fmesher_sparse` returns an `fmesher_sparse` object.
 #' @export
 fm_as_fmesher_sparse <- function(x) {
   x <- fm_as_dgTMatrix(x, unique = TRUE)

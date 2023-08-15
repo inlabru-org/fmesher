@@ -29,6 +29,9 @@ basis functions to the interval endpoints.}
 
 \item{\dots}{Additional options, currently unused.}
 }
+\value{
+An \code{fm_mesh_1d} object
+}
 \description{
 Create a \code{fm_mesh_1d} object.
 }

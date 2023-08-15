@@ -72,6 +72,9 @@ specification for each location in \code{loc}, \code{boundary/interior}
 
 \item{crs}{Optional crs object}
 }
+\value{
+An \code{fm_mesh_2d} object
+}
 \description{
 Computes a refined constrained Delaunay triangulation on R2 or S2.
 }

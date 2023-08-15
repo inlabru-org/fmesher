@@ -6,6 +6,7 @@
 #' @describeIn fm_segm Create a new `fm_segm` object.
 #' @export
 #' @param ... Passed on to submethods
+#' @returns An `fm_segm` or `fm_segm_list` object
 #' @family object creation and conversion
 fm_segm <- function(...) {
   UseMethod("fm_segm")
@@ -336,6 +337,7 @@ fm_segm.fm_mesh_2d <- function(x, boundary = TRUE, grp = NULL, ...) {
 #' @describeIn fm_as_segm Convert an object to `fm_segm`.
 #' @param x Object to be converted.
 #' @param ... Arguments passed on to submethods
+#' @returns An `fm_segm` or `fm_segm_list` object
 #' @export
 #' @family object creation and conversion
 fm_as_segm <- function(x, ...) {

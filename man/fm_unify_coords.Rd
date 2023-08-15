@@ -29,6 +29,9 @@ fm_unify_coords(x, crs = NULL)
 
 \item{crs}{A optional crs object to convert the coordinates to}
 }
+\value{
+A coordinate matrix
+}
 \description{
 Convert coordinate information to a 3-column matrix.
 This is mainly an internal function, and the interface may change.

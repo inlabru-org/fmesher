@@ -355,6 +355,7 @@ template <class T> Eigen::SparseMatrix<T> SparseMatrix<T>::EigenSparseMatrix(IOM
   return m;
 }
 #endif
+
 // Export to R as list(i,j,x,dims)
 template <class T> SEXP SparseMatrix<T>::fmesher_sparse(IOMatrixtype matrixt) const {
   std::vector<int> i;

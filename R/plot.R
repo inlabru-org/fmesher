@@ -21,7 +21,8 @@
 #' @param xlab,ylab character; labels for the axes.
 #' @param \dots Additional parameters, passed on to graphics methods.
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
-#' @seealso [fm_segm()]
+#' @returns None
+#' @seealso [fm_segm()], [plot.fm_mesh_2d]
 #' @export
 plot.fm_segm <- function(x, ..., add = FALSE) {
   lines(x, add = add, rgl = FALSE, ...)
@@ -96,7 +97,7 @@ lines.fm_segm <- function(x, loc = NULL, col = NULL,
 
 #' Generate text RGB color specifications.
 #'
-#' Generates a tex RGB color specification matrix based on a color palette.
+#' Generates a text RGB color specification matrix based on a color palette.
 #'
 #' @keywords internal
 #' @param color `character`, `matrix` or `vector`
@@ -106,6 +107,7 @@ lines.fm_segm <- function(x, loc = NULL, col = NULL,
 #' @param color.truncate If `TRUE`, truncate the colors at the color axis
 #' limits.
 #' @param alpha Transparency/opaqueness values.
+#' @returns A list with character vector `colors` and numeric vector `alpha`
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
 generate_colors <- function(color,
                             color.axis = NULL,
@@ -207,7 +209,7 @@ generate_colors <- function(color,
 #' @param \dots Additional parameters passed to and from other methods.
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
 #' @seealso [plot.fm_mesh_2d()]
-# @method plot_rgl fm_mesh_2d
+#' @returns An rgl device identifier, invisibly.
 #' @export
 #' @examples
 #' \donttest{
@@ -404,6 +406,7 @@ plot_rgl.fm_mesh_2d <- function(x, col = "white", color.axis = NULL,
 #' plotting systems.
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
 #' @seealso [plot.fm_segm()], [plot_rgl.fm_mesh_2d()]
+#' @returns None
 #' @examples
 #'
 #' mesh <- fm_rcdt_2d(globe = 10)

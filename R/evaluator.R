@@ -53,6 +53,7 @@ NULL
 #' `fm_evaluator` object. `fm_evaluate(mesh, field = field, ...)` is a
 #' shortcut to `fm_evaluate(fm_evaluator(mesh, ...), field = field)`.
 #' @export fm_evaluate
+#' @returns A vector or matrix of the evaluated function
 fm_evaluate <- function(...) {
   UseMethod("fm_evaluate")
 }
@@ -117,6 +118,7 @@ fm_evaluate.fm_evaluator <-
 #' input, `proj` also contains a matrix `bary` and vector `t`, with the
 #' barycentric coordinates within the triangle each input location falls in.
 #' @export
+#' @returns An `fm_evaluator` object
 fm_evaluator <- function(...) {
   UseMethod("fm_evaluator")
 }
@@ -130,6 +132,8 @@ fm_evaluator <- function(...) {
 #' @inheritParams fm_evaluate
 #' @export
 #' @keywords internal
+#' @returns A list of evaluator information objects, at least a matrix `A` and
+#' logical vector `ok`.
 #' @name fm_evaluator_helpers
 fm_evaluator_mesh_2d <- function(mesh,
                                  loc = NULL,
@@ -1149,7 +1153,7 @@ internal_spline_mesh_1d <- function(interval, m, degree, boundary, free.clamped)
 #' repeating the boundary knots. See
 #' [fm_mesh_1d()] for more information.
 #' @param ... Unused
-#'
+#' @returns A matrix with evaluated basis function
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
 #' @seealso [fm_mesh_1d()], [fm_mesh_2d()], [fm_basis()]
 #' @examples
@@ -1321,8 +1325,8 @@ fm_raw_basis <- function(mesh,
 #' specified if it's larger than `max(block)`, or to keep the output of
 #' consistent size for different inputs.
 #'
+#' @returns A (sparse) matrix
 #' @export
-#'
 #' @describeIn fm_block A (sparse) matrix of size `n_block` times `length(block)`.
 #' @examples
 #' block <- rep(1:2, 3:2)
