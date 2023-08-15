@@ -1,15 +1,22 @@
-#' @title Matérn process precision
+#' @title SPDE, GMRF, and Matérn process methods
 #' @description
 #' `r lifecycle::badge("experimental")`
-#' Construct the (sparse) precision matrix for the basis weights for
-#' Whittle-Matérn SPDE models.
-#'
-#' @param x A mesh object
-#' @param alpha The SPDE operator order. The smoothness index is `alpha - dim/2`.
-#' @param rho The range parameter.
-#' @param sigma The nominal standard deviation.
-#'
+#' Methods for SPDEs and GMRFs.
 #' @name fm_gmrf
+NULL
+
+#' @describeIn fm_gmrf
+#' Construct the (sparse) precision matrix for the basis weights for
+#' Whittle-Matérn SPDE models.  The boundary behaviour is determined by the
+#' provided mesh function space.
+#'
+#' @param x A mesh object, e.g. from `fm_mesh_1d()` or `fm_mesh_2d()`.
+#' @param alpha The SPDE operator order. The resulting smoothness index
+#' is `nu = alpha - dim / 2`.
+#' @param rho The Matérn range parameter
+#' (scale parameter `kappa = sqrt(8 * nu) / rho`)
+#' @param sigma The nominal Matérn std.dev. parameter
+#'
 #' @export
 #' @examples
 #' library(Matrix)
@@ -53,6 +60,33 @@ fm_matern_precision <- function(x, alpha, rho, sigma) {
 
   Q
 }
+
+
+#' @describeIn fm_gmrf
+#' Simulate a Matérn field given a mesh and
+#' covariance function parameters, and optionally evaluate at given locations.
+#'
+#' @param loc locations to evaluate the random field, compatible with
+#' `fm_evaluate(x, loc = loc, field = ...)`
+#'
+#' @return `fm_matern_sample()` returns a matrix, where each column is a sampled
+#' field. If `loc` is `NULL`, the `fm_dof(mesh)` basis weights are given.
+#' Otherwise, the evaluated field at the `nrow(loc)` locations `loc` are given.
+#' A list with two elements,
+#' * `Ax` = matrix of size nrow(locs) x n, each column corresponds to a
+#'          realisation of the random field at the locations specified in locs.
+#' * `x` = matrix of size m x n where m is the number of mesh nodes.
+#'         (The GMRF basis weights at each mesh node before evaluation using A)
+
+fm_matern_sample <- function(x, alpha = 2, rho, sigma, n = 1, loc = NULL) {
+  Q <- fm_matern_precision(x, alpha = alpha, rho = rho, sigma = sigma)
+  x <- fm_sample(n = n, Q = Q)
+  if (!is.null(loc)) {
+    x <- fm_evaluate(x, loc = loc, field = x)
+  }
+  x
+}
+
 
 
 #' @describeIn fm_gmrf Compute the covariance between "A1 x" and "A2 x", when
@@ -154,9 +188,12 @@ fm_sample <- function(n, Q, mu = 0, constr = NULL) {
   result <- mu + x
   if (!is.null(constr) && !is.null(constr[["A"]])) {
     if (is.null(constr[["e"]])) {
-      constr$e <- matrix(0, nrow(constr$A), 1)
+      constr$e <- matrix(0, nrow(constr$A), n)
     } else {
       constr$e <- as.matrix(constr$e)
+      if (ncol(constr$e) == 1) {
+        constr$e <- matrix(as.vector(constr$e), nrow(constr$A), n)
+      }
     }
     # See gmrf.pdf section 4.2
     A_tilde_T <- L_solve(fact, Matrix::t(constr$A))
