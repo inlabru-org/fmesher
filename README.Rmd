@@ -58,12 +58,6 @@ options(repos = c(
 
 install.packages("fmesher")
 ```
-Note that you need the `feature/fmesher` branch of `inlabru` until that is merged
-into the main development branch:
-``` r
-# install.packages("remotes")
-remotes::install_github("inlabru-org/inlabru@feature/fmesher")
-```
 
 To install and run `fmesher` in full debug mode (this is quite an experience!),
 use
