@@ -29,6 +29,10 @@ Takes two Matrices and computes the row-wise Kronecker product.  Optionally
 applies row-wise weights and/or applies an additional 0/1 row-wise Kronecker
 matrix product.
 }
+\examples{
+fm_row_kron(rbind(c(1, 1, 0), c(0, 1, 1)), rbind(c(1, 2), c(3, 4)))
+
+}
 \author{
 Finn Lindgren \email{finn.lindgren@gmail.com}
 }

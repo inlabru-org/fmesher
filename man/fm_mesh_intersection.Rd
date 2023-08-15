@@ -18,6 +18,15 @@ An \link{fm_mesh_2d} object
 \description{
 Construct the intersection mesh of a mesh and a polygon
 }
+\examples{
+segm <- fm_segm(rbind(c(-4, -4), c(4, -4), c(0, 4)),
+  is.bnd = TRUE
+)
+str(m <- fm_mesh_intersection(fmexample$mesh, segm))
+plot(fmexample$mesh)
+lines(segm, col = 4)
+plot(m, edge.color = 2, add = TRUE)
+}
 \author{
 Finn Lindgren \email{finn.lindgren@gmail.com}
 }

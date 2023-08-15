@@ -8,6 +8,10 @@
 #' @param ... Passed on to submethods
 #' @returns An `fm_segm` or `fm_segm_list` object
 #' @family object creation and conversion
+#' @examples
+#' fm_segm(rbind(c(0, 0), c(1, 0), c(1, 1), c(0, 1)), is.bnd = FALSE)
+#' fm_segm(rbind(c(0, 0), c(1, 0), c(1, 1), c(0, 1)), is.bnd = TRUE)
+#'
 fm_segm <- function(...) {
   UseMethod("fm_segm")
 }
@@ -287,6 +291,10 @@ fm_segm.inla.mesh <- function(x, ...) {
 #' @param boundary logical; if `TRUE`, extract the boundary segments,
 #' otherwise interior constrain segments.
 #' @export
+#' @examples
+#' fm_segm(fmexample$mesh, boundary = TRUE)
+#' fm_segm(fmexample$mesh, boundary = FALSE)
+#'
 fm_segm.fm_mesh_2d <- function(x, boundary = TRUE, grp = NULL, ...) {
   extract_segments <- function(mesh.loc,
                                segm,

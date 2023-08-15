@@ -41,3 +41,7 @@ and more if \code{order > 1}. When \code{aniso} is non-NULL, also \code{g1aniso}
 \description{
 (...)
 }
+\examples{
+str(fm_fem(fmexample$mesh))
+
+}

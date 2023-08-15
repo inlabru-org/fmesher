@@ -88,6 +88,11 @@ Assigns new crs information.
 \item \code{fm_crs_oblique(x) <- value}: Assigns new \code{oblique} information.
 
 }}
+\examples{
+x <- fm_segm()
+fm_crs(x) <- fm_crs("+proj=longlat")
+fm_crs(x)$proj4string
+}
 \seealso{
 \code{\link[=fm_crs]{fm_crs()}}
 }

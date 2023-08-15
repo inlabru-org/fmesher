@@ -62,6 +62,10 @@ Used for conversion from general objects
 (usually \code{inla.mesh} and other INLA specific classes)
 to \code{fmesher} classes.
 }
+\examples{
+fm_as_fm(NULL)
+
+}
 \seealso{
 Other object creation and conversion: 
 \code{\link{fm_as_lattice_2d}()},

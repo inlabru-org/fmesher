@@ -6,8 +6,10 @@
 #' @description
 #' Create points on a globe
 #'
-#' @param globe integer; the number of edge subdivision segments, 1 or higher
+#' @param globe integer; the number of edge subdivision segments, 1 or higher.
 #' @returns A matrix of points on a unit radius globe
+#' @examples
+#' fmesher_globe_points(1)
 #' @export
 fmesher_globe_points <- function(globe) {
     .Call(`_fmesher_fmesher_globe_points`, globe)

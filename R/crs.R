@@ -867,6 +867,10 @@ fm_crs.matrix <- function(x, oblique = NULL, ...) {
 #' @returns The modified object
 #' @seealso [fm_crs()]
 #' @export
+#' @examples
+#' x <- fm_segm()
+#' fm_crs(x) <- fm_crs("+proj=longlat")
+#' fm_crs(x)$proj4string
 `fm_crs<-` <- function(x, value) {
   UseMethod("fm_crs<-")
 }
@@ -2002,6 +2006,13 @@ fm_detect_manifold.fm_mesh_2d <- function(x) {
 #' the input object.
 #' @seealso [fm_CRS()]
 #' @export
+#' @examples
+#' fm_transform(
+#'   rbind(c(0, 0), c(0, 90)),
+#'   crs = fm_crs("sphere"),
+#'   crs0 = fm_crs("longlat_norm")
+#' )
+#'
 fm_transform <- function(x, crs, ...) {
   UseMethod("fm_transform")
 }

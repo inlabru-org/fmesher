@@ -51,4 +51,8 @@ logical vector \code{ok}.
 \description{
 Methods called internally by \code{\link[=fm_evaluator]{fm_evaluator()}} methods.
 }
+\examples{
+str(fm_evaluator_mesh_2d(fmexample$mesh, loc = fmexample$loc))
+
+}
 \keyword{internal}

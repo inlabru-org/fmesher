@@ -58,6 +58,10 @@ Requires \code{splancs::nndistF()}
 \item \code{fm_nonconvex_hull_inla_basic()}: Special method for \code{convex = 0}.
 
 }}
+\examples{
+fm_nonconvex_hull_inla(cbind(0, 0), convex = 1)
+
+}
 \seealso{
 \code{\link[=fm_nonconvex_hull]{fm_nonconvex_hull()}}
 

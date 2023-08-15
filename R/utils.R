@@ -185,6 +185,12 @@ fm_require_stop <- function(pkg, msg = NULL, override = NULL) {
 #' @keywords internal
 #' @returns `fm_as_dgCMatrix` returns a [Matrix::dgCMatrix-class] object.
 #' @export
+#' @examples
+#' library(Matrix)
+#' str(A <- fm_as_dgCMatrix(matrix(c(1, 2, 0, 0, 0, 3, 4, 0, 5), 3, 3)))
+#' str(fm_as_dgTMatrix(A))
+#' str(fm_as_unpackedMatrix(A))
+#' str(fm_as_fmesher_sparse(A))
 fm_as_dgCMatrix <- function(x) {
   UseMethod("fm_as_dgCMatrix")
 }
@@ -313,6 +319,9 @@ fm_as_dgTMatrix.fmesher_sparse <- function(x, unique = TRUE, ...) {
 #' @return A `Matrix::sparseMatrix` object.
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
 #' @export
+#' @examples
+#' fm_row_kron(rbind(c(1, 1, 0), c(0, 1, 1)), rbind(c(1, 2), c(3, 4)))
+#'
 fm_row_kron <- function(M1, M2, repl = NULL, n.repl = NULL, weights = NULL # ,
                         # method. = 1
 ) {

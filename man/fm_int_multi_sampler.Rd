@@ -19,4 +19,13 @@ An object with integration points and weights
 \description{
 Combine integration over different domains
 }
+\examples{
+fm_int_multi_sampler(
+  domain = list(x = fm_mesh_1d(1:4), y = 11:12),
+  samplers = tibble::tibble(
+    x = rbind(c(1, 3), c(2, 4)),
+    y = c(12, 11)
+  )
+)
+}
 \keyword{internal}

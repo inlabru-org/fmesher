@@ -52,4 +52,11 @@ representation has a single entry for each non-zero matrix element.}
 \description{
 Conversion between sparse matrix types
 }
+\examples{
+library(Matrix)
+str(A <- fm_as_dgCMatrix(matrix(c(1, 2, 0, 0, 0, 3, 4, 0, 5), 3, 3)))
+str(fm_as_dgTMatrix(A))
+str(fm_as_unpackedMatrix(A))
+str(fm_as_fmesher_sparse(A))
+}
 \keyword{internal}

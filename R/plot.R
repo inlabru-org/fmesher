@@ -24,6 +24,10 @@
 #' @returns None
 #' @seealso [fm_segm()], [plot.fm_mesh_2d]
 #' @export
+#' @examples
+#' plot(fm_segm(fmexample$mesh, boundary = TRUE))
+#' lines(fm_segm(fmexample$mesh, boundary = FALSE), col = 2)
+#'
 plot.fm_segm <- function(x, ..., add = FALSE) {
   lines(x, add = add, rgl = FALSE, ...)
 }

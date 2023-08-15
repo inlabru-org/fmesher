@@ -23,3 +23,7 @@ An integer
 Obtain the degrees of freedom of a function space, i.e.
 the number of basis functions it uses.
 }
+\examples{
+fm_dof(fmexample$mesh)
+
+}

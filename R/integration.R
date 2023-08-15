@@ -226,6 +226,14 @@ fm_int <- function(domain, samplers = NULL, ...) {
 #' @returns An object with integration points and weights
 #' @export
 #' @keywords internal
+#' @examples
+#' fm_int_multi_sampler(
+#'   domain = list(x = fm_mesh_1d(1:4), y = 11:12),
+#'   samplers = tibble::tibble(
+#'     x = rbind(c(1, 3), c(2, 4)),
+#'     y = c(12, 11)
+#'   )
+#' )
 fm_int_multi_sampler <- function(domain, samplers, ...) {
   if (is.null(names(domain))) {
     stop("For 'fm_int_multi_sampler', the domain must be a named list.")
@@ -822,6 +830,8 @@ fm_vertex_projection <- function(points, mesh) {
 #' @inheritParams fm_int
 #' @export
 #' @keywords internal
+#' @examples
+#' str(fm_int_mesh_2d(samplers = NULL, domain = fmexample$mesh))
 fm_int_mesh_2d <- function(samplers,
                            domain,
                            name = NULL,
@@ -1118,6 +1128,9 @@ fm_int_mesh_2d.sfc_MULTILINESTRING <- function(samplers,
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
 #' @keywords internal
 #' @export
+#' @examples
+#' str(fm_int_mesh_2d_core(fmexample$mesh))
+#'
 fm_int_mesh_2d_core <- function(mesh, tri_subset = NULL, nsub = NULL) {
   # Construct a barycentric grid of subdivision triangle midpoints
   if (is.null(nsub)) {

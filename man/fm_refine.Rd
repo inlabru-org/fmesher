@@ -7,16 +7,21 @@
 fm_refine(mesh, refine = list(max.edge = 1))
 }
 \arguments{
-\item{mesh}{an fm_mesh_2d object}
+\item{mesh}{An \code{\link[=fm_mesh_2d]{fm_mesh_2d()}} object}
 
 \item{refine}{A list of refinement options passed on to
 \link{fm_rcdt_2d_inla}}
 }
 \value{
-mesh A refined fm_mesh_2d object
+A refined \code{fm_mesh_2d} object
 }
 \description{
-Refine a 2d mesh
+Refine an existing mesh
+}
+\examples{
+fm_dof(fmexample$mesh)
+fm_dof(fm_refine(fmexample$mesh, refine = list(max.edge = 1)))
+
 }
 \author{
 Finn Lindgren \email{finn.lindgren@gmail.com}

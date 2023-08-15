@@ -213,16 +213,23 @@ Mesh Rcpp_import_mesh(Rcpp::NumericMatrix mesh_loc,
 //' @description
 //' Create points on a globe
 //'
-//' @param globe integer; the number of edge subdivision segments, 1 or higher
+//' @param globe integer; the number of edge subdivision segments, 1 or higher.
 //' @returns A matrix of points on a unit radius globe
+//' @examples
+//' fmesher_globe_points(1)
 //' @export
 // [[Rcpp::export]]
 Rcpp::NumericMatrix fmesher_globe_points(Rcpp::IntegerVector globe) {
   MatrixC matrices;
 
+  int num = globe[0];
+  if (num < 1) {
+    num = 1;
+  }
+
   matrices.attach(
     ".globe",
-    (Matrix<double> *)fmesh::make_globe_points(globe[0], 1.0),
+    (Matrix<double> *)fmesh::make_globe_points(num, 1.0),
     true);
   FMLOG("globe points constructed." << std::endl);
 

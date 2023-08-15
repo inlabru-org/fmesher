@@ -157,4 +157,7 @@ Integration methods for spatial samplers on \code{inla.mesh} meshes.
 \item \code{fm_int_mesh_2d_NULL()}: Full domain integration
 
 }}
+\examples{
+str(fm_int_mesh_2d(samplers = NULL, domain = fmexample$mesh))
+}
 \keyword{internal}

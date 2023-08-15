@@ -135,6 +135,9 @@ fm_evaluator <- function(...) {
 #' @returns A list of evaluator information objects, at least a matrix `A` and
 #' logical vector `ok`.
 #' @name fm_evaluator_helpers
+#' @examples
+#' str(fm_evaluator_mesh_2d(fmexample$mesh, loc = fmexample$loc))
+#'
 fm_evaluator_mesh_2d <- function(mesh,
                                  loc = NULL,
                                  weights = NULL,

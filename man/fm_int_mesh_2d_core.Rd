@@ -24,6 +24,10 @@ integration points for the mesh
 \description{
 Integration scheme for mesh triangle interiors
 }
+\examples{
+str(fm_int_mesh_2d_core(fmexample$mesh))
+
+}
 \author{
 Finn Lindgren \email{finn.lindgren@gmail.com}
 }

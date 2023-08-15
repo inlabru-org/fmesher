@@ -55,6 +55,11 @@ None
 Draws a \code{\link[=fm_segm]{fm_segm()}} object with generic or \code{rgl}
 graphics.
 }
+\examples{
+plot(fm_segm(fmexample$mesh, boundary = TRUE))
+lines(fm_segm(fmexample$mesh, boundary = FALSE), col = 2)
+
+}
 \seealso{
 \code{\link[=fm_segm]{fm_segm()}}, \link{plot.fm_mesh_2d}
 }

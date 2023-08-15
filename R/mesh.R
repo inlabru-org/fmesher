@@ -176,16 +176,22 @@ fm_pixels <- function(mesh,
 
 
 
-#' Refine a 2d mesh
+#' @title Refine a 2d mesh
+#'
+#' @description Refine an existing mesh
 #'
 #' @keywords internal
 #'
-#' @param mesh an fm_mesh_2d object
+#' @param mesh An [fm_mesh_2d()] object
 #' @param refine A list of refinement options passed on to
 #' [fm_rcdt_2d_inla]
-#' @return mesh A refined fm_mesh_2d object
+#' @return A refined `fm_mesh_2d` object
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
-
+#' @export
+#' @examples
+#' fm_dof(fmexample$mesh)
+#' fm_dof(fm_refine(fmexample$mesh, refine = list(max.edge = 1)))
+#'
 fm_refine <- function(mesh, refine = list(max.edge = 1)) {
   rmesh <- fm_rcdt_2d_inla(
     loc = mesh$loc,
@@ -391,6 +397,15 @@ join_segm <- function(...) {
 #' @returns An [fm_mesh_2d] object
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
 #' @keywords internal
+#' @export
+#' @examples
+#' segm <- fm_segm(rbind(c(-4, -4), c(4, -4), c(0, 4)),
+#'   is.bnd = TRUE
+#' )
+#' str(m <- fm_mesh_intersection(fmexample$mesh, segm))
+#' plot(fmexample$mesh)
+#' lines(segm, col = 4)
+#' plot(m, edge.color = 2, add = TRUE)
 fm_mesh_intersection <- function(mesh, poly) {
   if (ncol(poly$loc) < 3) {
     poly$loc <- cbind(poly$loc, 0)
@@ -407,7 +422,7 @@ fm_mesh_intersection <- function(mesh, poly) {
 
   mesh_cover <- fm_rcdt_2d_inla(
     loc = rbind(mesh$loc, poly$loc),
-    interior = list(all_edges)
+    interior = all_edges
   )
 
   split_segm <- fm_split_lines(mesh_cover, segm = poly)
@@ -415,7 +430,7 @@ fm_mesh_intersection <- function(mesh, poly) {
   joint_segm <- join_segm(split_segm, all_edges)
 
   mesh_joint_cover <- fm_rcdt_2d_inla(
-    interior = list(joint_segm),
+    interior = joint_segm,
     extend = TRUE
   )
 
@@ -426,8 +441,8 @@ fm_mesh_intersection <- function(mesh, poly) {
       mesh_joint_cover$loc[mesh_joint_cover$graph$tv[, 2], , drop = FALSE] +
       mesh_joint_cover$loc[mesh_joint_cover$graph$tv[, 3], , drop = FALSE]) / 3
   ok_tri <-
-    fm_is_within(loc = loc_tri, mesh) &
-      fm_is_within(loc = loc_tri, mesh_poly)
+    fm_is_within(loc_tri, mesh) &
+      fm_is_within(loc_tri, mesh_poly)
   if (any(ok_tri)) {
     loc_subset <- unique(sort(as.vector(mesh_joint_cover$graph$tv[ok_tri, , drop = FALSE])))
     new_idx <- integer(mesh$n)
@@ -656,6 +671,9 @@ fm_onto_mesh <- function(mesh, loc, crs = NULL) {
 #' [fm_mesh_2d()]
 #' @returns An integer
 #' @export
+#' @examples
+#' fm_dof(fmexample$mesh)
+#'
 fm_dof <- function(x) {
   UseMethod("fm_dof")
 }

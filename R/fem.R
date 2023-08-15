@@ -11,6 +11,9 @@
 #' @param ... Currently unused
 #'
 #' @export
+#' @examples
+#' str(fm_fem(fmexample$mesh))
+#'
 fm_fem <- function(mesh, order = 2, ...) {
   UseMethod("fm_fem")
 }

@@ -14,6 +14,9 @@
 #' @returns An object of some `fm_*` class
 #' @export
 #' @family object creation and conversion
+#' @examples
+#' fm_as_fm(NULL)
+#'
 fm_as_fm <- function(x, ...) {
   UseMethod("fm_as_fm")
 }
