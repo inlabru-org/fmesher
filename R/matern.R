@@ -72,11 +72,7 @@ fm_matern_precision <- function(x, alpha, rho, sigma) {
 #' @return `fm_matern_sample()` returns a matrix, where each column is a sampled
 #' field. If `loc` is `NULL`, the `fm_dof(mesh)` basis weights are given.
 #' Otherwise, the evaluated field at the `nrow(loc)` locations `loc` are given.
-#' A list with two elements,
-#' * `Ax` = matrix of size nrow(locs) x n, each column corresponds to a
-#'          realisation of the random field at the locations specified in locs.
-#' * `x` = matrix of size m x n where m is the number of mesh nodes.
-#'         (The GMRF basis weights at each mesh node before evaluation using A)
+#' @export
 
 fm_matern_sample <- function(x, alpha = 2, rho, sigma, n = 1, loc = NULL) {
   Q <- fm_matern_precision(x, alpha = alpha, rho = rho, sigma = sigma)

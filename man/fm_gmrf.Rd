@@ -52,13 +52,6 @@ is reimplemented.)}
 \code{fm_matern_sample()} returns a matrix, where each column is a sampled
 field. If \code{loc} is \code{NULL}, the \code{fm_dof(mesh)} basis weights are given.
 Otherwise, the evaluated field at the \code{nrow(loc)} locations \code{loc} are given.
-A list with two elements,
-\itemize{
-\item \code{Ax} = matrix of size nrow(locs) x n, each column corresponds to a
-realisation of the random field at the locations specified in locs.
-\item \code{x} = matrix of size m x n where m is the number of mesh nodes.
-(The GMRF basis weights at each mesh node before evaluation using A)
-}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
