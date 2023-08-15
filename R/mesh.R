@@ -6,10 +6,9 @@
 #'
 #' @export
 #'
-#' @author Fabian E. Bachl \email{bachlfab@@gmail.com} and
-#'  Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
 #'
-#' @param mesh An `inla.mesh` object
+#' @param mesh An `fm_mesh_2d` object
 #' @param dims A length 2 integer vector giving the dimensions of
 #' the target lattice.
 #' @param xlim,ylim Length 2 numeric vectors of x- and y- axis limits.
@@ -185,7 +184,7 @@ fm_pixels <- function(mesh,
 #' @param refine A list of refinement options passed on to
 #' [fm_rcdt_2d_inla]
 #' @return mesh A refined fm_mesh_2d object
-#' @author Fabian E. Bachl \email{bachlfab@@gmail.com}
+#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
 
 fm_refine <- function(mesh, refine = list(max.edge = 1)) {
   rmesh <- fm_rcdt_2d_inla(
@@ -499,14 +498,13 @@ fm_store_points <- function(loc, crs = NULL, info = NULL, format = NULL) {
 #' @description Extracts the vertices of an `fm_mesh_2d` object.
 #'
 #' @export
-#' @param x An `inla.mesh` object.
+#' @param x An `fm_mesh_2d` object.
 #' @param format character; `"sf"`, `"df"`, `"sp"`
 #' @return
 #' An `sf`, `data.frame`, or `SpatialPointsDataFrame` object, with the vertex
 #' coordinates, and a `.vertex` column with the vertex indices.
 #'
-#' @author Fabian E. Bachl \email{bachlfab@@gmail.com},
-#' Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
 #' @seealso [fm_centroids()]
 #'
 #' @examples

@@ -17,7 +17,7 @@ fm_pixels(
 )
 }
 \arguments{
-\item{mesh}{An \code{inla.mesh} object}
+\item{mesh}{An \code{fm_mesh_2d} object}
 
 \item{dims}{A length 2 integer vector giving the dimensions of
 the target lattice.}
@@ -90,6 +90,5 @@ if (require("ggplot2", quietly = TRUE) &&
 }
 }
 \author{
-Fabian E. Bachl \email{bachlfab@gmail.com} and
 Finn Lindgren \email{finn.lindgren@gmail.com}
 }

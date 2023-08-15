@@ -19,6 +19,6 @@ mesh A refined fm_mesh_2d object
 Refine a 2d mesh
 }
 \author{
-Fabian E. Bachl \email{bachlfab@gmail.com}
+Finn Lindgren \email{finn.lindgren@gmail.com}
 }
 \keyword{internal}

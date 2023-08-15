@@ -29,7 +29,5 @@ Compute intersections between line segments and triangle edges,
 and filter out segment of length zero.
 }
 \author{
-Fabian E. Bachl \email{f.e.bachl@bath.ac.uk}
-
 Finn Lindgren \email{finn.lindgren@gmail.com}
 }

@@ -7,7 +7,7 @@
 fm_vertices(x, format = NULL)
 }
 \arguments{
-\item{x}{An \code{inla.mesh} object.}
+\item{x}{An \code{fm_mesh_2d} object.}
 
 \item{format}{character; \code{"sf"}, \code{"df"}, \code{"sp"}}
 }
@@ -31,6 +31,5 @@ if (require("ggplot2", quietly = TRUE)) {
 \code{\link[=fm_centroids]{fm_centroids()}}
 }
 \author{
-Fabian E. Bachl \email{bachlfab@gmail.com},
 Finn Lindgren \email{finn.lindgren@gmail.com}
 }
