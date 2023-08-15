@@ -681,13 +681,19 @@ fm_dof <- function(x) {
 #' @rdname fm_dof
 #' @export
 fm_dof.fm_mesh_1d <- function(x) {
-  x[["m"]]
+  as.integer(x[["m"]])
 }
 
 #' @rdname fm_dof
 #' @export
 fm_dof.fm_mesh_2d <- function(x) {
-  x[["n"]]
+  as.integer(x[["n"]])
+}
+
+#' @rdname fm_dof
+#' @export
+fm_dof.fm_tensor <- function(x) {
+  prod(vapply(x$fun_spaces, fm_dof, 0L))
 }
 
 

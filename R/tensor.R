@@ -8,6 +8,15 @@
 #' @param ... Currently unused
 #' @returns A `fm_tensor` or `fm_tensor_list` object
 #' @family object creation and conversion
+#' @examples
+#' m <- fm_tensor(list(
+#'   space = fmexample$mesh,
+#'   time = fm_mesh_1d(1:5)
+#' ))
+#' m2 <- fm_as_tensor(m)
+#' m3 <- fm_as_tensor_list(list(m, m))
+#' c(fm_dof(m$fun_spaces$space) * fm_dof(m$fun_spaces$time), fm_dof(m))
+#' str(fm_evaluator(m, loc = list(space = cbind(0, 0), time = 2.5)))
 fm_tensor <- function(x, ...) {
   nn <- names(x)
   if (is.null(nn)) {
