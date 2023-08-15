@@ -223,6 +223,8 @@ Matrix3<T>::Matrix3(const typename Matrix<T>::RcppMatrix &from) : Matrix<T>(from
 
 
 
+// No need for IOHeader and IOHelper classes when using Rcpp
+#ifndef FMESHER_WITH_R
 
 template <class T>
 bool Matrix<T>::save(std::string filename, IOMatrixtype matrixt,
@@ -337,7 +339,7 @@ bool SparseMatrix<T>::load(std::string filename, bool binary) {
   I.close();
   return true;
 }
-
+#endif // not FMESHER_WITH_R
 
 #ifdef FMESHER_WITH_R
 
@@ -466,6 +468,10 @@ SparseMatrix<T>::SparseMatrix(const EigenMSM<T> &from)
 
 #endif
 
+
+// No need for IOHeader and IOHelper classes when using Rcpp
+#ifndef FMESHER_WITH_R
+
 template <class T>
 bool SparseMatrix<T>::save_ascii_2009(std::string filename,
                                       IOMatrixtype matrixt) const {
@@ -479,6 +485,8 @@ bool SparseMatrix<T>::save_ascii_2009(std::string filename,
   O.close();
   return true;
 }
+
+#endif // not FMESHER_WITH_R
 
 template <class T> SparseMatrix<T> diag(const Matrix<T> &M1) {
   SparseMatrix<T> SM(M1.rows(), M1.rows());

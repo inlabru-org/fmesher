@@ -297,6 +297,8 @@ public:
                       const Matrix<double> &vec) const;
   void calcGradientMatrices(SparseMatrix<double> **D) const;
 
+  // No need for IOHeader and IOHelper classes when using Rcpp
+#ifndef FMESHER_WITH_R
   /*! \brief Store the mesh in files. */
   bool save(std::string filename_s, std::string filename_tv,
             bool binary = true) const;
@@ -307,6 +309,7 @@ public:
   bool save_ascii_2009(std::string filename_s, std::string filename_tv) const;
   /*! \brief Read a mesh from files in old headerless ascii format. */
   bool load_ascii_2009(std::string filename_s, std::string filename_tv);
+#endif // not FMESHER_WITH_R
 };
 
 Matrix3double *make_globe_points(int subsegments, double radius);

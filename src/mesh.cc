@@ -2531,6 +2531,9 @@ void Mesh::calcGradientMatrices(SparseMatrix<double> **D) const {
   D[2] = new SparseMatrix<double>(w * D_[2]);
 }
 
+// No need for IOHeader and IOHelper classes when using Rcpp
+#ifndef FMESHER_WITH_R
+
 bool Mesh::save(std::string filename_s, std::string filename_tv,
                 bool binary) const {
   return (S_.save(filename_s, IOMatrixtype_general, binary) &&
@@ -2567,6 +2570,8 @@ bool Mesh::load_ascii_2009(std::string filename_s, std::string filename_tv) {
 
   return true;
 }
+
+#endif // not FMESHER_WITH_R
 
 Dart &Dart::alpha0() {
   vi_ = (vi_ + (3 + edir_)) % 3;

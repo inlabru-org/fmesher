@@ -29,8 +29,11 @@ enum IOMatrixtype {
   IOMatrixtype_diagonal = 2
 };
 
+// No need for IOHeader and IOHelper classes when using Rcpp
+#ifndef FMESHER_WITH_R
 template <class T> class IOHelperM;
 template <class T> class IOHelperSM;
+#endif
 template <class T> class Matrix;
 template <class T> class Vector3;
 template <class T> class Matrix3;
@@ -137,6 +140,8 @@ public:
   const T *raw(void) const { return data_; }
   T *raw(void) { return data_; }
 
+  // No need for IOHeader and IOHelper classes when using Rcpp
+#ifndef FMESHER_WITH_R
   /*! \brief Store the matrix in a file. */
   bool save(std::string filename, IOMatrixtype matrixt = IOMatrixtype_general,
             bool binary = true) const;
@@ -149,6 +154,7 @@ public:
   bool load_ascii_2009(std::string filename);
   /*! \brief Read a matrix from a stream in old headerless ascii format. */
   void load_ascii_2009(std::istream &input);
+#endif // not FMESHER_WITH_R
 
   friend SparseMatrix<T> diag<T>(const Matrix<T> &M1);
   friend Matrix<T> diag<T>(const SparseMatrix<T> &M1);

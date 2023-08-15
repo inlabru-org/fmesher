@@ -36,6 +36,10 @@ enum IOValuetype { IOValuetype_int = 0, IOValuetype_double = 1 };
 /*! rowmajor/colmajor */
 enum IOStoragetype { IOStoragetype_rowmajor = 0, IOStoragetype_colmajor = 1 };
 
+
+// No need for IOHeader and IOHelper classes when using Rcpp
+#ifndef FMESHER_WITH_R
+
 /*! Header for input and output file formats. */
 class IOHeader {
 public:
@@ -324,6 +328,9 @@ public:
   };
 };
 
+#endif // not FMESHER_WITH_R
+
+
 class MCCInfo {
 public:
   bool loaded;
@@ -411,7 +418,10 @@ public:
 };
 
 class MatrixC {
+  // No need for IOHeader and IOHelper classes when using Rcpp
+#ifndef FMESHER_WITH_R
   friend class IOHelperC;
+#endif
   typedef std::pair<std::string, MCC *> collPairT;
   typedef std::map<std::string, MCC *> collT;
   typedef std::set<std::string> outputT;
@@ -449,6 +459,9 @@ public:
   void io(bool bin_in, bool bin_out);
   void input_prefix(std::string prefix);
   void output_prefix(std::string prefix);
+
+// No need for IOHeader and IOHelper classes when using Rcpp
+#ifndef FMESHER_WITH_R
   void input_file(std::string filename);
   void output_file(std::string filename);
 
@@ -457,18 +470,26 @@ public:
   void input_raw(std::string name, std::string specification,
                  std::string filename);
   void save();
+#endif
 #ifdef FMESHER_WITH_R
   SEXP Rcpp_wrap() const;
 #endif
 
+  // No need for IOHeader and IOHelper classes when using Rcpp
+#ifndef FMESHER_WITH_R
   void load_file(std::string filename, bool only_list = false);
+#endif
 
   /*! Activate all loaded matrices */
   void activate();
   /*! Activate if loaded */
   bool activate(std::string name);
+
+// No need for IOHeader and IOHelper classes when using Rcpp
+#ifndef FMESHER_WITH_R
   /*! Load and activate */
   MCCInfo load(std::string name);
+#endif
 
   /*! Add and activate */
   template <class T>

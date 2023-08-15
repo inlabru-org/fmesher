@@ -30,6 +30,11 @@ namespace fmesh {
 //  enum Storagetype {Storagetype_rowmajor=0,
 //                    Storagetype_colmajor=1};
 
+
+// No need for IOHeader and IOHelper classes when using Rcpp
+#ifndef FMESHER_WITH_R
+
+
 IOHeader::IOHeader() { def(); }
 
 IOHeader &IOHeader::def(const int &ref) {
@@ -210,6 +215,10 @@ IOHelperC &IOHelperC::ID(std::istream &input) {
   return *this;
 }
 
+#endif // not FMESHER_WITH_R
+
+
+
 template <>
 Matrix<int> &MatrixC::attach(std::string name, Matrix<int> *M,
                              bool transfer_ownership, IOMatrixtype matrixt) {
@@ -266,6 +275,9 @@ void MatrixC::activate() {
     colli->second->info.active = true;
   }
 }
+
+// No need for IOHeader and IOHelper classes when using Rcpp
+#ifndef FMESHER_WITH_R
 
 void MatrixC::load_file(std::string filename, bool only_list) {
   IOHelperC ioh;
@@ -357,6 +369,8 @@ MCCInfo MatrixC::load(std::string name) {
   return info(name);
 }
 
+#endif // not FMESHER_WITH_R
+
 MatrixC &MatrixC::free(std::string name) {
   dont_output(name);
 
@@ -411,9 +425,14 @@ void MatrixC::input_prefix(std::string prefix) { input_prefix_ = prefix; }
 
 void MatrixC::output_prefix(std::string prefix) { output_prefix_ = prefix; }
 
+// No need for IOHeader and IOHelper classes when using Rcpp
+#ifndef FMESHER_WITH_R
 void MatrixC::input_file(std::string filename) { load_file(filename, true); }
 void MatrixC::output_file(std::string filename) { output_file_ = filename; }
+#endif
 
+// No need for IOHeader and IOHelper classes when using Rcpp
+#ifndef FMESHER_WITH_R
 void MatrixC::input_raw(std::string name, std::string specification,
                         std::string filename) {
   /* Parse raw ascii matrix data and add to collection. */
@@ -484,6 +503,7 @@ void MatrixC::save() {
     }
   }
 }
+#endif // not FMESHER_WITH_R
 
 Matrix<int> &MatrixC::DI(std::string name) {
   collT::iterator colli;

@@ -2866,7 +2866,19 @@ std::ostream &operator<<(std::ostream &output,
   if (il.empty())
     return output;
   for (MCQsegm::meta_map_type::const_iterator qi = il.begin(); qi != il.end();
-       qi++) {
+  qi++) {
+    output << ' ' << qi->first << ' ' << qi->second << endl;
+  }
+  return output;
+}
+
+std::ostream &operator<<(std::ostream &output,
+                         const MCQ::map_type &il) {
+  output << "(n = " << il.size() << ")" << endl;
+  if (il.empty())
+    return output;
+  for (MCQ::map_type::const_iterator qi = il.begin(); qi != il.end();
+  qi++) {
     output << ' ' << qi->first << ' ' << qi->second << endl;
   }
   return output;

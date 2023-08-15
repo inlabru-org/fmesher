@@ -24,9 +24,12 @@ using fmesh::DartList;
 using fmesh::DartPair;
 using fmesh::Int3;
 using fmesh::Int3Raw;
+// No need for IOHeader and IOHelper classes when using Rcpp
+#ifndef FMESHER_WITH_R
 using fmesh::IOHelper;
 using fmesh::IOHelperM;
 using fmesh::IOHelperSM;
+#endif
 using fmesh::Matrix;
 using fmesh::Matrix3double;
 using fmesh::MatrixC;

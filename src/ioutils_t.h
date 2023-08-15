@@ -16,6 +16,9 @@
 
 namespace fmesh {
 
+// No need for IOHeader and IOHelper classes when using Rcpp
+#ifndef FMESHER_WITH_R
+
 /*
 template <class T>
 IOHeader& IOHeader::def(const T& ref)
@@ -465,6 +468,9 @@ template <class T>
 void MatrixC::input_raw_M(std::istream &input, Matrix<T> &M) const {
   M.load_ascii_2009(input);
 }
+
+#endif // not FMESHER_WITH_R
+
 
 } /* namespace fmesh */
 
