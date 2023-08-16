@@ -117,19 +117,16 @@ Points per knot segment: \code{nsub1}
 
 \item{...}{Additional arguments passed on to other methods}
 
-\item{.weight}{Optional weight vector for \verb{sfc_*} integration}
-
 \item{format}{character; determines the output format, as either "sf"
 (default when the sampler is \code{NULL}) or "sp". When \code{NULL}, determined by
 the sampler type.}
-
-\item{.block}{Optional block grouping vector for \verb{sfc_*} integration}
 }
 \value{
-An \code{sf} point object with columns \code{weight} and \code{.block}
+A \code{list}, \code{sf}, or \code{Spatial} object with
+point coordinate information and additional columns \code{weight} and \code{.block}
 }
 \description{
-Integration methods for spatial samplers on \code{inla.mesh} meshes.
+Integration methods for spatial samplers on \code{fm_mesh_2d} meshes.
 }
 \section{Methods (by class)}{
 \itemize{

@@ -4,21 +4,16 @@
 \alias{globeproj}
 \alias{old_globeproj}
 \alias{.globeproj.types}
-\alias{old_outline.globeproj}
-\alias{outline}
 \alias{old_outline}
-\alias{old_graticule.globeproj}
-\alias{graticule}
+\alias{outline}
 \alias{old_graticule}
-\alias{old_tissot.globeproj}
-\alias{tissot}
+\alias{graticule}
 \alias{old_tissot}
-\alias{old_limits.globeproj}
-\alias{limits}
+\alias{tissot}
 \alias{old_limits}
-\alias{old_project.globeproj}
-\alias{project}
+\alias{limits}
 \alias{old_project}
+\alias{project}
 \title{Old globe projection methods}
 \usage{
 old_globeproj(
@@ -31,15 +26,15 @@ old_globeproj(
 
 .globeproj.types(x, ...)
 
-\method{old_outline}{globeproj}(x, add = FALSE, do.plot = TRUE, ...)
+old_outline(x, add = FALSE, do.plot = TRUE, ...)
 
-\method{old_graticule}{globeproj}(x, n = c(24, 12), add = FALSE, do.plot = TRUE, ...)
+old_graticule(x, n = c(24, 12), add = FALSE, do.plot = TRUE, ...)
 
-\method{old_tissot}{globeproj}(x, n = c(12, 6), add = FALSE, do.plot = TRUE, ...)
+old_tissot(x, n = c(12, 6), add = FALSE, do.plot = TRUE, ...)
 
-\method{old_limits}{globeproj}(x, loc = NULL, ...)
+old_limits(x, loc = NULL, ...)
 
-\method{old_project}{globeproj}(x, loc, inverse = FALSE, ...)
+old_project(x, loc, inverse = FALSE, ...)
 }
 \arguments{
 \item{type}{Projection type, see \code{\link[=.globeproj.types]{.globeproj.types()}}}
@@ -86,14 +81,11 @@ B
 Deprecated globe projection methods that may be removed in the
 future
 }
-\section{Methods (by generic)}{
-\itemize{
-\item \code{old_limits(globeproj)}: Calculates projection axis limits
-
-}}
 \section{Functions}{
 \itemize{
 \item \code{.globeproj.types()}: Types of globe projections
+
+\item \code{old_limits()}: Calculates projection axis limits
 
 }}
 \examples{

@@ -36,7 +36,7 @@ fm_as_fmesher_sparse(x)
 \arguments{
 \item{x}{Object to be converted}
 
-\item{pretty}{logical; if \code{TRUE}, ensures that the sparse triplet
+\item{unique}{logical; if \code{TRUE}, ensures that the sparse triplet
 representation has a single entry for each non-zero matrix element.}
 }
 \value{

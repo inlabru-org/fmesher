@@ -112,7 +112,7 @@ Construct integration points on tensor product spaces
 \code{weight} column.
 }
 
-\item \code{fm_int(fm_mesh_2d)}: \code{inla.mesh} integration. Any sampler class with an
+\item \code{fm_int(fm_mesh_2d)}: \code{fm_mesh_2d} integration. Any sampler class with an
 associated \code{\link[=fm_int_mesh_2d]{fm_int_mesh_2d()}} method is supported.
 
 }}

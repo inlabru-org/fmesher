@@ -202,7 +202,7 @@ fm_as_dgCMatrix <- function(x) {
   UseMethod("fm_as_dgCMatrix")
 }
 
-#' @param pretty logical; if `TRUE`, ensures that the sparse triplet
+#' @param unique logical; if `TRUE`, ensures that the sparse triplet
 #' representation has a single entry for each non-zero matrix element.
 #' @rdname fmesher_sparse
 #' @returns `fm_as_dgTMatrix` returns a [Matrix::dgTMatrix-class] object.

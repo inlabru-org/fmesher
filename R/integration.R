@@ -695,7 +695,7 @@ fm_int.fm_mesh_1d <- function(domain, samplers = NULL, name = "x", int.args = NU
 # fm_mesh_2d integration ####
 
 #' @export
-#' @describeIn fm_int `inla.mesh` integration. Any sampler class with an
+#' @describeIn fm_int `fm_mesh_2d` integration. Any sampler class with an
 #' associated [fm_int_mesh_2d()] method is supported.
 #' @param format character; determines the output format, as either "sf"
 #'   (default when the sampler is `NULL`) or "sp". When `NULL`, determined by
@@ -834,9 +834,10 @@ fm_vertex_projection <- function(points, mesh) {
 
 #' Subset integration on a mesh
 #'
-#' Integration methods for spatial samplers on `inla.mesh` meshes.
+#' Integration methods for spatial samplers on `fm_mesh_2d` meshes.
 #'
-#' @returns An `sf` point object with columns `weight` and `.block`
+#' @returns A `list`, `sf`, or `Spatial` object with
+#' point coordinate information and additional columns `weight` and `.block`
 #' @inheritParams fm_int
 #' @export
 #' @keywords internal
@@ -911,8 +912,6 @@ fm_int_mesh_2d.sf <- function(samplers,
   )
 }
 
-#' @param .weight Optional weight vector for `sfc_*` integration
-#' @param .block Optional block grouping vector for `sfc_*` integration
 #' @export
 #' @describeIn fm_int_mesh_2d `sfc_POINT` integration
 fm_int_mesh_2d.sfc_POINT <- function(samplers,

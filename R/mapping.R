@@ -1,19 +1,6 @@
 ## mapping.R
 ##
 ##   Copyright (C) 2015, Finn Lindgren
-##
-##   This program is free software: you can redistribute it and/or modify
-##   it under the terms of the GNU General Public License as published by
-##   the Free Software Foundation, either version 3 of the License, or
-##   (at your option) any later version.
-##
-##   This program is distributed in the hope that it will be useful,
-##   but WITHOUT ANY WARRANTY; without even the implied warranty of
-##   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-##   GNU General Public License for more details.
-##
-##   You should have received a copy of the GNU General Public License
-##   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # old_globeproj ####
 
@@ -87,7 +74,7 @@ old_globeproj <- function(type = NULL,
     ),
     class = "globeproj"
   )
-  .validobject(x)
+  .validobject_globeproj(x)
   x
 }
 
@@ -108,51 +95,50 @@ old_globeproj <- function(type = NULL,
     )
   }
 
-setMethodS3(
-  "valid", "globeproj",
-  function(object, ...) {
-    msg <- c()
-    if (!(object$type %in% .globeproj.types())) {
-      msg <- c(
-        msg,
-        paste("'type' should be one of (",
-          paste("'", .globeproj.types(), "'",
-            collapse = ", ", sep = ""
-          ),
-          "), not '", object$type, "'.",
-          sep = ""
-        )
-      )
-    }
-    if (length(object$xlim) != 2) {
-      msg <- c(
-        msg,
-        paste("'xlim' should have length 2, not ",
-          length(object$xlim), ".",
-          sep = ""
-        )
-      )
-    }
-    if (length(object$ylim) != 2) {
-      msg <- c(
-        msg,
-        paste("'ylim' should have length 2, not ",
-          length(object$ylim), ".",
-          sep = ""
-        )
-      )
-    }
-    if (length(msg) == 0) {
-      TRUE
-    } else {
-      msg
-    }
-  }
-)
 
-.validobject <- function(x, test = FALSE, ...) {
+valid_globeproj <- function(object, ...) {
+  msg <- c()
+  if (!(object$type %in% .globeproj.types())) {
+    msg <- c(
+      msg,
+      paste("'type' should be one of (",
+        paste("'", .globeproj.types(), "'",
+          collapse = ", ", sep = ""
+        ),
+        "), not '", object$type, "'.",
+        sep = ""
+      )
+    )
+  }
+  if (length(object$xlim) != 2) {
+    msg <- c(
+      msg,
+      paste("'xlim' should have length 2, not ",
+        length(object$xlim), ".",
+        sep = ""
+      )
+    )
+  }
+  if (length(object$ylim) != 2) {
+    msg <- c(
+      msg,
+      paste("'ylim' should have length 2, not ",
+        length(object$ylim), ".",
+        sep = ""
+      )
+    )
+  }
+  if (length(msg) == 0) {
+    TRUE
+  } else {
+    msg
+  }
+}
+
+
+.validobject_globeproj <- function(x, test = FALSE, ...) {
   ## Mostly from validObject
-  errors <- valid(x)
+  errors <- valid_globeproj(x)
   if (length(errors) > 1 || is.character(errors[1])) {
     if (test) {
       errors
@@ -178,7 +164,7 @@ setMethodS3(
 
 
 
-.clip <- function(x, coords) {
+.clip_globeproj <- function(x, coords) {
   ## Clip and generate a list of Line objects
   thelines <- list()
   ## Rudimentary cutting:
@@ -204,6 +190,7 @@ setMethodS3(
   thelines
 }
 
+# plot_Polyset ####
 
 #' @title Plot a projected PolySet
 #' @param x A PolySet (see `PBSmapping`)
@@ -224,7 +211,7 @@ plot_PolySet <- function(x, projection, add = FALSE, ...) {
         lapply(
           unique(x$PID),
           function(k) {
-            .clip(
+            .clip_globeproj(
               projection,
               coords[sum(x$PID < k) +
                 x$POS[x$PID == k], , drop = FALSE]
@@ -256,8 +243,7 @@ plot_PolySet <- function(x, projection, add = FALSE, ...) {
 #' @aliases old_outline
 #' @rdname globeproj
 
-setMethodS3(
-  "old_outline", "globeproj",
+old_outline <-
   function(x, add = FALSE, do.plot = TRUE,
            ...) {
     thebox <-
@@ -305,7 +291,6 @@ setMethodS3(
     }
     invisible(theoutline)
   }
-)
 
 # old_graticule ####
 
@@ -320,8 +305,7 @@ setMethodS3(
 #' @export old_graticule
 #' @aliases graticule
 #' @aliases old_graticule
-setMethodS3(
-  "old_graticule", "globeproj",
+old_graticule <-
   function(x, n = c(24, 12), add = FALSE, do.plot = TRUE,
            ...) {
     ## Graticule
@@ -347,7 +331,7 @@ setMethodS3(
             lapply(
               seq_along(lon),
               function(k) {
-                .clip(x, cbind(
+                .clip_globeproj(x, cbind(
                   proj.mer.coords1[, k],
                   proj.mer.coords2[, k]
                 ))
@@ -387,7 +371,7 @@ setMethodS3(
             lapply(
               seq_along(lat),
               function(k) {
-                .clip(x, cbind(
+                .clip_globeproj(x, cbind(
                   proj.par.coords1[, k],
                   proj.par.coords2[, k]
                 ))
@@ -409,7 +393,7 @@ setMethodS3(
     }
     invisible(list(meridians = proj.mer, parallels = proj.par))
   }
-)
+
 
 # old_tissot ####
 
@@ -424,16 +408,14 @@ setMethodS3(
 ##' @export old_tissot
 ##' @aliases tissot
 ##' @aliases old_tissot
-setMethodS3(
-  "old_tissot", "globeproj",
+old_tissot <-
   function(x, n = c(12, 6), add = FALSE, do.plot = TRUE,
            ...) {
     ## Tissot
   }
-)
 
 
-
+# plot_globeproj ####
 
 #' @title Plot a globeproj object
 #' @param x A [globeproj] object
@@ -490,8 +472,7 @@ plot_globeproj <-
 ##' @export old_limits
 ##' @aliases limits
 ##' @aliases old_limits
-setMethodS3(
-  "old_limits", "globeproj",
+old_limits <-
   function(x,
            loc = NULL,
            ...) {
@@ -508,7 +489,7 @@ setMethodS3(
     }
     lim
   }
-)
+
 
 
 
@@ -525,8 +506,7 @@ setMethodS3(
 #' @export old_project
 #' @aliases project
 #' @aliases old_project
-setMethodS3(
-  "old_project", "globeproj",
+old_project <-
   function(x, loc, inverse = FALSE, ...) {
     if (!is(x, "globeproj")) {
       stop("'x' must be a 'globeproj'")
@@ -662,4 +642,3 @@ setMethodS3(
     }
     proj
   }
-)
