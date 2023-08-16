@@ -443,7 +443,7 @@ NULL
     return(do.call("c", y))
   }
   object <- NextMethod()
-  class(object) <- c("fm_segm_list", "fm_list")
+  class(object) <- c("fm_segm_list", "fm_list", "list")
   object
 }
 

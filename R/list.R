@@ -65,11 +65,14 @@ fm_as_list <- function(x, ..., .class_stub = NULL) {
   }
   if (missing(x) || is.null(x) || (length(x) == 0)) {
     return(structure(list(),
-      class = c(.class_list_name, "fm_list")
+      class = c(.class_list_name, "fm_list", "list")
     ))
   }
 
   if (inherits(x, paste0("fm_", fm_class_stubs(), "_list"))) {
+    if (!("list" %in% class(x))) {
+      class(x) <- c(class(x), "list")
+    }
     return(x)
   }
 
@@ -126,11 +129,11 @@ fm_as_list <- function(x, ..., .class_stub = NULL) {
       }
     }
     .class_list_name <- paste0(.class_name, "_list")
-    class(y) <- c(.class_list_name, "fm_list")
+    class(y) <- c(.class_list_name, "fm_list", "list")
     return(y)
   }
 
-  class(y) <- "fm_list"
+  class(y) <- c("fm_list", "list")
   return(y)
 }
 
