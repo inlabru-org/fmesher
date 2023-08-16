@@ -306,14 +306,14 @@ fm_segm.fm_mesh_2d <- function(x, boundary = TRUE, grp = NULL, ...) {
                                crs = NULL) {
     segments <- NULL
     if (nrow(segm[["idx"]]) == 0) {
-      return(NULL)
+      return(fm_segm(is.bnd = is.bnd, crs = crs))
     }
     if (is.null(grp)) {
       grp <- unique(sort(segm[["grp"]]))
     }
     extract <- (segm[["grp"]] %in% grp)
     if (!any(extract)) {
-      return(NULL)
+      return(fm_segm(is.bnd = is.bnd, crs = crs))
     }
     segments <-
       fm_segm(
