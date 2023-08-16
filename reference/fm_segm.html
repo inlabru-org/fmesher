@@ -68,12 +68,12 @@
 <span><span class="fu">fm_segm</span><span class="op">(</span>loc <span class="op">=</span> <span class="cn">NULL</span>, idx <span class="op">=</span> <span class="cn">NULL</span>, grp <span class="op">=</span> <span class="cn">NULL</span>, is.bnd <span class="op">=</span> <span class="cn">TRUE</span>, crs <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for fm_segm</span></span>
-<span><span class="fu">fm_segm</span><span class="op">(</span><span class="va">...</span>, grp <span class="op">=</span> <span class="cn">NULL</span>, grp.default <span class="op">=</span> <span class="fl">0L</span><span class="op">)</span></span>
+<span><span class="fu">fm_segm</span><span class="op">(</span><span class="va">...</span>, grp <span class="op">=</span> <span class="cn">NULL</span>, grp.default <span class="op">=</span> <span class="fl">0L</span>, is.bnd <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for fm_segm_list</span></span>
 <span><span class="fu">fm_segm</span><span class="op">(</span><span class="va">x</span>, grp <span class="op">=</span> <span class="cn">NULL</span>, grp.default <span class="op">=</span> <span class="fl">0L</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">fm_segm_join</span><span class="op">(</span><span class="va">x</span>, grp <span class="op">=</span> <span class="cn">NULL</span>, grp.default <span class="op">=</span> <span class="fl">0L</span><span class="op">)</span></span>
+<span><span class="fu">fm_segm_join</span><span class="op">(</span><span class="va">x</span>, grp <span class="op">=</span> <span class="cn">NULL</span>, grp.default <span class="op">=</span> <span class="fl">0L</span>, is.bnd <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">fm_segm_split</span><span class="op">(</span><span class="va">x</span>, grp <span class="op">=</span> <span class="cn">NULL</span>, grp.default <span class="op">=</span> <span class="fl">0L</span><span class="op">)</span></span>
 <span></span>
@@ -153,7 +153,8 @@ otherwise interior constrain segments.</p></dd>
     <h2 id="methods-by-class-">Methods (by class)<a class="anchor" aria-label="anchor" href="#methods-by-class-"></a></h2>
     
 <ul><li><p><code>fm_segm(fm_segm)</code>: Join multiple <code>fm_segm</code> objects into a single <code>fm_segm</code>
-object.</p></li>
+object. If <code>is.bnd</code> is non-NULL, it overrides the input segment information.
+Otherwise, it checks if the inputs are consistent.</p></li>
 <li><p><code>fm_segm(fm_segm_list)</code>: Join <code>fm_segm</code> objects from a <code>fm_segm_list</code> into
 a single <code>fm_segm</code> object. Equivalent to <code>fm_segm_join(x)</code></p></li>
 <li><p><code>fm_segm(fm_mesh_2d)</code>: Extract the boundary or interior segments of a 2d mesh.
@@ -165,7 +166,8 @@ of groups given by <code>grp</code>.</p></li>
     
 <ul><li><p><code>fm_segm()</code>: Create a new <code>fm_segm</code> object.</p></li>
 <li><p><code>fm_segm_join()</code>: Join multiple <code>fm_segm</code> objects into a single <code>fm_segm</code>
-object.</p></li>
+object. If <code>is.bnd</code> is non-NULL, it overrides the segment information.
+Otherwise it checks for consistency.</p></li>
 <li><p><code>fm_segm_split()</code>: Split an <code>fm_segm</code> object by <code>grp</code> into an <code>fm_segm_list</code>
 object, optionally keeping only some groups.</p></li>
 </ul></div>
