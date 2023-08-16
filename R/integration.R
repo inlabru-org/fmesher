@@ -522,6 +522,13 @@ fm_int.fm_lattice_2d <- function(domain, samplers = NULL, name = "x", ...) {
 #' * A 2-column matrix with a single interval in each row;
 #' * A tibble with a named column containing a matrix, and optionally a
 #'  `weight` column.
+#' @examples
+#' ips <- fm_int(
+#'   fm_mesh_1d(0:10, boundary = "cyclic"),
+#'   rbind(c(0, 3), c(5, 10))
+#' )
+#' plot(ips$x, ips$weight)
+#'
 fm_int.fm_mesh_1d <- function(domain, samplers = NULL, name = "x", int.args = NULL, ...) {
   int.args.default <- list(method = "stable", nsub1 = 30, nsub2 = 9)
   if (is.null(int.args)) {

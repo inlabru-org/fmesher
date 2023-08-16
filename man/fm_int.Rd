@@ -144,4 +144,10 @@ if (require("ggplot2", quietly = TRUE)) {
     scale_size_area()
 }
 
+ips <- fm_int(
+  fm_mesh_1d(0:10, boundary = "cyclic"),
+  rbind(c(0, 3), c(5, 10))
+)
+plot(ips$x, ips$weight)
+
 }
