@@ -5,13 +5,23 @@
 \alias{lines_rgl}
 \alias{lines_rgl.fm_segm}
 \alias{plot_rgl.fm_mesh_2d}
+\alias{plot_rgl.fm_segm}
+\alias{plot_rgl.fm_segm_list}
+\alias{lines_rgl.fm_segm_list}
 \title{Low level triangulation mesh plotting}
 \usage{
 plot_rgl(x, ...)
 
 lines_rgl(x, ..., add = TRUE)
 
-\method{lines_rgl}{fm_segm}(x, ..., add = TRUE)
+\method{lines_rgl}{fm_segm}(
+  x,
+  loc = NULL,
+  col = NULL,
+  colors = c("black", "blue", "red", "green"),
+  ...,
+  add = TRUE
+)
 
 \method{plot_rgl}{fm_mesh_2d}(
   x,
@@ -35,6 +45,12 @@ lines_rgl(x, ..., add = TRUE)
   add = FALSE,
   ...
 )
+
+\method{plot_rgl}{fm_segm}(x, ..., add = FALSE)
+
+\method{plot_rgl}{fm_segm_list}(x, ...)
+
+\method{lines_rgl}{fm_segm_list}(x, ...)
 }
 \arguments{
 \item{x}{A \code{fm_mesh_2d()} object}
@@ -44,8 +60,11 @@ lines_rgl(x, ..., add = TRUE)
 \item{add}{If \code{TRUE}, adds to the current plot instead of starting a
 new one.}
 
-\item{col}{Color specification.  A single named color, a vector of scalar
-values, or a matrix of RGB values.}
+\item{loc}{Point locations to be used if \code{x$loc} is \code{NULL}.}
+
+\item{col}{Segment color specification.}
+
+\item{colors}{Colors to cycle through if \code{col} is \code{NULL}.}
 
 \item{color.axis}{The min/max limit values for the color mapping.}
 

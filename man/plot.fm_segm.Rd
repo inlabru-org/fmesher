@@ -3,6 +3,8 @@
 \name{plot.fm_segm}
 \alias{plot.fm_segm}
 \alias{lines.fm_segm}
+\alias{plot.fm_segm_list}
+\alias{lines.fm_segm_list}
 \title{Draw \code{fm_segm} objects.}
 \usage{
 \method{plot}{fm_segm}(x, ..., add = FALSE)
@@ -22,6 +24,10 @@
   ylab = "",
   ...
 )
+
+\method{plot}{fm_segm_list}(x, ...)
+
+\method{lines}{fm_segm_list}(x, ...)
 }
 \arguments{
 \item{x}{An \code{\link[=fm_segm]{fm_segm()}} object.}
