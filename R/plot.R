@@ -88,9 +88,9 @@ lines.fm_segm <- function(x, loc = NULL, col = NULL,
       color <- colors[1 + (grp %% length(colors))]
     }
     lines(loc[t(cbind(segm$idx[idx, , drop = FALSE], NA)), 1],
-          loc[t(cbind(segm$idx[idx, , drop = FALSE], NA)), 2],
-          col = color,
-          ...
+      loc[t(cbind(segm$idx[idx, , drop = FALSE], NA)), 2],
+      col = color,
+      ...
     )
   }
   return(invisible(dev))
@@ -236,11 +236,11 @@ plot.fm_mesh_2d <- function(
 
   if (!add) {
     plot(NA,
-         type = "n",
-         xlim = xlim, ylim = ylim, asp = asp,
-         axes = axes,
-         xlab = xlab, ylab = ylab,
-         ...
+      type = "n",
+      xlim = xlim, ylim = ylim, asp = asp,
+      axes = axes,
+      xlab = xlab, ylab = ylab,
+      ...
     )
   }
   if (draw.edges) {
@@ -250,11 +250,11 @@ plot.fm_mesh_2d <- function(
   if (draw.vertices) {
     idx <- unique(as.vector(tv))
     points(mesh$loc[idx, , drop = FALSE],
-           pch = 20, col = vertex.color, cex = size, ...
+      pch = 20, col = vertex.color, cex = size, ...
     )
     idx <- intersect(idx, mesh$idx$loc)
     points(mesh$loc[idx, , drop = FALSE],
-           pch = 20, col = "blue", cex = size, ...
+      pch = 20, col = "blue", cex = size, ...
     )
   }
   if (draw.segments) {
@@ -581,13 +581,13 @@ fm_generate_colors <- function(color,
     }
     if (color.truncate) {
       not.ok <- ((color < color.axis[1]) |
-                   (color > color.axis[2]))
+        (color > color.axis[2]))
     } else {
       not.ok <- rep(FALSE, length(color))
     }
     cs <- (pmax(color.axis[1],
-                pmin(color.axis[2], color, na.rm = TRUE),
-                na.rm = TRUE
+      pmin(color.axis[2], color, na.rm = TRUE),
+      na.rm = TRUE
     ))
     cs <- (cs - color.axis[1]) / (color.axis[2] - color.axis[1])
     not.ok <- not.ok | is.na(cs)
@@ -599,7 +599,7 @@ fm_generate_colors <- function(color,
     }
 
     ics <- (as.numeric(cut(cs, seq(0, 1, length.out = color.n + 1),
-                           include.lowest = TRUE
+      include.lowest = TRUE
     )))
     colors <- color.palette(color.n)[ics]
 
@@ -610,18 +610,18 @@ fm_generate_colors <- function(color,
     }
     if (color.truncate) {
       not.ok <- ((color[, 1] < color.axis[1]) |
-                   (color[, 2] < color.axis[1]) |
-                   (color[, 3] < color.axis[1]) |
-                   (color[, 1] > color.axis[2]) |
-                   (color[, 2] > color.axis[2]) |
-                   (color[, 3] > color.axis[2]))
+        (color[, 2] < color.axis[1]) |
+        (color[, 3] < color.axis[1]) |
+        (color[, 1] > color.axis[2]) |
+        (color[, 2] > color.axis[2]) |
+        (color[, 3] > color.axis[2]))
     } else {
       not.ok <- rep(FALSE, nrow(color))
     }
     cs <- matrix(
       pmax(color.axis[1],
-           pmin(color.axis[2], color, na.rm = TRUE),
-           na.rm = TRUE
+        pmin(color.axis[2], color, na.rm = TRUE),
+        na.rm = TRUE
       ), dim(color)
     )
     cs <- (cs - color.axis[1]) / (color.axis[2] - color.axis[1])
@@ -639,7 +639,3 @@ fm_generate_colors <- function(color,
 
   return(list(colors = colors, alpha = alpha))
 }
-
-
-
-
