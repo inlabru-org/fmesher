@@ -1,4 +1,4 @@
-# fmesher (development version)
+# fmesher 0.1.0
 
 * Full conversion of the fmesher interface from the standalone binary in R-INLA
   (https://www.r-inla.org) to an interface powered by `Rcpp`
