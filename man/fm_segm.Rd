@@ -18,11 +18,11 @@ fm_segm(...)
 
 \method{fm_segm}{default}(loc = NULL, idx = NULL, grp = NULL, is.bnd = TRUE, crs = NULL, ...)
 
-\method{fm_segm}{fm_segm}(..., grp = NULL, grp.default = 0L)
+\method{fm_segm}{fm_segm}(..., grp = NULL, grp.default = 0L, is.bnd = NULL)
 
 \method{fm_segm}{fm_segm_list}(x, grp = NULL, grp.default = 0L, ...)
 
-fm_segm_join(x, grp = NULL, grp.default = 0L)
+fm_segm_join(x, grp = NULL, grp.default = 0L, is.bnd = NULL)
 
 fm_segm_split(x, grp = NULL, grp.default = 0L)
 
@@ -76,7 +76,8 @@ Make a spatial segment object
 \section{Methods (by class)}{
 \itemize{
 \item \code{fm_segm(fm_segm)}: Join multiple \code{fm_segm} objects into a single \code{fm_segm}
-object.
+object. If \code{is.bnd} is non-NULL, it overrides the input segment information.
+Otherwise, it checks if the inputs are consistent.
 
 \item \code{fm_segm(fm_segm_list)}: Join \code{fm_segm} objects from a \code{fm_segm_list} into
 a single \code{fm_segm} object. Equivalent to \code{fm_segm_join(x)}
@@ -91,7 +92,8 @@ of groups given by \code{grp}.
 \item \code{fm_segm()}: Create a new \code{fm_segm} object.
 
 \item \code{fm_segm_join()}: Join multiple \code{fm_segm} objects into a single \code{fm_segm}
-object.
+object. If \code{is.bnd} is non-NULL, it overrides the segment information.
+Otherwise it checks for consistency.
 
 \item \code{fm_segm_split()}: Split an \code{fm_segm} object by \code{grp} into an \code{fm_segm_list}
 object, optionally keeping only some groups.

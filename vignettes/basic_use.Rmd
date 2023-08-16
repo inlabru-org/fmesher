@@ -112,12 +112,6 @@ ggplot() +
   geom_fm(data = mesh1, linetype = 2, alpha = 0.5, xlim = c(-2, 12))
 ```
 
-### `rgl` graphics
-
-```{r eval=FALSE}
-plot_rgl(mesh2)
-```
-
 ## Finite element calculations
 
 ```{r}
@@ -125,4 +119,12 @@ fem1 <- fm_fem(mesh1, order = 2)
 names(fem1)
 fem2 <- fm_fem(mesh2, order = 2)
 names(fem2)
+```
+
+## Stochastic process simulation
+
+```{r}
+samp <- fm_matern_sample(mesh2, alpha = 2, rho = 4, sigma = 1)[, 1]
+evaluator <- fm_evaluator(mesh2, lattice = fm_evaluator_lattice(mesh2, dims = c(150, 50)))
+image(evaluator$x, evaluator$y, fm_evaluate(evaluator, field = samp), asp = 1)
 ```

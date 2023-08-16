@@ -41,9 +41,9 @@ fm_segm.default <- function(loc = NULL, idx = NULL, grp = NULL, is.bnd = TRUE,
     loc <- fm_unify_coords(loc)
     if (is.null(idx)) {
       idx <- if (is.bnd) {
-        c(seq_len(nrow(loc)), 1)
+        c(seq_len(NROW(loc)), 1)
       } else {
-        seq_len(nrow(loc))
+        seq_len(NROW(loc))
       }
     }
   }
@@ -68,11 +68,11 @@ fm_segm.default <- function(loc = NULL, idx = NULL, grp = NULL, is.bnd = TRUE,
     storage.mode(idx) <- "integer"
     if (!is.null(loc) &&
       (nrow(idx) > 0) &&
-      (max(idx, na.rm = TRUE) > nrow(loc))) {
+      (max(idx, na.rm = TRUE) > NROW(loc))) {
       warning(
         "Segment indices (max=", max(idx, na.rm = TRUE),
         ") exceed specified location list length (",
-        nrow(loc), ")."
+        NROW(loc), ")."
       )
     }
   }
@@ -82,7 +82,7 @@ fm_segm.default <- function(loc = NULL, idx = NULL, grp = NULL, is.bnd = TRUE,
       stop("'grp' must be a vector or a matrix")
     }
     grp <- as.vector(grp)
-    if (length(grp) < nrow(idx)) {
+    if (length(grp) < NROW(idx)) {
       grp <- c(
         grp,
         rep(grp[length(grp)], nrow(idx) - length(grp))
@@ -112,7 +112,7 @@ fm_segm.default <- function(loc = NULL, idx = NULL, grp = NULL, is.bnd = TRUE,
 
   if (!is.null(loc)) {
     ## Identify unused locations and remap indices accordingly.
-    idx.new <- rep(0L, nrow(loc))
+    idx.new <- rep(0L, NROW(loc))
     idx.new[as.vector(idx)] <- 1L
     loc <- loc[idx.new == 1L, , drop = FALSE]
     idx.new[idx.new == 1L] <- seq_len(sum(idx.new))
@@ -128,15 +128,16 @@ fm_segm.default <- function(loc = NULL, idx = NULL, grp = NULL, is.bnd = TRUE,
 }
 
 #' @describeIn fm_segm Join multiple `fm_segm` objects into a single `fm_segm`
-#' object.
+#' object. If `is.bnd` is non-NULL, it overrides the input segment information.
+#' Otherwise, it checks if the inputs are consistent.
 #' @param grp When joining segments, use these group labels for segments
 #' instead of the original group labels.
 #' @param grp.default If `grp.default` is `NULL`, use these group labels for segments
 #' with NULL group.
 #' @export
-fm_segm.fm_segm <- function(..., grp = NULL, grp.default = 0L) {
+fm_segm.fm_segm <- function(..., grp = NULL, grp.default = 0L, is.bnd = NULL) {
   segm <- fm_as_segm_list(list(...))
-  fm_segm_join(segm, grp = grp, grp.default = grp.default)
+  fm_segm_join(segm, grp = grp, grp.default = grp.default, is.bnd = is.bnd)
 }
 #' @describeIn fm_segm Join `fm_segm` objects from a `fm_segm_list` into
 #' a single `fm_segm` object. Equivalent to `fm_segm_join(x)`
@@ -150,12 +151,13 @@ fm_segm.fm_segm_list <- function(x, grp = NULL, grp.default = 0L, ...) {
   fm_segm_join(x, grp = grp, grp.default = grp.default)
 }
 #' @describeIn fm_segm Join multiple `fm_segm` objects into a single `fm_segm`
-#' object.
+#' object. If `is.bnd` is non-NULL, it overrides the segment information.
+#' Otherwise it checks for consistency.
 #' @export
 #' @examples
 #' fm_segm_join(fmexample$boundary_fm)
 #'
-fm_segm_join <- function(x, grp = NULL, grp.default = 0L) {
+fm_segm_join <- function(x, grp = NULL, grp.default = 0L, is.bnd = NULL) {
   segm <- fm_as_segm_list(x)
   segm <- lapply(seq_along(segm), function(k) {
     seg <- segm[[k]]
@@ -165,12 +167,12 @@ fm_segm_join <- function(x, grp = NULL, grp.default = 0L) {
           seg[["grp"]] <-
             rep(
               grp.default[min(length(grp.default), k)],
-              nrow(seg[["idx"]])
+              NROW(seg[["idx"]])
             )
         }
       } else {
         seg[["grp"]] <-
-          rep(grp[min(length(grp), k)], nrow(seg[["idx"]]))
+          rep(grp[min(length(grp), k)], NROW(seg[["idx"]]))
       }
     }
     seg
@@ -186,9 +188,9 @@ fm_segm_join <- function(x, grp = NULL, grp.default = 0L) {
     stop("All objects must be of class 'fm_segm'.")
   }
 
-  Nloc <- vapply(segm, function(x) nrow(x$loc), 0L)
+  Nloc <- vapply(segm, function(x) NROW(x$loc), 0L)
   cumNloc <- c(0, cumsum(Nloc))
-  Nidx <- vapply(segm, function(x) nrow(x$idx), 0L)
+  Nidx <- vapply(segm, function(x) NROW(x$idx), 0L)
 
   loc <- do.call(rbind, lapply(segm, function(x) x$loc))
   idx <- do.call(rbind, lapply(
@@ -205,12 +207,14 @@ fm_segm_join <- function(x, grp = NULL, grp.default = 0L) {
       }
     }
   ))
-  is.bnd <- vapply(segm, function(x) fm_is_bnd(x), TRUE)
-  if (all(is.bnd) || all(!is.bnd)) {
-    is.bnd <- all(is.bnd)
-  } else {
-    warning("Inconsistent 'is.bnd' attributes.  Setting 'is.bnd=FALSE'.")
-    is.bnd <- FALSE
+  if (is.null(is.bnd)) {
+    is.bnd <- vapply(segm, function(x) fm_is_bnd(x), TRUE)
+    if (all(is.bnd) || all(!is.bnd)) {
+      is.bnd <- all(is.bnd)
+    } else {
+      warning("Inconsistent 'is.bnd' attributes.  Setting 'is.bnd=FALSE'.")
+      is.bnd <- FALSE
+    }
   }
 
   crs <- lapply(segm, function(x) fm_crs(x))
@@ -249,7 +253,7 @@ fm_segm_join <- function(x, grp = NULL, grp.default = 0L) {
 #' @export
 fm_segm_split <- function(x, grp = NULL, grp.default = 0L) {
   if (is.null(x[["grp"]])) {
-    x[["grp"]] <- rep(grp.default, nrow(x[["idx"]]))
+    x[["grp"]] <- rep(grp.default, NROW(x[["idx"]]))
   }
   if (is.null(grp)) {
     grp <- sort(unique(x[["grp"]]))
@@ -305,7 +309,7 @@ fm_segm.fm_mesh_2d <- function(x, boundary = TRUE, grp = NULL, ...) {
                                is.bnd,
                                crs = NULL) {
     segments <- NULL
-    if (nrow(segm[["idx"]]) == 0) {
+    if (NROW(segm[["idx"]]) == 0) {
       return(fm_segm(is.bnd = is.bnd, crs = crs))
     }
     if (is.null(grp)) {

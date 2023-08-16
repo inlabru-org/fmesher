@@ -825,7 +825,7 @@ fm_mesh_2d_inla <- function(loc = NULL, ## Points to include in final triangulat
     fm_rcdt_2d(
       loc = rbind(loc, mesh2$loc),
       boundary = boundary[[2]],
-      interior = fm_segm(boundary2, interior2),
+      interior = fm_segm(boundary2, interior2, is.bnd = FALSE),
       cutoff = cutoff,
       extend = list(n = n[2], offset = offset[2]),
       refine =
