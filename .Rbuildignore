@@ -24,3 +24,4 @@ _config.yml
 ^man/chk_all$
 ^man/chk_found$
 ^cran-comments\.md$
+^CRAN-SUBMISSION$
