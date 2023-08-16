@@ -10,7 +10,7 @@ The data is a list containing these elements:
 \item{\code{loc}:}{ A \code{matrix} of points.}
 \item{\code{loc_sf}:}{ An \code{sfc} version of \code{loc}.}
 \item{\code{loc_sp}:}{ A \code{SpatialPoints} version of \code{loc}.}
-\item{\code{boundary_fm}:}{ A list of two \code{fm_segm} objects used in the mesh construction.}
+\item{\code{boundary_fm}:}{ A \code{fm_segm_list} of two \code{fm_segm} objects used in the mesh construction.}
 \item{\code{boundary_sf}:}{ An \code{sfc} list version of \code{boundary}.}
 \item{\code{boundary_sp}:}{ An \code{SpatialPolygons} list version of \code{boundary}.}
 \item{\code{mesh}:}{ An \code{\link[=fm_mesh_2d]{fm_mesh_2d()}} object.}

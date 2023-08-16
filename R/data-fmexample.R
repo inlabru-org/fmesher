@@ -10,7 +10,7 @@
 #'    \item{`loc`:}{ A `matrix` of points.}
 #'    \item{`loc_sf`:}{ An `sfc` version of `loc`.}
 #'    \item{`loc_sp`:}{ A `SpatialPoints` version of `loc`.}
-#'    \item{`boundary_fm`:}{ A list of two `fm_segm` objects used in the mesh construction.}
+#'    \item{`boundary_fm`:}{ A `fm_segm_list` of two `fm_segm` objects used in the mesh construction.}
 #'    \item{`boundary_sf`:}{ An `sfc` list version of `boundary`.}
 #'    \item{`boundary_sp`:}{ An `SpatialPolygons` list version of `boundary`.}
 #'    \item{`mesh`:}{ An [fm_mesh_2d()] object.}

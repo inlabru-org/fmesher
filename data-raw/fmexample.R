@@ -15,10 +15,10 @@ fmexample <- list(
   loc = loc,
   loc_sf = loc_sf,
   loc_sp = loc_sp,
-  boundary_fm = lapply(boundary_sf, fm_as_segm),
+  boundary_fm = fm_as_segm_list(boundary_sf),
   boundary_sf = boundary_sf,
   boundary_sp = lapply(boundary_sf, sf::as_Spatial),
   mesh = mesh
 )
 
-usethis::use_data(fmexample, overwrite = TRUE)
+# usethis::use_data(fmexample, overwrite = TRUE)

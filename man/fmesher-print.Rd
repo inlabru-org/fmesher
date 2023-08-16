@@ -46,4 +46,9 @@ Print objects
 \examples{
 fm_bbox(matrix(1:6, 3, 2))
 print(fm_bbox(matrix(1:6, 3, 2)), verbose = FALSE)
+
+print(fmexample$mesh)
+print(fmexample$boundary_fm)
+
+print(fm_mesh_1d(c(1, 2, 3, 5, 7), degree = 2))
 }
