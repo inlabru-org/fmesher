@@ -122,6 +122,27 @@ to be used for numeric and complex x. The default, NULL, uses <code>getOption("d
 <span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box: (1,3) x (4,6)</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="fm_bbox.html">fm_bbox</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, <span class="fl">3</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (1,3) x (4,6)</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fm_mesh_2d object:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Manifold:	R2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   V / E / T:	298 / 860 / 563</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Euler char.:	1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Constraints:	31 boundary edges (1 group: 1), 56 interior edges (1 group: 1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Bounding box: (-5.331027, 4.061656) x (-3.998161, 5.415609) x (0,0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Basis d.o.f.:	298</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">boundary_fm</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 47 boundary edges (1 group: 1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27 boundary edges (1 group: 1)</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="fm_mesh_1d.html">fm_mesh_1d</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">7</span><span class="op">)</span>, degree <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fm_mesh_1d object:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Manifold:	R1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   #{knots}:	5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Interval:	(1, 7)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Boundary:	(neumann, neumann)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   B-spline degree:	2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Basis d.o.f.:	4</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
