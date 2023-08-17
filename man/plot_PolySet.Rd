@@ -21,8 +21,27 @@ An (invisible) \code{sp} object of projected lines
 \description{
 Plot a projected PolySet
 }
+\details{
+This function is a legacy method for plotting data from the
+\code{PBSmapping} package, with
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{data(worldLL, package = "PBSmapping")
+plot_PolySet(worldLL, old_globeproj("longlat"), add = FALSE)
+}\if{html}{\out{</div>}}
+
+To avoid a dependency on the \code{PBSmapping} package, the example below
+constructs a synthetic object of the same format.
+}
 \examples{
-# data(worldLL, package = "PBSmapping")
-# plot_PolySet(worldLL, old_globeproj("longlat"), add = FALSE)
+world_example <- data.frame(
+  PID = c(0L, 0L, 0L, 1L, 1L),
+  POS = c(1L, 2L, 3L, 1L, 2L),
+  X = c(10, 20, 30, 15, 25),
+  Y = c(10, 15, 70, -40, -50)
+)
+plot_PolySet(world_example, old_globeproj("longlat"), add = FALSE)
+}
+\seealso{
+\code{\link[=old_globeproj]{old_globeproj()}}
 }
 \keyword{internal}

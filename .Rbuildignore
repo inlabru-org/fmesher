@@ -25,3 +25,4 @@ _config.yml
 ^man/chk_found$
 ^cran-comments\.md$
 ^CRAN-SUBMISSION$
+^LICENSE$
