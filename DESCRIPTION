@@ -33,7 +33,6 @@ Imports:
     grDevices,
     lifecycle,
     Matrix,
-    R.methodsS3,
     rlang,
     sf,
     sp (>= 1.4-5),

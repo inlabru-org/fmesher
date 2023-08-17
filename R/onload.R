@@ -1,4 +1,3 @@
-#' @importFrom R.methodsS3 setMethodS3
 #' @importFrom grDevices dev.off pdf
 #' @importFrom graphics plot.new
 #' @importFrom methods is
