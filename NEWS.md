@@ -6,6 +6,9 @@
 
 * Fix C++ unused-variable warning detected by clang-tidy version 16.0.6
 
+* Add workaround for `sf::st_buffer` not supporting negative distance
+  for `s2` with longlat coordinates. Fixes #5
+
 # fmesher 0.1.0
 
 * Full conversion of the fmesher interface from the standalone binary in R-INLA
