@@ -45,7 +45,7 @@ fmesher_clang_tidy <- function(files = NULL) {
   }
   CPPFLAGS <- "-I/home/flindgre/local/R-4.3.1/lib/R/include -DNDEBUG -DFMESHER_WITH_R -I/home/flindgre/R/x86_64-pc-linux-gnu-library/4.3/Rcpp/include -I/usr/local/include"
   SOURCE <- paste0(file.path("src", files), collapse = " ")
-  cmd <- paste("clang-tidy", SOURCE, "--", CPPFLAGS)
+  cmd <- paste("~/local/bin/clang-tidy", SOURCE, "--", CPPFLAGS)
   print(cmd)
   system(cmd, intern = TRUE)
 }

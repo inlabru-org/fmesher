@@ -1997,7 +1997,6 @@ Dart Mesh::find_path_direction(const Point &s0, const Point &s1,
 DartPair Mesh::trace_path(const Dart &d0, const Point &s1, const int v1,
                           DartList *trace) const {
   Dart dh;
-  int trace_index = 0;
   if (d0.isnull())
     dh = Dart(*this, 0);
   else
@@ -2029,7 +2028,6 @@ DartPair Mesh::trace_path(const Dart &d0, const Point &s1, const int v1,
   while (!d.onBoundary()) {
     if (trace) {
       trace->push_back(d);
-      trace_index++;
     }
     d.orbit1().orbit2rev();
     FMLOG("In triangle " << d << endl);
@@ -2080,7 +2078,6 @@ DartPair Mesh::trace_path(const Dart &d0, const Point &s1, const int v1,
 DartPair Mesh::trace_path(const Point &s0, const Point &s1, const Dart &d0,
                           DartList *trace) const {
   Dart dh;
-  int trace_index = 0;
   if (d0.isnull()) {
     return DartPair(Dart(), Dart());
   }
@@ -2105,7 +2102,6 @@ DartPair Mesh::trace_path(const Point &s0, const Point &s1, const Dart &d0,
   while (!d.onBoundary()) {
     if (trace) {
       trace->push_back(d);
-      trace_index++;
     }
     d.orbit1().orbit2rev();
     FMLOG("In triangle " << d << endl);
@@ -2122,7 +2118,6 @@ DartPair Mesh::trace_path(const Point &s0, const Point &s1, const Dart &d0,
   FMLOG("Endpoint not found " << dstart << " " << d << endl);
   if (trace) {
     trace->push_back(d);
-    trace_index++;
   }
   return DartPair(dstart, Dart());
 }
