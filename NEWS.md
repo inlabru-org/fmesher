@@ -1,5 +1,11 @@
 # fmesher (development version)
 
+* Simplify LICENSE information in the R package DESCRIPTION
+
+* Fix example for legacy `plot_PolySet` method
+
+* Fix C++ unused-variable warning detected by clang-tidy version 16.0.6
+
 # fmesher 0.1.0
 
 * Full conversion of the fmesher interface from the standalone binary in R-INLA
