@@ -1,36 +1,109 @@
 Package: fmesher
 Type: Package
-Title: Triangle Meshes and Other Geometry Tools
-Version: 0.0.7
-Author: Finn Lindgren <finn.lindgren@gmail.com>
-Maintainer: Finn Lindgren <finn.lindgren@gmail.com>
-Description: Functions that generate planar and spherical triangle meshes for
-    finite element calculations, and functions for lines and polygons. Experimental
-    package that will take over these features from the INLA package.
+Title: Triangle Meshes and Related Geometry Tools
+Version: 0.1.0
+Authors@R: c(
+  person("Finn", "Lindgren", email = "finn.lindgren@gmail.com",
+         role = c("aut", "cre", "cph"),
+         comment = c(ORCID = "0000-0002-5833-2011",
+                     "Finn Lindgren wrote the main code")),
+  person("Seaton", "Andy", email = "andy.e.seaton@gmail.com",
+         role = c("ctb"),
+         comment = "Andy Seaton constributed features to the sf support"),
+  person("Suen", "Man Ho", email = "M.H.Suen@sms.ed.ac.uk", role = c("ctb"),
+         comment = "Man Ho Suen contributed features for the integration methods"),
+  person("Fabian E.", "Bachl", email = "bachlfab@gmail.com",
+         role = c("ctb"),
+         comment = "Fabian Bachl co-developed precursors of fm_pixels and fm_split_lines in inlabru")
+  )
+Description: Generate planar and spherical triangle meshes,
+    compute finite element calculations for 1- and 2-dimensional flat and curved
+    manifolds with associated basis function spaces, methods for lines and
+    polygons, and transparent handling of coordinate reference systems and
+    coordinate transformation, including 'sf' and 'sp' geometries. The core
+    'fmesher' library code was originally part of the 'INLA' package, and
+    implements parts of "Triangulations and Applications" by
+    Hjelle and Daehlen (2006) <doi:10.1007/3-540-33261-8>.
 Depends:
-    Matrix
-Suggests:
-    INLA,
-    testthat
+    R (>= 3.6),
+    methods
 Imports:
+    dplyr,
     graphics,
     grDevices,
-    fields,
-    methods,
-    rgeos,
-    rgdal,
+    lifecycle,
+    Matrix,
     R.methodsS3,
-    sp,
+    rlang,
+    sf,
+    sp (>= 1.4-5),
     stats,
-    utils
-Additional_repositories: https://inla.r-inla-download.org/R/testing
-URL: https://finnlindgren.github.io/fmesher/
-BugReports: https://github.com/finnlindgren/fmesher/issues
-License: GPL (>=3)
-Copyright: The R package and code, and the main programs, were written by and
-    are Copyright by Finn Lindgren, and are redistributable under the GNU Public
-    License, version 3 or later.
-NeedsCompilation: no
-RoxygenNote: 7.1.1
+    tibble,
+    utils,
+    withr,
+    Rcpp
+Suggests:
+    ggplot2,
+    ggpolypath,
+    inlabru (>= 2.8.0),
+    knitr,
+    testthat (>= 3.0.0),
+    terra,
+    tidyterra,
+    rgl,
+    rmarkdown,
+    splancs,
+    gsl
+URL: https://inlabru-org.github.io/fmesher/, https://github.com/inlabru-org/fmesher
+BugReports: https://github.com/inlabru-org/fmesher/issues
+License: MPL-2.0 | file LICENSE
+Copyright: The R package and C++ code were written
+    by and are Copyright by Finn Lindgren, and are redistributable under the
+    Mozilla Public License version 2.0.
+NeedsCompilation: yes
+RoxygenNote: 7.2.3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
+Config/testthat/edition: 3
+Config/testthat/parallel: true
+LinkingTo:
+    Rcpp
+VignetteBuilder: knitr
+BuildVignettes: true
+Collate: 
+    'RcppExports.R'
+    'deprecated.R'
+    'bary.R'
+    'bbox.R'
+    'print.R'
+    'crs.R'
+    'data-fmexample.R'
+    'diameter.R'
+    'evaluator.R'
+    'fem.R'
+    'fm.R'
+    'fmesher-package.R'
+    'fmesher.R'
+    'ggplot.R'
+    'integration.R'
+    'lattice_2d.R'
+    'list.R'
+    'local.R'
+    'manifold.R'
+    'mapping.R'
+    'matern.R'
+    'mesh.R'
+    'mesh_1d.R'
+    'mesh_2d.R'
+    'nonconvex_hull.R'
+    'onload.R'
+    'plot.R'
+    'segm.R'
+    'sf_mesh.R'
+    'sf_utils.R'
+    'simplify.R'
+    'sp_mesh.R'
+    'split_lines.R'
+    'tensor.R'
+    'utils.R'
+LazyData: true

@@ -15,12 +15,14 @@ plot_PolySet(x, projection, add = FALSE, ...)
 
 \item{\dots}{Additional parameters passed on to \code{sp::plot}}
 }
+\value{
+An (invisible) \code{sp} object of projected lines
+}
 \description{
 Plot a projected PolySet
 }
 \examples{
-\dontrun{
-data(worldLL, package = "PBSmapping")
-plot_PolySet(worldLL, globeproj("longlat"), add = FALSE)
+# data(worldLL, package = "PBSmapping")
+# plot_PolySet(worldLL, old_globeproj("longlat"), add = FALSE)
 }
-}
+\keyword{internal}

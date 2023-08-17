@@ -1,0 +1,210 @@
+---
+title: "Converting legacy INLA mesh code to fmesher"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Converting legacy INLA mesh code to fmesher}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup, echo = FALSE}
+suppressPackageStartupMessages(library(fmesher))
+suppressPackageStartupMessages(library(tibble))
+
+convert_fun_links <- function(df) {
+  webref <- list(
+    fmesher = "../reference/",
+    inlabru = "https://inlabru-org.github.io/inlabru/reference/"
+  )
+  for (k in seq_len(nrow(df))) {
+    df$INLA[[k]] <- paste0("`", df$INLA[[k]], "`")
+    df$fmesher[[k]] <-
+      vapply(
+        df$fmesher[[k]],
+        function(x) {
+          pkg_name <- sub(
+            pattern = "^(([^:]*)::)?([^(]+)(\\(.*\\))(<-)?$",
+            replacement = "\\2",
+            x = x
+          )
+          if (identical(pkg_name, "")) {
+            pkg_name <- "fmesher"
+          }
+          nm <- sub(
+            pattern = "^(([^:]*)::)?([^(]+)(\\(.*\\))(<-)?$",
+            replacement = "\\3",
+            x = x
+          )
+          args <- sub(
+            pattern = "^(([^:]*)::)?([^(]+)(\\(.*\\))(<-)?$",
+            replacement = "\\4\\5",
+            x = x
+          )
+          help_name <- basename(utils::help((nm), package = (pkg_name)))
+          paste0(
+            '<a href="', webref[[pkg_name]], help_name, '.html">`',
+            if (!identical(pkg_name, "fmesher")) {
+              paste0(pkg_name, "::")
+            } else {
+              ""
+            },
+            nm,
+            "`</a>`", args, "`"
+          )
+        },
+        ""
+      )
+  }
+  df
+}
+```
+
+## Deprecation warnings
+
+Three `INLA::inla.getOption()`/`INLA::inla.setOption()` options control the
+transition behaviour of the `INLA` package use of `fmesher`.
+
+* `fmesher.evolution`, integer:
+  - `1L` uses the intermediate `fm_*` methods in `fmesher` that were already available via inlabru from 2.8.0,
+    but calls the `INLA` built-in `fmesher` standalone programme for mesh construction
+    and related operations. (From `INLA` version 23.06.29)
+  - `2L` uses the full range of `fmesher` package methods, and does not use the standalone `fmesher` programme.
+    (From `INLA` around version 23.08.20)
+
+* `fmesher.evolution.warn`, logical:
+  When `TRUE`, `INLA` will show deprecation methods for all the methods in `INLA` that
+  are being replaced by `fmesher` package methods.  When `FALSE`, no warnings will be shown.
+  Set this option to `TRUE` if you want to update your own code, but keep it at
+  `FALSE` when you need to run existing code without changing it.
+  
+* `fmesher.evolution.verbosity`, character: Either "soft", "warn", or "stop",
+  indicating the minimum warning level when `fmesher.evolution.warn` is `TRUE`.
+  Set this to "warn" or "stop" to get more immediate feedback when testing
+  conversion of old code, e.g. in package testing.
+
+## Mesh construction
+
+```{r echo = FALSE}
+df <- tribble(
+  ~INLA, ~fmesher,
+  "inla.mesh.create()", c("fm_rcdt_2d()", "fm_rcdt_2d_inla()"),
+  "inla.mesh.2d()", c("fm_mesh_2d()", "fm_mesh_2d_inla()"),
+  "inla.delaunay()", "fm_delaunay_2d()",
+  "inla.mesh.1d()", "fm_mesh_1d()",
+  "inla.mesh.lattice()", "fm_lattice_2d()",
+  "inla.mesh.segment()", "fm_segm()",
+  "inla.nonconvex.hull()", c("fm_nonconvex_hull()", "fm_extensions()", "fm_simplify()"),
+  c(
+    "inla.nonconvex.hull()",
+    "inla.contour.segment()",
+    "inla.simplify.curve()"
+  ),
+  c(
+    "fm_nonconvex_hull_inla()",
+    "fm_simplify_helper()",
+    "fm_segm_contour_helper()"
+  )
+)
+df <- convert_fun_links(df)
+```
+
+```{r, echo = FALSE}
+knitr::kable(df)
+```
+
+## Basis and function evaluation
+
+```{r echo = FALSE}
+df <- tribble(
+  ~INLA, ~fmesher,
+  "inla.mesh.projector()", "fm_evaluator()",
+  "inla.mesh.project()", "fm_evaluate()",
+  "inla.spde.make.A()", c(
+    "fm_basis()",
+    "fm_row_kron()",
+    "inlabru::bru_mapper_multi()",
+    "inlabru::ibm_jacobian()",
+    "fm_block()",
+    "fm_block_eval()",
+    "inlabru::bru_mapper_aggregate()"
+  ),
+  "inla.mesh.deriv()", "fm_basis()"
+)
+df <- convert_fun_links(df)
+```
+
+```{r, echo = FALSE}
+knitr::kable(df)
+```
+
+## Printing
+
+```{r echo = FALSE}
+df <- tribble(
+  ~INLA,
+  ~fmesher,
+  ~Comments,
+  "summary.inla.mesh()",
+  c(
+    "print.fm_mesh_2d()",
+    "print.fm_segm()",
+    "print.fm_mesh_1d()"
+  ),
+  "Use `print(mesh)` etc."
+)
+df <- convert_fun_links(df)
+```
+
+```{r, echo = FALSE}
+knitr::kable(df)
+```
+
+## CRS information and coordinate transformations
+
+```{r, echo = FALSE}
+df <- convert_fun_links(
+  tibble::tribble(
+    ~INLA, ~fmesher, ~Comments,
+    "inla.spTransform()", "fm_transform()", "",
+    "mesh$crs", c("fm_crs(mesh)", "fm_CRS(mesh)"), "The crs may now be stored in different formats; use `fm_crs()` for `sf` format, and `fm_CRS()` for `sp` format. `fmesher` will attempt to convert when needed.",
+    "mesh$crs<-", "fm_crs(mesh)<-", "Direct assignment of crs information should be avoided, but is allowed as long as its compatible with the actual mesh coordinates."
+  )
+)
+```
+
+```{r, echo = FALSE}
+knitr::kable(df)
+```
+
+## Plotting
+
+```{r echo = FALSE}
+df <- tribble(
+  ~INLA, ~fmesher, ~Comment,
+  "No ggplot support", c("geom_fm(data = mesh)", "geom_fm(data = segm)"), "Use `ggplot() + geom_fm(data = mesh)` and `inlabru::gg()` methods",
+  "plot.inla.mesh(rgl = FALSE)", c("plot.fm_mesh_2d()", "lines.fm_mesh_2d()"), "Use `plot()` or `lines()`",
+  "lines.inla.mesh.segment(rgl = FALSE)", c(
+    "plot.fm_segm()",
+    "lines.fm_segm()"
+  ), "Use `plot()` or `lines()`",
+  "plot.inla.mesh(rgl = TRUE)", c("plot_rgl()", "lines_rgl()"), "",
+  "lines.inla.mesh.segment(rgl = TRUE)", c(
+    "plot_rgl()",
+    "lines_rgl()"
+  ),
+  ""
+)
+df <- convert_fun_links(df)
+```
+
+```{r, echo = FALSE}
+knitr::kable(df)
+```
+

@@ -2,9 +2,39 @@
 % Please edit documentation in R/mapping.R
 \name{globeproj}
 \alias{globeproj}
-\title{A}
+\alias{old_globeproj}
+\alias{.globeproj.types}
+\alias{old_outline}
+\alias{outline}
+\alias{old_graticule}
+\alias{graticule}
+\alias{old_tissot}
+\alias{tissot}
+\alias{old_limits}
+\alias{limits}
+\alias{old_project}
+\alias{project}
+\title{Old globe projection methods}
 \usage{
-globeproj(type = NULL, orient = NULL, xlim = NULL, ylim = NULL, scale = NULL)
+old_globeproj(
+  type = NULL,
+  orient = NULL,
+  xlim = NULL,
+  ylim = NULL,
+  scale = NULL
+)
+
+.globeproj.types(x, ...)
+
+old_outline(x, add = FALSE, do.plot = TRUE, ...)
+
+old_graticule(x, n = c(24, 12), add = FALSE, do.plot = TRUE, ...)
+
+old_tissot(x, n = c(12, 6), add = FALSE, do.plot = TRUE, ...)
+
+old_limits(x, loc = NULL, ...)
+
+old_project(x, loc, inverse = FALSE, ...)
 }
 \arguments{
 \item{type}{Projection type, see \code{\link[=.globeproj.types]{.globeproj.types()}}}
@@ -16,13 +46,53 @@ globeproj(type = NULL, orient = NULL, xlim = NULL, ylim = NULL, scale = NULL)
 \item{ylim}{y-axis limits}
 
 \item{scale}{x- and y- scaling factors}
+
+\item{x}{A \link{globeproj} object}
+
+\item{\dots}{Additional parameters passed on to other methods}
+
+\item{add}{logical; If TRUE, add to existing plot}
+
+\item{do.plot}{logical; If TRUE, do plotting}
+
+\item{n}{The number of Tissot indicatrices (n-long, n-lat) to compute}
+
+\item{loc}{Coordinates to be mapped.}
+
+\item{inverse}{logical}
 }
 \value{
+A vector of names of available projection types; "longlat",
+"mollweide", "hammer", "orthocyl", "lambert", "gall-peters"
+
+A
+
+A
+
+A
+
+A list:
+\item{xlim }{X axis limits in the map domain}
+\item{ylim }{Y axis limits in the map domain}
+
 B
 }
 \description{
-A
+Deprecated globe projection methods that may be removed in the
+future
+}
+\section{Functions}{
+\itemize{
+\item \code{.globeproj.types()}: Types of globe projections
+
+\item \code{old_limits()}: Calculates projection axis limits
+
+}}
+\examples{
+old_globeproj("mollweide")
+
 }
 \author{
 Finn Lindgren
 }
+\keyword{internal}

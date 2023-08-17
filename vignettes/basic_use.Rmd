@@ -1,0 +1,130 @@
+---
+title: "Basic fmesher use"
+author: "Finn Lindgren"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Basic fmesher use}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  dev = "png",
+  dev.args = list(type = "cairo-png"),
+  fig.width = 7,
+  fig.height = 5
+  #  out.width = 250,
+  #  out.height = 250
+)
+rgl::setupKnitr(autoprint = TRUE)
+```
+
+```{r setup}
+suppressPackageStartupMessages(library(fmesher))
+set.seed(1234L)
+```
+
+## Mesh construction
+
+```{r basic2}
+domain <- cbind(rnorm(4, sd = 3), rnorm(4))
+(mesh2 <- fm_mesh_2d(
+  boundary = fm_extensions(domain, c(2.5, 5)),
+  max.edge = c(0.5, 2)
+))
+plot(mesh2, axes = TRUE)
+```
+
+```{r basic1}
+(mesh1 <- fm_mesh_1d(
+  c(0, 2, 4, 7, 10),
+  boundary = "free", # c("neumann", "dirichlet"),
+  degree = 2
+))
+```
+
+## Point lookup and evaluation
+
+```{r lookup2}
+pts <- cbind(rnorm(400, sd = 3), rnorm(400))
+
+# Find what triangle each point is in, and it's triangular Barycentric coordinates
+bary <- fm_bary(mesh2, loc = pts)
+# How many points are outside the mesh?
+sum(is.na(bary$t))
+head(bary$bary)
+
+# Construct an evaluator object
+evaluator <- fm_evaluator(mesh2, loc = pts)
+sum(!evaluator$proj$ok)
+
+# Values for the basis function weights; for ordinary 2d meshes this coincides
+# with the resulting values at the vertices, but this is not true for e.g.
+# 2nd order B-splines on 1d meshes.
+field <- mesh2$loc[, 1]
+value <- fm_evaluate(evaluator, field = field)
+sum(abs(pts[, 1] - value), na.rm = TRUE)
+```
+
+```{r lookup1}
+pts1 <- seq(-2, 12, length.out = 1000)
+
+# Find what segment, and its interval Barycentric coordinates
+bary1 <- fm_bary(mesh1, loc = pts1)
+# Points outside the interval are treated differently depending on the
+# boundary conditions:
+sum(is.na(bary1$t))
+head(bary1$bary)
+
+# Construct an evaluator object.
+evaluator1 <- fm_evaluator(mesh1, loc = pts1)
+# mesh_1d basis functions are defined everywhere
+sum(!evaluator1$proj$ok)
+
+# Values for the basis function weights; for ordinary 2d meshes this coincides
+# with the resulting values at the vertices, but this is not true for e.g.
+# 2nd order B-splines on 1d meshes.
+field1 <- rnorm(fm_dof(mesh1))
+value1 <- fm_evaluate(evaluator1, field = field1)
+plot(pts1, value1, type = "l")
+```
+
+## Plotting
+
+### Base graphics
+
+```{r}
+plot(mesh2)
+```
+
+### `ggplot` graphics
+
+```{r}
+suppressPackageStartupMessages(library(ggplot2))
+ggplot() +
+  geom_fm(data = mesh2)
+
+ggplot() +
+  geom_fm(data = mesh1, weights = field1 + 2, xlim = c(-2, 12)) +
+  geom_fm(data = mesh1, linetype = 2, alpha = 0.5, xlim = c(-2, 12))
+```
+
+## Finite element calculations
+
+```{r}
+fem1 <- fm_fem(mesh1, order = 2)
+names(fem1)
+fem2 <- fm_fem(mesh2, order = 2)
+names(fem2)
+```
+
+## Stochastic process simulation
+
+```{r}
+samp <- fm_matern_sample(mesh2, alpha = 2, rho = 4, sigma = 1)[, 1]
+evaluator <- fm_evaluator(mesh2, lattice = fm_evaluator_lattice(mesh2, dims = c(150, 50)))
+image(evaluator$x, evaluator$y, fm_evaluate(evaluator, field = samp), asp = 1)
+```

@@ -3,3 +3,12 @@
 .RData
 .Ruserdata
 docs
+src/.deps
+inst/doc
+src/gitstamp
+src/mymake
+/doc/
+/Meta/
+man/chk
+man/chk_all
+man/chk_found

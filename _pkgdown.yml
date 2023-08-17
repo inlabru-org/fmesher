@@ -1,0 +1,108 @@
+url: https://inlabru-org.github.io/fmesher/
+
+template:
+  bootstrap: 5
+
+navbar:
+  components:
+    articles:
+      text: Articles
+      menu:
+      - text: Basic examples
+      - text: Basic use
+        href: articles/basic_use.html
+      - text: ---
+      - text: Concepts
+      - text: Conversion from legacy INLA package methods
+        href: articles/inla_conversion.html
+      - text: The fmesher C++ library
+        href: articles/fmesher_library.html
+
+
+reference:
+- title: "Mesh construction"
+  desc: "Functions for contructing meshes and function spaces."
+  contents:
+  - starts_with("fm_mesh")
+  - starts_with("fm_rcdt")
+  - starts_with("fm_delaunay")
+  - starts_with("fm_lattice")
+  - starts_with("fm_segm")
+  - starts_with("fm_nonconvex")
+  - starts_with("fm_extensions")
+  - starts_with("fm_simplify")
+  - starts_with("fm_tensor")
+  - starts_with("fm_split_lines")
+- title: "Property methods"
+  desc: "Functions for computing or accessing object properties"
+  contents:
+  - starts_with("fm_basis")
+  - starts_with("fm_raw_basis")
+  - starts_with("fm_int")
+  - starts_with("fm_bary")
+  - starts_with("fm_evaluate")
+  - starts_with("fm_evaluator")
+  - starts_with("fm_diameter")
+  - starts_with("fm_bbox")
+  - starts_with("fm_vertices")
+  - starts_with("fm_centroids")
+  - starts_with("fm_contains")
+  - starts_with("fm_is_within")
+  - starts_with("fm_manifold")
+  - starts_with("fm_detect_manifold")
+  - starts_with("fm_dof")
+  - starts_with("fm_pixels")
+- title: "Stochastic process methods"
+  desc: "Functions for constructing stochastic PDE models"
+  contents:
+  - starts_with("fm_fem")
+  - starts_with("fm_gmrf")
+- title: "Matrix helper functions"
+  desc: "Functions for handling matrix constructions"
+  contents:
+  - starts_with("fm_block")
+  - starts_with("fm_row_kron")
+- title: "Coordinate system tools"
+  desc: "Functions for handling coordinate systems and conversions"
+  contents:
+  - starts_with("fm_crs")
+  - starts_with("fm_transform")
+  - starts_with("fm_CRS")
+  - starts_with("fm_wkt")
+  - starts_with("fm_length_unit")
+  - starts_with("fm_ellipsoid")
+  - starts_with("fm_proj4string")
+  - matches("^is.na.fm_crs$")
+  - matches("^is.na.fm_CRS$")
+  - matches("^is.na.inla.CRS$")
+#  - matches("\$\.fm_crs")
+- title: "Conversion to fmesher classes"
+  desc: "Functions for converting non-fmesher objects to fmesher objects."
+  contents:
+  - starts_with("fm_as_")
+- title: "Plotting methods"
+  desc: "Functions for plotting."
+  contents:
+  - starts_with("geom_fm")
+  - starts_with("plot")
+  - starts_with("lines")
+- title: "Printing methods"
+  desc: "Functions for printing."
+  contents:
+  - starts_with("print")
+- title: "Data objects"
+  desc: "Data objects"
+  contents:
+  - matches("fmexample")
+- title: "Direct C++ interface"
+  desc: "Direct C++ interface methods, not intended for package users."
+  contents:
+  - starts_with("fmesher_")
+- title: "Deprecated methods"
+  desc: "Deprecated methods"
+  contents:
+  - matches("fm_spTransform")
+#- title: "Other functions"
+#  desc: "Other functions"
+#  contents:
+#  - matches("")

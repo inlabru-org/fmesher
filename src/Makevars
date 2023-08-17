@@ -1,0 +1,33 @@
+# CXX_STD = CXX17
+
+PKG_CPPFLAGS=-DFMESHER_WITH_R
+
+## Instead of manually activating debug output here, use
+##   source("misc/build.R")
+##   fmesher_install(debug = TRUE)
+#  -DFMESHER_DEBUG=1
+
+## For RcppEigen, we would need this:
+#  -DFMESHER_WITH_EIGEN
+#  -DEIGEN_PERMANENTLY_DISABLE_STUPID_WARNINGS
+
+## GSL flags; the R package uses the R 'gsl' package instead
+#  -DFMESHER_WITH_GSL
+#  -DFMESHER_WITH_SPHERICAL_HARMONICS
+# PKG_LIBS=-lgsl -lgslcblas
+
+## Extra code to reduce the library size, but not allowed on CRAN, see
+## https://cran.r-project.org/doc/manuals/r-release/R-exts.html#Writing-portable-packages:
+## http://dirk.eddelbuettel.com/blog/2017/08/14/#009_compact_shared_libraries
+## 	if test -e "/usr/bin/strip"; then /usr/bin/strip --strip-debug $(SHLIB); fi
+## Variant here:
+## https://stat.ethz.ch/pipermail/r-package-devel/2017q4/002024.html
+##
+#strippedLib: $(SHLIB)
+#	@if test -f "/usr/bin/strip" & \
+#	  test -f "/bin/uname" & \
+#	  [[ `uname` == "Linux" ]]; then \
+#	  /usr/bin/strip --strip-debug $(SHLIB); \
+#	fi
+#.phony: strippedLib
+

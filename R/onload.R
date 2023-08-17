@@ -4,8 +4,13 @@
 #' @importFrom methods is
 #' @importFrom stats quantile runif
 #' @importFrom utils str
-#' @import Matrix
+#' @import methods
 
 .onLoad <- function(libname, pkgname) {
-    options(list("Matrix.quiet"=TRUE))
+  options(list("Matrix.quiet" = TRUE))
+}
+
+
+.onUnload <- function(libpath) {
+  library.dynam.unload("fmesher", libpath)
 }

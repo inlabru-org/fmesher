@@ -30,6 +30,20 @@ indicates the index number of the desired version. Default: 1}
 
 \item{item_tree}{An item tree identifying a parameter item entry}
 }
+\value{
+A hierarchical list, describing WKT information as a tree
+
+\code{fm_wkt_tree_as_wkt} character; the WKT corresponding to the tree.
+
+\code{fm_wkt_tree_get_item} returns the value of an item found in the tree
+
+\code{fm_wkt_tree_set_item} returns the modified tree
+}
 \description{
 Conversion between WKT and a tree representation
 }
+\examples{
+str(fm_wkt_as_wkt_tree(fm_crs("longlat_norm")$wkt))
+
+}
+\keyword{internal}
