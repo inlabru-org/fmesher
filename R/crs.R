@@ -559,6 +559,7 @@ fm_length_unit.character <- function(x) {
 #' crs5 <- fm_crs("sphere")
 #' crs6 <- fm_crs("globe")
 #' @export
+#' @seealso fm_crs_is_null
 #' @rdname fm_crs
 #' @seealso [fm_crs<-()], [fm_crs_oblique<-()]
 fm_crs <- function(x, oblique = NULL, ..., crsonly = deprecated()) {
@@ -601,24 +602,47 @@ fm_crs <- function(x, oblique = NULL, ..., crsonly = deprecated()) {
 
 
 
-#' @describeIn fm_crs Check if a `fm_crs` has `NA` crs information and `NA`
-#' obliqueness
-#' @export
-is.na.fm_crs <- function(x) {
-  is.na(x[["crs"]]) && all(is.na(x[["oblique"]]))
-}
-
-#' @describeIn fm_crs Check if an object is or has `NULL` or `NA` CRS information.
+#' @title Check if a crs is NULL or NA
+#'
+#' @description
+#' Methods of checking whether various kinds of CRS objects are `NULL` or `NA`
+#'
+#' @describeIn fm_crs_is_null Check if an object is or has `NULL` or `NA` CRS information.
 #' If not `NULL`, `is.na(fm_crs(x))` is returned. This allows the input to be e.g.
 #' a proj4string or epsg number, since the default [fm_crs()] method passes
 #' its argument on to `sf::st_crs()`.
 #'
+#' @param x An object supported by `fm_crs(x)`
+#' @param crsonly For crs objects with extended functionality, such as
+#' [fm_crs()] objects with `oblique` information, `crsonly = TRUE` only checks
+#' the plain CRS part.
+#'
+#' @returns logical
+#'
+#' @examples
+#' fm_crs_is_null(NULL)
+#' fm_crs_is_null(27700)
+#' fm_crs_is_null(fm_crs())
+#' fm_crs_is_null(fm_crs(27700))
+#' fm_crs_is_null(fm_crs(oblique = c(1, 2, 3, 4)))
+#' fm_crs_is_null(fm_crs(oblique = c(1, 2, 3, 4)), crsonly = TRUE)
+#' fm_crs_is_null(fm_crs(27700, oblique = c(1, 2, 3, 4)))
+#' fm_crs_is_null(fm_crs(27700, oblique = c(1, 2, 3, 4)), crsonly = TRUE)
+#'
+#' @seealso [fm_crs()], [fm_CRS()], [fm_crs_is_identical()]
 #' @export
 fm_crs_is_null <- function(x, crsonly = FALSE) {
   if (crsonly) {
     return(is.null(x) || is.na(fm_crs(x, oblique = NA)))
   }
   is.null(x) || is.na(fm_crs(x))
+}
+
+#' @describeIn fm_crs_is_null Check if a `fm_crs` has `NA` crs information and `NA`
+#' obliqueness
+#' @export
+is.na.fm_crs <- function(x) {
+  is.na(x[["crs"]]) && all(is.na(x[["oblique"]]))
 }
 
 
@@ -1854,7 +1878,7 @@ fm_internal_update_crs <- function(crs, newcrs, mismatch.allowed) {
 #' @export
 #' @returns logical, indicating if the two crs objects are identical in the
 #' specified sense (see the `crsonly` argument)
-#' @seealso [fm_crs()], [fm_CRS()]
+#' @seealso [fm_crs()], [fm_CRS()], [fm_crs_is_null()]
 #' @examples
 #'
 #' crs0 <- crs1 <- fm_crs("longlat_globe")

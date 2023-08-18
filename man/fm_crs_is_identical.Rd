@@ -39,5 +39,5 @@ print(c(
 ))
 }
 \seealso{
-\code{\link[=fm_crs]{fm_crs()}}, \link[=fm_crs]{fm_CRS()}
+\code{\link[=fm_crs]{fm_crs()}}, \link[=fm_crs]{fm_CRS()}, \code{\link[=fm_crs_is_null]{fm_crs_is_null()}}
 }
