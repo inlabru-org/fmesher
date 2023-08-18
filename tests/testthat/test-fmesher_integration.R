@@ -122,15 +122,13 @@ test_that("conversion of whole 2D mesh to integration points", {
 
 
 test_that("Polygon integration with holes", {
-  set.seed(123L)
-
   plyA <- sp::SpatialPolygons(list(
     sp::Polygons(
       list(
-        sp::Polygon(matrix(c(0, 3, 3, 0, 0, 0, 3, 3) + runif(8) * 0.01, 4, 2),
+        sp::Polygon(matrix(c(0, 3, 3, 0, 0, 0, 3, 3) - 1, 4, 2),
           hole = FALSE
         ),
-        sp::Polygon(matrix(c(1, 2, 2, 1, 1, 1, 2, 2) + runif(8) * 0.01, 4, 2),
+        sp::Polygon(matrix(c(1, 2, 2, 1, 1, 1, 2, 2) - 1, 4, 2),
           hole = TRUE
         )
       ),
@@ -139,59 +137,45 @@ test_that("Polygon integration with holes", {
   ))
 
   bndA <- fm_as_segm(plyA)
-  m <- fm_mesh_2d_inla(
-    loc.domain = bndA$loc,
-    max.edge = 1
-  )
-  ipA1 <- fm_int(m, plyA, int.args = list(
-    method = "direct",
-    nsub2 = 1
-  ))
-  ipA2 <- fm_int(m, plyA, int.args = list(
-    method = "stable",
-    nsub2 = 1
-  ))
-  ipA3 <- fm_int(m, plyA, int.args = list(
-    method = "direct"
-  ))
-  ipA4 <- fm_int(m, plyA, int.args = list(
-    method = "stable"
-  ))
+  m <- fmexample$mesh
+  ipA1 <- fm_int(m, plyA, int.args = list(method = "direct",
+                                          nsub2 = 1))
+  ipA2 <- fm_int(m, plyA, int.args = list(method = "stable",
+                                          nsub2 = 1))
+  ipA3 <- fm_int(m, plyA, int.args = list(method = "direct"))
+  ipA4 <- fm_int(m, plyA, int.args = list(method = "stable"))
   ipA1$test <- "A1"
   ipA2$test <- "A2"
   ipA3$test <- "A3"
   ipA4$test <- "A4"
 
   # if (FALSE) {
+  #   require("ggplot2")
   #   pl <- ggplot2::ggplot() +
-  #     gg(m) +
-  #     gg(plyA)
+  #     geom_fm(data = m, alpha = 0) +
+  #     inlabru::gg(plyA)
   #   pl
   #
   #   pl +
-  #     gg(ipA1, mapping = aes(col = weight, size = weight)) +
-  #     gg(ipA2, mapping = aes(col = weight, size = weight)) +
-  #     gg(ipA3, mapping = aes(col = weight, size = weight)) +
-  #     gg(ipA4, mapping = aes(col = weight, size = weight)) +
+  #     inlabru::gg(ipA1, mapping = aes(col = weight, size = weight)) +
+  #     inlabru::gg(ipA2, mapping = aes(col = weight, size = weight)) +
+  #     inlabru::gg(ipA3, mapping = aes(col = weight, size = weight)) +
+  #     inlabru::gg(ipA4, mapping = aes(col = weight, size = weight)) +
   #     ggplot2::facet_wrap(vars(test))
   # }
 
-  # > sf::st_area(sf::st_as_sf(plyA))
+  #   sf::st_area(sf::st_as_sf(plyA))
   # [1] 8.006112
 
-  expect_equal(sum(ipA1$weight), 7.780959, tolerance = lowtol)
-  expect_equal(sum(ipA2$weight), 7.780959, tolerance = lowtol)
-  expect_equal(sum(ipA3$weight), 8.004363, tolerance = lowtol)
-  expect_equal(sum(ipA4$weight), 8.004363, tolerance = lowtol)
+  expect_equal(sum(ipA1$weight), 7.914124, tolerance = lowtol)
+  expect_equal(sum(ipA2$weight), 7.914124, tolerance = lowtol)
+  expect_equal(sum(ipA3$weight), 8.001529, tolerance = lowtol)
+  expect_equal(sum(ipA4$weight), 8.001529, tolerance = lowtol)
 })
 
 
 test_that("Integration line splitting", {
-  mesh <- fm_mesh_2d_inla(
-    loc.domain = cbind(0, 0),
-    offset = 2,
-    max.edge = 0.5
-  )
+  mesh <- fmexample$mesh
 
   segm <- fm_segm(
     loc = rbind(c(-1, 0), c(-1, 1), c(1, 0), c(1, 1)),
@@ -239,9 +223,7 @@ test_that("Integration line splitting", {
 # Additional mesh integration tests
 
 test_that("flat mesh integration", {
-  skip_on_cran()
-
-  mesh <- fm_mesh_2d(cbind(0, 0), offset = 1, max.edge = 2)
+  mesh <- fmexample$mesh
 
   ips0 <- fm_int(mesh, int.args = list(nsub2 = 0))
   ips9 <- fm_int(mesh, int.args = list(nsub2 = 9))
@@ -287,10 +269,7 @@ test_that("sphere and globe mesh integration", {
 })
 
 test_that("flat SpatialPolygons integration", {
-  skip_on_cran()
-  fm_safe_sp()
-
-  mesh <- fm_mesh_2d(cbind(0, 0), offset = 2, max.edge = 4)
+  mesh <- fmexample$mesh
 
   poly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(rbind(
     c(-1, -1), c(-1, 1), c(1, 1), c(1, -1)
@@ -302,16 +281,18 @@ test_that("flat SpatialPolygons integration", {
   ips9 <- fm_int(mesh, samplers = poly, int.args = list(nsub2 = 9, method = "direct"))
   ips19 <- fm_int(mesh, samplers = poly, int.args = list(nsub2 = 19, method = "direct"))
 
-  #  ggplot() + gg(mesh) +
-  #    geom_point(aes(x=x,y=y,size=weight,colour="0"),data=ips0) +
-  #    geom_point(aes(x=x,y=y,size=weight,colour="1"),data=ips1) +
-  #    geom_point(aes(x=x,y=y,size=weight,colour="9"),data=ips9) +
-  #    geom_point(aes(x=x,y=y,size=weight,colour="19"),data=ips19)
+  require("ggplot2")
+   ggplot() + geom_fm(data = mesh) +
+     geom_sf(aes(size=weight,colour=nsub2),data = cbind(ips0, nsub2 = "0")) +
+     geom_sf(aes(size=weight,colour=nsub2),data = cbind(ips1, nsub2 = "1")) +
+     geom_sf(aes(size=weight,colour=nsub2),data = cbind(ips9, nsub2 = "9")) +
+     geom_sf(aes(size=weight,colour=nsub2),data = cbind(ips19, nsub2 = "19")) +
+     facet_wrap(~ nsub2)
 
-  expect_equal(sum(ips0$weight), 6.627417, tolerance = midtol)
-  expect_equal(sum(ips1$weight), 4.970563, tolerance = midtol)
-  expect_equal(sum(ips9$weight), 4.108999, tolerance = midtol)
-  expect_equal(sum(ips19$weight), 4.009587, tolerance = midtol)
+  expect_equal(sum(ips0$weight), 4.055089, tolerance = midtol)
+  expect_equal(sum(ips1$weight), 4.02438, tolerance = midtol)
+  expect_equal(sum(ips9$weight), 4.00746, tolerance = midtol)
+  expect_equal(sum(ips19$weight), 3.999283, tolerance = midtol)
 })
 
 test_that("globe polygon integration", {
