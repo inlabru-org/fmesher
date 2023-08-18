@@ -4,8 +4,9 @@
 # fmesher: Triangle Meshes and Other Geometry Tools
 
 <!-- badges: start -->
-<!-- [![CRAN status](http://www.r-pkg.org/badges/version-last-release/fmesher)](https://cran.r-project.org/package=fmesher) -->
 
+[![CRAN
+status](http://www.r-pkg.org/badges/version-last-release/fmesher)](https://cran.r-project.org/package=fmesher)
 [![inlabru-org r-universe
 status](https://inlabru-org.r-universe.dev/badges/fmesher)](https://inlabru-org.r-universe.dev)
 [![R build
