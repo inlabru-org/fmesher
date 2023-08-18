@@ -433,7 +433,18 @@ fm_nonconvex_hull.sfc <- function(x,
   y <- sf::st_buffer(x, dist = convex + concave, nQuadSegs = nQuadSegs)
   y <- sf::st_union(y)
   if (concave > 0) {
-    y <- sf::st_buffer(y, dist = -concave, nQuadSegs = nQuadSegs)
+    if (sf::sf_use_s2() && isTRUE(sf::st_is_longlat(x))) {
+      # s2 gives empty result for negative buffers
+      # Use bounding set trick to get around this
+      y_box <- sf::st_buffer(y, dist = 100000, nQuadSegs = nQuadSegs)
+      y_box <- sf::st_union(y_box)
+      y_inverse <- sf::st_difference(y_box, y)
+      y_inverse_expanded <- sf::st_buffer(y_inverse, concave, nQuadSegs = nQuadSegs)
+      y_inverse_expanded <- sf::st_union(y_inverse_expanded)
+      y <- sf::st_difference(y, y_inverse_expanded)
+    } else {
+      y <- sf::st_buffer(y, dist = -concave, nQuadSegs = nQuadSegs)
+    }
   }
 
   if (dTolerance > 0) {

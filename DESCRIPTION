@@ -1,7 +1,7 @@
 Package: fmesher
 Type: Package
 Title: Triangle Meshes and Related Geometry Tools
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: c(
   person("Finn", "Lindgren", email = "finn.lindgren@gmail.com",
          role = c("aut", "cre", "cph"),
@@ -56,7 +56,7 @@ Suggests:
     gsl
 URL: https://inlabru-org.github.io/fmesher/, https://github.com/inlabru-org/fmesher
 BugReports: https://github.com/inlabru-org/fmesher/issues
-License: MPL-2.0 | file LICENSE
+License: MPL-2.0
 Copyright: The R package and C++ code were written
     by and are Copyright by Finn Lindgren, and are redistributable under the
     Mozilla Public License version 2.0.

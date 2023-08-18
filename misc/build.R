@@ -27,24 +27,25 @@ fmesher_install <- function(repo = ".", debug = FALSE) {
 
 
 
-fmesher_clang_tidy <- function() {
+fmesher_clang_tidy <- function(files = NULL) {
+  if (is.null(files)) {
+    files <-
+      c(
+        "basis.cc",
+        "fmesher.cc",
+        "fmesher_helpers.cc",
+        "ioutils.cc",
+        "locator.cc",
+        "mesh.cc",
+        "meshc.cc",
+        "Rcpp_interface.cc",
+        "trees.cc",
+        "vector.cc"
+      )
+  }
   CPPFLAGS <- "-I/home/flindgre/local/R-4.3.1/lib/R/include -DNDEBUG -DFMESHER_WITH_R -I/home/flindgre/R/x86_64-pc-linux-gnu-library/4.3/Rcpp/include -I/usr/local/include"
-  SOURCE <- paste0(
-    "src/",
-    c(
-      "basis.cc",
-      "fmesher.cc",
-      "fmesher_helpers.cc",
-      "ioutils.cc",
-      "locator.cc",
-      "mesh.cc",
-      "Rcpp_interface.cc",
-      "trees.cc",
-      "vector.cc"
-    ),
-    collapse = " "
-  )
-  cmd <- paste("clang-tidy", SOURCE, "--", CPPFLAGS)
+  SOURCE <- paste0(file.path("src", files), collapse = " ")
+  cmd <- paste("~/local/bin/clang-tidy", SOURCE, "--", CPPFLAGS)
   print(cmd)
   system(cmd, intern = TRUE)
 }

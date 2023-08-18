@@ -171,8 +171,8 @@ valid_globeproj <- function(object, ...) {
   toolong <-
     which(c(
       TRUE,
-      diff(coords[, 1])^2 / diff(x$xlim)
-        + diff(coords[, 2])^2 / diff(x$ylim)
+      diff(coords[, 1])^2 / diff(x$xlim)^2
+        + diff(coords[, 2])^2 / diff(x$ylim)^2
       > 0.1^2,
       TRUE
     ))
@@ -197,10 +197,26 @@ valid_globeproj <- function(object, ...) {
 #' @param projection a `globeproj` objcet
 #' @param add logical; If TRUE, add to existing plot
 #' @param \dots Additional parameters passed on to `sp::plot`
+#' @details This function is a legacy method for plotting data from the
+#' `PBSmapping` package, with
+#'
+#' ```
+#' data(worldLL, package = "PBSmapping")
+#' plot_PolySet(worldLL, old_globeproj("longlat"), add = FALSE)
+#' ```
+#'
+#' To avoid a dependency on the `PBSmapping` package, the example below
+#' constructs a synthetic object of the same format.
 #' @export
+#' @seealso [old_globeproj()]
 #' @examples
-#' # data(worldLL, package = "PBSmapping")
-#' # plot_PolySet(worldLL, old_globeproj("longlat"), add = FALSE)
+#' world_example <- data.frame(
+#'   PID = c(0L, 0L, 0L, 1L, 1L),
+#'   POS = c(1L, 2L, 3L, 1L, 2L),
+#'   X = c(10, 20, 30, 15, 25),
+#'   Y = c(10, 15, 70, -40, -50)
+#' )
+#' plot_PolySet(world_example, old_globeproj("longlat"), add = FALSE)
 #' @keywords internal
 #' @returns An (invisible) `sp` object of projected lines
 plot_PolySet <- function(x, projection, add = FALSE, ...) {
