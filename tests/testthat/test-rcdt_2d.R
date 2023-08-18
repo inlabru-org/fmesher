@@ -4,7 +4,7 @@ test_that("Flat CDT works", {
     refine = list(max.edge = 0.25)
   )
 
-#  expect_equal(fm_dof(mesh), 135) # 138 on M1?
+  #  expect_equal(fm_dof(mesh), 135) # 138 on M1?
 
   expect_equal(fm_diameter(mesh), 2, tolerance = 0.1)
 

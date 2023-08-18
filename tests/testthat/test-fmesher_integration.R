@@ -138,10 +138,14 @@ test_that("Polygon integration with holes", {
 
   bndA <- fm_as_segm(plyA)
   m <- fmexample$mesh
-  ipA1 <- fm_int(m, plyA, int.args = list(method = "direct",
-                                          nsub2 = 1))
-  ipA2 <- fm_int(m, plyA, int.args = list(method = "stable",
-                                          nsub2 = 1))
+  ipA1 <- fm_int(m, plyA, int.args = list(
+    method = "direct",
+    nsub2 = 1
+  ))
+  ipA2 <- fm_int(m, plyA, int.args = list(
+    method = "stable",
+    nsub2 = 1
+  ))
   ipA3 <- fm_int(m, plyA, int.args = list(method = "direct"))
   ipA4 <- fm_int(m, plyA, int.args = list(method = "stable"))
   ipA1$test <- "A1"
@@ -282,12 +286,13 @@ test_that("flat SpatialPolygons integration", {
   ips19 <- fm_int(mesh, samplers = poly, int.args = list(nsub2 = 19, method = "direct"))
 
   require("ggplot2")
-   ggplot() + geom_fm(data = mesh) +
-     geom_sf(aes(size=weight,colour=nsub2),data = cbind(ips0, nsub2 = "0")) +
-     geom_sf(aes(size=weight,colour=nsub2),data = cbind(ips1, nsub2 = "1")) +
-     geom_sf(aes(size=weight,colour=nsub2),data = cbind(ips9, nsub2 = "9")) +
-     geom_sf(aes(size=weight,colour=nsub2),data = cbind(ips19, nsub2 = "19")) +
-     facet_wrap(~ nsub2)
+  ggplot() +
+    geom_fm(data = mesh) +
+    geom_sf(aes(size = weight, colour = nsub2), data = cbind(ips0, nsub2 = "0")) +
+    geom_sf(aes(size = weight, colour = nsub2), data = cbind(ips1, nsub2 = "1")) +
+    geom_sf(aes(size = weight, colour = nsub2), data = cbind(ips9, nsub2 = "9")) +
+    geom_sf(aes(size = weight, colour = nsub2), data = cbind(ips19, nsub2 = "19")) +
+    facet_wrap(~nsub2)
 
   expect_equal(sum(ips0$weight), 4.055089, tolerance = midtol)
   expect_equal(sum(ips1$weight), 4.02438, tolerance = midtol)
