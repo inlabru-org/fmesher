@@ -12,7 +12,7 @@ weighting."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/
     
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1.9003</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -191,7 +191,7 @@ More efficient and numerically stable alternative to to
 <li><p><code>fm_block_weights()</code>: Computes (optionally) blockwise renormalised weights</p></li>
 <li><p><code>fm_block_log_weights()</code>: Computes (optionally) blockwise renormalised log-weights</p></li>
 <li><p><code>fm_block_log_shift()</code>: Computes shifts for stable blocked log-sum-exp.
-To compute \(\log(\sum_{i; \text{block}_i=k} \exp(v_i) w_i)\) for
+To compute \(\log(\sum_{i; \textrm{block}_i=k} \exp(v_i) w_i)\) for
 each block <code>k</code>, first compute combined values and weights, and a shift:</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>w_values <span class="ot">&lt;-</span> values <span class="sc">+</span> <span class="fu">fm_block_log_weights</span>(block, <span class="at">log_weights =</span> log_weights)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>shift <span class="ot">&lt;-</span> <span class="fu">fm_block_log_shift</span>(block, <span class="at">log_weights =</span> w_values)</span></code></pre><p></p></div>
