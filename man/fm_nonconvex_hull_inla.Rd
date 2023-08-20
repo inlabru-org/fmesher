@@ -59,8 +59,9 @@ Requires \code{splancs::nndistF()}
 
 }}
 \examples{
+\dontshow{if (require("splancs")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 fm_nonconvex_hull_inla(cbind(0, 0), convex = 1)
-
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 \code{\link[=fm_nonconvex_hull]{fm_nonconvex_hull()}}
