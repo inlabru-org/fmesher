@@ -23,8 +23,12 @@ jobs:
       fail-fast: false
       matrix:
         config:
+          - {os: macOS-12, r: 'devel', http-user-agent: 'release'}
           - {os: macOS-12, r: 'release'}
+          - {os: macOS-12, r: 'oldrel-1'}
+          - {os: windows-latest, r: 'devel', http-user-agent: 'release'}
           - {os: windows-latest, r: 'release'}
+          - {os: windows-latest, r: 'oldrel-1'}
           - {os: ubuntu-latest, r: 'devel', http-user-agent: 'release'}
           - {os: ubuntu-latest, r: 'release'}
           - {os: ubuntu-latest, r: 'oldrel-1'}
@@ -75,4 +79,4 @@ jobs:
         env:
           _R_CHECK_CRAN_INCOMING_REMOTE_: false
         with:
-          args: 'c("--no-manual", "--as-cran")'
+          args: 'c("-as-cran")'
