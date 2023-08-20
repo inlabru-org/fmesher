@@ -121,7 +121,7 @@ More efficient and numerically stable alternative to to
 \item \code{fm_block_log_weights()}: Computes (optionally) blockwise renormalised log-weights
 
 \item \code{fm_block_log_shift()}: Computes shifts for stable blocked log-sum-exp.
-To compute \eqn{\log(\sum_{i; \textrm{block}_i=k} \exp(v_i) w_i)}{
+To compute \eqn{\log(\sum_{i; \text{block}_i=k} \exp(v_i) w_i)}{
 log(sum_(i;block_i=k) exp(v_i) w_i)
 } for
 each block \code{k}, first compute combined values and weights, and a shift:
