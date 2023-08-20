@@ -2,6 +2,8 @@
 
 * Avoid floating point issue when testing on M1 that can lead to different meshes
 
+* Update `fm_mesh_2d` documentation and protect against invalid `tv` inputs
+
 # fmesher 0.1.1
 
 * Simplify LICENSE information in the R package DESCRIPTION

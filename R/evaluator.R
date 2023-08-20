@@ -1583,7 +1583,7 @@ fm_block_log_weights <- function(block = NULL,
 
 
 #' @describeIn fm_block Computes shifts for stable blocked log-sum-exp.
-#' To compute \eqn{\log(\sum_{i; \text{block}_i=k} \exp(v_i) w_i)}{
+#' To compute \eqn{\log(\sum_{i; \textrm{block}_i=k} \exp(v_i) w_i)}{
 #' log(sum_(i;block_i=k) exp(v_i) w_i)
 #' } for
 #' each block `k`, first compute combined values and weights, and a shift:

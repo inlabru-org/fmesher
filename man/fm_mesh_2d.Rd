@@ -67,13 +67,8 @@ allowed for the extension.}
 where the second value gives the number of additional vertices allowed for
 the extension.}
 
-\item{plot.delay}{On Linux (and Mac if appropriate X11 libraries are
-installed), specifying a nonnegative numeric value activates a rudimentary
-plotting system in the underlying \code{fmesher} program, showing the
-triangulation algorithm at work, with waiting time factor \code{plot.delay}
-between each step.
-
-On all systems, specifying any negative value activates displaying the
+\item{plot.delay}{If logical \code{TRUE} or a negative numeric value,
+activates displaying the
 result after each step of the multi-step domain extension algorithm.}
 
 \item{crs}{An optional \code{\link[=fm_crs]{fm_crs()}}, \code{sf::crs} or \code{sp::CRS} object}
