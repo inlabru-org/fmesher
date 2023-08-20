@@ -26,7 +26,6 @@ jobs:
           - {os: macOS-12, r: 'devel', http-user-agent: 'release'}
           - {os: macOS-12, r: 'release'}
           - {os: macOS-12, r: 'oldrel-1'}
-          - {os: windows-latest, r: 'devel', http-user-agent: 'release'}
           - {os: windows-latest, r: 'release'}
           - {os: windows-latest, r: 'oldrel-1'}
           - {os: ubuntu-latest, r: 'devel', http-user-agent: 'release'}
@@ -56,6 +55,7 @@ jobs:
           brew install proj@9
           brew install gdal
           brew install gsl
+          brew install udunits
 
       - name: Install system dependencies on Linux (GL)
         if: runner.os == 'Linux'
