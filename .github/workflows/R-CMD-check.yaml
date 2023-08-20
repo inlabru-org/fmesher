@@ -79,4 +79,4 @@ jobs:
         env:
           _R_CHECK_CRAN_INCOMING_REMOTE_: false
         with:
-          args: 'c("--no-manual", "-as-cran")'
+          args: 'c("--no-manual", "--as-cran")'
