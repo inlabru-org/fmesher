@@ -413,6 +413,10 @@ fm_rcdt_2d_inla <- function(loc = NULL,
     loc.int <- interior$loc
   }
 
+  if (!is.null(tv)) {
+    stopifnot(all(as.vector(tv) >= 1L))
+    stopifnot(all(as.vector(tv) <= NROW(loc)))
+  }
   loc <- rbind(loc.bnd, loc.int, lattice$loc, loc)
 
   options <- handle_rcdt_options_inla(
@@ -621,13 +625,13 @@ fm_mesh_2d <- function(...) {
 #' `max.edge` only (default=-1, meaning no limit).  One or two values,
 #' where the second value gives the number of additional vertices allowed for
 #' the extension.
-#' @param plot.delay On Linux (and Mac if appropriate X11 libraries are
-#' installed), specifying a nonnegative numeric value activates a rudimentary
-#' plotting system in the underlying `fmesher` program, showing the
-#' triangulation algorithm at work, with waiting time factor `plot.delay`
-#' between each step.
-#'
-#' On all systems, specifying any negative value activates displaying the
+# @param plot.delay On Linux (and Mac if appropriate X11 libraries are
+# installed), specifying a nonnegative numeric value activates a rudimentary
+# plotting system in the underlying `fmesher` program, showing the
+# triangulation algorithm at work, with waiting time factor `plot.delay`
+# between each step.
+#' @param plot.delay If logical `TRUE` or a negative numeric value,
+#' activates displaying the
 #' result after each step of the multi-step domain extension algorithm.
 #' @param crs An optional [fm_crs()], `sf::crs` or `sp::CRS` object
 #' @return An `inla.mesh` object.
@@ -651,8 +655,15 @@ fm_mesh_2d_inla <- function(loc = NULL, ## Points to include in final triangulat
   ## plot.delay: Do plotting.
   ## NULL --> No plotting
   ## <0  --> Intermediate meshes displayed at the end
-  ## >0   --> Dynamical fmesher plotting
-
+  ## TRUE  --> Intermediate meshes displayed at the end
+  ## >0   --> Dynamical fmesher X11 plotting is not avoailable in the R interface
+  if (is.null(plot.delay)) {
+    plot.intermediate <- FALSE
+  } else if (is.logical(plot.delay)) {
+    plot.intermediate <- plot.delay
+  } else {
+    plot.intermediate <- plot.delay < 0
+  }
 
   if ((missing(max.edge) || is.null(max.edge)) &&
     (missing(max.n.strict) || is.null(max.n.strict)) &&
@@ -710,9 +721,6 @@ fm_mesh_2d_inla <- function(loc = NULL, ## Points to include in final triangulat
   }
   if (missing(cutoff) || is.null(cutoff)) {
     cutoff <- 1e-12
-  }
-  if (missing(plot.delay) || is.null(plot.delay)) {
-    plot.delay <- NULL
   }
 
   num.layers <-
@@ -773,7 +781,6 @@ fm_mesh_2d_inla <- function(loc = NULL, ## Points to include in final triangulat
       cutoff = cutoff,
       extend = list(n = n[1], offset = offset[1]),
       refine = FALSE,
-      plot.delay = plot.delay,
       crs = crs
     )
 
@@ -781,7 +788,7 @@ fm_mesh_2d_inla <- function(loc = NULL, ## Points to include in final triangulat
   boundary1 <- fm_segm(mesh1, boundary = TRUE)
   interior1 <- fm_segm(mesh1, boundary = FALSE)
 
-  if (!is.null(plot.delay) && (plot.delay < 0)) {
+  if (plot.intermediate) {
     plot(mesh1)
   }
 
@@ -801,14 +808,13 @@ fm_mesh_2d_inla <- function(loc = NULL, ## Points to include in final triangulat
           max.n.strict = max.n.strict[1],
           max.n = max.n[1]
         ),
-      plot.delay = plot.delay,
       crs = crs
     )
 
   boundary2 <- fm_segm(mesh2, boundary = TRUE)
   interior2 <- fm_segm(mesh2, boundary = FALSE)
 
-  if (!is.null(plot.delay) && (plot.delay < 0)) {
+  if (plot.intermediate) {
     plot(mesh2)
   }
 
@@ -836,7 +842,6 @@ fm_mesh_2d_inla <- function(loc = NULL, ## Points to include in final triangulat
           max.n.strict = mesh2$n + max.n.strict[2],
           max.n = mesh2$n + max.n[2]
         ),
-      plot.delay = plot.delay,
       crs = crs
     )
 
@@ -876,7 +881,7 @@ fm_mesh_2d_inla <- function(loc = NULL, ## Points to include in final triangulat
     mesh3$crs <- crs.target
   }
 
-  if (!is.null(plot.delay) && (plot.delay < 0)) {
+  if (plot.intermediate) {
     plot(mesh3)
   }
 
