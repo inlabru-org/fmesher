@@ -765,14 +765,13 @@ fm_crs.character <- function(x, oblique = NULL, ...) {
   # Possible approach: sf::st_crs(as(sf::st_crs(x), "CRS"))
   # Borrowing from the sf::CRS_from_crs code:
   x <- y$proj4string
-  if (is.na(x) || identical(x, y$input)) {
-    return(y)
+  if (!is.na(x) && !identical(x, y$input)) {
+    y <- sf::st_crs(x, ...)
   }
-  x <- sf::st_crs(x, ...)
   if (!is.null(oblique)) {
-    fm_crs_oblique(x) <- oblique
+    fm_crs_oblique(y) <- oblique
   }
-  x
+  y
 }
 
 
