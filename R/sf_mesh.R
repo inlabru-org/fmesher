@@ -493,7 +493,6 @@ fm_as_segm.sfc_MULTIPOLYGON <-
     # that geos has CW as canonical orientation
     sfc <- sf::st_sfc(x, check_ring_dir = TRUE)
     crs <- sf::st_crs(sfc)
-    crs <- fm_CRS(crs) # required for INLA::inla.mesh.segment
 
     segm <- list()
     if (is.null(grp)) {

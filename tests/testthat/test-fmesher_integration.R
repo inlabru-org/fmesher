@@ -304,7 +304,7 @@ test_that("globe polygon integration", {
   skip_on_cran()
 
   suppressWarnings(
-    mesh <- fm_rcdt_2d_inla(globe = 1, crs = fm_CRS("globe"))
+    mesh <- fm_rcdt_2d_inla(globe = 1, crs = fm_crs("globe"))
   )
 
   poly <- sp::SpatialPolygons(
