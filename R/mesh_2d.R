@@ -71,7 +71,7 @@ fm_unify_coords.Spatial <- function(x, crs = NULL) {
       x <- matrix(0.0, 0, 3)
     }
   } else if (ncol(x) > 3) {
-    stop("Coordinates can have at mots 3 columns.")
+    stop("Coordinates can have at most 3 columns.")
   }
   colnames(x) <- NULL
   x
