@@ -11,7 +11,7 @@ Authors@R: c(
          role = c("ctb"),
          comment = "Andy Seaton constributed features to the sf support"),
   person("Suen", "Man Ho", email = "M.H.Suen@sms.ed.ac.uk", role = c("ctb"),
-         comment = "Man Ho Suen contributed features for the integration methods"),
+         comment = "Man Ho Suen contributed features and code structure design for the integration methods"),
   person("Fabian E.", "Bachl", email = "bachlfab@gmail.com",
          role = c("ctb"),
          comment = "Fabian Bachl co-developed precursors of fm_pixels and fm_split_lines in inlabru")
