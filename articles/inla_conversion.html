@@ -129,16 +129,25 @@ far as practical, with in particular the old <code>inla.mesh</code>,
 <code>inla.mesh.1d</code>, and <code>inla.mesh.segment</code> object
 classes given fallback methods that carry out methods for the new
 <code>fm_mesh_2d</code>, <code>fm_mesh_1d</code>, and
-<code>fm_segm</code> classes. An important change is that the handling
-of mesh <code>crs</code> information is now more flexible, but stricter
-in the sense that user code should make no assumption about how the
-information is stored in the mesh, and should therefore avoid the direct
-<code>mesh$crs</code> access, and instead use the <code><a href="../reference/fm_crs.html">fm_crs()</a></code>
-and <code><a href="../reference/fm_CRS_sp.html">fm_CRS()</a></code> access methods, depending on what type of CRS
+<code>fm_segm</code> classes.</p>
+<p>An important change is that the handling of mesh <code>crs</code>
+information is now more flexible, but stricter in the sense that user
+code should make no assumption about how the information is stored in
+the mesh, and should therefore avoid the direct <code>mesh$crs</code>
+access, and instead use the <code><a href="../reference/fm_crs.html">fm_crs()</a></code> and
+<code><a href="../reference/fm_CRS_sp.html">fm_CRS()</a></code> access methods, depending on what type of CRS
 object is needed. The ideal way to specify crs information is in the
 initial mesh creation call. If the crs needs to be explicitly assigned a
 new value, use the <code>fm_crs(mesh) &lt;- crs</code> assignment
 method.</p>
+<p>For mesh and curve creation, the <code><a href="../reference/fm_rcdt_2d.html">fm_rcdt_2d_inla()</a></code>,
+<code><a href="../reference/fm_mesh_2d.html">fm_mesh_2d_inla()</a></code>, and
+<code><a href="../reference/fm_nonconvex_hull_inla.html">fm_nonconvex_hull_inla()</a></code> method will keep the interface
+syntax used by <code>inla.mesh.create()</code>,
+<code>inla.mesh.2d()</code>, and <code>inla.nonconvex.hull()</code>
+functions, respectively, whereas the <code><a href="../reference/fm_rcdt_2d.html">fm_rcdt_2d()</a></code>,
+<code><a href="../reference/fm_mesh_2d.html">fm_mesh_2d()</a></code>, and <code><a href="../reference/fm_nonconvex_hull.html">fm_nonconvex_hull()</a></code>
+interfaces may change in the future.</p>
 </div>
 </div>
 <div class="section level2">
