@@ -95,7 +95,9 @@ transition behaviour of the `INLA` package use of `fmesher`.
 Great effort has been taken to preserve backwards compatibility as far as practical,
 with in particular the old `inla.mesh`, `inla.mesh.1d`, and `inla.mesh.segment`
 object classes given fallback methods that carry out methods for the new `fm_mesh_2d`,
-`fm_mesh_1d`, and `fm_segm` classes.  An important change is that the handling
+`fm_mesh_1d`, and `fm_segm` classes.  
+
+An important change is that the handling
 of mesh `crs` information is now more flexible, but stricter in the sense that
 user code should make no assumption about how the information is stored in the
 mesh, and should therefore avoid the direct `mesh$crs` access, and instead use
@@ -104,6 +106,12 @@ depending on what type of CRS object is needed.  The ideal way to
 specify crs information is in the initial mesh creation call. If the crs needs
 to be explicitly assigned a new value, use the `fm_crs(mesh) <- crs` assignment
 method.
+
+For mesh and curve creation, the `fm_rcdt_2d_inla()`, `fm_mesh_2d_inla()`, and
+`fm_nonconvex_hull_inla()` method will keep the interface syntax used by
+`inla.mesh.create()`, `inla.mesh.2d()`, and `inla.nonconvex.hull()` functions,
+respectively, whereas the `fm_rcdt_2d()`, `fm_mesh_2d()`, and
+`fm_nonconvex_hull()` interfaces may change in the future.
 
 
 ## Mesh construction
