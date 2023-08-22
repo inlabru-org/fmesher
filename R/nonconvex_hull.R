@@ -432,17 +432,18 @@ fm_nonconvex_hull.sfc <- function(x,
   nQuadSegs <- 64
   y <- sf::st_buffer(x, dist = convex + concave, nQuadSegs = nQuadSegs)
   y <- sf::st_union(y)
-  # st_buffer can break for LINESTRING input with large dist,
-  # giving interior holes.
-  # Partial protection obtained by taking the union with an extension of the
-  # points.
-  z <-
-    sf::st_buffer(
-      sf::st_cast(x, to = "POINT"),
-      dist = convex + concave,
-      nQuadSegs = nQuadSegs
-    )
-  y <- sf::st_union(y, z)
+  ## This workaround produces spurious extra points.
+  # # st_buffer can break for LINESTRING input with large dist,
+  # # giving interior holes.
+  # # Partial protection obtained by taking the union with an extension of the
+  # # points.
+  # z <-
+  #   sf::st_buffer(
+  #     sf::st_cast(x, to = "POINT"),
+  #     dist = convex + concave,
+  #     nQuadSegs = nQuadSegs
+  #   )
+  # y <- sf::st_union(y, z)
   if (concave > 0) {
     if (sf::sf_use_s2() && isTRUE(sf::st_is_longlat(x))) {
       # s2 gives empty result for negative buffers

@@ -39,8 +39,12 @@ fm_unify_coords.default <- function(x, crs = NULL) {
     }
   }
   if (ncol(x) < 3) {
-    while (ncol(x) < 3) {
-      x <- cbind(x, 0.0)
+    if (nrow(x) > 0) {
+      while (ncol(x) < 3) {
+        x <- cbind(x, 0.0)
+      }
+    } else {
+      x <- matrix(0.0, 0, 3)
     }
   } else if (ncol(x) > 3) {
     stop("Coordinates can have at most 3 columns.")
@@ -59,8 +63,12 @@ fm_unify_coords.Spatial <- function(x, crs = NULL) {
     passthrough = TRUE
   )
   if (ncol(x) < 3) {
-    while (ncol(x) < 3) {
-      x <- cbind(x, 0.0)
+    if (nrow(x) > 0) {
+      while (ncol(x) < 3) {
+        x <- cbind(x, 0.0)
+      }
+    } else {
+      x <- matrix(0.0, 0, 3)
     }
   } else if (ncol(x) > 3) {
     stop("Coordinates can have at mots 3 columns.")
@@ -91,8 +99,12 @@ fm_unify_coords.sfc <- function(x, crs = NULL) {
     passthrough = TRUE
   )
   if (ncol(x) < 3) {
-    while (ncol(x) < 3) {
-      x <- cbind(x, 0.0)
+    if (nrow(x) > 0) {
+      while (ncol(x) < 3) {
+        x <- cbind(x, 0.0)
+      }
+    } else {
+      x <- matrix(0.0, 0, 3)
     }
   } else if (ncol(x) > 3) {
     stop("Coordinates can have at most 3 columns.")

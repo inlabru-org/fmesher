@@ -329,6 +329,16 @@ fm_as_segm.sfc_LINESTRING <-
     for (k in seq_len(length(sfc))) {
       loc <- sf::st_coordinates(sfc[k])
       coord_names <- intersect(c("X", "Y", "Z"), colnames(loc))
+      if (nrow(loc) == 0) {
+        segm[[k]] <- fm_segm(
+          loc = matrix(0, 0, length(coord_names)),
+          idx = matrix(0L, 0, 2),
+          grp = integer(0),
+          is.bnd = FALSE,
+          crs = crs
+        )
+        next
+      }
       loc <- unname(loc[, coord_names, drop = FALSE])
 
       n <- dim(loc)[1L]
@@ -371,6 +381,17 @@ fm_as_segm.sfc_MULTILINESTRING <-
     for (k in seq_len(length(sfc))) {
       loc <- sf::st_coordinates(sfc[k])
       coord_names <- intersect(c("X", "Y", "Z"), colnames(loc))
+      if (nrow(loc) == 0) {
+        segm[[k]] <- fm_segm(
+          loc = matrix(0, 0, length(coord_names)),
+          idx = matrix(0L, 0, 2),
+          grp = integer(0),
+          is.bnd = FALSE,
+          crs = crs
+        )
+        next
+      }
+      coord_names <- intersect(c("X", "Y", "Z"), colnames(loc))
       Linfo <- loc[, c("L1", "L2"), drop = FALSE]
       uniqueLinfo <- unique(Linfo)
       loc <- unname(loc[, coord_names, drop = FALSE])
@@ -411,7 +432,6 @@ fm_as_segm.sfc_POLYGON <-
     # that geos has CW as canonical orientation
     sfc <- sf::st_sfc(x, check_ring_dir = TRUE)
     crs <- sf::st_crs(sfc)
-    crs <- fm_CRS(crs) # required for INLA::inla.mesh.segment
 
     segm <- list()
     if (is.null(grp)) {
@@ -421,6 +441,17 @@ fm_as_segm.sfc_POLYGON <-
     }
     for (k in seq_len(length(sfc))) {
       loc <- sf::st_coordinates(sfc[k])
+      coord_names <- intersect(c("X", "Y", "Z"), colnames(loc))
+      if (nrow(loc) == 0) {
+        segm[[k]] <- fm_segm(
+          loc = matrix(0, 0, length(coord_names)),
+          idx = matrix(0L, 0, 2),
+          grp = integer(0),
+          is.bnd = TRUE,
+          crs = crs
+        )
+        next
+      }
       coord_names <- intersect(c("X", "Y", "Z"), colnames(loc))
       L1info <- loc[, "L1", drop = TRUE]
       L2info <- loc[, "L2", drop = TRUE]
@@ -472,6 +503,17 @@ fm_as_segm.sfc_MULTIPOLYGON <-
     }
     for (k in seq_len(length(sfc))) {
       loc <- sf::st_coordinates(sfc[k])
+      coord_names <- intersect(c("X", "Y", "Z"), colnames(loc))
+      if (nrow(loc) == 0) {
+        segm[[k]] <- fm_segm(
+          loc = matrix(0, 0, length(coord_names)),
+          idx = matrix(0L, 0, 2),
+          grp = integer(0),
+          is.bnd = TRUE,
+          crs = crs
+        )
+        next
+      }
       coord_names <- intersect(c("X", "Y", "Z"), colnames(loc))
       Linfo <- loc[, c("L1", "L2"), drop = FALSE]
       loc <- unname(loc[, coord_names, drop = FALSE])
