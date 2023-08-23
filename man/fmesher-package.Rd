@@ -23,7 +23,7 @@ Useful links:
 Other contributors:
 \itemize{
   \item Seaton Andy \email{andy.e.seaton@gmail.com} (Andy Seaton constributed features to the sf support) [contributor]
-  \item Suen Man Ho \email{M.H.Suen@sms.ed.ac.uk} (Man Ho Suen contributed features for the integration methods) [contributor]
+  \item Suen Man Ho \email{M.H.Suen@sms.ed.ac.uk} (Man Ho Suen contributed features and code structure design for the integration methods) [contributor]
   \item Fabian E. Bachl \email{bachlfab@gmail.com} (Fabian Bachl co-developed precursors of fm_pixels and fm_split_lines in inlabru) [contributor]
 }
 

@@ -28,7 +28,7 @@ fm_mesh_2d_inla(
 \item{...}{Currently passed on to \code{fm_mesh_2d_inla}}
 
 \item{loc}{Matrix of point locations to be used as initial triangulation
-nodes.  Can alternatively be a \code{SpatialPoints} or
+nodes.  Can alternatively be a \code{sf}, \code{sfc}, \code{SpatialPoints} or
 \code{SpatialPointsDataFrame} object.}
 
 \item{loc.domain}{Matrix of point locations used to determine the domain

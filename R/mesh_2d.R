@@ -247,7 +247,8 @@ handle_rcdt_options_inla <- function(
 #' @description
 #' Computes a refined constrained Delaunay triangulation on R2 or S2.
 #'
-#' @param loc Input coordinates that should be part of the mesh
+#' @param loc Input coordinates that should be part of the mesh. Can be a matrix, `sf`, `sfc`, `SpatialPoints`,
+#' or other object supported by [fm_unify_coords()].
 #' @param tv Initial triangulation, as a N-by-3 indec vector into `loc`
 #' @param boundary,interior Objects supported by [fm_as_segm()].
 #' If `boundary` is `numeric`, `fm_nonconvex_hull(loc, convex = boundary)` is
@@ -609,7 +610,7 @@ fm_mesh_2d <- function(...) {
 #' @export
 #'
 #' @param loc Matrix of point locations to be used as initial triangulation
-#' nodes.  Can alternatively be a `SpatialPoints` or
+#' nodes.  Can alternatively be a `sf`, `sfc`, `SpatialPoints` or
 #' `SpatialPointsDataFrame` object.
 #' @param loc.domain Matrix of point locations used to determine the domain
 #' extent.  Can alternatively be a `SpatialPoints` or
