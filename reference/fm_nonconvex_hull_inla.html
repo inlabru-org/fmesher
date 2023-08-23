@@ -135,6 +135,17 @@ details.</p></dd>
 <ul><li><p><code>fm_nonconvex_hull_inla_basic()</code>: Special method for <code>convex = 0</code>.</p></li>
 </ul></div>
     <div class="section level2">
+    <h2 id="inla-compatibility">INLA compatibility<a class="anchor" aria-label="anchor" href="#inla-compatibility"></a></h2>
+    
+
+<p>For mesh and curve creation, the <code><a href="fm_rcdt_2d.html">fm_rcdt_2d_inla()</a></code>, <code><a href="fm_mesh_2d.html">fm_mesh_2d_inla()</a></code>,
+and <code>fm_nonconvex_hull_inla()</code> methods will keep the interface syntax used by
+<code>INLA::inla.mesh.create()</code>, <code>INLA::inla.mesh.2d()</code>, and
+<code>INLA::inla.nonconvex.hull()</code> functions, respectively, whereas the
+<code><a href="fm_rcdt_2d.html">fm_rcdt_2d()</a></code>, <code><a href="fm_mesh_2d.html">fm_mesh_2d()</a></code>, and <code><a href="fm_nonconvex_hull.html">fm_nonconvex_hull()</a></code> interfaces may be
+different, and potentially change in the future.</p>
+    </div>
+    <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="fm_nonconvex_hull.html">fm_nonconvex_hull()</a></code></p>
 <p>Other nonconvex inla legacy support: 

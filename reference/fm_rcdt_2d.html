@@ -180,6 +180,17 @@ specification for each location in <code>loc</code>, <code>boundary/interior</co
 interface</p></li>
 <li><p><code>fm_delaunay_2d()</code>: Construct a plain Delaunay triangulation.</p></li>
 </ul></div>
+    <div class="section level2">
+    <h2 id="inla-compatibility">INLA compatibility<a class="anchor" aria-label="anchor" href="#inla-compatibility"></a></h2>
+    
+
+<p>For mesh and curve creation, the <code>fm_rcdt_2d_inla()</code>, <code><a href="fm_mesh_2d.html">fm_mesh_2d_inla()</a></code>,
+and <code><a href="fm_nonconvex_hull_inla.html">fm_nonconvex_hull_inla()</a></code> methods will keep the interface syntax used by
+<code>INLA::inla.mesh.create()</code>, <code>INLA::inla.mesh.2d()</code>, and
+<code>INLA::inla.nonconvex.hull()</code> functions, respectively, whereas the
+<code>fm_rcdt_2d()</code>, <code><a href="fm_mesh_2d.html">fm_mesh_2d()</a></code>, and <code><a href="fm_nonconvex_hull.html">fm_nonconvex_hull()</a></code> interfaces may be
+different, and potentially change in the future.</p>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
@@ -190,7 +201,7 @@ interface</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Manifold:	R2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   V / E / T:	16 / 29 / 14</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Euler char.:	1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Constraints:	16 boundary edges (1 group: 1), 0 interior edges</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Constraints:	16 boundary edges (1 group: 1), 0 boundary edges</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Bounding box: (-4.999623, 4.999623) x (-4.999623, 4.999623) x (0,0)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Basis d.o.f.:	16</span>
 <span class="r-in"><span></span></span>
@@ -199,8 +210,8 @@ interface</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Manifold:	R2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   V / E / T:	15 / 34 / 20</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Euler char.:	1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Constraints:	8 boundary edges (1 group: 1), 0 interior edges</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Bounding box: (-0.9601167, 1.7223042) x (-1.563477, 1.717527) x (0,0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Constraints:	8 boundary edges (1 group: 1), 0 boundary edges</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Bounding box: (-0.9396327, 1.7016423) x (-2.076190, 1.547141) x (0,0)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Basis d.o.f.:	15</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
