@@ -155,7 +155,7 @@ fm_simplify <- function(x, eps = NULL, eps_rel = NULL, ...) {
       if (final) {
         break
       }
-      if (x$is.bnd) {
+      if (all(x$is.bnd)) {
         next_seg <- not_handled_seg[which(x$idx[not_handled_seg, 1] == next_vtx)]
         if (length(next_seg) == 0) {
           break
