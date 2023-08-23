@@ -297,6 +297,7 @@ fm_rcdt_2d <-
 
 #' @describeIn fm_rcdt_2d Legacy method for the `INLA::inla.mesh.create()`
 #' interface
+#' @inheritSection fm_mesh_2d INLA compatibility
 #' @export
 fm_rcdt_2d_inla <- function(loc = NULL,
                             tv = NULL,
@@ -597,6 +598,14 @@ fm_delaunay_2d <- function(loc, crs = NULL, ...) {
 #' @export
 #' @param ... Currently passed on to `fm_mesh_2d_inla`
 #' @family object creation and conversion
+#' @section INLA compatibility:
+#' For mesh and curve creation, the [fm_rcdt_2d_inla()], [fm_mesh_2d_inla()],
+#' and [fm_nonconvex_hull_inla()] methods will keep the interface syntax used by
+#' `INLA::inla.mesh.create()`, `INLA::inla.mesh.2d()`, and
+#' `INLA::inla.nonconvex.hull()` functions, respectively, whereas the
+#' [fm_rcdt_2d()], [fm_mesh_2d()], and [fm_nonconvex_hull()] interfaces may be
+#' different, and potentially change in the future.
+#'
 #' @examples
 #' fm_mesh_2d_inla(boundary = fm_extensions(cbind(2, 1), convex = 1, 2))
 #'

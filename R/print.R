@@ -58,7 +58,7 @@ print.fm_segm <- function(x, ..., digits = NULL, verbose = TRUE, newline = TRUE)
     cat("  ", sep = "")
   }
   cat(as.character(ret$n),
-    if (isTRUE(x$is.bnd)) {
+    if (all(x$is.bnd)) {
       " boundary edge"
     } else {
       " interior edge"

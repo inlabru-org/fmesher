@@ -87,6 +87,16 @@ interface
 \item \code{fm_delaunay_2d()}: Construct a plain Delaunay triangulation.
 
 }}
+\section{INLA compatibility}{
+
+For mesh and curve creation, the \code{\link[=fm_rcdt_2d_inla]{fm_rcdt_2d_inla()}}, \code{\link[=fm_mesh_2d_inla]{fm_mesh_2d_inla()}},
+and \code{\link[=fm_nonconvex_hull_inla]{fm_nonconvex_hull_inla()}} methods will keep the interface syntax used by
+\code{INLA::inla.mesh.create()}, \code{INLA::inla.mesh.2d()}, and
+\code{INLA::inla.nonconvex.hull()} functions, respectively, whereas the
+\code{\link[=fm_rcdt_2d]{fm_rcdt_2d()}}, \code{\link[=fm_mesh_2d]{fm_mesh_2d()}}, and \code{\link[=fm_nonconvex_hull]{fm_nonconvex_hull()}} interfaces may be
+different, and potentially change in the future.
+}
+
 \examples{
 (m <- fm_rcdt_2d_inla(
   boundary = fm_nonconvex_hull(cbind(0, 0), convex = 5)

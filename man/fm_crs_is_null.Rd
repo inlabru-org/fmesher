@@ -20,7 +20,9 @@ the plain CRS part.}
 logical
 }
 \description{
-Methods of checking whether various kinds of CRS objects are \code{NULL} or \code{NA}
+Methods of checking whether various kinds of CRS objects are \code{NULL} or \code{NA}.
+Logically equivalent to either \code{is.na(fm_crs(x))} or
+\code{is.na(fm_crs(x, oblique = NA))}, but with a short-cut pre-check for \code{is.null(x)}.
 }
 \section{Functions}{
 \itemize{

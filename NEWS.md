@@ -1,8 +1,12 @@
 # fmesher (development version)
 
-* Avoid floating point issue when testing on M1 that can lead to different meshes
-
-* Update `fm_mesh_2d` documentation and protect against invalid `tv` inputs
+* Various documentation improvements, in particular for INLA compatibility
+* Modify mesh refinement tests to directly check the refinement criteria
+  instead of the specific mesh result, to account for differences in
+  floating point behaviour on M1 processors.
+* Modify tests of non-mesh-generation features to use precomputed meshes
+  or meshes with stable properties
+* Protect against invalid `tv` inputs
 
 # fmesher 0.1.1
 

@@ -108,7 +108,7 @@ to be explicitly assigned a new value, use the `fm_crs(mesh) <- crs` assignment
 method.
 
 For mesh and curve creation, the `fm_rcdt_2d_inla()`, `fm_mesh_2d_inla()`, and
-`fm_nonconvex_hull_inla()` method will keep the interface syntax used by
+`fm_nonconvex_hull_inla()` methods will keep the interface syntax used by
 `inla.mesh.create()`, `inla.mesh.2d()`, and `inla.nonconvex.hull()` functions,
 respectively, whereas the `fm_rcdt_2d()`, `fm_mesh_2d()`, and
 `fm_nonconvex_hull()` interfaces may change in the future.

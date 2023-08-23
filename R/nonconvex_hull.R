@@ -155,6 +155,7 @@ fm_segm_contour_helper <- function(x = seq(0, 1, length.out = nrow(z)),
 #' object, for compatibility with `inla.nonconvex.hull()`.
 #' @export
 #' @family nonconvex inla legacy support
+#' @inheritSection fm_mesh_2d INLA compatibility
 #' @examplesIf require("splancs")
 #' fm_nonconvex_hull_inla(cbind(0, 0), convex = 1)
 #'
@@ -393,6 +394,7 @@ fm_nonconvex_hull_inla_basic <- function(x, convex = -0.15, resolution = 40,
 #' @references Gonzalez and Woods (1992), Digital Image Processing
 #' @seealso [fm_nonconvex_hull_inla()]
 #' @export
+#' @inheritSection fm_mesh_2d INLA compatibility
 #' @examples
 #' inp <- matrix(rnorm(20), 10, 2)
 #' out <- fm_nonconvex_hull(inp, convex = 1)

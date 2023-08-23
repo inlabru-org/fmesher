@@ -192,7 +192,7 @@ fm_simplify <- function(x, eps = NULL, eps_rel = NULL, ...) {
       loc = x$loc,
       idx = idx,
       grp = x$grp[seq_seg[1]],
-      is.bnd = x$is.bnd,
+      is.bnd = all(x$is.bnd),
       crs = fm_crs(x)
     )
   }
