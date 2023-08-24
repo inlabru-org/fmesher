@@ -1,4 +1,4 @@
-# fmesher (development version)
+# fmesher 0.1.2
 
 * Various documentation improvements, in particular for INLA compatibility
 * Modify mesh refinement tests to directly check the refinement criteria
