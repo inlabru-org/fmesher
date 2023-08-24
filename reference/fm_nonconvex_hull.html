@@ -147,12 +147,12 @@ give approximately 4 or more subsegments per circular quadrant.</p></dd>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Morphological dilation by <code>convex</code>, followed by closing by
 <code>concave</code>, with minimum concave curvature radius <code>concave</code>.  If
-the dilated set has no gaps of width between $$2 \text{convex} (\sqrt{1+2
-\text{concave}/\text{convex}} - 1)$$
-and \(2\text{concave}\), then the minimum convex curvature radius is
+the dilated set has no gaps of width between $$2 \textrm{convex} (\sqrt{1+2
+\textrm{concave}/\textrm{convex}} - 1)$$
+and \(2\textrm{concave}\), then the minimum convex curvature radius is
 <code>convex</code>.</p>
-<p>The implementation is based on the identity $$\text{dilation}(a) \&amp;
-\text{closing}(b) = \text{dilation}(a+b) \&amp; \text{erosion}(b)$$ where all operations
+<p>The implementation is based on the identity $$\textrm{dilation}(a) \&amp;
+\textrm{closing}(b) = \textrm{dilation}(a+b) \&amp; \textrm{erosion}(b)$$ where all operations
 are with respect to disks with the specified radii.</p>
 <p>When <code>convex</code>, <code>concave</code>, or <code>dTolerance</code> are negative,
 <code>fm_diameter * abs(...)</code> is used instead.</p>
