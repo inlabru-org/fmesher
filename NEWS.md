@@ -7,6 +7,9 @@
 * Modify tests of non-mesh-generation features to use precomputed meshes
   or meshes with stable properties
 * Protect against invalid `tv` inputs
+* Revert from `\text{}` to `\textrm{}`, as AMS extensions are only supported
+  from R 4.2.2 (https://www.stats.bris.ac.uk/R/doc/manuals/r-devel/R-exts.pdf
+  2023-08-24, page 90), and CRAN oldrel for macOS is 4.2.0, not 4.2.3
 
 # fmesher 0.1.1
 
