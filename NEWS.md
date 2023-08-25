@@ -1,3 +1,5 @@
+# fmesher (development version)
+
 # fmesher 0.1.2
 
 * Various documentation improvements, in particular for INLA compatibility
