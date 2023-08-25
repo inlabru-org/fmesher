@@ -39,8 +39,12 @@ fm_unify_coords.default <- function(x, crs = NULL) {
     }
   }
   if (ncol(x) < 3) {
-    while (ncol(x) < 3) {
-      x <- cbind(x, 0.0)
+    if (nrow(x) > 0) {
+      while (ncol(x) < 3) {
+        x <- cbind(x, 0.0)
+      }
+    } else {
+      x <- matrix(0.0, 0, 3)
     }
   } else if (ncol(x) > 3) {
     stop("Coordinates can have at most 3 columns.")
@@ -59,11 +63,15 @@ fm_unify_coords.Spatial <- function(x, crs = NULL) {
     passthrough = TRUE
   )
   if (ncol(x) < 3) {
-    while (ncol(x) < 3) {
-      x <- cbind(x, 0.0)
+    if (nrow(x) > 0) {
+      while (ncol(x) < 3) {
+        x <- cbind(x, 0.0)
+      }
+    } else {
+      x <- matrix(0.0, 0, 3)
     }
   } else if (ncol(x) > 3) {
-    stop("Coordinates can have at mots 3 columns.")
+    stop("Coordinates can have at most 3 columns.")
   }
   colnames(x) <- NULL
   x
@@ -91,8 +99,12 @@ fm_unify_coords.sfc <- function(x, crs = NULL) {
     passthrough = TRUE
   )
   if (ncol(x) < 3) {
-    while (ncol(x) < 3) {
-      x <- cbind(x, 0.0)
+    if (nrow(x) > 0) {
+      while (ncol(x) < 3) {
+        x <- cbind(x, 0.0)
+      }
+    } else {
+      x <- matrix(0.0, 0, 3)
     }
   } else if (ncol(x) > 3) {
     stop("Coordinates can have at most 3 columns.")
@@ -235,7 +247,8 @@ handle_rcdt_options_inla <- function(
 #' @description
 #' Computes a refined constrained Delaunay triangulation on R2 or S2.
 #'
-#' @param loc Input coordinates that should be part of the mesh
+#' @param loc Input coordinates that should be part of the mesh. Can be a matrix, `sf`, `sfc`, `SpatialPoints`,
+#' or other object supported by [fm_unify_coords()].
 #' @param tv Initial triangulation, as a N-by-3 indec vector into `loc`
 #' @param boundary,interior Objects supported by [fm_as_segm()].
 #' If `boundary` is `numeric`, `fm_nonconvex_hull(loc, convex = boundary)` is
@@ -284,6 +297,7 @@ fm_rcdt_2d <-
 
 #' @describeIn fm_rcdt_2d Legacy method for the `INLA::inla.mesh.create()`
 #' interface
+#' @inheritSection fm_mesh_2d INLA compatibility
 #' @export
 fm_rcdt_2d_inla <- function(loc = NULL,
                             tv = NULL,
@@ -413,6 +427,10 @@ fm_rcdt_2d_inla <- function(loc = NULL,
     loc.int <- interior$loc
   }
 
+  if (!is.null(tv)) {
+    stopifnot(all(as.vector(tv) >= 1L))
+    stopifnot(all(as.vector(tv) <= NROW(loc)))
+  }
   loc <- rbind(loc.bnd, loc.int, lattice$loc, loc)
 
   options <- handle_rcdt_options_inla(
@@ -580,6 +598,14 @@ fm_delaunay_2d <- function(loc, crs = NULL, ...) {
 #' @export
 #' @param ... Currently passed on to `fm_mesh_2d_inla`
 #' @family object creation and conversion
+#' @section INLA compatibility:
+#' For mesh and curve creation, the [fm_rcdt_2d_inla()], [fm_mesh_2d_inla()],
+#' and [fm_nonconvex_hull_inla()] methods will keep the interface syntax used by
+#' `INLA::inla.mesh.create()`, `INLA::inla.mesh.2d()`, and
+#' `INLA::inla.nonconvex.hull()` functions, respectively, whereas the
+#' [fm_rcdt_2d()], [fm_mesh_2d()], and [fm_nonconvex_hull()] interfaces may be
+#' different, and potentially change in the future.
+#'
 #' @examples
 #' fm_mesh_2d_inla(boundary = fm_extensions(cbind(2, 1), convex = 1, 2))
 #'
@@ -593,7 +619,7 @@ fm_mesh_2d <- function(...) {
 #' @export
 #'
 #' @param loc Matrix of point locations to be used as initial triangulation
-#' nodes.  Can alternatively be a `SpatialPoints` or
+#' nodes.  Can alternatively be a `sf`, `sfc`, `SpatialPoints` or
 #' `SpatialPointsDataFrame` object.
 #' @param loc.domain Matrix of point locations used to determine the domain
 #' extent.  Can alternatively be a `SpatialPoints` or
@@ -621,13 +647,13 @@ fm_mesh_2d <- function(...) {
 #' `max.edge` only (default=-1, meaning no limit).  One or two values,
 #' where the second value gives the number of additional vertices allowed for
 #' the extension.
-#' @param plot.delay On Linux (and Mac if appropriate X11 libraries are
-#' installed), specifying a nonnegative numeric value activates a rudimentary
-#' plotting system in the underlying `fmesher` program, showing the
-#' triangulation algorithm at work, with waiting time factor `plot.delay`
-#' between each step.
-#'
-#' On all systems, specifying any negative value activates displaying the
+# @param plot.delay On Linux (and Mac if appropriate X11 libraries are
+# installed), specifying a nonnegative numeric value activates a rudimentary
+# plotting system in the underlying `fmesher` program, showing the
+# triangulation algorithm at work, with waiting time factor `plot.delay`
+# between each step.
+#' @param plot.delay If logical `TRUE` or a negative numeric value,
+#' activates displaying the
 #' result after each step of the multi-step domain extension algorithm.
 #' @param crs An optional [fm_crs()], `sf::crs` or `sp::CRS` object
 #' @return An `inla.mesh` object.
@@ -651,8 +677,15 @@ fm_mesh_2d_inla <- function(loc = NULL, ## Points to include in final triangulat
   ## plot.delay: Do plotting.
   ## NULL --> No plotting
   ## <0  --> Intermediate meshes displayed at the end
-  ## >0   --> Dynamical fmesher plotting
-
+  ## TRUE  --> Intermediate meshes displayed at the end
+  ## >0   --> Dynamical fmesher X11 plotting is not avoailable in the R interface
+  if (is.null(plot.delay)) {
+    plot.intermediate <- FALSE
+  } else if (is.logical(plot.delay)) {
+    plot.intermediate <- plot.delay
+  } else {
+    plot.intermediate <- plot.delay < 0
+  }
 
   if ((missing(max.edge) || is.null(max.edge)) &&
     (missing(max.n.strict) || is.null(max.n.strict)) &&
@@ -710,9 +743,6 @@ fm_mesh_2d_inla <- function(loc = NULL, ## Points to include in final triangulat
   }
   if (missing(cutoff) || is.null(cutoff)) {
     cutoff <- 1e-12
-  }
-  if (missing(plot.delay) || is.null(plot.delay)) {
-    plot.delay <- NULL
   }
 
   num.layers <-
@@ -773,7 +803,6 @@ fm_mesh_2d_inla <- function(loc = NULL, ## Points to include in final triangulat
       cutoff = cutoff,
       extend = list(n = n[1], offset = offset[1]),
       refine = FALSE,
-      plot.delay = plot.delay,
       crs = crs
     )
 
@@ -781,7 +810,7 @@ fm_mesh_2d_inla <- function(loc = NULL, ## Points to include in final triangulat
   boundary1 <- fm_segm(mesh1, boundary = TRUE)
   interior1 <- fm_segm(mesh1, boundary = FALSE)
 
-  if (!is.null(plot.delay) && (plot.delay < 0)) {
+  if (plot.intermediate) {
     plot(mesh1)
   }
 
@@ -801,14 +830,13 @@ fm_mesh_2d_inla <- function(loc = NULL, ## Points to include in final triangulat
           max.n.strict = max.n.strict[1],
           max.n = max.n[1]
         ),
-      plot.delay = plot.delay,
       crs = crs
     )
 
   boundary2 <- fm_segm(mesh2, boundary = TRUE)
   interior2 <- fm_segm(mesh2, boundary = FALSE)
 
-  if (!is.null(plot.delay) && (plot.delay < 0)) {
+  if (plot.intermediate) {
     plot(mesh2)
   }
 
@@ -836,7 +864,6 @@ fm_mesh_2d_inla <- function(loc = NULL, ## Points to include in final triangulat
           max.n.strict = mesh2$n + max.n.strict[2],
           max.n = mesh2$n + max.n[2]
         ),
-      plot.delay = plot.delay,
       crs = crs
     )
 
@@ -876,7 +903,7 @@ fm_mesh_2d_inla <- function(loc = NULL, ## Points to include in final triangulat
     mesh3$crs <- crs.target
   }
 
-  if (!is.null(plot.delay) && (plot.delay < 0)) {
+  if (plot.intermediate) {
     plot(mesh3)
   }
 

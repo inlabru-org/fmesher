@@ -11,7 +11,8 @@ CC = gcc
 CXX = g++
 FC = gfortran
 FCEXTRAFLAGS = -fno-second-underscore
-FLAGS= -O3 -mfpmath=sse -msse2 -funroll-loops -ftracer -pipe -Wall -Wextra \
+# FLAGS= -mfpmath=sse -msse2
+FLAGS= -O3 -funroll-loops -ftracer -pipe -Wall -Wextra \
   -Wsign-compare -Wundef -Wimplicit-fallthrough -fdiagnostics-color -Wshadow=compatible-local
 LD = $(CXX)
 INSTALL = install
@@ -84,7 +85,7 @@ INCL    = -I$(PREFIX)/include
 LDFLAGSXX = $(FLAGS) $(OS_LDFLAGS)
 FFLAGS  = $(FLAGS) $(FCEXTRAFLAGS) $(INCL)
 CFLAGS  = -std=gnu99 $(FLAGS) $(OS_FLAGS) $(INCL) -I$(LEXTPREFIX)/include -DCMDLINE_VERSION="\"${GITCOMMIT}\""
-CXXFLAGS  = -std=c++14 $(FLAGS) $(OS_FLAGS) $(INCL) -I$(LEXTPREFIX)/include -DCMDLINE_VERSION="\"${GITCOMMIT}\""
+CXXFLAGS  = -std=c++17 $(FLAGS) $(OS_FLAGS) $(INCL) -I$(LEXTPREFIX)/include -DCMDLINE_VERSION="\"${GITCOMMIT}\""
 
 FMESHER = fmesher
 FMESHER_TEST = fmesher_test
@@ -133,9 +134,9 @@ $(CMDLINE_CH) : cmdline.ggo
 	$(GENGETOPT) --file-name=cmdline --conf-parser --unamed-opts=PREFIX \
 		--long-help --func-name=cmdline < cmdline.ggo
 
-tags :; etags --output=TAGS *.c *.h *.cc *.h *.tcc
+tags :; etags --output=TAGS *.c *.h *.cc
 
-clean:; -$(RM) $(OBJ) $(FMESHER).o $(FMESHER_TEST).o $(FMESHER_TEST2).o $(FMESHER) $(FMESHER_TEST) $(FMESHER_TEST2) $(CMDLINE_CH) Rcpp*.o *.so
+clean:; -$(RM) $(OBJ) $(FMESHER).o $(FMESHER_TEST).o $(FMESHER_TEST2).o $(FMESHER) $(FMESHER_TEST) $(FMESHER_TEST2) $(CMDLINE_CH) Rcpp*.o *.so *.o
 clean-deps:
 	-$(RMR) $(dir $(DEPDIR))
 
@@ -143,7 +144,7 @@ depend: $(dir $(DEPDIR))dependencies.d
 $(dir $(DEPDIR))dependencies.d: Makefile $(DEPDIR) $(wildcard *.c) $(wildcard *.cc) $(wildcard *.h)
 	-$(RM) $(dir $(DEPDIR))dependencies.d
 	touch $(dir $(DEPDIR))dependencies.d
-	for file in *.c *.h *.cc *.h *.tcc ; do \
+	for file in *.c *.h *.cc ; do \
 	  if [ -n "`grep CMDLINE_VERSION $$file`" ]; then \
 	    echo $$file | \
 	      $(SED) 's/\(.*\)\(\.[hc]\)$$/\1\.o: gitstamp/' \

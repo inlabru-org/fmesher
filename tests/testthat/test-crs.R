@@ -1,4 +1,4 @@
-test_that("Basic CRS predefinitions", {
+test_that("CRS/WKT predefinitions", {
   expect_warning(
     {
       crs <- fm_CRS("longlat")
@@ -12,4 +12,24 @@ test_that("Basic CRS predefinitions", {
 
   crs <- fm_crs("longlat_globe")
   expect_s3_class(crs, "crs")
+})
+
+
+test_that("crs object creation", {
+  crs <- fm_crs("+proj=longlat +R=1 +no_defs")
+  expect_s3_class(crs, "crs")
+
+  crs <- fm_crs(NA_character_)
+  expect_s3_class(crs, "crs")
+})
+
+test_that("fm_crs object creation", {
+  crs <- fm_crs("+proj=longlat +R=1 +no_defs", oblique = 1:4)
+  expect_s3_class(crs, "fm_crs")
+
+  crs <- fm_crs(NA_character_, oblique = 1:2)
+  expect_s3_class(crs, "fm_crs")
+
+  crs <- fm_crs("globe", oblique = 1:4)
+  expect_s3_class(crs, "fm_crs")
 })

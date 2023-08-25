@@ -2,8 +2,6 @@
 % Please edit documentation in R/crs.R
 \name{fm_crs}
 \alias{fm_crs}
-\alias{is.na.fm_crs}
-\alias{fm_crs_is_null}
 \alias{fm_crs_oblique}
 \alias{st_crs.fm_crs}
 \alias{$.fm_crs}
@@ -32,10 +30,6 @@
 \title{Obtain coordinate reference system object}
 \usage{
 fm_crs(x, oblique = NULL, ..., crsonly = deprecated())
-
-\method{is.na}{fm_crs}(x)
-
-fm_crs_is_null(x, crsonly = FALSE)
 
 fm_crs_oblique(x)
 
@@ -157,9 +151,6 @@ projection is only correct for perfect spheres.
 }}
 \section{Methods (by generic)}{
 \itemize{
-\item \code{is.na(fm_crs)}: Check if a \code{fm_crs} has \code{NA} crs information and \code{NA}
-obliqueness
-
 \item \code{st_crs(fm_crs)}: \code{st_crs(x, ...)} is equivalent to
 \verb{fm_crs(x, ... oblique = NA)}
 when \code{x} is a \code{fm_crs} object.
@@ -171,11 +162,6 @@ If \code{name} is "oblique", the internal oblique angle parameter vector is retu
 }}
 \section{Functions}{
 \itemize{
-\item \code{fm_crs_is_null()}: Check if an object is or has \code{NULL} or \code{NA} CRS information.
-If not \code{NULL}, \code{is.na(fm_crs(x))} is returned. This allows the input to be e.g.
-a proj4string or epsg number, since the default \code{\link[=fm_crs]{fm_crs()}} method passes
-its argument on to \code{sf::st_crs()}.
-
 \item \code{fm_crs_oblique()}: Return \code{NA} for object with no oblique information,
 and otherwise a length 4 numeric vector.
 
@@ -193,6 +179,8 @@ names(fm_wkt_predef())
 }
 \seealso{
 \code{\link[sf:st_crs]{sf::st_crs()}}, \code{\link{fm_crs_wkt}}
+
+fm_crs_is_null
 
 \code{\link[=fm_crs<-]{fm_crs<-()}}, \code{\link[=fm_crs_oblique<-]{fm_crs_oblique<-()}}
 }

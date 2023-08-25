@@ -40,7 +40,7 @@ fm_segm.default <- function(loc = NULL, idx = NULL, grp = NULL, is.bnd = TRUE,
   if (!is.null(loc)) {
     loc <- fm_unify_coords(loc)
     if (is.null(idx)) {
-      idx <- if (is.bnd) {
+      idx <- if (all(is.bnd)) {
         c(seq_len(NROW(loc)), 1)
       } else {
         seq_len(NROW(loc))
@@ -122,8 +122,19 @@ fm_segm.default <- function(loc = NULL, idx = NULL, grp = NULL, is.bnd = TRUE,
     )
   }
 
-  ret <- list(loc = loc, idx = idx, grp = grp, is.bnd = is.bnd, crs = crs)
-  class(ret) <- c("fm_segm", "inla.mesh.segment")
+  if (length(is.bnd) == 1L) {
+    is.bnd <- rep(is.bnd, nrow(idx))
+  } else {
+    if (any(is.bnd) && any(!is.bnd)) {
+      warning("Mixed is.bnd status within a single fm_segm is not yet supported, replacing with FALSE.")
+    }
+    is.bnd <- rep(FALSE, nrow(idx))
+  }
+
+  ret <- structure(
+    list(loc = loc, idx = idx, grp = grp, is.bnd = is.bnd, crs = crs),
+    class = c("fm_segm", "inla.mesh.segment")
+  )
   return(ret)
 }
 
@@ -208,9 +219,11 @@ fm_segm_join <- function(x, grp = NULL, grp.default = 0L, is.bnd = NULL) {
     }
   ))
   if (is.null(is.bnd)) {
-    is.bnd <- vapply(segm, function(x) fm_is_bnd(x), TRUE)
-    if (all(is.bnd) || all(!is.bnd)) {
-      is.bnd <- all(is.bnd)
+    is.bnd <- vapply(segm, function(x) all(fm_is_bnd(x)), TRUE)
+    not.is.bnd <- vapply(segm, function(x) all(!fm_is_bnd(x)), TRUE)
+    if ((all(is.bnd) && all(!not.is.bnd)) ||
+      (all(!is.bnd) && all(not.is.bnd))) {
+      is.bnd <- all(is.bnd) && all(!not.is.bnd)
     } else {
       warning("Inconsistent 'is.bnd' attributes.  Setting 'is.bnd=FALSE'.")
       is.bnd <- FALSE

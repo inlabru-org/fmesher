@@ -1,7 +1,7 @@
 Package: fmesher
 Type: Package
 Title: Triangle Meshes and Related Geometry Tools
-Version: 0.1.1
+Version: 0.1.2
 Authors@R: c(
   person("Finn", "Lindgren", email = "finn.lindgren@gmail.com",
          role = c("aut", "cre", "cph"),
@@ -11,7 +11,7 @@ Authors@R: c(
          role = c("ctb"),
          comment = "Andy Seaton constributed features to the sf support"),
   person("Suen", "Man Ho", email = "M.H.Suen@sms.ed.ac.uk", role = c("ctb"),
-         comment = "Man Ho Suen contributed features for the integration methods"),
+         comment = "Man Ho Suen contributed features and code structure design for the integration methods"),
   person("Fabian E.", "Bachl", email = "bachlfab@gmail.com",
          role = c("ctb"),
          comment = "Fabian Bachl co-developed precursors of fm_pixels and fm_split_lines in inlabru")
@@ -33,7 +33,6 @@ Imports:
     grDevices,
     lifecycle,
     Matrix,
-    R.methodsS3,
     rlang,
     sf,
     sp (>= 1.4-5),
@@ -57,9 +56,7 @@ Suggests:
 URL: https://inlabru-org.github.io/fmesher/, https://github.com/inlabru-org/fmesher
 BugReports: https://github.com/inlabru-org/fmesher/issues
 License: MPL-2.0
-Copyright: The R package and C++ code were written
-    by and are Copyright by Finn Lindgren, and are redistributable under the
-    Mozilla Public License version 2.0.
+Copyright: 2010-2023 Finn Lindgren, except src/predicates.cc by Jonathan Richard Shewchuk, 1996
 NeedsCompilation: yes
 RoxygenNote: 7.2.3
 Encoding: UTF-8

@@ -18,11 +18,9 @@
 #' @param ... Arguments passed on to the geom method.
 #' @returns A combination of `ggplot2` geoms.
 #'
-#' @examples
-#' if (require("ggplot2", quietly = TRUE)) {
-#'   ggplot() +
-#'     geom_fm(data = fmexample$mesh)
-#' }
+#' @examplesIf require("ggplot2", quietly = TRUE)
+#' ggplot() +
+#'   geom_fm(data = fmexample$mesh)
 #'
 geom_fm <- function(mapping = NULL, data = NULL, ...) {
   UseMethod("geom_fm", data)
@@ -41,37 +39,33 @@ geom_fm <- function(mapping = NULL, data = NULL, ...) {
 #' @param defs_bnd additional settings for boundary edges.
 #' @param crs Optional crs to transform the object to before plotting.
 #' @importFrom utils modifyList
-#' @examples
-#' if (require("ggplot2", quietly = TRUE)) {
-#'   m <- fm_mesh_2d(
-#'     cbind(10, 20),
-#'     boundary = fm_extensions(cbind(10, 20), c(25, 65)),
-#'     max.edge = c(2, 5),
-#'     crs = fm_crs("+proj=longlat")
-#'   )
-#'   print(ggplot() +
-#'     geom_fm(data = m))
-#'   print(ggplot() +
-#'     geom_fm(data = m, crs = fm_crs("epsg:27700")))
-#' }
+#' @examplesIf require("ggplot2", quietly = TRUE)
+#' m <- fm_mesh_2d(
+#'   cbind(10, 20),
+#'   boundary = fm_extensions(cbind(10, 20), c(25, 65)),
+#'   max.edge = c(2, 5),
+#'   crs = fm_crs("+proj=longlat")
+#' )
+#' ggplot() +
+#'   geom_fm(data = m)
+#' ggplot() +
+#'   geom_fm(data = m, crs = fm_crs("epsg:27700"))
 #' \donttest{
-#' if (require("ggplot2", quietly = TRUE)) {
-#'   # Compute a mesh vertex based function on a different grid
-#'   px <- fm_pixels(fm_transform(m, fm_crs("mollweide_globe")))
-#'   px$fun <- fm_evaluate(m,
-#'     loc = px,
-#'     field = sin(m$loc[, 1] / 5) * sin(m$loc[, 2] / 5)
+#' # Compute a mesh vertex based function on a different grid
+#' px <- fm_pixels(fm_transform(m, fm_crs("mollweide_globe")))
+#' px$fun <- fm_evaluate(m,
+#'   loc = px,
+#'   field = sin(m$loc[, 1] / 5) * sin(m$loc[, 2] / 5)
+#' )
+#' ggplot() +
+#'   geom_tile(aes(geometry = geometry, fill = fun),
+#'     data = px,
+#'     stat = "sf_coordinates"
+#'   ) +
+#'   geom_fm(
+#'     data = m, alpha = 0.2, linewidth = 0.05,
+#'     crs = fm_crs("mollweide_globe")
 #'   )
-#'   print(ggplot() +
-#'     geom_tile(aes(geometry = geometry, fill = fun),
-#'       data = px,
-#'       stat = "sf_coordinates"
-#'     ) +
-#'     geom_fm(
-#'       data = m, alpha = 0.2, linewidth = 0.05,
-#'       crs = fm_crs("mollweide_globe")
-#'     ))
-#' }
 #' }
 geom_fm.fm_mesh_2d <- function(mapping = NULL,
                                data = NULL,
@@ -158,12 +152,10 @@ geom_fm.fm_mesh_2d <- function(mapping = NULL,
 #' Converts an [fm_segm()] object to `sf` with [fm_as_sfc()] and uses
 #' `geom_sf` to visualize it.
 #' @export
-#' @examples
-#' if (require("ggplot2", quietly = TRUE)) {
-#'   m <- fm_mesh_1d(c(1, 2, 4, 6, 10), boundary = c("n", "d"), degree = 2)
-#'   ggplot() +
-#'     geom_fm(data = m, weights = c(4, 2, 4, -1))
-#' }
+#' @examplesIf require("ggplot2", quietly = TRUE)
+#' m <- fm_mesh_1d(c(1, 2, 4, 6, 10), boundary = c("n", "d"), degree = 2)
+#' ggplot() +
+#'   geom_fm(data = m, weights = c(4, 2, 4, -1))
 #'
 geom_fm.fm_segm <- function(mapping = NULL,
                             data = NULL,
@@ -236,16 +228,15 @@ geom_fm.fm_segm <- function(mapping = NULL,
 #' the resulting weighted sum.
 #' @export
 #' @importFrom utils modifyList
-#' @examples
-#' if (require("ggplot2", quietly = TRUE)) {
-#'   m <- fm_mesh_1d(
-#'     c(1, 2, 3, 5, 7),
-#'     boundary = c("dirichlet", "neumann"),
-#'     degree = 2
-#'   )
-#'   print(ggplot() +
-#'     geom_fm(data = m))
-#' }
+#' @examplesIf require("ggplot2", quietly = TRUE)
+#' m <- fm_mesh_1d(
+#'   c(1, 2, 3, 5, 7),
+#'   boundary = c("dirichlet", "neumann"),
+#'   degree = 2
+#' )
+#' ggplot() +
+#'   geom_fm(data = m)
+#'
 geom_fm.fm_mesh_1d <- function(mapping = NULL,
                                data = NULL,
                                ...,

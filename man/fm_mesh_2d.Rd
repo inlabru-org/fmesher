@@ -28,7 +28,7 @@ fm_mesh_2d_inla(
 \item{...}{Currently passed on to \code{fm_mesh_2d_inla}}
 
 \item{loc}{Matrix of point locations to be used as initial triangulation
-nodes.  Can alternatively be a \code{SpatialPoints} or
+nodes.  Can alternatively be a \code{sf}, \code{sfc}, \code{SpatialPoints} or
 \code{SpatialPointsDataFrame} object.}
 
 \item{loc.domain}{Matrix of point locations used to determine the domain
@@ -67,13 +67,8 @@ allowed for the extension.}
 where the second value gives the number of additional vertices allowed for
 the extension.}
 
-\item{plot.delay}{On Linux (and Mac if appropriate X11 libraries are
-installed), specifying a nonnegative numeric value activates a rudimentary
-plotting system in the underlying \code{fmesher} program, showing the
-triangulation algorithm at work, with waiting time factor \code{plot.delay}
-between each step.
-
-On all systems, specifying any negative value activates displaying the
+\item{plot.delay}{If logical \code{TRUE} or a negative numeric value,
+activates displaying the
 result after each step of the multi-step domain extension algorithm.}
 
 \item{crs}{An optional \code{\link[=fm_crs]{fm_crs()}}, \code{sf::crs} or \code{sp::CRS} object}
@@ -91,6 +86,16 @@ Create a triangle mesh based on initial point locations, specified or
 automatic boundaries, and mesh quality parameters.
 
 }}
+\section{INLA compatibility}{
+
+For mesh and curve creation, the \code{\link[=fm_rcdt_2d_inla]{fm_rcdt_2d_inla()}}, \code{\link[=fm_mesh_2d_inla]{fm_mesh_2d_inla()}},
+and \code{\link[=fm_nonconvex_hull_inla]{fm_nonconvex_hull_inla()}} methods will keep the interface syntax used by
+\code{INLA::inla.mesh.create()}, \code{INLA::inla.mesh.2d()}, and
+\code{INLA::inla.nonconvex.hull()} functions, respectively, whereas the
+\code{\link[=fm_rcdt_2d]{fm_rcdt_2d()}}, \code{\link[=fm_mesh_2d]{fm_mesh_2d()}}, and \code{\link[=fm_nonconvex_hull]{fm_nonconvex_hull()}} interfaces may be
+different, and potentially change in the future.
+}
+
 \examples{
 fm_mesh_2d_inla(boundary = fm_extensions(cbind(2, 1), convex = 1, 2))
 

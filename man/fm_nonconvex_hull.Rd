@@ -64,13 +64,13 @@ by closing (dilation + erosion) by \code{concave}.
 \details{
 Morphological dilation by \code{convex}, followed by closing by
 \code{concave}, with minimum concave curvature radius \code{concave}.  If
-the dilated set has no gaps of width between \deqn{2 \text{convex} (\sqrt{1+2
-\text{concave}/\text{convex}} - 1)}{2*convex*(sqrt(1+2*concave/convex) - 1)}
-and \eqn{2\text{concave}}{2*concave}, then the minimum convex curvature radius is
+the dilated set has no gaps of width between \deqn{2 \textrm{convex} (\sqrt{1+2
+\textrm{concave}/\textrm{convex}} - 1)}{2*convex*(sqrt(1+2*concave/convex) - 1)}
+and \eqn{2\textrm{concave}}{2*concave}, then the minimum convex curvature radius is
 \code{convex}.
 
-The implementation is based on the identity \deqn{\text{dilation}(a) \&
-\text{closing}(b) = \text{dilation}(a+b) \& \text{erosion}(b)}{
+The implementation is based on the identity \deqn{\textrm{dilation}(a) \&
+\textrm{closing}(b) = \textrm{dilation}(a+b) \& \textrm{erosion}(b)}{
 dilation(a) & closing(b) = dilation(a+b) & erosion(b)} where all operations
 are with respect to disks with the specified radii.
 
@@ -91,6 +91,16 @@ erosion by \code{concave}. This is equivalent to dilation by \code{convex} follo
 by closing (dilation + erosion) by \code{concave}.
 
 }}
+\section{INLA compatibility}{
+
+For mesh and curve creation, the \code{\link[=fm_rcdt_2d_inla]{fm_rcdt_2d_inla()}}, \code{\link[=fm_mesh_2d_inla]{fm_mesh_2d_inla()}},
+and \code{\link[=fm_nonconvex_hull_inla]{fm_nonconvex_hull_inla()}} methods will keep the interface syntax used by
+\code{INLA::inla.mesh.create()}, \code{INLA::inla.mesh.2d()}, and
+\code{INLA::inla.nonconvex.hull()} functions, respectively, whereas the
+\code{\link[=fm_rcdt_2d]{fm_rcdt_2d()}}, \code{\link[=fm_mesh_2d]{fm_mesh_2d()}}, and \code{\link[=fm_nonconvex_hull]{fm_nonconvex_hull()}} interfaces may be
+different, and potentially change in the future.
+}
+
 \examples{
 inp <- matrix(rnorm(20), 10, 2)
 out <- fm_nonconvex_hull(inp, convex = 1)
