@@ -1,3 +1,6 @@
+This is a bugfix release due to errors on CRAN testing for macos and M1,
+and a missing Rd feature for < 4.2.3.
+
 ## Changes from 0.1.1 to 0.1.2 (requested submission)
 
 * Various documentation improvements, in particular for INLA compatibility
