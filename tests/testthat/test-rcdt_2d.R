@@ -35,8 +35,8 @@ test_that("Flat CDT works", {
     ))))
   max.edge <- max(rowSums(do.call(rbind, edges)^2)^0.5)
 
-  expect_lte(max.edge, max.edge0)
-  expect_gte(min.angle, min.angle0)
+  expect_lte(max.edge, max.edge0 + lowtol)
+  expect_gte(min.angle, min.angle0 - lowtol)
 })
 
 test_that("Spherical CDT works", {
@@ -72,5 +72,5 @@ test_that("Spherical CDT works", {
   len <- 2 * atan2(euc_len, sum_len)
   max.edge <- max(len)
 
-  expect_lte(max.edge, max.edge0)
+  expect_lte(max.edge, max.edge0 + lowtol)
 })

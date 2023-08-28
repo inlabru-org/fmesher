@@ -155,6 +155,7 @@ fm_segm_contour_helper <- function(x = seq(0, 1, length.out = nrow(z)),
 #' object, for compatibility with `inla.nonconvex.hull()`.
 #' @export
 #' @family nonconvex inla legacy support
+#' @inheritSection fm_mesh_2d INLA compatibility
 #' @examplesIf require("splancs")
 #' fm_nonconvex_hull_inla(cbind(0, 0), convex = 1)
 #'
@@ -366,13 +367,13 @@ fm_nonconvex_hull_inla_basic <- function(x, convex = -0.15, resolution = 40,
 #' @details
 #' Morphological dilation by `convex`, followed by closing by
 #' `concave`, with minimum concave curvature radius `concave`.  If
-#' the dilated set has no gaps of width between \deqn{2 \text{convex} (\sqrt{1+2
-#' \text{concave}/\text{convex}} - 1)}{2*convex*(sqrt(1+2*concave/convex) - 1)}
-#' and \eqn{2\text{concave}}{2*concave}, then the minimum convex curvature radius is
+#' the dilated set has no gaps of width between \deqn{2 \textrm{convex} (\sqrt{1+2
+#' \textrm{concave}/\textrm{convex}} - 1)}{2*convex*(sqrt(1+2*concave/convex) - 1)}
+#' and \eqn{2\textrm{concave}}{2*concave}, then the minimum convex curvature radius is
 #' `convex`.
 #'
-#' The implementation is based on the identity \deqn{\text{dilation}(a) \&
-#' \text{closing}(b) = \text{dilation}(a+b) \& \text{erosion}(b)}{
+#' The implementation is based on the identity \deqn{\textrm{dilation}(a) \&
+#' \textrm{closing}(b) = \textrm{dilation}(a+b) \& \textrm{erosion}(b)}{
 #' dilation(a) & closing(b) = dilation(a+b) & erosion(b)} where all operations
 #' are with respect to disks with the specified radii.
 #'
@@ -393,6 +394,7 @@ fm_nonconvex_hull_inla_basic <- function(x, convex = -0.15, resolution = 40,
 #' @references Gonzalez and Woods (1992), Digital Image Processing
 #' @seealso [fm_nonconvex_hull_inla()]
 #' @export
+#' @inheritSection fm_mesh_2d INLA compatibility
 #' @examples
 #' inp <- matrix(rnorm(20), 10, 2)
 #' out <- fm_nonconvex_hull(inp, convex = 1)

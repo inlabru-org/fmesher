@@ -29,7 +29,8 @@ fm_delaunay_2d(loc, crs = NULL, ...)
 \item{...}{Currently passed on to \code{fm_mesh_2d_inla} or converted to
 \code{\link[=fmesher_rcdt]{fmesher_rcdt()}} options.}
 
-\item{loc}{Input coordinates that should be part of the mesh}
+\item{loc}{Input coordinates that should be part of the mesh. Can be a matrix, \code{sf}, \code{sfc}, \code{SpatialPoints},
+or other object supported by \code{\link[=fm_unify_coords]{fm_unify_coords()}}.}
 
 \item{tv}{Initial triangulation, as a N-by-3 indec vector into \code{loc}}
 
@@ -86,6 +87,16 @@ interface
 \item \code{fm_delaunay_2d()}: Construct a plain Delaunay triangulation.
 
 }}
+\section{INLA compatibility}{
+
+For mesh and curve creation, the \code{\link[=fm_rcdt_2d_inla]{fm_rcdt_2d_inla()}}, \code{\link[=fm_mesh_2d_inla]{fm_mesh_2d_inla()}},
+and \code{\link[=fm_nonconvex_hull_inla]{fm_nonconvex_hull_inla()}} methods will keep the interface syntax used by
+\code{INLA::inla.mesh.create()}, \code{INLA::inla.mesh.2d()}, and
+\code{INLA::inla.nonconvex.hull()} functions, respectively, whereas the
+\code{\link[=fm_rcdt_2d]{fm_rcdt_2d()}}, \code{\link[=fm_mesh_2d]{fm_mesh_2d()}}, and \code{\link[=fm_nonconvex_hull]{fm_nonconvex_hull()}} interfaces may be
+different, and potentially change in the future.
+}
+
 \examples{
 (m <- fm_rcdt_2d_inla(
   boundary = fm_nonconvex_hull(cbind(0, 0), convex = 5)

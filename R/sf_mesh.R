@@ -84,7 +84,7 @@ fm_as_sfc.inla.mesh.segment <- function(x, ..., multi = FALSE) {
 fm_as_sfc.fm_segm <- function(x, ..., multi = FALSE) {
   stopifnot(inherits(x, "fm_segm"))
 
-  if (x$is.bnd) {
+  if (all(fm_is_bnd(x))) {
     warning("fm_as_sfc currently only supports (multi)linestring output")
   }
 
@@ -288,7 +288,7 @@ fm_as_segm.sfc_POINT <-
     loc <- unname(loc[, coord_names, drop = FALSE])
 
     n <- dim(loc)[1L]
-    if (is.bnd) {
+    if (all(is.bnd)) {
       idx <- c(seq_len(n), 1L)
     } else {
       idx <- seq_len(n)
@@ -300,7 +300,7 @@ fm_as_segm.sfc_POINT <-
       }
     }
     fm_segm(
-      loc = loc, idx = idx, grp = grp, is.bnd = is.bnd,
+      loc = loc, idx = idx, grp = grp, is.bnd = all(is.bnd),
       crs = crs
     )
   }

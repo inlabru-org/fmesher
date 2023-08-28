@@ -605,7 +605,9 @@ fm_crs <- function(x, oblique = NULL, ..., crsonly = deprecated()) {
 #' @title Check if a crs is NULL or NA
 #'
 #' @description
-#' Methods of checking whether various kinds of CRS objects are `NULL` or `NA`
+#' Methods of checking whether various kinds of CRS objects are `NULL` or `NA`.
+#' Logically equivalent to either `is.na(fm_crs(x))` or
+#' `is.na(fm_crs(x, oblique = NA))`, but with a short-cut pre-check for `is.null(x)`.
 #'
 #' @describeIn fm_crs_is_null Check if an object is or has `NULL` or `NA` CRS information.
 #' If not `NULL`, `is.na(fm_crs(x))` is returned. This allows the input to be e.g.

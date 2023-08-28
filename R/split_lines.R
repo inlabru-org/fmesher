@@ -52,7 +52,7 @@ fm_split_lines.fm_mesh_2d <- function(mesh, segm, ...) {
       loc = segm$loc,
       idx = segm$idx[keep, , drop = FALSE],
       grp = segm$grp[keep],
-      is.bnd = segm$is.bnd,
+      is.bnd = all(segm$is.bnd),
       crs = fm_crs(segm)
     )
     origin <- origin[keep]
@@ -83,7 +83,7 @@ fm_split_lines.fm_mesh_2d <- function(mesh, segm, ...) {
     loc = splt$split.loc,
     idx = splt$split.idx,
     grp = segm$grp[splt$split.origin],
-    is.bnd = segm$is.bnd,
+    is.bnd = all(segm$is.bnd),
     crs = fm_crs(segm)
   )
   origin <- origin[splt$split.origin]
@@ -100,7 +100,7 @@ fm_split_lines.fm_mesh_2d <- function(mesh, segm, ...) {
     loc = segm.split$loc,
     idx = segm.split$idx[keep, , drop = FALSE],
     grp = segm.split$grp[keep],
-    is.bnd = segm.split$is.bnd,
+    is.bnd = all(segm.split$is.bnd),
     crs = fm_crs(segm)
   )
   segm.split$origin <- origin[keep]
