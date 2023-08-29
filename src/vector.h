@@ -241,7 +241,7 @@ public:
   };
   double length() const;
   selfT &cross(const selfT &s0, const selfT &s1) {
-    if ((this == &s0) || (this == &s0)) {
+    if ((this == &s0) || (this == &s0)) {//I think there might be a typo here, should one of the s0 be s1?
       T s_0 = s0.s[1] * s1.s[2] - s0.s[2] * s1.s[1];
       T s_1 = s0.s[2] * s1.s[0] - s0.s[0] * s1.s[2];
       T s_2 = s0.s[0] * s1.s[1] - s0.s[1] * s1.s[0];

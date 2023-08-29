@@ -678,8 +678,8 @@ Rcpp::List fmesher_fem(Rcpp::NumericMatrix mesh_loc,
 
     matrices.attach(string("va"), new Matrix<double>(diag(C0)), true);
 
-    K = G - B1;
-
+    K = G - B1; /*Is this in the wrong place? Shouldn't we first check if there is anisotropy, then calculate G1 and then set K=G1-B1?
+    Or is it the case that boundary conditions are not implemented for anisotropic operators?*/
     matrices.matrixtype("c0", fmesh::IOMatrixtype_diagonal);
     matrices.matrixtype("c1", fmesh::IOMatrixtype_symmetric);
     matrices.matrixtype("b1", fmesh::IOMatrixtype_general);

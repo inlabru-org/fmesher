@@ -295,6 +295,8 @@ public:
                    Matrix<double> &Tareas) const;
   void calcQblocksAni(SparseMatrix<double> &G1, const Matrix<double> &gamma,
                       const Matrix<double> &vec) const;
+  void calcGaniso(SparseMatrix<double> &GH,
+                      const Matrix<double> &vec) const;
   void calcGradientMatrices(SparseMatrix<double> **D) const;
 
   // No need for IOHeader and IOHelper classes when using Rcpp
