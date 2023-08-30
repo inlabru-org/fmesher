@@ -2463,14 +2463,52 @@ void Mesh::calcQblocksAni(SparseMatrix<double> &G1, const Matrix<double> &gamma,
   }
 }
 
-//This functions calculates the FEM matrix G_{H} corresponding to the second order operator \nabla\cdot H\nabla
+//This function calculates the C  matrix for the mesh
+void Mesh::calcCaniso(SparseMatrix<double> &C0, SparseMatrix<double> &Ckappa,
+                       const Matrix<double> &kappa,
+                       Matrix<double> &Tareas) const {
+  C0.clear().rows(nV()).cols(nV());
+  Ckappa.clear().rows(nV()).cols(nV());
+  Tareas.clear().cols(1).rows(nT());
+  Point e[3];
+  bool isKappaPointwise = kappa.rows() == nV();/* Boolean to check if vec is defined pointwise or trianglewise.
+     If vec is defined pointwise takes average and assigns to t_vec*/
+  for (int t = 0; t < (int)nT(); t++) {
+    const Int3Raw &tv = TV_[t].raw(); // Define triangle vertices mapping
+    const Point &s0 = S_[tv[0]]; // Assign vertices of triangle
+    const Point &s1 = S_[tv[1]];
+    const Point &s2 = S_[tv[2]];
+    e[0].diff(s2, s1); // Assign edges of triangle
+    e[1].diff(s0, s2);
+    e[2].diff(s1, s0);
+    double t_kappa;
+    if (isKappaPointwise) {
+      t_kappa = (kappa[tv[0]][0] + kappa[tv[1]][0] + kappa[tv[2]][0]) / 3.0;
+    } else {
+      t_kappa = kappa[t][0]; // rename kappa to t_kappa
+    }
+
+    double a = triangleArea(t);
+    Tareas(t, 0) = a;
+
+        for (int i = 0; i < 3; i++) {
+            C0(tv[i], tv[i]) += t_kappa * a / 3.0;
+            Ckappa(tv[i], tv[i]) += t_kappa * a / 6.0;
+            for (int j = i + 1; j < 3; j++) {
+                Ckappa(tv[i], tv[j]) += a / 12.0;
+                Ckappa(tv[j], tv[i]) += a / 12.0;
+            }
+        }
+    }
+}
+
+// This functions calculates the FEM matrix G_{H} corresponding to the second order operator \nabla\cdot H\nabla
 void Mesh::calcGaniso(SparseMatrix<double> &GH, const Matrix<double> &vec) const {
   GH.clear().rows(nV()).cols(nV());
   Matrix<double> Tareas;
   Tareas.clear().cols(1).rows(nT());
   Matrix3double vec_(vec);
   Point e[3];
-  double t_gamma;
   Point t_vec;
   for (int t = 0; t < (int)nT(); t++) {
     const Int3Raw &tv = TV_[t].raw();
@@ -2480,12 +2518,13 @@ void Mesh::calcGaniso(SparseMatrix<double> &GH, const Matrix<double> &vec) const
     e[0].diff(s2, s1);
     e[1].diff(s0, s2);
     e[2].diff(s1, s0);
-    // If vec is defined pointwise takes average and assigns to t_vec
-    if (vec.rows() == nV()) {
-      t_vec.sum(vec_(tv[0]),vec_(tv[1])).accum(vec_(tv[2]),1.0);
+    bool isVecPointwise = vec.rows() == nV();/* Boolean to check if vec is defined pointwise or trianglewise.
+     If vec is defined pointwise takes average and assigns to t_vec*/
+    if (isVecPointwise) {
+      t_vec.sum(vec_(tv[0]), vec_(tv[1])).accum(vec_(tv[2]), 1.0);
       t_vec.rescale(1.0/3.0);
-    } else {//rename vec_ to t_vec
-      t_vec = vec_(t);
+    } else {
+      t_vec = vec_(t);//rename vec_ to t_vec
     }
 
     // Calculate v magnitude
@@ -2503,17 +2542,17 @@ void Mesh::calcGaniso(SparseMatrix<double> &GH, const Matrix<double> &vec) const
     //Calculates H= cosh( |v|) Id+ \sinh(|v|)/|v| [[v_1,v_2 ][v_2,-v_1]]
     switch (type()) {
     case Mesh::Mtype_plane:
-      H[0] = Point(cosh(v_magnitude)+sinh(v_magnitude)/v_magnitude*t_vec[1],sinh(v_magnitude)*t_vec[2],
+      H[0] = Point(cosh(v_magnitude) + sinh(v_magnitude) / v_magnitude * t_vec[1],sinh(v_magnitude) * t_vec[2],
                    0.0);
-      H[1] = Point(sinh(v_magnitude)*t_vec[2], cosh(v_magnitude)-sinh(v_magnitude)/v_magnitude*t_vec[1],
+      H[1] = Point(sinh(v_magnitude) * t_vec[2], cosh(v_magnitude) - sinh(v_magnitude) / v_magnitude *t_vec[1],
                    0.0);
       H[2] = Point(0.0, 0.0, 0.0);
 
     //Calculates adj(H)
-      aH[0] = Point(cosh(v_magnitude)-sinh(v_magnitude)/v_magnitude*t_vec[1],
-                    -sinh(v_magnitude)*t_vec[2], 0.0);
-      aH[1] = Point(-sinh(v_magnitude)*t_vec[2],
-                    cosh(v_magnitude)+sinh(v_magnitude)/v_magnitude*t_vec[1], 0.0);
+      aH[0] = Point(cosh(v_magnitude) - sinh(v_magnitude) / v_magnitude * t_vec[1],
+                    - sinh(v_magnitude) * t_vec[2], 0.0);
+      aH[1] = Point(-sinh(v_magnitude) * t_vec[2],
+                    cosh(v_magnitude) + sinh(v_magnitude) / v_magnitude * t_vec[1], 0.0);
       aH[2] = Point(0.0, 0.0, 0.0);
       break;
     case Mesh::Mtype_sphere: //Does this line do anything?
