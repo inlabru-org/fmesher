@@ -212,6 +212,40 @@ fm_fem.fm_mesh_2d <- function(mesh, order = 2,
   result
 }
 
+#' @rdname fm_fem_aniso
+#' @param aniso If non-NULL, a `list(kappa, v)`. Calculates anisotropic structure
+#' matrices (in addition to the regular) for \eqn{\kappa}{kappa} and \eqn{v}{v} for
+#' an anisotropic operator \eqn{\nabla\cdot H \nabla}{div H grad}, where
+#' \eqn{H=....}{H = ...}.
+#' Currently (2023-08-05) the fields need to be given per vertex.
+#' @return `fm_fem.fm_mesh_2d`: A list with elements `c0`, `c1`, `g1`, `va`, `ta`,
+#' and more if `order > 1`. When `aniso` is non-NULL, also `g1aniso` matrices, etc.
+#'
+#' @export
+fm_fem.aniso <- function(mesh, order = 2,##Where is this used?
+                              aniso = NULL,
+                              ...) {
+  if (length(order) != 1) {
+    stop("'order' must have length 1.")
+  }
+  if (!is.null(aniso)) {
+    if (!is.list(aniso) || length(aniso) != 2) {
+      stop("'aniso' must be NULL or a list of length 2.")
+    }
+  }
+  result <- fmesher_fem(
+    mesh_loc = mesh$loc,
+    mesh_tv = mesh$graph$tv - 1L,
+    fem_order_max = order,
+    aniso = aniso,
+    options = list()
+  )
+  result
+}
+
+
+
+
 #' @rdname fm_fem
 #' @export
 #' @method fm_fem inla.mesh.1d

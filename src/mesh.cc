@@ -2464,11 +2464,11 @@ void Mesh::calcQblocksAni(SparseMatrix<double> &G1, const Matrix<double> &gamma,
 }
 
 //This function calculates the C  matrix for the mesh
-void Mesh::calcCaniso(SparseMatrix<double> &C0, SparseMatrix<double> &Ckappa,
+void Mesh::calcCaniso(SparseMatrix<double> &C0_kappa, SparseMatrix<double> &C_kappa,
                        const Matrix<double> &kappa,
                        Matrix<double> &Tareas) const {
-  C0.clear().rows(nV()).cols(nV());
-  Ckappa.clear().rows(nV()).cols(nV());
+  C0_kappa.clear().rows(nV()).cols(nV());
+  C_kappa.clear().rows(nV()).cols(nV());
   Tareas.clear().cols(1).rows(nT());
   Point e[3];
   bool isKappaPointwise = kappa.rows() == nV();/* Boolean to check if vec is defined pointwise or trianglewise.
@@ -2492,19 +2492,22 @@ void Mesh::calcCaniso(SparseMatrix<double> &C0, SparseMatrix<double> &Ckappa,
     Tareas(t, 0) = a;
 
         for (int i = 0; i < 3; i++) {
-            C0(tv[i], tv[i]) += t_kappa * a / 3.0;
-            Ckappa(tv[i], tv[i]) += t_kappa * a / 6.0;
+          // Lumped mass matrix
+            C0_kappa(tv[i], tv[i]) += t_kappa * t_kappa * a / 3.0;
+            /*I saw that, in the isotropic case, the non-lumped version is only used only in dim1 and if mesh is of degree 2. 
+            Unsure why. As a result, this isn't used later*/
+            C_kappa(tv[i], tv[i]) += t_kappa * t_kappa * a / 6.0;
             for (int j = i + 1; j < 3; j++) {
-                Ckappa(tv[i], tv[j]) += a / 12.0;
-                Ckappa(tv[j], tv[i]) += a / 12.0;
+                C_kappa(tv[i], tv[j]) += a / 12.0;
+                C_kappa(tv[j], tv[i]) += a / 12.0;
             }
         }
     }
 }
 
 // This functions calculates the FEM matrix G_{H} corresponding to the second order operator \nabla\cdot H\nabla
-void Mesh::calcGaniso(SparseMatrix<double> &GH, const Matrix<double> &vec) const {
-  GH.clear().rows(nV()).cols(nV());
+void Mesh::calcGaniso(SparseMatrix<double> &G_H, const Matrix<double> &vec) const {
+  G_H.clear().rows(nV()).cols(nV());
   Matrix<double> Tareas;
   Tareas.clear().cols(1).rows(nT());
   Matrix3double vec_(vec);
@@ -2611,14 +2614,14 @@ void Mesh::calcGaniso(SparseMatrix<double> &GH, const Matrix<double> &vec) const
     /* "Flat area" better approximation for use in G-calculation. */
     double fa = Point().cross(e[0], e[1]).length() / 2.0;
 
-    //GH = GH + eij(4*fa). Calculation from Appendix A2 in 2011 paper
+    //G_H = G_H + eij(4*fa). Calculation from Appendix A2 in 2011 paper
     double vij;
     for (int i = 0; i < 3; i++) {
-      GH(tv[i], tv[i]) += eij[i][i] / (4. * fa);//GH = GH + eij[i][i]/(4*fa)
+      G_H(tv[i], tv[i]) += eij[i][i] / (4. * fa);//G_H = G_H + eij[i][i]/(4*fa)
       for (int j = i + 1; j < 3; j++) {
         vij = eij[i][j] / (4. * fa);
-        GH(tv[i], tv[j]) += vij;
-        GH(tv[j], tv[i]) += vij;
+        G_H(tv[i], tv[j]) += vij;
+        G_H(tv[j], tv[i]) += vij;
       }
     }
   }

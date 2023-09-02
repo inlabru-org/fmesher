@@ -780,6 +780,77 @@ Rcpp::List fmesher_fem(Rcpp::NumericMatrix mesh_loc,
   return Rcpp::wrap(matrices);
 }
 
+/*Anisotropic version of fmesher, calculates finite element matrices*/
+Rcpp::List fmesher_fem_aniso(Rcpp::NumericMatrix mesh_loc,
+                       Rcpp::IntegerMatrix mesh_tv,
+                       Rcpp::List aniso,
+                       Rcpp::List options) {
+  MatrixC matrices;
+  Mesh M = Rcpp_import_mesh(mesh_loc, mesh_tv, matrices, options);
+  FMLOG("Compute finite element matrices." << std::endl);
+  if (fem_order_max >= 0) {
+    FMLOG("fem output." << std::endl)
+    SparseMatrix<double> &C0_kappa = matrices.SD("c0").clear();
+    SparseMatrix<double> &C1_kappa = matrices.SD("c1").clear();
+    SparseMatrix<double> &G_H = matrices.SD("g1").clear();
+    SparseMatrix<double> &G2_H = matrices.SD("g2").clear();
+    /* K1=G1-B1, K2=K1*inv(C0)*K1, ... */
+    Matrix<double> &Tareas = matrices.DD("ta").clear();
+    FMLOG("Compute anisotropic finite element matrices." << std::endl);
+    if (Rcpp::as<Rcpp::List>(aniso).size() < 2) {
+      Rcpp::stop("'aniso' list must have at least two elements.");
+    }
+    matrices.attach("kappa_field",
+                    new Matrix<double>(
+                        Rcpp::as<Rcpp::NumericVector>(
+                          Rcpp::as<Rcpp::List>(aniso)[0] //Not sure if this line is necessary anymore, 
+                                                        //is aniso[0] already a List?
+                        )
+                    ),
+                    true);
+    FMLOG("'kappa_field' imported." << std::endl);
+    matrices.attach("vector_field",
+                    new Matrix<double>(
+                        Rcpp::as<Rcpp::NumericMatrix>(
+                          Rcpp::as<Rcpp::List>(aniso)[1]
+                        )
+                    ),
+                    true);
+    FMLOG("'vector_field' imported." << std::endl);
+    //Checks if the length of the kappa_field and vector_field match the number of vertices or triangles
+    if (matrices.DD("kappa_field").rows() != M.nV() && matrices.DD("kappa_field").rows() != M.nT()) { 
+    Rcpp::stop("'aniso[[1]]' length should match the number of vertices or the number of triangles."); 
+    } 
+    if (matrices.DD("vector_field").rows() != M.nV() && matrices.DD("vector_field").rows() != M.nT()) { 
+        Rcpp::stop("'aniso[[2]]' rows should match the number of vertices or the number of triangles."); 
+    }
+
+    //Calculates finite element matrices C0, C1,G_H, and Tareas
+    M.calcCaniso(C0_kappa,C_kappa, matrices.DD("kappa_field"),Tareas);
+    M.calcCaniso(G_H,matrices.DD("vector_field"));
+
+    // Calculates G2= G_H * C0_kappa^-1 * G_H
+    SparseMatrix<double> C0inv = inverse(C0, true);
+    G2_H = G_H * C0inv * G_H;
+
+    //Not sure what this is used for
+    matrices.attach(string("va"), new Matrix<double>(diag(C0)), true);
+
+    //K = G - B1 I think we said no need for boundary condition, unsure why.
+    matrices.matrixtype("c0", fmesh::IOMatrixtype_diagonal);
+    matrices.matrixtype("c1", fmesh::IOMatrixtype_symmetric);
+    matrices.matrixtype("g1", fmesh::IOMatrixtype_symmetric);
+    matrices.matrixtype("g2", fmesh::IOMatrixtype_symmetric);
+    matrices.output("c0");
+    matrices.output("c1");
+    matrices.output("g1");
+    matrices.output("g2");
+    matrices.output("va");
+    matrices.output("ta");
+
+  //Returns the matrices c0, c1, g1, g2, va, and ta
+  return Rcpp::wrap(matrices);
+}
 
 
 //' @title Split lines at triangle edges
