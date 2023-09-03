@@ -61,6 +61,24 @@ fm_matern_precision <- function(x, alpha, rho, sigma) {
   Q
 }
 
+#' @describeIn fm_gmrf
+#' Construct the (sparse) precision matrix for the basis weights of anisotropic
+#' SPDE models.
+#'
+#' @param x A mesh object, e.g. from `fm_mesh_2d()`.
+#' @param aniso List `[kappa,vec]` where `kappa` controls the (inverse) correlation range
+#' and (the half angle version of) `vec` controls the main directions of the anisoropy
+#'
+#' @export
+#' @examples
+#' .....
+fm_aniso_precision <- function(x, aniso) {
+  fem <- fm_fem_aniso(x, aniso)
+  Q <- (fem$c0 + 2 * fem$g1 + fem$g2)
+  Q
+}
+
+
 
 #' @describeIn fm_gmrf
 #' Simulate a Matérn field given a mesh and
@@ -76,6 +94,27 @@ fm_matern_precision <- function(x, alpha, rho, sigma) {
 
 fm_matern_sample <- function(x, alpha = 2, rho, sigma, n = 1, loc = NULL) {
   Q <- fm_matern_precision(x, alpha = alpha, rho = rho, sigma = sigma)
+  x <- fm_sample(n = n, Q = Q)
+  if (!is.null(loc)) {
+    x <- fm_evaluate(x, loc = loc, field = x)
+  }
+  x
+}
+
+#' @describeIn fm_gmrf
+#' Simulate an anisotropic field given a mesh and
+#' anisotropic parameters, and optionally evaluate at given locations.
+#'
+#' @param loc locations to evaluate the random field, compatible with
+#' `fm_evaluate(x, loc = loc, field = ...)`
+#'
+#' @return `fm_aniso_sample()` returns a matrix, where each column is a sampled
+#' field. If `loc` is `NULL`, the `fm_dof(mesh)` basis weights are given.
+#' Otherwise, the evaluated field at the `nrow(loc)` locations `loc` are given.
+#' @export
+
+fm_aniso_sample <- function(x, aniso, n = 1, loc = NULL) {
+  Q <- fm_aniso_precision(x, aniso)
   x <- fm_sample(n = n, Q = Q)
   if (!is.null(loc)) {
     x <- fm_evaluate(x, loc = loc, field = x)
