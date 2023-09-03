@@ -95,6 +95,20 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// fmesher_fem_aniso
+Rcpp::List fmesher_fem_aniso(Rcpp::NumericMatrix mesh_loc, Rcpp::IntegerMatrix mesh_tv, Rcpp::List aniso, Rcpp::List options);
+RcppExport SEXP _fmesher_fmesher_fem_aniso(SEXP mesh_locSEXP, SEXP mesh_tvSEXP, SEXP anisoSEXP, SEXP optionsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type mesh_loc(mesh_locSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerMatrix >::type mesh_tv(mesh_tvSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type aniso(anisoSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type options(optionsSEXP);
+    rcpp_result_gen = Rcpp::wrap(fmesher_fem_aniso(mesh_loc, mesh_tv, aniso, options));
+    return rcpp_result_gen;
+END_RCPP
+}
 // fmesher_split_lines
 Rcpp::List fmesher_split_lines(Rcpp::NumericMatrix mesh_loc, Rcpp::IntegerMatrix mesh_tv, Rcpp::NumericMatrix loc, Rcpp::IntegerMatrix idx, Rcpp::List options);
 RcppExport SEXP _fmesher_fmesher_split_lines(SEXP mesh_locSEXP, SEXP mesh_tvSEXP, SEXP locSEXP, SEXP idxSEXP, SEXP optionsSEXP) {
@@ -118,6 +132,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_fmesher_fmesher_spherical_bsplines1", (DL_FUNC) &_fmesher_fmesher_spherical_bsplines1, 4},
     {"_fmesher_fmesher_spherical_bsplines", (DL_FUNC) &_fmesher_fmesher_spherical_bsplines, 4},
     {"_fmesher_fmesher_fem", (DL_FUNC) &_fmesher_fmesher_fem, 5},
+    {"_fmesher_fmesher_fem_aniso", (DL_FUNC) &_fmesher_fmesher_fem_aniso, 4},
     {"_fmesher_fmesher_split_lines", (DL_FUNC) &_fmesher_fmesher_split_lines, 5},
     {NULL, NULL, 0}
 };

@@ -2441,6 +2441,8 @@ void Mesh::calcQblocksAni(SparseMatrix<double> &G1, const Matrix<double> &gamma,
     for (int i = 0; i < 3; i++) {
       Point eiH(Vec::scalar(aH[0], e[i]), Vec::scalar(aH[1], e[i]),
                 Vec::scalar(aH[2], e[i]));
+            // Output eiH values
+      //std::cout << "eiH 0 for i = " << i << " is: " << eiH << std::endl;
       eij[i][i] = Vec::scalar(eiH, e[i]);
       for (int j = i + 1; j < 3; j++) {
         eij[i][j] = Vec::scalar(eiH, e[j]);
@@ -2460,6 +2462,30 @@ void Mesh::calcQblocksAni(SparseMatrix<double> &G1, const Matrix<double> &gamma,
         G1(tv[j], tv[i]) += vij;
       }
     }
+
+    // Output for testing purposes
+    //     std::cout << "H matrix 0:" << std::endl;
+    // for (int i = 0; i < 3; i++) {
+    //     std::cout << "H[" << i << "] = (" << H[i][0] << ", " << H[i][1] << ", " << H[i][2] << ")" << std::endl;
+    // }
+
+    // // Printing aH matrix
+    // std::cout << "\naH matrix 0:" << std::endl;
+    // for (int i = 0; i < 3; i++) {
+    //     std::cout << "aH[" << i << "] = (" << aH[i][0] << ", " << aH[i][1] << ", " << aH[i][2] << ")" << std::endl;
+    // }
+    //     // Output e[i] values
+    // for (int i = 0; i < 3; i++) {
+    //   std::cout << "e[" << i << "] = " << e[i] << std::endl;
+    // }
+
+    // // Printing eij matrix
+    // std::cout << "\neij matrix 0:" << std::endl;
+    // for (int i = 0; i < 3; i++) {
+    //     for (int j = 0; j < 3; j++) {
+    //         std::cout << "eij[" << i << "][" << j << "] = " << eij[i][j] << std::endl;
+    //     }
+    // }
   }
 }
 
@@ -2467,6 +2493,7 @@ void Mesh::calcQblocksAni(SparseMatrix<double> &G1, const Matrix<double> &gamma,
 void Mesh::calcCaniso(SparseMatrix<double> &C0_kappa, SparseMatrix<double> &C_kappa,
                        const Matrix<double> &kappa,
                        Matrix<double> &Tareas) const {
+  // Clear and initialize matrices
   C0_kappa.clear().rows(nV()).cols(nV());
   C_kappa.clear().rows(nV()).cols(nV());
   Tareas.clear().cols(1).rows(nT());
@@ -2498,42 +2525,49 @@ void Mesh::calcCaniso(SparseMatrix<double> &C0_kappa, SparseMatrix<double> &C_ka
             Unsure why. As a result, this isn't used later*/
             C_kappa(tv[i], tv[i]) += t_kappa * t_kappa * a / 6.0;
             for (int j = i + 1; j < 3; j++) {
-                C_kappa(tv[i], tv[j]) += a / 12.0;
-                C_kappa(tv[j], tv[i]) += a / 12.0;
+                C_kappa(tv[i], tv[j]) += t_kappa * t_kappa * a / 12.0;
+                C_kappa(tv[j], tv[i]) += t_kappa * t_kappa * a / 12.0;
             }
         }
     }
 }
 
-// This functions calculates the FEM matrix G_{H} corresponding to the second order operator \nabla\cdot H\nabla
-void Mesh::calcGaniso(SparseMatrix<double> &G_H, const Matrix<double> &vec) const {
+// This function calculates the FEM matrix G_{H} corresponding to the second order operator \nabla\cdot H\nabla
+void Mesh::calcGaniso(SparseMatrix < double > & G_H,
+  const Matrix < double > & vec) const {
   G_H.clear().rows(nV()).cols(nV());
-  Matrix<double> Tareas;
+
+  Matrix < double > Tareas;
   Tareas.clear().cols(1).rows(nT());
+
   Matrix3double vec_(vec);
+
   Point e[3];
   Point t_vec;
-  for (int t = 0; t < (int)nT(); t++) {
-    const Int3Raw &tv = TV_[t].raw();
-    const Point &s0 = S_[tv[0]];
-    const Point &s1 = S_[tv[1]];
-    const Point &s2 = S_[tv[2]];
+
+  for (int t = 0; t < (int) nT(); t++) {
+    const Int3Raw & tv = TV_[t].raw();
+    const Point & s0 = S_[tv[0]];
+    const Point & s1 = S_[tv[1]];
+    const Point & s2 = S_[tv[2]];
+
     e[0].diff(s2, s1);
     e[1].diff(s0, s2);
     e[2].diff(s1, s0);
-    bool isVecPointwise = vec.rows() == nV();/* Boolean to check if vec is defined pointwise or trianglewise.
-     If vec is defined pointwise takes average and assigns to t_vec*/
+
+    bool isVecPointwise = vec.rows() == nV(); // Boolean to check if vec is defined pointwise or trianglewise.
+    // If vec is defined pointwise takes average and assigns to t_vec
     if (isVecPointwise) {
       t_vec.sum(vec_(tv[0]), vec_(tv[1])).accum(vec_(tv[2]), 1.0);
-      t_vec.rescale(1.0/3.0);
+      t_vec.rescale(1.0 / 3.0);
     } else {
-      t_vec = vec_(t);//rename vec_ to t_vec
+      t_vec = vec_(t); // rename vec_ to t_vec
     }
 
     // Calculate v magnitude
-    double v_magnitude = sqrt(vec[tv[0]][0] * vec[tv[0]][0] + vec[tv[0]][1] * vec[tv[0]][1]);
+    double v_magnitude = sqrt(t_vec[0] * t_vec[0] + t_vec[1] * t_vec[1]);
 
-    // Convert v (now called t_vec) to its half-angle version 
+    // Convert v (now called t_vec) to its half-angle version
     double alpha = atan2(t_vec[1], t_vec[0]) / 2.0;
     t_vec[0] = cos(alpha);
     t_vec[1] = sin(alpha);
@@ -2542,88 +2576,125 @@ void Mesh::calcGaniso(SparseMatrix<double> &G_H, const Matrix<double> &vec) cons
     Point H[3];
     Point aH[3];
 
-    //Calculates H= cosh( |v|) Id+ \sinh(|v|)/|v| [[v_1,v_2 ][v_2,-v_1]]
+
+    const double EPSILON = 1e-6; //If v_magnitude is small, then H[0] is used instead of H. H[epsilion] \sim H[0]=Id. 
     switch (type()) {
     case Mesh::Mtype_plane:
-      H[0] = Point(cosh(v_magnitude) + sinh(v_magnitude) / v_magnitude * t_vec[1],sinh(v_magnitude) * t_vec[2],
-                   0.0);
-      H[1] = Point(sinh(v_magnitude) * t_vec[2], cosh(v_magnitude) - sinh(v_magnitude) / v_magnitude *t_vec[1],
-                   0.0);
-      H[2] = Point(0.0, 0.0, 0.0);
+      if (v_magnitude < EPSILON) {
+        H[0] = Point(1.0, 0.0, 0.0);
+        H[1] = Point(0.0, 1.0, 0.0);
+        H[2] = Point(0.0, 0.0, 0.0);
+        aH[0] = Point(1.0, 0.0, 0.0);
+        aH[1] = Point(0.0, 1.0, 0.0);
+        aH[2] = Point(0.0, 0.0, 0.0);
+      } else {
+        // Calculates H= cosh( |v|) Id+ \sinh(|v|)/|v| [[v_1,v_2 ][v_2,-v_1]]
+        H[0] = Point(cosh(v_magnitude) + sinh(v_magnitude) / v_magnitude * t_vec[1], sinh(v_magnitude) * t_vec[2], 0.0);
+        H[1] = Point(sinh(v_magnitude) * t_vec[2], cosh(v_magnitude) - sinh(v_magnitude) / v_magnitude * t_vec[1], 0.0);
+        H[2] = Point(0.0, 0.0, 0.0);
 
-    //Calculates adj(H)
-      aH[0] = Point(cosh(v_magnitude) - sinh(v_magnitude) / v_magnitude * t_vec[1],
-                    - sinh(v_magnitude) * t_vec[2], 0.0);
-      aH[1] = Point(-sinh(v_magnitude) * t_vec[2],
-                    cosh(v_magnitude) + sinh(v_magnitude) / v_magnitude * t_vec[1], 0.0);
-      aH[2] = Point(0.0, 0.0, 0.0);
+        // Calculates adj(H)
+        aH[0] = Point(cosh(v_magnitude) - sinh(v_magnitude) / v_magnitude * t_vec[1], -sinh(v_magnitude) * t_vec[2], 0.0);
+        aH[1] = Point(-sinh(v_magnitude) * t_vec[2], cosh(v_magnitude) + sinh(v_magnitude) / v_magnitude * t_vec[1], 0.0);
+        aH[2] = Point(0.0, 0.0, 0.0);
+      }
       break;
-    case Mesh::Mtype_sphere: //Does this line do anything?
-    case Mesh::Mtype_manifold://Not yet implemented, how to move from planar case to manifold? The pervious code is as follows:
-      Point ax[4];
-      Point n;
-      Vec::cross(ax[0], e[1], e[2]); //ax[0] = e1 x e2
-      Vec::cross(ax[1], e[2], e[0]); //ax[1] = e2 x e0
-      Vec::cross(ax[2], e[0], e[1]); //ax[2] = e0 x e1
-      Vec::accum(ax[0], ax[1]); //ax[0] = ax[0] + ax[1]
-      Vec::accum(ax[0], ax[2]); //ax[0] = ax[0] + ax[2], in total ax[0] = e1 x e2 + e2 x e0 + e0 x e1
-      n.scale(ax[0], 1.0 / ax[0].length()); //n = ax[0]/|ax[0]| average unit normal vector
-      ax[1] = e[0]; 
-      ax[1].rescale(1.0 / ax[1].length()); //ax[1] = e0/|e0|
-      Vec::cross(ax[2], n, ax[1]); //ax[2] = n x ax[1]
-      ax[2].rescale(1.0 / ax[2].length());//ax[2] = ax[2]/|ax[2]|
-      ax[1].rescale(t_gamma);//ax[1] = gamma*ax[1]
-      ax[2].rescale(t_gamma);//ax[2] = gamma*ax[2]
-      ax[0] = n;// Sets ax[0] to unit normal vector n
-
-      t_vec.accum(n, -Vec::scalar(n, t_vec)); //v= v- (v.n)n
-      ax[3] = t_vec;//ax[3] = v
-      crossmultiply(ax, H, 4);
-      //H = ax[0]ax[0]^T + ax[1]ax[1]^T + ax[2]ax[2]^T + ax[3]ax[3]^T. Where
-      //ax[0]=n, ax[1]=gamma*e0/|e0|, ax[2]=gamma (n x e0/|n x e0|), ax[3]=v- (v.n)n
-      //So in total
-      // H=n*n^T + gamma^2( e0e0^T/|e0|^2+(n x e0)(n x e0)^T/|(n x e0)|^2) + (v- (v.n)n)(v- (v.n)n)^T. 
-      //How come? What do we get in our case?
-
-      FMLOG("H[0]\t" << H[0] << endl);//Prints H
-      FMLOG("H[1]\t" << H[1] << endl);
-      FMLOG("H[2]\t" << H[2] << endl);
-
-      adjugate(H, aH);//aH = adj(H)
-
-      FMLOG("aH[0]\t" << aH[0] << endl);
-      FMLOG("aH[1]\t" << aH[1] << endl);
-      FMLOG("aH[2]\t" << aH[2] << endl);
-
+    case Mesh::Mtype_sphere:
+      // Does this line do anything?
+      break;
+    case Mesh::Mtype_manifold:
+      // Not yet implemented, how to move from planar case to manifold? The previous code is as follows:
+      // Point ax[4];
+      // Point n;
+      // Vec::cross(ax[0], e[1], e[2]); //ax[0] = e1 x e2
+      // Vec::cross(ax[1], e[2], e[0]); //ax[1] = e2 x e0
+      // Vec::cross(ax[2], e[0], e[1]); //ax[2] = e0 x e1
+      // Vec::accum(ax[0], ax[1]); //ax[0] = ax[0] + ax[1]
+      // Vec::accum(ax[0], ax[2]); //ax[0] = ax[0] + ax[2], in total ax[0] = e1 x e2 + e2 x e0 + e0 x e1
+      // n.scale(ax[0], 1.0 / ax[0].length()); //n = ax[0]/|ax[0]| average unit normal vector
+      // ax[1] = e[0];
+      // ax[1].rescale(1.0 / ax[1].length()); //ax[1] = e0/|e0|
+      // Vec::cross(ax[2], n, ax[1]); //ax[2] = n x ax[1]
+      // ax[2].rescale(1.0 / ax[2].length());//ax[2] = ax[2]/|ax[2]|
+      // ax[1].rescale(t_gamma);//ax[1] = gamma*ax[1]
+      // ax[2].rescale(t_gamma);//ax[2] = gamma*ax[2]
+      // ax[0] = n;// Sets ax[0] to unit normal vector n
+      // t_vec.accum(n, -Vec::scalar(n, t_vec)); //v= v- (v.n)n
+      // ax[3] = t_vec;//ax[3] = v
+      // crossmultiply(ax, H, 4);
+      // //H = ax[0]ax[0]^T + ax[1]ax[1]^T + ax[2]ax[2]^T + ax[3]ax[3]^T. Where
+      // //ax[0]=n, ax[1]=gamma*e0/|e0|, ax[2]=gamma (n x e0/|n x e0|), ax[3]=v- (v.n)n
+      // //So in total
+      // // H=n*n^T + gamma^2( e0e0^T/|e0|^2+(n x e0)(n x e0)^T/|(n x e0)|^2) + (v- (v.n)n)(v- (v.n)n)^T.
+      // // How come? What do we get in our case?
+      // FMLOG("H[0]\t" << H[0] << endl); // Prints H
+      // FMLOG("H[1]\t" << H[1] << endl);
+      // FMLOG("H[2]\t" << H[2] << endl);
+      // adjugate(H, aH); // aH = adj(H)
+      // FMLOG("aH[0]\t" << aH[0] << endl);
+      // FMLOG("aH[1]\t" << aH[1] << endl);
+      // FMLOG("aH[2]\t" << aH[2] << endl);
       break;
     }
 
-    //The rest needs no changes with respect to calcQblocksAni
-    //eij[i][j] = e_i^T adj(H) e_j
+    // The rest needs no changes with respect to calcQblocksAni
+    // eij[i][j] = e_i^T adj(H) e_j
     PointRaw eij[3];
+
     for (int i = 0; i < 3; i++) {
-      Point eiH(Vec::scalar(aH[0], e[i]), Vec::scalar(aH[1], e[i]),
-                Vec::scalar(aH[2], e[i]));
+      Point eiH(Vec::scalar(aH[0], e[i]), Vec::scalar(aH[1], e[i]), Vec::scalar(aH[2], e[i]));
+
+      // Output eiH values
+      //std::cout << "eiH for i = " << i << " is: " << eiH << std::endl;
+
       eij[i][i] = Vec::scalar(eiH, e[i]);
+
       for (int j = i + 1; j < 3; j++) {
         eij[i][j] = Vec::scalar(eiH, e[j]);
-        eij[j][i] = eij[i][j];//eij is symmetric
+        eij[j][i] = eij[i][j]; // eij is symmetric
       }
     }
 
-    /* "Flat area" better approximation for use in G-calculation. */
+    // "Flat area" better approximation for use in G-calculation.
     double fa = Point().cross(e[0], e[1]).length() / 2.0;
 
-    //G_H = G_H + eij(4*fa). Calculation from Appendix A2 in 2011 paper
+    // G_H = G_H + eij(4*fa). Calculation from Appendix A2 in 2011 paper
     double vij;
+
     for (int i = 0; i < 3; i++) {
-      G_H(tv[i], tv[i]) += eij[i][i] / (4. * fa);//G_H = G_H + eij[i][i]/(4*fa)
+      G_H(tv[i], tv[i]) += eij[i][i] / (4. * fa);
+
       for (int j = i + 1; j < 3; j++) {
         vij = eij[i][j] / (4. * fa);
         G_H(tv[i], tv[j]) += vij;
         G_H(tv[j], tv[i]) += vij;
       }
     }
+
+    //Output for testing purposes
+    // std::cout << "H matrix:" << std::endl;
+    // for (int i = 0; i < 3; i++) {
+    //   std::cout << "H[" << i << "] = (" << H[i][0] << ", " << H[i][1] << ", " << H[i][2] << ")" << std::endl;
+    // }
+
+    // // Printing aH matrix
+    // std::cout << "\naH matrix:" << std::endl;
+    // for (int i = 0; i < 3; i++) {
+    //   std::cout << "aH[" << i << "] = (" << aH[i][0] << ", " << aH[i][1] << ", " << aH[i][2] << ")" << std::endl;
+    // }
+
+    // // Output e[i] values
+    // for (int i = 0; i < 3; i++) {
+    //   std::cout << "e[" << i << "] = " << e[i] << std::endl;
+    // }
+
+    // // Printing eij matrix
+    // std::cout << "\neij matrix:" << std::endl;
+    // for (int i = 0; i < 3; i++) {
+    //   for (int j = 0; j < 3; j++) {
+    //     std::cout << "eij[" << i << "][" << j << "] = " << eij[i][j] << std::endl;
+    //   }
+    // }
   }
 }
 

@@ -780,7 +780,45 @@ Rcpp::List fmesher_fem(Rcpp::NumericMatrix mesh_loc,
   return Rcpp::wrap(matrices);
 }
 
-/*Anisotropic version of fmesher, calculates finite element matrices*/
+//' @title Anisotropic finite element matrix computation
+//'
+//' @description
+//' Construct finite element structure matrices
+//'
+//' @param mesh_loc numeric matrix; mesh vertex coordinates
+//' @param mesh_tv 3-column integer matrix with 0-based vertex indices for each triangle
+//' @param aniso A `list(kappa, v)`. Which can be given per triangle or vertex.
+//' Calculates anisotropic structure matrices for
+//'  an anisotropic operator \eqn{\kappa^2-\nabla\cdot H \nabla}{kappa^2-div H grad}. 
+//' Here \eqn{\kappa>0,v=(v_1,v_2)\in\mathbb{R}^2}{kappa>0,v=(v1,v2) in R^2} and
+//'  \eqn{H=e^{|v|}\tilde{v}\tilde{v}^T+e^{-|v|}\tilde{v}_\perp\tilde{v}^T_\perp}{H = H = exp(|v|) * v_tilde * v_tilde' + exp(-|v|) * v_tilde_perp * v_tilde_perp'}., where
+//' and \eqn{\tilde{v}=|v| e^{i \alpha /2 }, \alpha := \arctan(v_2 /v_1)}{v_tilde=|v|exp(i alpha /2),arctan(v2 /v1)}.
+//' @param options list of triangulation options (`sphere_tolerance`)
+//' @examples
+//'loc <- matrix(rnorm(20), 10, 2)
+//'loc_sf <- sf::st_geometry(sf::st_as_sf(as.data.frame(loc), coords = 1:2))
+//'loc_sp <- sf::as_Spatial(loc_sf)
+//'boundary_sf <- fm_extensions(loc, c(1, 3))
+//'mesh <- fm_mesh_2d_inla(boundary = boundary_sf, max.edge = c(0.5, 2))
+//'plot(mesh)
+//'
+//'kappa <- function(xi) {
+  //'return(sum(xi^2))
+//'}
+//'
+//'vec <- function(xi) {
+  //'return(c(xi[1] + 1, xi[2] - 2))
+//'}
+//'
+//'nodes <- mesh$loc
+//'
+//'kappa_values <- apply(nodes, 1, kappa)
+//'vec_values <- t(apply(nodes, 1, vec))
+//'aniso=list(kappa_values,vec_values)
+//'a<-fm_fem_aniso(mesh,aniso)
+//' @returns A list of matrices
+//' @export
+// [[Rcpp::export]]
 Rcpp::List fmesher_fem_aniso(Rcpp::NumericMatrix mesh_loc,
                        Rcpp::IntegerMatrix mesh_tv,
                        Rcpp::List aniso,
@@ -788,68 +826,67 @@ Rcpp::List fmesher_fem_aniso(Rcpp::NumericMatrix mesh_loc,
   MatrixC matrices;
   Mesh M = Rcpp_import_mesh(mesh_loc, mesh_tv, matrices, options);
   FMLOG("Compute finite element matrices." << std::endl);
-  if (fem_order_max >= 0) {
-    FMLOG("fem output." << std::endl)
-    SparseMatrix<double> &C0_kappa = matrices.SD("c0").clear();
-    SparseMatrix<double> &C1_kappa = matrices.SD("c1").clear();
-    SparseMatrix<double> &G_H = matrices.SD("g1").clear();
-    SparseMatrix<double> &G2_H = matrices.SD("g2").clear();
-    /* K1=G1-B1, K2=K1*inv(C0)*K1, ... */
-    Matrix<double> &Tareas = matrices.DD("ta").clear();
-    FMLOG("Compute anisotropic finite element matrices." << std::endl);
-    if (Rcpp::as<Rcpp::List>(aniso).size() < 2) {
-      Rcpp::stop("'aniso' list must have at least two elements.");
-    }
-    matrices.attach("kappa_field",
-                    new Matrix<double>(
-                        Rcpp::as<Rcpp::NumericVector>(
-                          Rcpp::as<Rcpp::List>(aniso)[0] //Not sure if this line is necessary anymore, 
-                                                        //is aniso[0] already a List?
-                        )
-                    ),
-                    true);
-    FMLOG("'kappa_field' imported." << std::endl);
-    matrices.attach("vector_field",
-                    new Matrix<double>(
-                        Rcpp::as<Rcpp::NumericMatrix>(
-                          Rcpp::as<Rcpp::List>(aniso)[1]
-                        )
-                    ),
-                    true);
-    FMLOG("'vector_field' imported." << std::endl);
-    //Checks if the length of the kappa_field and vector_field match the number of vertices or triangles
-    if (matrices.DD("kappa_field").rows() != M.nV() && matrices.DD("kappa_field").rows() != M.nT()) { 
-    Rcpp::stop("'aniso[[1]]' length should match the number of vertices or the number of triangles."); 
-    } 
-    if (matrices.DD("vector_field").rows() != M.nV() && matrices.DD("vector_field").rows() != M.nT()) { 
-        Rcpp::stop("'aniso[[2]]' rows should match the number of vertices or the number of triangles."); 
-    }
+  FMLOG("fem output." << std::endl)
+  SparseMatrix<double> &C0_kappa = matrices.SD("c0").clear();
+  SparseMatrix<double> &C1_kappa = matrices.SD("c1").clear();
+  SparseMatrix<double> &G_H = matrices.SD("g1").clear();
+  SparseMatrix<double> &G2_H = matrices.SD("g2").clear();
+  /* K1=G1-B1, K2=K1*inv(C0)*K1, ... */
+  Matrix<double> &Tareas = matrices.DD("ta").clear();
+  FMLOG("Compute anisotropic finite element matrices." << std::endl);
+  if (Rcpp::as<Rcpp::List>(aniso).size() < 2) {
+    Rcpp::stop("'aniso' list must have at least two elements.");
+  }
+  matrices.attach("kappa_field",
+                  new Matrix<double>(
+                      Rcpp::as<Rcpp::NumericVector>(
+                        Rcpp::as<Rcpp::List>(aniso)[0] //Not sure if this line is necessary anymore, 
+                                                      //is aniso[0] already a List?
+                      )
+                  ),
+                  true);
+  FMLOG("'kappa_field' imported." << std::endl);
+  matrices.attach("vector_field",
+                  new Matrix<double>(
+                      Rcpp::as<Rcpp::NumericMatrix>(
+                        Rcpp::as<Rcpp::List>(aniso)[1]
+                      )
+                  ),
+                  true);
+  FMLOG("'vector_field' imported." << std::endl);
+  //Checks if the length of the kappa_field and vector_field match the number of vertices or triangles
+  if (matrices.DD("kappa_field").rows() != M.nV() && matrices.DD("kappa_field").rows() != M.nT()) { 
+  Rcpp::stop("'aniso[[1]]' length should match the number of vertices or the number of triangles."); 
+  } 
+  if (matrices.DD("vector_field").rows() != M.nV() && matrices.DD("vector_field").rows() != M.nT()) { 
+      Rcpp::stop("'aniso[[2]]' rows should match the number of vertices or the number of triangles."); 
+  }
 
-    //Calculates finite element matrices C0, C1,G_H, and Tareas
-    M.calcCaniso(C0_kappa,C_kappa, matrices.DD("kappa_field"),Tareas);
-    M.calcCaniso(G_H,matrices.DD("vector_field"));
+  //Calculates finite element matrices C0, C1,G_H, and Tareas
+  M.calcCaniso(C0_kappa,C1_kappa, matrices.DD("kappa_field"),Tareas);
+  M.calcGaniso(G_H,matrices.DD("vector_field"));
 
-    // Calculates G2= G_H * C0_kappa^-1 * G_H
-    SparseMatrix<double> C0inv = inverse(C0, true);
-    G2_H = G_H * C0inv * G_H;
+  // Calculates G2= G_H * C0_kappa^-1 * G_H
+  SparseMatrix<double> C0inv = inverse(C0_kappa, true);
+  G2_H = G_H * C0inv * G_H;
 
-    //Not sure what this is used for
-    matrices.attach(string("va"), new Matrix<double>(diag(C0)), true);
+  //Not sure what this is used for
+  matrices.attach(string("va"), new Matrix<double>(diag(C0_kappa)), true);
 
-    //K = G - B1 I think we said no need for boundary condition, unsure why.
-    matrices.matrixtype("c0", fmesh::IOMatrixtype_diagonal);
-    matrices.matrixtype("c1", fmesh::IOMatrixtype_symmetric);
-    matrices.matrixtype("g1", fmesh::IOMatrixtype_symmetric);
-    matrices.matrixtype("g2", fmesh::IOMatrixtype_symmetric);
-    matrices.output("c0");
-    matrices.output("c1");
-    matrices.output("g1");
-    matrices.output("g2");
-    matrices.output("va");
-    matrices.output("ta");
+  //K = G - B1 I think we said no need for boundary condition, unsure why.
+  matrices.matrixtype("c0", fmesh::IOMatrixtype_diagonal);
+  matrices.matrixtype("c1", fmesh::IOMatrixtype_symmetric);
+  matrices.matrixtype("g1", fmesh::IOMatrixtype_symmetric);
+  matrices.matrixtype("g2", fmesh::IOMatrixtype_symmetric);
+  matrices.output("c0");
+  matrices.output("c1");
+  matrices.output("g1");
+  matrices.output("g2");
+  matrices.output("va");
+  matrices.output("ta");
 
-  //Returns the matrices c0, c1, g1, g2, va, and ta
-  return Rcpp::wrap(matrices);
+//Returns the matrices c0, c1, g1, g2, va, and ta
+return Rcpp::wrap(matrices);
 }
 
 
