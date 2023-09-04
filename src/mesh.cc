@@ -2521,7 +2521,7 @@ void Mesh::calcCaniso(SparseMatrix<double> &C0_kappa, SparseMatrix<double> &C_ka
         for (int i = 0; i < 3; i++) {
           // Lumped mass matrix
             C0_kappa(tv[i], tv[i]) += t_kappa * t_kappa * a / 3.0;
-            /*I saw that, in the isotropic case, the non-lumped version is only used only in dim1 and if mesh is of degree 2. 
+            /*I saw that, in the isotropic case, the non-lumped version is only used only in dim1 and if mesh is of degree 2.
             Unsure why. As a result, this isn't used later*/
             C_kappa(tv[i], tv[i]) += t_kappa * t_kappa * a / 6.0;
             for (int j = i + 1; j < 3; j++) {
@@ -2577,9 +2577,10 @@ void Mesh::calcGaniso(SparseMatrix < double > & G_H,
     Point aH[3];
 
 
-    const double EPSILON = 1e-6; //If v_magnitude is small, then H[0] is used instead of H. H[epsilion] \sim H[0]=Id. 
+    const double EPSILON = 1e-6; //If v_magnitude is small, then H[0] is used instead of H. H[epsilion] \sim H[0]=Id.
     switch (type()) {
     case Mesh::Mtype_plane:
+      std::cout << "Planar mesh." << std::endl;
       if (v_magnitude < EPSILON) {
         H[0] = Point(1.0, 0.0, 0.0);
         H[1] = Point(0.0, 1.0, 0.0);
@@ -2599,41 +2600,54 @@ void Mesh::calcGaniso(SparseMatrix < double > & G_H,
         aH[2] = Point(0.0, 0.0, 0.0);
       }
       break;
+    // Does this case do anything? It seems to go immediately to the next case.
     case Mesh::Mtype_sphere:
-      // Does this line do anything?
-      break;
+      std::cout << "Spherical mesh." << std::endl;
     case Mesh::Mtype_manifold:
-      // Not yet implemented, how to move from planar case to manifold? The previous code is as follows:
-      // Point ax[4];
-      // Point n;
-      // Vec::cross(ax[0], e[1], e[2]); //ax[0] = e1 x e2
-      // Vec::cross(ax[1], e[2], e[0]); //ax[1] = e2 x e0
-      // Vec::cross(ax[2], e[0], e[1]); //ax[2] = e0 x e1
-      // Vec::accum(ax[0], ax[1]); //ax[0] = ax[0] + ax[1]
-      // Vec::accum(ax[0], ax[2]); //ax[0] = ax[0] + ax[2], in total ax[0] = e1 x e2 + e2 x e0 + e0 x e1
-      // n.scale(ax[0], 1.0 / ax[0].length()); //n = ax[0]/|ax[0]| average unit normal vector
-      // ax[1] = e[0];
-      // ax[1].rescale(1.0 / ax[1].length()); //ax[1] = e0/|e0|
-      // Vec::cross(ax[2], n, ax[1]); //ax[2] = n x ax[1]
-      // ax[2].rescale(1.0 / ax[2].length());//ax[2] = ax[2]/|ax[2]|
-      // ax[1].rescale(t_gamma);//ax[1] = gamma*ax[1]
-      // ax[2].rescale(t_gamma);//ax[2] = gamma*ax[2]
-      // ax[0] = n;// Sets ax[0] to unit normal vector n
-      // t_vec.accum(n, -Vec::scalar(n, t_vec)); //v= v- (v.n)n
-      // ax[3] = t_vec;//ax[3] = v
-      // crossmultiply(ax, H, 4);
-      // //H = ax[0]ax[0]^T + ax[1]ax[1]^T + ax[2]ax[2]^T + ax[3]ax[3]^T. Where
-      // //ax[0]=n, ax[1]=gamma*e0/|e0|, ax[2]=gamma (n x e0/|n x e0|), ax[3]=v- (v.n)n
-      // //So in total
-      // // H=n*n^T + gamma^2( e0e0^T/|e0|^2+(n x e0)(n x e0)^T/|(n x e0)|^2) + (v- (v.n)n)(v- (v.n)n)^T.
-      // // How come? What do we get in our case?
-      // FMLOG("H[0]\t" << H[0] << endl); // Prints H
-      // FMLOG("H[1]\t" << H[1] << endl);
-      // FMLOG("H[2]\t" << H[2] << endl);
-      // adjugate(H, aH); // aH = adj(H)
-      // FMLOG("aH[0]\t" << aH[0] << endl);
-      // FMLOG("aH[1]\t" << aH[1] << endl);
-      // FMLOG("aH[2]\t" << aH[2] << endl);
+      std::cout << "Manifold mesh." << std::endl;
+    if (v_magnitude < EPSILON) {
+        H[0] = Point(1.0, 0.0, 0.0);
+        H[1] = Point(0.0, 1.0, 0.0);
+        H[2] = Point(0.0, 0.0, 1.0);
+        aH[0] = Point(1.0, 0.0, 0.0);
+        aH[1] = Point(0.0, 1.0, 0.0);
+        aH[2] = Point(0.0, 0.0, 1.0);
+      } else {
+        // Used correspondednce between old and new parametrization to calculate H.
+        // Does this hold for manifolds?
+        double t_gamma = -log(v_magnitude);
+        t_vec.rescale(1/ v_magnitude);
+        Point ax[4];
+        Point n;
+        Vec::cross(ax[0], e[1], e[2]); //ax[0] = e1 x e2
+        Vec::cross(ax[1], e[2], e[0]); //ax[1] = e2 x e0
+        Vec::cross(ax[2], e[0], e[1]); //ax[2] = e0 x e1
+        Vec::accum(ax[0], ax[1]); //ax[0] = ax[0] + ax[1]
+        Vec::accum(ax[0], ax[2]); //ax[0] = ax[0] + ax[2], in total ax[0] = e1 x e2 + e2 x e0 + e0 x e1
+        n.scale(ax[0], 1.0 / ax[0].length()); //n = ax[0]/|ax[0]| average unit normal vector
+        ax[1] = e[0];
+        ax[1].rescale(1.0 / ax[1].length()); //ax[1] = e0/|e0|
+        Vec::cross(ax[2], n, ax[1]); //ax[2] = n x ax[1]
+        ax[2].rescale(1.0 / ax[2].length());//ax[2] = ax[2]/|ax[2]|
+        ax[1].rescale(t_gamma);//ax[1] = gamma*ax[1]
+        ax[2].rescale(t_gamma);//ax[2] = gamma*ax[2]
+        ax[0] = n;// Sets ax[0] to unit normal vector n
+        t_vec.accum(n, -Vec::scalar(n, t_vec)); //v= v- (v.n)n
+        ax[3] = t_vec;//ax[3] = v
+        crossmultiply(ax, H, 4);
+        //H = ax[0]ax[0]^T + ax[1]ax[1]^T + ax[2]ax[2]^T + ax[3]ax[3]^T. Where
+        //ax[0]=n, ax[1]=gamma*e0/|e0|, ax[2]=gamma (n x e0/|n x e0|), ax[3]=v- (v.n)n
+        //So in total
+        // H=n*n^T + gamma^2( e0e0^T/|e0|^2+(n x e0)(n x e0)^T/|(n x e0)|^2) + (v- (v.n)n)(v- (v.n)n)^T.
+        // How come? What do we get in our case?
+        FMLOG("H[0]\t" << H[0] << endl);
+        FMLOG("H[1]\t" << H[1] << endl);
+        FMLOG("H[2]\t" << H[2] << endl);
+        adjugate(H, aH); // aH = adj(H)
+        FMLOG("aH[0]\t" << aH[0] << endl);
+        FMLOG("aH[1]\t" << aH[1] << endl);
+        FMLOG("aH[2]\t" << aH[2] << endl);
+      }
       break;
     }
 
