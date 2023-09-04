@@ -39,7 +39,7 @@ test_that("GMRF methods, anisotropic", {
     max.edge = 0.5
   )
 
-  Q <- fm_aniso_precision(mesh,  list(rep(1, mesh$n),matrix(1, mesh$n, 2)))
+  Q <- fm_aniso_precision(mesh,  list(rep(1, mesh$n), matrix(1, mesh$n, 2)))
   expect_equal(dim(Q), c(1, 1) * fm_dof(mesh))
 
   set.seed(12345L)
