@@ -16,7 +16,7 @@ test_that("Basic 2d FEM works", {
   ))
   names_aniso <- union(names_fem, c("g1aniso", "g2aniso"))
   expect_setequal(names(fem2), names_aniso)
-  
+
   fem3 <- fm_fem_aniso(mesh, aniso = list(
     kappa = rep(1, mesh$n),
     v = matrix(1, mesh$n, 3)
@@ -24,7 +24,6 @@ test_that("Basic 2d FEM works", {
   names_aniso2 <- c("c0", "c1", "g1", "g2", "ta", "va")
   expect_setequal(names(fem3), names_aniso2)
 })
-  
 
 test_that("Basic 1d FEM works", {
   names_fem0 <- c("c0", "c1", "g1", "g2")
