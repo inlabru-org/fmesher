@@ -345,12 +345,12 @@ int extract_segments(const MCQsegm &seg, Matrix<int> *segm,
   }
 
   intDartMapT map_v0_d;
-  for (MCQsegm::const_iterator ci = seg.begin(); ci != seg.end(); ci++) {
-    map_v0_d.insert(intDartPairT(ci->first.v(), ci->first));
+  for (auto&& ci : seg) {
+    map_v0_d.insert(intDartPairT(ci.first.v(), ci.first));
   }
 
   int segm_initial = segm->rows();
-  for (intDartMapT::iterator i = map_v0_d.begin(); i != map_v0_d.end();
+  for (auto i = map_v0_d.begin(); i != map_v0_d.end();
        i = map_v0_d.begin()) {
     Dart d;
     for (; i != map_v0_d.end(); i = find_next_dart_in_set(d, map_v0_d)) {
@@ -1464,9 +1464,8 @@ bool MeshC::LOP(const triangleSetT &t_set) {
   /* Locate interior edges */
   Dart dh, dh2;
   MCQswapableD swapable(this);
-  for (triangleSetT::const_iterator ci = t_set.begin(); ci != t_set.end();
-       ci++) {
-    dh = Dart(*M_, (*ci));
+  for (auto&& ci : t_set) {
+    dh = Dart(*M_, ci);
     for (int vi = 0; vi < 3; vi++) {
       dh2 = dh;
       dh2.orbit1();
@@ -1610,8 +1609,8 @@ Dart MeshC::CDTInsertSegment(const DartPair &dp, const DartList &trace,
     return ds;
   }
 
-  for (DartList::const_iterator i(trace.begin()); i != trace.end(); i++) {
-    dh = *i;
+  for (auto&& i : trace) {
+    dh = i;
     triangles.insert(dh.t());
 
 #ifdef FMESHER_WITH_X
@@ -1857,8 +1856,8 @@ int MeshC::CDTSplitSegment(const DartPair &dp, const DartList &trace) {
   bool split(false);
   double delta;
   int dhv1;
-  for (DartList::const_iterator i(trace.begin()); i != trace.end(); i++) {
-    dh = *i;
+  for (auto&& i : trace) {
+    dh = i;
     FMLOG("Testing edge for interference: " << dh << endl)
 
     FMLOG("Testing vertex for interference: " << dh.v() << endl);
@@ -2050,7 +2049,7 @@ bool MeshC::buildCDT() {
   FMESHER_R_INTERRUPT_CHECKER(10000);
 
   constrListT::iterator ci_next;
-  for (constrListT::iterator ci = constr_boundary_.begin();
+  for (auto ci = constr_boundary_.begin();
        ci != constr_boundary_.end();) {
     FMESHER_R_INTERRUPT_CHECK;
     FMLOG("Trying to add boundary segment: " << ci->first.first << ","
@@ -2067,7 +2066,7 @@ bool MeshC::buildCDT() {
       ci++;
     }
   }
-  for (constrListT::iterator ci = constr_interior_.begin();
+  for (auto ci = constr_interior_.begin();
        ci != constr_interior_.end();) {
     FMESHER_R_INTERRUPT_CHECK;
     FMLOG("Trying to add interior segment: " << ci->first.first << ","
@@ -2101,8 +2100,8 @@ bool MeshC::buildCDT() {
 bool MeshC::buildRCDTlookahead(MCQsegm *segm, const Point &c) {
   FMLOG("Checking for potentially encroached segments at ("
         << c[0] << ',' << c[1] << ',' << c[2] << ")" << endl);
-  for (MCQ::const_iterator ci = segm->begin(); ci != segm->end(); ci++) {
-    Dart dhc(ci->first);
+  for (auto&& ci : *segm) {
+    Dart dhc(ci.first);
     double encr = M_->edgeEncroached(dhc, c);
     if (encr > 0.0) {
       FMLOG("Potentially encroached segment: " << dhc << " " << encr << endl);
@@ -2265,7 +2264,7 @@ bool MeshC::PruneExterior() {
   triangleSetT ext;
 
   /* Unlink the exterior. */
-  for (MCQsegm::const_iterator boundary_segm_i = boundary_.begin();
+  for (auto boundary_segm_i = boundary_.begin();
        boundary_segm_i != boundary_.end();
        boundary_segm_i = ++boundary_.find(d0)) {
     d0 = boundary_segm_i->first;
@@ -2285,7 +2284,7 @@ bool MeshC::PruneExterior() {
   /* Remove exterior triangles. */
   int t_relocated;
   triangleSetT::iterator ext_j;
-  for (triangleSetT::iterator ext_i = ext.begin(); ext_i != ext.end();
+  for (auto ext_i = ext.begin(); ext_i != ext.end();
        ext_i = ext.begin()) {
     dh = Dart(*M_, *ext_i);
     if (!dh.onBoundary())
@@ -2802,10 +2801,9 @@ std::ostream &operator<<(std::ostream &output, const MCQ &Q) {
   if (Q.empty())
     return output;
   output << "N,n = " << Q.count() << "," << Q.countQ() << endl;
-  for (MCQ::map_type::const_iterator qi = Q.darts_.begin();
-       qi != Q.darts_.end(); qi++) {
-    output << ' ' << qi->first << ' ' << std::scientific << qi->second << ' '
-           << Q.foundQ(qi->first) << endl;
+  for (auto&& qi : Q.darts_) {
+    output << ' ' << qi.first << ' ' << std::scientific << qi.second << ' '
+           << Q.foundQ(qi.first) << endl;
   }
   return output;
 }
@@ -2819,28 +2817,30 @@ std::ostream &operator<<(std::ostream &output, const DartList &ds) {
   output << "n = " << ds.size() << endl;
   if (ds.empty())
     return output;
-  for (DartList::const_iterator di = ds.begin(); di != ds.end(); di++) {
-    output << ' ' << *di << endl;
+  for (auto&& di : ds) {
+    output << ' ' << di << endl;
   }
   return output;
 }
 
-std::ostream &operator<<(std::ostream &output, const std::set<int> &il) {
+template <class T>
+std::ostream &operator<<(std::ostream &output, const std::set<T> &il) {
   output << "(n = " << il.size() << ")";
   if (il.empty())
     return output;
-  for (std::set<int>::const_iterator i = il.begin(); i != il.end(); i++) {
-    output << ' ' << *i;
+  for (auto&& i : il) {
+    output << ' ' << i;
   }
   return output;
 }
 
-std::ostream &operator<<(std::ostream &output, const std::list<int> &il) {
+template <class T>
+std::ostream &operator<<(std::ostream &output, const std::list<T> &il) {
   output << "(n = " << il.size() << ")";
   if (il.empty())
     return output;
-  for (std::list<int>::const_iterator i = il.begin(); i != il.end(); i++) {
-    output << ' ' << *i;
+  for (auto&& i : il) {
+    output << ' ' << i;
   }
   return output;
 }
@@ -2850,36 +2850,14 @@ std::ostream &operator<<(std::ostream &output, const IntPair &p) {
   return output;
 }
 
-std::ostream &operator<<(std::ostream &output, const std::list<IntPair> &il) {
-  output << "(n = " << il.size() << ")";
-  if (il.empty())
-    return output;
-  for (std::list<IntPair>::const_iterator i = il.begin(); i != il.end(); i++) {
-    output << " " << *i;
-  }
-  return output;
-}
-
+template <class S, class T>
 std::ostream &operator<<(std::ostream &output,
-                         const MCQsegm::meta_map_type &il) {
+                         const std::map<S, T> &il) {
   output << "(n = " << il.size() << ")" << endl;
   if (il.empty())
     return output;
-  for (MCQsegm::meta_map_type::const_iterator qi = il.begin(); qi != il.end();
-  qi++) {
-    output << ' ' << qi->first << ' ' << qi->second << endl;
-  }
-  return output;
-}
-
-std::ostream &operator<<(std::ostream &output,
-                         const MCQ::map_type &il) {
-  output << "(n = " << il.size() << ")" << endl;
-  if (il.empty())
-    return output;
-  for (MCQ::map_type::const_iterator qi = il.begin(); qi != il.end();
-  qi++) {
-    output << ' ' << qi->first << ' ' << qi->second << endl;
+  for (auto&& qi : il) {
+    output << ' ' << qi.first << ' ' << qi.second << endl;
   }
   return output;
 }

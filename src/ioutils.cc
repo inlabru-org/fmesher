@@ -113,14 +113,13 @@ IOHelperC &IOHelperC::OL(std::ostream &output) {
   if ((h.elems == 0) || (!cM_)) {
     return *this;
   }
-  for (MatrixC::outputT::const_iterator outi = cM_->output_.begin();
-       outi != cM_->output_.end(); ++outi) {
+  for (auto&& outi : cM_->output_) {
     if (bin_) {
-      int string_size = (*outi).length() + 1;
+      int string_size = outi.length() + 1;
       output.write((char *)&string_size, sizeof(string_size));
-      output.write((char *)(*outi).c_str(), sizeof(char) * string_size);
+      output.write((char *)outi.c_str(), sizeof(char) * string_size);
     } else {
-      output << *outi << std::endl;
+      output << outi << std::endl;
     }
   }
   return *this;
@@ -155,9 +154,8 @@ IOHelperC &IOHelperC::OD(std::ostream &output) {
   if ((h.elems == 0) || (!cM_)) {
     return *this;
   }
-  for (MatrixC::outputT::const_iterator outi = cM_->output_.begin();
-       outi != cM_->output_.end(); ++outi) {
-    const MCC &mcc = *(cM_->coll_.find(*outi)->second);
+  for (auto&& outi : cM_->output_) {
+    const MCC &mcc = *(cM_->coll_.find(outi)->second);
     if (mcc.info.datatype == IODatatype_dense)
       if (mcc.info.valuetype == IOValuetype_int) {
         IOHelperM<int> ioh;
@@ -187,7 +185,7 @@ IOHelperC &IOHelperC::ID(std::istream &input) {
   if ((!M_) || (h.elems == 0)) {
     return *this;
   }
-  for (listT::iterator listi = list_.begin(); listi != list_.end(); ++listi) {
+  for (auto&& listi : list_) {
 
     IOHelper<int> ioh_;
     ioh_.binary(bin_).IH(input);
@@ -195,20 +193,20 @@ IOHelperC &IOHelperC::ID(std::istream &input) {
     if (ioh_.h_.datatype == IODatatype_dense)
       if (ioh_.h_.valuetype == IOValuetype_int) {
         IOHelperM<int> ioh;
-        ioh.D(&(M_->DI(*listi)));
+        ioh.D(&(M_->DI(listi)));
         ioh.binary(bin_).IH(ioh_.h_).ID(input);
       } else {
         IOHelperM<double> ioh;
-        ioh.D(&(M_->DD(*listi)));
+        ioh.D(&(M_->DD(listi)));
         ioh.binary(bin_).IH(ioh_.h_).ID(input);
       }
     else if (ioh_.h_.valuetype == IOValuetype_int) {
       IOHelperSM<int> ioh;
-      ioh.D(&(M_->SI(*listi)));
+      ioh.D(&(M_->SI(listi)));
       ioh.binary(bin_).IH(ioh_.h_).ID(input);
     } else {
       IOHelperSM<double> ioh;
-      ioh.D(&(M_->SD(*listi)));
+      ioh.D(&(M_->SD(listi)));
       ioh.binary(bin_).IH(ioh_.h_).ID(input);
     }
   }
@@ -271,8 +269,8 @@ bool MatrixC::activate(std::string name) {
 }
 
 void MatrixC::activate() {
-  for (collT::iterator colli = coll_.begin(); colli != coll_.end(); ++colli) {
-    colli->second->info.active = true;
+  for (auto&& colli : coll_) {
+    colli.second->info.active = true;
   }
 }
 
@@ -299,9 +297,8 @@ void MatrixC::load_file(std::string filename, bool only_list) {
   }
 
   /* Populate source_ */
-  for (IOHelperC::listT::const_iterator listi = ioh.list_.begin();
-       listi != ioh.list_.end(); ++listi) {
-    source_[(*listi)] = filename;
+  for (auto&& listi : ioh.list_) {
+    source_[listi] = filename;
   }
 }
 
@@ -393,15 +390,15 @@ MatrixC &MatrixC::dont_output(std::string name) {
 MatrixC &MatrixC::output(std::string name) {
   if (name == "-") {
     output_all_ = true;
-    for (collT::iterator colli = coll_.begin(); colli != coll_.end(); ++colli) {
-      if (colli->second->info.active)
-        output_.insert(colli->first);
+    for (auto&& colli : coll_) {
+      if (colli.second->info.active)
+        output_.insert(colli.first);
     }
   } else if (name == "--") {
     output_all_ = true;
-    for (collT::iterator colli = coll_.begin(); colli != coll_.end(); ++colli) {
-      if (activate(colli->first))
-        output_.insert(colli->first);
+    for (auto&& colli : coll_) {
+      if (activate(colli.first))
+        output_.insert(colli.first);
     }
   } else {
     if (info(name).loaded) {
@@ -470,18 +467,17 @@ void MatrixC::input_raw(std::string name, std::string specification,
 void MatrixC::save() {
   /* Write the matrix collection to output */
   if (output_prefix_ != "-") {
-    for (outputT::const_iterator outi = output_.begin(); outi != output_.end();
-         ++outi) {
-      MCC &mcc = *(coll_.find(*outi)->second);
+    for (auto&& outi : output_) {
+      MCC &mcc = *(coll_.find(outi)->second);
       if (mcc.info.datatype == IODatatype_dense)
         if (mcc.info.valuetype == IOValuetype_int)
-          save_M((output_prefix_ + (*outi)), mcc.DI(), mcc.info, bin_out_);
+          save_M((output_prefix_ + outi), mcc.DI(), mcc.info, bin_out_);
         else
-          save_M((output_prefix_ + (*outi)), mcc.DD(), mcc.info, bin_out_);
+          save_M((output_prefix_ + outi), mcc.DD(), mcc.info, bin_out_);
       else if (mcc.info.valuetype == IOValuetype_int)
-        save_SM((output_prefix_ + (*outi)), mcc.SI(), mcc.info, bin_out_);
+        save_SM((output_prefix_ + outi), mcc.SI(), mcc.info, bin_out_);
       else
-        save_SM((output_prefix_ + (*outi)), mcc.SD(), mcc.info, bin_out_);
+        save_SM((output_prefix_ + outi), mcc.SD(), mcc.info, bin_out_);
     }
   }
   if (output_file_ != "") {
@@ -568,19 +564,17 @@ MCCInfo MatrixC::info(std::string name) const {
 SEXP MatrixC::Rcpp_wrap() const {
   /* Convert the matrix collection to a list of R objects */
   Rcpp::List res;
-  for (outputT::const_iterator outi = output_.begin();
-       outi != output_.end();
-       ++outi) {
-    const MCC &mcc = *(coll_.find(*outi)->second);
+  for (auto&& outi : output_) {
+    const MCC &mcc = *(coll_.find(outi)->second);
     if (mcc.info.datatype == IODatatype_dense) {
       if (mcc.info.valuetype == IOValuetype_int)
-        res[(*outi)] = Rcpp::wrap(mcc.DI());
+        res[outi] = Rcpp::wrap(mcc.DI());
       else
-        res[(*outi)] = Rcpp::wrap(mcc.DD());
+        res[outi] = Rcpp::wrap(mcc.DD());
     } else if (mcc.info.valuetype == IOValuetype_int) {
-      res[(*outi)] = Rcpp::wrap(mcc.SI());
+      res[outi] = Rcpp::wrap(mcc.SI());
     } else
-      res[(*outi)] = Rcpp::wrap(mcc.SD());
+      res[outi] = Rcpp::wrap(mcc.SD());
   }
   return res;
 }
@@ -623,10 +617,8 @@ void MatrixC::attach(std::string name, SEXP from) {
 void MatrixC::attach(SEXP from) {
     Rcpp::List from_list = Rcpp::as<Rcpp::List>(from);
   Rcpp::CharacterVector from_names = from_list.names();
-  for (auto elem = from_names.begin();
-       elem != from_names.end();
-       elem++) {
-    std::string the_name = Rcpp::as<std::string>(*elem);
+  for (auto&& elem : from_names) {
+    std::string the_name = Rcpp::as<std::string>(elem);
     (*this).attach(the_name, from_list[the_name]);
   }
 }
