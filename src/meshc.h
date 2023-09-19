@@ -457,9 +457,12 @@ std::ostream &operator<<(std::ostream &output, const MeshC &MC);
 std::ostream &operator<<(std::ostream &output, const IntPair &p);
 std::ostream &operator<<(std::ostream &output, const DartPair &dp);
 std::ostream &operator<<(std::ostream &output, const DartList &ds);
-std::ostream &operator<<(std::ostream &output, const std::set<int> &il);
-std::ostream &operator<<(std::ostream &output, const std::list<int> &il);
-std::ostream &operator<<(std::ostream &output, const std::list<IntPair> &il);
+template <class S, class T>
+std::ostream &operator<<(std::ostream &output, const std::map<S, T> &il);
+template <class T>
+std::ostream &operator<<(std::ostream &output, const std::set<T> &il);
+template <class T>
+std::ostream &operator<<(std::ostream &output, const std::list<T> &il);
 
 } /* namespace fmesh */
 
