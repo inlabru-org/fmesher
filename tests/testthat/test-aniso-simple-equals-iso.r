@@ -43,4 +43,3 @@ test_that("G2 matrix is equal", {
   expect_equal(fem1$g2, fem3$g2, label = "fem1$g2 is not equal to fem3$g2")
   expect_equal(fem2$g2, fem3$g2, label = "fem2$g2 is not equal to fem3$g2")
 })
-
