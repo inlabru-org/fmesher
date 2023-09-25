@@ -2532,10 +2532,10 @@ void Mesh::calcCaniso(SparseMatrix<double> &C0_kappa, SparseMatrix<double> &C_ka
     }
 }
 // This functions calculates the H matrix corresponding to an anisotropic operator
-void calcHaniso(Point (&H)[3], Point (&aH)[3], const Point t_vec, const double v_magnitude) {
+void Mesh::calcHaniso(Point (&H)[3], Point (&aH)[3], const Point t_vec, const double v_magnitude) const {
     // Pre-calculate common terms
     double cosh_val = std::cosh(v_magnitude);
-    double sinh_over_magnitude = sinh_over_magnitude / v_magnitude;
+    double sinh_over_magnitude = std::sinh(v_magnitude) / v_magnitude;
 
     // Calculate H= cosh( |v|) Id+ \sinh(|v|)/|v| [[v_1,v_2 ][v_2,-v_1]]
     H[0] = Point(cosh_val + sinh_over_magnitude * t_vec[1], sinh_over_magnitude * t_vec[2], 0.0);
@@ -2590,7 +2590,7 @@ void Mesh::calcGaniso(SparseMatrix < double > & G_H,
     const double EPSILON = 1e-6; //If v_magnitude is small, then H[0] is used instead of H. H[epsilion] \sim H[0]=Id.
     switch (type()) {
     case Mesh::Mtype_plane:
-      std::cout << "Planar mesh." << std::endl;
+      // std::cout << "Planar mesh." << std::endl;
       if (v_magnitude < EPSILON) {
         H[0] = Point(1.0, 0.0, 0.0);
         H[1] = Point(0.0, 1.0, 0.0);
@@ -2600,14 +2600,14 @@ void Mesh::calcGaniso(SparseMatrix < double > & G_H,
         aH[2] = Point(0.0, 0.0, 0.0);
       } else {
         // Calculates H= cosh( |v|) Id+ \sinh(|v|)/|v| [[v_1,v_2 ][v_2,-v_1]]
-        calcHaniso(H, aH, t_vec, v_magnitude)
+        calcHaniso(H, aH, t_vec, v_magnitude);
       }
       break;
     // Does this case do anything? It seems to go immediately to the next case.
     case Mesh::Mtype_sphere:
-      std::cout << "Spherical mesh." << std::endl;
+     // std::cout << "Spherical mesh." << std::endl;
     case Mesh::Mtype_manifold:
-      std::cout << "Manifold mesh." << std::endl;
+     // std::cout << "Manifold mesh." << std::endl;
     if (v_magnitude < EPSILON) {
         H[0] = Point(1.0, 0.0, 0.0);
         H[1] = Point(0.0, 1.0, 0.0);

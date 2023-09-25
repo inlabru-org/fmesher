@@ -296,7 +296,8 @@ public:
   void calcQblocksAni(SparseMatrix<double> &G1, const Matrix<double> &gamma,
                       const Matrix<double> &vec) const;
   void calcCaniso(SparseMatrix<double> &C0_kappa, SparseMatrix<double> &C_kappa,
-                       const Matrix<double> &kappa, Matrix<double> &Tareas) const;                    
+                       const Matrix<double> &kappa, Matrix<double> &Tareas) const;
+  void calcHaniso(Point (&H)[3], Point (&aH)[3], const Point t_vec, const double v_magnitude) const;
   void calcGaniso(SparseMatrix<double> &G_H,
                       const Matrix<double> &vec) const;
   void calcGradientMatrices(SparseMatrix<double> **D) const;
