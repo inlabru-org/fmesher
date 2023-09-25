@@ -2565,13 +2565,13 @@ void Mesh::calcGaniso(SparseMatrix < double > & G_H,
     }
 
     // Calculate v magnitude
-    double v_magnitude = sqrt(t_vec[0] * t_vec[0] + t_vec[1] * t_vec[1]);
+    double v_magnitude = t_vec.length();
 
-    // Convert v (now called t_vec) to its half-angle version
-    double alpha = atan2(t_vec[1], t_vec[0]) / 2.0;
-    t_vec[0] = cos(alpha);
-    t_vec[1] = sin(alpha);
-    t_vec.rescale(v_magnitude);
+    // // Convert v (now called t_vec) to its half-angle version
+    // double alpha = atan2(t_vec[1], t_vec[0]) / 2.0;
+    // t_vec[0] = cos(alpha);
+    // t_vec[1] = sin(alpha);
+    // t_vec.rescale(v_magnitude);
 
     Point H[3];
     Point aH[3];
@@ -2590,11 +2590,13 @@ void Mesh::calcGaniso(SparseMatrix < double > & G_H,
         aH[2] = Point(0.0, 0.0, 0.0);
       } else {
         // Calculates H= cosh( |v|) Id+ \sinh(|v|)/|v| [[v_1,v_2 ][v_2,-v_1]]
+        // dont calculate exponentials multiple times
+        // a =exp(v_magnitude);
         H[0] = Point(cosh(v_magnitude) + sinh(v_magnitude) / v_magnitude * t_vec[1], sinh(v_magnitude) * t_vec[2], 0.0);
         H[1] = Point(sinh(v_magnitude) * t_vec[2], cosh(v_magnitude) - sinh(v_magnitude) / v_magnitude * t_vec[1], 0.0);
         H[2] = Point(0.0, 0.0, 0.0);
 
-        // Calculates adj(H)
+        // Calculates adj(H), pick elements
         aH[0] = Point(cosh(v_magnitude) - sinh(v_magnitude) / v_magnitude * t_vec[1], -sinh(v_magnitude) * t_vec[2], 0.0);
         aH[1] = Point(-sinh(v_magnitude) * t_vec[2], cosh(v_magnitude) + sinh(v_magnitude) / v_magnitude * t_vec[1], 0.0);
         aH[2] = Point(0.0, 0.0, 0.0);
