@@ -259,9 +259,9 @@ void remap_vertex_indices(const Matrix<int> &idx, constrListT &segm) {
   FMLOG("Remapping vertex indices constraint segments." << endl);
   FMLOG("Index size: " << idx.rows() << ", " << idx.cols() << endl);
   FMLOG("Segment size: " << segm.size() << endl);
-  for (constrListT::iterator i = segm.begin(); i != segm.end(); i++) {
-    (*i).first.first = idx[(*i).first.first][0];
-    (*i).first.second = idx[(*i).first.second][0];
+  for (auto&& i : segm) {
+    i.first.first = idx[i.first.first][0];
+    i.first.second = idx[i.first.second][0];
   }
   FMLOG("Done remapping constraint indices." << endl);
 }
@@ -361,8 +361,7 @@ void split_line_segments_on_triangles(
     }
 
     /* Middle sub-segments */
-    for (DartList::const_iterator dti(dart_trace.begin());
-         dti != dart_trace.end(); ++dti) {
+    for (auto&&dti : dart_trace) {
       FMLOG("Making middle subsegment, split on" << endl
                                                  << " " << *dti << std::endl);
       s_curr = s_next;
@@ -370,12 +369,12 @@ void split_line_segments_on_triangles(
                              << " " << s_curr << endl
                              << " " << s1 << endl);
       FMLOG("Edge to split on:" << endl
-                                << " " << M.S((*dti).v()) << endl
-                                << " " << M.S((*dti).vo()) << endl);
-      M.edgeIntersection(s_curr, s1, M.S((*dti).v()), M.S((*dti).vo()), s_next);
+                                << " " << M.S(dti.v()) << endl
+                                << " " << M.S(dti.vo()) << endl);
+      M.edgeIntersection(s_curr, s1, M.S(dti.v()), M.S(dti.vo()), s_next);
       FMLOG("Split result = " << s_next << endl);
-      M.barycentric(*dti, s_curr, b1);
-      M.barycentric(*dti, s_next, b2);
+      M.barycentric(dti, s_curr, b1);
+      M.barycentric(dti, s_next, b2);
       //
       ++i_idx_curr;
       idx1(i_idx_curr, 0) = i_loc_curr;
@@ -387,7 +386,7 @@ void split_line_segments_on_triangles(
         bary2(i_idx_curr, di) = b2[di];
       }
       origin1(i_idx_curr, 0) = i;
-      triangle1(i_idx_curr, 0) = (*dti).t();
+      triangle1(i_idx_curr, 0) = dti.t();
     }
     /* Final sub-segment, or both points in the same triangle */
     if (!endpoints.second.isnull()) {

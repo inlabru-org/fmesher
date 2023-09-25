@@ -447,8 +447,8 @@ public:
   void attach(std::string name, SEXP from);
 #endif
   ~MatrixC() {
-    for (collT::iterator colli = coll_.begin(); colli != coll_.end(); ++colli) {
-      delete colli->second;
+    for (auto&& colli : coll_) {
+      delete colli.second;
     }
   };
 

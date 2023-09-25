@@ -740,9 +740,8 @@ std::ostream &operator<<(std::ostream &output, SegmentSet<VT> &segm) {
   output << "(" << segm.data_.size() << ")";
   if (segm.data_.size() > 0) {
     output << "  ( ";
-    for (typename SegmentSet<VT>::set_type::iterator i = segm.data_.begin();
-         i != segm.data_.end(); ++i) {
-      output << (*i) << " ";
+    for (auto&& i : segm.data_) {
+      output << i << " ";
     }
     output << ")" << std::endl;
   } else
@@ -756,16 +755,12 @@ std::ostream &operator<<(std::ostream &output, OrderedSegmentSet<VT> &segm) {
   output << "(" << segm.L_data_.size() << ")";
   if (segm.L_data_.size() > 0) {
     output << " L=( ";
-    for (typename OrderedSegmentSet<VT>::L_map_type::iterator i =
-             segm.L_data_.begin();
-         i != segm.L_data_.end(); ++i) {
-      output << (*i).second << " ";
+    for (auto&& i : segm.L_data_) {
+      output << i.second << " ";
     }
     output << ") R=( ";
-    for (typename OrderedSegmentSet<VT>::R_map_type::iterator i =
-             segm.R_data_.begin();
-         i != segm.R_data_.end(); ++i) {
-      output << (*i).second << " ";
+    for (auto&& i : segm.R_data_) {
+      output << i.second << " ";
     }
     output << ")" << std::endl;
   } else

@@ -404,8 +404,8 @@ public:
         nnz_ = 1;
       }
     } else if (matrixt == IOMatrixtype_symmetric) {
-      for (ColCIter c = data_.begin(); c != data_.end(); c++)
-        if (r <= c->first)
+      for (auto&& c : data_)
+        if (r <= c.first)
           nnz_++;
     } else {
       nnz_ = data_.size();
@@ -423,10 +423,10 @@ public:
         elem++;
       }
     } else {
-      for (ColCIter col = data_.begin(); col != data_.end(); col++) {
-        if ((matrixt == IOMatrixtype_general) || (row <= col->first)) {
+      for (auto&& col : data_) {
+        if ((matrixt == IOMatrixtype_general) || (row <= col.first)) {
           MT(offset + elem) =
-            SparseMatrixTriplet<T>(row, col->first, col->second);
+            SparseMatrixTriplet<T>(row, col.first, col.second);
           elem++;
         }
       }
@@ -446,9 +446,9 @@ public:
         elem++;
       }
     } else {
-      for (ColCIter col = data_.begin(); col != data_.end(); col++) {
-        if ((matrixt == IOMatrixtype_general) || (row <= col->first)) {
-          MT.push_back(Eigen::Triplet<T>(row, col->first, col->second));
+      for (auto&& col : data_) {
+        if ((matrixt == IOMatrixtype_general) || (row <= col.first)) {
+          MT.push_back(Eigen::Triplet<T>(row, col.first, col.second));
           elem++;
         }
       }
@@ -471,11 +471,11 @@ public:
         elem++;
       }
     } else {
-      for (ColCIter col = data_.begin(); col != data_.end(); col++) {
-        if ((matrixt == IOMatrixtype_general) || (row <= col->first)) {
+      for (auto&& col : data_) {
+        if ((matrixt == IOMatrixtype_general) || (row <= col.first)) {
           i.push_back(row);
-          j.push_back(col->first);
-          x.push_back(col->second);
+          j.push_back(col.first);
+          x.push_back(col.second);
           elem++;
         }
       }
@@ -497,11 +497,11 @@ public:
         elem++;
       }
     } else {
-      for (ColCIter col = data_.begin(); col != data_.end(); col++) {
-        if ((matrixt == IOMatrixtype_general) || (row <= col->first)) {
+      for (auto&& col : data_) {
+        if ((matrixt == IOMatrixtype_general) || (row <= col.first)) {
           Tr(offset + elem) = row;
-          Tc(offset + elem) = col->first;
-          Tv(offset + elem) = col->second;
+          Tc(offset + elem) = col.first;
+          Tv(offset + elem) = col.second;
           elem++;
         }
       }
@@ -914,9 +914,8 @@ template <class T>
 std::ostream &operator<<(std::ostream &output, const SparseMatrix<T> &M) {
   output << M.rows() << " " << M.cols() << " " << M.nnz() << std::endl;
   for (size_t row = 0; row < M.rows(); row++)
-    for (typename SparseMatrix<T>::ColCIter col = M[row].begin();
-         col != M[row].end(); col++) {
-      output << row << " " << col->first << " " << col->second << std::endl;
+    for (auto&& col : M[row]) {
+      output << row << " " << col.first << " " << col.second << std::endl;
     }
   return output;
 }
