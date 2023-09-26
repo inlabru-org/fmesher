@@ -622,9 +622,8 @@ private:
     return true;
   };
   void distribute_segments() {
-    for (typename segment_list_type::const_iterator si = segments_.begin();
-         si != segments_.end(); ++si) {
-      distribute_segment(tree_->root(), (*si));
+    for (const auto& si : segments_) {
+      distribute_segment(tree_->root(), si);
     }
   }
 
@@ -740,7 +739,7 @@ std::ostream &operator<<(std::ostream &output, SegmentSet<VT> &segm) {
   output << "(" << segm.data_.size() << ")";
   if (segm.data_.size() > 0) {
     output << "  ( ";
-    for (auto&& i : segm.data_) {
+    for (const auto& i : segm.data_) {
       output << i << " ";
     }
     output << ")" << std::endl;
@@ -755,11 +754,11 @@ std::ostream &operator<<(std::ostream &output, OrderedSegmentSet<VT> &segm) {
   output << "(" << segm.L_data_.size() << ")";
   if (segm.L_data_.size() > 0) {
     output << " L=( ";
-    for (auto&& i : segm.L_data_) {
+    for (const auto& i : segm.L_data_) {
       output << i.second << " ";
     }
     output << ") R=( ";
-    for (auto&& i : segm.R_data_) {
+    for (const auto& i : segm.R_data_) {
       output << i.second << " ";
     }
     output << ")" << std::endl;
