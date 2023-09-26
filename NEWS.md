@@ -1,5 +1,8 @@
 # fmesher (development version)
 
+* Fix bug in `fm_rcdt_2d_inla(..., extend = TRUE)` that geve different
+  defaults than `extend = list()` (version 0.1.2.9001)
+
 # fmesher 0.1.2
 
 * Various documentation improvements, in particular for INLA compatibility

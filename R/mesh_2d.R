@@ -177,6 +177,9 @@ handle_rcdt_options_inla <- function(
 
   cet_sides <- NULL
   cet_margin <- NULL
+  if (isTRUE(extend)) {
+    extend <- list()
+  }
   if (inherits(extend, "list")) {
     cet_sides <- ifelse(is.null(extend$n), 16L, as.integer(extend$n))
     cet_margin <- ifelse(is.null(extend$offset), -0.1, extend$offset)
@@ -255,7 +258,7 @@ handle_rcdt_options_inla <- function(
 #' used.
 #' @param extend `logical` or `list` specifying whether to extend the
 #' data region, with parameters \describe{ \item{list("n")}{the number of edges
-#' in the extended boundary (default=8)} \item{list("offset")}{the extension
+#' in the extended boundary (default=16)} \item{list("offset")}{the extension
 #' distance.  If negative, interpreted as a factor relative to the approximate
 #' data diameter (default=-0.10)} } Setting to `FALSE` is only useful in
 #' combination `lattice` or `boundary`.
