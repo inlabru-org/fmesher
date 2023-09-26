@@ -186,6 +186,9 @@ handle_rcdt_options_inla <- function(
   }
   options <- c(options, list(cet_sides = cet_sides, cet_margin = cet_margin))
 
+  if (isTRUE(refine)) {
+    refine <- list()
+  }
   if (inherits(refine, "list")) {
     rcdt_min_angle <- 0
     rcdt_max_edge <- 0
