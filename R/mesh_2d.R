@@ -528,7 +528,7 @@ fm_rcdt_2d_inla <- function(loc = NULL,
         )
       ),
       idx = idx,
-      crs = fm_crs(crs),
+      crs = fm_crs(crs)
     ),
     class = c("fm_mesh_2d", "inla.mesh")
   )
