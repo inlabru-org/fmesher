@@ -2489,7 +2489,8 @@ void Mesh::calcQblocksAni(SparseMatrix<double> &G1, const Matrix<double> &gamma,
   }
 }
 
-//This function calculates the C  matrix for the mesh
+/* This function calculates the C  matrices for the mesh
+C0= Lumped mass matrix, C=Mass matrix */
 void Mesh::calcCaniso(SparseMatrix<double> &C0_kappa, SparseMatrix<double> &C_kappa,
                        const Matrix<double> &kappa,
                        Matrix<double> &Tareas) const {
@@ -2498,8 +2499,8 @@ void Mesh::calcCaniso(SparseMatrix<double> &C0_kappa, SparseMatrix<double> &C_ka
   C_kappa.clear().rows(nV()).cols(nV());
   Tareas.clear().cols(1).rows(nT());
   Point e[3];
-  bool isKappaPointwise = kappa.rows() == nV();/* Boolean to check if vec is defined pointwise or trianglewise.
-     If vec is defined pointwise takes average and assigns to t_vec*/
+  bool isKappaPointwise = kappa.rows() == nV();/* Boolean to check if kappa is defined pointwise or trianglewise.
+     If kappa is defined pointwise takes average and assigns to t_kappa*/
   for (int t = 0; t < (int)nT(); t++) {
     const Int3Raw &tv = TV_[t].raw(); // Define triangle vertices mapping
     const Point &s0 = S_[tv[0]]; // Assign vertices of triangle
@@ -2548,7 +2549,8 @@ void Mesh::calcHaniso(Point (&H)[3], Point (&aH)[3], const Point t_vec, const do
     aH[2] = Point(0.0, 0.0, 0.0);
 }
 
-// This function calculates the FEM matrix G_{H} corresponding to the second order operator \nabla\cdot H\nabla
+/*This function calculates the FEM matrix G_{H} corresponding to
+the second order operator \nabla\cdot H\nabla */
 void Mesh::calcGaniso(SparseMatrix < double > & G_H,
   const Matrix < double > & vec) const {
   G_H.clear().rows(nV()).cols(nV());
@@ -2675,7 +2677,7 @@ void Mesh::calcGaniso(SparseMatrix < double > & G_H,
     // "Flat area" better approximation for use in G-calculation.
     double fa = Point().cross(e[0], e[1]).length() / 2.0;
 
-    // G_H = G_H + eij(4*fa). Calculation from Appendix A2 in 2011 paper
+    // G_H = G_H + eij/(4*fa). Calculation from Appendix A2 in 2011 paper
     double vij;
 
     for (int i = 0; i < 3; i++) {
