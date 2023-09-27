@@ -2,7 +2,9 @@
 
 * Fix bug in `fm_rcdt_2d_inla()` that gave different defaults for the `extend` and
   `refine` arguments when equal to `TRUE`, that should be treated the same as `list()`
-  (version 0.1.2.9001)
+  (version `0.1.2.9001`)
+* Fix bug in `fm_rcdt_2d_inla()` to properly update `n` basis counter element
+  when removing unused vertices. (version `0.1.2.9002`)
 
 # fmesher 0.1.2
 

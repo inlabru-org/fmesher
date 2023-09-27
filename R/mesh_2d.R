@@ -529,7 +529,6 @@ fm_rcdt_2d_inla <- function(loc = NULL,
       ),
       idx = idx,
       crs = fm_crs(crs),
-      n = nrow(result[["s"]])
     ),
     class = c("fm_mesh_2d", "inla.mesh")
   )
@@ -542,6 +541,7 @@ fm_rcdt_2d_inla <- function(loc = NULL,
       idx.map <- rep(NA, nrow(mesh$loc))
       idx.map[used] <- seq_len(length(used))
       mesh$loc <- mesh$loc[used, , drop = FALSE]
+      mesh$n <- nrow(mesh[["loc"]])
       mesh$graph$tv <-
         matrix(idx.map[as.vector(mesh$graph$tv)], nrow(mesh$graph$tv), 3)
       mesh$graph$vt <- mesh$graph$vt[used, , drop = FALSE]
