@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.2.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.2.9002</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -108,7 +108,7 @@ used.</p></dd>
 <dd><p><code>logical</code> or <code>list</code> specifying whether to extend the
 data region, with parameters</p><dl><dt>list("n")</dt>
 <dd><p>the number of edges
-in the extended boundary (default=8)</p></dd>
+in the extended boundary (default=16)</p></dd>
  <dt>list("offset")</dt>
 <dd><p>the extension
 distance.  If negative, interpreted as a factor relative to the approximate
@@ -208,10 +208,10 @@ different, and potentially change in the future.</p>
 <span class="r-in"><span><span class="fu">fm_delaunay_2d</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">30</span><span class="op">)</span>, <span class="fl">15</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> fm_mesh_2d object:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Manifold:	R2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   V / E / T:	15 / 36 / 22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   V / E / T:	15 / 35 / 21</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Euler char.:	1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Constraints:	6 boundary edges (1 group: 1), 0 boundary edges</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Bounding box: (-1.748896, 1.999804) x (-1.587876, 1.957489) x (0,0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Constraints:	7 boundary edges (1 group: 1), 0 boundary edges</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Bounding box: (-1.546633, 1.470469) x (-1.701314, 1.293622) x (0,0)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Basis d.o.f.:	15</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
