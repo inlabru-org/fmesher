@@ -2353,7 +2353,7 @@ void crossmultiply(const Point *ax, Point *H, int n) {
   }
 }
 
-void adjugate(const Point *H, Point *aH) {
+void adjugate(const Point (&H)[3], Point (&aH)[3]) {
   aH[0][0] = H[1][1] * H[2][2] - H[1][2] * H[2][1];
   aH[0][1] = H[1][2] * H[2][0] - H[1][0] * H[2][2];
   aH[0][2] = H[1][0] * H[2][1] - H[1][1] * H[2][0];
@@ -2363,6 +2363,17 @@ void adjugate(const Point *H, Point *aH) {
   aH[1][0] = aH[0][1];
   aH[2][0] = aH[0][2];
   aH[2][1] = aH[1][2];
+}
+void adjugate2(const Point (&H)[3], Point (&aH)[3]) {
+  aH[0][0] = H[1][1];
+  aH[0][1] = -H[0][1] ;
+  aH[0][2] = 0;
+  aH[1][1] = H[0][0] ;
+  aH[1][2] = 0;
+  aH[2][2] = 0;
+  aH[1][0] = -H[1][0];
+  aH[2][0] = 0;
+  aH[2][1] = 0;
 }
 
 void Mesh::calcQblocksAni(SparseMatrix<double> &G1, const Matrix<double> &gamma,
@@ -2533,20 +2544,21 @@ void Mesh::calcCaniso(SparseMatrix<double> &C0_kappa, SparseMatrix<double> &C_ka
     }
 }
 // This functions calculates the H matrix corresponding to an anisotropic operator
-void Mesh::calcHaniso(Point (&H)[3], Point (&aH)[3], const Point t_vec, const double v_magnitude) const {
+void Mesh::calcHaniso(Point (&H)[3], Point (&aH)[3], const Point  t_vec, const double v_magnitude) const {
     // Pre-calculate common terms
     double cosh_val = std::cosh(v_magnitude);
     double sinh_over_magnitude = std::sinh(v_magnitude) / v_magnitude;
 
     // Calculate H= cosh( |v|) Id+ \sinh(|v|)/|v| [[v_1,v_2 ][v_2,-v_1]]
-    H[0] = Point(cosh_val + sinh_over_magnitude * t_vec[1], sinh_over_magnitude * t_vec[2], 0.0);
-    H[1] = Point(sinh_over_magnitude * t_vec[2], cosh_val - sinh_over_magnitude * t_vec[1], 0.0);
-    H[2] = Point(0.0, 0.0, 0.0);
+    H[0] = Point(cosh_val + sinh_over_magnitude * t_vec[0], sinh_over_magnitude * t_vec[1], 0.0);
+    H[1] = Point(sinh_over_magnitude * t_vec[1], cosh_val - sinh_over_magnitude * t_vec[0], 0.0);
+    H[2] = Point(0.0, 0.0, 0);
+    FMLOG_("H="<<std::endl<<H[0]<<std::endl<<H[1]<<std::endl<<H[2]<<std::endl);
+
 
     // Calculate adj(H)
-    aH[0] = Point(H[1][1], - H[1][0], 0.0);
-    aH[1] = Point(-H[0][1], H[0][0], 0.0);
-    aH[2] = Point(0.0, 0.0, 0.0);
+    adjugate2(H,aH);
+    FMLOG_("aH="<<std::endl<<aH[0]<<std::endl<<aH[1]<<std::endl<<aH[2]<<std::endl);
 }
 
 /*This function calculates the FEM matrix G_{H} corresponding to
@@ -2573,7 +2585,8 @@ void Mesh::calcGaniso(SparseMatrix < double > & G_H,
     e[1].diff(s0, s2);
     e[2].diff(s1, s0);
 
-    bool isVecPointwise = vec.rows() == nV(); // Boolean to check if vec is defined pointwise or trianglewise.
+    // Boolean to check if vec is defined pointwise or trianglewise.
+    bool isVecPointwise = vec.rows() == nV();
     // If vec is defined pointwise takes average and assigns to t_vec
     if (isVecPointwise) {
       t_vec.sum(vec_(tv[0]), vec_(tv[1])).accum(vec_(tv[2]), 1.0);
