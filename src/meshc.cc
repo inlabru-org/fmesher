@@ -345,7 +345,7 @@ int extract_segments(const MCQsegm &seg, Matrix<int> *segm,
   }
 
   intDartMapT map_v0_d;
-  for (auto&& ci : seg) {
+  for (const auto& ci : seg) {
     map_v0_d.insert(intDartPairT(ci.first.v(), ci.first));
   }
 
@@ -1464,7 +1464,7 @@ bool MeshC::LOP(const triangleSetT &t_set) {
   /* Locate interior edges */
   Dart dh, dh2;
   MCQswapableD swapable(this);
-  for (auto&& ci : t_set) {
+  for (const auto& ci : t_set) {
     dh = Dart(*M_, ci);
     for (int vi = 0; vi < 3; vi++) {
       dh2 = dh;
@@ -1609,7 +1609,7 @@ Dart MeshC::CDTInsertSegment(const DartPair &dp, const DartList &trace,
     return ds;
   }
 
-  for (auto&& i : trace) {
+  for (const auto& i : trace) {
     dh = i;
     triangles.insert(dh.t());
 
@@ -1856,7 +1856,7 @@ int MeshC::CDTSplitSegment(const DartPair &dp, const DartList &trace) {
   bool split(false);
   double delta;
   int dhv1;
-  for (auto&& i : trace) {
+  for (const auto& i : trace) {
     dh = i;
     FMLOG("Testing edge for interference: " << dh << endl)
 
@@ -2100,7 +2100,7 @@ bool MeshC::buildCDT() {
 bool MeshC::buildRCDTlookahead(MCQsegm *segm, const Point &c) {
   FMLOG("Checking for potentially encroached segments at ("
         << c[0] << ',' << c[1] << ',' << c[2] << ")" << endl);
-  for (auto&& ci : *segm) {
+  for (const auto& ci : *segm) {
     Dart dhc(ci.first);
     double encr = M_->edgeEncroached(dhc, c);
     if (encr > 0.0) {
@@ -2801,7 +2801,7 @@ std::ostream &operator<<(std::ostream &output, const MCQ &Q) {
   if (Q.empty())
     return output;
   output << "N,n = " << Q.count() << "," << Q.countQ() << endl;
-  for (auto&& qi : Q.darts_) {
+  for (const auto& qi : Q.darts_) {
     output << ' ' << qi.first << ' ' << std::scientific << qi.second << ' '
            << Q.foundQ(qi.first) << endl;
   }
@@ -2817,7 +2817,7 @@ std::ostream &operator<<(std::ostream &output, const DartList &ds) {
   output << "n = " << ds.size() << endl;
   if (ds.empty())
     return output;
-  for (auto&& di : ds) {
+  for (const auto& di : ds) {
     output << ' ' << di << endl;
   }
   return output;
@@ -2828,7 +2828,7 @@ std::ostream &operator<<(std::ostream &output, const std::set<T> &il) {
   output << "(n = " << il.size() << ")";
   if (il.empty())
     return output;
-  for (auto&& i : il) {
+  for (const auto& i : il) {
     output << ' ' << i;
   }
   return output;
@@ -2839,7 +2839,7 @@ std::ostream &operator<<(std::ostream &output, const std::list<T> &il) {
   output << "(n = " << il.size() << ")";
   if (il.empty())
     return output;
-  for (auto&& i : il) {
+  for (const auto& i : il) {
     output << ' ' << i;
   }
   return output;
@@ -2856,7 +2856,7 @@ std::ostream &operator<<(std::ostream &output,
   output << "(n = " << il.size() << ")" << endl;
   if (il.empty())
     return output;
-  for (auto&& qi : il) {
+  for (const auto& qi : il) {
     output << ' ' << qi.first << ' ' << qi.second << endl;
   }
   return output;

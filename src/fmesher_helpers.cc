@@ -259,7 +259,7 @@ void remap_vertex_indices(const Matrix<int> &idx, constrListT &segm) {
   FMLOG("Remapping vertex indices constraint segments." << endl);
   FMLOG("Index size: " << idx.rows() << ", " << idx.cols() << endl);
   FMLOG("Segment size: " << segm.size() << endl);
-  for (auto&& i : segm) {
+  for (auto& i : segm) {
     i.first.first = idx[i.first.first][0];
     i.first.second = idx[i.first.second][0];
   }
@@ -361,9 +361,9 @@ void split_line_segments_on_triangles(
     }
 
     /* Middle sub-segments */
-    for (auto&&dti : dart_trace) {
+    for (const auto& dti : dart_trace) {
       FMLOG("Making middle subsegment, split on" << endl
-                                                 << " " << *dti << std::endl);
+                                                 << " " << dti << std::endl);
       s_curr = s_next;
       FMLOG("Line to split:" << endl
                              << " " << s_curr << endl

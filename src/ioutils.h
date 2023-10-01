@@ -447,7 +447,7 @@ public:
   void attach(std::string name, SEXP from);
 #endif
   ~MatrixC() {
-    for (auto&& colli : coll_) {
+    for (auto& colli : coll_) {
       delete colli.second;
     }
   };

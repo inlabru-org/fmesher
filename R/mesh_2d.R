@@ -177,12 +177,18 @@ handle_rcdt_options_inla <- function(
 
   cet_sides <- NULL
   cet_margin <- NULL
+  if (isTRUE(extend)) {
+    extend <- list()
+  }
   if (inherits(extend, "list")) {
     cet_sides <- ifelse(is.null(extend$n), 16L, as.integer(extend$n))
     cet_margin <- ifelse(is.null(extend$offset), -0.1, extend$offset)
   }
   options <- c(options, list(cet_sides = cet_sides, cet_margin = cet_margin))
 
+  if (isTRUE(refine)) {
+    refine <- list()
+  }
   if (inherits(refine, "list")) {
     rcdt_min_angle <- 0
     rcdt_max_edge <- 0
@@ -255,7 +261,7 @@ handle_rcdt_options_inla <- function(
 #' used.
 #' @param extend `logical` or `list` specifying whether to extend the
 #' data region, with parameters \describe{ \item{list("n")}{the number of edges
-#' in the extended boundary (default=8)} \item{list("offset")}{the extension
+#' in the extended boundary (default=16)} \item{list("offset")}{the extension
 #' distance.  If negative, interpreted as a factor relative to the approximate
 #' data diameter (default=-0.10)} } Setting to `FALSE` is only useful in
 #' combination `lattice` or `boundary`.
@@ -522,8 +528,7 @@ fm_rcdt_2d_inla <- function(loc = NULL,
         )
       ),
       idx = idx,
-      crs = fm_crs(crs),
-      n = nrow(result[["s"]])
+      crs = fm_crs(crs)
     ),
     class = c("fm_mesh_2d", "inla.mesh")
   )
@@ -536,6 +541,7 @@ fm_rcdt_2d_inla <- function(loc = NULL,
       idx.map <- rep(NA, nrow(mesh$loc))
       idx.map[used] <- seq_len(length(used))
       mesh$loc <- mesh$loc[used, , drop = FALSE]
+      mesh$n <- nrow(mesh[["loc"]])
       mesh$graph$tv <-
         matrix(idx.map[as.vector(mesh$graph$tv)], nrow(mesh$graph$tv), 3)
       mesh$graph$vt <- mesh$graph$vt[used, , drop = FALSE]

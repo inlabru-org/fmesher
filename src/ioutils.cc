@@ -113,7 +113,7 @@ IOHelperC &IOHelperC::OL(std::ostream &output) {
   if ((h.elems == 0) || (!cM_)) {
     return *this;
   }
-  for (auto&& outi : cM_->output_) {
+  for (const auto& outi : cM_->output_) {
     if (bin_) {
       int string_size = outi.length() + 1;
       output.write((char *)&string_size, sizeof(string_size));
@@ -154,7 +154,7 @@ IOHelperC &IOHelperC::OD(std::ostream &output) {
   if ((h.elems == 0) || (!cM_)) {
     return *this;
   }
-  for (auto&& outi : cM_->output_) {
+  for (const auto& outi : cM_->output_) {
     const MCC &mcc = *(cM_->coll_.find(outi)->second);
     if (mcc.info.datatype == IODatatype_dense)
       if (mcc.info.valuetype == IOValuetype_int) {
@@ -185,7 +185,7 @@ IOHelperC &IOHelperC::ID(std::istream &input) {
   if ((!M_) || (h.elems == 0)) {
     return *this;
   }
-  for (auto&& listi : list_) {
+  for (const auto& listi : list_) {
 
     IOHelper<int> ioh_;
     ioh_.binary(bin_).IH(input);
@@ -269,7 +269,7 @@ bool MatrixC::activate(std::string name) {
 }
 
 void MatrixC::activate() {
-  for (auto&& colli : coll_) {
+  for (const auto& colli : coll_) {
     colli.second->info.active = true;
   }
 }
@@ -297,7 +297,7 @@ void MatrixC::load_file(std::string filename, bool only_list) {
   }
 
   /* Populate source_ */
-  for (auto&& listi : ioh.list_) {
+  for (const auto& listi : ioh.list_) {
     source_[listi] = filename;
   }
 }
@@ -390,13 +390,13 @@ MatrixC &MatrixC::dont_output(std::string name) {
 MatrixC &MatrixC::output(std::string name) {
   if (name == "-") {
     output_all_ = true;
-    for (auto&& colli : coll_) {
+    for (auto const & colli : coll_) {
       if (colli.second->info.active)
         output_.insert(colli.first);
     }
   } else if (name == "--") {
     output_all_ = true;
-    for (auto&& colli : coll_) {
+    for (auto const & colli : coll_) {
       if (activate(colli.first))
         output_.insert(colli.first);
     }
@@ -467,7 +467,7 @@ void MatrixC::input_raw(std::string name, std::string specification,
 void MatrixC::save() {
   /* Write the matrix collection to output */
   if (output_prefix_ != "-") {
-    for (auto&& outi : output_) {
+    for (auto const & outi : output_) {
       MCC &mcc = *(coll_.find(outi)->second);
       if (mcc.info.datatype == IODatatype_dense)
         if (mcc.info.valuetype == IOValuetype_int)
@@ -564,7 +564,7 @@ MCCInfo MatrixC::info(std::string name) const {
 SEXP MatrixC::Rcpp_wrap() const {
   /* Convert the matrix collection to a list of R objects */
   Rcpp::List res;
-  for (auto&& outi : output_) {
+  for (auto const & outi : output_) {
     const MCC &mcc = *(coll_.find(outi)->second);
     if (mcc.info.datatype == IODatatype_dense) {
       if (mcc.info.valuetype == IOValuetype_int)
@@ -617,7 +617,7 @@ void MatrixC::attach(std::string name, SEXP from) {
 void MatrixC::attach(SEXP from) {
     Rcpp::List from_list = Rcpp::as<Rcpp::List>(from);
   Rcpp::CharacterVector from_names = from_list.names();
-  for (auto&& elem : from_names) {
+  for (auto const & elem : from_names) {
     std::string the_name = Rcpp::as<std::string>(elem);
     (*this).attach(the_name, from_list[the_name]);
   }

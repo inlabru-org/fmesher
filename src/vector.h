@@ -404,9 +404,11 @@ public:
         nnz_ = 1;
       }
     } else if (matrixt == IOMatrixtype_symmetric) {
-      for (auto&& c : data_)
-        if (r <= c.first)
+      for (const auto& c : data_) {
+        if (r <= c.first) {
           nnz_++;
+        }
+      }
     } else {
       nnz_ = data_.size();
     }
@@ -423,7 +425,7 @@ public:
         elem++;
       }
     } else {
-      for (auto&& col : data_) {
+      for (const auto& col : data_) {
         if ((matrixt == IOMatrixtype_general) || (row <= col.first)) {
           MT(offset + elem) =
             SparseMatrixTriplet<T>(row, col.first, col.second);
@@ -446,7 +448,7 @@ public:
         elem++;
       }
     } else {
-      for (auto&& col : data_) {
+      for (const auto& col : data_) {
         if ((matrixt == IOMatrixtype_general) || (row <= col.first)) {
           MT.push_back(Eigen::Triplet<T>(row, col.first, col.second));
           elem++;
@@ -471,7 +473,7 @@ public:
         elem++;
       }
     } else {
-      for (auto&& col : data_) {
+      for (const auto& col : data_) {
         if ((matrixt == IOMatrixtype_general) || (row <= col.first)) {
           i.push_back(row);
           j.push_back(col.first);
@@ -497,7 +499,7 @@ public:
         elem++;
       }
     } else {
-      for (auto&& col : data_) {
+      for (const auto& col : data_) {
         if ((matrixt == IOMatrixtype_general) || (row <= col.first)) {
           Tr(offset + elem) = row;
           Tc(offset + elem) = col.first;
@@ -914,7 +916,7 @@ template <class T>
 std::ostream &operator<<(std::ostream &output, const SparseMatrix<T> &M) {
   output << M.rows() << " " << M.cols() << " " << M.nnz() << std::endl;
   for (size_t row = 0; row < M.rows(); row++)
-    for (auto&& col : M[row]) {
+    for (const auto& col : M[row]) {
       output << row << " " << col.first << " " << col.second << std::endl;
     }
   return output;
