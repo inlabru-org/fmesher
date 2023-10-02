@@ -126,8 +126,51 @@ logGdensity <- function(Q, x, mu) {
   norm_term <- norm_Q(Q, x - mu)
 
   # Calculate the log Gaussian density
-  logGdty <- -0.5 * (log(det_val) + norm_term)
+  logGdty <- 0.5 * (log(det_val) - norm_term)
 
   return(logGdty)
 }
+#' @title Calculate the log-posterior for anisotropic parameters (kappa,v) with PC prior.
+#'
+#' @description
+#' Calculate the log-posterior based on the prior and likelihood. Only stationary parameters accepted.
+#'
+#' @param mesh The mesh
+#' @param kappa Inverse correlation range
+#' @param v Vector that controls anisotropy
+#' @param lambda A hyperparameter controlling the size of kappa.
+#' @param lambda1 A hyperparameter controlling the size of |v|.
+#' @param y A vector with length equal to the number of basis elements n representing the observed data.
+#' @param A Matrix of size nxn representing the transformation A
+#' @param Q_epsilon A sparse matrix of size nxn representing the noise precision matrix
+#' @param m_u A vector with length n representing the prior mean m_u
+#'
+#' @return The calculated log-posterior
+#' @export
 
+
+  log_posterior <- function(mesh, kappa, v, lambda, lambda1, y, A, Q_epsilon, m_u) {
+  # Calculate log-prior
+  log_pc_prior(kappa, v, lambda, lambda1)
+
+  # Calculate log-density of the distribution of u knowing (kappa, v)
+  nodes1=mesh$loc
+  kappa_values <- apply(nodes1, 1, kappa)
+  vec_values <- t(apply(nodes1, 1, vec))
+  aniso <- list(kappa_values, vec_values)
+  Q_u <- fm_aniso_precision(mesh, aniso)
+  u <- m_u  #Could it be anything?
+  logGdty_prior <- logGdensity(Q_u, u, m_u)
+
+  # Calculate Q_{u|y,theta} and m_{u|y,theta}
+  Q_uy_theta <- Q_u + t(A) %*% Q_epsilon %*% A
+  m_uy_theta <- solve(Q_uy_theta, Q_u %*% m_u + t(A) %*% Q_epsilon %*% y)
+
+  # Calculate log-density of the posterior distribution of u given y and theta
+  logGdty_posterior <- logGdensity(Q_uy_theta, u, m_uy_theta)
+
+  # Calculate log-posterior
+  log_posterior_val <- log_prior_val + logGdty_prior + logGdty_posterior
+
+  return(log_posterior_val)
+}
