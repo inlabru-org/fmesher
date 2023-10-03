@@ -33,15 +33,6 @@ pc_prior <- function(lambda, lambda1, kappa, v) {
   return(term1 * term2)
 }
 
-# Example usage
-lambda <- 1
-lambda1 <- 1
-kappa <- 0.5
-v <- c(1, 2)
-
-result <- pc_prior(lambda, lambda1, kappa, v)
-print(result)
-
 #' @title Log PC Prior Calculation
 #' @description Calculate the log of the PC prior based on given hyperparameters and vectors.
 #'
@@ -77,7 +68,7 @@ log_pc_prior <- function(lambda, lambda1, kappa, v) {
 #' library(Matrix)
 #' Q <- Matrix(c(4, -1, -1, 4), nrow = 2, sparse = TRUE)
 #' sparse_determinant_chol(Q)
-sparse_determinant_chol <- function(Q) {
+sparse_log_determinant_chol <- function(Q) {
   # Perform Cholesky factorization
   chol_fact <- Matrix::Cholesky(Q, perm = TRUE, LDL = FALSE)
 
@@ -85,7 +76,7 @@ sparse_determinant_chol <- function(Q) {
   diag_L <- Matrix::diag(chol_fact)
 
   # Calculate determinant using Cholesky factor
-  det_val <- prod(diag_L)
+  det_val <- sum(log(diag_L))
 
   return(det_val)
 }
@@ -103,6 +94,7 @@ sparse_determinant_chol <- function(Q) {
 #' @return The calculated norm term
 #' @export
 norm_Q <- function(Q, x) {
+  x <- as.vector(x)
   norm <- t(x) %*% Q %*% x
   return(norm)
 }
@@ -120,13 +112,13 @@ norm_Q <- function(Q, x) {
 #' @export
 logGdensity <- function(Q, x, mu) {
   # Calculate determinant using Cholesky factorization
-  det_val <- sparse_determinant_chol(Q)
+  log_det_val <- sparse_log_determinant_chol(Q)
 
   # Calculate the norm term
   norm_term <- norm_Q(Q, x - mu)
 
   # Calculate the log Gaussian density
-  logGdty <- 0.5 * (log(det_val) - norm_term)
+  logGdty <- 0.5 * (log_det_val - norm_term)
 
   return(logGdty)
 }
@@ -151,13 +143,15 @@ logGdensity <- function(Q, x, mu) {
 
   log_posterior <- function(mesh, kappa, v, lambda, lambda1, y, A, Q_epsilon, m_u) {
   # Calculate log-prior
-  log_pc_prior(kappa, v, lambda, lambda1)
+  log_pc_value <- log_pc_prior(kappa, v, lambda, lambda1)
 
-  # Calculate log-density of the distribution of u knowing (kappa, v)
-  nodes1=mesh$loc
-  kappa_values <- apply(nodes1, 1, kappa)
-  vec_values <- t(apply(nodes1, 1, vec))
+  # Calculate anisotropy
+  nodes <- mesh$loc
+  kappa_values <- apply(nodes, 1, kappa)
+  vec_values <- t(apply(nodes, 1, vec))
   aniso <- list(kappa_values, vec_values)
+
+  #Calculate log-density of the distribution of u knowing (kappa, v)
   Q_u <- fm_aniso_precision(mesh, aniso)
   u <- m_u  #Could it be anything?
   logGdty_prior <- logGdensity(Q_u, u, m_u)
@@ -170,7 +164,7 @@ logGdensity <- function(Q, x, mu) {
   logGdty_posterior <- logGdensity(Q_uy_theta, u, m_uy_theta)
 
   # Calculate log-posterior
-  log_posterior_val <- log_prior_val + logGdty_prior + logGdty_posterior
+  log_posterior_val <- log_pc_value + logGdty_prior + logGdty_posterior
 
   return(log_posterior_val)
 }
