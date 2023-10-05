@@ -2553,12 +2553,12 @@ void Mesh::calcHaniso(Point (&H)[3], Point (&aH)[3], const Point  t_vec, const d
     H[0] = Point(cosh_val + sinh_over_magnitude * t_vec[0], sinh_over_magnitude * t_vec[1], 0.0);
     H[1] = Point(sinh_over_magnitude * t_vec[1], cosh_val - sinh_over_magnitude * t_vec[0], 0.0);
     H[2] = Point(0.0, 0.0, 0);
-    FMLOG_("H="<<std::endl<<H[0]<<std::endl<<H[1]<<std::endl<<H[2]<<std::endl);
+    FMLOG("H="<<std::endl<<H[0]<<std::endl<<H[1]<<std::endl<<H[2]<<std::endl);
 
 
     // Calculate adj(H)
     adjugate2(H,aH);
-    FMLOG_("aH="<<std::endl<<aH[0]<<std::endl<<aH[1]<<std::endl<<aH[2]<<std::endl);
+    FMLOG("aH="<<std::endl<<aH[0]<<std::endl<<aH[1]<<std::endl<<aH[2]<<std::endl);
 }
 
 /*This function calculates the FEM matrix G_{H} corresponding to

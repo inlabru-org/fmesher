@@ -1,7 +1,7 @@
 library(devtools)
 library(ggplot2)
-setwd("C:/Users/liaml/OneDrive/Documentos")
-load_all("fmesher")
+library(Matrix)
+# load_all()
 # Example usage
 lambda <- 1
 lambda1 <- 1
@@ -39,7 +39,7 @@ aniso=list(kappa_values,vec_values)
 #Calculating log determinant
 Q <- fm_aniso_precision(mesh,aniso)
 log_det <- sparse_log_determinant_chol(Q)
-#Hich version to use?
+#Which version to use?
 log_det_2 <- determinant(Q,logarithm = TRUE)
 log_det_2_v <- as.numeric(log_det_2$modulus)
 log_det - log_det_2_v
@@ -50,15 +50,13 @@ norm_Q(Q,x)
 
 #Calculating logGdty
 m_u = as.vector(rep(0,n))
-logGdensity(Q,x,mu) #This should be smaller
-
-
+logGdensity(x,mu,Q) #This should be small
 #Calculate log posterior
-y = as.vector(rep(1,n))
-A = diag(rep(2,n))
-Q_epsilon = diag(1:n)
+y = rep(1,n)
+A = Matrix::Diagonal(n, 3)
+Q_epsilon = Matrix::Diagonal(n, 1)
 
-#For some reasoon thsi doent execute, had similar problem with norm function what causes it?
+#For some reason this doesn't execute, had similar problem with norm function what causes it?
 log_posterior(mesh, kp, v, lambda, lambda1, y, A, Q_epsilon, m_u )
 
 #Calculate log-density of the distribution of u knowing (kappa, v)

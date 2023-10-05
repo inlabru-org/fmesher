@@ -3,21 +3,27 @@
 \name{fm_gmrf}
 \alias{fm_gmrf}
 \alias{fm_matern_precision}
+\alias{fm_aniso_precision}
 \alias{fm_matern_sample}
+\alias{fm_aniso_sample}
 \alias{fm_covariance}
 \alias{fm_sample}
 \title{SPDE, GMRF, and Matérn process methods}
 \usage{
 fm_matern_precision(x, alpha, rho, sigma)
 
+fm_aniso_precision(x, aniso)
+
 fm_matern_sample(x, alpha = 2, rho, sigma, n = 1, loc = NULL)
+
+fm_aniso_sample(x, aniso, n = 1, loc = NULL)
 
 fm_covariance(Q, A1 = NULL, A2 = NULL, partial = FALSE)
 
 fm_sample(n, Q, mu = 0, constr = NULL)
 }
 \arguments{
-\item{x}{A mesh object, e.g. from \code{fm_mesh_1d()} or \code{fm_mesh_2d()}.}
+\item{x}{A mesh object, e.g. from \code{fm_mesh_2d()}.}
 
 \item{alpha}{The SPDE operator order. The resulting smoothness index
 is \code{nu = alpha - dim / 2}.}
@@ -26,6 +32,9 @@ is \code{nu = alpha - dim / 2}.}
 (scale parameter \code{kappa = sqrt(8 * nu) / rho})}
 
 \item{sigma}{The nominal Matérn std.dev. parameter}
+
+\item{aniso}{List \verb{[kappa,vec]} where \code{kappa} controls the (inverse) correlation range
+and (the half angle version of) \code{vec} controls the main directions of the anisoropy}
 
 \item{n}{The number of samples to generate}
 
@@ -52,6 +61,10 @@ is reimplemented.)}
 \code{fm_matern_sample()} returns a matrix, where each column is a sampled
 field. If \code{loc} is \code{NULL}, the \code{fm_dof(mesh)} basis weights are given.
 Otherwise, the evaluated field at the \code{nrow(loc)} locations \code{loc} are given.
+
+\code{fm_aniso_sample()} returns a matrix, where each column is a sampled
+field. If \code{loc} is \code{NULL}, the \code{fm_dof(mesh)} basis weights are given.
+Otherwise, the evaluated field at the \code{nrow(loc)} locations \code{loc} are given.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
@@ -63,8 +76,14 @@ Methods for SPDEs and GMRFs.
 Whittle-Matérn SPDE models.  The boundary behaviour is determined by the
 provided mesh function space.
 
+\item \code{fm_aniso_precision()}: Construct the (sparse) precision matrix for the basis weights of anisotropic
+SPDE models.
+
 \item \code{fm_matern_sample()}: Simulate a Matérn field given a mesh and
 covariance function parameters, and optionally evaluate at given locations.
+
+\item \code{fm_aniso_sample()}: Simulate an anisotropic field given a mesh and
+anisotropic parameters, and optionally evaluate at given locations.
 
 \item \code{fm_covariance()}: Compute the covariance between "A1 x" and "A2 x", when
 x is a basis vector with precision matrix \code{Q}.
@@ -90,4 +109,5 @@ plot(x,
   ylab = "process sample"
 )
 
+.....
 }

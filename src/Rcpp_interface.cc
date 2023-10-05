@@ -795,27 +795,27 @@ Rcpp::List fmesher_fem(Rcpp::NumericMatrix mesh_loc,
 //' and \eqn{\tilde{v}=|v| e^{i \alpha /2 }, \alpha := \arctan(v_2 /v_1)}{v_tilde=|v|exp(i alpha /2),arctan(v2 /v1)}.
 //' @param options list of triangulation options (`sphere_tolerance`)
 //' @examples
-//'loc <- matrix(rnorm(20), 10, 2)
-//'loc_sf <- sf::st_geometry(sf::st_as_sf(as.data.frame(loc), coords = 1:2))
-//'loc_sp <- sf::as_Spatial(loc_sf)
-//'boundary_sf <- fm_extensions(loc, c(1, 3))
-//'mesh <- fm_mesh_2d_inla(boundary = boundary_sf, max.edge = c(0.5, 2))
-//'plot(mesh)
+//' loc <- matrix(rnorm(20), 10, 2)
+//' loc_sf <- sf::st_geometry(sf::st_as_sf(as.data.frame(loc), coords = 1:2))
+//' loc_sp <- sf::as_Spatial(loc_sf)
+//' boundary_sf <- fm_extensions(loc, c(1, 3))
+//' mesh <- fm_mesh_2d_inla(boundary = boundary_sf, max.edge = c(0.5, 2))
+//' plot(mesh)
 //'
-//'kappa <- function(xi) {
-  //'return(sum(xi^2))
-//'}
+//' kappa <- function(xi) {
+//' return(sum(xi^2))
+//' }
 //'
-//'vec <- function(xi) {
-  //'return(c(xi[1] + 1, xi[2] - 2))
-//'}
+//' vec <- function(xi) {
+//' return(c(xi[1] + 1, xi[2] - 2))
+//' }
 //'
-//'nodes <- mesh$loc
+//' nodes <- mesh$loc
 //'
-//'kappa_values <- apply(nodes, 1, kappa)
-//'vec_values <- t(apply(nodes, 1, vec))
-//'aniso=list(kappa_values,vec_values)
-//'a<-fm_fem_aniso(mesh,aniso)
+//' kappa_values <- apply(nodes, 1, kappa)
+//' vec_values <- t(apply(nodes, 1, vec))
+//' aniso=list(kappa_values,vec_values)
+//' a<-fm_fem_aniso(mesh,aniso)
 //' @returns A list of matrices
 //' @export
 // [[Rcpp::export]]
