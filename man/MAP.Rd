@@ -2,9 +2,9 @@
 % Please edit documentation in R/PCPrior.R
 \name{MAP}
 \alias{MAP}
-\title{Calculate the MAP estimate for linear noisy observation of field.}
+\title{Calculates  the MAP estimate for linear noisy observation of field.}
 \usage{
-MAP(mesh, lambda, lambda1, y, A, Q_epsilon, m_u)
+MAP(mesh, lambda, lambda1, lambda_epsilon, y, A, m_u)
 }
 \arguments{
 \item{mesh}{The mesh}
@@ -13,11 +13,11 @@ MAP(mesh, lambda, lambda1, y, A, Q_epsilon, m_u)
 
 \item{lambda1}{A hyperparameter controlling the size of |v|.}
 
+\item{lambda_epsilon}{A hyperparameter controlling the size of sigma_epsilon.}
+
 \item{y}{A vector with length equal to the number of basis elements n representing the observed data.}
 
 \item{A}{Matrix of size nxn representing the transformation A}
-
-\item{Q_epsilon}{A sparse matrix of size nxn representing the noise precision matrix}
 
 \item{m_u}{A vector with length n representing the prior mean m_u}
 }

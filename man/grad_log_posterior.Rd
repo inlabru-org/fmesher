@@ -2,7 +2,7 @@
 % Please edit documentation in R/PCPrior.R
 \name{grad_log_posterior}
 \alias{grad_log_posterior}
-\title{Calculate the gradient of the log posterior of a linear observation y = A u + noise}
+\title{Calculates  the gradient of the log posterior of a linear observation y = A u + noise}
 \usage{
 grad_log_posterior(mesh, kappa, v, lambda, lambda1, y, A, Q_epsilon, m_u)
 }
@@ -29,5 +29,5 @@ grad_log_posterior(mesh, kappa, v, lambda, lambda1, y, A, Q_epsilon, m_u)
 The calculated log-posterior
 }
 \description{
-Calculate the gradient of the log posterior of a linear observation y = A u + noise
+Calculates  the gradient of the log posterior of a linear observation y = A u + noise
 }

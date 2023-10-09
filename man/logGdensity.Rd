@@ -2,7 +2,7 @@
 % Please edit documentation in R/PCPrior.R
 \name{logGdensity}
 \alias{logGdensity}
-\title{Calculate the log Gaussian density}
+\title{Calculates  the log Gaussian density}
 \usage{
 logGdensity(x, mu, Q)
 }
@@ -17,5 +17,5 @@ logGdensity(x, mu, Q)
 The calculated log Gaussian density
 }
 \description{
-Calculate the log Gaussian density using the precision matrix Q and mean mu
+Calculates  the log Gaussian density using the precision matrix Q and mean mu
 }

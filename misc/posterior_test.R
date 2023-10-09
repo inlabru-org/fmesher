@@ -1,11 +1,15 @@
 library(devtools)
 library(ggplot2)
 library(Matrix)
-# load_all()
+document()
+load_all()
+# Use document() and devtools::load_all() to load files
 # Example usage
 lambda <- 1
 lambda1 <- 1
+lambda_epsilon <- 1
 kp <- 0.5
+logkp <- log(kp)
 v <- c(1,2)
 kappa <- function(x) {
   return(kp)
@@ -16,10 +20,8 @@ vec <- function(x) {
 }
 
 #Testing PC priors
-pc_value <- pc_prior(lambda, lambda1, kp, v)
-log_pc_value <- log_pc_prior(lambda, lambda1, kp, v)
-print(pc_value)
-print(log(pc_value)==log_pc_value)
+log_pc_value <- log_pc_prior_aniso(lambda, lambda1, kp, v)
+log_pc_noise <- log_pc_prior_noise_variance(lambda_epsilon = lambda_epsilon, log_sigma_epsilon = 2)
 
 #Mesh definition
 library(sf)
@@ -39,38 +41,33 @@ aniso=list(kappa_values,vec_values)
 #Calculating log determinant
 Q <- fm_aniso_precision(mesh,aniso)
 log_det <- sparse_log_determinant_chol(Q)
-#Which version to use?
+#Checking value
 log_det_2 <- determinant(Q,logarithm = TRUE)
 log_det_2_v <- as.numeric(log_det_2$modulus)
 log_det - log_det_2_v
 
 #Calculating |x|_Q
 x <- rep(2,n)
-norm_Q(Q,x)
+x_norm <- norm_Q(Q,x)
 
 #Calculating logGdty
 m_u = as.vector(rep(0,n))
-logGdensity(x,mu,Q) #This should be small
-#Calculate log posterior
-y = rep(1,n)
-A = Matrix::Diagonal(n, 3)
-Q_epsilon = Matrix::Diagonal(n, 1)
+logGdensity(x,m_u,Q) #This should be small
 
-#For some reason this doesn't execute, had similar problem with norm function what causes it?
-log_posterior(mesh, kp, v, lambda, lambda1, y, A, Q_epsilon, m_u )
+#Calculate of log posterior
+log_sigma_epsilon <- 1
+y = rep(0,n)
+A = Matrix::Diagonal(n, 1)
+log_posterior(mesh = mesh, log_kappa = logkp,log_sigma_epsilon = log_sigma_epsilon, v = v,
+              lambda =lambda, lambda1 = lambda1, lambda_epsilon = lambda_epsilon,
+              y= y, A = A, m_u =m_u )
 
-#Calculate log-density of the distribution of u knowing (kappa, v)
-Q_u <- fm_aniso_precision(mesh, aniso)
-u <- m_u  #Could it be anything?
-logGdty_prior <- logGdensity(Q_u, u, m_u)
 
-# Calculate Q_{u|y,theta} and m_{u|y,theta}
-Q_uy_theta <- Q_u + t(A) %*% Q_epsilon %*% A
-m_uy_theta <- solve(Q_uy_theta, Q_u %*% m_u + t(A) %*% Q_epsilon %*% y)
+map <- MAP(mesh = mesh,
+    lambda =lambda, lambda1 = lambda1, lambda_epsilon = lambda_epsilon,
+    y= y, A = A, m_u =m_u )
+print(map)
 
-# Calculate log-density of the posterior distribution of u given y and theta
-logGdty_posterior <- logGdensity(Q_uy_theta, u, m_uy_theta)
 
-# Calculate log-posterior
-log_posterior_val <- log_pc_value + logGdty_prior + logGdty_posterior
+
 

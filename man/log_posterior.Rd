@@ -2,32 +2,47 @@
 % Please edit documentation in R/PCPrior.R
 \name{log_posterior}
 \alias{log_posterior}
-\title{Calculate the log-posterior for anisotropic parameters (kappa,v) with PC prior.}
+\title{Calculates  the log-posterior density for parameters (log_kappa,v,log_sigma_epsilon) with PC prior.}
 \usage{
-log_posterior(mesh, kappa, v, lambda, lambda1, y, A, Q_epsilon, m_u)
+log_posterior(
+  mesh,
+  log_kappa,
+  log_sigma_epsilon,
+  v,
+  lambda,
+  lambda1,
+  lambda_epsilon,
+  y,
+  A,
+  m_u
+)
 }
 \arguments{
 \item{mesh}{The mesh}
 
-\item{kappa}{Inverse correlation range}
+\item{log_kappa}{Logarithm of inverse correlation range}
 
-\item{v}{Vector that controls anisotropy}
+\item{log_sigma_epsilon}{Variance of noise}
+
+\item{v}{2D vector that controls anisotropy}
 
 \item{lambda}{A hyperparameter controlling the size of kappa.}
 
 \item{lambda1}{A hyperparameter controlling the size of |v|.}
 
+\item{lambda_epsilon}{A hyperparameter controlling the size of sigma_epsilon.}
+
 \item{y}{A vector with length equal to the number of basis elements n representing the observed data.}
 
 \item{A}{Matrix of size nxn representing the transformation A}
 
-\item{Q_epsilon}{A sparse matrix of size nxn representing the noise precision matrix}
+\item{m_u}{A vector with length n representing the prior mean m_u. If a number is given is transformed into (m_u, m_u,..., m_u)}
 
-\item{m_u}{A vector with length n representing the prior mean m_u}
+\item{Q_epsilon}{A sparse matrix of size nxn representing the noise precision matrix}
 }
 \value{
 The calculated log-posterior
 }
 \description{
-Calculate the log-posterior based on the prior and likelihood. Only stationary parameters accepted.
+Calculates  the log-posterior density based on the prior density and the likelihood. Only stationary parameters are accepted.
 }

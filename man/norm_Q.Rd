@@ -2,7 +2,7 @@
 % Please edit documentation in R/PCPrior.R
 \name{norm_Q}
 \alias{norm_Q}
-\title{Calculate the norm ||x||_Q:= <Qx,x>}
+\title{Calculates  the norm ||x||_Q:= <Qx,x>}
 \usage{
 norm_Q(Q, x)
 }
@@ -15,5 +15,5 @@ norm_Q(Q, x)
 The calculated norm term
 }
 \description{
-Calculate the term <Qx, x> appearing in Gaussian density
+Calculates  the term <Qx, x> appearing in Gaussian density
 }
