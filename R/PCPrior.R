@@ -1,4 +1,66 @@
 #' @importFrom Matrix t solve
+#' @title Marginal PC prior density of kappa
+#' @description Calculates  the marginal PC prior pi_kappa
+#'
+#' @param lambda A hyperparameter controlling the penalization of the distance from the base moedel as a function of kappa
+#' @param lambda1 A hyperparameter controlling the penalization of the distance from the base moedel as a function of v
+#' @param log_kappa Logarithm of the inverse correlation range kappa.
+#'
+#' @return The calculated marginal prior density of kappa .
+#' @export
+#' @examples
+#' log_kappa <- -0.3
+#' lambda <- 0.5
+#' lambda1 <- 1
+#' result <-PC_prior_kappa(log_r, lambda, lambda1)
+PC_prior_kappa <- function(log_kappa, lambda, lambda1) {
+  kappa <- exp(log_kappa)
+  c <- 2 * sqrt(3*pi)
+  fact <- exp(-((kappa * lambda) / c)) * lambda * lambda1 / (kappa * lambda + lambda1)^2
+  return(fact*(1+(kappa*lambda+lambda1)/c))
+}
+
+#' @title Marginal PC prior density of r = |v|
+#' @description Calculates  the marginal PC prior, pi_r, of the norm of the anisotropy vector
+#'
+#' @param lambda1 A hyperparameter controlling the penalization of the distance from the base moedel as a function of r.
+#' @param log_r The logarithm of |v|, which controls the magnitude of the anisotropy
+#'
+#' @return The calculated marginal prior density of r.
+#' @export
+#' @examples
+#' log_r <- -0.5
+#' lambda1 <- 1
+#' result <-PC_prior_r(log_r, lambda1)
+PC_prior_r <- function(log_r, lambda1) {
+  r <- exp(log_r)
+  numerator <- sqrt(3) * exp(-((lambda1 * (-2 + sqrt(1 + 3 * cosh(2 * r)))) / (4 * sqrt(3 * pi)))) * lambda1 * sinh(2 * r)
+  denominator <- 4 * sqrt(pi + 3 * pi * cosh(2 * r))
+  result <- numerator / denominator
+  return(result)
+}
+
+#' @title Marginal PC prior density of v
+#' @description Calculates  the marginal PC prior, pi_v, of the anisotropy vector
+#'
+#' @param lambda1 A hyperparameter controlling the penalization of the distance from the base moedel as a function of v
+#' @param v A two dimensional vector which controls the direction and magintude of anisotropy 
+#'
+#' @return The calculated marginal prior density of v.
+#' @export
+#' @examples
+#' v <- c(1,2)
+#' lambda1 <- 1
+#' result <-PC_prior_v(v, lambda1)
+PC_prior_v <- function(v, lambda1) {
+  log_norm_v <- 0.5* log(sum(v^2))
+  return(PC_prior_r(log_norm_v, lambda1) / (2 * pi * exp(log_norm_v)))
+  return(result)
+}
+
+
+
+
 #' @title PC Prior Calculation
 #' @description Calculates  the PC prior based on given hyperparameters and vectors.
 #'
@@ -217,7 +279,7 @@ log_posterior <- function(mesh, log_kappa, log_sigma_epsilon, v, lambda, lambda1
 #' @export
 
 
-MAP <- function(mesh, lambda, lambda1, lambda_epsilon, y, A, m_u) {
+MAP <- function(mesh, lambda, lambda1, lambda_epsilon, y, A, m_u, maxiiterations = 300) {
   # Writes the log-posterior as a function of (log_kappa, v, sigma)
   log_post <- function(theta) {
     log_kappa <- theta[1]
@@ -228,7 +290,7 @@ MAP <- function(mesh, lambda, lambda1, lambda_epsilon, y, A, m_u) {
   aniso_0 <- c(log(0.5), c(1,2), 1)
   # To do: calculate the gradient of log posterior
   # gradient= grad_log_posterior(mesh, kappa, v, lambda, lambda1, y, A, Q_epsilon, m_u)
-  return(optim(par = aniso_0, fn = log_post, control= list(fnscale = -1, maxit=300)))
+  return(optim(par = aniso_0, fn = log_post, control= list(fnscale = -1, maxit = maxiiterations)))
 }
 
 #' @title Calculates  the gradient of the log posterior of a linear observation y = A u + noise

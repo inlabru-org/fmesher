@@ -4,7 +4,7 @@
 \alias{MAP}
 \title{Calculates  the MAP estimate for linear noisy observation of field.}
 \usage{
-MAP(mesh, lambda, lambda1, lambda_epsilon, y, A, m_u)
+MAP(mesh, lambda, lambda1, lambda_epsilon, y, A, m_u, maxiiterations = 300)
 }
 \arguments{
 \item{mesh}{The mesh}
