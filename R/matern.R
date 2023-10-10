@@ -122,6 +122,31 @@ fm_aniso_sample <- function(x, aniso, n = 1, loc = NULL) {
   x
 }
 
+#' @describeIn fm_gmrf
+#' Simulates the basis weights u_i in u(x) = sum(u_j phi_j(x))
+#'
+#' @return `fm_aniso_sample()` returns a vector whose j_th component is a sample of the 
+#' weight u_j of the jth basis vector.
+#' @export
+
+fm_aniso_basis_weights_sample <- function(x, aniso, n = 1) {
+  Q <- fm_aniso_precision(x, aniso) #Calculate the precision
+  L_solve <- function(fact, b) {
+    Matrix::solve(fact, Matrix::solve(fact, b, system = "P"), system = "L")
+  }
+  Lt_solve <- function(fact, b) {
+    Matrix::solve(fact, Matrix::solve(fact, b, system = "Lt"), system = "Pt")
+  }
+  # Find P and L such that Q = P' L L' P
+  fact <- Matrix::Cholesky(Q, perm = TRUE, LDL = FALSE)
+  # To find the value at the weights we need to solve PLu = w
+  u <- Lt_solve(
+    fact,
+    Matrix::Matrix(stats::rnorm(n * nrow(Q)), nrow(Q), n)
+  )
+  return(u)
+}
+
 
 
 #' @describeIn fm_gmrf Compute the covariance between "A1 x" and "A2 x", when

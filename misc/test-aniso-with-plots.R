@@ -84,6 +84,5 @@ ggplot(pxl)+
                 theme(legend.position = "bottom")
 
 
-
-
+fm_aniso_basis_weights_sample(x = mesh, aniso = aniso)
 

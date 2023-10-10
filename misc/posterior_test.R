@@ -1,16 +1,17 @@
 library(devtools)
 library(ggplot2)
 library(Matrix)
-document()
-load_all()
-# Use document() and devtools::load_all() to load files
-# Example usage
+#document()
+#load_all()
+
+#Defining parameters
 lambda <- 1
 lambda1 <- 1
 lambda_epsilon <- 1
-kp <- 0.5
+kp <- 3
 logkp <- log(kp)
-v <- c(1,2)
+log_sigma_epsilon <- 1
+v <- c(0,0)
 kappa <- function(x) {
   return(kp)
 }
@@ -28,7 +29,7 @@ library(sf)
 boundary_sf = st_sfc(st_polygon(list(rbind(c(0, 0), c(10, 0), c(10, 10), c(0, 10),c(0,0)))))
 boundary = fm_as_segm(boundary_sf)
 
-mesh <- fm_mesh_2d_inla(  boundary = boundary,  max.edge = c(4, 4))
+mesh <- fm_mesh_2d_inla(  boundary = boundary,  max.edge = c(1, 1))
 nodes <- mesh$loc
 n <- mesh$n
 plot(mesh)
@@ -54,10 +55,12 @@ x_norm <- norm_Q(Q,x)
 m_u = as.vector(rep(0,n))
 logGdensity(x,m_u,Q) #This should be small
 
-#Calculate of log posterior
-log_sigma_epsilon <- 1
-y = rep(0,n)
+#Sampling from noisy data
+x = fm_aniso_basis_weights_sample(x = mesh, aniso = aniso)
 A = Matrix::Diagonal(n, 1)
+y = A %*% x + exp(log_sigma_epsilon)*stats::rnorm(nrow(Q))
+
+#Calculate log posterior and map
 log_posterior(mesh = mesh, log_kappa = logkp,log_sigma_epsilon = log_sigma_epsilon, v = v,
               lambda =lambda, lambda1 = lambda1, lambda_epsilon = lambda_epsilon,
               y= y, A = A, m_u =m_u )
@@ -65,7 +68,7 @@ log_posterior(mesh = mesh, log_kappa = logkp,log_sigma_epsilon = log_sigma_epsil
 
 map <- MAP(mesh = mesh,
     lambda =lambda, lambda1 = lambda1, lambda_epsilon = lambda_epsilon,
-    y= y, A = A, m_u =m_u )
+    y= y, A = A, m_u =m_u, maxiiterations = 350 )
 print(map)
 
 

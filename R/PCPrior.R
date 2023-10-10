@@ -197,7 +197,7 @@ logGdensity <- function(x, mu, Q) {
   norm_term <- norm_Q(Q, x - mu)
 
   # Calculates  the log Gaussian density
-  logGdty <- 0.5 * (log_det_val - norm_term) - nrow(Q) / 2 * log(2 * pi)
+  logGdty <- 0.5 * (log_det_val - norm_term) - nrow(Q) * log(2 * pi)
 
   return(logGdty)
 }
