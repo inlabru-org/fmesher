@@ -12,12 +12,12 @@
 #' log_kappa <- -0.3
 #' lambda <- 0.5
 #' lambda1 <- 1
-#' result <-PC_prior_kappa(log_r, lambda, lambda1)
+#' result <- PC_prior_kappa(log_r, lambda, lambda1)
 PC_prior_kappa <- function(log_kappa, lambda, lambda1) {
   kappa <- exp(log_kappa)
-  c <- 2 * sqrt(3*pi)
+  c <- 2 * sqrt(3 * pi)
   fact <- exp(-((kappa * lambda) / c)) * lambda * lambda1 / (kappa * lambda + lambda1)^2
-  return(fact*(1+(kappa*lambda+lambda1)/c))
+  return(fact * (1 + (kappa * lambda + lambda1) / c))
 }
 
 #' @title Marginal PC prior density of r = |v|
@@ -31,7 +31,7 @@ PC_prior_kappa <- function(log_kappa, lambda, lambda1) {
 #' @examples
 #' log_r <- -0.5
 #' lambda1 <- 1
-#' result <-PC_prior_r(log_r, lambda1)
+#' result <- PC_prior_r(log_r, lambda1)
 PC_prior_r <- function(log_r, lambda1) {
   r <- exp(log_r)
   numerator <- sqrt(3) * exp(-((lambda1 * (-2 + sqrt(1 + 3 * cosh(2 * r)))) / (4 * sqrt(3 * pi)))) * lambda1 * sinh(2 * r)
@@ -44,16 +44,16 @@ PC_prior_r <- function(log_r, lambda1) {
 #' @description Calculates  the marginal PC prior, pi_v, of the anisotropy vector
 #'
 #' @param lambda1 A hyperparameter controlling the penalization of the distance from the base moedel as a function of v
-#' @param v A two dimensional vector which controls the direction and magintude of anisotropy 
+#' @param v A two dimensional vector which controls the direction and magintude of anisotropy
 #'
 #' @return The calculated marginal prior density of v.
 #' @export
 #' @examples
-#' v <- c(1,2)
+#' v <- c(1, 2)
 #' lambda1 <- 1
-#' result <-PC_prior_v(v, lambda1)
+#' result <- PC_prior_v(v, lambda1)
 PC_prior_v <- function(v, lambda1) {
-  log_norm_v <- 0.5* log(sum(v^2))
+  log_norm_v <- 0.5 * log(sum(v^2))
   return(PC_prior_r(log_norm_v, lambda1) / (2 * pi * exp(log_norm_v)))
   return(result)
 }
@@ -115,7 +115,7 @@ pc_prior <- function(lambda, lambda1, log_kappa, v) {
 #' log_pc_prior_aniso(lambda = lambda, lambda1 = lambda1, log_kappa = log_kappa, v = v)
 log_pc_prior_aniso <- function(lambda, lambda1, log_kappa, v) {
   # Calculates  the log PC prior
-  log_pc_prior_aniso_value <- log(pc_prior(lambda = lambda, lambda1 =  lambda1 , log_kappa = log_kappa, v = v))
+  log_pc_prior_aniso_value <- log(pc_prior(lambda = lambda, lambda1 = lambda1, log_kappa = log_kappa, v = v))
 
   return(log_pc_prior_aniso_value)
 }
@@ -132,7 +132,7 @@ log_pc_prior_aniso <- function(lambda, lambda1, log_kappa, v) {
 #' lambda_epsilon <- 1
 #' log_pc_prior_noise_variance(lambda_epsilon = lambda_epsilon, log_sigma_epsilon = log_sigma_epsilon)
 log_pc_prior_noise_variance <- function(lambda_epsilon, log_sigma_epsilon) {
-  sigma_epsilon = exp(log_sigma_epsilon)
+  sigma_epsilon <- exp(log_sigma_epsilon)
   # Calculates  the logarithm of exponential density.
   return(log(lambda_epsilon) - lambda_epsilon * sigma_epsilon)
 }
@@ -224,11 +224,11 @@ logGdensity <- function(x, mu, Q) {
 
 
 log_posterior <- function(mesh, log_kappa, log_sigma_epsilon, v, lambda, lambda1, lambda_epsilon, y, A, m_u) {
-  kappa <-exp(log_kappa)
+  kappa <- exp(log_kappa)
   sigma_epsilon <- exp(log_sigma_epsilon)
   # Calculates  log-prior
   log_pc_aniso_value <- log_pc_prior_aniso(lambda = lambda, lambda1 = lambda1, log_kappa = log_kappa, v = v)
-  log_pc_noise_value <- log_pc_prior_noise_variance(lambda_epsilon =lambda_epsilon, log_sigma_epsilon = log_sigma_epsilon)
+  log_pc_noise_value <- log_pc_prior_noise_variance(lambda_epsilon = lambda_epsilon, log_sigma_epsilon = log_sigma_epsilon)
   log_pc_value <- log_pc_aniso_value + log_pc_noise_value
 
   # Calculates  anisotropy
@@ -246,7 +246,7 @@ log_posterior <- function(mesh, log_kappa, log_sigma_epsilon, v, lambda, lambda1
   logGdty_prior <- logGdensity(x = u, mu = m_u, Q = Q_u)
 
   # Calculates Q_epsilon,  Q_{u|y,theta} and m_{u|y,theta}
-  Q_epsilon <-Matrix::Diagonal(n, sigma_epsilon^2)
+  Q_epsilon <- Matrix::Diagonal(n, sigma_epsilon^2)
   Q_uy_theta <- Q_u + t(A) %*% Q_epsilon %*% A
   m_uy_theta <- solve(Q_uy_theta, Q_u %*% m_u + t(A) %*% Q_epsilon %*% y)
 
@@ -287,10 +287,10 @@ MAP <- function(mesh, lambda, lambda1, lambda_epsilon, y, A, m_u, maxiiterations
     log_sigma_epsilon <- theta[4]
     return(log_posterior(mesh = mesh, log_kappa = log_kappa, v = v, log_sigma_epsilon = log_sigma_epsilon, lambda = lambda, lambda1 = lambda1, lambda_epsilon = lambda_epsilon, y = y, A = A, m_u = m_u))
   }
-  aniso_0 <- c(log(0.5), c(1,2), 1)
+  aniso_0 <- c(log(0.5), c(1, 2), 1)
   # To do: calculate the gradient of log posterior
   # gradient= grad_log_posterior(mesh, kappa, v, lambda, lambda1, y, A, Q_epsilon, m_u)
-  return(optim(par = aniso_0, fn = log_post, control= list(fnscale = -1, maxit = maxiiterations)))
+  return(optim(par = aniso_0, fn = log_post, control = list(fnscale = -1, maxit = maxiiterations)))
 }
 
 #' @title Calculates  the gradient of the log posterior of a linear observation y = A u + noise
