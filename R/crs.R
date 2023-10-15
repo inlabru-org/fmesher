@@ -302,6 +302,9 @@ fm_wkt_unit_params <- function() {
 #' unit.
 
 fm_wkt_get_lengthunit <- function(wkt) {
+  if (is.null(wkt) || identical(wkt, "") || is.na(wkt)) {
+    return(NA_character_)
+  }
   extract <- function(wt) {
     # 1. Recursively find LENGTHUNIT, except within ELLIPSOID
     # 2. Return unit
@@ -1361,6 +1364,10 @@ fm_wkt_predef <- function() {
 #' str(fm_wkt_as_wkt_tree(fm_crs("longlat_norm")$wkt))
 #'
 fm_wkt_as_wkt_tree <- function(x, ...) {
+  if (is.null(x) || is.na(x)) {
+    return(list())
+  }
+
   # Basic parsing of WKT string
   # ITEM[Param1, Param2, ...]
   # Param can be a constant or an ITEM[...]
