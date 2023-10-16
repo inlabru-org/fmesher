@@ -148,7 +148,7 @@ Mesh Rcpp_import_mesh(Rcpp::NumericMatrix mesh_loc,
   Matrix<int>& TV0 = matrices.DI("mesh_tv");
 
   /* Initialise mesh structure */
-  Mesh M(Mesh::Mtype_plane, 0, useVT, useTTi);
+  Mesh M(Mesh::Mtype::Plane, 0, useVT, useTTi);
   //  if ((iS0.rows() > 0) && (iS0.cols() < 2)) {
   //    /* 1D data. Not implemented */
   //    FMLOG("1D data not implemented." << std::endl);
@@ -333,7 +333,7 @@ Rcpp::List fmesher_rcdt(Rcpp::List options,
   remap_vertex_indices(idx, cdt_interior);
 
   /* Initialise mesh structure */
-  Mesh M(Mesh::Mtype_plane, 0, useVT, useTTi);
+  Mesh M(Mesh::Mtype::Plane, 0, useVT, useTTi);
   if ((iS0.rows() > 0) && (iS0.cols() < 2)) {
     /* 1D data. Not implemented */
     FMLOG("1D data not implemented." << std::endl);
@@ -366,8 +366,8 @@ Rcpp::List fmesher_rcdt(Rcpp::List options,
   MeshC MC(&M);
   MC.setOptions(MC.getOptions() | MeshC::Option_offcenter_steiner);
 
-  if ((M.type() != Mesh::Mtype_plane) &&
-      (M.type() != Mesh::Mtype_sphere)) {
+  if ((M.type() != Mesh::Mtype::Plane) &&
+      (M.type() != Mesh::Mtype::Sphere)) {
     if (M.nT() == 0) {
       FMLOG_(
         "Points not in the plane or on a sphere, and triangulation empty."
@@ -457,19 +457,19 @@ Rcpp::List fmesher_rcdt(Rcpp::List options,
 //  matrices.attach("manifold", new Matrix<int>(1), true,
 //                  fmesh::IOMatrixtype::General);
 //  Matrix<int> &manifold = matrices.DI("manifold");
-//  manifold(0, 0) = M.type();
+//  manifold(0, 0) = static_cast<int>(M.type());
 //  matrices.output("manifold");
 
   Rcpp::List out = Rcpp::wrap(matrices);
 
   switch (M.type()) {
-  case Mesh::Mtype_manifold:
+  case Mesh::Mtype::Manifold:
     out["manifold"] = "M2";
     break;
-  case Mesh::Mtype_plane:
+  case Mesh::Mtype::Plane:
     out["manifold"] = "R2";
     break;
-  case Mesh::Mtype_sphere:
+  case Mesh::Mtype::Sphere:
     out["manifold"] = "S2";
     break;
   }
@@ -507,8 +507,8 @@ Rcpp::List fmesher_bary(Rcpp::NumericMatrix mesh_loc,
   Options rcdt_options(options, M.nV());
 
   FMLOG("barycentric coordinate output." << std::endl);
-  if ((M.type() != Mesh::Mtype_plane) &&
-      (M.type() != Mesh::Mtype_sphere)) {
+  if ((M.type() != Mesh::Mtype::Plane) &&
+      (M.type() != Mesh::Mtype::Sphere)) {
     FMLOG_("Cannot calculate points2mesh mapping for non R2/S2 manifolds"
              << std::endl);
     return Rcpp::List();

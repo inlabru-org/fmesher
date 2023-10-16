@@ -423,7 +423,7 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  Mesh M(Mesh::Mtype_plane, 0, useVT, useTTi);
+  Mesh M(Mesh::Mtype::Plane, 0, useVT, useTTi);
 
   FMLOG("checkpoint 10." << std::endl);
 
@@ -450,10 +450,10 @@ int main(int argc, char *argv[]) {
     }
     if (!isflat) {
       if (issphere) {
-        M.type(Mesh::Mtype_sphere);
+        M.type(Mesh::Mtype::Sphere);
         M.sphere_radius(radius);
       } else {
-        M.type(Mesh::Mtype_manifold);
+        M.type(Mesh::Mtype::Manifold);
       }
     }
 
@@ -623,7 +623,7 @@ int main(int argc, char *argv[]) {
   matrices.attach("manifold", new Matrix<int>(1), true,
                   fmesh::IOMatrixtype::General);
   Matrix<int> &manifold = matrices.DI("manifold");
-  manifold(0, 0) = M.type();
+  manifold(0, 0) = static_cast<int>(M.type());
   matrices.output("manifold");
 
   if (issphere) {

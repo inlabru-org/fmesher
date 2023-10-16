@@ -40,7 +40,7 @@ class Mesh {
   friend std::ostream &operator<<(std::ostream &output, const Mesh &M);
 
 public:
-  enum Mtype { Mtype_manifold = 0, Mtype_plane, Mtype_sphere };
+  enum class Mtype : int { Manifold = 0, Plane, Sphere };
 
 private:
   Mtype type_;
@@ -86,7 +86,7 @@ public:
 
 public:
   Mesh(void)
-      : type_(Mtype_manifold), use_VT_(false), use_TTi_(true), TV_(), TT_(),
+      : type_(Mtype::Manifold), use_VT_(false), use_TTi_(true), TV_(), TT_(),
         VT_(), TTi_(), S_()
 #ifdef FMESHER_WITH_X
         ,
@@ -96,7 +96,7 @@ public:
   Mesh(Mtype manifold_type, size_t Vcapacity, bool use_VT = true,
        bool use_TTi = false);
   Mesh(const Mesh &M)
-      : type_(Mtype_manifold), sphere_radius_(1.0), use_VT_(true),
+      : type_(Mtype::Manifold), sphere_radius_(1.0), use_VT_(true),
         use_TTi_(false), TV_(), TT_(), VT_(), TTi_(), S_()
 #ifdef FMESHER_WITH_X
         ,
@@ -149,7 +149,7 @@ public:
     bool isflat = false;
     if ((*this).S().rows() == 0) {
       FMLOG("Empty manifold detected, treating as flat." << std::endl);
-      return Mtype_plane;
+      return Mtype::Plane;
     }
     isflat = (std::fabs((*this).S(0)[2]) < 1.0e-10);
     double radius = (*this).S(0).length();
@@ -163,13 +163,13 @@ public:
     }
     if (isflat) {
       FMLOG("Plane detected" << std::endl);
-      return Mtype_plane;
+      return Mtype::Plane;
     } else if (issphere) {
       FMLOG("Sphere detected" << std::endl);
-      return Mtype_sphere;
+      return Mtype::Sphere;
     } else {
       FMLOG("General manifold detected" << std::endl);
-      return Mtype_manifold;
+      return Mtype::Manifold;
     }
   }
 
@@ -177,7 +177,7 @@ public:
   Mtype auto_type(double sphere_tolerance) {
     Mtype mtype = determine_type(sphere_tolerance);
     (*this).type(mtype);
-    if (mtype == fmesh::Mesh::Mtype_sphere) {
+    if (mtype == fmesh::Mesh::Mtype::Sphere) {
       // The radius argument gives a default radius,
       // used only if there are no points.
       sphere_radius(1.0);
