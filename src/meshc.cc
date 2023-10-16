@@ -72,22 +72,18 @@ void MCQtri::setQ(double quality_limit, const double *quality_limits,
   quality_limit_ = quality_limit;
   if (quality_limits) {
     if (quality_limits_cap_ < MC_->M_->Vcap()) {
-      if (quality_limits_) {
-        delete[] quality_limits_;
-      }
       quality_limits_cap_ = MC_->M_->Vcap();
-      quality_limits_ = new double[quality_limits_cap_];
+      quality_limits_ = std::make_unique<double[]>(quality_limits_cap_);
     }
     if (nQL >= MC_->M_->nV())
-      memcpy(quality_limits_, quality_limits, sizeof(double) * MC_->M_->nV());
+      memcpy(quality_limits_.get(), quality_limits, sizeof(double) * MC_->M_->nV());
     else {
-      memcpy(quality_limits_, quality_limits, sizeof(double) * nQL);
+      memcpy(quality_limits_.get(), quality_limits, sizeof(double) * nQL);
       for (int v = nQL; v < (int)MC_->M_->nV(); v++)
-        quality_limits_[v] = quality_limit_;
+        quality_limits_.get()[v] = quality_limit_;
     }
   } else {
     if (quality_limits_) {
-      delete[] quality_limits_;
       quality_limits_ = NULL;
     }
   }
@@ -97,14 +93,13 @@ void MCQtri::setQv(int v, double quality_limit) {
   if (quality_limits_cap_ < MC_->M_->Vcap()) {
     size_t old_quality_limits_cap_ = quality_limits_cap_;
     quality_limits_cap_ = MC_->M_->Vcap();
-    double *ql = new double[quality_limits_cap_];
+    auto ql = std::make_unique<double[]>(quality_limits_cap_);
     if (quality_limits_) {
-      memcpy(ql, quality_limits_, sizeof(double) * old_quality_limits_cap_);
-      delete[] quality_limits_;
+      memcpy(ql.get(), quality_limits_.get(), sizeof(double) * old_quality_limits_cap_);
     }
-    quality_limits_ = ql;
+    quality_limits_ = std::move(ql);
   }
-  quality_limits_[v] = quality_limit;
+  quality_limits_.get()[v] = quality_limit;
 }
 
 double MCQtri::getQ(int t) const {
