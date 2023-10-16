@@ -30,7 +30,7 @@ IOHeader& IOHeader::def(const T& ref)
 
 template <class T>
 IOHeader &IOHeader::dense(const Matrix<T> &M, IOMatrixtype matrixt) {
-  datatype = IODatatype_dense;
+  datatype = IODatatype::dense;
   matrixtype = matrixt;
   switch (matrixt) {
   case IOMatrixtype_general:
@@ -66,7 +66,7 @@ IOHeader &IOHeader::dense(const Matrix<T> &M, IOMatrixtype matrixt) {
 
 template <class T>
 IOHeader &IOHeader::sparse(const SparseMatrix<T> &M, IOMatrixtype matrixt) {
-  datatype = IODatatype_sparse;
+  datatype = IODatatype::sparse;
   matrixtype = matrixt;
   elems = M.nnz(matrixt);
   switch (matrixt) {

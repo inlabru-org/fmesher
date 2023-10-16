@@ -56,7 +56,7 @@ IOHeader &IOHeader::def() {
   elems = 0;
   rows = 0;
   cols = 0;
-  datatype = -1;
+  datatype = IODatatype::invalid;
   valuetype = -1;
   matrixtype = -1;
   storagetype = IOStoragetype_rowmajor;
@@ -64,7 +64,7 @@ IOHeader &IOHeader::def() {
 }
 
 IOHeader &IOHeader::collection(const MatrixC &C) {
-  datatype = IODatatype_collection;
+  datatype = IODatatype::collection;
   elems = C.output_size();
   rows = -1;
   cols = -1;
@@ -156,7 +156,7 @@ IOHelperC &IOHelperC::OD(std::ostream &output) {
   }
   for (const auto& outi : cM_->output_) {
     const MCC &mcc = *(cM_->coll_.find(outi)->second);
-    if (mcc.info.datatype == IODatatype_dense)
+    if (mcc.info.datatype == IODatatype::dense)
       if (mcc.info.valuetype == IOValuetype_int) {
         IOHelperM<int> ioh;
         ioh.cD(&(mcc.DI())).matrixtype(mcc.info.matrixtype);
@@ -190,7 +190,7 @@ IOHelperC &IOHelperC::ID(std::istream &input) {
     IOHelper<int> ioh_;
     ioh_.binary(bin_).IH(input);
 
-    if (ioh_.h_.datatype == IODatatype_dense)
+    if (ioh_.h_.datatype == IODatatype::dense)
       if (ioh_.h_.valuetype == IOValuetype_int) {
         IOHelperM<int> ioh;
         ioh.D(&(M_->DI(listi)));
@@ -221,7 +221,7 @@ template <>
 Matrix<int> &MatrixC::attach(std::string name, Matrix<int> *M,
                              bool transfer_ownership, IOMatrixtype matrixt) {
   free(name);
-  coll_.insert(collPairT(name, new MCC(IODatatype_dense, IOValuetype_int,
+  coll_.insert(collPairT(name, new MCC(IODatatype::dense, IOValuetype_int,
                                        matrixt, M, transfer_ownership)));
   activate(name);
   return coll_[name]->DI();
@@ -231,7 +231,7 @@ template <>
 Matrix<double> &MatrixC::attach(std::string name, Matrix<double> *M,
                                 bool transfer_ownership, IOMatrixtype matrixt) {
   free(name);
-  coll_.insert(collPairT(name, new MCC(IODatatype_dense, IOValuetype_double,
+  coll_.insert(collPairT(name, new MCC(IODatatype::dense, IOValuetype_double,
                                        matrixt, M, transfer_ownership)));
   activate(name);
   return coll_[name]->DD();
@@ -242,7 +242,7 @@ SparseMatrix<int> &MatrixC::attach(std::string name, SparseMatrix<int> *M,
                                    bool transfer_ownership,
                                    IOMatrixtype matrixt) {
   free(name);
-  coll_.insert(collPairT(name, new MCC(IODatatype_sparse, IOValuetype_int,
+  coll_.insert(collPairT(name, new MCC(IODatatype::sparse, IOValuetype_int,
                                        matrixt, M, transfer_ownership)));
   activate(name);
   return coll_[name]->SI();
@@ -253,7 +253,7 @@ SparseMatrix<double> &MatrixC::attach(std::string name, SparseMatrix<double> *M,
                                       bool transfer_ownership,
                                       IOMatrixtype matrixt) {
   free(name);
-  coll_.insert(collPairT(name, new MCC(IODatatype_sparse, IOValuetype_double,
+  coll_.insert(collPairT(name, new MCC(IODatatype::sparse, IOValuetype_double,
                                        matrixt, M, transfer_ownership)));
   activate(name);
   return coll_[name]->SD();
@@ -341,7 +341,7 @@ MCCInfo MatrixC::load(std::string name) {
   if (!I.is_open()) {
     return info(name);
   }
-  if (ioh_.h_.datatype == IODatatype_dense)
+  if (ioh_.h_.datatype == IODatatype::dense)
     if (ioh_.h_.valuetype == IOValuetype_int) {
       IOHelperM<int> ioh;
       ioh.D(&DI(name));
@@ -469,7 +469,7 @@ void MatrixC::save() {
   if (output_prefix_ != "-") {
     for (auto const & outi : output_) {
       MCC &mcc = *(coll_.find(outi)->second);
-      if (mcc.info.datatype == IODatatype_dense)
+      if (mcc.info.datatype == IODatatype::dense)
         if (mcc.info.valuetype == IOValuetype_int)
           save_M((output_prefix_ + outi), mcc.DI(), mcc.info, bin_out_);
         else
@@ -504,7 +504,7 @@ void MatrixC::save() {
 Matrix<int> &MatrixC::DI(std::string name) {
   collT::iterator colli;
   if (((colli = coll_.find(name)) != coll_.end()) &&
-      (colli->second->info.datatype == IODatatype_dense) &&
+      (colli->second->info.datatype == IODatatype::dense) &&
       (colli->second->info.valuetype == IOValuetype_int) &&
       (colli->second->info.active)) {
     return colli->second->DI();
@@ -515,7 +515,7 @@ Matrix<int> &MatrixC::DI(std::string name) {
 Matrix<double> &MatrixC::DD(std::string name) {
   collT::iterator colli;
   if (((colli = coll_.find(name)) != coll_.end()) &&
-      (colli->second->info.datatype == IODatatype_dense) &&
+      (colli->second->info.datatype == IODatatype::dense) &&
       (colli->second->info.valuetype == IOValuetype_double) &&
       (colli->second->info.active)) {
     return colli->second->DD();
@@ -526,7 +526,7 @@ Matrix<double> &MatrixC::DD(std::string name) {
 SparseMatrix<int> &MatrixC::SI(std::string name) {
   collT::iterator colli;
   if (((colli = coll_.find(name)) != coll_.end()) &&
-      (colli->second->info.datatype == IODatatype_sparse) &&
+      (colli->second->info.datatype == IODatatype::sparse) &&
       (colli->second->info.valuetype == IOValuetype_int) &&
       (colli->second->info.active)) {
     return colli->second->SI();
@@ -537,7 +537,7 @@ SparseMatrix<int> &MatrixC::SI(std::string name) {
 SparseMatrix<double> &MatrixC::SD(std::string name) {
   collT::iterator colli;
   if (((colli = coll_.find(name)) != coll_.end()) &&
-      (colli->second->info.datatype == IODatatype_sparse) &&
+      (colli->second->info.datatype == IODatatype::sparse) &&
       (colli->second->info.valuetype == IOValuetype_double) &&
       (colli->second->info.active)) {
     return colli->second->SD();
@@ -566,7 +566,7 @@ SEXP MatrixC::Rcpp_wrap() const {
   Rcpp::List res;
   for (auto const & outi : output_) {
     const MCC &mcc = *(coll_.find(outi)->second);
-    if (mcc.info.datatype == IODatatype_dense) {
+    if (mcc.info.datatype == IODatatype::dense) {
       if (mcc.info.valuetype == IOValuetype_int)
         res[outi] = Rcpp::wrap(mcc.DI());
       else
