@@ -12,8 +12,8 @@ CXX = g++
 FC = gfortran
 FCEXTRAFLAGS = -fno-second-underscore
 # FLAGS= -mfpmath=sse -msse2
-FLAGS= -O3 -funroll-loops -ftracer -pipe -Wall -Wextra \
-  -Wsign-compare -Wundef -Wimplicit-fallthrough -fdiagnostics-color -Wshadow=compatible-local
+FLAGS= -O3 -funroll-loops -pipe -Wall -Wextra \
+  -Wsign-compare -Wundef -Wimplicit-fallthrough -fdiagnostics-color
 LD = $(CXX)
 INSTALL = install
 RSYNC = rsync

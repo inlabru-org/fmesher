@@ -379,10 +379,16 @@ protected:
   DataType data_;
 
 public:
-  SparseMatrixRow() : M_(NULL), data_(){};
-  SparseMatrixRow(const SparseMatrixRow<T> &from)
-      : M_(from.M_), data_(from.data_){};
-  SparseMatrixRow(SparseMatrix<T> *M) : M_(M), data_(){};
+//  SparseMatrixRow() :
+//  M_(NULL),
+//    data_(){};
+//  SparseMatrixRow(const SparseMatrixRow<T> &from)
+//      :
+//      M_(from.M_),
+//      data_(from.data_){};
+  SparseMatrixRow(SparseMatrix<T> *M) :
+    M_(M),
+    data_(){};
 
   size_t size() const { return data_.size(); };
 

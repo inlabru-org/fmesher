@@ -6,6 +6,7 @@
 #include <iostream>
 #include <list>
 #include <map>
+#include <memory>
 #include <set>
 #include <string>
 #include <variant>
