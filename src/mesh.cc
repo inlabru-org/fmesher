@@ -2531,8 +2531,8 @@ void Mesh::calcGradientMatrices(SparseMatrix<double> **D) const {
 
 bool Mesh::save(std::string filename_s, std::string filename_tv,
                 bool binary) const {
-  return (S_.save(filename_s, IOMatrixtype_general, binary) &&
-          TV_.save(filename_tv, IOMatrixtype_general, binary));
+  return (S_.save(filename_s, IOMatrixtype::General, binary) &&
+          TV_.save(filename_tv, IOMatrixtype::General, binary));
 }
 
 bool Mesh::load(std::string filename_s, std::string filename_tv, bool binary) {

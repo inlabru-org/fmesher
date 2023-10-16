@@ -30,15 +30,17 @@ IOHeader& IOHeader::def(const T& ref)
 
 template <class T>
 IOHeader &IOHeader::dense(const Matrix<T> &M, IOMatrixtype matrixt) {
-  datatype = IODatatype::dense;
+  datatype = IODatatype::Dense;
   matrixtype = matrixt;
   switch (matrixt) {
-  case IOMatrixtype_general:
+  case IOMatrixtype::Invalid:
+    break;
+  case IOMatrixtype::General:
     elems = M.rows() * M.cols();
     rows = M.rows();
     cols = M.cols();
     break;
-  case IOMatrixtype_symmetric:
+  case IOMatrixtype::Symmetric:
     if (M.rows() <= M.cols()) {
       elems = (M.rows() * (M.rows() + 1)) / 2;
       rows = M.rows();
@@ -49,7 +51,7 @@ IOHeader &IOHeader::dense(const Matrix<T> &M, IOMatrixtype matrixt) {
       cols = M.cols();
     }
     break;
-  case IOMatrixtype_diagonal:
+  case IOMatrixtype::Diagonal:
     if (M.rows() <= M.cols()) {
       elems = M.rows();
       rows = M.rows();
@@ -66,15 +68,17 @@ IOHeader &IOHeader::dense(const Matrix<T> &M, IOMatrixtype matrixt) {
 
 template <class T>
 IOHeader &IOHeader::sparse(const SparseMatrix<T> &M, IOMatrixtype matrixt) {
-  datatype = IODatatype::sparse;
+  datatype = IODatatype::Sparse;
   matrixtype = matrixt;
   elems = M.nnz(matrixt);
   switch (matrixt) {
-  case IOMatrixtype_general:
+  case IOMatrixtype::Invalid:
+    break;
+  case IOMatrixtype::General:
     rows = M.rows();
     cols = M.cols();
     break;
-  case IOMatrixtype_symmetric:
+  case IOMatrixtype::Symmetric:
     if (M.rows() <= M.cols()) {
       rows = M.cols();
       cols = M.cols();
@@ -83,7 +87,7 @@ IOHeader &IOHeader::sparse(const SparseMatrix<T> &M, IOMatrixtype matrixt) {
       cols = M.rows();
     }
     break;
-  case IOMatrixtype_diagonal:
+  case IOMatrixtype::Diagonal:
     if (M.rows() <= M.cols()) {
       rows = M.rows();
       cols = M.rows();
@@ -116,7 +120,7 @@ template <class T> IOHelper<T> &IOHelper<T>::IH(std::istream &input) {
     input.read((char *)&file_header_length, sizeof(file_header_length));
     int file_header_size = file_header_length * sizeof(int);
     if (file_header_size < header_size) {
-      h_.dense(Matrix<int>(0), IOMatrixtype_general);
+      h_.dense(Matrix<int>(0), IOMatrixtype::General);
       input.read((char *)&h_, file_header_size);
     } else {
       input.read((char *)&h_, header_size);
@@ -145,8 +149,10 @@ template <class T> IOHelperM<T> &IOHelperM<T>::OD(std::ostream &output) {
   }
   if (bin_) {
     switch ((IOMatrixtype)h.matrixtype) {
-    case IOMatrixtype_general:
-      if ((h.storagetype == IOStoragetype_rowmajor) || ((*cM_).cols() == 1)) {
+    case IOMatrixtype::Invalid:
+      break;
+    case IOMatrixtype::General:
+      if ((h.storagetype == IOStoragetype::Rowmajor) || ((*cM_).cols() == 1)) {
         output.write((char *)(*cM_).raw(), sizeof(T) * h.rows * h.cols);
       } else {
         for (int j = 0; j < h.cols; j++) {
@@ -156,8 +162,8 @@ template <class T> IOHelperM<T> &IOHelperM<T>::OD(std::ostream &output) {
         }
       }
       break;
-    case IOMatrixtype_symmetric:
-      if (h.storagetype == IOStoragetype_rowmajor) {
+    case IOMatrixtype::Symmetric:
+      if (h.storagetype == IOStoragetype::Rowmajor) {
         for (int i = 0; i < h.rows; i++) {
           const T *Mrow = (*cM_)[i];
           output.write((char *)&Mrow[i], sizeof(T) * (h.cols - i));
@@ -170,7 +176,7 @@ template <class T> IOHelperM<T> &IOHelperM<T>::OD(std::ostream &output) {
         }
       }
       break;
-    case IOMatrixtype_diagonal:
+    case IOMatrixtype::Diagonal:
       for (int i = 0; i < h.rows; i++) {
         output.write((char *)&(*cM_)[i][i], sizeof(T));
       }
@@ -179,8 +185,10 @@ template <class T> IOHelperM<T> &IOHelperM<T>::OD(std::ostream &output) {
   } else { /* Text format. */
     output << std::setprecision(15) << std::scientific;
     switch ((IOMatrixtype)h.matrixtype) {
-    case IOMatrixtype_general:
-      if (h.storagetype == IOStoragetype_rowmajor) {
+    case IOMatrixtype::Invalid:
+      break;
+    case IOMatrixtype::General:
+      if (h.storagetype == IOStoragetype::Rowmajor) {
         for (int i = 0; i < h.rows; i++) {
           const T *Mrow = (*cM_)[i];
           for (int j = 0; j + 1 < h.cols; j++) {
@@ -197,8 +205,8 @@ template <class T> IOHelperM<T> &IOHelperM<T>::OD(std::ostream &output) {
         }
       }
       break;
-    case IOMatrixtype_symmetric:
-      if (h.storagetype == IOStoragetype_rowmajor) {
+    case IOMatrixtype::Symmetric:
+      if (h.storagetype == IOStoragetype::Rowmajor) {
         for (int i = 0; i < h.rows; i++) {
           const T *Mrow = (*cM_)[i];
           for (int j = i; j + 1 < h.cols; j++) {
@@ -215,8 +223,8 @@ template <class T> IOHelperM<T> &IOHelperM<T>::OD(std::ostream &output) {
         }
       }
       break;
-    case IOMatrixtype_diagonal:
-      if (h.storagetype == IOStoragetype_rowmajor) {
+    case IOMatrixtype::Diagonal:
+      if (h.storagetype == IOStoragetype::Rowmajor) {
         for (int i = 0; i < h.rows; i++) {
           output << (*cM_)[i][i] << std::endl;
         }
@@ -245,8 +253,10 @@ template <class T> IOHelperM<T> &IOHelperM<T>::ID(std::istream &input) {
     (*M_)(h.rows - 1, h.cols - 1, T()); /* Initialize last element. */
   if (bin_) {
     switch ((IOMatrixtype)h.matrixtype) {
-    case IOMatrixtype_general:
-      if ((h.storagetype == IOStoragetype_rowmajor) || (h.cols == 1)) {
+    case IOMatrixtype::Invalid:
+      break;
+    case IOMatrixtype::General:
+      if ((h.storagetype == IOStoragetype::Rowmajor) || (h.cols == 1)) {
         input.read((char *)(*M_).raw(), sizeof(T) * h.rows * h.cols);
       } else {
         for (int j = 0; j < h.cols; j++) {
@@ -256,8 +266,8 @@ template <class T> IOHelperM<T> &IOHelperM<T>::ID(std::istream &input) {
         }
       }
       break;
-    case IOMatrixtype_symmetric:
-      if (h.storagetype == IOStoragetype_rowmajor) {
+    case IOMatrixtype::Symmetric:
+      if (h.storagetype == IOStoragetype::Rowmajor) {
         for (int i = 0; i < h.rows; i++) {
           T *Mrow = (*M_)(i);
           input.read((char *)&Mrow[i], sizeof(T) * (h.cols - i));
@@ -270,7 +280,7 @@ template <class T> IOHelperM<T> &IOHelperM<T>::ID(std::istream &input) {
         }
       }
       break;
-    case IOMatrixtype_diagonal:
+    case IOMatrixtype::Diagonal:
       for (int i = 0; i < h.rows; i++) {
         input.read((char *)&(*M_)(i)[i], sizeof(T));
       }
@@ -278,8 +288,10 @@ template <class T> IOHelperM<T> &IOHelperM<T>::ID(std::istream &input) {
     }
   } else { /* Text format. */
     switch ((IOMatrixtype)h.matrixtype) {
-    case IOMatrixtype_general:
-      if (h.storagetype == IOStoragetype_rowmajor) {
+    case IOMatrixtype::Invalid:
+      break;
+    case IOMatrixtype::General:
+      if (h.storagetype == IOStoragetype::Rowmajor) {
         for (int i = 0; i < h.rows; i++) {
           T *Mrow = (*M_)(i);
           for (int j = 0; j < h.cols; j++) {
@@ -294,8 +306,8 @@ template <class T> IOHelperM<T> &IOHelperM<T>::ID(std::istream &input) {
         }
       }
       break;
-    case IOMatrixtype_symmetric:
-      if (h.storagetype == IOStoragetype_rowmajor) {
+    case IOMatrixtype::Symmetric:
+      if (h.storagetype == IOStoragetype::Rowmajor) {
         for (int i = 0; i < h.rows; i++) {
           T *Mrow = (*M_)(i);
           for (int j = i; j < h.cols; j++) {
@@ -310,8 +322,8 @@ template <class T> IOHelperM<T> &IOHelperM<T>::ID(std::istream &input) {
         }
       }
       break;
-    case IOMatrixtype_diagonal:
-      if (h.storagetype == IOStoragetype_rowmajor) {
+    case IOMatrixtype::Diagonal:
+      if (h.storagetype == IOStoragetype::Rowmajor) {
         for (int i = 0; i < h.rows; i++) {
           input >> (*M_)(i)[i];
         }
@@ -332,7 +344,7 @@ template <class T> IOHelperSM<T> &IOHelperSM<T>::OD(std::ostream &output) {
   if (!cM_) {
     return *this;
   }
-  if (h.storagetype == IOStoragetype_rowmajor) {
+  if (h.storagetype == IOStoragetype::Rowmajor) {
     Matrix1<SparseMatrixTriplet<T>> MT;
     (*cM_).tolist(MT, (IOMatrixtype)h.matrixtype);
     IOHelperM<SparseMatrixTriplet<T>>().cD(&MT).binary(bin_).rowmajor().OD(
@@ -359,7 +371,7 @@ template <class T> IOHelperSM<T> &IOHelperSM<T>::ID(std::istream &input) {
   if (h.elems == 0) {
     return *this;
   }
-  if (h.storagetype == IOStoragetype_rowmajor) {
+  if (h.storagetype == IOStoragetype::Rowmajor) {
     Matrix1<SparseMatrixTriplet<T>> MT;
     MT(h.elems - 1) = SparseMatrixTriplet<T>();
     IOHelperM<SparseMatrixTriplet<T>>().D(&MT).binary(bin_).rowmajor().ID(
@@ -389,7 +401,7 @@ template <class T> IOHelperM<T> &IOHelperM<T>::OH_2009(std::ostream &output) {
 
 template <class T> IOHelperSM<T> &IOHelperSM<T>::OH_2009(std::ostream &output) {
   const IOHeader &h(IOHelper<T>::h_);
-  if ((IOMatrixtype)h.matrixtype == IOMatrixtype_diagonal) {
+  if ((IOMatrixtype)h.matrixtype == IOMatrixtype::Diagonal) {
     output << h.rows;
     output << std::endl;
   }
@@ -418,7 +430,7 @@ template <class T> IOHelperSM<T> &IOHelperSM<T>::OD_2009(std::ostream &output) {
   if (!cM_) {
     return *this;
   }
-  if ((IOMatrixtype)h.matrixtype == IOMatrixtype_diagonal) {
+  if ((IOMatrixtype)h.matrixtype == IOMatrixtype::Diagonal) {
     Matrix1<T> MT;
     for (int r = 0; r < (*cM_).rows(); r++)
       MT(r) = (*cM_)[r][r];
@@ -434,7 +446,7 @@ template <class T> IOHelperSM<T> &IOHelperSM<T>::OD_2009(std::ostream &output) {
 template <class T> IOHeader &IOHeader::def(const T &ref) {
   (void)(ref);
   def();
-  valuetype = -(int)sizeof(T);
+  valuetype = IOValuetype::Invalid;
   return *this;
 }
 

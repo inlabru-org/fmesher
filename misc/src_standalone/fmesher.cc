@@ -521,18 +521,18 @@ int main(int argc, char *argv[]) {
       /* Calculate and collect output. */
 
       matrices.attach("segm.bnd.idx", new Matrix<int>(2), true,
-                      fmesh::IOMatrixtype_general);
+                      fmesh::IOMatrixtype::General);
       matrices.attach("segm.bnd.grp", new Matrix<int>(1), true,
-                      fmesh::IOMatrixtype_general);
+                      fmesh::IOMatrixtype::General);
       MC.segments(true, &matrices.DI("segm.bnd.idx"),
                   &matrices.DI("segm.bnd.grp"));
 
       matrices.output("segm.bnd.idx").output("segm.bnd.grp");
 
       matrices.attach("segm.int.idx", new Matrix<int>(2), true,
-                      fmesh::IOMatrixtype_general);
+                      fmesh::IOMatrixtype::General);
       matrices.attach("segm.int.grp", new Matrix<int>(1), true,
-                      fmesh::IOMatrixtype_general);
+                      fmesh::IOMatrixtype::General);
       MC.segments(false, &matrices.DI("segm.int.idx"),
                   &matrices.DI("segm.int.grp"));
 
@@ -589,18 +589,18 @@ int main(int argc, char *argv[]) {
       /* Calculate and collect output. */
 
       matrices.attach("segm.bnd.idx", new Matrix<int>(2), true,
-                      fmesh::IOMatrixtype_general);
+                      fmesh::IOMatrixtype::General);
       matrices.attach("segm.bnd.grp", new Matrix<int>(1), true,
-                      fmesh::IOMatrixtype_general);
+                      fmesh::IOMatrixtype::General);
       MC.segments(true, &matrices.DI("segm.bnd.idx"),
                   &matrices.DI("segm.bnd.grp"));
 
       matrices.output("segm.bnd.idx").output("segm.bnd.grp");
 
       matrices.attach("segm.int.idx", new Matrix<int>(2), true,
-                      fmesh::IOMatrixtype_general);
+                      fmesh::IOMatrixtype::General);
       matrices.attach("segm.int.grp", new Matrix<int>(1), true,
-                      fmesh::IOMatrixtype_general);
+                      fmesh::IOMatrixtype::General);
       MC.segments(false, &matrices.DI("segm.int.idx"),
                   &matrices.DI("segm.int.grp"));
 
@@ -613,7 +613,7 @@ int main(int argc, char *argv[]) {
     M.useTTi(true);
     matrices.attach("tti", &M.TTi(), false);
     matrices.attach("vv", new SparseMatrix<int>(M.VV()), true,
-                    fmesh::IOMatrixtype_symmetric);
+                    fmesh::IOMatrixtype::Symmetric);
 
     matrices.output("tt").output("tti").output("vt").output("vv");
   }
@@ -621,7 +621,7 @@ int main(int argc, char *argv[]) {
   FMLOG("Manifold output." << std::endl)
   /* Output the manifold type. */
   matrices.attach("manifold", new Matrix<int>(1), true,
-                  fmesh::IOMatrixtype_general);
+                  fmesh::IOMatrixtype::General);
   Matrix<int> &manifold = matrices.DI("manifold");
   manifold(0, 0) = M.type();
   matrices.output("manifold");
@@ -635,7 +635,7 @@ int main(int argc, char *argv[]) {
       FMLOG("sph0 output." << std::endl)
       matrices.attach(string("sph0"),
                       spherical_harmonics(M.S(), sph0_order_max, true), true);
-      matrices.matrixtype("sph0", fmesh::IOMatrixtype_general);
+      matrices.matrixtype("sph0", fmesh::IOMatrixtype::General);
       matrices.output("sph0");
     }
 
@@ -643,7 +643,7 @@ int main(int argc, char *argv[]) {
       FMLOG("sph output." << std::endl)
       matrices.attach(string("sph"),
                       spherical_harmonics(M.S(), sph_order_max, false), true);
-      matrices.matrixtype("sph", fmesh::IOMatrixtype_general);
+      matrices.matrixtype("sph", fmesh::IOMatrixtype::General);
       matrices.output("sph");
     }
 
@@ -663,7 +663,7 @@ int main(int argc, char *argv[]) {
                       spherical_bsplines(M.S(), bspline_n, bspline_degree,
                                          bspline_uniform_knot_angles),
                       true);
-      matrices.matrixtype("bspline", fmesh::IOMatrixtype_general);
+      matrices.matrixtype("bspline", fmesh::IOMatrixtype::General);
       matrices.output("bspline");
     }
   }
@@ -684,8 +684,8 @@ int main(int argc, char *argv[]) {
           matrices.attach(string("p2m.t"), new Matrix<int>(points_n, 1), true);
       Matrix<double> &points2mesh_b = matrices.attach(
           string("p2m.b"), new Matrix<double>(points_n, 3), true);
-      matrices.matrixtype("p2m.t", fmesh::IOMatrixtype_general);
-      matrices.matrixtype("p2m.b", fmesh::IOMatrixtype_general);
+      matrices.matrixtype("p2m.t", fmesh::IOMatrixtype::General);
+      matrices.matrixtype("p2m.b", fmesh::IOMatrixtype::General);
       matrices.output("p2m.t").output("p2m.b");
 
       map_points_to_mesh(M, points2mesh, points2mesh_t, points2mesh_b);
@@ -709,11 +709,11 @@ int main(int argc, char *argv[]) {
 
     K = G - B1;
 
-    matrices.matrixtype("c0", fmesh::IOMatrixtype_diagonal);
-    matrices.matrixtype("c1", fmesh::IOMatrixtype_symmetric);
-    matrices.matrixtype("b1", fmesh::IOMatrixtype_general);
-    matrices.matrixtype("g1", fmesh::IOMatrixtype_symmetric);
-    matrices.matrixtype("k1", fmesh::IOMatrixtype_general);
+    matrices.matrixtype("c0", fmesh::IOMatrixtype::Diagonal);
+    matrices.matrixtype("c1", fmesh::IOMatrixtype::Symmetric);
+    matrices.matrixtype("b1", fmesh::IOMatrixtype::General);
+    matrices.matrixtype("g1", fmesh::IOMatrixtype::Symmetric);
+    matrices.matrixtype("k1", fmesh::IOMatrixtype::General);
     matrices.output("c0");
     matrices.output("c1");
     matrices.output("b1");
@@ -735,7 +735,7 @@ int main(int argc, char *argv[]) {
         a = b;
         b = &(matrices.SD(Gname).clear());
         *b = tmp * (*a);
-        matrices.matrixtype(Gname, fmesh::IOMatrixtype_symmetric);
+        matrices.matrixtype(Gname, fmesh::IOMatrixtype::Symmetric);
         matrices.output(Gname);
       }
       tmp = C0inv * K;
@@ -747,7 +747,7 @@ int main(int argc, char *argv[]) {
         a = b;
         b = &(matrices.SD(Kname).clear());
         *b = (*a) * tmp;
-        matrices.matrixtype(Kname, fmesh::IOMatrixtype_general);
+        matrices.matrixtype(Kname, fmesh::IOMatrixtype::General);
         matrices.output(Kname);
       }
     }
@@ -770,7 +770,7 @@ int main(int argc, char *argv[]) {
           a = b;
           b = &(matrices.SD(Gname).clear());
           *b = tmp * (*a);
-          matrices.matrixtype(Gname, fmesh::IOMatrixtype_symmetric);
+          matrices.matrixtype(Gname, fmesh::IOMatrixtype::Symmetric);
           matrices.output(Gname);
         }
       }
@@ -783,9 +783,9 @@ int main(int argc, char *argv[]) {
     matrices.attach("dx", D[0], true);
     matrices.attach("dy", D[1], true);
     matrices.attach("dz", D[2], true);
-    matrices.matrixtype("dx", fmesh::IOMatrixtype_general);
-    matrices.matrixtype("dy", fmesh::IOMatrixtype_general);
-    matrices.matrixtype("dz", fmesh::IOMatrixtype_general);
+    matrices.matrixtype("dx", fmesh::IOMatrixtype::General);
+    matrices.matrixtype("dy", fmesh::IOMatrixtype::General);
+    matrices.matrixtype("dz", fmesh::IOMatrixtype::General);
     matrices.output("dx").output("dy").output("dz");
   }
 
