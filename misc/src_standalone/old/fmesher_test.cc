@@ -50,7 +50,7 @@ int mesh_test()
     {{0,1,2},
      {3,2,1}};
 
-  Mesh M(Mesh::Mtype_plane,0,useVT,useTTi);
+  Mesh M(Mesh::Mtype::Plane,0,useVT,useTTi);
 
   M.S_set(Matrix3double(4,S));
   M.TV_set(Matrix3int(2,TV));
@@ -102,7 +102,7 @@ int CDT_test()
 		{0.7,0.4,0},
 		{0.5,0.4,0}};
 
-  Mesh M(Mesh::Mtype_plane,0,useVT,useTTi);
+  Mesh M(Mesh::Mtype::Plane,0,useVT,useTTi);
 
   M.S_set(Matrix3double(n,S));
 
@@ -171,7 +171,7 @@ int DT2D_test()
 		     {1.,1.,0.}};
   int TVb[2][3] = {{0,1,2},
 		   {3,2,1}};
-  Mesh M(Mesh::Mtype_plane,0,useVT,useTTi);
+  Mesh M(Mesh::Mtype::Plane,0,useVT,useTTi);
   int t,vi,v;
 
   M.S_set(Matrix3double(n,S));
@@ -249,7 +249,7 @@ int DT2D_test2()
 		     {1.,1.,0.}};
   int TVb[2][3] = {{0,1,2},
 		   {3,2,1}};
-  Mesh M(Mesh::Mtype_plane,0,useVT,useTTi);
+  Mesh M(Mesh::Mtype::Plane,0,useVT,useTTi);
   int t,vi,v;
 
   /*
@@ -301,7 +301,7 @@ int DT2D_test3() /* Random points */
 		     {1.,1.,0.}};
   int TVb[2][3] = {{0,1,2},
 		   {3,2,1}};
-  Mesh M(Mesh::Mtype_plane,0,useVT,useTTi);
+  Mesh M(Mesh::Mtype::Plane,0,useVT,useTTi);
   int t,vi,v;
 
   for (v=0;v<n;v++) {
@@ -390,7 +390,7 @@ int DTsphere_test()
 		   {0,1,3},
 		   {1,2,3},
 		   {2,0,3}};
-  Mesh M(Mesh::Mtype_sphere,0,useVT,useTTi);
+  Mesh M(Mesh::Mtype::Sphere,0,useVT,useTTi);
   int t,vi,v,i;
   double l;
 
@@ -470,7 +470,7 @@ int DTsphere_test2()
 		    {-0.4,0.2,0.8},
 		    {-0.4,-0.2,-0.3}};
 
-  Mesh M(Mesh::Mtype_sphere,0,useVT,useTTi);
+  Mesh M(Mesh::Mtype::Sphere,0,useVT,useTTi);
   int t,vi,v,i;
   double l;
 
@@ -602,7 +602,7 @@ int koala_test()
 		 {5000.,5000.,0.}};
   int TVe[2][3] = {{0,1,2},
 		   {3,2,1}};
-  Mesh M(Mesh::Mtype_plane,0,useVT,useTTi);
+  Mesh M(Mesh::Mtype::Plane,0,useVT,useTTi);
   int t,vi,v;
 
 #ifdef FMESHER_WITH_X
@@ -792,7 +792,7 @@ int iohelper_test()
 void make_globe_test()
 {
   fmesh::Mesh M;
-  M.type(fmesh::Mesh::Mtype_sphere);
+  M.type(fmesh::Mesh::Mtype::Sphere);
 #ifdef FMESHER_WITH_X
   if (useX11)
     M.useX11(true,useX11text,500,500,-1.05,1.05,-1.05,1.05);

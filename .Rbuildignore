@@ -26,3 +26,4 @@ _config.yml
 ^cran-comments\.md$
 ^CRAN-SUBMISSION$
 ^LICENSE$
+^src/.vscode$

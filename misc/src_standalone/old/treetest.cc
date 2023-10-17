@@ -86,7 +86,7 @@ int treetest_main(void) {
 
     {
       Mesh M;
-      M.type(fmesh::Mesh::Mtype_sphere);
+      M.type(fmesh::Mesh::Mtype::Sphere);
       //      M.useX11(true,false,500,500,-1.05,1.05,-1.05,1.05);
       M.make_globe(25);
 

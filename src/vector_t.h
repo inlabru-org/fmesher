@@ -414,7 +414,7 @@ void SparseMatrix<T>::fromRcpp(SEXP from) {
     Rcpp::NumericVector Tv = Rcpp::as<Rcpp::NumericVector>(from_list["x"]);
     Rcpp::IntegerVector dims = Rcpp::as<Rcpp::IntegerVector>(from_list["dims"]);
 
-    fromlist(Tr, Tc, Tv, dims, IOMatrixtype_general);
+    fromlist(Tr, Tc, Tv, dims, IOMatrixtype::General);
   } else if (Rcpp::is<Rcpp::S4>(from)) {
     Rcpp::S4 obj = (SEXP)from;
     if (obj.is("Matrix")) {
@@ -429,7 +429,7 @@ void SparseMatrix<T>::fromRcpp(SEXP from) {
       Rcpp::NumericVector Tv = Rcpp::as<Rcpp::NumericVector>(obj.slot("x"));
       Rcpp::IntegerVector dims = Rcpp::as<Rcpp::IntegerVector>(obj.slot("Dim"));
 
-      fromlist(Tr, Tc, Tv, dims, IOMatrixtype_general);
+      fromlist(Tr, Tc, Tv, dims, IOMatrixtype::General);
     } else {
       Rcpp::warning("Unsupported SparseMatrix<T>(Rcpp::S4) class.");
     }
@@ -601,12 +601,12 @@ __FM_VECTOR_WRAP__(IntegerVector, Matrix1<int>)
 
   template<>
   inline SEXP wrap(const fmesh::SparseMatrix<double>& obj) {
-    return Rcpp::wrap(obj.dgTMatrix(fmesh::IOMatrixtype_general));
+    return Rcpp::wrap(obj.dgTMatrix(fmesh::IOMatrixtype::General));
   }
   template<>
   inline SEXP wrap(const fmesh::SparseMatrix<int>& obj) {
     // No Sparse matrix storage for integers, so return ijx triples instead.
-    return Rcpp::wrap(obj.fmesher_sparse(fmesh::IOMatrixtype_general));
+    return Rcpp::wrap(obj.fmesher_sparse(fmesh::IOMatrixtype::General));
   }
 
 } // Namespace Rcpp

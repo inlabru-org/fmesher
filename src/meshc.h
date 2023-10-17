@@ -88,7 +88,7 @@ public:
 class MCQtri : public MCQ {
 protected:
   double quality_limit_;
-  double *quality_limits_;
+  std::unique_ptr<double[]> quality_limits_;
   size_t quality_limits_cap_;
   /*!< Larger values are included in the quality set */
   virtual double calcQtri(const Dart &d) const = 0;
@@ -96,10 +96,6 @@ protected:
 public:
   MCQtri(MeshC *MC, bool only_quality, double quality_limit,
          const double *quality_limits = NULL, size_t nQL = 0);
-  ~MCQtri() {
-    if (quality_limits_)
-      delete[] quality_limits_;
-  }
 
   void setQ(double quality_limit, const double *quality_limits = NULL,
             size_t nQL = 0);
