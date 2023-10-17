@@ -5,6 +5,8 @@
   (version `0.1.2.9001`)
 * Fix bug in `fm_rcdt_2d_inla()` to properly update `n` basis counter element
   when removing unused vertices. (version `0.1.2.9002`)
+* Fix bug giving a spurious warning about inconsistent `is.bnd` for empty
+  `fm_segm` objects, and inconsistent `grp` vector lengths. (version `0.1.2.9003`)
 
 # fmesher 0.1.2
 
