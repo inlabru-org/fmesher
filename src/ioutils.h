@@ -135,13 +135,13 @@ public:
 /*! Helper for Matrix input and output. */
 template <class T> class IOHelperM : public IOHelper<T> {
 public:
-  const Matrix<T> *cM_;
-  Matrix<T> *M_;
+  const Matrix<T> *cM_{NULL};
+  Matrix<T> *M_{NULL};
 
 public:
   /* Constructors: */
-  IOHelperM() : IOHelper<T>(), cM_(NULL), M_(NULL) {};
-  IOHelperM(const IOHeader &h) : IOHelper<T>(h), cM_(NULL), M_(NULL) {};
+  IOHelperM() : IOHelper<T>() {};
+  IOHelperM(const IOHeader &h) : IOHelper<T>(h) {};
   IOHelperM<T> &cD(const Matrix<T> *M) {
     cM_ = M;
     M_ = NULL;
