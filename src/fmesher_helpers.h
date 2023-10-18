@@ -55,25 +55,25 @@ using fmesh::vertexListT;
 
 template <class T>
 void print_M(string filename, const Matrix<T> &M,
-             fmesh::IOMatrixtype matrixt = fmesh::IOMatrixtype_general) {
+             fmesh::IOMatrixtype matrixt = fmesh::IOMatrixtype::General) {
   M.save(filename, matrixt);
 }
 
 template <class T>
 void print_SM(string filename, const SparseMatrix<T> &M,
-              fmesh::IOMatrixtype matrixt = fmesh::IOMatrixtype_general) {
+              fmesh::IOMatrixtype matrixt = fmesh::IOMatrixtype::General) {
   M.save(filename, matrixt);
 }
 
 template <class T>
 void print_M_old(string filename, const Matrix<T> &M,
-                 fmesh::IOMatrixtype matrixt = fmesh::IOMatrixtype_general) {
+                 fmesh::IOMatrixtype matrixt = fmesh::IOMatrixtype::General) {
   M.save_ascii_2009(filename, matrixt);
 }
 
 template <class T>
 void print_SM_old(string filename, const SparseMatrix<T> &M,
-                  fmesh::IOMatrixtype matrixt = fmesh::IOMatrixtype_general) {
+                  fmesh::IOMatrixtype matrixt = fmesh::IOMatrixtype::General) {
   M.save_ascii_2009(filename, matrixt);
 }
 

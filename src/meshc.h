@@ -88,7 +88,7 @@ public:
 class MCQtri : public MCQ {
 protected:
   double quality_limit_;
-  double *quality_limits_;
+  std::unique_ptr<double[]> quality_limits_;
   size_t quality_limits_cap_;
   /*!< Larger values are included in the quality set */
   virtual double calcQtri(const Dart &d) const = 0;
@@ -96,10 +96,6 @@ protected:
 public:
   MCQtri(MeshC *MC, bool only_quality, double quality_limit,
          const double *quality_limits = NULL, size_t nQL = 0);
-  ~MCQtri() {
-    if (quality_limits_)
-      delete[] quality_limits_;
-  }
 
   void setQ(double quality_limit, const double *quality_limits = NULL,
             size_t nQL = 0);
@@ -457,9 +453,12 @@ std::ostream &operator<<(std::ostream &output, const MeshC &MC);
 std::ostream &operator<<(std::ostream &output, const IntPair &p);
 std::ostream &operator<<(std::ostream &output, const DartPair &dp);
 std::ostream &operator<<(std::ostream &output, const DartList &ds);
-std::ostream &operator<<(std::ostream &output, const std::set<int> &il);
-std::ostream &operator<<(std::ostream &output, const std::list<int> &il);
-std::ostream &operator<<(std::ostream &output, const std::list<IntPair> &il);
+template <class S, class T>
+std::ostream &operator<<(std::ostream &output, const std::map<S, T> &il);
+template <class T>
+std::ostream &operator<<(std::ostream &output, const std::set<T> &il);
+template <class T>
+std::ostream &operator<<(std::ostream &output, const std::list<T> &il);
 
 } /* namespace fmesh */
 

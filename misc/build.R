@@ -32,7 +32,6 @@ fmesher_clang_tidy <- function(files = NULL) {
     files <-
       c(
         "basis.cc",
-        "fmesher.cc",
         "fmesher_helpers.cc",
         "ioutils.cc",
         "locator.cc",
@@ -43,9 +42,13 @@ fmesher_clang_tidy <- function(files = NULL) {
         "vector.cc"
       )
   }
-  CPPFLAGS <- "-I/home/flindgre/local/R-4.3.1/lib/R/include -DNDEBUG -DFMESHER_WITH_R -I/home/flindgre/R/x86_64-pc-linux-gnu-library/4.3/Rcpp/include -I/usr/local/include"
+  CPPFLAGS <- paste0("-std=c++17",
+                     " -I", R.home("include"),
+                     " -I", file.path(system.file(package = "Rcpp"), "include"),
+                     " -I/usr/local/include",
+                     " -DNDEBUG -DFMESHER_WITH_R")
   SOURCE <- paste0(file.path("src", files), collapse = " ")
-  cmd <- paste("~/local/bin/clang-tidy", SOURCE, "--", CPPFLAGS)
+  cmd <- paste("clang-tidy", SOURCE, "--", CPPFLAGS)
   print(cmd)
   system(cmd, intern = TRUE)
 }

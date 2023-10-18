@@ -148,7 +148,7 @@ Mesh Rcpp_import_mesh(Rcpp::NumericMatrix mesh_loc,
   Matrix<int>& TV0 = matrices.DI("mesh_tv");
 
   /* Initialise mesh structure */
-  Mesh M(Mesh::Mtype_plane, 0, useVT, useTTi);
+  Mesh M(Mesh::Mtype::Plane, 0, useVT, useTTi);
   //  if ((iS0.rows() > 0) && (iS0.cols() < 2)) {
   //    /* 1D data. Not implemented */
   //    FMLOG("1D data not implemented." << std::endl);
@@ -333,7 +333,7 @@ Rcpp::List fmesher_rcdt(Rcpp::List options,
   remap_vertex_indices(idx, cdt_interior);
 
   /* Initialise mesh structure */
-  Mesh M(Mesh::Mtype_plane, 0, useVT, useTTi);
+  Mesh M(Mesh::Mtype::Plane, 0, useVT, useTTi);
   if ((iS0.rows() > 0) && (iS0.cols() < 2)) {
     /* 1D data. Not implemented */
     FMLOG("1D data not implemented." << std::endl);
@@ -366,8 +366,8 @@ Rcpp::List fmesher_rcdt(Rcpp::List options,
   MeshC MC(&M);
   MC.setOptions(MC.getOptions() | MeshC::Option_offcenter_steiner);
 
-  if ((M.type() != Mesh::Mtype_plane) &&
-      (M.type() != Mesh::Mtype_sphere)) {
+  if ((M.type() != Mesh::Mtype::Plane) &&
+      (M.type() != Mesh::Mtype::Sphere)) {
     if (M.nT() == 0) {
       FMLOG_(
         "Points not in the plane or on a sphere, and triangulation empty."
@@ -423,9 +423,9 @@ Rcpp::List fmesher_rcdt(Rcpp::List options,
     /* Calculate and collect output. */
 
     matrices.attach("segm.bnd.idx", new Matrix<int>(2), true,
-                    fmesh::IOMatrixtype_general);
+                    fmesh::IOMatrixtype::General);
     matrices.attach("segm.bnd.grp", new Matrix<int>(1), true,
-                    fmesh::IOMatrixtype_general);
+                    fmesh::IOMatrixtype::General);
     MC.segments(true,
                 &matrices.DI("segm.bnd.idx"),
                 &matrices.DI("segm.bnd.grp"));
@@ -433,9 +433,9 @@ Rcpp::List fmesher_rcdt(Rcpp::List options,
     matrices.output("segm.bnd.idx").output("segm.bnd.grp");
 
     matrices.attach("segm.int.idx", new Matrix<int>(2), true,
-                    fmesh::IOMatrixtype_general);
+                    fmesh::IOMatrixtype::General);
     matrices.attach("segm.int.grp", new Matrix<int>(1), true,
-                    fmesh::IOMatrixtype_general);
+                    fmesh::IOMatrixtype::General);
     MC.segments(false, &matrices.DI("segm.int.idx"),
                 &matrices.DI("segm.int.grp"));
 
@@ -448,28 +448,28 @@ Rcpp::List fmesher_rcdt(Rcpp::List options,
   M.useTTi(true);
   matrices.attach("tti", &M.TTi(), false);
   matrices.attach("vv", new SparseMatrix<int>(M.VV()), true,
-                  fmesh::IOMatrixtype_symmetric);
+                  fmesh::IOMatrixtype::Symmetric);
 
   matrices.output("tt").output("tti").output("vt").output("vv");
 
 //  FMLOG("Manifold output." << std::endl);
 //  /* Output the manifold type. */
 //  matrices.attach("manifold", new Matrix<int>(1), true,
-//                  fmesh::IOMatrixtype_general);
+//                  fmesh::IOMatrixtype::General);
 //  Matrix<int> &manifold = matrices.DI("manifold");
-//  manifold(0, 0) = M.type();
+//  manifold(0, 0) = static_cast<int>(M.type());
 //  matrices.output("manifold");
 
   Rcpp::List out = Rcpp::wrap(matrices);
 
   switch (M.type()) {
-  case Mesh::Mtype_manifold:
+  case Mesh::Mtype::Manifold:
     out["manifold"] = "M2";
     break;
-  case Mesh::Mtype_plane:
+  case Mesh::Mtype::Plane:
     out["manifold"] = "R2";
     break;
-  case Mesh::Mtype_sphere:
+  case Mesh::Mtype::Sphere:
     out["manifold"] = "S2";
     break;
   }
@@ -507,8 +507,8 @@ Rcpp::List fmesher_bary(Rcpp::NumericMatrix mesh_loc,
   Options rcdt_options(options, M.nV());
 
   FMLOG("barycentric coordinate output." << std::endl);
-  if ((M.type() != Mesh::Mtype_plane) &&
-      (M.type() != Mesh::Mtype_sphere)) {
+  if ((M.type() != Mesh::Mtype::Plane) &&
+      (M.type() != Mesh::Mtype::Sphere)) {
     FMLOG_("Cannot calculate points2mesh mapping for non R2/S2 manifolds"
              << std::endl);
     return Rcpp::List();
@@ -522,8 +522,8 @@ Rcpp::List fmesher_bary(Rcpp::NumericMatrix mesh_loc,
     matrices.attach(string("t"), new Matrix<int>(points_n, 1), true);
   Matrix<double> &points2mesh_b = matrices.attach(
     string("bary"), new Matrix<double>(points_n, 3), true);
-  matrices.matrixtype("t", fmesh::IOMatrixtype_general);
-  matrices.matrixtype("bary", fmesh::IOMatrixtype_general);
+  matrices.matrixtype("t", fmesh::IOMatrixtype::General);
+  matrices.matrixtype("bary", fmesh::IOMatrixtype::General);
   matrices.output("t").output("bary");
 
   map_points_to_mesh(M, points2mesh, points2mesh_t, points2mesh_b);
@@ -583,7 +583,7 @@ SEXP fmesher_spherical_bsplines1(Rcpp::NumericVector loc,
     string("bspline"),
     spherical_bsplines1(matrices.DD("loc"), n, degree, bool_uniform),
     true);
-  matrices.matrixtype("bspline", fmesh::IOMatrixtype_general);
+  matrices.matrixtype("bspline", fmesh::IOMatrixtype::General);
   matrices.output("bspline");
 
   return Rcpp::wrap(matrices.DD("bspline"));
@@ -624,7 +624,7 @@ SEXP fmesher_spherical_bsplines(Rcpp::NumericMatrix loc,
     string("bspline"),
     spherical_bsplines(matrices.DD("loc"), n, degree, bool_uniform),
     true);
-  matrices.matrixtype("bspline", fmesh::IOMatrixtype_general);
+  matrices.matrixtype("bspline", fmesh::IOMatrixtype::General);
   matrices.output("bspline");
 
   return Rcpp::wrap(matrices.DD("bspline"));
@@ -680,11 +680,11 @@ Rcpp::List fmesher_fem(Rcpp::NumericMatrix mesh_loc,
 
     K = G - B1;
 
-    matrices.matrixtype("c0", fmesh::IOMatrixtype_diagonal);
-    matrices.matrixtype("c1", fmesh::IOMatrixtype_symmetric);
-    matrices.matrixtype("b1", fmesh::IOMatrixtype_general);
-    matrices.matrixtype("g1", fmesh::IOMatrixtype_symmetric);
-    matrices.matrixtype("k1", fmesh::IOMatrixtype_general);
+    matrices.matrixtype("c0", fmesh::IOMatrixtype::Diagonal);
+    matrices.matrixtype("c1", fmesh::IOMatrixtype::Symmetric);
+    matrices.matrixtype("b1", fmesh::IOMatrixtype::General);
+    matrices.matrixtype("g1", fmesh::IOMatrixtype::Symmetric);
+    matrices.matrixtype("k1", fmesh::IOMatrixtype::General);
     matrices.output("c0");
     matrices.output("c1");
     matrices.output("b1");
@@ -706,7 +706,7 @@ Rcpp::List fmesher_fem(Rcpp::NumericMatrix mesh_loc,
         a = b;
         b = &(matrices.SD(Gname).clear());
         *b = tmp * (*a);
-        matrices.matrixtype(Gname, fmesh::IOMatrixtype_symmetric);
+        matrices.matrixtype(Gname, fmesh::IOMatrixtype::Symmetric);
         matrices.output(Gname);
       }
       tmp = C0inv * K;
@@ -718,7 +718,7 @@ Rcpp::List fmesher_fem(Rcpp::NumericMatrix mesh_loc,
         a = b;
         b = &(matrices.SD(Kname).clear());
         *b = (*a) * tmp;
-        matrices.matrixtype(Kname, fmesh::IOMatrixtype_general);
+        matrices.matrixtype(Kname, fmesh::IOMatrixtype::General);
         matrices.output(Kname);
       }
     }
@@ -769,7 +769,7 @@ Rcpp::List fmesher_fem(Rcpp::NumericMatrix mesh_loc,
           a = b;
           b = &(matrices.SD(Gname).clear());
           *b = tmp * (*a);
-          matrices.matrixtype(Gname, fmesh::IOMatrixtype_symmetric);
+          matrices.matrixtype(Gname, fmesh::IOMatrixtype::Symmetric);
           matrices.output(Gname);
         }
       }

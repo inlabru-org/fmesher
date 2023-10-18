@@ -40,7 +40,7 @@ used.}
 
 \item{extend}{\code{logical} or \code{list} specifying whether to extend the
 data region, with parameters \describe{ \item{list("n")}{the number of edges
-in the extended boundary (default=8)} \item{list("offset")}{the extension
+in the extended boundary (default=16)} \item{list("offset")}{the extension
 distance.  If negative, interpreted as a factor relative to the approximate
 data diameter (default=-0.10)} } Setting to \code{FALSE} is only useful in
 combination \code{lattice} or \code{boundary}.}

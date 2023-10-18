@@ -140,7 +140,7 @@ print.fm_mesh_2d <- function(x, ..., digits = NULL, verbose = FALSE) {
       ret,
       list(
         manifold = x$manifold,
-        nV = x$n,
+        nV = nrow(x$loc),
         nT = nrow(x$graph$tv)
       )
     )

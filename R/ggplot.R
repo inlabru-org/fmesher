@@ -43,7 +43,7 @@ geom_fm <- function(mapping = NULL, data = NULL, ...) {
 #' m <- fm_mesh_2d(
 #'   cbind(10, 20),
 #'   boundary = fm_extensions(cbind(10, 20), c(25, 65)),
-#'   max.edge = c(2, 5),
+#'   max.edge = c(4, 10),
 #'   crs = fm_crs("+proj=longlat")
 #' )
 #' ggplot() +
