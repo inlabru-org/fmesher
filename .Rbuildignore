@@ -27,3 +27,4 @@ _config.yml
 ^CRAN-SUBMISSION$
 ^LICENSE$
 ^src/.vscode$
+^revdep$
