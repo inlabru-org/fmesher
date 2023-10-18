@@ -1,4 +1,4 @@
-# fmesher (development version)
+# fmesher 0.1.3
 
 * Fix bug in `fm_rcdt_2d_inla()` that gave different defaults for the `extend` and
   `refine` arguments when equal to `TRUE`, that should be treated the same as `list()`
@@ -7,6 +7,8 @@
   when removing unused vertices. (version `0.1.2.9002`)
 * Fix bug giving a spurious warning about inconsistent `is.bnd` for empty
   `fm_segm` objects, and inconsistent `grp` vector lengths. (version `0.1.2.9003`)
+* Convert some of the old potentially unsafe C++ pointer methods to type safe
+  C++17 features
 
 # fmesher 0.1.2
 
