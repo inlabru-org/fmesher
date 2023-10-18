@@ -25,7 +25,7 @@ Description: Generate planar and spherical triangle meshes,
     implements parts of "Triangulations and Applications" by
     Hjelle and Daehlen (2006) <doi:10.1007/3-540-33261-8>.
 Depends:
-    R (>= 3.6),
+    R (>= 4.0),
     methods
 Imports:
     dplyr,
@@ -35,7 +35,7 @@ Imports:
     Matrix,
     rlang,
     sf,
-    sp (>= 1.4-5),
+    sp (>= 1.6-1),
     stats,
     tibble,
     utils,
