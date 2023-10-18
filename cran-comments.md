@@ -25,3 +25,10 @@ Result: NOTE
      sub-directories of 1Mb or more:
      libs 6.2Mb
 Flavors:  r-release-macos-arm64, r-release-macos-x86_64, r-oldrel-macos-arm64, r-oldrel-macos-x86_64
+
+# revdepcheck results
+
+We checked 4 reverse dependencies (4 from CRAN), comparing R CMD check results across CRAN and dev versions of this package.
+
+ * We saw 0 new problems
+ * We failed to check 0 packages
