@@ -231,23 +231,21 @@ logGdensity <- function(x, mu, Q) {
 
 log_posterior <- function(mesh, log_kappa, log_sigma_epsilon, log_sigma_u, v, lambda, lambda1, lambda_epsilon, lambda_u, y, A, m_u) {
   kappa <- exp(log_kappa)
-  sigma_u <- exp(log_sigma_u)
   sigma_epsilon <- exp(log_sigma_epsilon)
-  # Calculates  log-prior
+  # Calculates log-prior
   log_pc_aniso_value <- log_pc_prior_aniso(lambda = lambda, lambda1 = lambda1, log_kappa = log_kappa, v = v)
   log_pc_noise_value <- log_pc_prior_noise_variance(lambda_epsilon = lambda_epsilon, log_sigma_epsilon = log_sigma_epsilon)
   log_pc_sigma_u_value <- log_pc_prior_noise_variance(lambda_epsilon = lambda_u, log_sigma_epsilon = log_sigma_u)
   log_pc_value <- log_pc_aniso_value + log_pc_noise_value + log_pc_sigma_u_value
 
-  # Calculates  anisotropy
+  # Calculates anisotropy
   n <- nrow(mesh$loc)
   kappa_values <- rep(kappa, n)
   vec_values <- matrix(v, n, 2, byrow = TRUE)
   aniso <- list(kappa = kappa_values, vec = vec_values)
 
-  # Calculates  log-density of the distribution of u knowing (kappa, v)
-  scaling <- 1 / (4 * pi * sigma_u^2)
-  Q_u <- scaling * fm_aniso_precision(mesh, aniso)
+  # Calculates log-density of the distribution of u knowing (kappa, v)
+  Q_u <- fm_aniso_precision(mesh, aniso, log_sigma = log_sigma_u)
   if (length(m_u) == 1) {
     m_u <- rep(m_u, n)
   }
