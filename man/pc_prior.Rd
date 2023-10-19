@@ -2,7 +2,7 @@
 % Please edit documentation in R/PCPrior.R
 \name{pc_prior}
 \alias{pc_prior}
-\title{PC Prior Calculation}
+\title{PC Prior on kappa, v}
 \usage{
 pc_prior(lambda, lambda1, log_kappa, v)
 }
@@ -19,7 +19,7 @@ pc_prior(lambda, lambda1, log_kappa, v)
 The calculated PC prior density .
 }
 \description{
-Calculates  the PC prior based on given hyperparameters and vectors.
+Calculates  the PC prior for kappa, v based on given hyperparameters and vectors.
 }
 \examples{
 lambda <- 1

@@ -2,7 +2,7 @@
 % Please edit documentation in R/PCPrior.R
 \name{log_pc_prior_noise_variance}
 \alias{log_pc_prior_noise_variance}
-\title{Log PC Prior calcualtion for variance of noise}
+\title{Log PC Prior calcualtion for variance of noise (and u)}
 \usage{
 log_pc_prior_noise_variance(lambda_epsilon, log_sigma_epsilon)
 }

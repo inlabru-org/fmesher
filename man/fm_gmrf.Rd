@@ -6,6 +6,7 @@
 \alias{fm_aniso_precision}
 \alias{fm_matern_sample}
 \alias{fm_aniso_sample}
+\alias{fm_aniso_basis_weights_sample}
 \alias{fm_covariance}
 \alias{fm_sample}
 \title{SPDE, GMRF, and Matérn process methods}
@@ -18,12 +19,14 @@ fm_matern_sample(x, alpha = 2, rho, sigma, n = 1, loc = NULL)
 
 fm_aniso_sample(x, aniso, n = 1, loc = NULL)
 
+fm_aniso_basis_weights_sample(x, aniso, n = 1, log_sigma = 0)
+
 fm_covariance(Q, A1 = NULL, A2 = NULL, partial = FALSE)
 
 fm_sample(n, Q, mu = 0, constr = NULL)
 }
 \arguments{
-\item{x}{A mesh object, e.g. from \code{fm_mesh_2d()}.}
+\item{x}{A 2d mesh object.}
 
 \item{alpha}{The SPDE operator order. The resulting smoothness index
 is \code{nu = alpha - dim / 2}.}
@@ -31,10 +34,10 @@ is \code{nu = alpha - dim / 2}.}
 \item{rho}{The Matérn range parameter
 (scale parameter \code{kappa = sqrt(8 * nu) / rho})}
 
-\item{sigma}{The nominal Matérn std.dev. parameter}
+\item{sigma}{The std.dev. parameter of anisotropic u}
 
 \item{aniso}{List \verb{[kappa,vec]} where \code{kappa} controls the (inverse) correlation range
-and (the half angle version of) \code{vec} controls the main directions of the anisoropy}
+and (the half angle version of) \code{vec} controls the main directions of the anisotropy}
 
 \item{n}{The number of samples to generate}
 
@@ -65,6 +68,9 @@ Otherwise, the evaluated field at the \code{nrow(loc)} locations \code{loc} are 
 \code{fm_aniso_sample()} returns a matrix, where each column is a sampled
 field. If \code{loc} is \code{NULL}, the \code{fm_dof(mesh)} basis weights are given.
 Otherwise, the evaluated field at the \code{nrow(loc)} locations \code{loc} are given.
+
+\code{fm_aniso_sample()} returns a vector whose j_th component is a sample of the
+weight u_j of the jth basis vector.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
@@ -84,6 +90,8 @@ covariance function parameters, and optionally evaluate at given locations.
 
 \item \code{fm_aniso_sample()}: Simulate an anisotropic field given a mesh and
 anisotropic parameters, and optionally evaluate at given locations.
+
+\item \code{fm_aniso_basis_weights_sample()}: Simulates the basis weights u_i in u(x) = sum(u_j phi_j(x))
 
 \item \code{fm_covariance()}: Compute the covariance between "A1 x" and "A2 x", when
 x is a basis vector with precision matrix \code{Q}.

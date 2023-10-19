@@ -4,7 +4,17 @@
 \alias{MAP}
 \title{Calculates  the MAP estimate for linear noisy observation of field.}
 \usage{
-MAP(mesh, lambda, lambda1, lambda_epsilon, y, A, m_u, maxiiterations = 300)
+MAP(
+  mesh,
+  lambda,
+  lambda1,
+  lambda_epsilon,
+  lambda_u,
+  y,
+  A,
+  m_u,
+  maxiiterations = 300
+)
 }
 \arguments{
 \item{mesh}{The mesh}
@@ -22,7 +32,7 @@ MAP(mesh, lambda, lambda1, lambda_epsilon, y, A, m_u, maxiiterations = 300)
 \item{m_u}{A vector with length n representing the prior mean m_u}
 }
 \value{
-The calculated log-posterior
+The parameters (log_kappa, v, log_sigma_u, log_sigma_epsilon) that maximize the posterior
 }
 \description{
 Calculated by maximizing log posterior using optim. Only stationary parameters accepted.

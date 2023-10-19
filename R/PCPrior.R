@@ -61,8 +61,8 @@ PC_prior_v <- function(v, lambda1) {
 
 
 
-#' @title PC Prior Calculation
-#' @description Calculates  the PC prior based on given hyperparameters and vectors.
+#' @title PC Prior on kappa, v
+#' @description Calculates  the PC prior for kappa, v based on given hyperparameters and vectors.
 #'
 #' @param lambda A hyperparameter controlling the size of kappa.
 #' @param lambda1 A hyperparameter controlling the size of |v|.
@@ -120,7 +120,7 @@ log_pc_prior_aniso <- function(lambda, lambda1, log_kappa, v) {
   return(log_pc_prior_aniso_value)
 }
 
-#' @title Log PC Prior calcualtion for variance of noise
+#' @title Log PC Prior calcualtion for variance of noise (and u)
 #' @description Calculates  the log of the PC prior for sigma_epsilon based on given hyperparameters and vectors.
 #'
 #' @param lambda_epsilon A hyperparameter controlling the size of epsilon.
@@ -202,18 +202,24 @@ logGdensity <- function(x, mu, Q) {
   return(logGdty)
 }
 
-#' @title Calculates  the log-posterior density for parameters (log_kappa,v,log_sigma_epsilon) with PC prior.
+#' @title Calculates  the log-posterior density for parameters (log_kappa,v, log_sigma_u, log_sigma_epsilon) with PC prior.
 #'
 #' @description
-#' Calculates  the log-posterior density based on the prior density and the likelihood. Only stationary parameters are accepted.
+#' Calculates  the log-posterior density of parameters (log(kappa),v, log(sigma_u), log(epsilon)))
+#' given a linear noisy observation y= A*u + epsilon 
+#' Uses based on the prior density and the likelihood.
+#' Only stationary parameters are accepted. 
+#' Value is up to an additive constant depending only on y
 #'
 #' @param mesh The mesh
 #' @param log_kappa Logarithm of inverse correlation range
 #' @param v 2D vector that controls anisotropy
+#' @param log_sigma_u Variance of field u
 #' @param log_sigma_epsilon Variance of noise
 #' @param lambda A hyperparameter controlling the size of kappa.
 #' @param lambda1 A hyperparameter controlling the size of |v|.
 #' @param lambda_epsilon A hyperparameter controlling the size of sigma_epsilon.
+#' @param lambda_epsilon A hyperparameter controlling the size of sigma_u.
 #' @param y A vector with length equal to the number of basis elements n representing the observed data.
 #' @param A Matrix of size nxn representing the transformation A
 #' @param Q_epsilon A sparse matrix of size nxn representing the noise precision matrix
@@ -223,13 +229,15 @@ logGdensity <- function(x, mu, Q) {
 #' @export
 
 
-log_posterior <- function(mesh, log_kappa, log_sigma_epsilon, v, lambda, lambda1, lambda_epsilon, y, A, m_u) {
+log_posterior <- function(mesh, log_kappa, log_sigma_epsilon, log_sigma_u, v, lambda, lambda1, lambda_epsilon, lambda_u, y, A, m_u) {
   kappa <- exp(log_kappa)
+  sigma_u <- exp(log_sigma_u)
   sigma_epsilon <- exp(log_sigma_epsilon)
   # Calculates  log-prior
   log_pc_aniso_value <- log_pc_prior_aniso(lambda = lambda, lambda1 = lambda1, log_kappa = log_kappa, v = v)
   log_pc_noise_value <- log_pc_prior_noise_variance(lambda_epsilon = lambda_epsilon, log_sigma_epsilon = log_sigma_epsilon)
-  log_pc_value <- log_pc_aniso_value + log_pc_noise_value
+  log_pc_sigma_u_value <- log_pc_prior_noise_variance(lambda_epsilon = lambda_u, log_sigma_epsilon = log_sigma_u)
+  log_pc_value <- log_pc_aniso_value + log_pc_noise_value + log_pc_sigma_u_value
 
   # Calculates  anisotropy
   n <- nrow(mesh$loc)
@@ -238,7 +246,8 @@ log_posterior <- function(mesh, log_kappa, log_sigma_epsilon, v, lambda, lambda1
   aniso <- list(kappa = kappa_values, vec = vec_values)
 
   # Calculates  log-density of the distribution of u knowing (kappa, v)
-  Q_u <- fm_aniso_precision(mesh, aniso)
+  scaling <- 1 / (4 * pi * sigma_u^2)
+  Q_u <- scaling * fm_aniso_precision(mesh, aniso)
   if (length(m_u) == 1) {
     m_u <- rep(m_u, n)
   }
@@ -253,7 +262,7 @@ log_posterior <- function(mesh, log_kappa, log_sigma_epsilon, v, lambda, lambda1
   # Calculates  log-density of the posterior distribution of u given y and theta
   logGdty_posterior <- logGdensity(x = u, mu = m_uy_theta, Q = Q_uy_theta)
 
-  # Calculates  log-density of the observation of y|u, theta
+  # Calculates  log-density of the observation of y given u, theta
   logGdty_observation <- logGdensity(x = y, mu = A %*% u, Q = Q_epsilon)
 
   # Calculates  log-posterior
@@ -275,22 +284,26 @@ log_posterior <- function(mesh, log_kappa, log_sigma_epsilon, v, lambda, lambda1
 #' @param A Matrix of size nxn representing the transformation A
 #' @param m_u A vector with length n representing the prior mean m_u
 #'
-#' @return The calculated log-posterior
+#' @return The parameters (log_kappa, v, log_sigma_u, log_sigma_epsilon) that maximize the posterior
 #' @export
 
 
-MAP <- function(mesh, lambda, lambda1, lambda_epsilon, y, A, m_u, maxiiterations = 300) {
+MAP <- function(mesh, lambda, lambda1, lambda_epsilon, lambda_u, y, A, m_u, maxiiterations = 300) {
   # Writes the log-posterior as a function of (log_kappa, v, sigma)
   log_post <- function(theta) {
     log_kappa <- theta[1]
     v <- theta[2:3]
-    log_sigma_epsilon <- theta[4]
-    return(log_posterior(mesh = mesh, log_kappa = log_kappa, v = v, log_sigma_epsilon = log_sigma_epsilon, lambda = lambda, lambda1 = lambda1, lambda_epsilon = lambda_epsilon, y = y, A = A, m_u = m_u))
+    log_sigma_u <- theta[4]
+    log_sigma_epsilon <- theta[5]
+    return(log_posterior(mesh = mesh, log_kappa = log_kappa, v = v, 
+    log_sigma_epsilon = log_sigma_epsilon, log_sigma_u = log_sigma_u, 
+    lambda = lambda, lambda1 = lambda1, lambda_epsilon = lambda_epsilon, lambda_u = lambda_u,
+     y = y, A = A, m_u = m_u))
   }
-  aniso_0 <- c(log(0.5), c(1, 2), 1)
+  aniso_0 <- c(log(0.5), c(1, 2), 1, 1)
   # To do: calculate the gradient of log posterior
   # gradient= grad_log_posterior(mesh, kappa, v, lambda, lambda1, y, A, Q_epsilon, m_u)
-  return(optim(par = aniso_0, fn = log_post, control = list(fnscale = -1, maxit = maxiiterations)))
+  return(optim(par = aniso_0, fn = log_post, control = list(fnscale = -1, maxit = maxiiterations), hessian = TRUE))
 }
 
 #' @title Calculates  the gradient of the log posterior of a linear observation y = A u + noise

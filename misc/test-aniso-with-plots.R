@@ -3,7 +3,7 @@ setwd("C:/Users/liaml/OneDrive/Documentos")
 load_all("fmesher")
 library(ggplot2)
 
-# Parameter values non-stationary field
+# Parameter values stationary, anisotropic field
 kp <- 1
 v1 <- 0
 v2 <- 5
@@ -21,13 +21,13 @@ kappa <- function(x) {
 }
 
 vec <- function(x) {
-  return(c(x[1] - 5, x[2] - 5))
+  return(c(0, -1 ))
 }
 
 # Square mesh for field
-l <- 10
+l <- 4
 library(sf)
-boundary_sf <- st_sfc(st_polygon(list(rbind(c(0, 0), c(10, 0), c(10, 10), c(0, 10), c(0, 0)))))
+boundary_sf <- st_sfc(st_polygon(list(rbind(c(-l, -l), c(l, -l), c(l, l), c(-l, l), c(-l, -l)))))
 boundary <- fm_as_segm(boundary_sf)
 
 mesh <- fm_mesh_2d_inla(
@@ -35,7 +35,7 @@ mesh <- fm_mesh_2d_inla(
   max.edge = c(0.2, 1)
 )
 nodes1 <- mesh$loc
-plot(mesh)
+#plot(mesh)
 
 # Defining anisotropy
 kappa_values <- apply(nodes1, 1, kappa)
@@ -81,8 +81,7 @@ ggplot(pxl) +
   coord_equal() +
   xlab("X Coordinate") +
   ylab("Y Coordinate") +
-  labs(fill = "Field u isotropic") +
-  theme(legend.position = "bottom")
+  labs(fill = "Field u isotropic")
 
 # Plotting anisotropic field
 ggplot(pxl) +
@@ -93,5 +92,4 @@ ggplot(pxl) +
   coord_equal() +
   xlab("X Coordinate") +
   ylab("Y Coordinate") +
-  labs(fill = "Field u anisotropic") +
-  theme(legend.position = "bottom")
+  labs(fill = "Field u")

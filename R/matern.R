@@ -67,7 +67,7 @@ fm_matern_precision <- function(x, alpha, rho, sigma) {
 #'
 #' @param x A mesh object, e.g. from `fm_mesh_2d()`.
 #' @param aniso List `[kappa,vec]` where `kappa` controls the (inverse) correlation range
-#' and (the half angle version of) `vec` controls the main directions of the anisoropy
+#' and (the half angle version of) `vec` controls the main directions of the anisotropy
 #'
 #' @export
 #' @examples
@@ -125,12 +125,19 @@ fm_aniso_sample <- function(x, aniso, n = 1, loc = NULL) {
 #' @describeIn fm_gmrf
 #' Simulates the basis weights u_i in u(x) = sum(u_j phi_j(x))
 #'
+#' @param x A 2d mesh object.
+#' @param aniso List `[kappa,vec]` where `kappa` controls the (inverse) correlation range
+#' and (the half angle version of) `vec` controls the main directions of the anisotropy
+#' @param sigma The std.dev. parameter of anisotropic u
+#'
 #' @return `fm_aniso_sample()` returns a vector whose j_th component is a sample of the
 #' weight u_j of the jth basis vector.
 #' @export
 
-fm_aniso_basis_weights_sample <- function(x, aniso, n = 1) {
-  Q <- fm_aniso_precision(x, aniso) # Calculate the precision
+fm_aniso_basis_weights_sample <- function(x, aniso, n = 1, log_sigma = 0) {
+  sigma <- exp(log_sigma)
+  scaling <- 1 / (4 * pi * sigma^2)
+  Q <- scaling * fm_aniso_precision(x, aniso) # Calculate the precision
   L_solve <- function(fact, b) {
     Matrix::solve(fact, Matrix::solve(fact, b, system = "P"), system = "L")
   }

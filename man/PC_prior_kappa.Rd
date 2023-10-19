@@ -23,5 +23,5 @@ Calculates  the marginal PC prior pi_kappa
 log_kappa <- -0.3
 lambda <- 0.5
 lambda1 <- 1
-result <-PC_prior_kappa(log_r, lambda, lambda1)
+result <- PC_prior_kappa(log_r, lambda, lambda1)
 }

@@ -18,7 +18,7 @@ The calculated marginal prior density of v.
 Calculates  the marginal PC prior, pi_v, of the anisotropy vector
 }
 \examples{
-v <- c(1,2)
+v <- c(1, 2)
 lambda1 <- 1
-result <-PC_prior_v(v, lambda1)
+result <- PC_prior_v(v, lambda1)
 }

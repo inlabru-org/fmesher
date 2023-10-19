@@ -20,5 +20,5 @@ Calculates  the marginal PC prior, pi_r, of the norm of the anisotropy vector
 \examples{
 log_r <- -0.5
 lambda1 <- 1
-result <-PC_prior_r(log_r, lambda1)
+result <- PC_prior_r(log_r, lambda1)
 }
