@@ -8,7 +8,7 @@ library(INLA)
 lambda <- 1; lambda1 <- 1; lambda_epsirlon <- 1; lambda_u <- 1
 
 #Anisotropy parameters
-kappa <- 1; log_kappa <- log(kappa);
+kappa <- 3; log_kappa <- log(kappa);
 v <- c(1,2)
 
 #Correlation range calculation
@@ -79,11 +79,12 @@ log_posterior_true <- log_posterior(mesh = mesh,
 
 map <- MAP(mesh = mesh,
     lambda =lambda, lambda1 = lambda1, lambda_epsilon = lambda_epsilon, lambda_u = lambda_u,
-    y= y, A = A, m_u =m_u, maxiterations = 200, log_sigma_epsilon = log_sigma_epsilon )
+    y= y, A = A, m_u =m_u, maxiterations = 300, log_sigma_epsilon = log_sigma_epsilon )
 print(map)
 cov2cor(solve(-map$hessian))
 par <- map$par
-
+real_par <- c(log_kappa,v,log_sigma_epsilon)
+print(par-real_par)
 
 ##Trying to see what doesn't work
 sigma_u <- 0.01; log_sigma_u <- log(sigma_u)
