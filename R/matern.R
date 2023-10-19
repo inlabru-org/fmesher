@@ -68,13 +68,15 @@ fm_matern_precision <- function(x, alpha, rho, sigma) {
 #' @param x A mesh object, e.g. from `fm_mesh_2d()`.
 #' @param aniso List `[kappa,vec]` where `kappa` controls the (inverse) correlation range
 #' and (the half angle version of) `vec` controls the main directions of the anisotropy
-#'
+#' @param log_sima The logarithmm of the marginal variance sigma (is a constant)
 #' @export
 #' @examples
 #' .....
-fm_aniso_precision <- function(x, aniso) {
+fm_aniso_precision <- function(x, aniso, log_sigma = 0) {
+  sigma <- exp(log_sigma)
+  scaling <- 1 / (4 * pi * sigma^2) #Calculates scaling so that Q * scaling has variance sigma
   fem <- fm_fem_aniso(x, aniso)
-  Q <- (fem$c0 + 2 * fem$g1 + fem$g2)
+  Q <- (fem$c0 + 2 * fem$g1 + fem$g2) * scaling
   Q
 }
 
