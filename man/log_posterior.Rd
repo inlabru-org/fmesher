@@ -8,12 +8,12 @@ log_posterior(
   mesh,
   log_kappa,
   log_sigma_epsilon,
-  log_sigma_u,
+  log_sigma_u = 0,
   v,
   lambda,
   lambda1,
   lambda_epsilon,
-  lambda_u,
+  lambda_u = 1,
   y,
   A,
   m_u
@@ -26,7 +26,7 @@ log_posterior(
 
 \item{log_sigma_epsilon}{Variance of noise}
 
-\item{log_sigma_u}{Variance of field u}
+\item{log_sigma_u}{Variance of field u. If unspecified, it is assumed to be 0.}
 
 \item{v}{2D vector that controls anisotropy}
 

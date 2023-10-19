@@ -74,7 +74,7 @@ fm_matern_precision <- function(x, alpha, rho, sigma) {
 #' .....
 fm_aniso_precision <- function(x, aniso, log_sigma = 0) {
   sigma <- exp(log_sigma)
-  scaling <- 1 / (4 * pi * sigma^2) #Calculates scaling so that Q * scaling has variance sigma
+  scaling <- 1 / (4 * pi * sigma^2) #Calculates scaling so that Q_fem * scaling has variance sigma
   fem <- fm_fem_aniso(x, aniso)
   Q <- (fem$c0 + 2 * fem$g1 + fem$g2) * scaling
   Q
@@ -137,9 +137,7 @@ fm_aniso_sample <- function(x, aniso, n = 1, loc = NULL) {
 #' @export
 
 fm_aniso_basis_weights_sample <- function(x, aniso, n = 1, log_sigma = 0) {
-  sigma <- exp(log_sigma)
-  scaling <- 1 / (4 * pi * sigma^2)
-  Q <- scaling * fm_aniso_precision(x, aniso) # Calculate the precision
+  Q <- fm_aniso_precision(x, aniso, log_sigma) # Calculate the precision
   L_solve <- function(fact, b) {
     Matrix::solve(fact, Matrix::solve(fact, b, system = "P"), system = "L")
   }
