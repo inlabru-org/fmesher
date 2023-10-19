@@ -166,20 +166,20 @@ IOHelperC &IOHelperC::OD(std::ostream &output) {
     if (mcc.info.datatype == IODatatype::Dense)
       if (mcc.info.valuetype == IOValuetype::Int) {
         IOHelperM<int> ioh;
-        ioh.cD(&(mcc.DI())).matrixtype(mcc.info.matrixtype);
+        ioh.cD(mcc.cDI()).matrixtype(mcc.info.matrixtype);
         ioh.binary(bin_).OH(output).OD(output);
       } else {
         IOHelperM<double> ioh;
-        ioh.cD(&mcc.DD()).matrixtype(mcc.info.matrixtype);
+        ioh.cD(mcc.cDD()).matrixtype(mcc.info.matrixtype);
         ioh.binary(bin_).OH(output).OD(output);
       }
     else if (mcc.info.valuetype == IOValuetype::Int) {
       IOHelperSM<int> ioh;
-      ioh.cD(&mcc.SI()).matrixtype(mcc.info.matrixtype);
+      ioh.cD(mcc.cSI()).matrixtype(mcc.info.matrixtype);
       ioh.binary(bin_).OH(output).OD(output);
     } else {
       IOHelperSM<double> ioh;
-      ioh.cD(&mcc.SD()).matrixtype(mcc.info.matrixtype);
+      ioh.cD(mcc.cSD()).matrixtype(mcc.info.matrixtype);
       ioh.binary(bin_).OH(output).OD(output);
     }
   }
@@ -574,14 +574,24 @@ SEXP MatrixC::Rcpp_wrap() const {
   for (auto const & outi : output_) {
     const MCC &mcc = *(coll_.find(outi)->second);
     if (mcc.info.datatype == IODatatype::Dense) {
-      if (mcc.info.valuetype == IOValuetype::Int)
-        res[outi] = Rcpp::wrap(mcc.DI());
-      else
-        res[outi] = Rcpp::wrap(mcc.DD());
+      if (mcc.info.valuetype == IOValuetype::Int) {
+        if (auto ptr = mcc.cDI()) {
+          res[outi] = Rcpp::wrap(*ptr);
+        }
+      } else {
+        if (auto ptr = mcc.cDD()) {
+          res[outi] = Rcpp::wrap(*ptr);
+        }
+      }
     } else if (mcc.info.valuetype == IOValuetype::Int) {
-      res[outi] = Rcpp::wrap(mcc.SI());
-    } else
-      res[outi] = Rcpp::wrap(mcc.SD());
+      if (auto ptr = mcc.cSI()) {
+        res[outi] = Rcpp::wrap(*ptr);
+      }
+    } else {
+      if (auto ptr = mcc.cSD()) {
+        res[outi] = Rcpp::wrap(*ptr);
+      }
+    }
   }
   return res;
 }
