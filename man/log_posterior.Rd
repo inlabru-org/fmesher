@@ -7,9 +7,9 @@
 log_posterior(
   mesh,
   log_kappa,
-  log_sigma_epsilon,
-  log_sigma_u = 0,
   v,
+  log_sigma_u = 0,
+  log_sigma_epsilon,
   lambda,
   lambda1,
   lambda_epsilon,
@@ -24,17 +24,19 @@ log_posterior(
 
 \item{log_kappa}{Logarithm of inverse correlation range}
 
-\item{log_sigma_epsilon}{Variance of noise}
+\item{v}{2D vector that controls anisotropy}
 
 \item{log_sigma_u}{Variance of field u. If unspecified, it is assumed to be 0.}
 
-\item{v}{2D vector that controls anisotropy}
+\item{log_sigma_epsilon}{Variance of noise}
 
 \item{lambda}{A hyperparameter controlling the size of kappa.}
 
 \item{lambda1}{A hyperparameter controlling the size of |v|.}
 
-\item{lambda_epsilon}{A hyperparameter controlling the size of sigma_u.}
+\item{lambda_epsilon}{A hyperparameter controlling the size of sigma_epsilon.}
+
+\item{lambda_u}{A hyperparameter controlling the size of sigma_u.}
 
 \item{y}{A vector with length equal to the number of basis elements n representing the observed data.}
 

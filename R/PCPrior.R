@@ -114,10 +114,30 @@ pc_prior <- function(lambda, lambda1, log_kappa, v) {
 #' v <- c(1, 2)
 #' log_pc_prior_aniso(lambda = lambda, lambda1 = lambda1, log_kappa = log_kappa, v = v)
 log_pc_prior_aniso <- function(lambda, lambda1, log_kappa, v) {
-  # Calculates  the log PC prior
-  log_pc_prior_aniso_value <- log(pc_prior(lambda = lambda, lambda1 = lambda1, log_kappa = log_kappa, v = v))
+  kappa <- exp(log_kappa)
+  # log_f <- function(r) {
+  #   0.5 * (-log(48*pi) + log(3 * cosh(2 * r) + 1))
+  # }
 
-  return(log_pc_prior_aniso_value)
+  # log_f_prime <- function(r) {
+  #   log(sinh(2 * r)) - log(4) - 0.5 * log(pi * cosh(2 * r) + pi / 3)
+  # }
+  f <- function(r) {
+    sqrt((1 / (48 * pi)) * (3 * cosh(2 * r) + 1))
+  }
+
+  f_prime <- function(r) {
+    sinh(2 * r) / (4 * sqrt(pi * cosh(2 * r) + pi / 3))
+  }
+
+  v_norm <- sqrt(sum(v^2))
+  f_val <- f(v_norm)
+  f_prime_val <- f_prime(v_norm)
+
+  term1 <- log(lambda) + log(lambda1) + log(f_prime_val) + log(f_val) - log(2 * pi * v_norm)
+  term2 <- -lambda1 * (f_val - f(0)) - lambda * f_val * kappa
+
+  return(term1 + term2)
 }
 
 #' @title Log PC Prior calcualtion for variance of noise (and u)
@@ -245,7 +265,7 @@ log_posterior <- function(mesh, log_kappa, v, log_sigma_u = 0, log_sigma_epsilon
   vec_values <- matrix(v, n, 2, byrow = TRUE)
   aniso <- list(kappa = kappa_values, vec = vec_values)
 
-  # Calculates log-density of the distribution of u = m_u knowing (kappa, v)
+  # Calculates log-density of the distribution of u at m_u knowing (kappa, v)
   Q_u <- fm_aniso_precision(mesh, aniso, log_sigma = log_sigma_u)
   if (length(m_u) == 1) {
     m_u <- rep(m_u, n)
@@ -254,7 +274,7 @@ log_posterior <- function(mesh, log_kappa, v, log_sigma_u = 0, log_sigma_epsilon
   logGdty_prior <- logGdensity(x = u, mu = m_u, Q = Q_u)
 
   # Calculates Q_epsilon,  Q_{u|y,theta} and m_{u|y,theta}
-  Q_epsilon <- Matrix::Diagonal(n, sigma_epsilon^2)
+  Q_epsilon <- Matrix::Diagonal(n, 1 / sigma_epsilon^2)
   Q_uy_theta <- Q_u + t(A) %*% Q_epsilon %*% A
   m_uy_theta <- solve(Q_uy_theta, Q_u %*% m_u + t(A) %*% Q_epsilon %*% y)
 
@@ -320,7 +340,7 @@ MAP <- function(mesh, lambda, lambda1, lambda_epsilon, lambda_u, y, A, m_u, maxi
         lambda = lambda, lambda1 = lambda1, lambda_epsilon = lambda_epsilon, lambda_u = lambda_u,
         y = y, A = A, m_u = m_u))
       }
-    aniso_0 <- c(log(0.5), c(1, 2), 1)
+    aniso_0 <- c(1, c(0.1, 0.1), 1)
     return(optim(par = aniso_0, fn = log_post, control = list(fnscale = -1, maxit = maxiterations), hessian = TRUE))
     }
 }

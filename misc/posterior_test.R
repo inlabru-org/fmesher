@@ -5,10 +5,10 @@ library(sp)
 library(INLA)
 
 #Hyperparameters for PC priors
-lambda <- 1; lambda1 <- 1; lambda_epsilon <- 1; lambda_u <- 1
+lambda <- 1; lambda1 <- 1; lambda_epsirlon <- 1; lambda_u <- 1
 
 #Anisotropy parameters
-kappa <- 1; logkappa <- log(kappa);
+kappa <- 1; log_kappa <- log(kappa);
 v <- c(1,2)
 
 #Correlation range calculation
@@ -16,14 +16,14 @@ rho <- sqrt(8)/kappa/sqrt(exp(sqrt(v[1]^2 + v[2]^2)))
 
 #Noise parameters
 sigma_u <- 0.01; log_sigma_u <- log(sigma_u)
-sigma_epsilon <- 0.01; log_sigma_epsilon <- log(sigma_epsilon)
+sigma_epsilon <- 0.01 ; log_sigma_epsilon <- log(sigma_epsilon)
 
 
 #Testing PC priors
 log_pc_aniso <- log_pc_prior_aniso(lambda, lambda1, kappa, v)
 log_pc_noise <- log_pc_prior_noise_variance(lambda_epsilon = lambda_epsilon, log_sigma_epsilon = log_sigma_epsilon)
-log_pc_u <- log_pc_prior_noise_variance(lambda_epsilon = lambda_u, log_sigma_epsilon = log_sigma_u)
-
+log_pc_sigma_u <- log_pc_prior_noise_variance(lambda_epsilon = lambda_u, log_sigma_epsilon = log_sigma_u)
+log_pc_value <- log_pc_aniso + log_pc_noise + log_pc_sigma_u
 #Mesh definition
 library(sf)
 boundary_sf = st_sfc(st_polygon(list(rbind(c(0, 0), c(10, 0), c(10, 10), c(0, 10),c(0,0)))))
@@ -64,8 +64,8 @@ y = A %*% x + exp(log_sigma_epsilon) * stats::rnorm(nrow(Q))
 
 #Calculate log posterior and map
 log_posterior_true <- log_posterior(mesh = mesh,
-                                    log_kappa = logkappa,
-                                    v = v,
+                                    log_kappa = log_kappa,
+                                    v = c(1,2),
                                     log_sigma_epsilon = log_sigma_epsilon,
                                     log_sigma_u = log_sigma_u,
                                     lambda =lambda,
@@ -77,13 +77,53 @@ log_posterior_true <- log_posterior(mesh = mesh,
                                     m_u = m_u
                                     )
 
-
 map <- MAP(mesh = mesh,
     lambda =lambda, lambda1 = lambda1, lambda_epsilon = lambda_epsilon, lambda_u = lambda_u,
-    y= y, A = A, m_u =m_u, maxiterations = 20, log_sigma_epsilon = log_sigma_epsilon )
+    y= y, A = A, m_u =m_u, maxiterations = 200, log_sigma_epsilon = log_sigma_epsilon )
 print(map)
 cov2cor(solve(-map$hessian))
 par <- map$par
+
+
+##Trying to see what doesn't work
+sigma_u <- 0.01; log_sigma_u <- log(sigma_u)
+sigma_epsilon <- 0.01 ; log_sigma_epsilon <- log(sigma_epsilon)
+
+
+# Calculates log-prior
+log_pc_aniso_value <- log_pc_prior_aniso(lambda = lambda, lambda1 = lambda1, log_kappa = log_kappa, v = v)
+log_pc_noise_value <- log_pc_prior_noise_variance(lambda_epsilon = lambda_epsilon, log_sigma_epsilon = log_sigma_epsilon)
+log_pc_sigma_u_value <- log_pc_prior_noise_variance(lambda_epsilon = lambda_u, log_sigma_epsilon = log_sigma_u)
+log_pc_value <- log_pc_aniso_value + log_pc_noise_value + log_pc_sigma_u_value
+
+# Calculates anisotropy
+n <- nrow(mesh$loc)
+kappa_values <- rep(kappa, n)
+vec_values <- matrix(v, n, 2, byrow = TRUE)
+aniso <- list(kappa = kappa_values, vec = vec_values)
+
+# Calculates log-density of the distribution of u at m_u knowing (kappa, v)
+Q_u <- fm_aniso_precision(mesh, aniso, log_sigma = log_sigma_u)
+if (length(m_u) == 1) {
+  m_u <- rep(m_u, n)
+}
+u <- m_u
+logGdty_prior <- logGdensity(x = u, mu = m_u, Q = Q_u)
+
+# Calculates Q_epsilon,  Q_{u|y,theta} and m_{u|y,theta}
+Q_epsilon <- Matrix::Diagonal(n, sigma_epsilon^2)
+Q_uy_theta <- Q_u + t(A) %*% Q_epsilon %*% A
+m_uy_theta <- solve(Q_uy_theta, Q_u %*% m_u + t(A) %*% Q_epsilon %*% y)
+
+# Calculates  log-density of the posterior distribution of u given y and theta
+logGdty_posterior <- logGdensity(x = u, mu = m_uy_theta, Q = Q_uy_theta)
+
+# Calculates  log-density of the observation of y given u, theta
+logGdty_observation <- logGdensity(x = y, mu = A %*% u, Q = Matrix::Diagonal(n, 1))
+
+# Calculates  log-posterior
+log_posterior_val <- log_pc_value + logGdty_prior + logGdty_observation - logGdty_posterior
+
 
 
 ggplot()+ gg(data=mesh,color = x)
