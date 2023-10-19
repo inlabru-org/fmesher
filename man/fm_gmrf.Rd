@@ -13,7 +13,7 @@
 \usage{
 fm_matern_precision(x, alpha, rho, sigma)
 
-fm_aniso_precision(x, aniso)
+fm_aniso_precision(x, aniso, log_sigma = 0)
 
 fm_matern_sample(x, alpha = 2, rho, sigma, n = 1, loc = NULL)
 
@@ -59,6 +59,8 @@ is reimplemented.)}
 
 \item{constr}{Optional list of constraint information, with elements
 \code{A} and \code{e}. Should only be used for a small number of exact constraints.}
+
+\item{log_sima}{The logarithmm of the marginal variance sigma (is a constant)}
 }
 \value{
 \code{fm_matern_sample()} returns a matrix, where each column is a sampled

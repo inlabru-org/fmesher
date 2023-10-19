@@ -48,6 +48,9 @@ log_posterior(
 The calculated log-posterior
 }
 \description{
-Calculates  the log-posterior density based on the prior density and the likelihood. Only stationary parameters are accepted.
+Calculates  the log-posterior density of parameters (log(kappa),v, log(sigma_u), log(epsilon)))
+given a linear noisy observation y= A*u + epsilon
+Uses based on the prior density and the likelihood.
+Only stationary parameters are accepted.
 Value is up to an additive constant depending only on y
 }

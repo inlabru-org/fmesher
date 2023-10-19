@@ -2,8 +2,8 @@ library(devtools)
 library(ggplot2)
 library(Matrix)
 library(INLA)
-#document()
-#load_all()
+document()
+load_all()
 
 #Defining parameters
 lambda <- 1
