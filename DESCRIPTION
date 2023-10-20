@@ -68,7 +68,6 @@ LinkingTo:
 VignetteBuilder: knitr
 BuildVignettes: true
 Collate: 
-    'PCPrior.R'
     'RcppExports.R'
     'deprecated.R'
     'bary.R'
