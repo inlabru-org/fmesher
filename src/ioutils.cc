@@ -115,13 +115,12 @@ std::istream &operator>>(std::istream &input, IOHeader &h) {
 }
 
 IOHelperC &IOHelperC::OL(std::ostream &output) {
-  const IOHeader &h(IOHelper<int>::h_);
-  const bool &bin_(IOHelper<int>::binary_);
+  const IOHeader &h(IOHelper<int>::header());
   if ((h.elems == 0) || (!cM_)) {
     return *this;
   }
   for (const auto& outi : cM_->output_) {
-    if (bin_) {
+    if (is_binary()) {
       int string_size = outi.length() + 1;
       output.write((char *)&string_size, sizeof(string_size));
       output.write((char *)outi.c_str(), sizeof(char) * string_size);
@@ -133,8 +132,8 @@ IOHelperC &IOHelperC::OL(std::ostream &output) {
 }
 
 IOHelperC &IOHelperC::IL(std::istream &input) {
-  const IOHeader &h(IOHelper<int>::h_);
-  const bool &bin_(IOHelper<int>::binary_);
+  const IOHeader &h(IOHelper<int>::header());
+  const bool bin_(IOHelper<int>::is_binary());
   if ((h.elems == 0) || (!cM_)) {
     return *this;
   }
@@ -156,8 +155,8 @@ IOHelperC &IOHelperC::IL(std::istream &input) {
 }
 
 IOHelperC &IOHelperC::OD(std::ostream &output) {
-  const IOHeader &h(IOHelper<int>::h_);
-  const bool &bin_(IOHelper<int>::binary_);
+  const IOHeader &h(IOHelper<int>::header());
+  const bool bin_(IOHelper<int>::is_binary());
   if ((h.elems == 0) || (!cM_)) {
     return *this;
   }
@@ -187,8 +186,8 @@ IOHelperC &IOHelperC::OD(std::ostream &output) {
 }
 
 IOHelperC &IOHelperC::ID(std::istream &input) {
-  const IOHeader &h(IOHelper<int>::h_);
-  const bool &bin_(IOHelper<int>::binary_);
+  const IOHeader &h(IOHelper<int>::header());
+  const bool bin_(IOHelper<int>::is_binary());
   if ((!M_) || (h.elems == 0)) {
     return *this;
   }
@@ -197,24 +196,24 @@ IOHelperC &IOHelperC::ID(std::istream &input) {
     IOHelper<int> ioh_;
     ioh_.binary(bin_).IH(input);
 
-    if (ioh_.h_.datatype == IODatatype::Dense)
-      if (ioh_.h_.valuetype == IOValuetype::Int) {
+    if (ioh_.header().datatype == IODatatype::Dense)
+      if (ioh_.header().valuetype == IOValuetype::Int) {
         IOHelperM<int> ioh;
         ioh.D(&(M_->DI(listi)));
-        ioh.binary(bin_).IH(ioh_.h_).ID(input);
+        ioh.binary(bin_).IH(ioh_.header()).ID(input);
       } else {
         IOHelperM<double> ioh;
         ioh.D(&(M_->DD(listi)));
-        ioh.binary(bin_).IH(ioh_.h_).ID(input);
+        ioh.binary(bin_).IH(ioh_.header()).ID(input);
       }
-    else if (ioh_.h_.valuetype == IOValuetype::Int) {
+    else if (ioh_.header().valuetype == IOValuetype::Int) {
       IOHelperSM<int> ioh;
       ioh.D(&(M_->SI(listi)));
-      ioh.binary(bin_).IH(ioh_.h_).ID(input);
+      ioh.binary(bin_).IH(ioh_.header()).ID(input);
     } else {
       IOHelperSM<double> ioh;
       ioh.D(&(M_->SD(listi)));
-      ioh.binary(bin_).IH(ioh_.h_).ID(input);
+      ioh.binary(bin_).IH(ioh_.header()).ID(input);
     }
   }
   return *this;
@@ -338,9 +337,9 @@ MCCInfo MatrixC::load(std::string name) {
   ioh_.binary(bin_in_).IH(I);
   I.close();
 
-  coll_.insert(collPairT(name, new MCC(IODatatype(ioh_.h_.datatype),
-                                       IOValuetype(ioh_.h_.valuetype),
-                                       IOMatrixtype(ioh_.h_.matrixtype))));
+  coll_.insert(collPairT(name, new MCC(IODatatype(ioh_.header().datatype),
+                                       IOValuetype(ioh_.header().valuetype),
+                                       IOMatrixtype(ioh_.header().matrixtype))));
   activate(name);
 
   I.open((input_prefix_ + name).c_str(),
@@ -348,8 +347,8 @@ MCCInfo MatrixC::load(std::string name) {
   if (!I.is_open()) {
     return info(name);
   }
-  if (ioh_.h_.datatype == IODatatype::Dense)
-    if (ioh_.h_.valuetype == IOValuetype::Int) {
+  if (ioh_.header().datatype == IODatatype::Dense)
+    if (ioh_.header().valuetype == IOValuetype::Int) {
       IOHelperM<int> ioh;
       ioh.D(&DI(name));
       ioh.binary(bin_in_).IH(I);
@@ -359,7 +358,7 @@ MCCInfo MatrixC::load(std::string name) {
       ioh.D(&DD(name));
       ioh.binary(bin_in_).IH(I).ID(I);
     }
-  else if (ioh_.h_.valuetype == IOValuetype::Int) {
+  else if (ioh_.header().valuetype == IOValuetype::Int) {
     IOHelperSM<int> ioh;
     ioh.D(&SI(name));
     ioh.binary(bin_in_).IH(I).ID(I);

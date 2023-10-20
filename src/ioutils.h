@@ -68,6 +68,7 @@ public:
   IOMatrixtype matrixtype;  /*!< The IOMatrixtype. */
   IOStoragetype storagetype; /*!< The IOStoragetype. */
 
+public:
   /* Sets defaults, and the valuetype matching T: */
   template <class T> IOHeader &def(const T &ref);
   IOHeader &def(const int &ref);
@@ -93,7 +94,7 @@ std::istream &operator>>(std::istream &output, IOHeader &h);
 
 /*! Base helper for input and output. */
 template <class T> class IOHelper {
-public:
+private:
   IOHeader h_;
   bool binary_;
 
@@ -102,9 +103,10 @@ public:
   IOHelper() : h_(T()), binary_(BINARY_DEFAULT){};
   IOHelper(const IOHeader &h) : h_(h), binary_(BINARY_DEFAULT){};
 
-  bool binaryformat() const { return binary_; };
-  IOMatrixtype matrixtype() const { return (IOMatrixtype)h_.matrixtype; };
-  IOStoragetype storagetype() const { return (IOStoragetype)h_.storagetype; };
+  IOHeader & header() { return h_; };
+  bool is_binary() const { return binary_; };
+  IOMatrixtype matrixtype() const { return h_.matrixtype; };
+  IOStoragetype storagetype() const { return h_.storagetype; };
 
   IOHelper<T> &ascii(bool set_ascii = true) { return binary(!set_ascii); };
   IOHelper<T> &binary(bool set_binary = true) {
@@ -145,18 +147,18 @@ public:
   IOHelperM<T> &cD(const Matrix<T> *M) {
     cM_ = M;
     M_ = NULL;
-    IOHelper<T>::h_.dense(*M);
+    IOHelper<T>::header().dense(*M);
     return *this;
   };
   IOHelperM<T> &D(Matrix<T> *M) {
     cM_ = M;
     M_ = M;
-    IOHelper<T>::h_.dense(*M);
+    IOHelper<T>::header().dense(*M);
     return *this;
   };
 
   IOHelperM<T> &matrixtype(IOMatrixtype matrixt) {
-    IOHelper<T>::h_.dense(*cM_, matrixt);
+    IOHelper<T>::header().dense(*cM_, matrixt);
     return *this;
   };
 
@@ -219,20 +221,20 @@ public:
   IOHelperSM<T> &cD(const SparseMatrix<T> *M) {
     cM_ = M;
     M_ = NULL;
-    IOHelper<T>::h_.sparse(*M);
+    IOHelper<T>::header().sparse(*M);
     IOHelper<T>::colmajor();
     return *this;
   };
   IOHelperSM<T> &D(SparseMatrix<T> *M) {
     cM_ = M;
     M_ = M;
-    IOHelper<T>::h_.sparse(*M);
+    IOHelper<T>::header().sparse(*M);
     IOHelper<T>::colmajor();
     return *this;
   };
 
   IOHelperSM<T> &matrixtype(IOMatrixtype matrixt) {
-    IOHelper<T>::h_.sparse(*cM_, matrixt);
+    IOHelper<T>::header().sparse(*cM_, matrixt);
     return *this;
   };
 
@@ -300,13 +302,13 @@ public:
   IOHelperC &cD(const MatrixC *M) {
     cM_ = M;
     M_ = NULL;
-    IOHelper<int>::h_.collection(*M);
+    IOHelper<int>::header().collection(*M);
     return *this;
   };
   IOHelperC &D(MatrixC *M) {
     cM_ = M;
     M_ = M;
-    IOHelper<int>::h_.collection(*M);
+    IOHelper<int>::header().collection(*M);
     return *this;
   };
 
