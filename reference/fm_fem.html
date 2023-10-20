@@ -189,8 +189,8 @@ and more if <code>order &gt; 1</code>. When <code>aniso</code> is non-NULL, also
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ ta: num [1:563, 1] 0.0733 0.0499 0.0794 0.0461 0.0274 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ va: num [1:298, 1] 0.558 0.397 0.666 0.427 0.564 ...</span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">mesh</span> <span class="op">&lt;-</span> <span class="fu"><a href="fm_rcdt_2d.html">fm_rcdt_2d_inla</a></span><span class="op">(</span>globe <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">fem3</span> <span class="op">&lt;-</span> <span class="fu">fm_fem_aniso</span><span class="op">(</span><span class="va">mesh</span>, aniso <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>kappa <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">mesh</span><span class="op">$</span><span class="va">n</span><span class="op">)</span>, v <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">mesh</span><span class="op">$</span><span class="va">n</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'mesh' not found</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
