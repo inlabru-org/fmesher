@@ -17,6 +17,7 @@ _config.yml
 ^src/Makefile-inla$
 ^src/gitstamp$
 ^\.lintr$
+^\.vscode$
 ^data-raw$
 ^doc$
 ^Meta$

@@ -220,7 +220,7 @@ fm_fem.fm_mesh_2d <- function(mesh, order = 2,
 #'  \eqn{H=e^{|v|}\tilde{v}\tilde{v}^T+e^{-|v|}\tilde{v}_\perp\tilde{v}^T_\perp}{H = H = exp(|v|) * v_tilde * v_tilde' + exp(-|v|) * v_tilde_perp * v_tilde_perp'}., where
 #' and \eqn{\tilde{v}=|v| e^{i \alpha /2 }, \alpha := \arctan(v_2 /v_1)}{v_tilde=|v|exp(i alpha /2),arctan(v2 /v1)}.
 #' @examples
-# mesh <- fm_rcdt_2d_inla(globe = 1)
+#' mesh <- fm_rcdt_2d_inla(globe = 1)
 #' fem3 <- fm_fem_aniso(mesh, aniso = list(kappa = rep(1, mesh$n), v = matrix(0, mesh$n, 3)))
 #' @return `fm_fem_aniso`: A list with elements `c0`, `c1`, `g1`, `g2` `va`, `ta`,
 #'

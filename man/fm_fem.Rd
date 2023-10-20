@@ -50,5 +50,6 @@ and more if \code{order > 1}. When \code{aniso} is non-NULL, also \code{g1aniso}
 \examples{
 str(fm_fem(fmexample$mesh))
 
+mesh <- fm_rcdt_2d_inla(globe = 1)
 fem3 <- fm_fem_aniso(mesh, aniso = list(kappa = rep(1, mesh$n), v = matrix(0, mesh$n, 3)))
 }
