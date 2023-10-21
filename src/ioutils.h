@@ -465,7 +465,7 @@ public:
   }
 
   template <class TheType>
-  TheType & accessor() {
+  TheType & get() {
     if (auto ret = std::get_if<std::unique_ptr<TheType>>(&matrix_)) {
       if (ret && *ret) {
         return **ret;
@@ -476,11 +476,11 @@ public:
       }
     }
     set(new TheType(), info.matrixtype, true);
-    return accessor<TheType>();
+    return get<TheType>();
   }
 
   template <class TheType>
-  const TheType * accessor() const {
+  const TheType * get_if() const {
     if (auto ret = std::get_if<std::unique_ptr<TheType>>(&matrix_)) {
       if (ret && *ret) {
         return &(**ret);
@@ -494,29 +494,29 @@ public:
   }
 
   Matrix<int> &DI() {
-    return accessor<Matrix<int>>();
+    return get<Matrix<int>>();
   }
   Matrix<double> &DD() {
-    return accessor<Matrix<double>>();
+    return get<Matrix<double>>();
   }
   SparseMatrix<int> &SI() {
-    return accessor<SparseMatrix<int>>();
+    return get<SparseMatrix<int>>();
   }
   SparseMatrix<double> &SD() {
-    return accessor<SparseMatrix<double>>();
+    return get<SparseMatrix<double>>();
   }
 
   const Matrix<int> *cDI() const {
-    return accessor<Matrix<int>>();
+    return get_if<Matrix<int>>();
   }
   const Matrix<double> *cDD() const {
-    return accessor<Matrix<double>>();
+    return get_if<Matrix<double>>();
   }
   const SparseMatrix<int> *cSI() const {
-    return accessor<SparseMatrix<int>>();
+    return get_if<SparseMatrix<int>>();
   }
   const SparseMatrix<double> *cSD() const {
-    return accessor<SparseMatrix<double>>();
+    return get_if<SparseMatrix<double>>();
   }
 
 };
