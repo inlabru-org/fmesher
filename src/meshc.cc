@@ -72,22 +72,18 @@ void MCQtri::setQ(double quality_limit, const double *quality_limits,
   quality_limit_ = quality_limit;
   if (quality_limits) {
     if (quality_limits_cap_ < MC_->M_->Vcap()) {
-      if (quality_limits_) {
-        delete[] quality_limits_;
-      }
       quality_limits_cap_ = MC_->M_->Vcap();
-      quality_limits_ = new double[quality_limits_cap_];
+      quality_limits_ = std::make_unique<double[]>(quality_limits_cap_);
     }
     if (nQL >= MC_->M_->nV())
-      memcpy(quality_limits_, quality_limits, sizeof(double) * MC_->M_->nV());
+      memcpy(quality_limits_.get(), quality_limits, sizeof(double) * MC_->M_->nV());
     else {
-      memcpy(quality_limits_, quality_limits, sizeof(double) * nQL);
+      memcpy(quality_limits_.get(), quality_limits, sizeof(double) * nQL);
       for (int v = nQL; v < (int)MC_->M_->nV(); v++)
-        quality_limits_[v] = quality_limit_;
+        quality_limits_.get()[v] = quality_limit_;
     }
   } else {
     if (quality_limits_) {
-      delete[] quality_limits_;
       quality_limits_ = NULL;
     }
   }
@@ -97,14 +93,13 @@ void MCQtri::setQv(int v, double quality_limit) {
   if (quality_limits_cap_ < MC_->M_->Vcap()) {
     size_t old_quality_limits_cap_ = quality_limits_cap_;
     quality_limits_cap_ = MC_->M_->Vcap();
-    double *ql = new double[quality_limits_cap_];
+    auto ql = std::make_unique<double[]>(quality_limits_cap_);
     if (quality_limits_) {
-      memcpy(ql, quality_limits_, sizeof(double) * old_quality_limits_cap_);
-      delete[] quality_limits_;
+      memcpy(ql.get(), quality_limits_.get(), sizeof(double) * old_quality_limits_cap_);
     }
-    quality_limits_ = ql;
+    quality_limits_ = std::move(ql);
   }
-  quality_limits_[v] = quality_limit;
+  quality_limits_.get()[v] = quality_limit;
 }
 
 double MCQtri::getQ(int t) const {
@@ -598,14 +593,14 @@ Dart MeshC::bisectEdgeDelaunay(const Dart &d) {
         beta *= 2.0;
 
     switch (M_->type()) {
-    case Mesh::Mtype_manifold:
-      /* Fall through to Mtype_plane behaviour; we have no
+    case Mesh::Mtype::Manifold:
+      /* Fall through to Mtype::Plane behaviour; we have no
          manifold-specific algorithm. */
-    case Mesh::Mtype_plane:
+    case Mesh::Mtype::Plane:
       Vec::scale(s, s0, 1. - beta);
       Vec::accum(s, s1, beta);
       break;
-    case Mesh::Mtype_sphere:
+    case Mesh::Mtype::Sphere:
       Vec::scale(s, s0, std::sin((1. - beta) * l01) / l01);
       Vec::accum(s, s1, std::sin(beta * l01) / l01);
       Vec::rescale(s, M_->sphere_radius() / Vec::length(s));
@@ -616,13 +611,13 @@ Dart MeshC::bisectEdgeDelaunay(const Dart &d) {
     Vec::rescale(s, 0.5);
 
     switch (M_->type()) {
-    case Mesh::Mtype_manifold:
-      /* Fall through to Mtype_plane behaviour; we have no
+    case Mesh::Mtype::Manifold:
+      /* Fall through to Mtype::Plane behaviour; we have no
          manifold-specific algorithm. */
-    case Mesh::Mtype_plane:
+    case Mesh::Mtype::Plane:
       /* Nothing to do! */
       break;
-    case Mesh::Mtype_sphere:
+    case Mesh::Mtype::Sphere:
       Vec::rescale(s, M_->sphere_radius() / Vec::length(s));
       break;
     }
@@ -644,7 +639,7 @@ Dart MeshC::bisectEdgeDelaunay(const Dart &d) {
 */
 void MeshC::calcSteinerPoint(const Dart &d, Point &c) {
   M_->triangleCircumcenter(d.t(), c);
-  if ((M_->type() != Mesh::Mtype_sphere) &&
+  if ((M_->type() != Mesh::Mtype::Sphere) &&
       (options_ & Option_offcenter_steiner)) {
     const double beta =
         ((state_ >= State_RCDT) ? skinny_.getQ(d.t()) : std::sqrt(2.));
@@ -694,7 +689,7 @@ Dart MeshC::insertNode(int v, const Dart &ed) {
 
   Dart ed0 = ed;
   FMLOG("Trying, starting from dart " << ed0 << " " << M_->S(ed0.v()) << endl);
-  if (M_->type() == Mesh::Mtype_sphere) {
+  if (M_->type() == Mesh::Mtype::Sphere) {
     double distance_to_target(M_->edgeLength(M_->S(v), M_->S(ed0.v())));
     double R(M_->sphere_radius());
     FMLOG("R*PI minus distance to target " << R * M_PI - distance_to_target
@@ -834,9 +829,9 @@ bool MeshC::CETsphere(int sides, double margin) {
     return false;
   }
 
-  if (M_->type() != Mesh::Mtype_sphere) {
+  if (M_->type() != Mesh::Mtype::Sphere) {
     FMLOG("Mesh type mismatch: " << M_->type() << " should be "
-                                 << "Mesh::Mtype_sphere" << endl);
+                                 << "Mesh::Mtype::Sphere" << endl);
     return false;
   }
 
@@ -1183,9 +1178,9 @@ bool MeshC::CETplane(int sides, double margin) {
   if (state_ != State_noT)
     return false; /* Cannot TODO: Add convex enclosure? */
 
-  if (M_->type() != Mesh::Mtype_plane) {
+  if (M_->type() != Mesh::Mtype::Plane) {
     FMLOG("Mesh type mismatch: " << M_->type() << " should be "
-                                 << "Mesh::Mtype_plane" << endl);
+                                 << "Mesh::Mtype::Plane" << endl);
     return false;
   }
 
@@ -1302,10 +1297,10 @@ bool MeshC::CET(int sides, double margin) {
     return false; /* Cannot add enclosure to an existing triangulation. */
 
   switch (M_->type()) {
-  case Mesh::Mtype_plane:
+  case Mesh::Mtype::Plane:
     return CETplane(sides, margin);
     break;
-  case Mesh::Mtype_sphere:
+  case Mesh::Mtype::Sphere:
     return CETsphere(sides, margin);
     break;
   default:

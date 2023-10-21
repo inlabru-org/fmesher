@@ -42,7 +42,8 @@ fmesher_clang_tidy <- function(files = NULL) {
         "vector.cc"
       )
   }
-  CPPFLAGS <- paste0("-I", R.home("include"),
+  CPPFLAGS <- paste0("-std=c++17",
+                     " -I", R.home("include"),
                      " -I", file.path(system.file(package = "Rcpp"), "include"),
                      " -I/usr/local/include",
                      " -DNDEBUG -DFMESHER_WITH_R")

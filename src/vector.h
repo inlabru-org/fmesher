@@ -23,10 +23,11 @@ namespace fmesh {
 /* Note: This definition really belongs in ioutils.hh, but is placed
    here to avoid chicken-and-egg definition problem. */
 /*! general/symmetric/diagonal */
-enum IOMatrixtype {
-  IOMatrixtype_general = 0,
-  IOMatrixtype_symmetric = 1,
-  IOMatrixtype_diagonal = 2
+enum class IOMatrixtype : int {
+  Invalid = -1,
+    General = 0,
+    Symmetric = 1,
+    Diagonal = 2
 };
 
 // No need for IOHeader and IOHelper classes when using Rcpp
@@ -143,13 +144,13 @@ public:
   // No need for IOHeader and IOHelper classes when using Rcpp
 #ifndef FMESHER_WITH_R
   /*! \brief Store the matrix in a file. */
-  bool save(std::string filename, IOMatrixtype matrixt = IOMatrixtype_general,
+  bool save(std::string filename, IOMatrixtype matrixt = IOMatrixtype::General,
             bool binary = true) const;
   /*! \brief Read a matrix from a file. */
   bool load(std::string filename, bool binary = true);
   /*! \brief Store the matrix in a file in old headerless ascii format. */
   bool save_ascii_2009(std::string filename,
-                       IOMatrixtype matrixt = IOMatrixtype_general) const;
+                       IOMatrixtype matrixt = IOMatrixtype::General) const;
   /*! \brief Read a matrix from a file in old headerless ascii format. */
   bool load_ascii_2009(std::string filename);
   /*! \brief Read a matrix from a stream in old headerless ascii format. */
@@ -241,7 +242,7 @@ public:
   };
   double length() const;
   selfT &cross(const selfT &s0, const selfT &s1) {
-    if ((this == &s0) || (this == &s0)) {//I think there might be a typo here, should one of the s0 be s1?
+    if ((this == &s0) || (this == &s1)) {
       T s_0 = s0.s[1] * s1.s[2] - s0.s[2] * s1.s[1];
       T s_1 = s0.s[2] * s1.s[0] - s0.s[0] * s1.s[2];
       T s_2 = s0.s[0] * s1.s[1] - s0.s[1] * s1.s[0];
@@ -378,10 +379,16 @@ protected:
   DataType data_;
 
 public:
-  SparseMatrixRow() : M_(NULL), data_(){};
-  SparseMatrixRow(const SparseMatrixRow<T> &from)
-      : M_(from.M_), data_(from.data_){};
-  SparseMatrixRow(SparseMatrix<T> *M) : M_(M), data_(){};
+//  SparseMatrixRow() :
+//  M_(NULL),
+//    data_(){};
+//  SparseMatrixRow(const SparseMatrixRow<T> &from)
+//      :
+//      M_(from.M_),
+//      data_(from.data_){};
+  SparseMatrixRow(SparseMatrix<T> *M) :
+    M_(M),
+    data_(){};
 
   size_t size() const { return data_.size(); };
 
@@ -396,14 +403,14 @@ public:
     }
   };
 
-  size_t nnz(int r, IOMatrixtype matrixt = IOMatrixtype_general) const {
+  size_t nnz(int r, IOMatrixtype matrixt = IOMatrixtype::General) const {
     size_t nnz_ = 0;
-    if (matrixt == IOMatrixtype_diagonal) {
+    if (matrixt == IOMatrixtype::Diagonal) {
       ColCIter col;
       if ((col = data_.find(r)) != data_.end()) {
         nnz_ = 1;
       }
-    } else if (matrixt == IOMatrixtype_symmetric) {
+    } else if (matrixt == IOMatrixtype::Symmetric) {
       for (const auto& c : data_) {
         if (r <= c.first) {
           nnz_++;
@@ -416,9 +423,9 @@ public:
   };
 
   int tolist(int offset, int row, Matrix1<SparseMatrixTriplet<T>> &MT,
-             IOMatrixtype matrixt = IOMatrixtype_general) const {
+             IOMatrixtype matrixt = IOMatrixtype::General) const {
     int elem = 0;
-    if (matrixt == IOMatrixtype_diagonal) {
+    if (matrixt == IOMatrixtype::Diagonal) {
       ColCIter col;
       if ((col = data_.find(row)) != data_.end()) {
         MT(offset + elem) = SparseMatrixTriplet<T>(row, row, col->second);
@@ -426,7 +433,7 @@ public:
       }
     } else {
       for (const auto& col : data_) {
-        if ((matrixt == IOMatrixtype_general) || (row <= col.first)) {
+        if ((matrixt == IOMatrixtype::General) || (row <= col.first)) {
           MT(offset + elem) =
             SparseMatrixTriplet<T>(row, col.first, col.second);
           elem++;
@@ -439,9 +446,9 @@ public:
   /*! To list, general, symmetric, or diagonal. */
 #ifdef FMESHER_WITH_EIGEN
   int tolist(int row, std::vector<Eigen::Triplet<T>> &MT,
-             IOMatrixtype matrixt = IOMatrixtype_general) const {
+             IOMatrixtype matrixt = IOMatrixtype::General) const {
     int elem = 0;
-    if (matrixt == IOMatrixtype_diagonal) {
+    if (matrixt == IOMatrixtype::Diagonal) {
       ColCIter col;
       if ((col = data_.find(row)) != data_.end()) {
         MT.push_back(Eigen::Triplet<T>(row, row, col->second));
@@ -449,7 +456,7 @@ public:
       }
     } else {
       for (const auto& col : data_) {
-        if ((matrixt == IOMatrixtype_general) || (row <= col.first)) {
+        if ((matrixt == IOMatrixtype::General) || (row <= col.first)) {
           MT.push_back(Eigen::Triplet<T>(row, col.first, col.second));
           elem++;
         }
@@ -462,9 +469,9 @@ public:
              std::vector<int> &i,
              std::vector<int> &j,
              std::vector<T> &x,
-             IOMatrixtype matrixt = IOMatrixtype_general) const {
+             IOMatrixtype matrixt = IOMatrixtype::General) const {
     int elem = 0;
-    if (matrixt == IOMatrixtype_diagonal) {
+    if (matrixt == IOMatrixtype::Diagonal) {
       ColCIter col;
       if ((col = data_.find(row)) != data_.end()) {
         i.push_back(row);
@@ -474,7 +481,7 @@ public:
       }
     } else {
       for (const auto& col : data_) {
-        if ((matrixt == IOMatrixtype_general) || (row <= col.first)) {
+        if ((matrixt == IOMatrixtype::General) || (row <= col.first)) {
           i.push_back(row);
           j.push_back(col.first);
           x.push_back(col.second);
@@ -488,9 +495,9 @@ public:
 #endif
   /*! To list, general, symmetric, or diagonal. */
   int tolist(int offset, int row, Matrix1<int> &Tr, Matrix1<int> &Tc,
-             Matrix1<T> &Tv, IOMatrixtype matrixt = IOMatrixtype_general) const {
+             Matrix1<T> &Tv, IOMatrixtype matrixt = IOMatrixtype::General) const {
     int elem = 0;
-    if (matrixt == IOMatrixtype_diagonal) {
+    if (matrixt == IOMatrixtype::Diagonal) {
       ColCIter col;
       if ((col = data_.find(row)) != data_.end()) {
         Tr(offset + elem) = row;
@@ -500,7 +507,7 @@ public:
       }
     } else {
       for (const auto& col : data_) {
-        if ((matrixt == IOMatrixtype_general) || (row <= col.first)) {
+        if ((matrixt == IOMatrixtype::General) || (row <= col.first)) {
           Tr(offset + elem) = row;
           Tc(offset + elem) = col.first;
           Tv(offset + elem) = col.second;
@@ -619,7 +626,7 @@ public:
 
   size_t cols(void) const { return cols_; };
 
-  size_t nnz(IOMatrixtype matrixt = IOMatrixtype_general) const {
+  size_t nnz(IOMatrixtype matrixt = IOMatrixtype::General) const {
     size_t nnz_ = 0;
     for (size_t row = 0; row < rows(); row++)
       nnz_ += data_[row].nnz(row, matrixt);
@@ -679,7 +686,7 @@ public:
   friend Matrix<T> diag<T>(const SparseMatrix<T> &M1);
 
   /*! To list, general, symmetric, or diagonal. */
-  int tolist(Matrix1<SparseMatrixTriplet<T>> &MT, IOMatrixtype matrixt = IOMatrixtype_general) const {
+  int tolist(Matrix1<SparseMatrixTriplet<T>> &MT, IOMatrixtype matrixt = IOMatrixtype::General) const {
     int elem = 0;
     for (size_t row = 0; row < rows(); row++) {
       elem += data_[row].tolist(elem, row, MT, matrixt);
@@ -689,7 +696,7 @@ public:
 #ifdef FMESHER_WITH_R
   /*! To list, general, symmetric, or diagonal. */
 #ifdef FMESHER_WITH_EIGEN
-  int tolist(std::vector<Eigen::Triplet<T>> &MT, IOMatrixtype matrixt = IOMatrixtype_general) const {
+  int tolist(std::vector<Eigen::Triplet<T>> &MT, IOMatrixtype matrixt = IOMatrixtype::General) const {
     int elem = nnz(matrixt);
     MT.reserve(elem);
     int elem_verify = 0;
@@ -703,7 +710,7 @@ public:
              std::vector<int> &j,
              std::vector<T> &x,
              std::vector<int> &dims,
-             IOMatrixtype matrixt = IOMatrixtype_general) const {
+             IOMatrixtype matrixt = IOMatrixtype::General) const {
     int elem = nnz(matrixt);
     i.reserve(elem);
     j.reserve(elem);
@@ -718,17 +725,17 @@ public:
     return elem;
   };
 #ifdef FMESHER_WITH_EIGEN
-  Eigen::SparseMatrix<T> EigenSparseMatrix(IOMatrixtype matrixt = IOMatrixtype_general) const;
+  Eigen::SparseMatrix<T> EigenSparseMatrix(IOMatrixtype matrixt = IOMatrixtype::General) const;
 #endif
-  SEXP fmesher_sparse(IOMatrixtype matrixt = IOMatrixtype_general) const;
-  SEXP unpackedMatrix(IOMatrixtype matrixt = IOMatrixtype_general) const;
-  SEXP dgCMatrix(IOMatrixtype matrixt = IOMatrixtype_general) const;
-  SEXP dgTMatrix(IOMatrixtype matrixt = IOMatrixtype_general) const;
+  SEXP fmesher_sparse(IOMatrixtype matrixt = IOMatrixtype::General) const;
+  SEXP unpackedMatrix(IOMatrixtype matrixt = IOMatrixtype::General) const;
+  SEXP dgCMatrix(IOMatrixtype matrixt = IOMatrixtype::General) const;
+  SEXP dgTMatrix(IOMatrixtype matrixt = IOMatrixtype::General) const;
 
 #endif
   /*! To list, general, symmetric, or diagonal. */
   int tolist(Matrix1<int> &Tr, Matrix1<int> &Tc, Matrix1<T> &Tv,
-             IOMatrixtype matrixt = IOMatrixtype_general) const {
+             IOMatrixtype matrixt = IOMatrixtype::General) const {
     int elem = 0;
     for (size_t row = 0; row < rows(); row++)
       elem += data_[row].tolist(elem, row, Tr, Tc, Tv, matrixt);
@@ -736,13 +743,13 @@ public:
   };
 
   /*! From list, general, symmetric, or diagonal. */
-  void fromlist(const Matrix1<SparseMatrixTriplet<T>> &MT, IOMatrixtype matrixt = IOMatrixtype_general) {
-    if (matrixt == IOMatrixtype_symmetric) {
+  void fromlist(const Matrix1<SparseMatrixTriplet<T>> &MT, IOMatrixtype matrixt = IOMatrixtype::General) {
+    if (matrixt == IOMatrixtype::Symmetric) {
       for (size_t i = 0; i < MT.rows(); i++) {
         operator()(MT[i].r, MT[i].c, MT[i].value);
         operator()(MT[i].c, MT[i].r, MT[i].value);
       }
-    } else if (matrixt == IOMatrixtype_diagonal) {
+    } else if (matrixt == IOMatrixtype::Diagonal) {
       for (size_t i = 0; i < MT.rows(); i++)
         operator()(MT[i].r, MT[i].r, MT[i].value);
     } else {
@@ -752,13 +759,13 @@ public:
   };
 #ifdef FMESHER_WITH_EIGEN
   /*! From list, general, symmetric, or diagonal. */
-  void fromlist(const std::vector<Eigen::Triplet<T>> &MT, IOMatrixtype matrixt = IOMatrixtype_general) {
-    if (matrixt == IOMatrixtype_symmetric) {
+  void fromlist(const std::vector<Eigen::Triplet<T>> &MT, IOMatrixtype matrixt = IOMatrixtype::General) {
+    if (matrixt == IOMatrixtype::Symmetric) {
       for (size_t i = 0; i < MT.rows(); i++) {
         operator()(MT[i].row(), MT[i].col(), MT[i].value());
         operator()(MT[i].col(), MT[i].row(), MT[i].value());
       }
-    } else if (matrixt == IOMatrixtype_diagonal) {
+    } else if (matrixt == IOMatrixtype::Diagonal) {
       for (size_t i = 0; i < MT.rows(); i++)
         operator()(MT[i].row(), MT[i].row(), MT[i].value());
     } else {
@@ -769,13 +776,13 @@ public:
 #endif
   /*! From list, general or symmetric. */
   void fromlist(const Matrix1<int> &Tr, const Matrix1<int> &Tc,
-                const Matrix1<T> &Tv, IOMatrixtype matrixt = IOMatrixtype_general) {
-    if (matrixt == IOMatrixtype_symmetric) {
+                const Matrix1<T> &Tv, IOMatrixtype matrixt = IOMatrixtype::General) {
+    if (matrixt == IOMatrixtype::Symmetric) {
       for (size_t i = 0; i < Tr.rows(); i++) {
         operator()(Tr[i], Tc[i], Tv[i]);
         operator()(Tc[i], Tr[i], Tv[i]);
       }
-    } else if (matrixt == IOMatrixtype_diagonal) {
+    } else if (matrixt == IOMatrixtype::Diagonal) {
       for (size_t i = 0; i < Tr.rows(); i++) {
         operator()(Tr[i], Tr[i], Tv[i]);
       }
@@ -792,15 +799,15 @@ public:
                 const Rcpp::IntegerVector &Tc,
                 const Rcpp::NumericVector &Tv,
                 const Rcpp::IntegerVector &dims,
-                IOMatrixtype matrixt = IOMatrixtype_general) {
+                IOMatrixtype matrixt = IOMatrixtype::General) {
     cols(dims[1]);
     rows(dims[0]);
-    if (matrixt == IOMatrixtype_symmetric) {
+    if (matrixt == IOMatrixtype::Symmetric) {
       for (int i = 0; i < Tr.size(); i++) {
         operator()(Tr[i], Tc[i], Tv[i]);
         operator()(Tc[i], Tr[i], Tv[i]);
       }
-    } else if (matrixt == IOMatrixtype_diagonal) {
+    } else if (matrixt == IOMatrixtype::Diagonal) {
       for (int i = 0; i < Tr.size(); i++) {
         operator()(Tr[i], Tr[i], Tv[i]);
       }
@@ -821,13 +828,13 @@ public:
 #endif
 
   /*! \brief Store the matrix in a file. */
-  bool save(std::string filename, IOMatrixtype matrixt = IOMatrixtype_general,
+  bool save(std::string filename, IOMatrixtype matrixt = IOMatrixtype::General,
             bool binary = true) const;
   /*! \brief Read a matrix from a file. */
   bool load(std::string filename, bool binary = true);
   /*! \brief Store the matrix in a file in old headerless ascii format. */
   bool save_ascii_2009(std::string filename,
-                       IOMatrixtype matrixt = IOMatrixtype_general) const;
+                       IOMatrixtype matrixt = IOMatrixtype::General) const;
 };
 
 struct Vec {

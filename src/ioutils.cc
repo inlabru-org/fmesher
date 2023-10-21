@@ -17,18 +17,25 @@ using std::ios;
 
 namespace fmesh {
 
-// enum Datatype {Datatype_dense=0,
-//                 Datatype_sparse=1};
-//  /*! int/double */
-//  enum Valuetype {Valuetype_int=0,
-//                  Valuetype_double=1};
-//  /*! general/symmentric/diagonal */
-//  enum Matrixtype {Matrixtype_general=0,
-//                   Matrixtype_symmetric=1,
-//                   Matrixtype_diagonal=2};
-//  /*! rowmajor/colmajor */
-//  enum Storagetype {Storagetype_rowmajor=0,
-//                    Storagetype_colmajor=1};
+// /*! dense/sparse/map */
+// enum class IODatatype : int {
+//   Invalid = -1,
+//     Dense = 0,
+//     Sparse = 1,
+//     Collection = 2
+// };
+// /*! int/double */
+// enum class IOValuetype : int {
+//   Invalid = -1,
+//     Int = 0,
+//     Double = 1
+// };
+// /*! rowmajor/colmajor */
+// enum class IOStoragetype : int {
+//   Invalid = -1,
+//     Rowmajor = 0,
+//     Colmajor = 1
+// };
 
 
 // No need for IOHeader and IOHelper classes when using Rcpp
@@ -40,14 +47,14 @@ IOHeader::IOHeader() { def(); }
 IOHeader &IOHeader::def(const int &ref) {
   (void)(ref);
   def();
-  valuetype = IOValuetype_int;
+  valuetype = IOValuetype::Int;
   return *this;
 }
 
 IOHeader &IOHeader::def(const double &ref) {
   (void)(ref);
   def();
-  valuetype = IOValuetype_double;
+  valuetype = IOValuetype::Double;
   return *this;
 }
 
@@ -56,19 +63,19 @@ IOHeader &IOHeader::def() {
   elems = 0;
   rows = 0;
   cols = 0;
-  datatype = -1;
-  valuetype = -1;
-  matrixtype = -1;
-  storagetype = IOStoragetype_rowmajor;
+  datatype = IODatatype::Invalid;
+  valuetype = IOValuetype::Invalid;
+  matrixtype = IOMatrixtype::Invalid;
+  storagetype = IOStoragetype::Rowmajor;
   return *this;
 }
 
 IOHeader &IOHeader::collection(const MatrixC &C) {
-  datatype = IODatatype_collection;
+  datatype = IODatatype::Collection;
   elems = C.output_size();
   rows = -1;
   cols = -1;
-  storagetype = -1;
+  storagetype = IOStoragetype::Invalid;
   return *this;
 }
 
@@ -89,7 +96,7 @@ std::istream &operator>>(std::istream &input, IOHeader &h) {
   int file_header_length;
   input >> file_header_length;
   if (file_header_length < header_length) {
-    h.dense(Matrix<int>(0), IOMatrixtype_general);
+    h.dense(Matrix<int>(0), IOMatrixtype::General);
     int *ioheader_p = (int *)&h;
     for (int i = 0; i < file_header_length; i++)
       input >> ioheader_p[i];
@@ -156,23 +163,23 @@ IOHelperC &IOHelperC::OD(std::ostream &output) {
   }
   for (const auto& outi : cM_->output_) {
     const MCC &mcc = *(cM_->coll_.find(outi)->second);
-    if (mcc.info.datatype == IODatatype_dense)
-      if (mcc.info.valuetype == IOValuetype_int) {
+    if (mcc.info.datatype == IODatatype::Dense)
+      if (mcc.info.valuetype == IOValuetype::Int) {
         IOHelperM<int> ioh;
-        ioh.cD(&(mcc.DI())).matrixtype(mcc.info.matrixtype);
+        ioh.cD(mcc.cDI()).matrixtype(mcc.info.matrixtype);
         ioh.binary(bin_).OH(output).OD(output);
       } else {
         IOHelperM<double> ioh;
-        ioh.cD(&mcc.DD()).matrixtype(mcc.info.matrixtype);
+        ioh.cD(mcc.cDD()).matrixtype(mcc.info.matrixtype);
         ioh.binary(bin_).OH(output).OD(output);
       }
-    else if (mcc.info.valuetype == IOValuetype_int) {
+    else if (mcc.info.valuetype == IOValuetype::Int) {
       IOHelperSM<int> ioh;
-      ioh.cD(&mcc.SI()).matrixtype(mcc.info.matrixtype);
+      ioh.cD(mcc.cSI()).matrixtype(mcc.info.matrixtype);
       ioh.binary(bin_).OH(output).OD(output);
     } else {
       IOHelperSM<double> ioh;
-      ioh.cD(&mcc.SD()).matrixtype(mcc.info.matrixtype);
+      ioh.cD(mcc.cSD()).matrixtype(mcc.info.matrixtype);
       ioh.binary(bin_).OH(output).OD(output);
     }
   }
@@ -190,8 +197,8 @@ IOHelperC &IOHelperC::ID(std::istream &input) {
     IOHelper<int> ioh_;
     ioh_.binary(bin_).IH(input);
 
-    if (ioh_.h_.datatype == IODatatype_dense)
-      if (ioh_.h_.valuetype == IOValuetype_int) {
+    if (ioh_.h_.datatype == IODatatype::Dense)
+      if (ioh_.h_.valuetype == IOValuetype::Int) {
         IOHelperM<int> ioh;
         ioh.D(&(M_->DI(listi)));
         ioh.binary(bin_).IH(ioh_.h_).ID(input);
@@ -200,7 +207,7 @@ IOHelperC &IOHelperC::ID(std::istream &input) {
         ioh.D(&(M_->DD(listi)));
         ioh.binary(bin_).IH(ioh_.h_).ID(input);
       }
-    else if (ioh_.h_.valuetype == IOValuetype_int) {
+    else if (ioh_.h_.valuetype == IOValuetype::Int) {
       IOHelperSM<int> ioh;
       ioh.D(&(M_->SI(listi)));
       ioh.binary(bin_).IH(ioh_.h_).ID(input);
@@ -221,7 +228,7 @@ template <>
 Matrix<int> &MatrixC::attach(std::string name, Matrix<int> *M,
                              bool transfer_ownership, IOMatrixtype matrixt) {
   free(name);
-  coll_.insert(collPairT(name, new MCC(IODatatype_dense, IOValuetype_int,
+  coll_.insert(collPairT(name, new MCC(IODatatype::Dense, IOValuetype::Int,
                                        matrixt, M, transfer_ownership)));
   activate(name);
   return coll_[name]->DI();
@@ -231,7 +238,7 @@ template <>
 Matrix<double> &MatrixC::attach(std::string name, Matrix<double> *M,
                                 bool transfer_ownership, IOMatrixtype matrixt) {
   free(name);
-  coll_.insert(collPairT(name, new MCC(IODatatype_dense, IOValuetype_double,
+  coll_.insert(collPairT(name, new MCC(IODatatype::Dense, IOValuetype::Double,
                                        matrixt, M, transfer_ownership)));
   activate(name);
   return coll_[name]->DD();
@@ -242,7 +249,7 @@ SparseMatrix<int> &MatrixC::attach(std::string name, SparseMatrix<int> *M,
                                    bool transfer_ownership,
                                    IOMatrixtype matrixt) {
   free(name);
-  coll_.insert(collPairT(name, new MCC(IODatatype_sparse, IOValuetype_int,
+  coll_.insert(collPairT(name, new MCC(IODatatype::Sparse, IOValuetype::Int,
                                        matrixt, M, transfer_ownership)));
   activate(name);
   return coll_[name]->SI();
@@ -253,7 +260,7 @@ SparseMatrix<double> &MatrixC::attach(std::string name, SparseMatrix<double> *M,
                                       bool transfer_ownership,
                                       IOMatrixtype matrixt) {
   free(name);
-  coll_.insert(collPairT(name, new MCC(IODatatype_sparse, IOValuetype_double,
+  coll_.insert(collPairT(name, new MCC(IODatatype::Sparse, IOValuetype::Double,
                                        matrixt, M, transfer_ownership)));
   activate(name);
   return coll_[name]->SD();
@@ -341,8 +348,8 @@ MCCInfo MatrixC::load(std::string name) {
   if (!I.is_open()) {
     return info(name);
   }
-  if (ioh_.h_.datatype == IODatatype_dense)
-    if (ioh_.h_.valuetype == IOValuetype_int) {
+  if (ioh_.h_.datatype == IODatatype::Dense)
+    if (ioh_.h_.valuetype == IOValuetype::Int) {
       IOHelperM<int> ioh;
       ioh.D(&DI(name));
       ioh.binary(bin_in_).IH(I);
@@ -352,7 +359,7 @@ MCCInfo MatrixC::load(std::string name) {
       ioh.D(&DD(name));
       ioh.binary(bin_in_).IH(I).ID(I);
     }
-  else if (ioh_.h_.valuetype == IOValuetype_int) {
+  else if (ioh_.h_.valuetype == IOValuetype::Int) {
     IOHelperSM<int> ioh;
     ioh.D(&SI(name));
     ioh.binary(bin_in_).IH(I).ID(I);
@@ -469,12 +476,12 @@ void MatrixC::save() {
   if (output_prefix_ != "-") {
     for (auto const & outi : output_) {
       MCC &mcc = *(coll_.find(outi)->second);
-      if (mcc.info.datatype == IODatatype_dense)
-        if (mcc.info.valuetype == IOValuetype_int)
+      if (mcc.info.datatype == IODatatype::Dense)
+        if (mcc.info.valuetype == IOValuetype::Int)
           save_M((output_prefix_ + outi), mcc.DI(), mcc.info, bin_out_);
         else
           save_M((output_prefix_ + outi), mcc.DD(), mcc.info, bin_out_);
-      else if (mcc.info.valuetype == IOValuetype_int)
+      else if (mcc.info.valuetype == IOValuetype::Int)
         save_SM((output_prefix_ + outi), mcc.SI(), mcc.info, bin_out_);
       else
         save_SM((output_prefix_ + outi), mcc.SD(), mcc.info, bin_out_);
@@ -504,8 +511,8 @@ void MatrixC::save() {
 Matrix<int> &MatrixC::DI(std::string name) {
   collT::iterator colli;
   if (((colli = coll_.find(name)) != coll_.end()) &&
-      (colli->second->info.datatype == IODatatype_dense) &&
-      (colli->second->info.valuetype == IOValuetype_int) &&
+      (colli->second->info.datatype == IODatatype::Dense) &&
+      (colli->second->info.valuetype == IOValuetype::Int) &&
       (colli->second->info.active)) {
     return colli->second->DI();
   }
@@ -515,8 +522,8 @@ Matrix<int> &MatrixC::DI(std::string name) {
 Matrix<double> &MatrixC::DD(std::string name) {
   collT::iterator colli;
   if (((colli = coll_.find(name)) != coll_.end()) &&
-      (colli->second->info.datatype == IODatatype_dense) &&
-      (colli->second->info.valuetype == IOValuetype_double) &&
+      (colli->second->info.datatype == IODatatype::Dense) &&
+      (colli->second->info.valuetype == IOValuetype::Double) &&
       (colli->second->info.active)) {
     return colli->second->DD();
   }
@@ -526,8 +533,8 @@ Matrix<double> &MatrixC::DD(std::string name) {
 SparseMatrix<int> &MatrixC::SI(std::string name) {
   collT::iterator colli;
   if (((colli = coll_.find(name)) != coll_.end()) &&
-      (colli->second->info.datatype == IODatatype_sparse) &&
-      (colli->second->info.valuetype == IOValuetype_int) &&
+      (colli->second->info.datatype == IODatatype::Sparse) &&
+      (colli->second->info.valuetype == IOValuetype::Int) &&
       (colli->second->info.active)) {
     return colli->second->SI();
   }
@@ -537,8 +544,8 @@ SparseMatrix<int> &MatrixC::SI(std::string name) {
 SparseMatrix<double> &MatrixC::SD(std::string name) {
   collT::iterator colli;
   if (((colli = coll_.find(name)) != coll_.end()) &&
-      (colli->second->info.datatype == IODatatype_sparse) &&
-      (colli->second->info.valuetype == IOValuetype_double) &&
+      (colli->second->info.datatype == IODatatype::Sparse) &&
+      (colli->second->info.valuetype == IOValuetype::Double) &&
       (colli->second->info.active)) {
     return colli->second->SD();
   }
@@ -566,15 +573,25 @@ SEXP MatrixC::Rcpp_wrap() const {
   Rcpp::List res;
   for (auto const & outi : output_) {
     const MCC &mcc = *(coll_.find(outi)->second);
-    if (mcc.info.datatype == IODatatype_dense) {
-      if (mcc.info.valuetype == IOValuetype_int)
-        res[outi] = Rcpp::wrap(mcc.DI());
-      else
-        res[outi] = Rcpp::wrap(mcc.DD());
-    } else if (mcc.info.valuetype == IOValuetype_int) {
-      res[outi] = Rcpp::wrap(mcc.SI());
-    } else
-      res[outi] = Rcpp::wrap(mcc.SD());
+    if (mcc.info.datatype == IODatatype::Dense) {
+      if (mcc.info.valuetype == IOValuetype::Int) {
+        if (auto ptr = mcc.cDI()) {
+          res[outi] = Rcpp::wrap(*ptr);
+        }
+      } else {
+        if (auto ptr = mcc.cDD()) {
+          res[outi] = Rcpp::wrap(*ptr);
+        }
+      }
+    } else if (mcc.info.valuetype == IOValuetype::Int) {
+      if (auto ptr = mcc.cSI()) {
+        res[outi] = Rcpp::wrap(*ptr);
+      }
+    } else {
+      if (auto ptr = mcc.cSD()) {
+        res[outi] = Rcpp::wrap(*ptr);
+      }
+    }
   }
   return res;
 }
@@ -585,29 +602,29 @@ void MatrixC::attach(std::string name, SEXP from) {
     (*this).attach(name, new Matrix<double>(
         Rcpp::as<Rcpp::NumericMatrix>(
           from)), true,
-          IOMatrixtype_general);
+          IOMatrixtype::General);
   } else if (Rcpp::is<Rcpp::IntegerMatrix>(from)) {
     (*this).attach(name, new Matrix<int>(
         Rcpp::as<Rcpp::IntegerMatrix>(
           from)), true,
-          IOMatrixtype_general);
+          IOMatrixtype::General);
   } else if (Rcpp::is<Rcpp::CharacterMatrix>(from)) {
   } else if (Rcpp::is<Rcpp::NumericVector>(from)) {
     (*this).attach(name, new Matrix1<double>(
         Rcpp::as<Rcpp::NumericVector>(
           from)), true,
-          IOMatrixtype_general);
+          IOMatrixtype::General);
   } else if (Rcpp::is<Rcpp::IntegerVector>(from)) {
     (*this).attach(name, new Matrix1<int>(
         Rcpp::as<Rcpp::IntegerVector>(
           from)), true,
-          IOMatrixtype_general);
+          IOMatrixtype::General);
   } else if (Rcpp::is<Rcpp::CharacterVector>(from)) {
   } else {
     (*this).attach(name,
      new SparseMatrix<double>(from),
      true,
-     IOMatrixtype_general);
+     IOMatrixtype::General);
   }
 }
 

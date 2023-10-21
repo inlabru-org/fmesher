@@ -213,20 +213,27 @@ fm_segm_join <- function(x, grp = NULL, grp.default = 0L, is.bnd = NULL) {
     function(k) {
       if (is.null(segm[[k]]$grp)) {
         rep(grp.default[min(length(grp.default), k)], Nidx[k])
-      } else {
+      } else if (Nidx[k] > 0) {
         segm[[k]]$grp
+      } else {
+        integer(0)
       }
     }
   ))
   if (is.null(is.bnd)) {
-    is.bnd <- vapply(segm, function(x) all(fm_is_bnd(x)), TRUE)
-    not.is.bnd <- vapply(segm, function(x) all(!fm_is_bnd(x)), TRUE)
-    if ((all(is.bnd) && all(!not.is.bnd)) ||
-      (all(!is.bnd) && all(not.is.bnd))) {
-      is.bnd <- all(is.bnd) && all(!not.is.bnd)
+    segm_ <- segm[vapply(segm, function(x) nrow(x[["idx"]]) > 0, TRUE)]
+    if (length(segm_) == 0) {
+      is.bnd <- TRUE
     } else {
-      warning("Inconsistent 'is.bnd' attributes.  Setting 'is.bnd=FALSE'.")
-      is.bnd <- FALSE
+      is.bnd <- vapply(segm_, function(x) all(fm_is_bnd(x)), TRUE)
+      not.is.bnd <- vapply(segm_, function(x) all(!fm_is_bnd(x)), TRUE)
+      if ((all(is.bnd) && all(!not.is.bnd)) ||
+          (all(!is.bnd) && all(not.is.bnd))) {
+        is.bnd <- all(is.bnd) && all(!not.is.bnd)
+      } else {
+        warning("Inconsistent 'is.bnd' attributes.  Setting 'is.bnd=FALSE'.")
+        is.bnd <- FALSE
+      }
     }
   }
 

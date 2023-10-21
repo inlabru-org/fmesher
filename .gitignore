@@ -12,3 +12,5 @@ src/mymake
 man/chk
 man/chk_all
 man/chk_found
+.vscode
+revdep

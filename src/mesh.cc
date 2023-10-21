@@ -280,14 +280,14 @@ Mesh &Mesh::useX11(bool use_X11, bool draw_text, int sx, int sy, double minx,
                    double maxx, double miny, double maxy, std::string name) {
   if (use_X11) {
     if (!X11_) { /* Init. */
-      if (type_ == Mtype_sphere)
+      if (type_ == Mtype::Sphere)
         X11_ = new Xtmpl(draw_text, sx * 2, sy, minx, 2 * maxx - minx, miny,
                          maxy, name);
       else
         X11_ = new Xtmpl(draw_text, sx, sy, minx, maxx, miny, maxy, name);
       redrawX11("");
     } else {
-      if (type_ == Mtype_sphere) {
+      if (type_ == Mtype::Sphere) {
         X11_->reopen(sx * 2, sy, draw_text);
         X11_->setAxis(minx, 2 * maxx - minx, miny, maxy);
       } else {
@@ -343,7 +343,7 @@ void Mesh::drawX11point(int v, bool fg) {
   const Point &s = S_[v];
   bool otherside = (s[2] < 0);
 
-  if (type_ == Mtype_sphere) {
+  if (type_ == Mtype::Sphere) {
     double offset(otherside ? X11_->width() / 2.0 : 0.0);
     int sz = ((v < X11_v_big_limit_) ? szbig : szsmall);
     X11_->dot_on_sphere(fg, s, sz, offset);
@@ -378,7 +378,7 @@ void Mesh::drawX11triangle(int t, bool fg) {
     Vec::copy(s[vi], S_[v[vi]]);
     Vec::accum(s0, s[vi], 1.0 / 3.0);
   }
-  if (type_ == Mtype_sphere) {
+  if (type_ == Mtype::Sphere) {
     double l = std::sqrt(Vec::scalar(s0, s0));
     Vec::rescale(s0, l);
 
@@ -448,7 +448,7 @@ void Mesh::drawX11triangle(int t, bool fg) {
     */
   }
   /* Draw triangle slightly closer to center. */
-  if (type_ == Mtype_sphere) {
+  if (type_ == Mtype::Sphere) {
     // for (int vi=0;vi<3;vi++) {
     // 	Vec::diff(s[vi],s[vi],s0);
     // 	Vec::rescale(s[vi],0.975);
@@ -567,7 +567,7 @@ double Mesh::edgeLength(const Point &s0, const Point &s1) const {
   Vec::diff(e, s1, s0);
   double len = Vec::length(e);
 
-  if (type_ == Mesh::Mtype_sphere) {
+  if (type_ == Mesh::Mtype::Sphere) {
     Point ssum;
     Vec::sum(ssum, s1, s0);
     len = 2.0 * sphere_radius_ * std::atan2(len, Vec::length(ssum));
@@ -674,7 +674,7 @@ double Mesh::triangleArea(const Point &s0, const Point &s1,
   double area;
 
   switch (type_) {
-  case Mesh::Mtype_manifold: {
+  case Mesh::Mtype::Manifold: {
     /* Calculate the upwards unscaled normal(s), calculate length. */
     Point n0, n1, n2;
     Vec::cross(n0, e1, e2);
@@ -684,12 +684,12 @@ double Mesh::triangleArea(const Point &s0, const Point &s1,
     Vec::accum(n0, n2);
     area = Vec::length(n0) / 6.0;
   } break;
-  case Mesh::Mtype_plane: {
+  case Mesh::Mtype::Plane: {
     /* Calculate the upwards unscaled normal(s), extract z-component. */
     area =
         (Vec::cross2(e1, e2) + Vec::cross2(e2, e0) + Vec::cross2(e0, e1)) / 6.0;
   } break;
-  case Mesh::Mtype_sphere: {
+  case Mesh::Mtype::Sphere: {
     /* "New" formula; simpler and more robust than the spherical excess
      * formulas. */
     /* See DOI: 10.1109/TBME.1983.325207, A. Van Oosterom, J. Strackee,
@@ -731,7 +731,7 @@ void Mesh::triangleBoundingBox(int t, Point &mini, Point &maxi) const {
   const Point &s2 = S_[v2];
   Mesh::triangleBoundingBox(s0, s1, s2, mini, maxi);
 
-  if (type_ == Mesh::Mtype_sphere) {
+  if (type_ == Mesh::Mtype::Sphere) {
     /* Need to take curvature into account. */
     /* Calculate a tangent point inside the triangle. */
     Point e0, e1, e2;
@@ -811,7 +811,7 @@ void Mesh::triangleCircumcenter(int t, Point &c) const {
   Vec::diff(e2, s1, s0);
 
   switch (type_) {
-  case Mesh::Mtype_manifold:
+  case Mesh::Mtype::Manifold:
     /* TODO: Implement? Need more manifold theory for that! */
     NOT_IMPLEMENTED;
     {
@@ -822,7 +822,7 @@ void Mesh::triangleCircumcenter(int t, Point &c) const {
       Vec::accum(c, s2, 1.0 / 3.0);
     }
     break;
-  case Mesh::Mtype_plane: {
+  case Mesh::Mtype::Plane: {
     Point n0, n1, n2;
     Vec::cross(n0, e1, e2);
     Vec::cross(n1, e2, e0);
@@ -834,7 +834,7 @@ void Mesh::triangleCircumcenter(int t, Point &c) const {
     Vec::accum(c, s1, scale * Vec::scalar(e1, e1) * Vec::scalar(e2, e0));
     Vec::accum(c, s2, scale * Vec::scalar(e2, e2) * Vec::scalar(e0, e1));
   } break;
-  case Mesh::Mtype_sphere: {
+  case Mesh::Mtype::Sphere: {
     /* The triangle normal is equal to the circumcenter. */
     Point tmp;
     Vec::cross(c, e1, e2);
@@ -879,7 +879,7 @@ double Mesh::triangleCircumcircleRadius(const Point &s0, const Point &s1,
   double radius = ((3.0 * Vec::length(e0) * Vec::length(e1) * Vec::length(e2)) /
                    (2.0 * Vec::length(n0)));
 
-  if (type_ == Mesh::Mtype_sphere) {
+  if (type_ == Mesh::Mtype::Sphere) {
     radius = std::asin(radius / sphere_radius_) * sphere_radius_;
   }
 
@@ -915,7 +915,7 @@ double Mesh::edgeIntersection(const Point &s00, const Point &s01,
   Vec::diff(e0, s01, s00);
   Vec::diff(e1, s11, s10);
 
-  if (type_ == Mesh::Mtype_sphere) {
+  if (type_ == Mesh::Mtype::Sphere) {
     e00.cross(s00, s01);
   } else {
     Point n(0.0, 0.0, 1.0);
@@ -927,7 +927,7 @@ double Mesh::edgeIntersection(const Point &s00, const Point &s01,
   beta = Vec::scalar(e00, e01) / Vec::scalar(e00, e1);
   c.accum(e1, beta);
 
-  if (type_ == Mesh::Mtype_sphere) {
+  if (type_ == Mesh::Mtype::Sphere) {
     Vec::rescale(c, 1. / Vec::length(c));
     beta = s10.angle(c) / s10.angle(s11);
   }
@@ -1009,14 +1009,14 @@ double Mesh::edgeEncroached(const Dart &d, const Point &s) const
 double Mesh::inLeftHalfspace(const Point &s0, const Point &s1,
                              const Point &s) const {
   switch (type_) {
-  case Mesh::Mtype_manifold:
+  case Mesh::Mtype::Manifold:
     //	return predicates::orient3d(M_->S[]);
     NOT_IMPLEMENTED;
     break;
-  case Mesh::Mtype_plane:
+  case Mesh::Mtype::Plane:
     return predicates::orient2d(s0.raw(), s1.raw(), s.raw());
     break;
-  case Mesh::Mtype_sphere:
+  case Mesh::Mtype::Sphere:
     Point zero(0., 0., 0.);
     return -predicates::orient3d(s0.raw(), s1.raw(), zero.raw(), s.raw());
     break;
@@ -1045,14 +1045,14 @@ double Dart::inCircumcircle(const Point &s) const {
   dh.orbit2();
   int v2(dh.v());
   switch (M_->type_) {
-  case Mesh::Mtype_manifold:
+  case Mesh::Mtype::Manifold:
     //	return predicates::orient3d(M_->S[]);
     break;
-  case Mesh::Mtype_plane:
+  case Mesh::Mtype::Plane:
     return predicates::incircle(M_->S_[v0].raw(), M_->S_[v1].raw(),
                                 M_->S_[v2].raw(), s.raw());
     break;
-  case Mesh::Mtype_sphere:
+  case Mesh::Mtype::Sphere:
     return -predicates::orient3d(M_->S_[v0].raw(), M_->S_[v1].raw(),
                                  M_->S_[v2].raw(), s.raw());
     break;
@@ -1757,11 +1757,11 @@ void Mesh::barycentric(const Dart &d, const Point &s, Point &bary) const {
   bary[2] = triangleArea(S_[v0], S_[v1], s);
 
   switch (type_) {
-  case Mesh::Mtype_manifold:
+  case Mesh::Mtype::Manifold:
     break;
-  case Mesh::Mtype_plane:
+  case Mesh::Mtype::Plane:
     break;
-  case Mesh::Mtype_sphere: {
+  case Mesh::Mtype::Sphere: {
     double R2(sphere_radius_ * sphere_radius_);
     bary[0] /= R2;
     bary[1] /= R2;
@@ -2243,7 +2243,7 @@ Matrix3double *make_globe_points(int subsegments, double radius) {
 Mesh &Mesh::make_globe(int subsegments, double radius) {
   TV_set(Matrix3int());
   int nV0 = (*this).nV();
-  type(Mtype_sphere);
+  type(Mtype::Sphere);
   sphere_radius(radius);
   int nT = 20 * subsegments * subsegments;
   int nV = 2 + nT / 2;
@@ -2400,7 +2400,7 @@ void Mesh::calcQblocksAni(SparseMatrix<double> &G1, const Matrix<double> &gamma,
     Point H[3];
     Point aH[3];
     switch (type()) {
-    case Mesh::Mtype_plane:
+    case Mesh::Mtype::Plane:
       H[0] = Point(t_vec[0] * t_vec[0] + t_gamma * t_gamma, t_vec[1] * t_vec[0],
                    0.0);
       H[1] = Point(t_vec[0] * t_vec[1], t_vec[1] * t_vec[1] + t_gamma * t_gamma,
@@ -2413,8 +2413,8 @@ void Mesh::calcQblocksAni(SparseMatrix<double> &G1, const Matrix<double> &gamma,
                     t_vec[0] * t_vec[0] + t_gamma * t_gamma, 0.0);
       aH[2] = Point(0.0, 0.0, 0.0);
       break;
-    case Mesh::Mtype_sphere:
-    case Mesh::Mtype_manifold:
+    case Mesh::Mtype::Sphere:
+    case Mesh::Mtype::Manifold:
       Point ax[4];
       Point n;
       Vec::cross(ax[0], e[1], e[2]);
@@ -2798,8 +2798,8 @@ void Mesh::calcGradientMatrices(SparseMatrix<double> **D) const {
 
 bool Mesh::save(std::string filename_s, std::string filename_tv,
                 bool binary) const {
-  return (S_.save(filename_s, IOMatrixtype_general, binary) &&
-          TV_.save(filename_tv, IOMatrixtype_general, binary));
+  return (S_.save(filename_s, IOMatrixtype::General, binary) &&
+          TV_.save(filename_tv, IOMatrixtype::General, binary));
 }
 
 bool Mesh::load(std::string filename_s, std::string filename_tv, bool binary) {
@@ -2918,13 +2918,13 @@ Dart &Dart::orbit2rev() {
 std::ostream &operator<<(std::ostream &output, const Mesh &M) {
   output << "Mesh type:\t";
   switch (M.type()) {
-  case Mesh::Mtype_manifold:
+  case Mesh::Mtype::Manifold:
     output << "Manifold (Rd)";
     break;
-  case Mesh::Mtype_plane:
+  case Mesh::Mtype::Plane:
     output << "Plane (R2)";
     break;
-  case Mesh::Mtype_sphere:
+  case Mesh::Mtype::Sphere:
     output << "Sphere (S2)";
     break;
   }

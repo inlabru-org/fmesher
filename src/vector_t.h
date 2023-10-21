@@ -414,7 +414,7 @@ void SparseMatrix<T>::fromRcpp(SEXP from) {
     Rcpp::NumericVector Tv = Rcpp::as<Rcpp::NumericVector>(from_list["x"]);
     Rcpp::IntegerVector dims = Rcpp::as<Rcpp::IntegerVector>(from_list["dims"]);
 
-    fromlist(Tr, Tc, Tv, dims, IOMatrixtype_general);
+    fromlist(Tr, Tc, Tv, dims, IOMatrixtype::General);
   } else if (Rcpp::is<Rcpp::S4>(from)) {
     Rcpp::S4 obj = (SEXP)from;
     if (obj.is("Matrix")) {
@@ -429,7 +429,7 @@ void SparseMatrix<T>::fromRcpp(SEXP from) {
       Rcpp::NumericVector Tv = Rcpp::as<Rcpp::NumericVector>(obj.slot("x"));
       Rcpp::IntegerVector dims = Rcpp::as<Rcpp::IntegerVector>(obj.slot("Dim"));
 
-      fromlist(Tr, Tc, Tv, dims, IOMatrixtype_general);
+      fromlist(Tr, Tc, Tv, dims, IOMatrixtype::General);
     } else {
       Rcpp::warning("Unsupported SparseMatrix<T>(Rcpp::S4) class.");
     }
@@ -571,10 +571,10 @@ template <class T> const T fmesh::SparseMatrix<T>::zero_ = T();
 #ifdef FMESHER_WITH_R
 namespace Rcpp {
 
-#define __FM_MATRIX_WRAP__(OutType, InType, COLS)              \
+#define __FM_MATRIX_WRAP__(InType, T, COLS)                    \
 template<>                                                     \
-inline SEXP wrap(const fmesh::InType& obj) {                   \
-  Rcpp::OutType res(obj.rows(), COLS);                         \
+inline SEXP wrap(const fmesh::InType<T>& obj) {                \
+  fmesh::Rcpp_traits<T>::Matrix res(obj.rows(), COLS);         \
   for (size_t r = 0; r < obj.rows(); r++) {                    \
     for (size_t c = 0; c < COLS; c++) {                        \
       res(r, c) = obj[r][c];                                   \
@@ -582,31 +582,31 @@ inline SEXP wrap(const fmesh::InType& obj) {                   \
   }                                                            \
   return res;                                                  \
 }
-#define __FM_VECTOR_WRAP__(OutType, InType)                    \
+#define __FM_VECTOR_WRAP__(InType, T)                          \
 template<>                                                     \
-inline SEXP wrap(const fmesh::InType& obj) {                   \
-  Rcpp::OutType res(obj.rows());                               \
+inline SEXP wrap(const fmesh::InType<T>& obj) {                \
+  fmesh::Rcpp_traits<T>::Vector res(obj.rows());               \
   for (size_t r = 0; r < obj.rows(); r++) {                    \
     res[r] = obj[r];                                           \
   }                                                            \
   return res;                                                  \
 }
 
-__FM_MATRIX_WRAP__(NumericMatrix, Matrix<double>, obj.cols())
-__FM_MATRIX_WRAP__(IntegerMatrix, Matrix<int>, obj.cols())
-__FM_MATRIX_WRAP__(NumericMatrix, Matrix3<double>, 3)
-__FM_MATRIX_WRAP__(IntegerMatrix, Matrix3<int>, 3)
-__FM_VECTOR_WRAP__(NumericVector, Matrix1<double>)
-__FM_VECTOR_WRAP__(IntegerVector, Matrix1<int>)
+__FM_MATRIX_WRAP__(Matrix, double, obj.cols())
+__FM_MATRIX_WRAP__(Matrix, int, obj.cols())
+__FM_MATRIX_WRAP__(Matrix3, double, 3)
+__FM_MATRIX_WRAP__(Matrix3, int, 3)
+__FM_VECTOR_WRAP__(Matrix1, double)
+__FM_VECTOR_WRAP__(Matrix1, int)
 
   template<>
   inline SEXP wrap(const fmesh::SparseMatrix<double>& obj) {
-    return Rcpp::wrap(obj.dgTMatrix(fmesh::IOMatrixtype_general));
+    return Rcpp::wrap(obj.dgTMatrix(fmesh::IOMatrixtype::General));
   }
   template<>
   inline SEXP wrap(const fmesh::SparseMatrix<int>& obj) {
     // No Sparse matrix storage for integers, so return ijx triples instead.
-    return Rcpp::wrap(obj.fmesher_sparse(fmesh::IOMatrixtype_general));
+    return Rcpp::wrap(obj.fmesher_sparse(fmesh::IOMatrixtype::General));
   }
 
 } // Namespace Rcpp
