@@ -8,6 +8,7 @@
 #include <iostream>
 #include <list>
 #include <map>
+#include <memory>
 #include <set>
 #include <string>
 #include <vector>
@@ -64,7 +65,7 @@ protected:
   static const size_t capacity_step_size_ = 1024;
   static const size_t capacity_doubling_limit_ = 8192;
   static const T zero_;
-  T *data_;
+  std::unique_ptr<T[]> data_;
   size_t rows_;
   size_t cols_;
   size_t cap_;
@@ -83,13 +84,8 @@ public:
   Matrix(const RcppVector &from);
 #endif
   const Matrix<T> &operator=(const Matrix<T> &from);
-  ~Matrix() {
-    if (data_)
-      delete[] data_;
-  };
   Matrix<T> &clear(void) {
     if (data_) {
-      delete[] data_;
       data_ = NULL;
     }
     cap_ = 0;
@@ -138,8 +134,8 @@ public:
     return (operator()(r, c) = val);
   };
 
-  const T *raw(void) const { return data_; }
-  T *raw(void) { return data_; }
+  const T *raw(void) const { return &data_[0]; }
+  T *raw(void) { return &data_[0]; }
 
   // No need for IOHeader and IOHelper classes when using Rcpp
 #ifndef FMESHER_WITH_R
@@ -328,7 +324,7 @@ public:
   };
 
   const ValueRow &operator[](const size_t r) const {
-    return ((ValueRow *)Matrix<T>::data_)[r];
+    return *(const ValueRow *)(Matrix<T>::operator[](r));
   };
 
   ValueRow &operator()(const size_t r) {
