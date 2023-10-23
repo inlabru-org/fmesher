@@ -284,8 +284,7 @@ int main(int argc, char *argv[]) {
     input_s0_names.push_back(string(".globe"));
     matrices.attach(
         ".globe",
-        (Matrix<double> *)fmesh::make_globe_points(args_info.globe_arg, 1.0),
-        true);
+        fmesh::make_globe_points(args_info.globe_arg, 1.0));
     FMLOG("globe points added." << std::endl);
   }
 
@@ -302,10 +301,10 @@ int main(int argc, char *argv[]) {
 
   if (input_s0_names.size() == 0) {
     input_s0_names.push_back(string("s0"));
-    matrices.attach(string("s0"), new Matrix<double>(3), true);
+    matrices.attach(string("s0"), std::make_unique<Matrix<double>>(3));
   }
   Matrix<double> &iS0 = matrices.DD(input_s0_names[0]);
-  Matrix<double> *Quality0_ = new Matrix<double>();
+  auto Quality0_ = std::make_unique<Matrix<double>>();
   Matrix<double> &Quality0 = *Quality0_;
 
   /* Join the location matrices */
@@ -341,7 +340,8 @@ int main(int argc, char *argv[]) {
   }
 
   /* OK to overwrite any old quality0 */
-  matrices.attach(string("quality0"), Quality0_, true);
+  matrices.attach(string("quality0"), std::move(Quality0_));
+  Quality0 = matrices.DD("quality0");
 
   FMLOG("TV0" << std::endl);
 
@@ -360,7 +360,7 @@ int main(int argc, char *argv[]) {
     }
     if (!matrices.load(boundarygrp_names[i]).active) {
       // FMLOG_("Matrix "+boundarygrp_names[i]+" not found. Creating." << endl);
-      matrices.attach(boundarygrp_names[i], new Matrix<int>(1), true);
+      matrices.attach(boundarygrp_names[i], std::make_unique<Matrix<int>>(1));
       matrices.DI(boundarygrp_names[i])(0, 0) = i + 1;
     }
   }
@@ -372,7 +372,7 @@ int main(int argc, char *argv[]) {
     if (!matrices.load(interiorgrp_names[i]).active) {
       FMLOG_("Matrix " + interiorgrp_names[i] + " not found. Creating."
              << endl);
-      matrices.attach(interiorgrp_names[i], new Matrix<int>(1), true);
+      matrices.attach(interiorgrp_names[i], std::make_unique<Matrix<int>>(1));
       matrices.DI(interiorgrp_names[i])(0, 0) = i + 1;
     }
   }
@@ -404,7 +404,7 @@ int main(int argc, char *argv[]) {
   }
 
   /* Prepare to filter out points at distance not greater than 'cutoff' */
-  matrices.attach("idx", new Matrix<int>(iS0.rows(), 1), true);
+  matrices.attach("idx", std::make_unique<Matrix<int>>(iS0.rows(), 1));
   matrices.output("idx");
   Matrix<int> &idx = matrices.DI("idx").clear();
 
@@ -465,8 +465,8 @@ int main(int argc, char *argv[]) {
       M.TV_set(*TV0);
     }
 
-    matrices.attach(string("s"), &M.S(), false);
-    matrices.attach("tv", &M.TV(), false);
+    matrices.attach(string("s"), &M.S());
+    matrices.attach("tv", &M.TV());
     matrices.output("s").output("tv");
 
     Point mini(M.S(0));
@@ -520,18 +520,18 @@ int main(int argc, char *argv[]) {
 
       /* Calculate and collect output. */
 
-      matrices.attach("segm.bnd.idx", new Matrix<int>(2), true,
+      matrices.attach("segm.bnd.idx", std::make_unique<Matrix<int>>(2),
                       fmesh::IOMatrixtype::General);
-      matrices.attach("segm.bnd.grp", new Matrix<int>(1), true,
+      matrices.attach("segm.bnd.grp", std::make_unique<Matrix<int>>(1),
                       fmesh::IOMatrixtype::General);
       MC.segments(true, &matrices.DI("segm.bnd.idx"),
                   &matrices.DI("segm.bnd.grp"));
 
       matrices.output("segm.bnd.idx").output("segm.bnd.grp");
 
-      matrices.attach("segm.int.idx", new Matrix<int>(2), true,
+      matrices.attach("segm.int.idx", std::make_unique<Matrix<int>>(2),
                       fmesh::IOMatrixtype::General);
-      matrices.attach("segm.int.grp", new Matrix<int>(1), true,
+      matrices.attach("segm.int.grp", std::make_unique<Matrix<int>>(1),
                       fmesh::IOMatrixtype::General);
       MC.segments(false, &matrices.DI("segm.int.idx"),
                   &matrices.DI("segm.int.grp"));
@@ -588,18 +588,18 @@ int main(int argc, char *argv[]) {
 
       /* Calculate and collect output. */
 
-      matrices.attach("segm.bnd.idx", new Matrix<int>(2), true,
+      matrices.attach("segm.bnd.idx", std::make_unique<Matrix<int>>(2),
                       fmesh::IOMatrixtype::General);
-      matrices.attach("segm.bnd.grp", new Matrix<int>(1), true,
+      matrices.attach("segm.bnd.grp", std::make_unique<Matrix<int>>(1),
                       fmesh::IOMatrixtype::General);
       MC.segments(true, &matrices.DI("segm.bnd.idx"),
                   &matrices.DI("segm.bnd.grp"));
 
       matrices.output("segm.bnd.idx").output("segm.bnd.grp");
 
-      matrices.attach("segm.int.idx", new Matrix<int>(2), true,
+      matrices.attach("segm.int.idx", std::make_unique<Matrix<int>>(2),
                       fmesh::IOMatrixtype::General);
-      matrices.attach("segm.int.grp", new Matrix<int>(1), true,
+      matrices.attach("segm.int.grp", std::make_unique<Matrix<int>>(1),
                       fmesh::IOMatrixtype::General);
       MC.segments(false, &matrices.DI("segm.int.idx"),
                   &matrices.DI("segm.int.grp"));
@@ -607,12 +607,12 @@ int main(int argc, char *argv[]) {
       matrices.output("segm.int.idx").output("segm.int.grp");
     }
 
-    matrices.attach("tt", &M.TT(), false);
+    matrices.attach("tt", &M.TT());
     M.useVT(true);
-    matrices.attach("vt", &M.VT(), false);
+    matrices.attach("vt", &M.VT());
     M.useTTi(true);
-    matrices.attach("tti", &M.TTi(), false);
-    matrices.attach("vv", new SparseMatrix<int>(M.VV()), true,
+    matrices.attach("tti", &M.TTi());
+    matrices.attach("vv", std::make_unique<SparseMatrix<int>>(M.VV()),
                     fmesh::IOMatrixtype::Symmetric);
 
     matrices.output("tt").output("tti").output("vt").output("vv");
@@ -620,7 +620,7 @@ int main(int argc, char *argv[]) {
 
   FMLOG("Manifold output." << std::endl)
   /* Output the manifold type. */
-  matrices.attach("manifold", new Matrix<int>(1), true,
+  matrices.attach("manifold", std::make_unique<Matrix<int>>(1),
                   fmesh::IOMatrixtype::General);
   Matrix<int> &manifold = matrices.DI("manifold");
   manifold(0, 0) = static_cast<int>(M.type());
@@ -634,7 +634,7 @@ int main(int argc, char *argv[]) {
     if (sph0_order_max >= 0) {
       FMLOG("sph0 output." << std::endl)
       matrices.attach(string("sph0"),
-                      spherical_harmonics(M.S(), sph0_order_max, true), true);
+                      spherical_harmonics(M.S(), sph0_order_max, true));
       matrices.matrixtype("sph0", fmesh::IOMatrixtype::General);
       matrices.output("sph0");
     }
@@ -642,7 +642,7 @@ int main(int argc, char *argv[]) {
     if (sph_order_max >= 0) {
       FMLOG("sph output." << std::endl)
       matrices.attach(string("sph"),
-                      spherical_harmonics(M.S(), sph_order_max, false), true);
+                      spherical_harmonics(M.S(), sph_order_max, false));
       matrices.matrixtype("sph", fmesh::IOMatrixtype::General);
       matrices.output("sph");
     }
@@ -661,8 +661,7 @@ int main(int argc, char *argv[]) {
 
       matrices.attach(string("bspline"),
                       spherical_bsplines(M.S(), bspline_n, bspline_degree,
-                                         bspline_uniform_knot_angles),
-                      true);
+                                         bspline_uniform_knot_angles));
       matrices.matrixtype("bspline", fmesh::IOMatrixtype::General);
       matrices.output("bspline");
     }
@@ -681,9 +680,9 @@ int main(int argc, char *argv[]) {
       Matrix<double> &points2mesh = matrices.DD(points2mesh_name);
       size_t points_n = points2mesh.rows();
       Matrix<int> &points2mesh_t =
-          matrices.attach(string("p2m.t"), new Matrix<int>(points_n, 1), true);
+          matrices.attach(string("p2m.t"), std::make_unique<Matrix<int>>(points_n, 1));
       Matrix<double> &points2mesh_b = matrices.attach(
-          string("p2m.b"), new Matrix<double>(points_n, 3), true);
+          string("p2m.b"), std::make_unique<Matrix<double>>(points_n, 3));
       matrices.matrixtype("p2m.t", fmesh::IOMatrixtype::General);
       matrices.matrixtype("p2m.b", fmesh::IOMatrixtype::General);
       matrices.output("p2m.t").output("p2m.b");
@@ -705,7 +704,7 @@ int main(int argc, char *argv[]) {
 
     M.calcQblocks(C0, C1, G, B1, Tareas);
 
-    matrices.attach(string("va"), new Matrix<double>(diag(C0)), true);
+    matrices.attach(string("va"), std::make_unique<Matrix<double>>(diag(C0)));
 
     K = G - B1;
 
@@ -780,9 +779,9 @@ int main(int argc, char *argv[]) {
   if (args_info.grad_given > 0) {
     SparseMatrix<double> *D[3];
     M.calcGradientMatrices(D);
-    matrices.attach("dx", D[0], true);
-    matrices.attach("dy", D[1], true);
-    matrices.attach("dz", D[2], true);
+    matrices.attach("dx", D[0]);
+    matrices.attach("dy", D[1]);
+    matrices.attach("dz", D[2]);
     matrices.matrixtype("dx", fmesh::IOMatrixtype::General);
     matrices.matrixtype("dy", fmesh::IOMatrixtype::General);
     matrices.matrixtype("dz", fmesh::IOMatrixtype::General);
@@ -793,24 +792,24 @@ int main(int argc, char *argv[]) {
     Matrix<double> &splitlocinput_raw = matrices.DD(splitlines_names[0]);
     /* Make sure we have a Nx3 matrix. */
     Matrix3double splitlocinput(splitlocinput_raw);
-    Matrix<double> *splitloc1 = new Matrix<double>(3);
-    Matrix<int> *splitidx1 = new Matrix<int>(1);
-    Matrix<int> *splittriangle1 = new Matrix<int>(1);
-    Matrix<double> *splitbary1 = new Matrix<double>(3);
-    Matrix<double> *splitbary2 = new Matrix<double>(3);
-    Matrix<int> *splitorigin1 = new Matrix<int>(1);
+    auto splitloc1 = std::make_unique<Matrix<double>>(3);
+    auto splitidx1 = std::make_unique<Matrix<int>>(1);
+    auto splittriangle1 = std::make_unique<Matrix<int>>(1);
+    auto splitbary1 = std::make_unique<Matrix<double>>(3);
+    auto splitbary2 = std::make_unique<Matrix<double>>(3);
+    auto splitorigin1 = std::make_unique<Matrix<int>>(1);
 
     split_line_segments_on_triangles(
         M, splitlocinput, matrices.DI(splitlines_names[1]), *splitloc1,
         *splitidx1, *splittriangle1, *splitbary1, *splitbary2, *splitorigin1);
 
     /* Now it's ok to overwrite potential input split* matrices. */
-    matrices.attach("split.loc", splitloc1, true);
-    matrices.attach("split.idx", splitidx1, true);
-    matrices.attach("split.t", splittriangle1, true);
-    matrices.attach("split.b1", splitbary1, true);
-    matrices.attach("split.b2", splitbary2, true);
-    matrices.attach("split.origin", splitorigin1, true);
+    matrices.attach("split.loc", std::move(splitloc1));
+    matrices.attach("split.idx", std::move(splitidx1));
+    matrices.attach("split.t", std::move(splittriangle1));
+    matrices.attach("split.b1", std::move(splitbary1));
+    matrices.attach("split.b2", std::move(splitbary2));
+    matrices.attach("split.origin", std::move(splitorigin1));
     matrices.output("split.loc").output("split.idx");
     matrices.output("split.b1").output("split.b2");
     matrices.output("split.t").output("split.origin");

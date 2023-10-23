@@ -312,7 +312,7 @@ public:
 #endif // not FMESHER_WITH_R
 };
 
-Matrix3double *make_globe_points(int subsegments, double radius);
+std::unique_ptr<Matrix<double>> make_globe_points(int subsegments, double radius);
 
 class MOAint {
   friend std::ostream &operator<<(std::ostream &output, const MOAint &MO);

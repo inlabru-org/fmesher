@@ -37,13 +37,14 @@ int sph_basis_n(int kmax, bool rot_sym) {
   }
 }
 
-Matrix<double> *spherical_harmonics(const Matrix3<double> &S, size_t max_order,
-                                    bool rotationally_symmetric) {
+std::unique_ptr<Matrix<double>> spherical_harmonics(
+    const Matrix3<double> &S, size_t max_order,
+    bool rotationally_symmetric) {
   // Protect against unused parameter warning:
   (void)(S);
 
-  Matrix<double> *sph =
-      new Matrix<double>(sph_basis_n(max_order, rotationally_symmetric));
+  auto sph =
+      std::make_unique<Matrix<double>>(sph_basis_n(max_order, rotationally_symmetric));
 
 #ifdef FMESHER_WITH_GSL
 #ifdef FMESHER_WITH_SPHERICAL_HARMONICS
@@ -98,10 +99,11 @@ Matrix<double> *spherical_harmonics(const Matrix3<double> &S, size_t max_order,
   return sph;
 }
 
-Matrix<double> *spherical_bsplines1(const Matrix<double> &S, size_t n_basis,
-                                    size_t degree,
-                                    bool uniform_knot_angle_spacing) {
-  Matrix<double> *basis = new Matrix<double>(n_basis);
+std::unique_ptr<Matrix<double>> spherical_bsplines1(
+    const Matrix<double> &S, size_t n_basis,
+    size_t degree,
+    bool uniform_knot_angle_spacing) {
+  auto basis = std::make_unique<Matrix<double>>(n_basis);
   std::vector<double> knots(n_basis + degree + 1);
   double s, s1, s2;
   std::vector<Matrix<double>> control(n_basis);
@@ -163,10 +165,11 @@ Matrix<double> *spherical_bsplines1(const Matrix<double> &S, size_t n_basis,
   return basis;
 }
 
-Matrix<double> *spherical_bsplines(const Matrix3<double> &S, size_t n_basis,
-                                   size_t degree,
-                                   bool uniform_knot_angle_spacing) {
-  Matrix<double> *basis = new Matrix<double>(n_basis);
+std::unique_ptr<Matrix<double>> spherical_bsplines(
+    const Matrix3<double> &S, size_t n_basis,
+    size_t degree,
+    bool uniform_knot_angle_spacing) {
+  auto basis = std::make_unique<Matrix<double>>(n_basis);
   std::vector<double> knots(n_basis + degree + 1);
   double s, s1, s2;
   std::vector<Matrix<double>> control(n_basis);
