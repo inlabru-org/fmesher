@@ -77,6 +77,9 @@ jobs:
           options(width = 100)
           pkgs <- installed.packages()[, "Package"]
           sessioninfo::session_info(pkgs, include_base = TRUE)
+          message("capabilities():")
+          capabilities()
+          message("Cairo::Cairo.capabilities():")
           Cairo::Cairo.capabilities()
         shell: Rscript {0}
 
