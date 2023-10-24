@@ -70,6 +70,7 @@ jobs:
           dependencies: '"all"'
           extra-packages: |
              rcmdcheck
+             Cairo
 
       - name: Session info
         run: |
