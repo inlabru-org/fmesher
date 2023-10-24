@@ -51,6 +51,8 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           brew install libsm
+          brew install libxrender
+          brew install cairo
           brew install --cask xquartz
           brew install pkg-config
           brew install proj@9
