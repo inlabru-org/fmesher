@@ -96,6 +96,8 @@ protected:
 public:
   MCQtri(MeshC *MC, bool only_quality, double quality_limit,
          const double *quality_limits = NULL, size_t nQL = 0);
+  MCQtri(MCQtri const& rhs) = delete;
+  MCQtri& operator=(MCQtri const& rhs) = delete;
 
   void setQ(double quality_limit, const double *quality_limits = NULL,
             size_t nQL = 0);
