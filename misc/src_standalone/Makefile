@@ -67,7 +67,10 @@ endif
 
 
 # Activate GSL, only needed for spherical harmonics, which can be computed with the R gsl package instead
-# OS_FLAGS:=$(OS_FLAGS) -DFMESHER_WITH_GSL
+ifeq ($(FMESHER_WITH_GSL), 1)
+  OS_LDFLAGS:=$(OS_LDFLAGS) -lgsl -lgslcblas
+  OS_FLAGS:=$(OS_FLAGS) -DFMESHER_WITH_GSL -DFMESHER_WITH_SPHERICAL_HARMONICS
+endif
 
 ################################################################################
 #
