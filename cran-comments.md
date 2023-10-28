@@ -33,7 +33,7 @@ Flavor: r-oldrel-macos-x86_64
     
 # revdepcheck results
 
-We checked 4 reverse dependencies (4 from CRAN), comparing R CMD check results across CRAN and dev versions of this package.
+We checked 6 reverse dependencies (6 from CRAN), comparing R CMD check results across CRAN and dev versions of this package.
 
  * We saw 0 new problems
  * We failed to check 0 packages
