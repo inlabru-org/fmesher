@@ -23,9 +23,9 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: macOS-12, r: 'devel', http-user-agent: 'release'}
-          - {os: macOS-12, r: 'release'}
-          - {os: macOS-12, r: 'oldrel-1'}
+#          - {os: macos-latest, r: 'devel', http-user-agent: 'release'}
+          - {os: macos-latest, r: 'release'}
+          - {os: macos-latest, r: 'oldrel-1'}
           - {os: windows-latest, r: 'release'}
           - {os: windows-latest, r: 'oldrel-1'}
           - {os: ubuntu-latest, r: 'devel', http-user-agent: 'release'}
@@ -50,6 +50,9 @@ jobs:
       - name: Install system dependencies on MacOS (X11, gdal)
         if: runner.os == 'macOS'
         run: |
+          brew install libsm
+          brew install libxrender
+          brew install cairo
           brew install --cask xquartz
           brew install pkg-config
           brew install proj@9
@@ -67,12 +70,17 @@ jobs:
           dependencies: '"all"'
           extra-packages: |
              rcmdcheck
+             Cairo
 
       - name: Session info
         run: |
           options(width = 100)
           pkgs <- installed.packages()[, "Package"]
           sessioninfo::session_info(pkgs, include_base = TRUE)
+          message("capabilities():")
+          capabilities()
+          message("Cairo::Cairo.capabilities():")
+          Cairo::Cairo.capabilities()
         shell: Rscript {0}
 
       - uses: r-lib/actions/check-r-package@v2

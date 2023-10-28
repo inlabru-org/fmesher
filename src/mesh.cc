@@ -2187,11 +2187,10 @@ Mesh &Mesh::quad_tesselate(const Mesh &M) {
   return *this;
 }
 
-Matrix3double *make_globe_points(int subsegments, double radius) {
+std::unique_ptr<Matrix<double>> make_globe_points(int subsegments, double radius) {
   int nT = 20 * subsegments * subsegments;
   int nV = 2 + nT / 2;
-  Matrix3double *S = new Matrix3double(nV);
-  Matrix3double &S_ = *S;
+  auto S_ = Matrix3double(nV);
 
   int offset = 0;
   S_(offset) = Point(0., 0., radius);
@@ -2237,7 +2236,7 @@ Matrix3double *make_globe_points(int subsegments, double radius) {
   }
   S_(offset) = Point(0., 0., -radius);
 
-  return S;
+  return std::make_unique<Matrix<double>>(S_);
 }
 
 Mesh &Mesh::make_globe(int subsegments, double radius) {
@@ -2249,9 +2248,7 @@ Mesh &Mesh::make_globe(int subsegments, double radius) {
   int nV = 2 + nT / 2;
   check_capacity(nV0 + nV, nT);
 
-  Matrix3double *S = make_globe_points(subsegments, radius);
-  S_append(*S);
-  delete S;
+  S_append(*make_globe_points(subsegments, radius));
 
   MeshC MC(this);
   vertexListT vertices;
@@ -2463,11 +2460,11 @@ void Mesh::calcQblocksAni(SparseMatrix<double> &G1, const Matrix<double> &gamma,
   }
 }
 
-void Mesh::calcGradientMatrices(SparseMatrix<double> **D) const {
-  SparseMatrix<double> D_[3];
-  D_[0].clear().rows(nV()).cols(nV());
-  D_[1].clear().rows(nV()).cols(nV());
-  D_[2].clear().rows(nV()).cols(nV());
+std::vector<SparseMatrix<double>> Mesh::calcGradientMatrices() const {
+  std::vector<SparseMatrix<double>> D_(3);
+  for (auto& m : D_) {
+    m.clear().rows(nV()).cols(nV());
+  }
   Matrix<double> weights(nV(), 1);
   Point e[3];
   for (int t = 0; t < (int)nT(); t++) {
@@ -2521,9 +2518,11 @@ void Mesh::calcGradientMatrices(SparseMatrix<double> **D) const {
     weights(i, 0) = 1.0 / weights(i, 0);
   }
   SparseMatrix<double> w(diag(weights));
-  D[0] = new SparseMatrix<double>(w * D_[0]);
-  D[1] = new SparseMatrix<double>(w * D_[1]);
-  D[2] = new SparseMatrix<double>(w * D_[2]);
+  std::vector<SparseMatrix<double>> D(3);
+  D[0] = w * D_[0];
+  D[1] = w * D_[1];
+  D[2] = w * D_[2];
+  return D;
 }
 
 // No need for IOHeader and IOHelper classes when using Rcpp

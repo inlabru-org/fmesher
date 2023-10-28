@@ -1,3 +1,7 @@
+# fmesher 0.1.4
+
+* Work around `std::get<variant>()` lack of support for MacOS `< 10.14`.
+
 # fmesher 0.1.3
 
 * Fix bug in `fm_rcdt_2d_inla()` that gave different defaults for the `extend` and

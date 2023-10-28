@@ -46,18 +46,11 @@ public:
 namespace Rcpp {
 /* support for wrap */
 
-#define FM_DEFINE_WRAP(__thetype__)                     \
-  template<> inline SEXP wrap(const fmesh::__thetype__& obj);
-
-FM_DEFINE_WRAP(Matrix<double>);
-FM_DEFINE_WRAP(Matrix<int>);
-FM_DEFINE_WRAP(Matrix1<double>);
-FM_DEFINE_WRAP(Matrix1<int>);
-FM_DEFINE_WRAP(Matrix3<double>);
-FM_DEFINE_WRAP(Matrix3<int>);
-FM_DEFINE_WRAP(SparseMatrix<double>);
-FM_DEFINE_WRAP(SparseMatrix<int>);
-FM_DEFINE_WRAP(MatrixC);
+template<class T> inline SEXP wrap(const fmesh::Matrix<T>& obj);
+template<class T> inline SEXP wrap(const fmesh::Matrix1<T>& obj);
+template<class T> inline SEXP wrap(const fmesh::Matrix3<T>& obj);
+template<class T> inline SEXP wrap(const fmesh::SparseMatrix<T>& obj);
+template<> inline SEXP wrap(const fmesh::MatrixC& obj);
 
 // TODO:
 /* support for as */

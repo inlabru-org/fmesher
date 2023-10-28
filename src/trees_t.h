@@ -166,13 +166,12 @@ void IntervalTree<T>::add_segment(int start_idx, int end_idx) {
 }
 template <class T> void IntervalTree<T>::build_tree() {
   if (tree_) {
-    delete tree_;
     tree_ = NULL;
   }
   if (breakpoints_.size() == 0) {
     return;
   }
-  tree_ = new tree_type(breakpoints_.size());
+  tree_ = std::make_unique<tree_type>(breakpoints_.size());
   typename breakpoints_type::const_iterator bi = breakpoints_.begin();
   distribute_breakpoints(tree_->root(), bi);
   distribute_segments();

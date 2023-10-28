@@ -8,6 +8,7 @@
 #include <iostream>
 #include <list>
 #include <map>
+#include <memory>
 #include <set>
 #include <string>
 #include <vector>
@@ -64,7 +65,7 @@ protected:
   static const size_t capacity_step_size_ = 1024;
   static const size_t capacity_doubling_limit_ = 8192;
   static const T zero_;
-  T *data_;
+  std::unique_ptr<T[]> data_;
   size_t rows_;
   size_t cols_;
   size_t cap_;
@@ -76,20 +77,15 @@ public:
   };
   Matrix(size_t set_rows, size_t set_cols, const T *vals = NULL);
   Matrix(const Matrix<T> &from);
+  Matrix<T> &operator=(const Matrix<T> &from);
 #ifdef FMESHER_WITH_R
   using RcppMatrix = typename Rcpp_traits<T>::Matrix;
   using RcppVector = typename Rcpp_traits<T>::Vector;
   Matrix(const RcppMatrix &from);
   Matrix(const RcppVector &from);
 #endif
-  const Matrix<T> &operator=(const Matrix<T> &from);
-  ~Matrix() {
-    if (data_)
-      delete[] data_;
-  };
   Matrix<T> &clear(void) {
     if (data_) {
-      delete[] data_;
       data_ = NULL;
     }
     cap_ = 0;
@@ -138,8 +134,8 @@ public:
     return (operator()(r, c) = val);
   };
 
-  const T *raw(void) const { return data_; }
-  T *raw(void) { return data_; }
+  const T *raw(void) const { return &data_[0]; }
+  T *raw(void) { return &data_[0]; }
 
   // No need for IOHeader and IOHelper classes when using Rcpp
 #ifndef FMESHER_WITH_R
@@ -242,7 +238,7 @@ public:
   };
   double length() const;
   selfT &cross(const selfT &s0, const selfT &s1) {
-    if ((this == &s0) || (this == &s0)) {
+    if ((this == &s0) || (this == &s1)) {
       T s_0 = s0.s[1] * s1.s[2] - s0.s[2] * s1.s[1];
       T s_1 = s0.s[2] * s1.s[0] - s0.s[0] * s1.s[2];
       T s_2 = s0.s[0] * s1.s[1] - s0.s[1] * s1.s[0];
@@ -328,7 +324,7 @@ public:
   };
 
   const ValueRow &operator[](const size_t r) const {
-    return ((ValueRow *)Matrix<T>::data_)[r];
+    return *(const ValueRow *)(Matrix<T>::operator[](r));
   };
 
   ValueRow &operator()(const size_t r) {
