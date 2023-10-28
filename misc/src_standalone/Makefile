@@ -8,7 +8,7 @@ PREFIX = /usr/local
 
 # select compilers and optimized compiler-options, add -fopenmp or similar to use OpenMP
 CC = gcc
-CXX = g++
+CXX = g++ # -stdlib=libc++
 FC = gfortran
 FCEXTRAFLAGS = -fno-second-underscore
 # FLAGS= -mfpmath=sse -msse2
