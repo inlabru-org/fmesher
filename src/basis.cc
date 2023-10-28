@@ -50,12 +50,12 @@ std::unique_ptr<Matrix<double>> spherical_harmonics(
 #ifdef FMESHER_WITH_SPHERICAL_HARMONICS
   size_t i, k, m;
   size_t GSL_res_n = gsl_sf_legendre_array_n(max_order);
-  double *GSL_res_array = new double[GSL_res_n];
+  auto GSL_res_array = std::make_unique<double[]>(GSL_res_n);
 
   if (rotationally_symmetric) {
     for (i = 0; i < S.rows(); i++) {
       gsl_sf_legendre_array(GSL_SF_LEGENDRE_SPHARM, max_order, S[i][2],
-                            GSL_res_array);
+                            &GSL_res_array[0]);
       for (k = 0; k <= max_order; k++) {
         (*sph)(i, k) =
             M_2_SQRT_PI * GSL_res_array[gsl_sf_legendre_array_index(k, 0)];
@@ -74,7 +74,7 @@ std::unique_ptr<Matrix<double>> spherical_harmonics(
       phi = atan2(S[i][1], S[i][0]);
 
       gsl_sf_legendre_array_e(GSL_SF_LEGENDRE_SPHARM, max_order, S[i][2], -1,
-                              GSL_res_array);
+                              &GSL_res_array[0]);
       for (k = 0; k <= max_order; k++) {
         (*sph)(i, Idxs2[k]) =
             M_2_SQRT_PI * GSL_res_array[gsl_sf_legendre_array_index(k, 0)];
@@ -92,7 +92,6 @@ std::unique_ptr<Matrix<double>> spherical_harmonics(
     }
   }
 
-  delete[] GSL_res_array;
 #endif
 #endif
 

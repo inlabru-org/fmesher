@@ -224,47 +224,43 @@ IOHelperC &IOHelperC::ID(std::istream &input) {
 
 
 template <>
-Matrix<int> &MatrixC::attach(std::string name, Matrix<int> *M,
+Matrix<int> &MatrixC::attach(std::string name,
+                             Matrix<int> *M,
                              IOMatrixtype matrixt) {
   free(name);
-  coll_.insert(collPairT(name,
-                         std::make_unique<MCC>(IODatatype::Dense, IOValuetype::Int,
-                                               matrixt, M, false)));
+  coll_.insert(collPairT(name, std::make_unique<MCC>(M, matrixt, false)));
   activate(name);
   return coll_[name]->DI();
 }
 
 
 template <>
-Matrix<double> &MatrixC::attach(std::string name, Matrix<double> *M,
+Matrix<double> &MatrixC::attach(std::string name,
+                                Matrix<double> *M,
                                 IOMatrixtype matrixt) {
   free(name);
-  coll_.insert(collPairT(name,
-                         std::make_unique<MCC>(IODatatype::Dense, IOValuetype::Double,
-                                               matrixt, M, false)));
+  coll_.insert(collPairT(name, std::make_unique<MCC>(M, matrixt, false)));
   activate(name);
   return coll_[name]->DD();
 }
 
 
 template <>
-SparseMatrix<int> &MatrixC::attach(std::string name, SparseMatrix<int> *M,
+SparseMatrix<int> &MatrixC::attach(std::string name,
+                                   SparseMatrix<int> *M,
                                    IOMatrixtype matrixt) {
   free(name);
-  coll_.insert(collPairT(name,
-                         std::make_unique<MCC>(IODatatype::Sparse, IOValuetype::Int,
-                                               matrixt, M, false)));
+  coll_.insert(collPairT(name, std::make_unique<MCC>(M, matrixt, false)));
   activate(name);
   return coll_[name]->SI();
 }
 
 template <>
-SparseMatrix<double> &MatrixC::attach(std::string name, SparseMatrix<double> *M,
+SparseMatrix<double> &MatrixC::attach(std::string name,
+                                      SparseMatrix<double> *M,
                                       IOMatrixtype matrixt) {
   free(name);
-  coll_.insert(collPairT(name,
-                         std::make_unique<MCC>(IODatatype::Sparse, IOValuetype::Double,
-                                               matrixt, M, false)));
+  coll_.insert(collPairT(name, std::make_unique<MCC>(M, matrixt, false)));
   activate(name);
   return coll_[name]->SD();
 }
@@ -274,9 +270,7 @@ Matrix<int> &MatrixC::attach(std::string name,
                              std::unique_ptr<Matrix<int>>&& M,
                              IOMatrixtype matrixt) {
   free(name);
-  coll_.insert(collPairT(name,
-                         std::make_unique<MCC>(IODatatype::Dense, IOValuetype::Int,
-                                               matrixt, std::move(M))));
+  coll_.insert(collPairT(name, std::make_unique<MCC>(std::move(M), matrixt)));
   activate(name);
   return coll_[name]->DI();
 }
@@ -286,9 +280,7 @@ Matrix<double> &MatrixC::attach(std::string name,
                                 std::unique_ptr<Matrix<double>>&& M,
                                 IOMatrixtype matrixt) {
   free(name);
-  coll_.insert(collPairT(name,
-                         std::make_unique<MCC>(IODatatype::Dense, IOValuetype::Double,
-                                               matrixt, std::move(M))));
+  coll_.insert(collPairT(name,std::make_unique<MCC>(std::move(M), matrixt)));
   activate(name);
   return coll_[name]->DD();
 }
@@ -298,9 +290,7 @@ SparseMatrix<int> &MatrixC::attach(std::string name,
                                    std::unique_ptr<SparseMatrix<int>>&& M,
                                    IOMatrixtype matrixt) {
   free(name);
-  coll_.insert(collPairT(name,
-                         std::make_unique<MCC>(IODatatype::Sparse, IOValuetype::Int,
-                                               matrixt, std::move(M))));
+  coll_.insert(collPairT(name, std::make_unique<MCC>(std::move(M), matrixt)));
   activate(name);
   return coll_[name]->SI();
 }
@@ -310,9 +300,7 @@ SparseMatrix<double> &MatrixC::attach(std::string name,
                                       std::unique_ptr<SparseMatrix<double>>&& M,
                                       IOMatrixtype matrixt) {
   free(name);
-  coll_.insert(collPairT(name,
-                         std::make_unique<MCC>(IODatatype::Sparse, IOValuetype::Double,
-                                               matrixt, std::move(M))));
+  coll_.insert(collPairT(name, std::make_unique<MCC>(std::move(M), matrixt)));
   activate(name);
   return coll_[name]->SD();
 }
@@ -389,9 +377,11 @@ MCCInfo MatrixC::load(std::string name) {
   ioh_.binary(bin_in_).IH(I);
   I.close();
 
-  coll_.insert(collPairT(name, new MCC(IODatatype(ioh_.header().datatype),
-                                       IOValuetype(ioh_.header().valuetype),
-                                       IOMatrixtype(ioh_.header().matrixtype))));
+  coll_.insert(collPairT(
+      name,
+      std::make_unique<MCC>(IODatatype(ioh_.header().datatype),
+                            IOValuetype(ioh_.header().valuetype),
+                            IOMatrixtype(ioh_.header().matrixtype))));
   activate(name);
 
   I.open((input_prefix_ + name).c_str(),

@@ -777,14 +777,16 @@ int main(int argc, char *argv[]) {
   }
 
   if (args_info.grad_given > 0) {
-    SparseMatrix<double> *D[3];
-    M.calcGradientMatrices(D);
-    matrices.attach("dx", D[0]);
-    matrices.attach("dy", D[1]);
-    matrices.attach("dz", D[2]);
-    matrices.matrixtype("dx", fmesh::IOMatrixtype::General);
-    matrices.matrixtype("dy", fmesh::IOMatrixtype::General);
-    matrices.matrixtype("dz", fmesh::IOMatrixtype::General);
+    auto D = M.calcGradientMatrices();
+    matrices.attach("dx",
+                    std::make_unique<SparseMatrix<double>>(D[0]),
+                    fmesh::IOMatrixtype::General);
+    matrices.attach("dy",
+                    std::make_unique<SparseMatrix<double>>(D[1]),
+                    fmesh::IOMatrixtype::General);
+    matrices.attach("dz",
+                    std::make_unique<SparseMatrix<double>>(D[2]),
+                    fmesh::IOMatrixtype::General);
     matrices.output("dx").output("dy").output("dz");
   }
 

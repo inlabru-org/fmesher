@@ -77,13 +77,13 @@ public:
   };
   Matrix(size_t set_rows, size_t set_cols, const T *vals = NULL);
   Matrix(const Matrix<T> &from);
+  Matrix<T> &operator=(const Matrix<T> &from);
 #ifdef FMESHER_WITH_R
   using RcppMatrix = typename Rcpp_traits<T>::Matrix;
   using RcppVector = typename Rcpp_traits<T>::Vector;
   Matrix(const RcppMatrix &from);
   Matrix(const RcppVector &from);
 #endif
-  const Matrix<T> &operator=(const Matrix<T> &from);
   Matrix<T> &clear(void) {
     if (data_) {
       data_ = NULL;

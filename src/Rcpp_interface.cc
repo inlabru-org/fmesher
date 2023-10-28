@@ -894,8 +894,8 @@ Rcpp::List fmesher_split_lines(
 //      Rcpp::List C_matrixio_test(Rcpp::List args_input) {
 //        MatrixC matrices;
 //
-//        //  matrices.attach("loc", new Matrix<double>(Rcpp::as<EigenMM<double>>(args_input["loc"])), true);
-//        //  matrices.attach("tv", new Matrix<int>(Rcpp::as<EigenMM<int>>(args_input["tv"])), true);
+//        //  matrices.attach("loc", std::make_unique<Matrix<double>>(Rcpp::as<EigenMM<double>>(args_input["loc"])));
+//        //  matrices.attach("tv", std::make_unique<Matrix<int>>(Rcpp::as<EigenMM<int>>(args_input["tv"])));
 //
 //        bool is_list = Rcpp::is<Rcpp::List>(args_input);
 //        bool is_numeric_matrix = Rcpp::is<Rcpp::NumericMatrix>(args_input["A"]);

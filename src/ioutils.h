@@ -344,6 +344,21 @@ public:
 #endif // not FMESHER_WITH_R
 
 
+using MatrixVariantPtr =
+  std::variant<
+    std::monostate,
+    std::unique_ptr<Matrix<int>>,
+    std::unique_ptr<Matrix<double>>,
+    std::unique_ptr<SparseMatrix<int>>,
+    std::unique_ptr<SparseMatrix<double>>,
+    Matrix<int>*,
+    Matrix<double>*,
+    SparseMatrix<int>*,
+    SparseMatrix<double>*
+  >;
+
+
+
 class MCCInfo {
 public:
   bool loaded;
@@ -361,20 +376,30 @@ public:
           IOMatrixtype matrixt, bool isowner)
       : loaded(load), active(act), datatype(data), valuetype(value),
         matrixtype(matrixt), owner(isowner){};
-};
 
-typedef
-std::variant<
-  std::monostate,
-  std::unique_ptr<Matrix<int>>,
-  std::unique_ptr<Matrix<double>>,
-  std::unique_ptr<SparseMatrix<int>>,
-  std::unique_ptr<SparseMatrix<double>>,
-  Matrix<int>*,
-  Matrix<double>*,
-  SparseMatrix<int>*,
-  SparseMatrix<double>*
-> MatrixVariantPtr;
+  void update(const MatrixVariantPtr& matrix) {
+    if (std::holds_alternative<std::unique_ptr<Matrix<int>>>(matrix) ||
+        std::holds_alternative<Matrix<int>*>(matrix)) {
+      datatype = IODatatype::Dense;
+      valuetype = IOValuetype::Int;
+    } else if (
+        std::holds_alternative<std::unique_ptr<Matrix<double>>>(matrix) ||
+          std::holds_alternative<Matrix<double>*>(matrix)) {
+      datatype = IODatatype::Dense;
+      valuetype = IOValuetype::Double;
+    } else if (
+        std::holds_alternative<std::unique_ptr<SparseMatrix<int>>>(matrix) ||
+          std::holds_alternative<SparseMatrix<int>*>(matrix)) {
+      datatype = IODatatype::Sparse;
+      valuetype = IOValuetype::Int;
+    } else if (
+        std::holds_alternative<std::unique_ptr<SparseMatrix<double>>>(matrix) ||
+          std::holds_alternative<SparseMatrix<double>*>(matrix)) {
+      datatype = IODatatype::Sparse;
+      valuetype = IOValuetype::Double;
+    }
+  }
+};
 
 class MCC {
   friend class MatrixC;
@@ -386,54 +411,31 @@ protected:
   MatrixVariantPtr matrix_;
 
 public:
-  MCC()
-      : info(false, false, IODatatype::Dense, IOValuetype::Int,
-             IOMatrixtype::General, false),
-        matrix_() {
-    create_blank();
-  }
+  MCC() = delete;
+//      : info(false, false, IODatatype::Dense, IOValuetype::Int,
+//             IOMatrixtype::General, false),
+//        matrix_() {
+//    create_blank();
+//  }
   MCC(IODatatype data, IOValuetype value, IOMatrixtype matrixt)
     : info(true, false, data, value, matrixt, true),
       matrix_() {
     create_blank();
   }
   template <class MatrixType>
-  MCC(IODatatype data, IOValuetype value, IOMatrixtype matrixt,
-      MatrixType * M,
+  MCC(MatrixType * M,
+      IOMatrixtype matrixt,
       bool isowner = true)
-    : info(true, false, data, value, matrixt, isowner), matrix_() {
+    : info(true, false, IODatatype::Invalid, IOValuetype::Invalid, matrixt, isowner),
+      matrix_() {
     set(M, matrixt, isowner);
   }
   template <class MatrixType>
-  MCC(IODatatype data, IOValuetype value, IOMatrixtype matrixt,
-      std::unique_ptr<MatrixType>&& M)
-    : info(true, false, data, value, matrixt, true), matrix_() {
+  MCC(std::unique_ptr<MatrixType>&& M,
+      IOMatrixtype matrixt)
+    : info(true, false, IODatatype::Invalid, IOValuetype::Invalid, matrixt, true),
+      matrix_() {
     set(std::move(M));
-  }
-  ~MCC() {
-  }
-
-  void set_data_and_value_info() {
-    if (std::holds_alternative<std::unique_ptr<Matrix<int>>>(matrix_) ||
-        std::holds_alternative<Matrix<int>*>(matrix_)) {
-      info.datatype = IODatatype::Dense;
-      info.valuetype = IOValuetype::Int;
-    } else if (
-        std::holds_alternative<std::unique_ptr<Matrix<double>>>(matrix_) ||
-          std::holds_alternative<Matrix<double>*>(matrix_)) {
-      info.datatype = IODatatype::Dense;
-      info.valuetype = IOValuetype::Double;
-    } else if (
-        std::holds_alternative<std::unique_ptr<SparseMatrix<int>>>(matrix_) ||
-          std::holds_alternative<SparseMatrix<int>*>(matrix_)) {
-      info.datatype = IODatatype::Sparse;
-      info.valuetype = IOValuetype::Int;
-    } else if (
-        std::holds_alternative<std::unique_ptr<SparseMatrix<double>>>(matrix_) ||
-          std::holds_alternative<SparseMatrix<double>*>(matrix_)) {
-      info.datatype = IODatatype::Sparse;
-      info.valuetype = IOValuetype::Double;
-    }
   }
 
 
@@ -453,7 +455,7 @@ public:
         matrix_ = std::make_unique<SparseMatrix<double>>();
       }
     }
-    set_data_and_value_info();
+    info.update(matrix_);
   }
 
   // Add a new matrix from raw pointer
@@ -463,11 +465,12 @@ public:
            bool isowner = true) {
     info.matrixtype = matrixt;
     info.owner = isowner;
-    matrix_ = M;
-    set_data_and_value_info();
     if (isowner) {
       matrix_ = std::unique_ptr<MatrixType>(M);
+    } else {
+      matrix_ = M;
     }
+    info.update(matrix_);
   }
 
   // Add a new matrix from unique_ptr
@@ -477,7 +480,7 @@ public:
     info.matrixtype = matrixt;
     info.owner = true;
     matrix_ = std::move(M);
-    set_data_and_value_info();
+    info.update(matrix_);
   }
 
   template <class TheType>

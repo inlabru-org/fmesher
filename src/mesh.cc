@@ -2460,11 +2460,11 @@ void Mesh::calcQblocksAni(SparseMatrix<double> &G1, const Matrix<double> &gamma,
   }
 }
 
-void Mesh::calcGradientMatrices(SparseMatrix<double> **D) const {
-  SparseMatrix<double> D_[3];
-  D_[0].clear().rows(nV()).cols(nV());
-  D_[1].clear().rows(nV()).cols(nV());
-  D_[2].clear().rows(nV()).cols(nV());
+std::vector<SparseMatrix<double>> Mesh::calcGradientMatrices() const {
+  std::vector<SparseMatrix<double>> D_(3);
+  for (auto& m : D_) {
+    m.clear().rows(nV()).cols(nV());
+  }
   Matrix<double> weights(nV(), 1);
   Point e[3];
   for (int t = 0; t < (int)nT(); t++) {
@@ -2518,9 +2518,11 @@ void Mesh::calcGradientMatrices(SparseMatrix<double> **D) const {
     weights(i, 0) = 1.0 / weights(i, 0);
   }
   SparseMatrix<double> w(diag(weights));
-  D[0] = new SparseMatrix<double>(w * D_[0]);
-  D[1] = new SparseMatrix<double>(w * D_[1]);
-  D[2] = new SparseMatrix<double>(w * D_[2]);
+  std::vector<SparseMatrix<double>> D(3);
+  D[0] = w * D_[0];
+  D[1] = w * D_[1];
+  D[2] = w * D_[2];
+  return D;
 }
 
 // No need for IOHeader and IOHelper classes when using Rcpp

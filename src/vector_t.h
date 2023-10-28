@@ -107,7 +107,7 @@ Matrix<T>::Matrix(const Rcpp::IntegerVector &from)
 
 
 template <class T>
-const Matrix<T> &Matrix<T>::operator=(const Matrix<T> &from) {
+Matrix<T> &Matrix<T>::operator=(const Matrix<T> &from) {
   clear();
   cols(from.cols_);
   capacity(from.cap_);

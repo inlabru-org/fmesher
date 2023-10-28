@@ -6,6 +6,7 @@
 #include <iomanip>
 #include <iostream>
 #include <map>
+#include <memory>
 #include <set>
 #include <vector>
 //#include <list>
@@ -410,7 +411,8 @@ public:
                                   OrderedSegmentSet<VT> &segm);
 }; // OrderedSegmentSet
 
-template <class T> class IntervalTree {
+template <class T>
+class IntervalTree {
 public:
   typedef IntervalTree<T> self_type;
   typedef T value_type;
@@ -425,20 +427,12 @@ public:
 
   protected:
     value_type mid_;
-    data_type *data_;
+    std::unique_ptr<data_type> data_;
 
   public:
-    node_type() : data_(NULL){};
-    ~node_type() {
-      if (data_) {
-        delete data_;
-        data_ = NULL;
-      }
-    };
-
     void activate_data(const typename multi_segment_type::iterator &segm_iter) {
       if (!data_) {
-        data_ = new data_type(segm_iter);
+        data_ = std::make_unique<data_type>(segm_iter);
       }
     };
   };
@@ -451,7 +445,7 @@ private:
   typename multi_segment_type::iterator multi_segment_iter_;
   segment_list_type segments_;
   breakpoints_type breakpoints_;
-  tree_type *tree_;
+  std::unique_ptr<tree_type> tree_;
 
   void
   distribute_breakpoints(typename tree_type::iterator i,
@@ -461,13 +455,7 @@ private:
 
 public:
   IntervalTree(const typename multi_segment_type::iterator &segm_iter)
-      : multi_segment_iter_(segm_iter), tree_(NULL){};
-  ~IntervalTree() {
-    if (tree_) {
-      delete tree_;
-      tree_ = NULL;
-    }
-  };
+      : multi_segment_iter_(segm_iter), tree_{} {};
 
   void add_segment(int segm_idx);
   void add_segment(int start_idx, int end_idx);
@@ -506,7 +494,7 @@ public:
       } else {
         FMLOG_("Error: undefined dereferencing" << std::endl);
       }
-      return (*(new T()));
+      return (*L_i_); // Undefined behaviour, should not be reached.
     };
   };
 
@@ -550,22 +538,16 @@ public:
     value_type left_;
     value_type mid_;
     value_type right_;
-    SubTreeType *data_;
+    std::unique_ptr<SubTreeType> data_;
 
   public:
-    node_type() : data_(NULL){};
-    ~node_type() {
-      if (data_) {
-        delete data_;
-        data_ = NULL;
-      }
-    };
+    node_type() : data_{} {};
 
     void activate_data(const typename multi_segment_type::iterator &segm_iter) {
       if (!data_) {
         typename multi_segment_type::iterator i = segm_iter;
         ++i;
-        data_ = new SubTreeType(i);
+        data_ = std::make_unique<SubTreeType>(i);
       }
     };
   };
@@ -578,7 +560,7 @@ private:
   typename multi_segment_type::iterator multi_segment_iter_;
   segment_list_type segments_;
   breakpoints_type breakpoints_;
-  tree_type *tree_;
+  std::unique_ptr<tree_type> tree_;
 
   void distribute_breakpoints(
       typename tree_type::iterator i,
@@ -638,13 +620,7 @@ private:
 
 public:
   SegmentTree(const typename multi_segment_type::iterator &segm_iter)
-      : multi_segment_iter_(segm_iter), tree_(NULL){};
-  ~SegmentTree() {
-    if (tree_) {
-      delete tree_;
-      tree_ = NULL;
-    }
-  };
+      : multi_segment_iter_(segm_iter), tree_{} {};
 
   void add_segment(int segm_idx) {
     const segment_type &segm = (*multi_segment_iter_)[segm_idx];
@@ -659,15 +635,15 @@ public:
 
   void build_tree(void) {
     if (tree_) {
-      delete tree_;
       tree_ = NULL;
     }
     if (breakpoints_.size() == 0)
       return;
     if (breakpoints_.size() == 1) {
-      tree_ = new tree_type(1);
-    } else
-      tree_ = new tree_type(breakpoints_.size() * 2 - 3);
+      tree_ = std::make_unique<tree_type>(1);
+    } else {
+      tree_ = std::make_unique<tree_type>(breakpoints_.size() * 2 - 3);
+    }
     typename breakpoints_type::const_iterator bi = breakpoints_.begin();
     distribute_breakpoints(tree_->root(), bi);
     distribute_segments();

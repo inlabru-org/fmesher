@@ -8,7 +8,7 @@ PREFIX = /usr/local
 
 # select compilers and optimized compiler-options, add -fopenmp or similar to use OpenMP
 CC = gcc
-CXX = g++
+CXX = g++ # -stdlib=libc++
 FC = gfortran
 FCEXTRAFLAGS = -fno-second-underscore
 # FLAGS= -mfpmath=sse -msse2
@@ -67,7 +67,10 @@ endif
 
 
 # Activate GSL, only needed for spherical harmonics, which can be computed with the R gsl package instead
-# OS_FLAGS:=$(OS_FLAGS) -DFMESHER_WITH_GSL
+ifeq ($(FMESHER_WITH_GSL), 1)
+  OS_LDFLAGS:=$(OS_LDFLAGS) -lgsl -lgslcblas
+  OS_FLAGS:=$(OS_FLAGS) -DFMESHER_WITH_GSL -DFMESHER_WITH_SPHERICAL_HARMONICS
+endif
 
 ################################################################################
 #
