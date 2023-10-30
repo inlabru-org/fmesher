@@ -1,5 +1,9 @@
 # fmesher (development version)
 
+* Fix bug in `fm_matern_sample()` that prevented the use of a non-NULL `loc` argument.
+  For earlier versions, the workaround is to make a separate call to `fm_evaluate()`
+  after calling `fm_matern_sample()`.
+
 # fmesher 0.1.4
 
 * Work around `std::get<variant>()` lack of support for MacOS `< 10.14`.
