@@ -53,6 +53,7 @@
         "xfacet": "cpp",
         "xstddef": "cpp",
         "xtr1common": "cpp",
-        "xtree": "cpp"
+        "xtree": "cpp",
+        "variant": "cpp"
     }
 }
