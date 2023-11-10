@@ -8,6 +8,4 @@
 #include "trees.h"
 #include "fmesher_debuglog.h"
 
-using std::endl;
-
 namespace fmesh {} /* namespace fmesh */

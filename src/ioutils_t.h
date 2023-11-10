@@ -142,8 +142,8 @@ template <class T> IOHelper<T> &IOHelper<T>::IH(const IOHeader &h) {
 }
 
 template <class T> IOHelperM<T> &IOHelperM<T>::OD(std::ostream &output) {
-  const IOHeader &h(IOHelper<T>::h_);
-  const bool &bin_(IOHelper<T>::binary_);
+  const IOHeader &h(IOHelper<T>::header());
+  const bool bin_(IOHelper<T>::is_binary());
   if ((!((h.rows > 0) && (h.cols > 0))) || (!cM_)) {
     return *this;
   }
@@ -241,8 +241,8 @@ template <class T> IOHelperM<T> &IOHelperM<T>::OD(std::ostream &output) {
 }
 
 template <class T> IOHelperM<T> &IOHelperM<T>::ID(std::istream &input) {
-  const IOHeader &h(IOHelper<T>::h_);
-  const bool &bin_(IOHelper<T>::binary_);
+  const IOHeader &h(IOHelper<T>::header());
+  const bool bin_(IOHelper<T>::is_binary());
   if (!M_) {
     return *this;
   }
@@ -339,8 +339,8 @@ template <class T> IOHelperM<T> &IOHelperM<T>::ID(std::istream &input) {
 }
 
 template <class T> IOHelperSM<T> &IOHelperSM<T>::OD(std::ostream &output) {
-  const IOHeader &h(IOHelper<T>::h_);
-  const bool &bin_(IOHelper<T>::binary_);
+  const IOHeader &h(IOHelper<T>::header());
+  const bool bin_(IOHelper<T>::is_binary());
   if (!cM_) {
     return *this;
   }
@@ -362,8 +362,8 @@ template <class T> IOHelperSM<T> &IOHelperSM<T>::OD(std::ostream &output) {
 }
 
 template <class T> IOHelperSM<T> &IOHelperSM<T>::ID(std::istream &input) {
-  const IOHeader &h(IOHelper<T>::h_);
-  const bool &bin_(IOHelper<T>::binary_);
+  const IOHeader &h(IOHelper<T>::header());
+  const bool bin_(IOHelper<T>::is_binary());
   if (!M_) {
     return *this;
   }
@@ -393,14 +393,14 @@ template <class T> IOHelperSM<T> &IOHelperSM<T>::ID(std::istream &input) {
 }
 
 template <class T> IOHelperM<T> &IOHelperM<T>::OH_2009(std::ostream &output) {
-  const IOHeader &h(IOHelper<T>::h_);
+  const IOHeader &h(IOHelper<T>::header());
   output << h.rows;
   output << std::endl;
   return *this;
 }
 
 template <class T> IOHelperSM<T> &IOHelperSM<T>::OH_2009(std::ostream &output) {
-  const IOHeader &h(IOHelper<T>::h_);
+  const IOHeader &h(IOHelper<T>::header());
   if ((IOMatrixtype)h.matrixtype == IOMatrixtype::Diagonal) {
     output << h.rows;
     output << std::endl;
@@ -409,7 +409,7 @@ template <class T> IOHelperSM<T> &IOHelperSM<T>::OH_2009(std::ostream &output) {
 }
 
 template <class T> IOHelperM<T> &IOHelperM<T>::OD_2009(std::ostream &output) {
-  const IOHeader &h(IOHelper<T>::h_);
+  const IOHeader &h(IOHelper<T>::header());
   if ((!((h.rows > 0) && (h.cols > 0))) || (!cM_)) {
     return *this;
   }
@@ -426,7 +426,7 @@ template <class T> IOHelperM<T> &IOHelperM<T>::OD_2009(std::ostream &output) {
 }
 
 template <class T> IOHelperSM<T> &IOHelperSM<T>::OD_2009(std::ostream &output) {
-  const IOHeader &h(IOHelper<T>::h_);
+  const IOHeader &h(IOHelper<T>::header());
   if (!cM_) {
     return *this;
   }

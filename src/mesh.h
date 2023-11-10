@@ -300,7 +300,8 @@ public:
   void calcHaniso(Point (&H)[3], Point (&aH)[3], const Point t_vec, const double v_magnitude) const;
   void calcGaniso(SparseMatrix<double> &G_H,
                       const Matrix<double> &vec) const;
-  void calcGradientMatrices(SparseMatrix<double> **D) const;
+  std::vector<SparseMatrix<double>> calcGradientMatrices() const;
+
 
   // No need for IOHeader and IOHelper classes when using Rcpp
 #ifndef FMESHER_WITH_R
@@ -317,7 +318,7 @@ public:
 #endif // not FMESHER_WITH_R
 };
 
-Matrix3double *make_globe_points(int subsegments, double radius);
+std::unique_ptr<Matrix<double>> make_globe_points(int subsegments, double radius);
 
 class MOAint {
   friend std::ostream &operator<<(std::ostream &output, const MOAint &MO);

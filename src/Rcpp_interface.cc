@@ -139,9 +139,10 @@ Mesh Rcpp_import_mesh(Rcpp::NumericMatrix mesh_loc,
   const bool useVT = true;
   const bool useTTi = true;
 
-  matrices.attach("mesh_loc", new Matrix3double(Matrix<double>(mesh_loc)), true);
+  matrices.attach("mesh_loc",
+                  std::make_unique<Matrix<double>>(Matrix3double(Matrix<double>(mesh_loc))));
   FMLOG("'mesh_loc' points imported." << std::endl);
-  matrices.attach("mesh_tv", new Matrix<int>(mesh_tv), true);
+  matrices.attach("mesh_tv", std::make_unique<Matrix<int>>(mesh_tv));
   FMLOG("'mesh_tv' points imported." << std::endl);
 
   Matrix<double>& iS0 = matrices.DD("mesh_loc");
@@ -226,8 +227,7 @@ Rcpp::NumericMatrix fmesher_globe_points(Rcpp::IntegerVector globe) {
 
   matrices.attach(
     ".globe",
-    (Matrix<double> *)fmesh::make_globe_points(num, 1.0),
-    true);
+    fmesh::make_globe_points(num, 1.0));
   FMLOG("globe points constructed." << std::endl);
 
   return Rcpp::wrap(matrices.DD(".globe"));
@@ -267,15 +267,14 @@ Rcpp::List fmesher_rcdt(Rcpp::List options,
 
   MatrixC matrices;
 
-  matrices.attach("loc", new Matrix<double>(loc), true);
+  matrices.attach("loc", std::make_unique<Matrix<double>>(loc));
   FMLOG("'loc' points imported." << std::endl);
 
   Matrix<double>& iS0 = matrices.DD("loc");
   Matrix<int>* TV0 = NULL;
   if (!tv.isNull()) {
     matrices.attach("tv0",
-                    new Matrix<int>(Rcpp::as<Rcpp::IntegerMatrix>(tv)),
-                    true);
+                    std::make_unique<Matrix<int>>(Rcpp::as<Rcpp::IntegerMatrix>(tv)));
     FMLOG("'tv0' points imported." << std::endl);
     TV0 = &matrices.DI("tv0");
   }
@@ -284,10 +283,10 @@ Rcpp::List fmesher_rcdt(Rcpp::List options,
   FMLOG("rcdt_options parsed" << std::endl);
 
   /* Prepare boundary/interior edges */
-  matrices.attach("boundary", new Matrix<int>(2), true);
-  matrices.attach("interior", new Matrix<int>(2), true);
-  matrices.attach("boundary_grp", new Matrix<int>(1), true);
-  matrices.attach("interior_grp", new Matrix<int>(1), true);
+  matrices.attach("boundary", std::make_unique<Matrix<int>>(2));
+  matrices.attach("interior", std::make_unique<Matrix<int>>(2));
+  matrices.attach("boundary_grp", std::make_unique<Matrix<int>>(1));
+  matrices.attach("interior_grp", std::make_unique<Matrix<int>>(1));
   if (!boundary.isNull()) {
     matrices.DI("boundary") = Rcpp::as<Rcpp::IntegerMatrix>(boundary);
   }
@@ -319,7 +318,7 @@ Rcpp::List fmesher_rcdt(Rcpp::List options,
   }
 
   /* Prepare to filter out points at distance not greater than 'cutoff' */
-  matrices.attach("idx", new Matrix<int>(iS0.rows(), 1), true);
+  matrices.attach("idx", std::make_unique<Matrix<int>>(iS0.rows(), 1));
   matrices.output("idx");
   Matrix<int> &idx = matrices.DI("idx").clear();
 
@@ -356,9 +355,9 @@ Rcpp::List fmesher_rcdt(Rcpp::List options,
   }
 
   FMLOG("Attach 's'." << std::endl);
-  matrices.attach(string("s"), &M.S(), false);
+  matrices.attach(string("s"), &M.S());
   FMLOG("Attach 'tv'." << std::endl);
-  matrices.attach("tv", &M.TV(), false);
+  matrices.attach("tv", &M.TV());
   FMLOG("Set output of 's' and 'tv'." << std::endl);
   matrices.output("s").output("tv");
 
@@ -422,9 +421,9 @@ Rcpp::List fmesher_rcdt(Rcpp::List options,
 
     /* Calculate and collect output. */
 
-    matrices.attach("segm.bnd.idx", new Matrix<int>(2), true,
+    matrices.attach("segm.bnd.idx", std::make_unique<Matrix<int>>(2),
                     fmesh::IOMatrixtype::General);
-    matrices.attach("segm.bnd.grp", new Matrix<int>(1), true,
+    matrices.attach("segm.bnd.grp", std::make_unique<Matrix<int>>(1),
                     fmesh::IOMatrixtype::General);
     MC.segments(true,
                 &matrices.DI("segm.bnd.idx"),
@@ -432,9 +431,9 @@ Rcpp::List fmesher_rcdt(Rcpp::List options,
 
     matrices.output("segm.bnd.idx").output("segm.bnd.grp");
 
-    matrices.attach("segm.int.idx", new Matrix<int>(2), true,
+    matrices.attach("segm.int.idx", std::make_unique<Matrix<int>>(2),
                     fmesh::IOMatrixtype::General);
-    matrices.attach("segm.int.grp", new Matrix<int>(1), true,
+    matrices.attach("segm.int.grp", std::make_unique<Matrix<int>>(1),
                     fmesh::IOMatrixtype::General);
     MC.segments(false, &matrices.DI("segm.int.idx"),
                 &matrices.DI("segm.int.grp"));
@@ -442,19 +441,19 @@ Rcpp::List fmesher_rcdt(Rcpp::List options,
     matrices.output("segm.int.idx").output("segm.int.grp");
   }
 
-  matrices.attach("tt", &M.TT(), false);
+  matrices.attach("tt", &M.TT());
   M.useVT(true);
-  matrices.attach("vt", &M.VT(), false);
+  matrices.attach("vt", &M.VT());
   M.useTTi(true);
-  matrices.attach("tti", &M.TTi(), false);
-  matrices.attach("vv", new SparseMatrix<int>(M.VV()), true,
+  matrices.attach("tti", &M.TTi());
+  matrices.attach("vv", std::make_unique<SparseMatrix<int>>(M.VV()),
                   fmesh::IOMatrixtype::Symmetric);
 
   matrices.output("tt").output("tti").output("vt").output("vv");
 
 //  FMLOG("Manifold output." << std::endl);
 //  /* Output the manifold type. */
-//  matrices.attach("manifold", new Matrix<int>(1), true,
+//  matrices.attach("manifold", std::make_unique<Matrix<int>>(1),
 //                  fmesh::IOMatrixtype::General);
 //  Matrix<int> &manifold = matrices.DI("manifold");
 //  manifold(0, 0) = static_cast<int>(M.type());
@@ -514,14 +513,15 @@ Rcpp::List fmesher_bary(Rcpp::NumericMatrix mesh_loc,
     return Rcpp::List();
   }
 
-  matrices.attach("loc", new Matrix3double(Matrix<double>(loc)), true);
+  matrices.attach("loc",
+                  std::make_unique<Matrix<double>>(Matrix3double(Matrix<double>(loc))));
   Matrix<double>& points2mesh = matrices.DD("loc");
 
   size_t points_n = points2mesh.rows();
   Matrix<int> &points2mesh_t =
-    matrices.attach(string("t"), new Matrix<int>(points_n, 1), true);
+    matrices.attach(string("t"), std::make_unique<Matrix<int>>(points_n, 1));
   Matrix<double> &points2mesh_b = matrices.attach(
-    string("bary"), new Matrix<double>(points_n, 3), true);
+    string("bary"), std::make_unique<Matrix<double>>(points_n, 3));
   matrices.matrixtype("t", fmesh::IOMatrixtype::General);
   matrices.matrixtype("bary", fmesh::IOMatrixtype::General);
   matrices.output("t").output("bary");
@@ -569,7 +569,7 @@ SEXP fmesher_spherical_bsplines1(Rcpp::NumericVector loc,
   }
 
   MatrixC matrices;
-  matrices.attach("loc", new Matrix<double>(loc), true);
+  matrices.attach("loc", std::make_unique<Matrix<double>>(loc));
 
   FMLOG("bspline output." << std::endl);
 
@@ -581,8 +581,7 @@ SEXP fmesher_spherical_bsplines1(Rcpp::NumericVector loc,
   }
   matrices.attach(
     string("bspline"),
-    spherical_bsplines1(matrices.DD("loc"), n, degree, bool_uniform),
-    true);
+    spherical_bsplines1(matrices.DD("loc"), n, degree, bool_uniform));
   matrices.matrixtype("bspline", fmesh::IOMatrixtype::General);
   matrices.output("bspline");
 
@@ -610,7 +609,8 @@ SEXP fmesher_spherical_bsplines(Rcpp::NumericMatrix loc,
   }
 
   MatrixC matrices;
-  matrices.attach("loc", new Matrix3double(Matrix<double>(loc)), true);
+  matrices.attach("loc",
+                  std::make_unique<Matrix<double>>(Matrix3double(Matrix<double>(loc))));
 
   FMLOG("bspline output." << std::endl);
 
@@ -622,8 +622,7 @@ SEXP fmesher_spherical_bsplines(Rcpp::NumericMatrix loc,
   }
   matrices.attach(
     string("bspline"),
-    spherical_bsplines(matrices.DD("loc"), n, degree, bool_uniform),
-    true);
+    spherical_bsplines(matrices.DD("loc"), n, degree, bool_uniform));
   matrices.matrixtype("bspline", fmesh::IOMatrixtype::General);
   matrices.output("bspline");
 
@@ -676,7 +675,7 @@ Rcpp::List fmesher_fem(Rcpp::NumericMatrix mesh_loc,
 
     M.calcQblocks(C0, C1, G, B1, Tareas);
 
-    matrices.attach(string("va"), new Matrix<double>(diag(C0)), true);
+    matrices.attach(string("va"), std::make_unique<Matrix<double>>(diag(C0)));
 
     K = G - B1;
 
@@ -729,20 +728,18 @@ Rcpp::List fmesher_fem(Rcpp::NumericMatrix mesh_loc,
         Rcpp::stop("'aniso' list must have at least two elements.");
       }
       matrices.attach("gamma_field",
-                      new Matrix<double>(
+                      std::make_unique<Matrix<double>>(
                           Rcpp::as<Rcpp::NumericVector>(
                             Rcpp::as<Rcpp::List>(aniso)[0]
                           )
-                      ),
-                      true);
+                      ));
       FMLOG("'gamma_field' imported." << std::endl);
       matrices.attach("vector_field",
-                      new Matrix<double>(
+                      std::make_unique<Matrix<double>>(
                           Rcpp::as<Rcpp::NumericMatrix>(
                             Rcpp::as<Rcpp::List>(aniso)[1]
                           )
-                      ),
-                      true);
+                      ));
       FMLOG("'vector_field' imported." << std::endl);
       if (matrices.DD("gamma_field").rows() < M.nV()) {
         Rcpp::stop("'aniso[[1]]' length should match the number of vertices.");
@@ -921,28 +918,30 @@ Rcpp::List fmesher_split_lines(
 
   FMLOG("Compute line splitting." << std::endl);
 
-  matrices.attach("loc", new Matrix3double(Matrix<double>(loc)), true);
-  matrices.attach("idx", new Matrix<int>(idx), true);
+  matrices.attach("loc",
+                  std::make_unique<Matrix<double>>(Matrix3double(Matrix<double>(loc))));
+  matrices.attach("idx",
+                  std::make_unique<Matrix<int>>(idx));
 
   /* Make sure we have a Nx3 matrix: */
-  Matrix<double> *splitloc1 = new Matrix<double>(3);
-  Matrix<int> *splitidx1 = new Matrix<int>(2);
-  Matrix<int> *splittriangle1 = new Matrix<int>(1);
-  Matrix<double> *splitbary1 = new Matrix<double>(3);
-  Matrix<double> *splitbary2 = new Matrix<double>(3);
-  Matrix<int> *splitorigin1 = new Matrix<int>(1);
+  auto splitloc1 = std::make_unique<Matrix<double>>(3);
+  auto splitidx1 = std::make_unique<Matrix<int>>(2);
+  auto splittriangle1 = std::make_unique<Matrix<int>>(1);
+  auto splitbary1 = std::make_unique<Matrix<double>>(3);
+  auto splitbary2 = std::make_unique<Matrix<double>>(3);
+  auto splitorigin1 = std::make_unique<Matrix<int>>(1);
 
   split_line_segments_on_triangles(
     M, matrices.DD("loc"), matrices.DI("idx"), *splitloc1,
     *splitidx1, *splittriangle1, *splitbary1, *splitbary2, *splitorigin1);
 
   /* Now it's ok to overwrite potential input split* matrices. */
-  matrices.attach("split.loc", splitloc1, true);
-  matrices.attach("split.idx", splitidx1, true);
-  matrices.attach("split.t", splittriangle1, true);
-  matrices.attach("split.b1", splitbary1, true);
-  matrices.attach("split.b2", splitbary2, true);
-  matrices.attach("split.origin", splitorigin1, true);
+  matrices.attach("split.loc", std::move(splitloc1));
+  matrices.attach("split.idx", std::move(splitidx1));
+  matrices.attach("split.t", std::move(splittriangle1));
+  matrices.attach("split.b1", std::move(splitbary1));
+  matrices.attach("split.b2", std::move(splitbary2));
+  matrices.attach("split.origin", std::move(splitorigin1));
   matrices.output("split.loc").output("split.idx");
   matrices.output("split.b1").output("split.b2");
   matrices.output("split.t").output("split.origin");
@@ -1003,8 +1002,8 @@ Rcpp::List fmesher_split_lines(
 //      Rcpp::List C_matrixio_test(Rcpp::List args_input) {
 //        MatrixC matrices;
 //
-//        //  matrices.attach("loc", new Matrix<double>(Rcpp::as<EigenMM<double>>(args_input["loc"])), true);
-//        //  matrices.attach("tv", new Matrix<int>(Rcpp::as<EigenMM<int>>(args_input["tv"])), true);
+//        //  matrices.attach("loc", std::make_unique<Matrix<double>>(Rcpp::as<EigenMM<double>>(args_input["loc"])));
+//        //  matrices.attach("tv", std::make_unique<Matrix<int>>(Rcpp::as<EigenMM<int>>(args_input["tv"])));
 //
 //        bool is_list = Rcpp::is<Rcpp::List>(args_input);
 //        bool is_numeric_matrix = Rcpp::is<Rcpp::NumericMatrix>(args_input["A"]);
@@ -1058,7 +1057,7 @@ Rcpp::List fmesher_split_lines(
 //
 //        //  bool is_msm = Rcpp::is<Eigen::SparseMatrix<double>>(args_input["a"]);
 //
-//        matrices.attach("Ad_fm", &Ad_fm, false);
+//        matrices.attach("Ad_fm", &Ad_fm);
 //        matrices.output("Ad_fm");
 //
 //        MatrixC mat2(args_input);

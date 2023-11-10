@@ -15,7 +15,7 @@ Matrix<T>::Matrix(size_t set_rows, size_t set_cols, const T *vals)
   capacity(set_rows);
   rows_ = set_rows;
   if (vals) {
-    std::memcpy(data_, vals, sizeof(T) * rows_ * cols_);
+    std::memcpy(&data_[0], vals, sizeof(T) * rows_ * cols_);
   }
 }
 
@@ -27,7 +27,7 @@ Matrix<T>::Matrix(const Matrix<T> &from)
   capacity(from.cap_);
   rows_ = from.rows_;
   if (data_) {
-    std::memcpy(data_, from.data_, sizeof(T) * rows_ * cols_);
+    std::memcpy(&data_[0], &from.data_[0], sizeof(T) * rows_ * cols_);
   }
 }
 #ifdef FMESHER_WITH_R
@@ -107,13 +107,13 @@ Matrix<T>::Matrix(const Rcpp::IntegerVector &from)
 
 
 template <class T>
-const Matrix<T> &Matrix<T>::operator=(const Matrix<T> &from) {
+Matrix<T> &Matrix<T>::operator=(const Matrix<T> &from) {
   clear();
   cols(from.cols_);
   capacity(from.cap_);
   rows_ = from.rows_;
   if (data_ && from.data_) {
-    std::memcpy(data_, from.data_, sizeof(T) * rows_ * cols_);
+    std::memcpy(&data_[0], &from.data_[0], sizeof(T) * rows_ * cols_);
   }
   return *this;
 }
@@ -136,14 +136,13 @@ template <class T> bool Matrix<T>::capacity(size_t cap) {
     }
   }
 
-  T *data_new_ = new T[cap_ * cols_];
+  std::unique_ptr<T[]> data_new_ = std::make_unique<T[]>(cap_ * cols_);
 
   if (data_ && data_new_) { /* Copy existing data: */
-    std::memcpy(data_new_, data_, sizeof(T) * old_cap * cols_);
-    delete[] data_;
+    std::memcpy(&data_new_[0], &data_[0], sizeof(T) * old_cap * cols_);
   }
 
-  data_ = data_new_;
+  data_ = std::move(data_new_);
   zeros(old_cap, cap_);
   return true;
 }
@@ -158,7 +157,7 @@ template <class T> bool Matrix<T>::append(const Matrix<T> &toappend) {
   if (!capacity(rows_ + toappend.rows_))
     return false;
   if (data_ && toappend.data_) {
-    std::memcpy(data_ + rows_ * cols_, toappend.data_,
+    std::memcpy(&data_[0] + rows_ * cols_, &toappend.data_[0],
                 sizeof(T) * toappend.rows_ * cols_);
     rows_ += toappend.rows_;
   }

@@ -68,6 +68,7 @@ public:
   IOMatrixtype matrixtype;  /*!< The IOMatrixtype. */
   IOStoragetype storagetype; /*!< The IOStoragetype. */
 
+public:
   /* Sets defaults, and the valuetype matching T: */
   template <class T> IOHeader &def(const T &ref);
   IOHeader &def(const int &ref);
@@ -93,7 +94,7 @@ std::istream &operator>>(std::istream &output, IOHeader &h);
 
 /*! Base helper for input and output. */
 template <class T> class IOHelper {
-public:
+private:
   IOHeader h_;
   bool binary_;
 
@@ -102,9 +103,10 @@ public:
   IOHelper() : h_(T()), binary_(BINARY_DEFAULT){};
   IOHelper(const IOHeader &h) : h_(h), binary_(BINARY_DEFAULT){};
 
-  bool binaryformat() const { return binary_; };
-  IOMatrixtype matrixtype() const { return (IOMatrixtype)h_.matrixtype; };
-  IOStoragetype storagetype() const { return (IOStoragetype)h_.storagetype; };
+  IOHeader & header() { return h_; };
+  bool is_binary() const { return binary_; };
+  IOMatrixtype matrixtype() const { return h_.matrixtype; };
+  IOStoragetype storagetype() const { return h_.storagetype; };
 
   IOHelper<T> &ascii(bool set_ascii = true) { return binary(!set_ascii); };
   IOHelper<T> &binary(bool set_binary = true) {
@@ -145,18 +147,18 @@ public:
   IOHelperM<T> &cD(const Matrix<T> *M) {
     cM_ = M;
     M_ = NULL;
-    IOHelper<T>::h_.dense(*M);
+    IOHelper<T>::header().dense(*M);
     return *this;
   };
   IOHelperM<T> &D(Matrix<T> *M) {
     cM_ = M;
     M_ = M;
-    IOHelper<T>::h_.dense(*M);
+    IOHelper<T>::header().dense(*M);
     return *this;
   };
 
   IOHelperM<T> &matrixtype(IOMatrixtype matrixt) {
-    IOHelper<T>::h_.dense(*cM_, matrixt);
+    IOHelper<T>::header().dense(*cM_, matrixt);
     return *this;
   };
 
@@ -219,20 +221,20 @@ public:
   IOHelperSM<T> &cD(const SparseMatrix<T> *M) {
     cM_ = M;
     M_ = NULL;
-    IOHelper<T>::h_.sparse(*M);
+    IOHelper<T>::header().sparse(*M);
     IOHelper<T>::colmajor();
     return *this;
   };
   IOHelperSM<T> &D(SparseMatrix<T> *M) {
     cM_ = M;
     M_ = M;
-    IOHelper<T>::h_.sparse(*M);
+    IOHelper<T>::header().sparse(*M);
     IOHelper<T>::colmajor();
     return *this;
   };
 
   IOHelperSM<T> &matrixtype(IOMatrixtype matrixt) {
-    IOHelper<T>::h_.sparse(*cM_, matrixt);
+    IOHelper<T>::header().sparse(*cM_, matrixt);
     return *this;
   };
 
@@ -300,13 +302,13 @@ public:
   IOHelperC &cD(const MatrixC *M) {
     cM_ = M;
     M_ = NULL;
-    IOHelper<int>::h_.collection(*M);
+    IOHelper<int>::header().collection(*M);
     return *this;
   };
   IOHelperC &D(MatrixC *M) {
     cM_ = M;
     M_ = M;
-    IOHelper<int>::h_.collection(*M);
+    IOHelper<int>::header().collection(*M);
     return *this;
   };
 
@@ -342,6 +344,21 @@ public:
 #endif // not FMESHER_WITH_R
 
 
+using MatrixVariantPtr =
+  std::variant<
+    std::monostate,
+    std::unique_ptr<Matrix<int>>,
+    std::unique_ptr<Matrix<double>>,
+    std::unique_ptr<SparseMatrix<int>>,
+    std::unique_ptr<SparseMatrix<double>>,
+    Matrix<int>*,
+    Matrix<double>*,
+    SparseMatrix<int>*,
+    SparseMatrix<double>*
+  >;
+
+
+
 class MCCInfo {
 public:
   bool loaded;
@@ -359,20 +376,30 @@ public:
           IOMatrixtype matrixt, bool isowner)
       : loaded(load), active(act), datatype(data), valuetype(value),
         matrixtype(matrixt), owner(isowner){};
-};
 
-typedef
-std::variant<
-  std::monostate,
-  std::unique_ptr<Matrix<int>>,
-  std::unique_ptr<Matrix<double>>,
-  std::unique_ptr<SparseMatrix<int>>,
-  std::unique_ptr<SparseMatrix<double>>,
-  Matrix<int>*,
-  Matrix<double>*,
-  SparseMatrix<int>*,
-  SparseMatrix<double>*
-> MatrixVariantPtr;
+  void update(const MatrixVariantPtr& matrix) {
+    if (std::holds_alternative<std::unique_ptr<Matrix<int>>>(matrix) ||
+        std::holds_alternative<Matrix<int>*>(matrix)) {
+      datatype = IODatatype::Dense;
+      valuetype = IOValuetype::Int;
+    } else if (
+        std::holds_alternative<std::unique_ptr<Matrix<double>>>(matrix) ||
+          std::holds_alternative<Matrix<double>*>(matrix)) {
+      datatype = IODatatype::Dense;
+      valuetype = IOValuetype::Double;
+    } else if (
+        std::holds_alternative<std::unique_ptr<SparseMatrix<int>>>(matrix) ||
+          std::holds_alternative<SparseMatrix<int>*>(matrix)) {
+      datatype = IODatatype::Sparse;
+      valuetype = IOValuetype::Int;
+    } else if (
+        std::holds_alternative<std::unique_ptr<SparseMatrix<double>>>(matrix) ||
+          std::holds_alternative<SparseMatrix<double>*>(matrix)) {
+      datatype = IODatatype::Sparse;
+      valuetype = IOValuetype::Double;
+    }
+  }
+};
 
 class MCC {
   friend class MatrixC;
@@ -384,26 +411,33 @@ protected:
   MatrixVariantPtr matrix_;
 
 public:
-  MCC()
-      : info(false, false, IODatatype::Dense, IOValuetype::Int,
-             IOMatrixtype::General, false),
-        matrix_() {
-    create_blank();
-  }
+  MCC() = delete;
+//      : info(false, false, IODatatype::Dense, IOValuetype::Int,
+//             IOMatrixtype::General, false),
+//        matrix_() {
+//    create_blank();
+//  }
   MCC(IODatatype data, IOValuetype value, IOMatrixtype matrixt)
     : info(true, false, data, value, matrixt, true),
       matrix_() {
     create_blank();
   }
   template <class MatrixType>
-  MCC(IODatatype data, IOValuetype value, IOMatrixtype matrixt,
-      MatrixType * M,
+  MCC(MatrixType * M,
+      IOMatrixtype matrixt,
       bool isowner = true)
-    : info(true, false, data, value, matrixt, isowner), matrix_() {
+    : info(true, false, IODatatype::Invalid, IOValuetype::Invalid, matrixt, isowner),
+      matrix_() {
     set(M, matrixt, isowner);
   }
-  ~MCC() {
+  template <class MatrixType>
+  MCC(std::unique_ptr<MatrixType>&& M,
+      IOMatrixtype matrixt)
+    : info(true, false, IODatatype::Invalid, IOValuetype::Invalid, matrixt, true),
+      matrix_() {
+    set(std::move(M));
   }
+
 
   // Uses the existing info to create a new owned matrix
   void create_blank() {
@@ -421,49 +455,36 @@ public:
         matrix_ = std::make_unique<SparseMatrix<double>>();
       }
     }
-    if (std::holds_alternative<std::unique_ptr<Matrix<int>>>(matrix_)) {
-      info.datatype = IODatatype::Dense;
-      info.valuetype = IOValuetype::Int;
-    } else if (std::holds_alternative<std::unique_ptr<Matrix<double>>>(matrix_)) {
-      info.datatype = IODatatype::Dense;
-      info.valuetype = IOValuetype::Double;
-    } else if (std::holds_alternative<std::unique_ptr<SparseMatrix<int>>>(matrix_)) {
-      info.datatype = IODatatype::Sparse;
-      info.valuetype = IOValuetype::Int;
-    } else if (std::holds_alternative<std::unique_ptr<SparseMatrix<double>>>(matrix_)) {
-      info.datatype = IODatatype::Sparse;
-      info.valuetype = IOValuetype::Double;
-    }
+    info.update(matrix_);
   }
 
   // Add a new matrix from raw pointer
   template <class MatrixType>
   void set(MatrixType * M,
-      IOMatrixtype matrixt = IOMatrixtype::General,
-      bool isowner = true) {
+           IOMatrixtype matrixt = IOMatrixtype::General,
+           bool isowner = true) {
     info.matrixtype = matrixt;
     info.owner = isowner;
-    matrix_ = M;
-    if (std::holds_alternative<Matrix<int>*>(matrix_)) {
-      info.datatype = IODatatype::Dense;
-      info.valuetype = IOValuetype::Int;
-    } else if (std::holds_alternative<Matrix<double>*>(matrix_)) {
-      info.datatype = IODatatype::Dense;
-      info.valuetype = IOValuetype::Double;
-    } else if (std::holds_alternative<SparseMatrix<int>*>(matrix_)) {
-      info.datatype = IODatatype::Sparse;
-      info.valuetype = IOValuetype::Int;
-    } else if (std::holds_alternative<SparseMatrix<double>*>(matrix_)) {
-      info.datatype = IODatatype::Sparse;
-      info.valuetype = IOValuetype::Double;
-    }
     if (isowner) {
       matrix_ = std::unique_ptr<MatrixType>(M);
+    } else {
+      matrix_ = M;
     }
+    info.update(matrix_);
+  }
+
+  // Add a new matrix from unique_ptr
+  template <class MatrixType>
+  void set(std::unique_ptr<MatrixType>&& M,
+           IOMatrixtype matrixt = IOMatrixtype::General) {
+    info.matrixtype = matrixt;
+    info.owner = true;
+    matrix_ = std::move(M);
+    info.update(matrix_);
   }
 
   template <class TheType>
-  TheType & accessor() {
+  TheType & get() {
     if (auto ret = std::get_if<std::unique_ptr<TheType>>(&matrix_)) {
       if (ret && *ret) {
         return **ret;
@@ -473,12 +494,12 @@ public:
         return **ret;
       }
     }
-    set(new TheType(), info.matrixtype, true);
-    return accessor<TheType>();
+    set(std::make_unique<TheType>(), info.matrixtype);
+    return get<TheType>();
   }
 
   template <class TheType>
-  const TheType * accessor() const {
+  const TheType * get_if() const {
     if (auto ret = std::get_if<std::unique_ptr<TheType>>(&matrix_)) {
       if (ret && *ret) {
         return &(**ret);
@@ -492,29 +513,29 @@ public:
   }
 
   Matrix<int> &DI() {
-    return accessor<Matrix<int>>();
+    return get<Matrix<int>>();
   }
   Matrix<double> &DD() {
-    return accessor<Matrix<double>>();
+    return get<Matrix<double>>();
   }
   SparseMatrix<int> &SI() {
-    return accessor<SparseMatrix<int>>();
+    return get<SparseMatrix<int>>();
   }
   SparseMatrix<double> &SD() {
-    return accessor<SparseMatrix<double>>();
+    return get<SparseMatrix<double>>();
   }
 
   const Matrix<int> *cDI() const {
-    return accessor<Matrix<int>>();
+    return get_if<Matrix<int>>();
   }
   const Matrix<double> *cDD() const {
-    return accessor<Matrix<double>>();
+    return get_if<Matrix<double>>();
   }
   const SparseMatrix<int> *cSI() const {
-    return accessor<SparseMatrix<int>>();
+    return get_if<SparseMatrix<int>>();
   }
   const SparseMatrix<double> *cSD() const {
-    return accessor<SparseMatrix<double>>();
+    return get_if<SparseMatrix<double>>();
   }
 
 };
@@ -524,8 +545,8 @@ class MatrixC {
 #ifndef FMESHER_WITH_R
   friend class IOHelperC;
 #endif
-  typedef std::pair<std::string, MCC *> collPairT;
-  typedef std::map<std::string, MCC *> collT;
+  typedef std::pair<std::string, std::unique_ptr<MCC>> collPairT;
+  typedef std::map<std::string, std::unique_ptr<MCC>> collT;
   typedef std::set<std::string> outputT;
   typedef std::map<std::string, std::string> sourceT;
 
@@ -548,11 +569,6 @@ public:
   void attach(SEXP from); // Rccp::List of matrices
   void attach(std::string name, SEXP from);
 #endif
-  ~MatrixC() {
-    for (auto& colli : coll_) {
-      delete colli.second;
-    }
-  };
 
   int output_size() const { return output_.size(); }
   MatrixC &dont_output(std::string name);
@@ -598,13 +614,16 @@ public:
   Matrix<T> &attach(
       std::string name,
       Matrix<T> *M,
-      bool transfer_ownership = true,
       IOMatrixtype matrixt = IOMatrixtype::General);
   template <class T>
   SparseMatrix<T> &attach(
       std::string name,
       SparseMatrix<T> *M,
-      bool transfer_ownership = true,
+      IOMatrixtype matrixt = IOMatrixtype::General);
+  template <class MatrixType>
+  MatrixType &attach(
+      std::string name,
+      std::unique_ptr<MatrixType>&& M,
       IOMatrixtype matrixt = IOMatrixtype::General);
 
   MatrixC &free(std::string name);
