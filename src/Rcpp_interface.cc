@@ -835,21 +835,19 @@ Rcpp::List fmesher_fem_aniso(Rcpp::NumericMatrix mesh_loc,
     Rcpp::stop("'aniso' list must have at least two elements.");
   }
   matrices.attach("kappa_field",
-                  new Matrix<double>(
+                  std::make_unique<Matrix<double>>(
                       Rcpp::as<Rcpp::NumericVector>(
                         Rcpp::as<Rcpp::List>(aniso)[0] //Not sure if this line is necessary anymore,
                                                       //is aniso[0] already a List?
                       )
-                  ),
-                  true);
+                  ));
   FMLOG("'kappa_field' imported." << std::endl);
   matrices.attach("vector_field",
-                  new Matrix<double>(
+                  std::make_unique<Matrix<double>>(
                       Rcpp::as<Rcpp::NumericMatrix>(
                         Rcpp::as<Rcpp::List>(aniso)[1]
                       )
-                  ),
-                  true);
+                  ));
   FMLOG("'vector_field' imported." << std::endl);
   //Checks if the length of the kappa_field and vector_field match the number of vertices or triangles
   if (matrices.DD("kappa_field").rows() != M.nV() && matrices.DD("kappa_field").rows() != M.nT()) {
@@ -868,13 +866,13 @@ Rcpp::List fmesher_fem_aniso(Rcpp::NumericMatrix mesh_loc,
   G2_H = G_H * C0inv * G_H;
 
   //Not sure what this is used for
-  matrices.attach(string("va"), new Matrix<double>(diag(C0_kappa)), true);
+  matrices.attach(string("va"), std::make_unique<Matrix<double>>(diag(C0_kappa)));
 
   //K = G - B1 I think we said no need for boundary condition, unsure why.
-  matrices.matrixtype("c0", fmesh::IOMatrixtype_diagonal);
-  matrices.matrixtype("c1", fmesh::IOMatrixtype_symmetric);
-  matrices.matrixtype("g1", fmesh::IOMatrixtype_symmetric);
-  matrices.matrixtype("g2", fmesh::IOMatrixtype_symmetric);
+  matrices.matrixtype("c0", fmesh::IOMatrixtype::Diagonal);
+  matrices.matrixtype("c1", fmesh::IOMatrixtype::Symmetric);
+  matrices.matrixtype("g1", fmesh::IOMatrixtype::Symmetric);
+  matrices.matrixtype("g2", fmesh::IOMatrixtype::Symmetric);
   matrices.output("c0");
   matrices.output("c1");
   matrices.output("g1");

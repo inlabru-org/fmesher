@@ -2601,7 +2601,7 @@ void Mesh::calcGaniso(SparseMatrix < double > & G_H,
 
     const double EPSILON = 1e-6; //If v_magnitude is small, then H[0] is used instead of H. H[epsilion] \sim H[0]=Id.
     switch (type()) {
-    case Mesh::Mtype_plane:
+    case Mesh::Mtype::Plane:
       // std::cout << "Planar mesh." << std::endl;
       if (v_magnitude < EPSILON) {
         H[0] = Point(1.0, 0.0, 0.0);
@@ -2616,9 +2616,9 @@ void Mesh::calcGaniso(SparseMatrix < double > & G_H,
       }
       break;
     // Does this case do anything? It seems to go immediately to the next case.
-    case Mesh::Mtype_sphere:
+    case Mesh::Mtype::Sphere:
      // std::cout << "Spherical mesh." << std::endl;
-    case Mesh::Mtype_manifold:
+    case Mesh::Mtype::Manifold:
      // std::cout << "Manifold mesh." << std::endl;
     if (v_magnitude < EPSILON) {
         H[0] = Point(1.0, 0.0, 0.0);
@@ -2628,7 +2628,7 @@ void Mesh::calcGaniso(SparseMatrix < double > & G_H,
         aH[1] = Point(0.0, 1.0, 0.0);
         aH[2] = Point(0.0, 0.0, 1.0);
       } else {
-        // Used correspondednce between old and new parametrization to calculate H.
+        // Used correspondence between old and new parametrization to calculate H.
         // Does this hold for manifolds?
         double t_gamma = -log(v_magnitude);
         t_vec.rescale(1/ v_magnitude);
