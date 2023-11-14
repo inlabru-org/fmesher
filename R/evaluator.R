@@ -1625,14 +1625,26 @@ fm_block_log_shift <- function(block = NULL,
   block_k <- sort(unique(info$block))
   shift <- numeric(info$n_block)
   if (!is.null(info$log_weights)) {
-    shift[block_k] <-
-      vapply(
-        block_k,
-        function(k) {
-          max(info$log_weights[info$block == k])
-        },
-        0.0
-      )
+    if (info$n_block <= 200) {
+      # Fast for small n_block
+      shift[block_k] <-
+        vapply(
+          block_k,
+          function(k) {
+            max(info$log_weights[info$block == k])
+          },
+          0.0
+        )
+    } else {
+      # Fast for large n_block
+      shift[block_k] <-
+        stats::aggregate(
+          info[["log_weights"]],
+          by = list(block = info[["block"]]),
+          FUN = max,
+          simplify = TRUE
+        )$x
+    }
   }
 
   shift

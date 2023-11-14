@@ -3,6 +3,8 @@
 * Fix bug in `fm_matern_sample()` that prevented the use of a non-NULL `loc` argument.
   For earlier versions, the workaround is to make a separate call to `fm_evaluate()`
   after calling `fm_matern_sample()`.
+* Improve speed of `fm_block_log_shift()` by an order of magnitude for multi-block
+  cases.
 
 # fmesher 0.1.4
 
