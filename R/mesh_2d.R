@@ -255,7 +255,7 @@ handle_rcdt_options_inla <- function(
 #'
 #' @param loc Input coordinates that should be part of the mesh. Can be a matrix, `sf`, `sfc`, `SpatialPoints`,
 #' or other object supported by [fm_unify_coords()].
-#' @param tv Initial triangulation, as a N-by-3 indec vector into `loc`
+#' @param tv Initial triangulation, as a N-by-3 index vector into `loc`
 #' @param boundary,interior Objects supported by [fm_as_segm()].
 #' If `boundary` is `numeric`, `fm_nonconvex_hull(loc, convex = boundary)` is
 #' used.
