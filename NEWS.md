@@ -5,6 +5,7 @@
   after calling `fm_matern_sample()`.
 * Improve speed of `fm_block_log_shift()` by an order of magnitude for multi-block
   cases.
+* Fix bug in `plot.fm_mesh_2d` for meshes with 2D coordinate storage (version 0.1.4.9002)
 
 # fmesher 0.1.4
 
