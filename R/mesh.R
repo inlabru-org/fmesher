@@ -307,21 +307,23 @@ fm_subdivide <- function(mesh, n = 1) {
     is.bnd = FALSE
   )
 
-  new.loc <- unique(rbind(fm_unify_coords(tri.edges$loc),
-                          fm_unify_coords(tri.inner.loc)))
+  new.loc <- unique(rbind(
+    fm_unify_coords(tri.edges$loc),
+    fm_unify_coords(tri.inner.loc)
+  ))
 
   boundary2 <- split.edges(fm_segm(mesh, boundary = TRUE), n = n)
   interior2 <- split.edges(fm_segm(mesh, boundary = FALSE), n = n)
 
   for (k in rev(seq_len(nrow(new.loc)))) {
     if ((NROW(boundary2$loc) > 0) &&
-        any(rowSums((new.loc[rep(k, nrow(boundary2$loc)), ,drop=FALSE] -
-                    boundary2$loc)^2)^0.5 < 1e-4)) {
-      new.loc <- new.loc[-k,,drop=FALSE]
+      any(rowSums((new.loc[rep(k, nrow(boundary2$loc)), , drop = FALSE] -
+        boundary2$loc)^2)^0.5 < 1e-4)) {
+      new.loc <- new.loc[-k, , drop = FALSE]
     } else if ((NROW(interior2$loc) > 0) &&
-               any(rowSums((new.loc[rep(k, nrow(interior2$loc)), ,drop=FALSE] -
-                           interior2$loc)^2)^0.5 < 1e-4)) {
-      new.loc <- new.loc[-k,,drop=FALSE]
+      any(rowSums((new.loc[rep(k, nrow(interior2$loc)), , drop = FALSE] -
+        interior2$loc)^2)^0.5 < 1e-4)) {
+      new.loc <- new.loc[-k, , drop = FALSE]
     }
   }
 
