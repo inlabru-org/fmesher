@@ -1,39 +1,32 @@
 This is a minor bugfix release.
 
-## Changes from 0.1.3 to 0.1.4
+## Changes from 0.1.4 to 0.1.5
 
-* C++ code refactor to work around `std::get<variant>()` lack of support
-  for MacOS < 10.14.
-* Further C++ refactor towards std::unique_ptr use.
+* Minor R code bugfixes and speedups
 
-## R CMD check results for 0.1.4
+## R CMD check results for 0.1.5
 
 > checking installed package size ... NOTE
-    installed size is 11.7Mb
+    installed size is  7.2Mb
     sub-directories of 1Mb or more:
-      libs   9.8Mb
+      libs   5.3Mb
       
 This is the size of the C++ library after build&installation.
 
-## CRAN results for 0.1.3
+## CRAN results for 0.1.4
 
-Version: 0.1.3
+Version: 0.1.4
 Check: installed package size
-Result: NOTE
-     installed size is 8.3Mb
-     sub-directories of 1Mb or more:
-     libs 6.4Mb
+Result: NOTE 
+    installed size is  8.9Mb
+    sub-directories of 1Mb or more:
+      libs   7.0Mb
 Flavors: r-release-macos-arm64, r-release-macos-x86_64, r-oldrel-macos-arm64
 
-Version: 0.1.3
-Check: whether package can be installed
-Result: ERROR
-    Installation failed.
-Flavor: r-oldrel-macos-x86_64
-    
+
 # revdepcheck results
 
-We checked 6 reverse dependencies (6 from CRAN), comparing R CMD check results across CRAN and dev versions of this package.
+We checked 9 reverse dependencies (8 from CRAN), comparing R CMD check results across CRAN and dev versions of this package.
 
  * We saw 0 new problems
  * We failed to check 0 packages
