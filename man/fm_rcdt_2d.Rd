@@ -32,7 +32,7 @@ fm_delaunay_2d(loc, crs = NULL, ...)
 \item{loc}{Input coordinates that should be part of the mesh. Can be a matrix, \code{sf}, \code{sfc}, \code{SpatialPoints},
 or other object supported by \code{\link[=fm_unify_coords]{fm_unify_coords()}}.}
 
-\item{tv}{Initial triangulation, as a N-by-3 indec vector into \code{loc}}
+\item{tv}{Initial triangulation, as a N-by-3 index vector into \code{loc}}
 
 \item{boundary, interior}{Objects supported by \code{\link[=fm_as_segm]{fm_as_segm()}}.
 If \code{boundary} is \code{numeric}, \code{fm_nonconvex_hull(loc, convex = boundary)} is

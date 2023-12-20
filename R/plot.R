@@ -189,6 +189,10 @@ plot.fm_mesh_2d <- function(
   force(ylim)
   mesh <- x
 
+  if (ncol(mesh$loc) < 3) {
+    mesh$loc <- cbind(mesh$loc, 0.0)
+  }
+
   tv_info <- get_tv_sub(
     tv = mesh$graph$tv,
     loc = mesh$loc,

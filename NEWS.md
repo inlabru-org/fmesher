@@ -1,3 +1,12 @@
+# fmesher 0.1.5
+
+* Fix bug in `fm_matern_sample()` that prevented the use of a non-NULL `loc` argument.
+  For earlier versions, the workaround is to make a separate call to `fm_evaluate()`
+  after calling `fm_matern_sample()`.
+* Improve speed of `fm_block_log_shift()` by an order of magnitude for multi-block
+  cases.
+* Fix bug in `plot.fm_mesh_2d` for meshes with 2D coordinate storage (version 0.1.4.9002)
+
 # fmesher 0.1.4
 
 * Work around `std::get<variant>()` lack of support for MacOS `< 10.14`.
