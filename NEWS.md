@@ -1,4 +1,4 @@
-# fmesher (development version)
+# fmesher 0.1.5
 
 * Fix bug in `fm_matern_sample()` that prevented the use of a non-NULL `loc` argument.
   For earlier versions, the workaround is to make a separate call to `fm_evaluate()`
