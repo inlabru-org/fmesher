@@ -1,7 +1,7 @@
 #' @include deprecated.R
 #' @include print.R
 
-#' @importFrom sp coordinates proj4string `proj4string<-`
+#' @importFrom sp coordinates proj4string proj4string<-
 
 
 #' @title Handling CRS/WKT
