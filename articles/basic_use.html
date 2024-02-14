@@ -106,7 +106,7 @@ Lindgren</h4>
 <span><span class="co">#&gt;   Constraints:   39 boundary edges (1 group: 1), 115 interior edges (1 group: 1)</span></span>
 <span><span class="co">#&gt;   Bounding box: (-11.963110,  8.246925) x (-5.522181, 5.499657) x (0,0)</span></span>
 <span><span class="co">#&gt;   Basis d.o.f.:  888</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mesh2</span>, axes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mesh2</span>, axes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="basic_use_files/figure-html/basic2-1.png" width="672"></p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">(</span><span class="va">mesh1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_mesh_1d.html">fm_mesh_1d</a></span><span class="op">(</span></span>
@@ -133,7 +133,7 @@ Lindgren</h4>
 <span><span class="co"># How many points are outside the mesh?</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">bary</span><span class="op">$</span><span class="va">t</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 2</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">bary</span><span class="op">$</span><span class="va">bary</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">bary</span><span class="op">$</span><span class="va">bary</span><span class="op">)</span></span>
 <span><span class="co">#&gt;            [,1]      [,2]      [,3]</span></span>
 <span><span class="co">#&gt; [1,] 0.04720217 0.5813611 0.3714367</span></span>
 <span><span class="co">#&gt; [2,] 0.13950532 0.7212692 0.1392255</span></span>
@@ -163,7 +163,7 @@ Lindgren</h4>
 <span><span class="co"># boundary conditions:</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">bary1</span><span class="op">$</span><span class="va">t</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">bary1</span><span class="op">$</span><span class="va">bary</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">bary1</span><span class="op">$</span><span class="va">bary</span><span class="op">)</span></span>
 <span><span class="co">#&gt;          [,1]      [,2]</span></span>
 <span><span class="co">#&gt; [1,] 2.000000 -1.000000</span></span>
 <span><span class="co">#&gt; [2,] 1.992993 -0.992993</span></span>
@@ -183,7 +183,7 @@ Lindgren</h4>
 <span><span class="co"># 2nd order B-splines on 1d meshes.</span></span>
 <span><span class="va">field1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fu"><a href="../reference/fm_dof.html">fm_dof</a></span><span class="op">(</span><span class="va">mesh1</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">value1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_evaluate.html">fm_evaluate</a></span><span class="op">(</span><span class="va">evaluator1</span>, field <span class="op">=</span> <span class="va">field1</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pts1</span>, <span class="va">value1</span>, type <span class="op">=</span> <span class="st">"l"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pts1</span>, <span class="va">value1</span>, type <span class="op">=</span> <span class="st">"l"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="basic_use_files/figure-html/lookup1-1.png" width="672"></p>
 </div>
 <div class="section level2">
@@ -193,7 +193,7 @@ Lindgren</h4>
 <h3 id="base-graphics">Base graphics<a class="anchor" aria-label="anchor" href="#base-graphics"></a>
 </h3>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mesh2</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mesh2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="basic_use_files/figure-html/unnamed-chunk-2-1.png" width="672"></p>
 </div>
 <div class="section level3">
@@ -218,10 +218,10 @@ Lindgren</h4>
 </h2>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fem1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_fem.html">fm_fem</a></span><span class="op">(</span><span class="va">mesh1</span>, order <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">fem1</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">fem1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "c0"  "c1"  "g1"  "g2"  "g01" "g02" "g12"</span></span>
 <span><span class="va">fem2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_fem.html">fm_fem</a></span><span class="op">(</span><span class="va">mesh2</span>, order <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">fem2</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">fem2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "b1" "c0" "c1" "g1" "g2" "k1" "k2" "ta" "va"</span></span></code></pre></div>
 </div>
 <div class="section level2">
