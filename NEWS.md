@@ -1,5 +1,7 @@
 # fmesher (development version)
 
+* Fix for hiding away-facing triangle edges in `plot.fm_mesh_2d()` and `lines.fm_segm()`.
+
 # fmesher 0.1.5
 
 * Fix bug in `fm_matern_sample()` that prevented the use of a non-NULL `loc` argument.
