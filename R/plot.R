@@ -34,6 +34,8 @@ plot.fm_segm <- function(x, ..., add = FALSE) {
   lines(x, add = add, rgl = FALSE, ...)
 }
 
+#' @param visibility If "front" only display mesh faces with normal pointing
+#' towards the camera.
 #' @rdname plot.fm_segm
 #' @export
 lines.fm_segm <- function(x, loc = NULL, col = NULL,
@@ -43,6 +45,7 @@ lines.fm_segm <- function(x, loc = NULL, col = NULL,
                           axes = FALSE,
                           xlab = "",
                           ylab = "",
+                          visibility = "front",
                           ...) {
   if (rgl) {
     lines_rgl(
@@ -87,10 +90,17 @@ lines.fm_segm <- function(x, loc = NULL, col = NULL,
     if (is.null(col)) {
       color <- colors[1 + (grp %% length(colors))]
     }
-    lines(loc[t(cbind(segm$idx[idx, , drop = FALSE], NA)), 1],
-      loc[t(cbind(segm$idx[idx, , drop = FALSE], NA)), 2],
-      col = color,
-      ...
+    ev <- segm$idx[idx, , drop = FALSE]
+    if (identical(visibility, "front") &&
+        (ncol(loc) >= 3)) {
+      keep <- (loc[ev[, 1], 3] >= 0) & (loc[ev[, 2], 3] >= 0)
+      ev <- ev[keep, , drop = FALSE]
+    }
+    ev <- t(cbind(ev, NA))
+    lines(loc[ev, 1],
+          loc[ev, 2],
+          col = color,
+          ...
     )
   }
   return(invisible(dev))
@@ -263,10 +273,12 @@ plot.fm_mesh_2d <- function(
   }
   if (draw.segments) {
     if (!is.null(mesh$segm$bnd)) {
-      lines(fm_as_fm(mesh$segm$bnd), mesh$loc, lwd = lwd + 1, ...)
+      lines(fm_as_fm(mesh$segm$bnd), mesh$loc, lwd = lwd + 1, ...,
+            visibility = visibility)
     }
     if (!is.null(mesh$segm$int)) {
-      lines(fm_as_fm(mesh$segm$int), mesh$loc, lwd = lwd + 1, ...)
+      lines(fm_as_fm(mesh$segm$int), mesh$loc, lwd = lwd + 1, ...,
+            visibility = visibility)
     }
   }
   return(invisible())
