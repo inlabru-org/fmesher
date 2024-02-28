@@ -133,6 +133,7 @@ fmesher_split_lines <- function(mesh_loc, mesh_tv, loc, idx, options) {
     .Call(`_fmesher_fmesher_split_lines`, mesh_loc, mesh_tv, loc, idx, options)
 }
 
+#' @title Split triangles
 #'
 #' @description
 #' Subdivide a mesh with congruent subtriangles

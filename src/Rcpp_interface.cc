@@ -845,7 +845,6 @@ Rcpp::List fmesher_split_lines(
 
 //' @title Split triangles
 //'
-//'
 //' @description
 //' Subdivide a mesh with congruent subtriangles
 //'
