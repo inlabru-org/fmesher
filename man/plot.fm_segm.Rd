@@ -22,6 +22,7 @@
   axes = FALSE,
   xlab = "",
   ylab = "",
+  visibility = "front",
   ...
 )
 
@@ -53,6 +54,9 @@ plot.}
 Default FALSE.}
 
 \item{xlab, ylab}{character; labels for the axes.}
+
+\item{visibility}{If "front" only display mesh faces with normal pointing
+towards the camera.}
 }
 \value{
 None
