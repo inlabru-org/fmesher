@@ -25,6 +25,7 @@ class Xtmpl;
 class Mesh;
 class Dart;
 class MOAint;
+class MOAVTMap;
 class MOAint3;
 class MOAdouble3;
 class MeshC;
@@ -34,6 +35,8 @@ typedef std::list<int> vertexListT;
 typedef std::set<int> triangleSetT;
 typedef std::list<Dart> DartList;
 typedef std::pair<Dart, Dart> DartPair;
+typedef std::map<int,int> IntMap;
+typedef std::vector<IntMap> VTMapT;
 
 class Mesh {
   friend class Dart;
@@ -49,8 +52,8 @@ private:
   bool use_TTi_;
   Matrix3int TV_;  /* TV[t]  : {v1,v2,v3} */
   Matrix3int TT_;  /* TT[t]  : {t1,t2,t3} */
-  Matrix1int VT_;  /* VT[v]  : t,
-                   v == TV[t][vi]  for some vi=0,1,2 */
+  VTMapT VT_mapping_;  /* VT[v] : map from t to the vi (0,1,2) value for v */
+  /* TV[ VT[v][i].t, VT[v][i].vi ] == v */
   Matrix3int TTi_; /* TTi[t] : {vi1,vi2,vi3},
                      t == TT[ TT[t][i] ][ TTi[t][i] ] */
   Matrix3double S_;
@@ -63,16 +66,21 @@ private:
 private:
   Mesh &rebuildTT();
 
-  /*! Change VT[v] only if not linked to a triangle */
-  Mesh &update_VT(const int v, const int t);
-  /*! Overwrite current VT[v] info */
-  Mesh &set_VT(const int v, const int t);
-  /*! Set VT[v]=-1 for v>=v_start */
+  /*! Add triangle to VT[v] */
+  Mesh &add_VT(const int v, const int t);
+  /*! Add triangle to VT[v] with precomputed vi information */
+  Mesh &add_VT(const int v, const int t, const int vi);
+  /*! Remove triangle to VT[v] */
+  Mesh &remove_VT(const int v, const int t);
+  /*! Clear VT[v] info */
+  Mesh &clear_VT(const int v);
+  /*! Set VT[v]=empty for v>=v_start */
   Mesh &reset_VT(const int v_start = 0);
 
-  Mesh &update_VT_triangle(const int t);
-  Mesh &set_VT_triangle(const int t);
-  Mesh &update_VT_triangles(const int t_start = 0);
+  Mesh &add_VT_triangle(const int t);
+  Mesh &remove_VT_triangle(const int t);
+  Mesh &add_VT_triangles(const int t_start = 0);
+  Mesh &remove_VT_triangles(const int t_start = 0);
 
   Mesh &rebuild_VT();
   Mesh &rebuildTTi();
@@ -87,7 +95,7 @@ public:
 public:
   Mesh(void)
       : type_(Mtype::Manifold), use_VT_(false), use_TTi_(true), TV_(), TT_(),
-        VT_(), TTi_(), S_()
+        VT_mapping_(), TTi_(), S_()
 #ifdef FMESHER_WITH_X
         ,
         X11_(NULL), X11_v_big_limit_(0), verbose_(0)
@@ -97,7 +105,7 @@ public:
        bool use_TTi = false);
   Mesh(const Mesh &M)
       : type_(Mtype::Manifold), sphere_radius_(1.0), use_VT_(true),
-        use_TTi_(false), TV_(), TT_(), VT_(), TTi_(), S_()
+        use_TTi_(false), TV_(), TT_(), VT_mapping_(), TTi_(), S_()
 #ifdef FMESHER_WITH_X
         ,
         X11_(NULL), X11_v_big_limit_(0), verbose_(0)
@@ -192,20 +200,20 @@ public:
   size_t nT() const { return TV_.rows(); };
   const Matrix3int &TV() const { return TV_; };
   const Matrix3int &TT() const { return TT_; };
-  const Matrix1int &VT() const { return VT_; };
+  const VTMapT &VT() const { return VT_mapping_; };
   const Matrix3int &TTi() const { return TTi_; };
   const Matrix3double &S() const { return S_; };
 
   Matrix3int &TV() { return TV_; };
   Matrix3int &TT() { return TT_; };
-  Matrix1int &VT() { return VT_; };
+  VTMapT &VT() { return VT_mapping_; };
   Matrix3int &TTi() { return TTi_; };
   Matrix3double &S() { return S_; };
 
   SparseMatrix<int> VV() const;
   const Int3 &TV(int t) const { return TV_[t]; };
   const Int3 &TT(int t) const { return TT_[t]; };
-  const int &VT(int v) const { return VT_[v]; };
+  const IntMap &VT(int v) const { return VT_mapping_[v]; };
   const Int3 &TTi(int t) const { return TTi_[t]; };
   const Point &S(int v) const { return S_[v]; };
 
@@ -215,7 +223,7 @@ public:
 
   MOAint3 TVO() const;
   MOAint3 TTO() const;
-  MOAint VTO() const;
+  MOAVTMap VTO() const;
   MOAint3 TTiO() const;
   MOAdouble3 SO() const;
 
@@ -244,7 +252,7 @@ public:
     if (nV() > 0) {
       S_.rows(nV() - 1);
       if (use_VT_)
-        VT_.rows(nV());
+        VT_mapping_.pop_back();
     }
     return *this;
   };
@@ -323,6 +331,17 @@ private:
 
 public:
   MOAint(const Matrix1int &M, size_t n) : n_(n), M_(M){};
+};
+
+class MOAVTMap {
+  friend std::ostream &operator<<(std::ostream &output, const MOAVTMap &MO);
+
+private:
+  size_t n_;
+  const VTMapT &M_;
+
+public:
+  MOAVTMap(const VTMapT &M, size_t n) : n_(n), M_(M){};
 };
 
 class MOAint3 {

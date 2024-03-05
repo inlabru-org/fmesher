@@ -443,7 +443,7 @@ Rcpp::List fmesher_rcdt(Rcpp::List options,
 
   matrices.attach("tt", &M.TT());
   M.useVT(true);
-  matrices.attach("vt", &M.VT());
+//  matrices.attach("vt", &M.VT());
   M.useTTi(true);
   matrices.attach("tti", &M.TTi());
   matrices.attach("vv", std::make_unique<SparseMatrix<int>>(M.VV()),
