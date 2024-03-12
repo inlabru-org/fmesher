@@ -141,9 +141,9 @@ Mesh Rcpp_import_mesh(Rcpp::NumericMatrix mesh_loc,
 
   matrices.attach("mesh_loc",
                   std::make_unique<Matrix<double>>(Matrix3double(Matrix<double>(mesh_loc))));
-  FMLOG("'mesh_loc' points imported." << std::endl);
+  FMLOG_("'mesh_loc' points imported." << std::endl);
   matrices.attach("mesh_tv", std::make_unique<Matrix<int>>(mesh_tv));
-  FMLOG("'mesh_tv' points imported." << std::endl);
+  FMLOG_("'mesh_tv' points imported." << std::endl);
 
   Matrix<double>& iS0 = matrices.DD("mesh_loc");
   Matrix<int>& TV0 = matrices.DI("mesh_tv");
@@ -526,7 +526,9 @@ Rcpp::List fmesher_bary(Rcpp::NumericMatrix mesh_loc,
   matrices.matrixtype("bary", fmesh::IOMatrixtype::General);
   matrices.output("t").output("bary");
 
+  FMLOG_("map_points_to_mesh start" << std::endl);
   map_points_to_mesh(M, points2mesh, points2mesh_t, points2mesh_b);
+  FMLOG_("map_points_to_mesh done" << std::endl);
 
   return Rcpp::wrap(matrices);
 }

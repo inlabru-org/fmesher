@@ -163,23 +163,23 @@ Mesh &Mesh::add_VT(const int v, const int t) {
       FMLOG("ERROR: Vertex " << v << " not in triangle " << t << "\n");
     }
   }
+  FMLOG("VT:" << VTO(v));
   return *this;
 }
 
 Mesh &Mesh::add_VT(const int v, const int t, const int vi) {
   if ((use_VT_) && (v < (int)nV()) && (t < (int)nT())) {
-    FMLOG_("Adding VT " << v << " in triangle " << t << " at " << vi << " "
-                        << VT_mapping_.size() << " ");
+    FMLOG("Adding to VT, (v, t, vi) = "
+             << "(" << v << ", " << t << ", " << vi << ")" << std::endl);
     if (TV_[t][vi] == v) {
-      FMLOG_("Adding VT " << v << " in triangle " << t << " at " << vi << " "
-                         << VT_mapping_[v].size() << " ");
       VT_mapping_[v].emplace(t, vi);
-    } else {
+  } else {
       /* Error! This should never happen! */
       FMLOG("ERROR: Vertex " << v << " doesn't match node vi=" <<
-        vi << " in triangle " << t << "\n");
+        vi << " in triangle " << t << std::endl);
     }
   }
+  FMLOG("VT:" << VTO(v));
   return *this;
 }
 
@@ -240,6 +240,7 @@ Mesh &Mesh::clear_VT(const int v) {
 
 Mesh &Mesh::reset_VT(const int v_start) {
   if (use_VT_) {
+    VT_mapping_.resize(nV());
     for (int v = v_start; v < (int)nV(); v++) {
       clear_VT(v);
     }
@@ -2327,6 +2328,7 @@ Mesh &Mesh::make_globe(int subsegments, double radius) {
 MOAint3 Mesh::TVO() const { return MOAint3(TV_, nT()); }
 MOAint3 Mesh::TTO() const { return MOAint3(TT_, nT()); }
 MOAVTMap Mesh::VTO() const { return MOAVTMap(VT_mapping_, nV()); }
+MOAVTMapV Mesh::VTO(const int v) const { return MOAVTMapV(VT_mapping_, nV(), v); }
 MOAint3 Mesh::TTiO() const { return MOAint3(TTi_, nT()); }
 MOAdouble3 Mesh::SO() const { return MOAdouble3(S_, nV()); }
 
@@ -2740,13 +2742,21 @@ std::ostream &operator<<(std::ostream &output, const MOAint &MO) {
 
 std::ostream &operator<<(std::ostream &output, const MOAVTMap &MO) {
   for (int i = 0; i < (int)MO.n_; i++) {
-    output << ' ' << std::right << std::setw(4) << "v = " << i;
+    output << ' ' << "v = " << i << ", (t, vi):";
     for (auto j = MO.M_[i].begin(); j != MO.M_[i].end(); j++) {
-      output << " (t=" << std::right << std::setw(4) << j->first << ", vi="
-             << std::right << std::setw(4) << j->second << ")";
+      output << " (" << j->first << ", " << j->second << ")";
     }
-    output << endl;
   }
+  return output;
+}
+
+std::ostream &operator<<(std::ostream &output, const MOAVTMapV &MO) {
+  const int i = MO.v_;
+  output << ' ' << "v = " << i << ", (t, vi):";
+  for (auto j = MO.M_[i].begin(); j != MO.M_[i].end(); j++) {
+    output << " (" << j->first << ", " << j->second << ")";
+  }
+  output << endl;
   return output;
 }
 

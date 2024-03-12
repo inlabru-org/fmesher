@@ -26,6 +26,7 @@ class Mesh;
 class Dart;
 class MOAint;
 class MOAVTMap;
+class MOAVTMapV;
 class MOAint3;
 class MOAdouble3;
 class MeshC;
@@ -224,6 +225,7 @@ public:
   MOAint3 TVO() const;
   MOAint3 TTO() const;
   MOAVTMap VTO() const;
+  MOAVTMapV VTO(const int v) const;
   MOAint3 TTiO() const;
   MOAdouble3 SO() const;
 
@@ -342,6 +344,18 @@ private:
 
 public:
   MOAVTMap(const VTMapT &M, size_t n) : n_(n), M_(M){};
+};
+
+class MOAVTMapV {
+  friend std::ostream &operator<<(std::ostream &output, const MOAVTMapV &MO);
+
+private:
+  size_t n_;
+  int v_;
+  const VTMapT &M_;
+
+public:
+  MOAVTMapV(const VTMapT &M, size_t n, int v) : n_(n), M_(M), v_(v) {};
 };
 
 class MOAint3 {
