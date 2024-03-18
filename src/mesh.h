@@ -355,7 +355,7 @@ private:
   const VTMapT &M_;
 
 public:
-  MOAVTMapV(const VTMapT &M, size_t n, int v) : n_(n), M_(M), v_(v) {};
+  MOAVTMapV(const VTMapT &M, size_t n, int v) : n_(n), v_(v), M_(M) {};
 };
 
 class MOAint3 {
