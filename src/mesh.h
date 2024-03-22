@@ -82,6 +82,7 @@ private:
   Mesh &remove_VT_triangle(const int t);
   Mesh &add_VT_triangles(const int t_start = 0);
   Mesh &remove_VT_triangles(const int t_start = 0);
+  void check_VT_mapping_consistency() const;
 
   Mesh &rebuild_VT();
   Mesh &rebuildTTi();
@@ -350,12 +351,11 @@ class MOAVTMapV {
   friend std::ostream &operator<<(std::ostream &output, const MOAVTMapV &MO);
 
 private:
-  size_t n_;
   int v_;
   const VTMapT &M_;
 
 public:
-  MOAVTMapV(const VTMapT &M, size_t n, int v) : n_(n), v_(v), M_(M) {};
+  MOAVTMapV(const VTMapT &M, int v) : v_(v), M_(M) {};
 };
 
 class MOAint3 {

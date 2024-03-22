@@ -164,6 +164,7 @@ Mesh &Mesh::add_VT(const int v, const int t) {
     }
   }
   FMLOG("VT:" << VTO(v));
+  check_VT_mapping_consistency();
   return *this;
 }
 
@@ -180,6 +181,7 @@ Mesh &Mesh::add_VT(const int v, const int t, const int vi) {
     }
   }
   FMLOG("VT:" << VTO(v));
+  check_VT_mapping_consistency();
   return *this;
 }
 
@@ -189,6 +191,7 @@ Mesh &Mesh::remove_VT(const int v, const int t) {
     if (where != VT_mapping_[v].end())
       VT_mapping_[v].erase(where);
   }
+  check_VT_mapping_consistency();
   return *this;
 }
 
@@ -199,6 +202,7 @@ Mesh &Mesh::add_VT_triangle(const int t) {
       add_VT(TVt[vi], t, vi);
     }
   }
+  check_VT_mapping_consistency();
   return *this;
 }
 
@@ -209,6 +213,7 @@ Mesh &Mesh::remove_VT_triangle(const int t) {
       remove_VT(TVt[vi], t);
     }
   }
+  check_VT_mapping_consistency();
   return *this;
 }
 
@@ -216,8 +221,10 @@ Mesh &Mesh::add_VT_triangles(const int t_start) {
   if (use_VT_) {
     for (auto t = t_start; t < (int)nT(); t++) {
       add_VT_triangle(t);
+      check_VT_mapping_consistency();
     }
   }
+  check_VT_mapping_consistency();
   return *this;
 }
 
@@ -227,6 +234,7 @@ Mesh &Mesh::remove_VT_triangles(const int t_start) {
       remove_VT_triangle(t);
     }
   }
+  check_VT_mapping_consistency();
   return *this;
 }
 
@@ -258,7 +266,35 @@ Mesh &Mesh::rebuild_VT() {
     reset_VT(0);
     add_VT_triangles(0);
   }
+  check_VT_mapping_consistency();
   return *this;
+}
+
+void Mesh::check_VT_mapping_consistency() const {
+  if (!use_VT_)
+    return;
+  for (int v = 0; v < (int)nV(); v++) {
+    for (auto it = VT_mapping_[v].begin(); it != VT_mapping_[v].end(); it++) {
+      if (it->first < 0 || it->first >= (int)nT()) {
+        FMLOG_("ERROR: VT_mapping_[" << v << "] contains invalid triangle "
+                                    << it->first << std::endl);
+      }
+      if (it->second < 0 || it->second >= 3) {
+        FMLOG_("ERROR: VT_mapping_[" << v << "] contains invalid node index "
+                                    << it->second << std::endl);
+      }
+      if (TV_[it->first][it->second] != v) {
+        FMLOG_("ERROR: VT_mapping_[" << v << "] contains invalid node index "
+                                    << it->second << " for triangle " << it->first
+                                    << std::endl);
+        FMLOG_(VTO(v));
+        FMLOG_(" TV[" << it->first << "] = ("
+                 << TV_[it->first][0] << ", "
+                 << TV_[it->first][1] << ", "
+                 << TV_[it->first][2] << "), vi = " << it->second << std::endl);
+      }
+    }
+  }
 }
 
 Mesh &Mesh::rebuildTTi() {
@@ -1150,6 +1186,10 @@ bool Dart::circumcircleOK(void) const {
 
 */
 Dart Mesh::swapEdge(const Dart &d) {
+  if (use_VT_) {
+    check_VT_mapping_consistency();
+  }
+
   Dart dh(d);
   int vi;
   int v_list[4];
@@ -1180,6 +1220,12 @@ Dart Mesh::swapEdge(const Dart &d) {
     dh = d;
     return dh;
   } /* ERROR: Boundary edge */
+
+  if (use_VT_) {
+    remove_VT_triangle(t0);
+    remove_VT_triangle(t1);
+  }
+
   vi = dh.vi();
   tt_list[2] = TT_[t1][vi];
   if (use_TTi_)
@@ -1290,6 +1336,10 @@ Dart Mesh::swapEdge(const Dart &d) {
     X11_->delay();
   }
 #endif
+
+  if (use_VT_) {
+    check_VT_mapping_consistency();
+  }
 
   return Dart(*this, t0, 1, 1);
 }
@@ -1556,7 +1606,12 @@ Dart Mesh::splitTriangle(const Dart &d, int v) {
   /* Step 1: Store geometry information. */
   t = dh.t();
   if (use_VT_) {
+    FMLOG("Checking VT pre-removal of t = " << t << endl);
+    check_VT_mapping_consistency();
     remove_VT_triangle(t);
+    FMLOG("Checking VT post-removal of t = " << t << endl);
+    check_VT_mapping_consistency();
+    FMLOG("Checking done." << endl);
   }
   vi = dh.vi();
   v0 = TV_[t][vi];
@@ -1662,9 +1717,18 @@ Dart Mesh::splitTriangle(const Dart &d, int v) {
 
   /* Link vertices to triangles */
   if (use_VT_) {
+    FMLOG("Checking pre-adding t to VT" << endl);
+    check_VT_mapping_consistency();
+    FMLOG("Add t2 = " << t2 << " to VT" << endl);
     add_VT_triangle(t2);
+    check_VT_mapping_consistency();
+    FMLOG("Add t1 = " << t1 << " to VT" << endl);
     add_VT_triangle(t1);
+    check_VT_mapping_consistency();
+    FMLOG("Add t0 = " << t0 << " to VT" << endl);
     add_VT_triangle(t0);
+    check_VT_mapping_consistency();
+    FMLOG("Added to VT." << endl);
   }
 
   /* Debug code: */
@@ -2328,7 +2392,7 @@ Mesh &Mesh::make_globe(int subsegments, double radius) {
 MOAint3 Mesh::TVO() const { return MOAint3(TV_, nT()); }
 MOAint3 Mesh::TTO() const { return MOAint3(TT_, nT()); }
 MOAVTMap Mesh::VTO() const { return MOAVTMap(VT_mapping_, nV()); }
-MOAVTMapV Mesh::VTO(const int v) const { return MOAVTMapV(VT_mapping_, nV(), v); }
+MOAVTMapV Mesh::VTO(const int v) const { return MOAVTMapV(VT_mapping_, v); }
 MOAint3 Mesh::TTiO() const { return MOAint3(TTi_, nT()); }
 MOAdouble3 Mesh::SO() const { return MOAdouble3(S_, nV()); }
 

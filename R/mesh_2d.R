@@ -573,10 +573,10 @@ fm_rcdt_2d_inla <- function(loc = NULL,
   remap_unused <- function(mesh) {
     ## Remap indices to remove unused vertices
     if (length(mesh$graph$vt) == 0) {
-      warning("VT information missing from mesh, rebuilding")
+      # warning("VT information missing from mesh, rebuilding")
       # Old storage mode: mesh$graph$vt <- rep(NA_integer_, nrow(mesh$loc))
       mesh$graph$vt <- list()
-      for (vv in seq_len(mesh$loc)) {
+      for (vv in seq_len(nrow(mesh$loc))) {
         mesh$graph$vt[[vv]] <- matrix(NA_integer_, 0, 2)
       }
       for (tt in seq_len(nrow(mesh$graph$tv))) {

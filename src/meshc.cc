@@ -410,10 +410,12 @@ bool MeshC::recSwapDelaunay(const Dart &d0) {
   //    FMLOG("TVpost = " << endl << M_->TVO());
   //    FMLOG("TTpost = " << endl << M_->TTO());
 
-  if (!d1.isnull())
+  if (!d1.isnull()) {
     recSwapDelaunay(d1);
-  if (!d2.isnull())
+  }
+  if (!d2.isnull()) {
     recSwapDelaunay(d2);
+  }
   return true;
 }
 
@@ -451,12 +453,15 @@ Dart MeshC::splitTriangleDelaunay(const Dart &td, int v) {
   FMLOG("Split triangle " << td << " with vertex " << v << endl);
   d = splitTriangle(td, v);
 
-  if (!d0.isnull())
+  if (!d0.isnull()) {
     recSwapDelaunay(d0);
-  if (!d1.isnull())
+  }
+  if (!d1.isnull()) {
     recSwapDelaunay(d1);
-  if (!d2.isnull())
+  }
+  if (!d2.isnull()) {
     recSwapDelaunay(d2);
+  }
 
   //    FMLOG("TV = " << endl << M_->TVO());
 
@@ -1326,8 +1331,8 @@ bool MeshC::DT(const vertexListT &v_set) {
     v = *v_iter;
     if (dh.isnull())
       dh = Dart(*M_, 0);
-    dh = insertNode(v, dh); /* Start looking where the previous
-                               point was found. */
+    /* Start looking where the previous point was found. */
+    dh = insertNode(v, dh);
     if (dh.isnull()) {
       FMLOG("DT: Failed to insert node " << v << endl << *this);
     }
@@ -2395,6 +2400,8 @@ Dart MeshC::swapEdge(const Dart &d, MCQswapable &swapable) {
 }
 
 Dart MeshC::swapEdge(const Dart &d) {
+  /* TODO: check VT updates */
+
   if (state_ < State_CDT) {
     return M_->swapEdge(d);
   }
