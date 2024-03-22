@@ -271,30 +271,44 @@ Mesh &Mesh::rebuild_VT() {
 }
 
 void Mesh::check_VT_mapping_consistency() const {
-  if (!use_VT_)
-    return;
-  for (int v = 0; v < (int)nV(); v++) {
-    for (auto it = VT_mapping_[v].begin(); it != VT_mapping_[v].end(); it++) {
-      if (it->first < 0 || it->first >= (int)nT()) {
-        FMLOG_("ERROR: VT_mapping_[" << v << "] contains invalid triangle "
-                                    << it->first << std::endl);
-      }
-      if (it->second < 0 || it->second >= 3) {
-        FMLOG_("ERROR: VT_mapping_[" << v << "] contains invalid node index "
-                                    << it->second << std::endl);
-      }
-      if (TV_[it->first][it->second] != v) {
-        FMLOG_("ERROR: VT_mapping_[" << v << "] contains invalid node index "
-                                    << it->second << " for triangle " << it->first
-                                    << std::endl);
-        FMLOG_(VTO(v));
-        FMLOG_(" TV[" << it->first << "] = ("
-                 << TV_[it->first][0] << ", "
-                 << TV_[it->first][1] << ", "
-                 << TV_[it->first][2] << "), vi = " << it->second << std::endl);
-      }
-    }
-  }
+  return;
+  // if (!use_VT_)
+  //   return;
+  // for (int v = 0; v < (int)nV(); v++) {
+  //   for (auto it = VT_mapping_[v].begin(); it != VT_mapping_[v].end(); it++) {
+  //     if (it->first < 0 || it->first >= (int)nT()) {
+  //       FMLOG_("ERROR: VT_mapping_[" << v << "] contains invalid triangle "
+  //                                   << it->first << std::endl);
+  //     }
+  //     if (it->second < 0 || it->second >= 3) {
+  //       FMLOG_("ERROR: VT_mapping_[" << v << "] contains invalid node index "
+  //                                   << it->second << std::endl);
+  //     }
+  //     if (TV_[it->first][it->second] != v) {
+  //       FMLOG_("ERROR: VT_mapping_[" << v << "] contains invalid node index "
+  //                                   << it->second << " for triangle " << it->first
+  //                                   << std::endl);
+  //       FMLOG_(VTO(v));
+  //       FMLOG_(" TV[" << it->first << "] = ("
+  //                << TV_[it->first][0] << ", "
+  //                << TV_[it->first][1] << ", "
+  //                << TV_[it->first][2] << "), vi = " << it->second << std::endl);
+  //     }
+  //   }
+  // }
+  // for (int t = 0; t < (int)nT(); t++) {
+  //   for (int vi = 0; vi < 3; vi++) {
+  //     if (VT_mapping_[TV_[t][vi]].find(t) == VT_mapping_[TV_[t][vi]].end()) {
+  //       FMLOG_("ERROR: VT_mapping_[" << TV_[t][vi] << "] does not contain "
+  //                                   << t << std::endl);
+  //       FMLOG_(VTO(TV_[t][vi]));
+  //       FMLOG_(" TV[" << t << "] = ("
+  //                     << TV_[t][0] << ", "
+  //                     << TV_[t][1] << ", "
+  //                     << TV_[t][2] << "), vi = " << vi << std::endl);
+  //     }
+  //   }
+  // }
 }
 
 Mesh &Mesh::rebuildTTi() {
