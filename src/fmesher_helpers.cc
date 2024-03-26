@@ -237,7 +237,7 @@ void filter_locations(Matrix<double> &S, Matrix<int> &idx, double cutoff) {
 void invalidate_unused_vertex_indices(const Mesh &M, Matrix<int> &idx) {
   for (size_t v = 0; v < idx.rows(); v++) {
     if ((idx(v, 0) >= 0) &&
-        ((idx(v, 0) >= int(M.nV())) || (M.VT(idx(v, 0)) == -1))) {
+        ((idx(v, 0) >= int(M.nV())) || (M.VT(idx(v, 0)).empty()))) {
       idx(v, 0) = -1;
     }
   }

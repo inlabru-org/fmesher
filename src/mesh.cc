@@ -34,7 +34,7 @@ namespace fmesh {
 
 Mesh::Mesh(Mtype manifold_type, size_t V_capacity, bool use_VT, bool use_TTi)
     : type_(manifold_type), use_VT_(use_VT), use_TTi_(use_TTi), TV_(), TT_(),
-      VT_(), TTi_(), S_()
+      VT_mapping_(), TTi_(), S_()
 #ifdef FMESHER_WITH_X
       ,
       X11_(NULL), X11_v_big_limit_(0)
@@ -44,7 +44,7 @@ Mesh::Mesh(Mtype manifold_type, size_t V_capacity, bool use_VT, bool use_TTi)
     TV_.capacity(V_capacity * 2);
     TT_.capacity(V_capacity * 2);
     if (use_VT_)
-      VT_.capacity(V_capacity);
+      VT_mapping_.reserve(V_capacity);
     if (use_TTi_)
       TTi_.capacity(V_capacity * 2);
     S_.capacity(V_capacity);
@@ -67,7 +67,7 @@ Mesh &Mesh::clear() {
 Mesh &Mesh::empty() {
   TV_.clear();
   TT_.clear();
-  VT_.clear();
+  VT_mapping_.clear();
   TTi_.clear();
   S_.clear();
   return *this;
@@ -94,7 +94,9 @@ Mesh &Mesh::operator=(const Mesh &M) {
 Mesh &Mesh::check_capacity(size_t nVc, size_t nTc) {
   if (nVc > S_.capacity()) {
     if (use_VT_)
-      VT_.capacity(nVc);
+      if (nVc > VT_mapping_.capacity()) {
+        VT_mapping_.reserve(nVc);
+      }
     S_.capacity(nVc);
   }
 
@@ -148,65 +150,165 @@ Mesh &Mesh::rebuildTT() {
   return *this;
 }
 
-Mesh &Mesh::update_VT(const int v, const int t) {
-  if ((use_VT_) && (v < (int)nV()) && (t < (int)nT()) && (VT_[v] < 0))
-    VT_(v) = t;
+Mesh &Mesh::add_VT(const int v, const int t) {
+  if ((use_VT_) && (v < (int)nV()) && (t < (int)nT())) {
+    if (TV_[t][0] == v) {
+      VT_mapping_[v].emplace(t, 0);
+    } else if (TV_[t][1] == v) {
+      VT_mapping_[v].emplace(t, 1);
+    } else if (TV_[t][2] == v) {
+      VT_mapping_[v].emplace(t, 2);
+    } else {
+      /* Error! This should never happen! */
+      FMLOG("ERROR: Vertex " << v << " not in triangle " << t << "\n");
+    }
+  }
+  FMLOG("VT:" << VTO(v));
+  check_VT_mapping_consistency();
   return *this;
 }
 
-Mesh &Mesh::set_VT(const int v, const int t) {
-  if ((use_VT_) && (v < (int)nV()) && (t < (int)nT()))
-    VT_(v) = t;
+Mesh &Mesh::add_VT(const int v, const int t, const int vi) {
+  if ((use_VT_) && (v < (int)nV()) && (t < (int)nT())) {
+    FMLOG("Adding to VT, (v, t, vi) = "
+             << "(" << v << ", " << t << ", " << vi << ")" << std::endl);
+    if (TV_[t][vi] == v) {
+      VT_mapping_[v].emplace(t, vi);
+  } else {
+      /* Error! This should never happen! */
+      FMLOG("ERROR: Vertex " << v << " doesn't match node vi=" <<
+        vi << " in triangle " << t << std::endl);
+    }
+  }
+  FMLOG("VT:" << VTO(v));
+  check_VT_mapping_consistency();
   return *this;
 }
 
-Mesh &Mesh::update_VT_triangle(const int t) {
+Mesh &Mesh::remove_VT(const int v, const int t) {
+  if ((use_VT_) && (v < (int)nV()) && (t < (int)nT())) {
+    auto where = VT_mapping_[v].find(t);
+    if (where != VT_mapping_[v].end())
+      VT_mapping_[v].erase(where);
+  }
+  check_VT_mapping_consistency();
+  return *this;
+}
+
+Mesh &Mesh::add_VT_triangle(const int t) {
   if ((use_VT_) && (t < (int)nT()) && (t >= 0)) {
     const Int3 &TVt = TV_[t];
     for (int vi = 0; vi < 3; vi++) {
-      int v = TVt[vi];
-      if (VT_[v] < 0)
-        VT_(v) = t;
+      add_VT(TVt[vi], t, vi);
     }
   }
+  check_VT_mapping_consistency();
   return *this;
 }
 
-Mesh &Mesh::set_VT_triangle(const int t) {
+Mesh &Mesh::remove_VT_triangle(const int t) {
   if ((use_VT_) && (t < (int)nT()) && (t >= 0)) {
     const Int3 &TVt = TV_[t];
-    for (int vi = 0; vi < 3; vi++)
-      VT_(TVt[vi]) = t;
+    for (int vi = 0; vi < 3; vi++) {
+      remove_VT(TVt[vi], t);
+    }
   }
+  check_VT_mapping_consistency();
   return *this;
 }
 
-Mesh &Mesh::update_VT_triangles(const int t_start) {
+Mesh &Mesh::add_VT_triangles(const int t_start) {
   if (use_VT_) {
-    for (int t = t_start; t < (int)nT(); t++)
-      update_VT_triangle(t);
+    for (auto t = t_start; t < (int)nT(); t++) {
+      add_VT_triangle(t);
+      check_VT_mapping_consistency();
+    }
+  }
+  check_VT_mapping_consistency();
+  return *this;
+}
+
+Mesh &Mesh::remove_VT_triangles(const int t_start) {
+  if (use_VT_) {
+    for (auto t = t_start; t < (int)nT(); t++) {
+      remove_VT_triangle(t);
+    }
+  }
+  check_VT_mapping_consistency();
+  return *this;
+}
+
+
+Mesh &Mesh::clear_VT(const int v) {
+  if (use_VT_) {
+    VT_mapping_[v].clear();
   }
   return *this;
 }
 
 Mesh &Mesh::reset_VT(const int v_start) {
   if (use_VT_) {
-    for (int v = v_start; v < (int)nV(); v++)
-      set_VT(v, -1);
+    VT_mapping_.resize(nV());
+    for (int v = v_start; v < (int)nV(); v++) {
+      clear_VT(v);
+    }
   }
   return *this;
 }
 
 Mesh &Mesh::rebuild_VT() {
   if ((!use_VT_) || (!S_.capacity())) {
-    VT_.clear();
+    VT_mapping_.clear();
   } else {
-    VT_.rows(0);
-    VT_.capacity(S_.capacity());
+    VT_mapping_.clear();
+    VT_mapping_.reserve(S_.capacity());
+    VT_mapping_.resize(S_.rows());
     reset_VT(0);
-    update_VT_triangles(0);
+    add_VT_triangles(0);
   }
+  check_VT_mapping_consistency();
   return *this;
+}
+
+void Mesh::check_VT_mapping_consistency() const {
+  return;
+  // if (!use_VT_)
+  //   return;
+  // for (int v = 0; v < (int)nV(); v++) {
+  //   for (auto it = VT_mapping_[v].begin(); it != VT_mapping_[v].end(); it++) {
+  //     if (it->first < 0 || it->first >= (int)nT()) {
+  //       FMLOG_("ERROR: VT_mapping_[" << v << "] contains invalid triangle "
+  //                                   << it->first << std::endl);
+  //     }
+  //     if (it->second < 0 || it->second >= 3) {
+  //       FMLOG_("ERROR: VT_mapping_[" << v << "] contains invalid node index "
+  //                                   << it->second << std::endl);
+  //     }
+  //     if (TV_[it->first][it->second] != v) {
+  //       FMLOG_("ERROR: VT_mapping_[" << v << "] contains invalid node index "
+  //                                   << it->second << " for triangle " << it->first
+  //                                   << std::endl);
+  //       FMLOG_(VTO(v));
+  //       FMLOG_(" TV[" << it->first << "] = ("
+  //                << TV_[it->first][0] << ", "
+  //                << TV_[it->first][1] << ", "
+  //                << TV_[it->first][2] << "), vi = " << it->second << std::endl);
+  //     }
+  //   }
+  // }
+  // for (int t = 0; t < (int)nT(); t++) {
+  //   for (int vi = 0; vi < 3; vi++) {
+  //     if (VT_mapping_[TV_[t][vi]].find(t) == VT_mapping_[TV_[t][vi]].end()) {
+  //       FMLOG_("ERROR: VT_mapping_[" << TV_[t][vi] << "] does not contain "
+  //                                   << t << std::endl);
+  //       FMLOG_(VTO(TV_[t][vi]));
+  //       FMLOG_(" TV[" << t << "] = ("
+  //                     << TV_[t][0] << ", "
+  //                     << TV_[t][1] << ", "
+  //                     << TV_[t][2] << "), vi = " << vi << std::endl);
+  //     }
+  //   }
+  // }
 }
 
 Mesh &Mesh::rebuildTTi() {
@@ -525,7 +627,7 @@ void Mesh::redrawX11(std::string str) {
 Mesh &Mesh::TV_append(const Matrix3int &TV) {
   TV_.append(TV);
   if (use_VT_)
-    update_VT_triangles(nT() - TV.rows());
+    add_VT_triangles(nT() - TV.rows());
   rebuildTT();
   rebuildTTi();
 #ifdef FMESHER_WITH_X
@@ -1098,6 +1200,10 @@ bool Dart::circumcircleOK(void) const {
 
 */
 Dart Mesh::swapEdge(const Dart &d) {
+  if (use_VT_) {
+    check_VT_mapping_consistency();
+  }
+
   Dart dh(d);
   int vi;
   int v_list[4];
@@ -1128,6 +1234,12 @@ Dart Mesh::swapEdge(const Dart &d) {
     dh = d;
     return dh;
   } /* ERROR: Boundary edge */
+
+  if (use_VT_) {
+    remove_VT_triangle(t0);
+    remove_VT_triangle(t1);
+  }
+
   vi = dh.vi();
   tt_list[2] = TT_[t1][vi];
   if (use_TTi_)
@@ -1214,8 +1326,8 @@ Dart Mesh::swapEdge(const Dart &d) {
 
   /* Link vertices to triangles */
   if (use_VT_) {
-    set_VT_triangle(t1);
-    set_VT_triangle(t0);
+    add_VT_triangle(t1);
+    add_VT_triangle(t0);
   }
 
   /* Debug code: */
@@ -1238,6 +1350,10 @@ Dart Mesh::swapEdge(const Dart &d) {
     X11_->delay();
   }
 #endif
+
+  if (use_VT_) {
+    check_VT_mapping_consistency();
+  }
 
   return Dart(*this, t0, 1, 1);
 }
@@ -1268,6 +1384,9 @@ Dart Mesh::splitEdge(const Dart &d, int v) {
   /* Step 1: Store geometry information. */
   /* Go through t0: */
   t0 = dh.t();
+  if (use_VT_) {
+    remove_VT_triangle(t0);
+  }
   vi = dh.vi();
   v0 = TV_[t0][vi];
   tt_list[1] = TT_[t0][vi];
@@ -1294,6 +1413,9 @@ Dart Mesh::splitEdge(const Dart &d, int v) {
     /* Go through t1: */
     dh.orbit1();
     t1 = dh.t();
+    if (use_VT_) {
+      remove_VT_triangle(t1);
+    }
     vi = dh.vi();
     tt_list[3] = TT_[t1][vi];
     if (use_TTi_)
@@ -1437,11 +1559,11 @@ Dart Mesh::splitEdge(const Dart &d, int v) {
   /* Link vertices to triangles */
   if (use_VT_) {
     if (!on_boundary) {
-      set_VT_triangle(t3);
-      set_VT_triangle(t2);
+      add_VT_triangle(t3);
+      add_VT_triangle(t2);
     }
-    set_VT_triangle(t1);
-    set_VT_triangle(t0);
+    add_VT_triangle(t1);
+    add_VT_triangle(t0);
   }
 
   /* Debug code: */
@@ -1497,6 +1619,14 @@ Dart Mesh::splitTriangle(const Dart &d, int v) {
 
   /* Step 1: Store geometry information. */
   t = dh.t();
+  if (use_VT_) {
+    FMLOG("Checking VT pre-removal of t = " << t << endl);
+    check_VT_mapping_consistency();
+    remove_VT_triangle(t);
+    FMLOG("Checking VT post-removal of t = " << t << endl);
+    check_VT_mapping_consistency();
+    FMLOG("Checking done." << endl);
+  }
   vi = dh.vi();
   v0 = TV_[t][vi];
   tt_list[1] = TT_[t][vi];
@@ -1601,9 +1731,18 @@ Dart Mesh::splitTriangle(const Dart &d, int v) {
 
   /* Link vertices to triangles */
   if (use_VT_) {
-    set_VT_triangle(t2);
-    set_VT_triangle(t1);
-    set_VT_triangle(t0);
+    FMLOG("Checking pre-adding t to VT" << endl);
+    check_VT_mapping_consistency();
+    FMLOG("Add t2 = " << t2 << " to VT" << endl);
+    add_VT_triangle(t2);
+    check_VT_mapping_consistency();
+    FMLOG("Add t1 = " << t1 << " to VT" << endl);
+    add_VT_triangle(t1);
+    check_VT_mapping_consistency();
+    FMLOG("Add t0 = " << t0 << " to VT" << endl);
+    add_VT_triangle(t0);
+    check_VT_mapping_consistency();
+    FMLOG("Added to VT." << endl);
   }
 
   /* Debug code: */
@@ -1658,12 +1797,17 @@ Mesh &Mesh::unlinkTriangle(const int t) {
   unlinkEdge(dh);
   dh.orbit2();
   unlinkEdge(dh);
+  if (use_VT_)
+    remove_VT_triangle(t);
   return *this;
 }
 
 Mesh &Mesh::relocateTriangle(const int t_source, const int t_target) {
   if (t_target == t_source)
     return *this;
+  if (use_VT_) {
+    remove_VT_triangle(t_source);
+  }
   if (t_target > t_source)
     check_capacity(0, t_target + 1);
   TV_(t_target)[0] = TV_[t_source][0];
@@ -1673,12 +1817,7 @@ Mesh &Mesh::relocateTriangle(const int t_source, const int t_target) {
   TT_(t_target)[1] = TT_[t_source][1];
   TT_(t_target)[2] = TT_[t_source][2];
   if (use_VT_) {
-    if (VT_[TV_[t_target][0]] == t_source)
-      VT_(TV_[t_target][0]) = t_target;
-    if (VT_[TV_[t_target][1]] == t_source)
-      VT_(TV_[t_target][1]) = t_target;
-    if (VT_[TV_[t_target][2]] == t_source)
-      VT_(TV_[t_target][2]) = t_target;
+    add_VT_triangle(t_target);
   }
   if (use_TTi_) {
     TTi_(t_target)[0] = TTi_[t_source][0];
@@ -1708,9 +1847,10 @@ Mesh &Mesh::relocateTriangle(const int t_source, const int t_target) {
 /*!
   Remove a triangle.
 
-  The current implementation is slow when useVT is true.  For better
+  The single-VT implementation of VT was slow when useVT is true.  For better
   performance when removing many triangles, set to false while
   removing.
+ The new set-VT implementation has not been tested for speed.
  */
 int Mesh::removeTriangle(const int t) {
   if ((t < 0) || (t >= (int)nT()))
@@ -1736,8 +1876,8 @@ int Mesh::removeTriangle(const int t) {
   TT_.rows(nT());
   if (use_TTi_)
     TTi_.rows(nT());
-  if (use_VT_)
-    rebuild_VT();
+//  if (use_VT_)
+//    rebuild_VT(); // This shouldn't be needed for the new VT implementation.
   return nT();
 }
 
@@ -2155,17 +2295,14 @@ Dart Mesh::locate_vertex(const Dart &d0, const int v) const {
   }
 
   if (use_VT_) {
-    int t = VT_[v];
-    if (t < 0) /* Vertex not connected to any triangles. */
+    if (VT_mapping_[v].empty()) {
+      /* Vertex not connected to any triangles. */
       return Dart();
-    if (TV_[t][0] == v)
-      return Dart(*this, t, 1, 0);
-    if (TV_[t][1] == v)
-      return Dart(*this, t, 1, 1);
-    if (TV_[t][2] == v)
-      return Dart(*this, t, 1, 2);
-    FMLOG("ERROR: Inconsistent data structures!" << endl);
-    return Dart(); /* ERROR: Inconsistent data structures! */
+    }
+
+    /* Return arbitrary dart from the vertex. */
+    auto v_t_iter = VT_mapping_[v].begin();
+    return Dart(*this, v_t_iter->first, 1, v_t_iter->second);
   }
 
   Dart dh;
@@ -2268,7 +2405,8 @@ Mesh &Mesh::make_globe(int subsegments, double radius) {
 
 MOAint3 Mesh::TVO() const { return MOAint3(TV_, nT()); }
 MOAint3 Mesh::TTO() const { return MOAint3(TT_, nT()); }
-MOAint Mesh::VTO() const { return MOAint(VT_, nV()); }
+MOAVTMap Mesh::VTO() const { return MOAVTMap(VT_mapping_, nV()); }
+MOAVTMapV Mesh::VTO(const int v) const { return MOAVTMapV(VT_mapping_, v); }
 MOAint3 Mesh::TTiO() const { return MOAint3(TTi_, nT()); }
 MOAdouble3 Mesh::SO() const { return MOAdouble3(S_, nV()); }
 
@@ -2675,6 +2813,26 @@ std::ostream &operator<<(std::ostream &output, const Mesh &M) {
 std::ostream &operator<<(std::ostream &output, const MOAint &MO) {
   for (int i = 0; i < (int)MO.n_; i++) {
     output << ' ' << std::right << std::setw(4) << MO.M_[i];
+  }
+  output << endl;
+  return output;
+}
+
+std::ostream &operator<<(std::ostream &output, const MOAVTMap &MO) {
+  for (int i = 0; i < (int)MO.n_; i++) {
+    output << ' ' << "v = " << i << ", (t, vi):";
+    for (auto j = MO.M_[i].begin(); j != MO.M_[i].end(); j++) {
+      output << " (" << j->first << ", " << j->second << ")";
+    }
+  }
+  return output;
+}
+
+std::ostream &operator<<(std::ostream &output, const MOAVTMapV &MO) {
+  const int i = MO.v_;
+  output << ' ' << "v = " << i << ", (t, vi):";
+  for (auto j = MO.M_[i].begin(); j != MO.M_[i].end(); j++) {
+    output << " (" << j->first << ", " << j->second << ")";
   }
   output << endl;
   return output;

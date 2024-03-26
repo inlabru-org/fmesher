@@ -373,12 +373,15 @@ Rcpp::List fmesher_rcdt(Rcpp::List options,
         << std::endl);
     }
     /* Remove everything outside the boundary segments, if any. */
+    FMLOG("Prune exterior." << std::endl);
     MC.PruneExterior();
+    FMLOG("Invalidate unused vertex indices." << std::endl);
     invalidate_unused_vertex_indices(M, idx);
     /* Nothing more to do here.  Cannot refine non R2/S2 meshes. */
   } else {
     /* If we don't already have a triangulation, we must create one. */
     if (M.nT() == 0) {
+      FMLOG("Create covering triangulation." << std::endl);
       FMLOG("cet_sides = " << rcdt_options.cet_sides << std::endl);
       FMLOG("cet_margin = " << rcdt_options.cet_margin << std::endl);
       if (!MC.CET(rcdt_options.cet_sides, rcdt_options.cet_margin)) {
@@ -403,12 +406,15 @@ Rcpp::List fmesher_rcdt(Rcpp::List options,
     MC.DT(vertices);
 
     /* Remove everything outside the boundary segments, if any. */
+    FMLOG("Prune exterior." << std::endl);
     MC.PruneExterior();
+    FMLOG("Invalidate unused vertex indices." << std::endl);
     invalidate_unused_vertex_indices(M, idx);
 
     if ((rcdt_options.rcdt) &&
         (rcdt_options.rcdt_max_edge > 0)) {
       /* Calculate the RCDT: */
+      FMLOG("Construct refinement." << std::endl);
       MC.RCDT(rcdt_options.rcdt_min_angle,
               rcdt_options.rcdt_max_edge,
               rcdt_options.quality.raw(),
@@ -443,7 +449,7 @@ Rcpp::List fmesher_rcdt(Rcpp::List options,
 
   matrices.attach("tt", &M.TT());
   M.useVT(true);
-  matrices.attach("vt", &M.VT());
+//  matrices.attach("vt", &M.VT());
   M.useTTi(true);
   matrices.attach("tti", &M.TTi());
   matrices.attach("vv", std::make_unique<SparseMatrix<int>>(M.VV()),
@@ -508,7 +514,7 @@ Rcpp::List fmesher_bary(Rcpp::NumericMatrix mesh_loc,
   FMLOG("barycentric coordinate output." << std::endl);
   if ((M.type() != Mesh::Mtype::Plane) &&
       (M.type() != Mesh::Mtype::Sphere)) {
-    FMLOG_("Cannot calculate points2mesh mapping for non R2/S2 manifolds"
+    FMLOG_("Cannot currently calculate points2mesh mapping for non R2/S2 manifolds"
              << std::endl);
     return Rcpp::List();
   }
@@ -526,7 +532,9 @@ Rcpp::List fmesher_bary(Rcpp::NumericMatrix mesh_loc,
   matrices.matrixtype("bary", fmesh::IOMatrixtype::General);
   matrices.output("t").output("bary");
 
+  FMLOG("map_points_to_mesh start" << std::endl);
   map_points_to_mesh(M, points2mesh, points2mesh_t, points2mesh_b);
+  FMLOG("map_points_to_mesh done" << std::endl);
 
   return Rcpp::wrap(matrices);
 }

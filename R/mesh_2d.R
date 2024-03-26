@@ -1,5 +1,42 @@
 #' @include deprecated.R
 
+# {(v, t, vi)} matrix to v-->{(t,ti)} list of matrices
+vt_matrix2list <- function(vt) {
+  if (is.null(vt)) {
+    return(NULL)
+  }
+  vt_new <- list()
+  for (v in seq_len(NROW(vt))) {
+    vt_new[[v]] <- vt[vt[, 1] == v, -1, drop = FALSE]
+  }
+  vt_new
+}
+
+vt_list2matrix <- function(vt) {
+  if (is.null(vt)) {
+    return(NULL)
+  }
+  v <- rep(seq_len(length(vt)), vapply(vt, NROW, 1L))
+  vt_new <- cbind(v, do.call(rbind, vt))
+  vt_new
+}
+
+vt_counts <- function(vt) {
+  if (is.list(vt)) {
+    # list version
+    vapply(vt, NROW, 1L)
+  } else {
+    vt_counts(vt_matrix2list(vt))
+    ## Slower than converting to list first:
+    # as.vector(Matrix::sparseMatrix(
+    #   i = vt[, 1],
+    #   j = rep(1L, NROW(vt)),
+    #   x = 1L,
+    #   dims = c(NROW(vt), 1)
+    # ))
+  }
+}
+
 # fm_mesh_2d ####
 
 #' @title Unify coordinates to 3-column matrix
@@ -510,7 +547,7 @@ fm_rcdt_2d_inla <- function(loc = NULL,
       loc = result[["s"]],
       graph = list(
         tv = idx_C2R(result[["tv"]]),
-        vt = idx_C2R(result[["vt"]]),
+        vt = lapply(result[["vt"]], idx_C2R),
         tt = idx_C2R(result[["tt"]]),
         tti = idx_C2R(result[["tti"]]),
         vv = fm_as_dgCMatrix(result[["vv"]])
@@ -535,7 +572,21 @@ fm_rcdt_2d_inla <- function(loc = NULL,
 
   remap_unused <- function(mesh) {
     ## Remap indices to remove unused vertices
-    used <- !is.na(mesh$graph$vt)
+    if (length(mesh$graph$vt) == 0) {
+      # warning("VT information missing from mesh, rebuilding")
+      # Old storage mode: mesh$graph$vt <- rep(NA_integer_, nrow(mesh$loc))
+      mesh$graph$vt <- list()
+      for (vv in seq_len(nrow(mesh$loc))) {
+        mesh$graph$vt[[vv]] <- matrix(NA_integer_, 0, 2)
+      }
+      for (tt in seq_len(nrow(mesh$graph$tv))) {
+        for (vvi in seq_len(3)) {
+          vv <- mesh$graph$tv[tt, vvi]
+          mesh$graph$vt[[vv]] <- rbind(mesh$graph$vt[[vv]], c(tt, vvi))
+        }
+      }
+    }
+    used <- vapply(mesh$graph$vt, function(x) NROW(x) > 0, logical(1))
     if (!all(used)) {
       used <- which(used)
       idx.map <- rep(NA, nrow(mesh$loc))
@@ -544,7 +595,7 @@ fm_rcdt_2d_inla <- function(loc = NULL,
       mesh$n <- nrow(mesh[["loc"]])
       mesh$graph$tv <-
         matrix(idx.map[as.vector(mesh$graph$tv)], nrow(mesh$graph$tv), 3)
-      mesh$graph$vt <- mesh$graph$vt[used, , drop = FALSE]
+      mesh$graph$vt <- mesh$graph$vt[used]
       ## graph$tt  ## No change needed
       ## graph$tti ## No change needed
       mesh$graph$vv <- mesh$graph$vv[used, used, drop = FALSE]
