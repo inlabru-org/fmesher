@@ -1,4 +1,5 @@
 test_that("sf coordinate unification", {
+  skip_if_not_installed("inlabru")
   data(gorillas_sf, package = "inlabru")
   sf_coords <- sf::st_coordinates(sf::st_geometry(gorillas_sf$nests))
   expect_error(
