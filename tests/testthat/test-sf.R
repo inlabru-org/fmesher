@@ -1,7 +1,12 @@
 test_that("sf coordinate unification", {
   data(gorillas_sf, package = "inlabru")
   sf_coords <- sf::st_coordinates(sf::st_geometry(gorillas_sf$nests))
-  expect_error({fm_coords <- fm_unify_coords(gorillas_sf$nests)}, NA)
+  expect_error(
+    {
+      fm_coords <- fm_unify_coords(gorillas_sf$nests)
+    },
+    NA
+  )
   expect_equal(fm_coords, cbind(sf_coords, 0.0), ignore_attr = TRUE)
 })
 
