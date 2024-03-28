@@ -1,6 +1,7 @@
 # fmesher (development version)
 
 * Fix for hiding away-facing triangle edges in `plot.fm_mesh_2d()` and `lines.fm_segm()`.
+* Fix duplicated `fm_unify_coords.sf()` method. Thanks to Pablo Paccioretti for debugging and reporting, see #13 (version `0.1.5.9001`)
 
 # fmesher 0.1.5
 
@@ -9,7 +10,7 @@
   after calling `fm_matern_sample()`.
 * Improve speed of `fm_block_log_shift()` by an order of magnitude for multi-block
   cases.
-* Fix bug in `plot.fm_mesh_2d` for meshes with 2D coordinate storage (version 0.1.4.9002)
+* Fix bug in `plot.fm_mesh_2d` for meshes with 2D coordinate storage (version `0.1.4.9002`)
 
 # fmesher 0.1.4
 
