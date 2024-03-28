@@ -119,11 +119,7 @@ fm_unify_coords.Spatial <- function(x, crs = NULL) {
 fm_unify_coords.sf <- function(x, crs = NULL) {
   fm_unify_coords.sfc(sf::st_geometry(x), crs = crs)
 }
-#' @rdname fm_unify_coords
-#' @export
-fm_unify_coords.sf <- function(x, crs = NULL) {
-  fm_unify_coords.sfc(sf::st_sfc(x), crs = crs)
-}
+
 #' @rdname fm_unify_coords
 #' @export
 fm_unify_coords.sfc <- function(x, crs = NULL) {
