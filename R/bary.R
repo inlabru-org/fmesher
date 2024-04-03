@@ -128,17 +128,36 @@ fm_bary.fm_mesh_2d <- function(mesh, loc, crs = NULL, ...) {
       nrow = nrow(loc),
       ncol = ncol(loc)
     )) == 0)
-  result <- fmesher_bary(
-    mesh_loc = mesh$loc * scale,
-    mesh_tv = mesh$graph$tv - 1L,
-    loc = loc[pre_ok_idx, , drop = FALSE],
-    options = list()
-  )
-  tri <- rep(NA_integer_, nrow(loc))
-  bary <- matrix(NA_real_, nrow(loc), 3)
-  ok <- result$t >= 0
-  tri[pre_ok_idx[ok]] <- result$t[ok] + 1L
-  bary[pre_ok_idx[ok], ] <- result$bary[ok, ]
+  if (length(pre_ok_idx) <= 2e5) {
+    result <- fmesher_bary(
+      mesh_loc = mesh$loc * scale,
+      mesh_tv = mesh$graph$tv - 1L,
+      loc = loc[pre_ok_idx, , drop = FALSE],
+      options = list()
+    )
+    tri <- rep(NA_integer_, nrow(loc))
+    bary <- matrix(NA_real_, nrow(loc), 3)
+    ok <- result$t >= 0
+    tri[pre_ok_idx[ok]] <- result$t[ok] + 1L
+    bary[pre_ok_idx[ok], ] <- result$bary[ok, ]
+  } else {
+    tri <- rep(NA_integer_, nrow(loc))
+    bary <- matrix(NA_real_, nrow(loc), 3)
+    n_batches <- ceiling(length(pre_ok_idx) / 2e5)
+    batch_idx <- round(seq(0, length(pre_ok_idx), length.out = n_batches + 1))
+    subindex <- split(pre_ok_idx, rep(seq_len(n_batches), diff(batch_idx)))
+    for (k in seq_along(subindex)) {
+      result <- fmesher_bary(
+        mesh_loc = mesh$loc * scale,
+        mesh_tv = mesh$graph$tv - 1L,
+        loc = loc[subindex[[k]], , drop = FALSE],
+        options = list()
+      )
+      ok <- result$t >= 0
+      tri[subindex[[k]][ok]] <- result$t[ok] + 1L
+      bary[subindex[[k]][ok], ] <- result$bary[ok, ]
+    }
+  }
   list(t = tri, bary = bary)
 }
 
