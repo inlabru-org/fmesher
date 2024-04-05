@@ -1131,7 +1131,7 @@ fm_int_mesh_2d.sfc_MULTILINESTRING <- function(samplers,
 #' @param nsub number of subdivision points along each triangle edge, giving
 #'    `(nsub + 1)^2` proto-integration points used to compute
 #'   the vertex weights
-#'   (default `NULL=9`, giving 100 integration points for each triangle)
+#'   (default `nsub=9`, giving 100 integration points for each triangle)
 #' @return `list` with elements `loc` and `weight` with
 #'   integration points for the mesh
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
