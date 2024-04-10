@@ -290,8 +290,10 @@ fm_int.list <- function(domain, samplers = NULL, ...) {
     samplers <- list(samplers)
   }
 
-  # Change a mix of sp and sf objects to sf
-  sf_samplers <- unlist(lapply(samplers, function(x) inherits(x, c("sf", "sfc"))))
+  # Change a mix of sp, sfc, and sf objects to sf
+  sfc_samplers <- unlist(lapply(samplers, function(x) inherits(x, "sfc")))
+  samplers[sfc_samplers] <- lapply(samplers[sfc_samplers], sf::st_as_sf)
+  sf_samplers <- unlist(lapply(samplers, function(x) inherits(x, "sf")))
   sp_samplers <- unlist(lapply(samplers, function(x) inherits(x, "Spatial")))
   if (any(sp_samplers)) {
     if (any(sf_samplers)) {
