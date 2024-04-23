@@ -330,8 +330,7 @@ fm_int.list <- function(domain, samplers = NULL, ...) {
             paste0(
               "Unnamed sampler in the samplers is an 'fm_segm' object.\n",
               "Use an 'sf' object or other supported multi-sampler class instead."
-            ),
-            immediate. = TRUE
+            )
           )
           NULL
         } else {
