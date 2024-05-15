@@ -152,7 +152,7 @@ Details section for <code><a href="fm_crs.html">fm_crs()</a></code>.</p></dd>
 
 <dt>projargs</dt>
 <dd><p>Either 1) a projection argument string suitable as input to
-<code><a href="https://rdrr.io/pkg/sp/man/CRS-class.html" class="external-link">sp::CRS</a></code>, or 2) an existing <code>CRS</code> object, or 3) a shortcut
+<code><a href="https://edzer.github.io/sp/reference/CRS-class.html" class="external-link">sp::CRS</a></code>, or 2) an existing <code>CRS</code> object, or 3) a shortcut
 reference string to a predefined projection; run
 <code>names(fm_wkt_predef())</code> for valid predefined projections. (projargs is a
 compatibility parameter that can be used for the default <code>fm_CRS()</code> method)</p></dd>
@@ -170,22 +170,22 @@ the PROJ4 arguments in <code>projargs</code>.  <code>name=value</code> is conver
 
 <dt>SRS_string</dt>
 <dd><p>a WKT2 string defining the coordinate system;
-see <code><a href="https://rdrr.io/pkg/sp/man/CRS-class.html" class="external-link">sp::CRS</a></code>. This takes precedence over <code>projargs</code>.</p></dd>
+see <code><a href="https://edzer.github.io/sp/reference/CRS-class.html" class="external-link">sp::CRS</a></code>. This takes precedence over <code>projargs</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>Either an <code><a href="https://rdrr.io/pkg/sp/man/CRS-class.html" class="external-link">sp::CRS</a></code> object or an <code>inla.CRS</code> object,
+<p>Either an <code><a href="https://edzer.github.io/sp/reference/CRS-class.html" class="external-link">sp::CRS</a></code> object or an <code>inla.CRS</code> object,
 depending on if the coordinate reference system described by the parameters
-can be expressed with a pure <code><a href="https://rdrr.io/pkg/sp/man/CRS-class.html" class="external-link">sp::CRS</a></code> object or not.</p>
+can be expressed with a pure <code><a href="https://edzer.github.io/sp/reference/CRS-class.html" class="external-link">sp::CRS</a></code> object or not.</p>
 
 
 <p>An S3 <code>inla.CRS</code> object is a list, usually (but not necessarily)
 containing at least one element:</p>
 <dl><dt>crs </dt>
-<dd><p>The basic <code><a href="https://rdrr.io/pkg/sp/man/CRS-class.html" class="external-link">sp::CRS</a></code>
+<dd><p>The basic <code><a href="https://edzer.github.io/sp/reference/CRS-class.html" class="external-link">sp::CRS</a></code>
 object</p></dd>
 
 </dl></div>
@@ -220,7 +220,7 @@ obliqueness</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="fm_crs.html">fm_crs()</a></code>, <code><a href="https://rdrr.io/pkg/sp/man/CRS-class.html" class="external-link">sp::CRS()</a></code>, <code><a href="fm_crs_wkt.html">fm_crs_wkt</a></code>,
+    <div class="dont-index"><p><code><a href="fm_crs.html">fm_crs()</a></code>, <code><a href="https://edzer.github.io/sp/reference/CRS-class.html" class="external-link">sp::CRS()</a></code>, <code><a href="fm_crs_wkt.html">fm_crs_wkt</a></code>,
 <code><a href="fmesher-deprecated.html">fm_sp_get_crs()</a></code>, <code><a href="fm_crs_is_identical.html">fm_crs_is_identical()</a></code></p></div>
     </div>
     <div class="section level2">

@@ -109,7 +109,7 @@ future version.</p>
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>x</dt>
-<dd><p>A <code><a href="https://rdrr.io/pkg/sp/man/Spatial-class.html" class="external-link">sp::Spatial</a></code> object</p></dd>
+<dd><p>A <code><a href="https://edzer.github.io/sp/reference/Spatial-class.html" class="external-link">sp::Spatial</a></code> object</p></dd>
 
 
 <dt>...</dt>
@@ -156,14 +156,14 @@ which uses the name of the calling function.</p></dd>
     <p>This function is a convenience method to workaround PROJ4/PROJ6
 differences, and the lack of a crs extraction method for Spatial objects.
 For newer code, use <code><a href="fm_crs.html">fm_crs()</a></code> instead, that returns <code>crs</code> objects,
-and use <a href="fm_crs.html">fm_CRS()</a> to extract/construct/convert to old style <code><a href="https://rdrr.io/pkg/sp/man/CRS-class.html" class="external-link">sp::CRS</a></code> objects.</p>
+and use <a href="fm_crs.html">fm_CRS()</a> to extract/construct/convert to old style <code><a href="https://edzer.github.io/sp/reference/CRS-class.html" class="external-link">sp::CRS</a></code> objects.</p>
     </div>
     <div class="section level2">
     <h2 id="functions">Functions<a class="anchor" aria-label="anchor" href="#functions"></a></h2>
     
 <ul><li><p><code>fm_spTransform()</code>: <a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> (See <code><a href="fm_transform.html">fm_transform()</a></code> instead)
 Handle transformation of various inla objects according to coordinate
-reference systems of <code><a href="https://rdrr.io/pkg/sp/man/CRS-class.html" class="external-link">sp::CRS</a></code> or <code>INLA::inla.CRS</code> class.</p></li>
+reference systems of <code><a href="https://edzer.github.io/sp/reference/CRS-class.html" class="external-link">sp::CRS</a></code> or <code>INLA::inla.CRS</code> class.</p></li>
 <li><p><code>fm_spTransform(default)</code>: The default method handles low level transformation of raw
 coordinates.</p></li>
 <li><p><code>fm_has_PROJ6()</code>: Detect whether PROJ6 is available</p></li>
@@ -176,9 +176,9 @@ to using old PROJ4 methods when a PROJ6 method hasn't been implemented</p></li>
 <li><p><code>fm_requires_PROJ6()</code>: Called to give an error when PROJ6
 is required but not available</p></li>
 <li><p><code>fm_as_sp_crs()</code>: Wrapper for <code><a href="fm_CRS_sp.html">fm_CRS()</a></code>
-<code><a href="https://rdrr.io/pkg/sp/man/Spatial-class.html" class="external-link">sp::Spatial</a></code> and <code><a href="https://rdrr.io/pkg/sp/man/CRS-class.html" class="external-link">sp::CRS</a></code> objects.</p></li>
+<code><a href="https://edzer.github.io/sp/reference/Spatial-class.html" class="external-link">sp::Spatial</a></code> and <code><a href="https://edzer.github.io/sp/reference/CRS-class.html" class="external-link">sp::CRS</a></code> objects.</p></li>
 <li><p><code>fm_sp_get_crs()</code>: Wrapper for CRS(projargs) (PROJ4) and CRS(wkt) for
-<code><a href="https://rdrr.io/pkg/sp/man/Spatial-class.html" class="external-link">sp::Spatial</a></code> objects.</p></li>
+<code><a href="https://edzer.github.io/sp/reference/Spatial-class.html" class="external-link">sp::Spatial</a></code> objects.</p></li>
 <li><p><code>fm_as_inla_mesh_segment()</code>: Conversion to inla.mesh.segment
 <a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> in favour of <code><a href="fm_as_segm.html">fm_as_segm()</a></code>.</p></li>
 <li><p><code>fm_as_inla_mesh()</code>: Conversion to inla.mesh.
@@ -198,7 +198,7 @@ is required but not available</p></li>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="fm_safe_sp.html">fm_safe_sp</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>  <span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">sp</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPoints</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, <span class="fl">3</span>, <span class="fl">2</span><span class="op">)</span>, proj4string <span class="op">=</span> <span class="fu"><a href="fm_CRS_sp.html">fm_CRS</a></span><span class="op">(</span><span class="st">"sphere"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">sp</span><span class="fu">::</span><span class="fu"><a href="https://edzer.github.io/sp/reference/SpatialPoints.html" class="external-link">SpatialPoints</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, <span class="fl">3</span>, <span class="fl">2</span><span class="op">)</span>, proj4string <span class="op">=</span> <span class="fu"><a href="fm_CRS_sp.html">fm_CRS</a></span><span class="op">(</span><span class="st">"sphere"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="fm_CRS_sp.html">fm_CRS</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Coordinate Reference System:</span>

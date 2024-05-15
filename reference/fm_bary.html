@@ -84,9 +84,9 @@
 
 
 <dt>loc</dt>
-<dd><p>Points for which to identify the containing triangle, and
-corresponding barycentric coordinates. May be a vector (for 1d) or
-raw matrix coordinates, <code>sf</code>, or <code>sp</code> point information (for 2d).</p></dd>
+<dd><p>Points for which to identify the containing interval/triangle, and
+corresponding barycentric coordinates. May be a vector (for 1d) or a matrix
+of raw coordinates, <code>sf</code>, or <code>sp</code> point information (for 2d).</p></dd>
 
 
 <dt>...</dt>
@@ -114,8 +114,10 @@ interval.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>A list with elements <code>t</code> (vector of triangle indices or matrix of
-interval knot indices), and <code>bary</code>, a matrix of barycentric coordinates.</p>
+<p>A list with elements <code>t</code>; either</p><ul><li><p>vector of triangle indices (triangle meshes),</p></li>
+<li><p>matrix of interval knot indices (1D meshes), or</p></li>
+<li><p>matrix of lower left box indices (2D lattices),</p></li>
+</ul><p>and <code>bary</code>, a matrix of barycentric coordinates.</p>
     </div>
     <div class="section level2">
     <h2 id="methods-by-class-">Methods (by class)<a class="anchor" aria-label="anchor" href="#methods-by-class-"></a></h2>

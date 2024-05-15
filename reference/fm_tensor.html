@@ -85,8 +85,17 @@ is experimental and may change.</p>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>A <code>fm_tensor</code> or <code>fm_tensor_list</code> object</p>
-    </div>
+<p>A <code>fm_tensor</code> or <code>fm_tensor_list</code> object. Elements of <code>fm_tensor</code>:</p><dl><dt>fun_spaces</dt>
+<dd><p><code>fm_list</code> of function space objects</p></dd>
+
+<dt>manifold</dt>
+<dd><p>character; manifold type summary. Regular subset of Rd "Rd",
+if all function spaces have type "R",
+torus connected "Td" if all function spaces have type "S", and otherwise "Md"
+In all cases, <code>d</code> is the sum of the manifold dimensions of the function spaces.</p></dd>
+
+
+</dl></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Other object creation and conversion: 
