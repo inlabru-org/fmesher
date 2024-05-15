@@ -21,9 +21,9 @@ fm_bary(mesh, loc, ...)
 \arguments{
 \item{mesh}{\code{fm_mesh_1d} or \code{fm_mesh_2d} object}
 
-\item{loc}{Points for which to identify the containing triangle, and
-corresponding barycentric coordinates. May be a vector (for 1d) or
-raw matrix coordinates, \code{sf}, or \code{sp} point information (for 2d).}
+\item{loc}{Points for which to identify the containing interval/triangle, and
+corresponding barycentric coordinates. May be a vector (for 1d) or a matrix
+of raw coordinates, \code{sf}, or \code{sp} point information (for 2d).}
 
 \item{\dots}{Arguments forwarded to sub-methods.}
 
@@ -39,8 +39,13 @@ interval.}
 \item{crs}{Optional crs information for \code{loc}}
 }
 \value{
-A list with elements \code{t} (vector of triangle indices or matrix of
-interval knot indices), and \code{bary}, a matrix of barycentric coordinates.
+A list with elements \code{t}; either
+\itemize{
+\item{vector of triangle indices (triangle meshes),}
+\item{matrix of interval knot indices (1D meshes), or}
+\item{matrix of lower left box indices (2D lattices),}
+}
+and \code{bary}, a matrix of barycentric coordinates.
 }
 \description{
 Identify knot intervals or triangles and compute barycentric coordinates

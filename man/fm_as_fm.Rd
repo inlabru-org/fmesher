@@ -5,6 +5,7 @@
 \alias{fm_as_fm.NULL}
 \alias{fm_as_fm.fm_mesh_1d}
 \alias{fm_as_fm.fm_mesh_2d}
+\alias{fm_as_fm.fm_tensor}
 \alias{fm_as_fm.fm_segm}
 \alias{fm_as_fm.fm_lattice_2d}
 \alias{fm_as_fm.fm_bbox}
@@ -26,6 +27,8 @@ fm_as_fm(x, ...)
 \method{fm_as_fm}{fm_mesh_1d}(x, ...)
 
 \method{fm_as_fm}{fm_mesh_2d}(x, ...)
+
+\method{fm_as_fm}{fm_tensor}(x, ...)
 
 \method{fm_as_fm}{fm_segm}(x, ...)
 

@@ -138,7 +138,7 @@ fm_mesh_2d_map_lim <- function(loc = NULL,
 
 #' @title Make a lattice object
 #' @export
-#' @param ... Currently passed on to `inla.mesh.lattice`
+#' @param ... Passed on to submethods
 #' @family object creation and conversion
 fm_lattice_2d <- function(...) {
   UseMethod("fm_lattice_2d")
@@ -155,7 +155,15 @@ fm_lattice_2d <- function(...) {
 #' @param units One of `c("default", "longlat", "longsinlat", "mollweide")`
 #' or NULL (equivalent to `"default"`).
 #' @param crs An optional `fm_crs`, `sf::st_crs`, or `sp::CRS` object
-#' @return An `fm_lattice_2d` object.
+#' @return An `fm_lattice_2d` object with elements
+#' \describe{
+#' \item{dims}{integer vector}
+#' \item{x}{x-values}
+#' \item{y}{y-values}
+#' \item{loc}{matrix of `(x, y)` values}
+#' \item{segm}{`fm_segm` object}
+#' \item{crs}{`fm_crs` object or `NULL`}
+#' }
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
 #' @seealso [fm_mesh_2d()]
 #' @examples

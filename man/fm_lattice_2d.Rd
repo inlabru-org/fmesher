@@ -22,7 +22,7 @@ fm_lattice_2d(...)
 )
 }
 \arguments{
-\item{...}{Currently passed on to \code{inla.mesh.lattice}}
+\item{...}{Passed on to submethods}
 
 \item{x}{vector or grid matrix of x-values}
 
@@ -38,7 +38,15 @@ or NULL (equivalent to \code{"default"}).}
 \item{crs}{An optional \code{fm_crs}, \code{sf::st_crs}, or \code{sp::CRS} object}
 }
 \value{
-An \code{fm_lattice_2d} object.
+An \code{fm_lattice_2d} object with elements
+\describe{
+\item{dims}{integer vector}
+\item{x}{x-values}
+\item{y}{y-values}
+\item{loc}{matrix of \verb{(x, y)} values}
+\item{segm}{\code{fm_segm} object}
+\item{crs}{\code{fm_crs} object or \code{NULL}}
+}
 }
 \description{
 Construct a lattice grid for \code{\link[=fm_mesh_2d]{fm_mesh_2d()}}

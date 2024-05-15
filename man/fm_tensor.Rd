@@ -12,7 +12,14 @@ fm_tensor(x, ...)
 \item{...}{Currently unused}
 }
 \value{
-A \code{fm_tensor} or \code{fm_tensor_list} object
+A \code{fm_tensor} or \code{fm_tensor_list} object. Elements of \code{fm_tensor}:
+\describe{
+\item{fun_spaces}{\code{fm_list} of function space objects}
+\item{manifold}{character; manifold type summary. Regular subset of Rd "Rd",
+if all function spaces have type "R",
+torus connected "Td" if all function spaces have type "S", and otherwise "Md"
+In all cases, \code{d} is the sum of the manifold dimensions of the function spaces.}
+}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}

@@ -7,12 +7,17 @@
 #' @description Identify knot intervals or triangles and compute barycentric coordinates
 #'
 #' @param mesh `fm_mesh_1d` or `fm_mesh_2d` object
-#' @param loc Points for which to identify the containing triangle, and
-#' corresponding barycentric coordinates. May be a vector (for 1d) or
-#' raw matrix coordinates, `sf`, or `sp` point information (for 2d).
+#' @param loc Points for which to identify the containing interval/triangle, and
+#' corresponding barycentric coordinates. May be a vector (for 1d) or a matrix
+#' of raw coordinates, `sf`, or `sp` point information (for 2d).
 #' @param \dots Arguments forwarded to sub-methods.
-#' @returns A list with elements `t` (vector of triangle indices or matrix of
-#' interval knot indices), and `bary`, a matrix of barycentric coordinates.
+#' @returns A list with elements `t`; either
+#' \itemize{
+#' \item{vector of triangle indices (triangle meshes),}
+#' \item{matrix of interval knot indices (1D meshes), or}
+#' \item{matrix of lower left box indices (2D lattices),}
+#' }
+#' and `bary`, a matrix of barycentric coordinates.
 #'
 #' @export
 #' @examples

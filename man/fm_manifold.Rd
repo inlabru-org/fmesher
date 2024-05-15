@@ -13,8 +13,7 @@ fm_manifold_type(x)
 fm_manifold_dim(x)
 }
 \arguments{
-\item{x}{A \link{fm_mesh_1d} or \link{fm_mesh_2d} object (or other object containing a
-\code{manifold} element)}
+\item{x}{An object with \code{manifold} information, or a character string}
 
 \item{type}{\code{character}; if \code{NULL} (the default), returns the manifold definition string.
 If \code{character}, returns \code{TRUE} if the manifold type of \code{x} matches at least
@@ -24,7 +23,7 @@ one of the character vector elements.}
 \code{fm_manifold()}: Either logical (matching manifold type yes/no),
 or character (the stored manifold, when \code{is.null(type)} is \code{TRUE})
 
-\code{fm_manifold_type()}: character or NULL; "M", "R", or "S"
+\code{fm_manifold_type()}: character or NULL; "M", "R", "S", or "T"
 
 \code{fm_manifold_dim()}: integer or NULL
 }
