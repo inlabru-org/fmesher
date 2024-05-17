@@ -47,6 +47,8 @@ fm_matern_precision <- function(x, alpha, rho, sigma) {
 
   if (inherits(mesh, "fm_mesh_1d") && (mesh$degree == 2)) {
     C <- fem$c1
+  } else if (inherits(mesh, "fm_tensor")) {
+    C <- fem$cc
   } else {
     C <- fem$c0
   }
