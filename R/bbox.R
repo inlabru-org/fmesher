@@ -70,6 +70,18 @@ fm_bbox.matrix <- function(x, ...) {
 
 #' @rdname fm_bbox
 #' @export
+fm_bbox.Matrix <- function(x, ...) {
+  do.call(
+    c,
+    c(lapply(seq_len(ncol(x)),
+             function(k) {
+               fm_bbox(x[, k, drop = TRUE])
+             }),
+      list(.join = TRUE)))
+}
+
+#' @rdname fm_bbox
+#' @export
 fm_bbox.fm_bbox <- function(x, ...) {
   x
 }

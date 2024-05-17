@@ -6,6 +6,7 @@
 \alias{fm_bbox.NULL}
 \alias{fm_bbox.numeric}
 \alias{fm_bbox.matrix}
+\alias{fm_bbox.Matrix}
 \alias{fm_bbox.fm_bbox}
 \alias{fm_bbox.fm_mesh_1d}
 \alias{fm_bbox.fm_mesh_2d}
@@ -33,6 +34,8 @@ fm_bbox(...)
 \method{fm_bbox}{numeric}(x, ...)
 
 \method{fm_bbox}{matrix}(x, ...)
+
+\method{fm_bbox}{Matrix}(x, ...)
 
 \method{fm_bbox}{fm_bbox}(x, ...)
 
