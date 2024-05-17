@@ -74,13 +74,16 @@
 <span><span class="fu">fm_fem</span><span class="op">(</span><span class="va">mesh</span>, order <span class="op">=</span> <span class="fl">2</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for inla.mesh</span></span>
+<span><span class="fu">fm_fem</span><span class="op">(</span><span class="va">mesh</span>, order <span class="op">=</span> <span class="fl">2</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for fm_tensor</span></span>
 <span><span class="fu">fm_fem</span><span class="op">(</span><span class="va">mesh</span>, order <span class="op">=</span> <span class="fl">2</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>mesh</dt>
-<dd><p><code>inla.mesh</code> object</p></dd>
+<dd><p><code>fm_mesh_1d</code> or other supported mesh class object</p></dd>
 
 
 <dt>order</dt>
@@ -109,6 +112,9 @@ When <code>mesh$degree == 2</code>, also <code>g01</code>, <code>g02</code>, and
 
 <p><code>fm_fem.fm_mesh_2d</code>: A list with elements <code>c0</code>, <code>c1</code>, <code>g1</code>, <code>va</code>, <code>ta</code>,
 and more if <code>order &gt; 1</code>. When <code>aniso</code> is non-NULL, also <code>g1aniso</code> matrices, etc.</p>
+
+
+<p><code>fm_fem.fm_tensor</code>: A list with elements <code>cc</code>, <code>g1</code>, <code>g2</code>.</p>
     </div>
 
     <div class="section level2">
