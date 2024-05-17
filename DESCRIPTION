@@ -43,7 +43,6 @@ Imports:
     Rcpp
 Suggests:
     ggplot2,
-    ggpolypath,
     inlabru (>= 2.8.0),
     knitr,
     testthat (>= 3.0.0),
