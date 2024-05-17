@@ -70,10 +70,16 @@ fm_bbox(x, ...)
 ## S3 method for class 'NULL'
 fm_bbox(...)
 
+# S3 method for numeric
+fm_bbox(x, ...)
+
 # S3 method for matrix
 fm_bbox(x, ...)
 
 # S3 method for fm_bbox
+fm_bbox(x, ...)
+
+# S3 method for fm_mesh_1d
 fm_bbox(x, ...)
 
 # S3 method for fm_mesh_2d
@@ -83,6 +89,9 @@ fm_bbox(x, ...)
 fm_bbox(x, ...)
 
 # S3 method for fm_lattice_2d
+fm_bbox(x, ...)
+
+# S3 method for fm_tensor
 fm_bbox(x, ...)
 
 # S3 method for sf
@@ -109,7 +118,7 @@ fm_as_bbox(x, ...)
 [(x, i)
 
 # S3 method for fm_bbox
-c(...)</code></pre></div>
+c(..., .join = FALSE)</code></pre></div>
     </div>
 
     <div class="section level2">
@@ -125,12 +134,18 @@ c(...)</code></pre></div>
 <dt>i</dt>
 <dd><p>indices specifying elements to extract</p></dd>
 
+
+<dt>.join</dt>
+<dd><p>logical; if <code>TRUE</code>, concatenate the bounding boxes into a single
+multi-dimensional bounding box. Default is <code>FALSE</code>.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>A <code>fm_bbox_list</code> object</p>
+<p>For <code>c.fm_bbox()</code>, a <code>fm_bbox_list</code> object if <code>join = FALSE</code> (the default)
+or an <code>fm_bbox</code> object if <code>join = TRUE</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="methods-by-class-">Methods (by class)<a class="anchor" aria-label="anchor" href="#methods-by-class-"></a></h2>
@@ -151,17 +166,24 @@ objects, or coercible with <code>fm_as_bbox(list(...))</code>.</p></li>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">fm_bbox</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, <span class="fl">3</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box: (1,3) x (4,6)</span>
-<span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>A <span class="op">=</span> <span class="fu">fm_bbox</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, B <span class="op">=</span> <span class="fu">fm_bbox</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>A <span class="op">=</span> <span class="fu">fm_bbox</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>, B <span class="op">=</span> <span class="fu">fm_bbox</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> List of 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> List of 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ A:List of 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ : num [1:2] 1 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ : num [1:2] 2 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..- attr(*, "class")= chr "fm_bbox"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ B:List of 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ : num [1:2] 3 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ : num [1:2] 4 4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..- attr(*, "class")= chr "fm_bbox"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - attr(*, "class")= chr [1:3] "fm_bbox_list" "fm_list" "list"</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">m</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> List of 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ NA: NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ B:List of 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ : num [1:2] 3 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ : num [1:2] 4 4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..- attr(*, "class")= chr "fm_bbox"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - attr(*, "class")= chr [1:3] "fm_bbox_list" "fm_list" "list"</span>
 </code></pre></div>
     </div>
