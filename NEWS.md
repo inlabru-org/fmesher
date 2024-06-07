@@ -6,6 +6,7 @@
 * Automatically convert raw `sfc` samplers objects to `sf` objects in `fm_int.list()` (version `0.1.5.9003`)
 * Detect and warn about unsupported use of `fm_segm` objects in `fm_int.list()` (version `0.1.5.9004`)
 * Add `fm_basis()` and `fm_fem()` support for `fm_tensor` function spaces (version `0.1.5.9005`)
+* Add `fm_CRS()` support for `terra` objects (version `0.1.5.9006`)
 
 # fmesher 0.1.5
 

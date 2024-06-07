@@ -1180,6 +1180,18 @@ fm_CRS.fm_CRS <- function(x, oblique = NULL, ...) {
 
 #' @rdname fm_CRS_sp
 #' @export
+fm_CRS.SpatVector <- function(x, oblique = NULL, ...) {
+  fm_CRS(fm_crs(x, ...), oblique = oblique)
+}
+
+#' @rdname fm_CRS_sp
+#' @export
+fm_CRS.SpatRaster <- function(x, oblique = NULL, ...) {
+  fm_CRS(fm_crs(x, ...), oblique = oblique)
+}
+
+#' @rdname fm_CRS_sp
+#' @export
 fm_CRS.sf <- function(x, oblique = NULL, ...) {
   fm_CRS(sf::st_crs(x, ...), oblique = oblique)
 }
