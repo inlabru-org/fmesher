@@ -1,3 +1,5 @@
+# fmesher (development version)
+
 # fmesher 0.1.6
 
 * Fix for hiding away-facing triangle edges in `plot.fm_mesh_2d()` and `lines.fm_segm()`.
