@@ -1,3 +1,13 @@
+# fmesher 0.1.6
+
+* Fix for hiding away-facing triangle edges in `plot.fm_mesh_2d()` and `lines.fm_segm()`.
+* Fix duplicated `fm_unify_coords.sf()` method. Thanks to Pablo Paccioretti for debugging and reporting, see #13 (version `0.1.5.9001`)
+* Use batched `fm_bary.fm_mesh_2d()` computations for data sizes of `2e5` and upwards. This improves performance of `fm_basis()`/`inla.spde.make.A()` for large data sets, see #14 (version `0.1.5.9002`)
+* Automatically convert raw `sfc` samplers objects to `sf` objects in `fm_int.list()` (version `0.1.5.9003`)
+* Detect and warn about unsupported use of `fm_segm` objects in `fm_int.list()` (version `0.1.5.9004`)
+* Add `fm_basis()` and `fm_fem()` support for `fm_tensor` function spaces (version `0.1.5.9005`)
+* Add `fm_CRS()` support for `terra` objects (version `0.1.5.9006`)
+
 # fmesher 0.1.5
 
 * Fix bug in `fm_matern_sample()` that prevented the use of a non-NULL `loc` argument.
@@ -5,7 +15,7 @@
   after calling `fm_matern_sample()`.
 * Improve speed of `fm_block_log_shift()` by an order of magnitude for multi-block
   cases.
-* Fix bug in `plot.fm_mesh_2d` for meshes with 2D coordinate storage (version 0.1.4.9002)
+* Fix bug in `plot.fm_mesh_2d` for meshes with 2D coordinate storage (version `0.1.4.9002`)
 
 # fmesher 0.1.4
 

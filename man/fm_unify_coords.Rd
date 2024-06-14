@@ -20,8 +20,6 @@ fm_unify_coords(x, crs = NULL)
 
 \method{fm_unify_coords}{sf}(x, crs = NULL)
 
-\method{fm_unify_coords}{sf}(x, crs = NULL)
-
 \method{fm_unify_coords}{sfc}(x, crs = NULL)
 }
 \arguments{

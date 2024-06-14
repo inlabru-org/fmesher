@@ -7,6 +7,8 @@
 \alias{fm_CRS.fm_crs}
 \alias{fm_CRS.Spatial}
 \alias{fm_CRS.fm_CRS}
+\alias{fm_CRS.SpatVector}
+\alias{fm_CRS.SpatRaster}
 \alias{fm_CRS.sf}
 \alias{fm_CRS.sfc}
 \alias{fm_CRS.sfg}
@@ -34,6 +36,10 @@ fm_CRS(x, oblique = NULL, ...)
 \method{fm_CRS}{Spatial}(x, oblique = NULL, ...)
 
 \method{fm_CRS}{fm_CRS}(x, oblique = NULL, ...)
+
+\method{fm_CRS}{SpatVector}(x, oblique = NULL, ...)
+
+\method{fm_CRS}{SpatRaster}(x, oblique = NULL, ...)
 
 \method{fm_CRS}{sf}(x, oblique = NULL, ...)
 

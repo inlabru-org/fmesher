@@ -290,8 +290,10 @@ fm_int.list <- function(domain, samplers = NULL, ...) {
     samplers <- list(samplers)
   }
 
-  # Change a mix of sp and sf objects to sf
-  sf_samplers <- unlist(lapply(samplers, function(x) inherits(x, c("sf", "sfc"))))
+  # Change a mix of sp, sfc, and sf objects to sf
+  sfc_samplers <- unlist(lapply(samplers, function(x) inherits(x, "sfc")))
+  samplers[sfc_samplers] <- lapply(samplers[sfc_samplers], sf::st_as_sf)
+  sf_samplers <- unlist(lapply(samplers, function(x) inherits(x, "sf")))
   sp_samplers <- unlist(lapply(samplers, function(x) inherits(x, "Spatial")))
   if (any(sp_samplers)) {
     if (any(sf_samplers)) {
@@ -319,7 +321,23 @@ fm_int.list <- function(domain, samplers = NULL, ...) {
   index_single_samplers <- which(names_lsamplers != "")
   index_multi_samplers <- which(names_lsamplers == "")
   names_samplers <- as.list(names_lsamplers)
-  names_samplers[index_multi_samplers] <- lapply(samplers[index_multi_samplers], names)
+  names_samplers[index_multi_samplers] <-
+    lapply(
+      samplers[index_multi_samplers],
+      function(x) {
+        if (inherits(x, "fm_segm")) {
+          stop(
+            paste0(
+              "Unnamed sampler in the samplers is an 'fm_segm' object.\n",
+              "Use an 'sf' object or other supported multi-sampler class instead."
+            )
+          )
+          NULL
+        } else {
+          names(x)
+        }
+      }
+    )
   names_reserved <- c("weight", ".block") # coordinate and geometry is not required here
 
   if (length(intersect(names_domain, names_reserved)) > 0) {
@@ -337,7 +355,7 @@ fm_int.list <- function(domain, samplers = NULL, ...) {
   # TODO still have to deal with secondary geometry
   for (i in index_multi_samplers) {
     if (is.null(names_samplers[[i]])) {
-      stop(paste0("The unnamed sampler #", i, " in the samplers is NULL"))
+      stop(paste0("The unnamed sampler #", i, " in the samplers has no sub-names."))
     }
     lips_samplers[[i]] <-
       fm_int_multi_sampler(
@@ -351,7 +369,9 @@ fm_int.list <- function(domain, samplers = NULL, ...) {
   # singledomain samplers, ie named element(s) in samplers
   for (i in index_single_samplers) {
     nm <- intersect(names_samplers[[i]], names_domain)
-    stopifnot(length(nm) == 1)
+    if (length(nm) == 0) {
+      stop(paste0("The named sampler '", names_lsamplers[[i]], "' in the samplers has no corresponding domain."))
+    }
     lips_samplers[[i]] <-
       fm_int(
         domain = domain[[nm]],
@@ -1131,7 +1151,7 @@ fm_int_mesh_2d.sfc_MULTILINESTRING <- function(samplers,
 #' @param nsub number of subdivision points along each triangle edge, giving
 #'    `(nsub + 1)^2` proto-integration points used to compute
 #'   the vertex weights
-#'   (default `NULL=9`, giving 100 integration points for each triangle)
+#'   (default `nsub=9`, giving 100 integration points for each triangle)
 #' @return `list` with elements `loc` and `weight` with
 #'   integration points for the mesh
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}

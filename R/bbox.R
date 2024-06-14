@@ -43,17 +43,41 @@ fm_bbox.NULL <- function(...) {
 
 #' @rdname fm_bbox
 #' @export
-fm_bbox.matrix <- function(x, ...) {
-  fm_bbox(lapply(
-    seq_len(ncol(x)),
-    function(k) {
-      if (all(is.na(x[, k]))) {
+fm_bbox.numeric <- function(x, ...) {
+  x <- as.vector(x)
+  fm_bbox(
+    list(
+      if (all(is.na(x))) {
         c(NA_real_, NA_real_)
       } else {
-        range(x[, k], na.rm = TRUE)
+        range(x, na.rm = TRUE)
       }
-    }
-  ))
+    )
+  )
+}
+
+#' @rdname fm_bbox
+#' @export
+fm_bbox.matrix <- function(x, ...) {
+  do.call(
+    c,
+    c(lapply(seq_len(ncol(x)),
+             function(k) {
+               fm_bbox(x[, k, drop = TRUE])
+             }),
+      list(.join = TRUE)))
+}
+
+#' @rdname fm_bbox
+#' @export
+fm_bbox.Matrix <- function(x, ...) {
+  do.call(
+    c,
+    c(lapply(seq_len(ncol(x)),
+             function(k) {
+               fm_bbox(x[, k, drop = TRUE])
+             }),
+      list(.join = TRUE)))
 }
 
 #' @rdname fm_bbox
@@ -64,8 +88,14 @@ fm_bbox.fm_bbox <- function(x, ...) {
 
 #' @rdname fm_bbox
 #' @export
+fm_bbox.fm_mesh_1d <- function(x, ...) {
+  fm_bbox(x[["interval"]])
+}
+
+#' @rdname fm_bbox
+#' @export
 fm_bbox.fm_mesh_2d <- function(x, ...) {
-  fm_bbox(x[["loc"]])
+  fm_bbox(x[["loc"]][, seq_len(fm_manifold_dim(x)), drop = FALSE])
 }
 
 #' @rdname fm_bbox
@@ -81,6 +111,12 @@ fm_bbox.fm_segm <- function(x, ...) {
 #' @export
 fm_bbox.fm_lattice_2d <- function(x, ...) {
   fm_bbox(x[["loc"]])
+}
+
+#' @rdname fm_bbox
+#' @export
+fm_bbox.fm_tensor <- function(x, ...) {
+  do.call(c, c(lapply(x[["fun_spaces"]], fm_bbox), list(.join = TRUE)))
 }
 
 #' @rdname fm_bbox
@@ -142,12 +178,22 @@ fm_as_bbox <- function(x, ...) {
 #' @export
 #' @describeIn fm_bbox The `...` arguments should be `fm_bbox`
 #' objects, or coercible with `fm_as_bbox(list(...))`.
-#' @returns A `fm_bbox_list` object
+#' @param .join logical; if `TRUE`, concatenate the bounding boxes into a single
+#' multi-dimensional bounding box. Default is `FALSE`.
+#' @returns For [c.fm_bbox()], a `fm_bbox_list` object if `join = FALSE` (the default)
+#' or an `fm_bbox` object if `join = TRUE`.
 #' @examples
-#' m <- c(A = fm_bbox(cbind(1, 2), B = fm_bbox(cbind(3, 4))))
+#' m <- c(A = fm_bbox(cbind(1, 2)), B = fm_bbox(cbind(3, 4)))
 #' str(m)
 #' str(m[2])
-`c.fm_bbox` <- function(...) {
+`c.fm_bbox` <- function(..., .join = FALSE) {
   y <- lapply(list(...), function(xx) fm_as_list(xx, .class_stub = "bbox"))
-  return(do.call("c", y))
+  y <- do.call("c", y)
+  if (.join) {
+    y <- unclass(y)
+    y <- lapply(y, function(xx) unclass(xx))
+    y <- do.call("c", y)
+    y <- fm_bbox(y)
+  }
+  y
 }

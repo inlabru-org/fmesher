@@ -410,10 +410,12 @@ bool MeshC::recSwapDelaunay(const Dart &d0) {
   //    FMLOG("TVpost = " << endl << M_->TVO());
   //    FMLOG("TTpost = " << endl << M_->TTO());
 
-  if (!d1.isnull())
+  if (!d1.isnull()) {
     recSwapDelaunay(d1);
-  if (!d2.isnull())
+  }
+  if (!d2.isnull()) {
     recSwapDelaunay(d2);
+  }
   return true;
 }
 
@@ -451,12 +453,15 @@ Dart MeshC::splitTriangleDelaunay(const Dart &td, int v) {
   FMLOG("Split triangle " << td << " with vertex " << v << endl);
   d = splitTriangle(td, v);
 
-  if (!d0.isnull())
+  if (!d0.isnull()) {
     recSwapDelaunay(d0);
-  if (!d1.isnull())
+  }
+  if (!d1.isnull()) {
     recSwapDelaunay(d1);
-  if (!d2.isnull())
+  }
+  if (!d2.isnull()) {
     recSwapDelaunay(d2);
+  }
 
   //    FMLOG("TV = " << endl << M_->TVO());
 
@@ -676,14 +681,11 @@ Dart MeshC::insertNode(int v, const Dart &ed) {
   FMLOG("Locating node " << v << " " << M_->S(v) << endl);
 
   if (M_->useVT()) {
-    if (M_->VT(v) != -1) { /* Node already inserted! */
+    if (!(M_->VT(v).empty())) { /* Node already inserted! */
       FMLOG("Node " << v << " already inserted." << endl);
-      td = Dart(*M_, M_->VT(v));
-      for (int k = 0; k < 3; k++) {
-        if (td.v() == v)
-          return td;
-        td.orbit2();
-      }
+      auto mapping = M_->VT(v).begin();
+      td = Dart(*M_, mapping->first, 1, mapping->second);
+      return td;
     }
   }
 
@@ -778,7 +780,7 @@ Dart MeshC::insertNode(int v, const Dart &ed) {
 
 /*!  Calculate a convex covering of the convex hull of the points,
   as a convex geodesic polygon.  If the covering is larger than a
-  hemisphere, the whole spere is used as cover.  The algorithm may
+  hemisphere, the whole sphere is used as cover.  The algorithm may
   overestimate the size of the convex hull.
 
   Let \f$(n,d)\f$ denote a plane with normal vector \f$n\f$ at
@@ -1329,8 +1331,8 @@ bool MeshC::DT(const vertexListT &v_set) {
     v = *v_iter;
     if (dh.isnull())
       dh = Dart(*M_, 0);
-    dh = insertNode(v, dh); /* Start looking where the previous
-                               point was found. */
+    /* Start looking where the previous point was found. */
+    dh = insertNode(v, dh);
     if (dh.isnull()) {
       FMLOG("DT: Failed to insert node " << v << endl << *this);
     }
@@ -2000,7 +2002,7 @@ Dart MeshC::CDTSegment(const bool boundary, const constrT &constraint) {
                         try to add them otherwise. */
     FMLOG("CDT: Checking vertex " << v0 << endl);
     Dart dh = Dart(*M_, 0);
-    if (M_->VT(v0) == -1) {
+    if (M_->VT(v0).empty()) {
       dh = insertNode(v0, dh);
       if (dh.isnull()) {
         FMLOG("CDT: Failed to insert node " << v0 << endl << *this);
@@ -2009,7 +2011,7 @@ Dart MeshC::CDTSegment(const bool boundary, const constrT &constraint) {
     }
     FMLOG("CDT: Checked" << endl);
     FMLOG("CDT: Checking vertex " << v1 << endl);
-    if (M_->VT(v1) == -1) {
+    if (M_->VT(v1).empty()) {
       dh = insertNode(v1, dh);
       if (dh.isnull()) {
         FMLOG("CDT: Failed to insert node " << v1 << endl << *this);
@@ -2301,7 +2303,7 @@ bool MeshC::PruneExterior() {
     /* Make sure useVT is on: */
     M_->useVT(true);
     int v = M_->nV() - 1;
-    while ((v >= 0) && (M_->VT(v) == -1)) {
+    while ((v >= 0) && (M_->VT(v).empty())) {
       M_->removeLastVertex();
       --v;
     }
@@ -2398,6 +2400,8 @@ Dart MeshC::swapEdge(const Dart &d, MCQswapable &swapable) {
 }
 
 Dart MeshC::swapEdge(const Dart &d) {
+  /* TODO: check VT updates */
+
   if (state_ < State_CDT) {
     return M_->swapEdge(d);
   }

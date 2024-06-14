@@ -1,7 +1,7 @@
 #' @include mesh.R
 #' @include deprecated.R
 
-#' @importFrom sp coordinates proj4string `proj4string<-`
+#' @importFrom sp coordinates proj4string proj4string<-
 
 
 # fm_as_segm ####

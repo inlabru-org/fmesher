@@ -373,12 +373,15 @@ Rcpp::List fmesher_rcdt(Rcpp::List options,
         << std::endl);
     }
     /* Remove everything outside the boundary segments, if any. */
+    FMLOG("Prune exterior." << std::endl);
     MC.PruneExterior();
+    FMLOG("Invalidate unused vertex indices." << std::endl);
     invalidate_unused_vertex_indices(M, idx);
     /* Nothing more to do here.  Cannot refine non R2/S2 meshes. */
   } else {
     /* If we don't already have a triangulation, we must create one. */
     if (M.nT() == 0) {
+      FMLOG("Create covering triangulation." << std::endl);
       FMLOG("cet_sides = " << rcdt_options.cet_sides << std::endl);
       FMLOG("cet_margin = " << rcdt_options.cet_margin << std::endl);
       if (!MC.CET(rcdt_options.cet_sides, rcdt_options.cet_margin)) {
@@ -403,12 +406,15 @@ Rcpp::List fmesher_rcdt(Rcpp::List options,
     MC.DT(vertices);
 
     /* Remove everything outside the boundary segments, if any. */
+    FMLOG("Prune exterior." << std::endl);
     MC.PruneExterior();
+    FMLOG("Invalidate unused vertex indices." << std::endl);
     invalidate_unused_vertex_indices(M, idx);
 
     if ((rcdt_options.rcdt) &&
         (rcdt_options.rcdt_max_edge > 0)) {
       /* Calculate the RCDT: */
+      FMLOG("Construct refinement." << std::endl);
       MC.RCDT(rcdt_options.rcdt_min_angle,
               rcdt_options.rcdt_max_edge,
               rcdt_options.quality.raw(),
@@ -443,7 +449,7 @@ Rcpp::List fmesher_rcdt(Rcpp::List options,
 
   matrices.attach("tt", &M.TT());
   M.useVT(true);
-  matrices.attach("vt", &M.VT());
+//  matrices.attach("vt", &M.VT());
   M.useTTi(true);
   matrices.attach("tti", &M.TTi());
   matrices.attach("vv", std::make_unique<SparseMatrix<int>>(M.VV()),
@@ -508,7 +514,7 @@ Rcpp::List fmesher_bary(Rcpp::NumericMatrix mesh_loc,
   FMLOG("barycentric coordinate output." << std::endl);
   if ((M.type() != Mesh::Mtype::Plane) &&
       (M.type() != Mesh::Mtype::Sphere)) {
-    FMLOG_("Cannot calculate points2mesh mapping for non R2/S2 manifolds"
+    FMLOG_("Cannot currently calculate points2mesh mapping for non R2/S2 manifolds"
              << std::endl);
     return Rcpp::List();
   }
@@ -526,7 +532,9 @@ Rcpp::List fmesher_bary(Rcpp::NumericMatrix mesh_loc,
   matrices.matrixtype("bary", fmesh::IOMatrixtype::General);
   matrices.output("t").output("bary");
 
+  FMLOG("map_points_to_mesh start" << std::endl);
   map_points_to_mesh(M, points2mesh, points2mesh_t, points2mesh_b);
+  FMLOG("map_points_to_mesh done" << std::endl);
 
   return Rcpp::wrap(matrices);
 }
@@ -841,6 +849,106 @@ Rcpp::List fmesher_split_lines(
   return Rcpp::wrap(matrices);
 }
 
+
+
+//' @title Split triangles
+//'
+//' @description
+//' Subdivide a mesh with congruent subtriangles
+//'
+//' @param mesh_loc numeric matrix; mesh vertex coordinates
+//' @param mesh_tv 3-column integer matrix with 0-based vertex indices for each triangle
+//' @param mesh_boundary 2-column integer matrix with 0-based vertex indices for
+//' boundary constraints
+//' @param mesh_interior 2-column integer matrix with 0-based vertex indices for
+//' interior constraints
+//' @param subdivisions integer; number of new points along each edge.
+//' @param options list of triangulation options (`sphere_tolerance`)
+//' @export
+//' @returns A list of line splitting information objects
+//' @seealso [fm_split_lines()]
+//' @examples
+//' mesh <- fm_mesh_2d(
+//'   boundary = fm_segm(rbind(c(0,0), c(1,0), c(1,1), c(0, 1)), is.bnd = TRUE)
+//' )
+//' splitter <- fm_segm(rbind(c(0.8, 0.2), c(0.2, 0.8)))
+//' segm_split <- fm_split_lines(mesh, splitter)
+// [[Rcpp::export]]
+   Rcpp::List fmesher_subdivide(
+       Rcpp::NumericMatrix mesh_loc,
+       Rcpp::IntegerMatrix mesh_tv,
+       Rcpp::IntegerMatrix mesh_boundary,
+       Rcpp::IntegerMatrix mesh_interior,
+       int subdivisions,
+       Rcpp::List options) {
+     MatrixC matrices;
+     // Mesh M = Rcpp_import_mesh(mesh_loc, mesh_tv, matrices, Rcpp::List());
+     //
+     // matrices.attach("loc",
+     //                 std::make_unique<Matrix<double>>(Matrix3double(mesh_loc)));
+     // Matrix<double> &loc = matrices.DD("loc");
+     // typedef struct {
+     //   int start;
+     //   int finish;
+     //   int sequence_index;
+     // } edge_point_t;
+     // std::map<edge_point_t, int> edge_to_point;
+     // FMLOG("Add edge point locations." << std::endl);
+     // int new_vtx = loc.rows() - 1L;
+     // loc.rows(loc.rows() + (M.nT() - numberofedges) * subdivisions);
+     // for (int k = 0; k < subdivisions; k++) {
+     //   edge_to_point.insert(edge_point_t{0, 1, k+1}, new_vtx);
+     //   edge_to_point.insert(edge_point_t{1, 0, subdivisions - k)}, new_vtx);
+     //  }
+     //
+     // FMLOG("Add triangle interior point locations." << std::endl);
+     // loc.rows(loc.rows() + M.nT() * (subdivisions - 1) * (subdivisions - 2) / 2);
+     // for (int t = 0; t < M.nT(); t++) {
+     //   for (int k = 1; k < subdivisions - 1; k++) {
+     //     for (int l = 1; l < subdivisions - k; l++) {
+     //       loc(new_vtx, 0) = (loc(M.TV()(t, 0), 0) * (subdivisions - k - l) +
+     //                          loc(M.TV()(t, 1), 0) * k +
+     //                          loc(M.TV()(t, 2), 0) * l) / subdivisions;
+     //       loc(new_vtx, 1) = (loc(M.TV()(t, 0), 1) * (subdivisions - k - l) +
+     //                          loc(M.TV()(t, 1), 1) * k +
+     //                          loc(M.TV()(t, 2), 1) * l) / subdivisions;
+     //       loc(new_vtx, 2) = (loc(M.TV()(t, 0), 2) * (subdivisions - k - l) +
+     //                          loc(M.TV()(t, 1), 2) * k +
+     //                          loc(M.TV()(t, 2), 2) * l) / subdivisions;
+     //       new_vtx++;
+     //     }
+     //   }
+     // }
+     // matrices.attach("loc",
+     //                 std::make_unique<Matrix<double>>(Matrix3double(Matrix<double>(loc))));
+     // matrices.attach("idx",
+     //                 std::make_unique<Matrix<int>>(idx));
+     //
+     // /* Make sure we have a Nx3 matrix: */
+     // auto splitloc1 = std::make_unique<Matrix<double>>(3);
+     // auto splitidx1 = std::make_unique<Matrix<int>>(2);
+     // auto splittriangle1 = std::make_unique<Matrix<int>>(1);
+     // auto splitbary1 = std::make_unique<Matrix<double>>(3);
+     // auto splitbary2 = std::make_unique<Matrix<double>>(3);
+     // auto splitorigin1 = std::make_unique<Matrix<int>>(1);
+     //
+     // split_line_segments_on_triangles(
+     //   M, matrices.DD("loc"), matrices.DI("idx"), *splitloc1,
+     //   *splitidx1, *splittriangle1, *splitbary1, *splitbary2, *splitorigin1);
+     //
+     // /* Now it's ok to overwrite potential input split* matrices. */
+     // matrices.attach("split.loc", std::move(splitloc1));
+     // matrices.attach("split.idx", std::move(splitidx1));
+     // matrices.attach("split.t", std::move(splittriangle1));
+     // matrices.attach("split.b1", std::move(splitbary1));
+     // matrices.attach("split.b2", std::move(splitbary2));
+     // matrices.attach("split.origin", std::move(splitorigin1));
+     // matrices.output("split.loc").output("split.idx");
+     // matrices.output("split.b1").output("split.b2");
+     // matrices.output("split.t").output("split.origin");
+     //
+     return Rcpp::wrap(matrices);
+   }
 
 
 // //' @title Test the matrix I/O system

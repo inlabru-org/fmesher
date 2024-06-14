@@ -133,3 +133,29 @@ fmesher_split_lines <- function(mesh_loc, mesh_tv, loc, idx, options) {
     .Call(`_fmesher_fmesher_split_lines`, mesh_loc, mesh_tv, loc, idx, options)
 }
 
+#' @title Split triangles
+#'
+#' @description
+#' Subdivide a mesh with congruent subtriangles
+#'
+#' @param mesh_loc numeric matrix; mesh vertex coordinates
+#' @param mesh_tv 3-column integer matrix with 0-based vertex indices for each triangle
+#' @param mesh_boundary 2-column integer matrix with 0-based vertex indices for
+#' boundary constraints
+#' @param mesh_interior 2-column integer matrix with 0-based vertex indices for
+#' interior constraints
+#' @param subdivisions integer; number of new points along each edge.
+#' @param options list of triangulation options (`sphere_tolerance`)
+#' @export
+#' @returns A list of line splitting information objects
+#' @seealso [fm_split_lines()]
+#' @examples
+#' mesh <- fm_mesh_2d(
+#'   boundary = fm_segm(rbind(c(0,0), c(1,0), c(1,1), c(0, 1)), is.bnd = TRUE)
+#' )
+#' splitter <- fm_segm(rbind(c(0.8, 0.2), c(0.2, 0.8)))
+#' segm_split <- fm_split_lines(mesh, splitter)
+fmesher_subdivide <- function(mesh_loc, mesh_tv, mesh_boundary, mesh_interior, subdivisions, options) {
+    .Call(`_fmesher_fmesher_subdivide`, mesh_loc, mesh_tv, mesh_boundary, mesh_interior, subdivisions, options)
+}
+

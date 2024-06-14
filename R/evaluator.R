@@ -717,19 +717,31 @@ fm_evaluator.fm_tensor <- function(x,
                                    loc,
                                    ...) {
   if (length(loc) != length(x[["fun_spaces"]])) {
-    stop("")
+    stop(
+      paste0(
+        "Length of location list (",
+        length(loc), ") doesn't match the number of function spaces (",
+        length(x[["fun_spaces"]]),
+        ")"
+      )
+    )
   }
   if (is.null(names(loc))) {
     names(loc) <- names(x[["fun_spaces"]])
   } else if (!setequal(names(x[["fun_spaces"]]), names(loc))) {
-    stop("")
+    stop("Name mismatch between location list names and function space names.")
+  }
+  idx <- names(x[["fun_spaces"]])
+  if (is.null(idx)) {
+    idx <- seq_along(x[["fun_spaces"]])
   }
   proj <- lapply(
-    names(x[["fun_spaces"]]),
+    idx,
     function(k) {
       fm_evaluator(x[["fun_spaces"]][[k]], loc = loc[[k]])$proj
     }
   )
+  names(proj) <- names(x[["fun_spaces"]])
 
   # Combine the matrices
   # (A1, A2, A3) -> rowkron(A3, rowkron(A2, A1))
@@ -1006,10 +1018,12 @@ fm_basis.default <- function(x, loc, ...) {
   fm_evaluator(x, loc = loc)$proj$A
 }
 
-#' @param weights Optional weight matrix to apply (from the left)
+#' @param weights Optional weight vector to apply (from the left, one
+#' weight for each row of the basis matrix)
 #' @param derivatives If non-NULL and logical, return a list, optionally
 #' including derivative matrices.
-#' @returns For `fm_mesh_1d`, a list with elements
+#' @return For `fm_mesh_1d`, a matrix, or if `derivatives` is `TRUE`,
+#' a list with elements
 #' \item{A }{The projection matrix, `u(loc_i)=sum_j A_ij w_i`}
 #' \item{d1A, d2A }{Derivative weight matrices,
 #' `du/dx(loc_i)=sum_j dx_ij w_i`, etc.}
@@ -1029,7 +1043,8 @@ fm_basis.fm_mesh_1d <- function(x, loc, weights = NULL, derivatives = NULL, ...)
   return(result)
 }
 
-#' @return For `fm_mesh_2d`, a list with elements
+#' @return For `fm_mesh_2d`, a matrix, or if `derivatives` is `TRUE`,
+#' a list with elements
 #' \item{A }{The projection matrix, `u(loc_i)=sum_j A_ij w_i`}
 #' \item{dx, dy, dz }{Derivative weight matrices, `du/dx(loc_i)=sum_j
 #' dx_ij w_i`, etc.}
@@ -1067,6 +1082,23 @@ fm_basis.inla.mesh <- function(x, loc, ...) {
 #' @export
 fm_basis.fm_evaluator <- function(x, ...) {
   x$proj$A
+}
+
+#' @return For `fm_tensor`, a matrix
+#' @rdname fm_basis
+#' @export
+fm_basis.fm_tensor <- function(x, loc, weights = NULL, ...) {
+  result <- fm_evaluator(
+    x,
+    loc = loc,
+    weights = weights,
+    ...
+  )
+  result <- fm_basis(result)
+  if (!is.null(weights)) {
+    result <- weights * result
+  }
+  return(result)
 }
 
 
