@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.5.9006</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.6.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,6 +57,9 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="fmesher-development-version">fmesher (development version)<a class="anchor" aria-label="anchor" href="#fmesher-development-version"></a></h2>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.1.6" id="fmesher-016">fmesher 0.1.6<a class="anchor" aria-label="anchor" href="#fmesher-016"></a></h2>
 <ul><li>Fix for hiding away-facing triangle edges in <code><a href="../reference/plot.fm_mesh_2d.html">plot.fm_mesh_2d()</a></code> and <code><a href="../reference/plot.fm_segm.html">lines.fm_segm()</a></code>.</li>
 <li>Fix duplicated <code><a href="../reference/fm_unify_coords.html">fm_unify_coords.sf()</a></code> method. Thanks to Pablo Paccioretti for debugging and reporting, see <a href="https://github.com/inlabru-org/fmesher/issues/13" class="external-link">#13</a> (version <code>0.1.5.9001</code>)</li>
 <li>Use batched <code><a href="../reference/fm_bary.html">fm_bary.fm_mesh_2d()</a></code> computations for data sizes of <code>2e5</code> and upwards. This improves performance of <code><a href="../reference/fm_basis.html">fm_basis()</a></code>/<code>inla.spde.make.A()</code> for large data sets, see <a href="https://github.com/inlabru-org/fmesher/issues/14" class="external-link">#14</a> (version <code>0.1.5.9002</code>)</li>
