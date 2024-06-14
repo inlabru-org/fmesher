@@ -7,9 +7,9 @@ This is a minor bugfix release.
 ## R CMD check results for 0.1.6
 
 > checking installed package size ... NOTE
-    installed size is  7.2Mb
+    installed size is  7.3Mb
     sub-directories of 1Mb or more:
-      libs   5.3Mb
+      libs   5.4Mb
       
 This is the size of the C++ library after build&installation.
 
