@@ -1,10 +1,10 @@
 This is a minor bugfix release.
 
-## Changes from 0.1.4 to 0.1.5
+## Changes from 0.1.5 to 0.1.6
 
-* Minor R code bugfixes and speedups
+* R code and feature bugfixes
 
-## R CMD check results for 0.1.5
+## R CMD check results for 0.1.6
 
 > checking installed package size ... NOTE
     installed size is  7.2Mb
@@ -13,16 +13,15 @@ This is a minor bugfix release.
       
 This is the size of the C++ library after build&installation.
 
-## CRAN results for 0.1.4
+## CRAN results for 0.1.5
 
-Version: 0.1.4
+Version: 0.1.5
 Check: installed package size
 Result: NOTE 
-    installed size is  8.9Mb
+    installed size is  9.0Mb
     sub-directories of 1Mb or more:
       libs   7.0Mb
-Flavors: r-release-macos-arm64, r-release-macos-x86_64, r-oldrel-macos-arm64
-
+Flavors: r-release-macos-arm64, r-release-macos-x86_64, r-oldrel-macos-arm64, r-oldrel-macos-x86_64
 
 # revdepcheck results
 
