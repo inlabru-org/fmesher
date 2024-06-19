@@ -217,8 +217,10 @@ fm_refine <- function(mesh, refine = list(max.edge = 1)) {
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
 #' @export
 #' @examples
-#' mesh <- fm_rcdt_2d_inla(loc = rbind(c(0, 0), c(1, 0), c(0, 1)),
-#'                         tv = rbind(c(1, 2, 3)))
+#' mesh <- fm_rcdt_2d_inla(
+#'   loc = rbind(c(0, 0), c(1, 0), c(0, 1)),
+#'   tv = rbind(c(1, 2, 3))
+#' )
 #' mesh_sub <- fm_subdivide(mesh, 3)
 #' mesh
 #' mesh_sub
@@ -227,18 +229,19 @@ fm_refine <- function(mesh, refine = list(max.edge = 1)) {
 #'
 #' plot(fm_subdivide(fmexample$mesh, 3), edge.color = 2)
 #' plot(fmexample$mesh, add = TRUE, edge.color = 1)
-
 fm_subdivide <- function(mesh, n = 1) {
   if (n < 1) {
     return(mesh)
   }
 
-  sub <- fmesher_subdivide(mesh_loc = mesh$loc,
-                           mesh_tv = mesh$graph$tv - 1L,
-                           mesh_boundary = mesh$segm$bnd$idx - 1L,
-                           mesh_interior = mesh$segm$int$idx - 1L,
-                           subdivisions = n,
-                           options = list())
+  sub <- fmesher_subdivide(
+    mesh_loc = mesh$loc,
+    mesh_tv = mesh$graph$tv - 1L,
+    mesh_boundary = mesh$segm$bnd$idx - 1L,
+    mesh_interior = mesh$segm$int$idx - 1L,
+    subdivisions = n,
+    options = list()
+  )
 
   if (fm_manifold(mesh, "S2")) {
     radius <- mean(rowSums(mesh$loc^2)^0.5)
@@ -248,9 +251,11 @@ fm_subdivide <- function(mesh, n = 1) {
     sub$loc <- renorm(sub$loc)
   }
 
-  new_mesh <- fm_rcdt_2d_inla(loc = sub$loc,
-                              tv = sub$tv + 1L,
-                              crs = fm_crs(mesh))
+  new_mesh <- fm_rcdt_2d_inla(
+    loc = sub$loc,
+    tv = sub$tv + 1L,
+    crs = fm_crs(mesh)
+  )
 
   new_mesh
 }

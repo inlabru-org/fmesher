@@ -20,8 +20,10 @@ Splits each mesh triangle into \code{(n + 1)^2} subtriangles.
 The current version drops any edge constraint information from the mesh.
 }
 \examples{
-mesh <- fm_rcdt_2d_inla(loc = rbind(c(0, 0), c(1, 0), c(0, 1)),
-                        tv = rbind(c(1, 2, 3)))
+mesh <- fm_rcdt_2d_inla(
+  loc = rbind(c(0, 0), c(1, 0), c(0, 1)),
+  tv = rbind(c(1, 2, 3))
+)
 mesh_sub <- fm_subdivide(mesh, 3)
 mesh
 mesh_sub
