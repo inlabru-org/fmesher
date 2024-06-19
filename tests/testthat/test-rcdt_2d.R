@@ -19,6 +19,9 @@ test_that("Flat CDT works", {
   expect_equal(fm_manifold(mesh, "S"), FALSE)
   expect_equal(fm_manifold(mesh, "1"), FALSE)
   expect_equal(fm_manifold(mesh, "S1"), FALSE)
+  # Check issue #16, where it ignored all but the first type option:
+  expect_equal(fm_manifold(mesh, c("R", "S")), TRUE)
+  expect_equal(fm_manifold(mesh, c("S", "R")), TRUE)
 
   edges <- list(
     mesh$loc[mesh$graph$tv[, 2], ] - mesh$loc[mesh$graph$tv[, 1], ],
