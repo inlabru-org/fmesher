@@ -2,7 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{fmesher_subdivide}
 \alias{fmesher_subdivide}
-\title{Split triangles}
+\title{Subdivide triangles}
 \usage{
 fmesher_subdivide(
   mesh_loc,
@@ -19,28 +19,30 @@ fmesher_subdivide(
 \item{mesh_tv}{3-column integer matrix with 0-based vertex indices for each triangle}
 
 \item{mesh_boundary}{2-column integer matrix with 0-based vertex indices for
-boundary constraints}
+boundary constraints, currently ignored}
 
 \item{mesh_interior}{2-column integer matrix with 0-based vertex indices for
-interior constraints}
+interior constraints, currently ignored}
 
 \item{subdivisions}{integer; number of new points along each edge.}
 
 \item{options}{list of triangulation options (\code{sphere_tolerance})}
 }
 \value{
-A list of line splitting information objects
+A list of new \code{loc} and \code{tv} information
 }
 \description{
-Subdivide a mesh with congruent subtriangles
+Subdivide a mesh with congruent and anti-congruent subtriangles
 }
 \examples{
 mesh <- fm_mesh_2d(
   boundary = fm_segm(rbind(c(0,0), c(1,0), c(1,1), c(0, 1)), is.bnd = TRUE)
 )
-splitter <- fm_segm(rbind(c(0.8, 0.2), c(0.2, 0.8)))
-segm_split <- fm_split_lines(mesh, splitter)
+new_mesh <- fm_subdivide(mesh, n = 3)
+plot(new_mesh, edge.color = 2)
+plot(mesh, add = TRUE, edge.color = 1)
 }
 \seealso{
-\code{\link[=fm_split_lines]{fm_split_lines()}}
+\code{\link[=fm_subdivide]{fm_subdivide()}}
 }
+\keyword{internal}
