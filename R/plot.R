@@ -293,13 +293,13 @@ get_tv_sub <- function(tv, loc, t.sub, visibility = "front") {
   tv <- tv[t.sub, , drop = FALSE]
   # Filter out away-facing triangles
   if (identical(visibility, "front")) {
-    e0 <- loc[tv[, 2], ] - loc[tv[, 1], ]
-    e1 <- loc[tv[, 3], ] - loc[tv[, 1], ]
+    e0 <- loc[tv[, 2], , drop = FALSE] - loc[tv[, 1], , drop = FALSE]
+    e1 <- loc[tv[, 3], , drop = FALSE] - loc[tv[, 1], , drop = FALSE]
     normal <-
       cbind(
-        e0[, 2] * e1[, 3] - e1[, 3] * e1[, 2],
-        e0[, 3] * e1[, 1] - e0[, 1] * e1[, 3],
-        e0[, 1] * e1[, 2] - e0[, 2] * e1[, 1]
+        e0[, 2, drop = FALSE] * e1[, 3, drop = FALSE] - e1[, 3, drop = FALSE] * e1[, 2, drop = FALSE],
+        e0[, 3, drop = FALSE] * e1[, 1, drop = FALSE] - e0[, 1, drop = FALSE] * e1[, 3, drop = FALSE],
+        e0[, 1, drop = FALSE] * e1[, 2, drop = FALSE] - e0[, 2, drop = FALSE] * e1[, 1, drop = FALSE]
       )
     ok <- normal[, 3] > 0
     tv <- tv[ok, , drop = FALSE]
