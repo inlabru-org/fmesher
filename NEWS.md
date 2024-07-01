@@ -1,4 +1,4 @@
-# fmesher (development version)
+# fmesher 0.1.7
 
 * Fix regression bug in `fm_manifold()` that made it ignore all but the first given type options. See #16 (version `0.1.6.9001)
 * Fix `plot.fm_mesh_2d` vectorisation bug (version `0.1.6.9002`)
