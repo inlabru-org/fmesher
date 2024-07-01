@@ -933,8 +933,8 @@ Rcpp::List fmesher_subdivide(
     triangle_to_point[i].resize(subdivisions + 2 - i, 0);
   }
 
-  int t_offset = 0;
-  for (int t = 0; t < M.nT(); t++) {
+  size_t t_offset = 0;
+  for (size_t t = 0; t < M.nT(); t++) {
     FMLOG("Corner points" << std::endl);
 
     triangle_to_point[0][0] = M.TV()(t, 0);
