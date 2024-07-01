@@ -294,13 +294,16 @@ print.fm_tensor <- function(x, ..., digits = NULL, verbose = FALSE) {
 
   cat("fm_tensor object:\n", sep = "")
   cat("  Manifold:\t", ret$manifold, " = ",
-      paste0(ret$sub_manifolds, collapse = " x "),
-      "\n",
-      sep = "")
+    paste0(ret$sub_manifolds, collapse = " x "),
+    "\n",
+    sep = ""
+  )
   cat("  ", sep = "")
   print(fm_bbox(x), digits = digits)
   cat("  Basis d.o.f.:\t", fm_dof(x), " = ",
-      paste0(ret$sub_dof, collapse = " x "),
-      "\n", sep = "")
+    paste0(ret$sub_dof, collapse = " x "),
+    "\n",
+    sep = ""
+  )
   invisible(x)
 }

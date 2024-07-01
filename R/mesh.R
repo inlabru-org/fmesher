@@ -205,150 +205,59 @@ fm_refine <- function(mesh, refine = list(max.edge = 1)) {
 
 
 
-# Split triangles of a mesh into subtriangles
-#
-# @param mesh an inla.mesh object
-# @param n number of added points along each edge
-# @return A refined inla.mesh object
-# @author Finn Lindgren \email{finn.lindgren@@gmail.com}
-# @export
-
+#' Split triangles of a mesh into subtriangles
+#'
+#' `r lifecycle::badge("experimental")`
+#' Splits each mesh triangle into `(n + 1)^2` subtriangles.
+#' The current version drops any edge constraint information from the mesh.
+#'
+#' @param mesh an [fm_mesh_2d] object
+#' @param n number of added points along each edge. Default is 1.
+#' @return A refined [fm_mesh_2d] object
+#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @export
+#' @examples
+#' mesh <- fm_rcdt_2d_inla(
+#'   loc = rbind(c(0, 0), c(1, 0), c(0, 1)),
+#'   tv = rbind(c(1, 2, 3))
+#' )
+#' mesh_sub <- fm_subdivide(mesh, 3)
+#' mesh
+#' mesh_sub
+#'
+#' plot(mesh_sub, edge.color = 2)
+#'
+#' plot(fm_subdivide(fmexample$mesh, 3), edge.color = 2)
+#' plot(fmexample$mesh, add = TRUE, edge.color = 1)
 fm_subdivide <- function(mesh, n = 1) {
   if (n < 1) {
     return(mesh)
   }
 
-  split.edges <- function(segm, n) {
-    if (is.null(segm) || (nrow(segm$idx) == 0)) {
-      return(segm)
-    }
-    n.loc <- nrow(segm$loc)
-    n.idx <- nrow(segm$idx)
-    loc <- do.call(
-      rbind,
-      c(
-        list(segm$loc),
-        lapply(
-          seq_len(n),
-          function(k) {
-            (segm$loc[segm$idx[, 1], , drop = FALSE] * k / (n + 1) +
-              segm$loc[segm$idx[, 2], , drop = FALSE] * (n - k + 1) / (n +
-                1))
-          }
-        )
-      )
-    )
-    idx <- do.call(
-      rbind,
-      c(
-        list(cbind(
-          segm$idx[, 1], n.loc + seq_len(n.idx)
-        )),
-        lapply(
-          seq_len(n - 1),
-          function(k) {
-            cbind(
-              n.loc * k + seq_len(n.idx),
-              n.loc * (k + 1) + seq_len(n.idx)
-            )
-          }
-        ),
-        list(cbind(
-          n.loc * n + seq_len(n.idx), segm$idx[, 2]
-        ))
-      )
-    )
-
-    segm2 <-
-      fm_segm(
-        loc = loc,
-        idx = idx,
-        grp = rep(segm$grp, n + 1),
-        is.bnd = segm$is.bnd
-      )
-
-    segm2
-  }
-
-  p1 <- mesh$loc[mesh$graph$tv[, 1], , drop = FALSE]
-  p2 <- mesh$loc[mesh$graph$tv[, 2], , drop = FALSE]
-  p3 <- mesh$loc[mesh$graph$tv[, 3], , drop = FALSE]
-
-  tri.inner.loc <-
-    do.call(
-      rbind,
-      lapply(
-        seq_len(n + 2) - 1,
-        function(k2) {
-          do.call(
-            rbind,
-            lapply(
-              seq_len(n + 2 - k2) - 1,
-              function(k3) {
-                w1 <- (n + 1 - k2 - k3) / (n + 1)
-                w2 <- k2 / (n + 1)
-                w3 <- k3 / (n + 1)
-                p1 * w1 + p2 * w2 + p3 * w3
-              }
-            )
-          )
-        }
-      )
-    )
-
-  n.tri <- nrow(p1)
-  tri.edges <- fm_segm(
-    loc = rbind(p1, p2, p3),
-    idx = rbind(
-      cbind(seq_len(n.tri), seq_len(n.tri) + n.tri),
-      cbind(seq_len(n.tri) + n.tri, seq_len(n.tri) + 2 * n.tri),
-      cbind(seq_len(n.tri) + 2 * n.tri, seq_len(n.tri))
-    ),
-    is.bnd = FALSE
+  sub <- fmesher_subdivide(
+    mesh_loc = mesh$loc,
+    mesh_tv = mesh$graph$tv - 1L,
+    mesh_boundary = mesh$segm$bnd$idx - 1L,
+    mesh_interior = mesh$segm$int$idx - 1L,
+    subdivisions = n,
+    options = list()
   )
-
-  new.loc <- unique(rbind(
-    fm_unify_coords(tri.edges$loc),
-    fm_unify_coords(tri.inner.loc)
-  ))
-
-  boundary2 <- split.edges(fm_segm(mesh, boundary = TRUE), n = n)
-  interior2 <- split.edges(fm_segm(mesh, boundary = FALSE), n = n)
-
-  for (k in rev(seq_len(nrow(new.loc)))) {
-    if ((NROW(boundary2$loc) > 0) &&
-      any(rowSums((new.loc[rep(k, nrow(boundary2$loc)), , drop = FALSE] -
-        boundary2$loc)^2)^0.5 < 1e-4)) {
-      new.loc <- new.loc[-k, , drop = FALSE]
-    } else if ((NROW(interior2$loc) > 0) &&
-      any(rowSums((new.loc[rep(k, nrow(interior2$loc)), , drop = FALSE] -
-        interior2$loc)^2)^0.5 < 1e-4)) {
-      new.loc <- new.loc[-k, , drop = FALSE]
-    }
-  }
 
   if (fm_manifold(mesh, "S2")) {
     radius <- mean(rowSums(mesh$loc^2)^0.5)
     renorm <- function(loc) {
       loc * (radius / rowSums(loc^2)^0.5)
     }
-    new.loc <- renorm(new.loc)
-    interior2$loc <- renorm(interior2$loc)
-    boundary2$loc <- renorm(boundary2$loc)
+    sub$loc <- renorm(sub$loc)
   }
 
-  mesh2 <- fm_rcdt_2d_inla(
-    loc = new.loc,
-    interior = interior2,
-    boundary = boundary2,
-    refine = list(
-      min.angle = 0,
-      max.edge = Inf
-    ),
+  new_mesh <- fm_rcdt_2d_inla(
+    loc = sub$loc,
+    tv = sub$tv + 1L,
     crs = fm_crs(mesh)
   )
 
-  mesh2
+  new_mesh
 }
 
 

@@ -1,3 +1,9 @@
+# fmesher 0.1.7
+
+* Fix regression bug in `fm_manifold()` that made it ignore all but the first given type options. See #16 (version `0.1.6.9001)
+* Fix `plot.fm_mesh_2d` vectorisation bug (version `0.1.6.9002`)
+* Add new `fm_subdivide()` method for `fm_mesh_2d` meshes (version `0.1.6.9003`)
+
 # fmesher 0.1.6
 
 * Fix for hiding away-facing triangle edges in `plot.fm_mesh_2d()` and `lines.fm_segm()`.

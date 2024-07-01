@@ -27,6 +27,14 @@ fm_manifold <- function(x, type = NULL) {
   if (is.null(x)) {
     return(FALSE)
   }
+  any(vapply(type, function(t) fm_manifold_match(x, t), logical(1)))
+}
+
+# Check match for a single type
+fm_manifold_match <- function(x, type) {
+  if (is.null(x)) {
+    return(FALSE)
+  }
   # Match exact manifold?
   if (x %in% type) {
     return(TRUE)
