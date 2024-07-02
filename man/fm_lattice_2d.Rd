@@ -46,9 +46,9 @@ or NULL (equivalent to \code{"default"}).}
 An \code{fm_lattice_2d} object with elements
 \describe{
 \item{dims}{integer vector}
-\item{x}{x-values}
-\item{y}{y-values}
-\item{loc}{matrix of \verb{(x, y)} values}
+\item{x}{x-values for original vector input}
+\item{y}{y-values for original vector input}
+\item{loc}{matrix of \verb{(x, y)} values or \verb{(x, y, z)} values. May be altered by \code{\link[=fm_transform]{fm_transform()}}}
 \item{segm}{\code{fm_segm} object}
 \item{crs}{\code{fm_crs} object or \code{NULL}}
 }

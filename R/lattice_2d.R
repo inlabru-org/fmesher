@@ -163,9 +163,9 @@ fm_lattice_2d <- function(...) {
 #' @return An `fm_lattice_2d` object with elements
 #' \describe{
 #' \item{dims}{integer vector}
-#' \item{x}{x-values}
-#' \item{y}{y-values}
-#' \item{loc}{matrix of `(x, y)` values}
+#' \item{x}{x-values for original vector input}
+#' \item{y}{y-values for original vector input}
+#' \item{loc}{matrix of `(x, y)` values or `(x, y, z)` values. May be altered by [fm_transform()]}
 #' \item{segm}{`fm_segm` object}
 #' \item{crs}{`fm_crs` object or `NULL`}
 #' }
