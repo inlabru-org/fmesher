@@ -148,9 +148,14 @@ fm_lattice_2d <- function(...) {
 #'
 #' Construct a lattice grid for [fm_mesh_2d()]
 #'
-#' @param x vector or grid matrix of x-values
-#' @param y vector of grid matrix of y-values
-#' @param z if x is a matrix, a grid matrix of z-values
+#' @param x vector or grid matrix of x-values. Vector values are sorted before use.
+#' Matrix input is assumed to be a grid of x-values with the same ordering convention
+#' of `as.vector(x)` as `rep(x, times = dims[2])` for vector input.
+#' @param y vector of grid matrix of y-values. Vector values are sorted before use.
+#' Matrix input is assumed to be a grid of y-values with the same ordering convention
+#' of `as.vector(y)` as `rep(y, each = dims[1])` for vector input.
+#' @param z if x is a matrix, a grid matrix of z-values, with the same ordering as `x`
+#' and `y`. If `x` is a vector, `z` is ignored.
 #' @param dims the size of the grid, length 2 vector
 #' @param units One of `c("default", "longlat", "longsinlat", "mollweide")`
 #' or NULL (equivalent to `"default"`).
@@ -252,6 +257,12 @@ fm_lattice_2d.default <- function(
         sep = ""
       ))
     }
+
+    # Ensure correct point ordering
+    x <- sort(unique(x))
+    y <- sort(unique(y))
+
+    # Expand coordinates
     loc <- (cbind(
       rep(x, times = dims[2]),
       rep(y, each = dims[1])

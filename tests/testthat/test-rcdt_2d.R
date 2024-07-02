@@ -77,3 +77,12 @@ test_that("Spherical CDT works", {
 
   expect_lte(max.edge, max.edge0 + lowtol)
 })
+
+
+test_that("fm_lattice_2d ordering", {
+  latt1 <- fm_lattice_2d(1:4, 1:3)
+  latt2 <- fm_lattice_2d(rev(1:4), 1:3)
+  expect_equal(latt1$x, latt2$x)
+  expect_equal(latt1$y, latt2$y)
+  expect_equal(latt1$loc, latt2$loc)
+})
