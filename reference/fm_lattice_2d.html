@@ -87,15 +87,20 @@
 
 
 <dt>x</dt>
-<dd><p>vector or grid matrix of x-values</p></dd>
+<dd><p>vector or grid matrix of x-values. Vector values are sorted before use.
+Matrix input is assumed to be a grid of x-values with the same ordering convention
+of <code>as.vector(x)</code> as <code>rep(x, times = dims[2])</code> for vector input.</p></dd>
 
 
 <dt>y</dt>
-<dd><p>vector of grid matrix of y-values</p></dd>
+<dd><p>vector of grid matrix of y-values. Vector values are sorted before use.
+Matrix input is assumed to be a grid of y-values with the same ordering convention
+of <code>as.vector(y)</code> as <code>rep(y, each = dims[1])</code> for vector input.</p></dd>
 
 
 <dt>z</dt>
-<dd><p>if x is a matrix, a grid matrix of z-values</p></dd>
+<dd><p>if x is a matrix, a grid matrix of z-values, with the same ordering as <code>x</code>
+and <code>y</code>. If <code>x</code> is a vector, <code>z</code> is ignored.</p></dd>
 
 
 <dt>dims</dt>
