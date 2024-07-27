@@ -169,6 +169,7 @@ fm_nonconvex_hull_inla <- function(x,
                                    ...) {
   stopifnot(!is.null(x))
   if (inherits(x, c("SpatialPoints", "SpatialPointsDataFrame"))) {
+    fm_safe_sp(force = TRUE)
     x <- fm_transform(
       sp::coordinates(x),
       crs0 = fm_crs(x),
@@ -278,6 +279,7 @@ fm_nonconvex_hull_inla_basic <- function(x, convex = -0.15, resolution = 40,
                                          eps = NULL, crs = NULL) {
   stopifnot(!is.null(x))
   if (inherits(x, c("SpatialPoints", "SpatialPointsDataFrame"))) {
+    fm_safe_sp(force = TRUE)
     x <- fm_transform(
       sp::coordinates(x),
       crs0 = fm_crs(x),

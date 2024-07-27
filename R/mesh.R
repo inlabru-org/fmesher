@@ -552,6 +552,7 @@ fm_onto_mesh <- function(mesh, loc, crs = NULL) {
   }
 
   if (inherits(loc, c("SpatialPoints", "SpatialPointsDataFrame"))) {
+    fm_safe_sp(force = TRUE)
     loc <- sp::coordinates(loc)
   } else if (inherits(loc, c("sf", "sfc", "sfg"))) {
     loc <- sf::st_coordinates(loc)

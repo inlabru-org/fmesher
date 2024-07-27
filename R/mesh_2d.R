@@ -93,6 +93,7 @@ fm_unify_coords.default <- function(x, crs = NULL) {
 #' @rdname fm_unify_coords
 #' @export
 fm_unify_coords.Spatial <- function(x, crs = NULL) {
+  fm_safe_sp(force = TRUE)
   x <- fm_transform(
     sp::coordinates(x),
     crs0 = fm_crs(x),

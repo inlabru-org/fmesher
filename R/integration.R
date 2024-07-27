@@ -821,6 +821,7 @@ fm_vertex_projection <- function(points, mesh) {
   data <- dplyr::select(data, c("weight", ".block", ".vertex"))
 
   if (inherits(points, "Spatial")) {
+    fm_safe_sp(force = TRUE)
     ret <- sp::SpatialPointsDataFrame(
       coords[, seq_len(min(
         ncol(coords),

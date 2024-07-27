@@ -1,9 +1,6 @@
 #' @include deprecated.R
 #' @include print.R
 
-#' @importFrom sp coordinates proj4string proj4string<-
-
-
 #' @title Handling CRS/WKT
 #' @description Get and set CRS object or WKT string properties.
 #' @export
