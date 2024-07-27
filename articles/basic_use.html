@@ -5,69 +5,53 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="fmesher">
 <title>Basic fmesher use • fmesher</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js" integrity="sha512-7O5pXpc0oCRrxk8RUfDYFgn0nO1t+jLuIOQdOMRp4APB7uZ4vSjspzp5y6YDtDs4VzUSTbWzBFZ/LKJhnyFOKw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Basic fmesher use">
-<meta property="og:description" content="fmesher">
-<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Basic fmesher use">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
-    
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light" data-bs-theme="light"><div class="container">
-    
+
+    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.7.9001</small>
 
-    
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item">
-  <a class="nav-link" href="../reference/index.html">Reference</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="active nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <h6 class="dropdown-header" data-toc-skip>Basic examples</h6>
-    <a class="dropdown-item" href="../articles/basic_use.html">Basic use</a>
-    <div class="dropdown-divider"></div>
-    <h6 class="dropdown-header" data-toc-skip>Concepts</h6>
-    <a class="dropdown-item" href="../articles/inla_conversion.html">Conversion from legacy INLA package methods</a>
-    <a class="dropdown-item" href="../articles/fmesher_library.html">The fmesher C++ library</a>
-  </div>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><h6 class="dropdown-header" data-toc-skip>Basic examples</h6></li>
+    <li><a class="dropdown-item" href="../articles/basic_use.html">Basic use</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Concepts</h6></li>
+    <li><a class="dropdown-item" href="../articles/inla_conversion.html">Conversion from legacy INLA package methods</a></li>
+    <li><a class="dropdown-item" href="../articles/fmesher_library.html">The fmesher C++ library</a></li>
+  </ul>
 </li>
-<li class="nav-item">
-  <a class="nav-link" href="../news/index.html">Changelog</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
-<form class="form-inline my-2 my-lg-0" role="search">
-        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
-</form>
-
-      <ul class="navbar-nav">
-<li class="nav-item">
-  <a class="external-link nav-link" href="https://github.com/inlabru-org/fmesher/" aria-label="github">
-    <span class="fab fa fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
+<ul class="navbar-nav">
+<li class="nav-item"><form class="form-inline" role="search">
+ <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
+</form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/inlabru-org/fmesher/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
-    
+
   </div>
 </nav><div class="container template-article">
 
@@ -76,12 +60,13 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="" class="logo" alt=""><h1>Basic fmesher use</h1>
+
+      <h1>Basic fmesher use</h1>
                         <h4 data-toc-skip class="author">Finn
 Lindgren</h4>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/inlabru-org/fmesher/blob/HEAD/vignettes/basic_use.Rmd" class="external-link"><code>vignettes/basic_use.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/inlabru-org/fmesher/blob/devel/vignettes/basic_use.Rmd" class="external-link"><code>vignettes/basic_use.Rmd</code></a></small>
       <div class="d-none name"><code>basic_use.Rmd</code></div>
     </div>
 
@@ -105,11 +90,10 @@ Lindgren</h4>
 <span><span class="co">#&gt;   Euler char.:   1</span></span>
 <span><span class="co">#&gt;   Constraints:   39 boundary edges (1 group: 1), 115 interior edges (1 group: 1)</span></span>
 <span><span class="co">#&gt;   Bounding box: (-11.963110,  8.246925) x (-5.522181, 5.499657)</span></span>
-<span><span class="co">#&gt;   Basis d.o.f.:  888</span></span></code></pre></div>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mesh2</span>, axes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co">#&gt;   Basis d.o.f.:  888</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mesh2</span>, axes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="basic_use_files/figure-html/basic2-1.png" width="672"></p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">(</span><span class="va">mesh1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_mesh_1d.html">fm_mesh_1d</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">7</span>, <span class="fl">10</span><span class="op">)</span>,</span>
 <span>  boundary <span class="op">=</span> <span class="st">"free"</span>, <span class="co"># c("neumann", "dirichlet"),</span></span>
@@ -126,31 +110,28 @@ Lindgren</h4>
 <div class="section level2">
 <h2 id="point-lookup-and-evaluation">Point lookup and evaluation<a class="anchor" aria-label="anchor" href="#point-lookup-and-evaluation"></a>
 </h2>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">400</span>, sd <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">400</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Find what triangle each point is in, and it's triangular Barycentric coordinates</span></span>
 <span><span class="va">bary</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_bary.html">fm_bary</a></span><span class="op">(</span><span class="va">mesh2</span>, loc <span class="op">=</span> <span class="va">pts</span><span class="op">)</span></span>
 <span><span class="co"># How many points are outside the mesh?</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">bary</span><span class="op">$</span><span class="va">t</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 2</span></span></code></pre></div>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">bary</span><span class="op">$</span><span class="va">bary</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 2</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">bary</span><span class="op">$</span><span class="va">bary</span><span class="op">)</span></span>
 <span><span class="co">#&gt;            [,1]      [,2]      [,3]</span></span>
 <span><span class="co">#&gt; [1,] 0.04720217 0.5813611 0.3714367</span></span>
 <span><span class="co">#&gt; [2,] 0.13950532 0.7212692 0.1392255</span></span>
 <span><span class="co">#&gt; [3,] 0.43189448 0.1384910 0.4296145</span></span>
 <span><span class="co">#&gt; [4,] 0.20031702 0.3721526 0.4275303</span></span>
 <span><span class="co">#&gt; [5,] 0.21259133 0.3686084 0.4188003</span></span>
-<span><span class="co">#&gt; [6,] 0.44390951 0.1739205 0.3821700</span></span></code></pre></div>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
+<span><span class="co">#&gt; [6,] 0.44390951 0.1739205 0.3821700</span></span>
+<span></span>
 <span><span class="co"># Construct an evaluator object</span></span>
 <span><span class="va">evaluator</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_evaluate.html">fm_evaluator</a></span><span class="op">(</span><span class="va">mesh2</span>, loc <span class="op">=</span> <span class="va">pts</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="op">!</span><span class="va">evaluator</span><span class="op">$</span><span class="va">proj</span><span class="op">$</span><span class="va">ok</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 2</span></span></code></pre></div>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
+<span><span class="co">#&gt; [1] 2</span></span>
+<span></span>
 <span><span class="co"># Values for the basis function weights; for ordinary 2d meshes this coincides</span></span>
 <span><span class="co"># with the resulting values at the vertices, but this is not true for e.g.</span></span>
 <span><span class="co"># 2nd order B-splines on 1d meshes.</span></span>
@@ -158,7 +139,7 @@ Lindgren</h4>
 <span><span class="va">value</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_evaluate.html">fm_evaluate</a></span><span class="op">(</span><span class="va">evaluator</span>, field <span class="op">=</span> <span class="va">field</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">pts</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span> <span class="op">-</span> <span class="va">value</span><span class="op">)</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 5.704812e-14</span></span></code></pre></div>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pts1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2</span>, <span class="fl">12</span>, length.out <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Find what segment, and its interval Barycentric coordinates</span></span>
@@ -166,25 +147,22 @@ Lindgren</h4>
 <span><span class="co"># Points outside the interval are treated differently depending on the</span></span>
 <span><span class="co"># boundary conditions:</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">bary1</span><span class="op">$</span><span class="va">t</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 0</span></span></code></pre></div>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">bary1</span><span class="op">$</span><span class="va">bary</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">bary1</span><span class="op">$</span><span class="va">bary</span><span class="op">)</span></span>
 <span><span class="co">#&gt;          [,1]      [,2]</span></span>
 <span><span class="co">#&gt; [1,] 2.000000 -1.000000</span></span>
 <span><span class="co">#&gt; [2,] 1.992993 -0.992993</span></span>
 <span><span class="co">#&gt; [3,] 1.985986 -0.985986</span></span>
 <span><span class="co">#&gt; [4,] 1.978979 -0.978979</span></span>
 <span><span class="co">#&gt; [5,] 1.971972 -0.971972</span></span>
-<span><span class="co">#&gt; [6,] 1.964965 -0.964965</span></span></code></pre></div>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
+<span><span class="co">#&gt; [6,] 1.964965 -0.964965</span></span>
+<span></span>
 <span><span class="co"># Construct an evaluator object.</span></span>
 <span><span class="va">evaluator1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_evaluate.html">fm_evaluator</a></span><span class="op">(</span><span class="va">mesh1</span>, loc <span class="op">=</span> <span class="va">pts1</span><span class="op">)</span></span>
 <span><span class="co"># mesh_1d basis functions are defined everywhere</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="op">!</span><span class="va">evaluator1</span><span class="op">$</span><span class="va">proj</span><span class="op">$</span><span class="va">ok</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 0</span></span></code></pre></div>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
+<span><span class="co">#&gt; [1] 0</span></span>
+<span></span>
 <span><span class="co"># Values for the basis function weights; for ordinary 2d meshes this coincides</span></span>
 <span><span class="co"># with the resulting values at the vertices, but this is not true for e.g.</span></span>
 <span><span class="co"># 2nd order B-splines on 1d meshes.</span></span>
@@ -199,7 +177,7 @@ Lindgren</h4>
 <div class="section level3">
 <h3 id="base-graphics">Base graphics<a class="anchor" aria-label="anchor" href="#base-graphics"></a>
 </h3>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mesh2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="basic_use_files/figure-html/unnamed-chunk-2-1.png" width="672"></p>
 </div>
@@ -207,12 +185,12 @@ Lindgren</h4>
 <h3 id="ggplot-graphics">
 <code>ggplot</code> graphics<a class="anchor" aria-label="anchor" href="#ggplot-graphics"></a>
 </h3>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_fm.html">geom_fm</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mesh2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="basic_use_files/figure-html/unnamed-chunk-3-1.png" width="672"></p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_fm.html">geom_fm</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mesh1</span>, weights <span class="op">=</span> <span class="va">field1</span> <span class="op">+</span> <span class="fl">2</span>, xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2</span>, <span class="fl">12</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -223,25 +201,24 @@ Lindgren</h4>
 <div class="section level2">
 <h2 id="finite-element-calculations">Finite element calculations<a class="anchor" aria-label="anchor" href="#finite-element-calculations"></a>
 </h2>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fem1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_fem.html">fm_fem</a></span><span class="op">(</span><span class="va">mesh1</span>, order <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">fem1</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "c0"  "c1"  "g1"  "g2"  "g01" "g02" "g12"</span></span></code></pre></div>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">fem2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_fem.html">fm_fem</a></span><span class="op">(</span><span class="va">mesh2</span>, order <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "c0"  "c1"  "g1"  "g2"  "g01" "g02" "g12"</span></span>
+<span><span class="va">fem2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_fem.html">fm_fem</a></span><span class="op">(</span><span class="va">mesh2</span>, order <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">fem2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "b1" "c0" "c1" "g1" "g2" "k1" "k2" "ta" "va"</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="stochastic-process-simulation">Stochastic process simulation<a class="anchor" aria-label="anchor" href="#stochastic-process-simulation"></a>
 </h2>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">samp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_gmrf.html">fm_matern_sample</a></span><span class="op">(</span><span class="va">mesh2</span>, alpha <span class="op">=</span> <span class="fl">2</span>, rho <span class="op">=</span> <span class="fl">4</span>, sigma <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span></span>
 <span><span class="va">evaluator</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_evaluate.html">fm_evaluator</a></span><span class="op">(</span><span class="va">mesh2</span>, lattice <span class="op">=</span> <span class="fu"><a href="../reference/fm_evaluate.html">fm_evaluator_lattice</a></span><span class="op">(</span><span class="va">mesh2</span>, dims <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">150</span>, <span class="fl">50</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/image.html" class="external-link">image</a></span><span class="op">(</span><span class="va">evaluator</span><span class="op">$</span><span class="va">x</span>, <span class="va">evaluator</span><span class="op">$</span><span class="va">y</span>, <span class="fu"><a href="../reference/fm_evaluate.html">fm_evaluate</a></span><span class="op">(</span><span class="va">evaluator</span>, field <span class="op">=</span> <span class="va">samp</span><span class="op">)</span>, asp <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <p><img src="basic_use_files/figure-html/unnamed-chunk-5-1.png" width="672"></p>
 </div>
-  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
 
@@ -252,15 +229,15 @@ Lindgren</h4>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
 </div>
 
     </footer>
 </div>
 
-  
 
-  
+
+
 
   </body>
 </html>

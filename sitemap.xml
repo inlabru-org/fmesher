@@ -1,285 +1,99 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/404.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/articles/basic_use.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/articles/fmesher_library.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/articles/inla_conversion.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/index.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/call-stack.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_CRS_sp.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_CRSargs.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_as_fm.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_as_lattice_2d.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_as_mesh_1d.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_as_mesh_2d.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_as_segm.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_as_sfc.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_as_tensor.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_bary.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_basis.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_bbox.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_block.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_centroids.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_contains.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_cprod.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_crs-set.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_crs.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_crs_is_identical.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_crs_is_null.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_crs_wkt.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_detect_manifold.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_diameter.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_dof.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_evaluate.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_evaluator_helpers.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_fem.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_generate_colors.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_gmrf.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_int.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_int_mesh_2d.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_int_mesh_2d_core.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_int_multi_sampler.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_is_within.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_lattice_2d.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_list.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_manifold.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_mesh_1d.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_mesh_2d.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_mesh_2d_map.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_mesh_intersection.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_nonconvex_hull.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_nonconvex_hull_inla.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_pixels.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_raw_basis.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_rcdt_2d.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_refine.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_row_kron.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_safe_sp.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_segm.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_segm_contour_helper.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_segm_list.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_simplify.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_simplify_helper.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_split_lines.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_store_points.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_subdivide.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_tensor.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_transform.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_unify_coords.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_vertex_projection.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fm_vertices.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fmesher-deprecated.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fmesher-package.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fmesher-print.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fmesher_bary.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fmesher_fem.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fmesher_globe_points.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fmesher_rcdt.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fmesher_sparse.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fmesher_spherical_bsplines.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fmesher_split_lines.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fmesher_subdivide.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/fmexample.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/geom_fm.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/globeproj.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/local_testthat.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/plot.fm_mesh_2d.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/plot.fm_segm.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/plot_PolySet.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/plot_globeproj.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/plot_rgl.html</loc>
-  </url>
-  <url>
-    <loc>https://inlabru-org.github.io/fmesher/reference/wkt_tree.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://inlabru-org.github.io/fmesher/404.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/LICENSE-text.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/articles/basic_use.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/articles/fmesher_library.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/articles/index.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/articles/inla_conversion.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/authors.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/index.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/news/index.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/call-stack.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_CRS_sp.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_CRSargs.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_as_fm.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_as_lattice_2d.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_as_mesh_1d.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_as_mesh_2d.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_as_segm.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_as_sfc.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_as_tensor.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_bary.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_basis.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_bbox.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_block.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_centroids.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_contains.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_cprod.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_crs-set.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_crs.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_crs_is_identical.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_crs_is_null.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_crs_wkt.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_detect_manifold.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_diameter.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_dof.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_evaluate.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_evaluator_helpers.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_fem.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_generate_colors.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_gmrf.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_int.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_int_mesh_2d.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_int_mesh_2d_core.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_int_multi_sampler.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_is_within.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_lattice_2d.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_list.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_manifold.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_mesh_1d.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_mesh_2d.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_mesh_2d_map.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_mesh_intersection.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_nonconvex_hull.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_nonconvex_hull_inla.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_pixels.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_qinv.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_raw_basis.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_rcdt_2d.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_refine.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_row_kron.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_safe_sp.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_segm.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_segm_contour_helper.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_segm_list.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_simplify.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_simplify_helper.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_split_lines.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_store_points.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_subdivide.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_tensor.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_transform.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_unify_coords.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_vertex_projection.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_vertices.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fmesher-deprecated.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fmesher-package.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fmesher-print.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fmesher_bary.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fmesher_fem.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fmesher_globe_points.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fmesher_qinv.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fmesher_rcdt.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fmesher_sparse.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fmesher_spherical_bsplines.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fmesher_split_lines.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fmesher_subdivide.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fmexample.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/geom_fm.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/globeproj.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/index.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/local_testthat.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/plot.fm_mesh_2d.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/plot.fm_segm.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/plot_PolySet.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/plot_globeproj.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/plot_rgl.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/wkt_tree.html</loc></url>
 </urlset>
+
