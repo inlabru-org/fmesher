@@ -1,5 +1,7 @@
 #' @include deprecated.R
 #' @include print.R
+#'
+#' @importFrom sp CRS
 
 #' @title Handling CRS/WKT
 #' @description Get and set CRS object or WKT string properties.
