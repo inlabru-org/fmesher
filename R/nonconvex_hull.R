@@ -95,7 +95,7 @@ fm_segm_contour_helper <- function(x = seq(0, 1, length.out = nrow(z)),
     ## Extract the rotated gradients along the curve
     curve.mid <- (curve.loc[1:(curve.n - 1), , drop = FALSE] +
       curve.loc[2:curve.n, , drop = FALSE]) / 2
-    A <- fm_basis(mesh, loc = curve.mid, derivatives = TRUE)
+    A <- fm_basis(mesh, loc = curve.mid, derivatives = TRUE, full = TRUE)
     ## Gradients rotated 90 degrees CW, i.e. to the direction
     ## of CCW curves around positive excursions:
     grid.diff <- cbind(A$dy %*% zz, -A$dx %*% zz)

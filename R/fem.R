@@ -158,7 +158,8 @@ fm_fem.fm_mesh_1d <- function(mesh, order = 2, ...) {
         )),
         weights =
           c(knots.d * 8 / 9, knots.d * 5 / 9, knots.d * 5 / 9)^0.5,
-        derivatives = TRUE
+        derivatives = TRUE,
+        full = TRUE
       )
     c1 <- Matrix::t(info$A) %*% info$A
     g1 <- Matrix::t(info$dA) %*% info$dA

@@ -2,6 +2,8 @@
 
 * Update documentation and vector coordinate inputs to `fm_lattice_2d()`
   to clarify input interpretation and ensure correct boundary orientation (version `0.1.7.9001`)
+* Add `full` argument to `fm_basis()` to toggle between matrix and full `fm_basis`
+  object output (version `0.1.7.9002`)
 
 # fmesher 0.1.7
 

@@ -4,10 +4,11 @@
 \alias{fm_evaluate}
 \alias{fm_evaluate.default}
 \alias{fm_evaluate.fm_evaluator}
+\alias{fm_evaluate.fm_basis}
 \alias{fm_evaluator}
+\alias{fm_evaluator.default}
 \alias{fm_evaluator.fm_mesh_2d}
 \alias{fm_evaluator.fm_mesh_1d}
-\alias{fm_evaluator.fm_tensor}
 \alias{fm_evaluator_lattice}
 \alias{fm_evaluator.inla.mesh}
 \alias{fm_evaluator.inla.mesh.1d}
@@ -19,13 +20,15 @@ fm_evaluate(...)
 
 \method{fm_evaluate}{fm_evaluator}(projector, field, ...)
 
+\method{fm_evaluate}{fm_basis}(basis, field, ...)
+
 fm_evaluator(...)
+
+\method{fm_evaluator}{default}(...)
 
 \method{fm_evaluator}{fm_mesh_2d}(mesh, loc = NULL, lattice = NULL, crs = NULL, ...)
 
 \method{fm_evaluator}{fm_mesh_1d}(mesh, loc = NULL, xlim = mesh$interval, dims = 100, ...)
-
-\method{fm_evaluator}{fm_tensor}(x, loc, ...)
 
 fm_evaluator_lattice(
   mesh,
@@ -37,9 +40,9 @@ fm_evaluator_lattice(
   ...
 )
 
-\method{fm_evaluator}{inla.mesh}(mesh, loc = NULL, lattice = NULL, crs = NULL, ...)
+\method{fm_evaluator}{inla.mesh}(mesh, ...)
 
-\method{fm_evaluator}{inla.mesh.1d}(mesh, loc = NULL, xlim = mesh$interval, dims = 100, ...)
+\method{fm_evaluator}{inla.mesh.1d}(mesh, ...)
 }
 \arguments{
 \item{\dots}{Additional arguments passed on to methods.}
@@ -50,6 +53,8 @@ fm_evaluator_lattice(
 the function to be evaluated at the projection locations}
 
 \item{projector}{An \code{fm_evaluator} object.}
+
+\item{basis}{An \link{fm_basis} object.}
 
 \item{loc}{Projection locations.  Can be a matrix, \code{SpatialPoints},
 \code{SpatialPointsDataFrame}, \code{sf}, \code{sfc}, or \code{sfg} object.}
@@ -63,8 +68,6 @@ and/or \code{lattice}.}
 the domain.}
 
 \item{dims}{Lattice dimensions.}
-
-\item{x}{\code{\link[=fm_tensor]{fm_tensor()}} object}
 
 \item{ylim}{Y-axis limits for a lattice. For R2 meshes, defaults to covering
 the domain.}
@@ -93,19 +96,26 @@ defined on a mesh or function space.
 shortcut to \code{fm_evaluate(fm_evaluator(mesh, ...), field = field)}.
 
 \item \code{fm_evaluator()}: Returns an \code{fm_evaluator} list object with evaluation information.
-The \code{proj} element contains a mapping matrix \code{A} and a logical vector \code{ok},
-that indicates which locations were mappable to the input mesh.
+The \code{proj} element is a \code{fm_basis} object, containing (at least)
+a mapping matrix \code{A} and a logical vector \code{ok}, that indicates which
+locations were mappable to the input mesh.
 For \code{fm_mesh_2d} and \code{inla.mesh}
 input, \code{proj} also contains a matrix \code{bary} and vector \code{t}, with the
 barycentric coordinates within the triangle each input location falls in.
+
+\item \code{fm_evaluator(default)}: The default method calls \code{fm_basis} and creates
+a basic \code{fm_evaluator} object
 
 \item \code{fm_evaluator(fm_mesh_2d)}: The \code{...} arguments are passed on to \code{fm_evaluator_lattice()}
 if no \code{loc} or \code{lattice} is provided.
 
 \item \code{fm_evaluator_lattice()}: Creates an \code{\link[=fm_lattice_2d]{fm_lattice_2d()}} object, by default covering the input mesh.
 
-\item \code{fm_evaluator(inla.mesh)}: The \code{...} arguments are passed on to \code{fm_evaluator_lattice()}
-if no \code{loc} or \code{lattice} is provided.
+\item \code{fm_evaluator(inla.mesh)}: Converts legacy \code{inla.mesh} to \code{fm_mesh_2d} and calls
+the \code{fm_evaluator} method again.
+
+\item \code{fm_evaluator(inla.mesh.1d)}: Converts legacy \code{inla.mesh} to \code{fm_mesh_1d} and calls
+the \code{fm_evaluator} method again.
 
 }}
 \examples{
