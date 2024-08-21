@@ -167,9 +167,6 @@ print(fm_crs("longlat_globe"))
 #>             ORDER[2],
 #>             ANGLEUNIT["degree",0.0174532925199433,
 #>                 ID["EPSG",9122]]]]
-```
-
-``` r
 
 # longlat for a sphere of radius 1m
 print(fm_crs("longlat_norm"))
@@ -193,9 +190,6 @@ print(fm_crs("longlat_norm"))
 #>             ORDER[2],
 #>             ANGLEUNIT["degree",0.0174532925199433,
 #>                 ID["EPSG",9122]]]]
-```
-
-``` r
 
 # A sphere of radius 1m
 print(fm_crs("sphere"))
