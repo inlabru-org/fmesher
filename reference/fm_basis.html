@@ -84,7 +84,7 @@
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Currently unused</p></dd>
+<dd><p>Passed on to submethods</p></dd>
 
 
 <dt id="arg-full">full<a class="anchor" aria-label="anchor" href="#arg-full"></a></dt>
@@ -94,7 +94,8 @@ are valid. If <code>FALSE</code>, return only the projection matrix <code>A</cod
 
 
 <dt id="arg-loc">loc<a class="anchor" aria-label="anchor" href="#arg-loc"></a></dt>
-<dd><p>A set of points of a class supported by <code>fm_evaluator(x, loc = loc)</code></p></dd>
+<dd><p>A location/value information object (vector, matrix, <code>sf</code>, etc, depending on
+the class of <code>x</code>)</p></dd>
 
 
 <dt id="arg-weights">weights<a class="anchor" aria-label="anchor" href="#arg-weights"></a></dt>
@@ -104,25 +105,25 @@ weight for each row of the basis matrix)</p></dd>
 
 <dt id="arg-derivatives">derivatives<a class="anchor" aria-label="anchor" href="#arg-derivatives"></a></dt>
 <dd><p>If non-NULL and logical, include derivative matrices
-in the output. Forces <code>full = TRUE</code>.
-A The projection matrix, <code>u(loc_i)=sum_j A_ij w_i</code>
-d1A, d2A Derivative weight matrices,
-<code>du/dx(loc_i)=sum_j dx_ij w_i</code>, etc.</p></dd>
+in the output. Forces <code>full = TRUE</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A <code>sparseMatrix</code> object (if <code>full = FALSE</code>),
-or a <code>fm_basis</code> object (if <code>full = TRUE</code> or <code>isTRUE(derivatives)</code>).</p>
-<p>For <code>fm_mesh_2d</code>, a matrix, or if <code>derivatives</code> is <code>TRUE</code>,
-a list with elements</p>
-<dl><dt>A </dt>
-<dd><p>The projection matrix, <code>u(loc_i)=sum_j A_ij w_i</code></p></dd>
+or a <code>fm_basis</code> object (if <code>full = TRUE</code> or <code>isTRUE(derivatives)</code>).
+The <code>fm_basis</code> object contains at least the projection matrix <code>A</code> and logical vector <code>ok</code>;
+<code>u(loc_i)=sum_j A_ij w_i</code></p>
+    </div>
+    <div class="section level2">
+    <h2 id="methods-by-class-">Methods (by class)<a class="anchor" aria-label="anchor" href="#methods-by-class-"></a></h2>
 
-<dt>dx, dy, dz </dt>
-<dd><p>Derivative weight matrices, <code>du/dx(loc_i)=sum_j dx_ij w_i</code>, etc.</p></dd>
-
-</dl></div>
+<ul><li><p><code>fm_basis(fm_mesh_1d)</code>: The <code>fm_basis</code> object contains additional derivative weight matrices,
+<code>d1A</code> and <code>d2A</code>, <code>du/dx(loc_i)=sum_j dx_ij w_i</code>.</p></li>
+<li><p><code>fm_basis(fm_mesh_2d)</code>: If <code>derivatives=TRUE</code>, additional derivative weight matrices
+are included in the <code>full=TRUE</code> output: Derivative weight matrices
+<code>dx</code>, <code>dy</code>, <code>dz</code>; <code>du/dx(loc_i)=sum_j dx_ij w_i</code>, etc.</p></li>
+</ul></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="fm_raw_basis.html">fm_raw_basis()</a></code></p></div>
