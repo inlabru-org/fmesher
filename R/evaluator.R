@@ -333,14 +333,14 @@ fm_basis_mesh_1d <- function(mesh,
     ))
 
     if (!(method %in% "default") &&
-        (mesh$degree != c(nearest = 0, linear = 1, quadratic = 2)[method])) {
+      (mesh$degree != c(nearest = 0, linear = 1, quadratic = 2)[method])) {
       deg <- c(nearest = 0, linear = 1, quadratic = 2)[method]
       info <- fm_basis_mesh_1d(
         fm_mesh_1d(mesh$loc,
-                   interval = mesh$interval,
-                   boundary = mesh$boundary,
-                   free.clamped = mesh$free.clamped,
-                   degree = deg
+          interval = mesh$interval,
+          boundary = mesh$boundary,
+          free.clamped = mesh$free.clamped,
+          degree = deg
         ),
         loc = loc,
         weights = weights,
@@ -498,7 +498,7 @@ fm_basis_mesh_1d <- function(mesh,
         (knots[c(seq_len(length(knots) - 1L) + 1L, 1)] - knots) %%
         diff(mesh$interval)
       d2 <- (knots[c(seq_len(length(knots) - 2L) + 2L, seq_len(2))] -
-               knots) %% diff(mesh$interval)
+        knots) %% diff(mesh$interval)
       d2[d2 == 0] <- diff(mesh$interval)
       d <- d[c(length(d), seq_len(length(d) - 1L))]
       d2 <- d2[c(length(d2), seq_len(length(d2) - 1L))]
@@ -528,7 +528,7 @@ fm_basis_mesh_1d <- function(mesh,
       i.m <- seq_along(info$t[, 1])
       j.m <- info$t[, 1] + 1L
       x.m <- (1 - (info$bary[, 1] * d[info$t[, 2]] / d2[info$t[, 1]] * info$bary[, 1] +
-                     info$bary[, 2] * d[info$t[, 2]] / d2[info$t[, 2]] * info$bary[, 2]
+        info$bary[, 2] * d[info$t[, 2]] / d2[info$t[, 2]] * info$bary[, 2]
       ))
       if (derivatives) {
         x.d1.m <- (2 / d2[info$t[, 1]] * info$bary[, 1]) -
@@ -562,7 +562,7 @@ fm_basis_mesh_1d <- function(mesh,
       i.m <- seq_along(loc)[ok]
       j.m <- index[, 1]
       x.m <- (1 - (bary[, 1] * d[index[, 2]] / d2[index[, 1]] * bary[, 1] +
-                     bary[, 2] * d[index[, 2]] / d2[index[, 2]] * bary[, 2]
+        bary[, 2] * d[index[, 2]] / d2[index[, 2]] * bary[, 2]
       ))
       if (derivatives) {
         x.d1.m <- (2 / d2[index[, 1]] * bary[, 1]) - (2 / d2[index[, 2]] * bary[, 2])
@@ -638,7 +638,7 @@ fm_basis_mesh_1d <- function(mesh,
         ok <- j_ > 1L
         j_[ok] <- j_[ok] - 1L
       } else if ((mesh$boundary[1] == "free") &&
-                 (mesh$free.clamped[1])) {
+        (mesh$free.clamped[1])) {
         # new1 <- 2 * basis1
         # new2 <- basis2 - basis1
         ok1 <- j_ == 1L
@@ -672,7 +672,7 @@ fm_basis_mesh_1d <- function(mesh,
         ok <- j_ > mesh$m
         j_[ok] <- mesh$m
       } else if ((mesh$boundary[2] == "free") &&
-                 (mesh$free.clamped[2])) {
+        (mesh$free.clamped[2])) {
         # new_m <- m + {m-1};     m = 1, m - 1 = 2
         # new_{m-1} <- {m-1} - m; m = 1, m - 1 = 2
         # new1 <- 2 * basis1
@@ -769,27 +769,31 @@ fm_evaluator.fm_mesh_2d <- function(mesh,
       )
     }
     projector <-
-      structure(list(
-        x = x,
-        y = y,
-        lattice = lattice,
-        loc = NULL,
-        proj = proj,
-        crs = crs
-      ),
-      class = "fm_evaluator")
+      structure(
+        list(
+          x = x,
+          y = y,
+          lattice = lattice,
+          loc = NULL,
+          proj = proj,
+          crs = crs
+        ),
+        class = "fm_evaluator"
+      )
   } else {
     proj <- fm_basis_mesh_2d(mesh, loc = loc, crs = crs)
     projector <-
-      structure(list(
-        x = NULL,
-        y = NULL,
-        lattice = NULL,
-        loc = loc,
-        proj = proj,
-        crs = crs
-      ),
-      class = "fm_evaluator")
+      structure(
+        list(
+          x = NULL,
+          y = NULL,
+          lattice = NULL,
+          loc = loc,
+          proj = proj,
+          crs = crs
+        ),
+        class = "fm_evaluator"
+      )
   }
 
   return(projector)
@@ -1088,9 +1092,10 @@ print.fm_basis <- function(x, ...) {
   cat("  Projection matrix (A): ", paste0(dim(x$A), collapse = "-by-"), "\n", sep = "")
   cat("  Valid evaluations (ok): ", sum(x$ok), " out of ", length(x$ok), "\n", sep = "")
   cat("  Additional information: ",
-      paste(names(x)[!names(x) %in% c("A", "ok")], collapse = ", "),
-      "\n",
-      sep = "")
+    paste(names(x)[!names(x) %in% c("A", "ok")], collapse = ", "),
+    "\n",
+    sep = ""
+  )
 
   invisible(x)
 }
@@ -1101,7 +1106,8 @@ fm_basis.default <- function(x, ..., full = FALSE) {
   lifecycle::deprecate_stop(
     "0.1.7.9002",
     "fm_basis.default()",
-    details = "Each mesh class needs its own `fm_basis()` method.")
+    details = "Each mesh class needs its own `fm_basis()` method."
+  )
 }
 
 #' @param weights Optional weight vector to apply (from the left, one
@@ -1165,8 +1171,9 @@ fm_basis.fm_evaluator <- function(x, ..., full = FALSE) {
     structure(
       x$proj,
       class = "fm_basis"
-      ),
-    full = full)
+    ),
+    full = full
+  )
 }
 
 #' @rdname fm_basis
