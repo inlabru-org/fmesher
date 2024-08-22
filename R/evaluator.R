@@ -1057,14 +1057,39 @@ fm_is_within.default <- function(x, y, ...) {
 #' a projection matrix `A` and logical vector `ok` indicating which evaluations
 #' are valid. If `FALSE`, return only the projection matrix `A`. Default is `FALSE`.
 #' @param \dots Currently unused
-#' @returns A `sparseMatrix`
+#' @returns A `sparseMatrix` object (if `full = FALSE`),
+#' or a `fm_basis` object (if `full = TRUE` or `isTRUE(derivatives)`).
 #' @seealso [fm_raw_basis()]
 #' @examples
 #' # Compute basis mapping matrix
 #' str(fm_basis(fmexample$mesh, fmexample$loc))
+#' print(fm_basis(fmexample$mesh, fmexample$loc), full = TRUE)
 #' @export
 fm_basis <- function(x, ..., full = FALSE) {
   UseMethod("fm_basis")
+}
+
+#' Print method for `fm_basis()`
+#'
+#' Prints information for an [fm_basis()] object.
+#'
+#' @param x [fm_basis()] object
+#' @param \dots Unused
+#' @returns `invisible(x)`
+#' @seealso [fm_basis()]
+#' @export
+#' @examples
+#' print(fm_basis(fmexample$mesh, fmexample$loc, full = TRUE))
+print.fm_basis <- function(x, ...) {
+  cat("fm_basis object\n")
+  cat("  Projection matrix (A): ", paste0(dim(x$A), collapse = "-by-"), "\n", sep = "")
+  cat("  Valid evaluations (ok): ", sum(x$ok), " out of ", length(x$ok), "\n", sep = "")
+  cat("  Additional information: ",
+      paste(names(x)[!names(x) %in% c("A", "ok")], collapse = ", "),
+      "\n",
+      sep = "")
+
+  invisible(x)
 }
 
 #' @rdname fm_basis
@@ -1078,10 +1103,8 @@ fm_basis.default <- function(x, ..., full = FALSE) {
 
 #' @param weights Optional weight vector to apply (from the left, one
 #' weight for each row of the basis matrix)
-#' @param derivatives If non-NULL and logical, return a list, optionally
-#' including derivative matrices.
-#' @return For `fm_mesh_1d`, a matrix, or if `derivatives` is `TRUE`,
-#' a list with elements
+#' @param derivatives If non-NULL and logical, include derivative matrices
+#' in the output. Forces `full = TRUE`.
 #' \item{A }{The projection matrix, `u(loc_i)=sum_j A_ij w_i`}
 #' \item{d1A, d2A }{Derivative weight matrices,
 #' `du/dx(loc_i)=sum_j dx_ij w_i`, etc.}
@@ -1096,7 +1119,6 @@ fm_basis.fm_mesh_1d <- function(x, loc, weights = NULL, derivatives = NULL, ...,
     ...
   )
   if (isTRUE(derivatives) && !full) {
-    warning("Derivatives requested, but `full = FALSE` would return only the basis matrix. Forcing full=TRUE.")
     full <- TRUE
   }
   fm_basis(result, full = full)
@@ -1119,7 +1141,6 @@ fm_basis.fm_mesh_2d <- function(x, loc, weights = NULL, derivatives = NULL, ...,
     ...
   )
   if (isTRUE(derivatives) && !full) {
-    warning("Derivatives requested, but `full = FALSE` would return only the basis matrix. Forcing full=TRUE.")
     full <- TRUE
   }
   fm_basis(result, full = full)

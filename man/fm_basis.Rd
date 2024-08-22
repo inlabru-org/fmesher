@@ -44,17 +44,15 @@ are valid. If \code{FALSE}, return only the projection matrix \code{A}. Default 
 \item{weights}{Optional weight vector to apply (from the left, one
 weight for each row of the basis matrix)}
 
-\item{derivatives}{If non-NULL and logical, return a list, optionally
-including derivative matrices.}
-}
-\value{
-A \code{sparseMatrix}
-
-For \code{fm_mesh_1d}, a matrix, or if \code{derivatives} is \code{TRUE},
-a list with elements
+\item{derivatives}{If non-NULL and logical, include derivative matrices
+in the output. Forces \code{full = TRUE}.
 \item{A }{The projection matrix, \verb{u(loc_i)=sum_j A_ij w_i}}
 \item{d1A, d2A }{Derivative weight matrices,
-\verb{du/dx(loc_i)=sum_j dx_ij w_i}, etc.}
+\verb{du/dx(loc_i)=sum_j dx_ij w_i}, etc.}}
+}
+\value{
+A \code{sparseMatrix} object (if \code{full = FALSE}),
+or a \code{fm_basis} object (if \code{full = TRUE} or \code{isTRUE(derivatives)}).
 
 For \code{fm_mesh_2d}, a matrix, or if \code{derivatives} is \code{TRUE},
 a list with elements
@@ -67,6 +65,7 @@ Computes the basis mapping matrix between a function space on a mesh, and locati
 \examples{
 # Compute basis mapping matrix
 str(fm_basis(fmexample$mesh, fmexample$loc))
+print(fm_basis(fmexample$mesh, fmexample$loc), full = TRUE)
 }
 \seealso{
 \code{\link[=fm_raw_basis]{fm_raw_basis()}}
