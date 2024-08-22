@@ -25,14 +25,15 @@ fm_basis_mesh_1d(
 )
 }
 \arguments{
-\item{loc}{A set of points of a class supported by \code{fm_evaluator(x, loc = loc)}}
+\item{loc}{A location/value information object (vector, matrix, \code{sf}, etc, depending on
+the class of \code{x})}
 
 \item{weights}{Optional weight vector, one weight for each location}
 
 \item{derivatives}{logical; If true, also return matrices \code{dA} and \code{d2A}
 for \code{fm_mesh_1d} objects, and \code{dx}, \code{dy}, \code{dz} for \code{fm_mesh_2d}.}
 
-\item{...}{Currently unused}
+\item{...}{Passed on to submethods}
 
 \item{method}{character; either "default", "nearest", "linear", or
 "quadratic". With \code{NULL} or "default", uses the object definition of the

@@ -1051,14 +1051,17 @@ fm_is_within.default <- function(x, y, ...) {
 #' @description
 #'  Computes the basis mapping matrix between a function space on a mesh, and locations.
 #'
-#' @param x An object supported by the [fm_evaluator()] class
-#' @param loc A set of points of a class supported by `fm_evaluator(x, loc = loc)`
+#' @param x An function space object
+#' @param loc A location/value information object (vector, matrix, `sf`, etc, depending on
+#' the class of `x`)
 #' @param full logical; if `TRUE`, return a `fm_basis` object, containing at least
 #' a projection matrix `A` and logical vector `ok` indicating which evaluations
 #' are valid. If `FALSE`, return only the projection matrix `A`. Default is `FALSE`.
-#' @param \dots Currently unused
+#' @param \dots Passed on to submethods
 #' @returns A `sparseMatrix` object (if `full = FALSE`),
 #' or a `fm_basis` object (if `full = TRUE` or `isTRUE(derivatives)`).
+#' The `fm_basis` object contains at least the projection matrix `A` and logical vector `ok`;
+#' `u(loc_i)=sum_j A_ij w_i`
 #' @seealso [fm_raw_basis()]
 #' @examples
 #' # Compute basis mapping matrix
@@ -1105,10 +1108,8 @@ fm_basis.default <- function(x, ..., full = FALSE) {
 #' weight for each row of the basis matrix)
 #' @param derivatives If non-NULL and logical, include derivative matrices
 #' in the output. Forces `full = TRUE`.
-#' \item{A }{The projection matrix, `u(loc_i)=sum_j A_ij w_i`}
-#' \item{d1A, d2A }{Derivative weight matrices,
-#' `du/dx(loc_i)=sum_j dx_ij w_i`, etc.}
-#' @rdname fm_basis
+#' @describeIn fm_basis The `fm_basis` object contains additional derivative weight matrices,
+#' `d1A` and `d2A`, `du/dx(loc_i)=sum_j dx_ij w_i`.
 #' @export
 fm_basis.fm_mesh_1d <- function(x, loc, weights = NULL, derivatives = NULL, ..., full = FALSE) {
   result <- fm_basis_mesh_1d(
@@ -1124,12 +1125,9 @@ fm_basis.fm_mesh_1d <- function(x, loc, weights = NULL, derivatives = NULL, ...,
   fm_basis(result, full = full)
 }
 
-#' @return For `fm_mesh_2d`, a matrix, or if `derivatives` is `TRUE`,
-#' a list with elements
-#' \item{A }{The projection matrix, `u(loc_i)=sum_j A_ij w_i`}
-#' \item{dx, dy, dz }{Derivative weight matrices, `du/dx(loc_i)=sum_j
-#' dx_ij w_i`, etc.}
-#' @rdname fm_basis
+#' @describeIn fm_basis If `derivatives=TRUE`, additional derivative weight matrices
+#' are included in the `full=TRUE` output: Derivative weight matrices
+#' `dx`, `dy`, `dz`; `du/dx(loc_i)=sum_j dx_ij w_i`, etc.
 #' @export
 fm_basis.fm_mesh_2d <- function(x, loc, weights = NULL, derivatives = NULL, ...,
                                 full = FALSE) {
