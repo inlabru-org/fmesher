@@ -1,8 +1,34 @@
 # fmesher (development version)
 
+* Update documentation and vector coordinate inputs to `fm_lattice_2d()`
+  to clarify input interpretation and ensure correct boundary orientation (version `0.1.7.9001`)
+* Add `full` argument to `fm_basis()` to toggle between matrix and full `fm_basis`
+  object output (version `0.1.7.9002`)
+
+# fmesher 0.1.7
+
+* Fix regression bug in `fm_manifold()` that made it ignore all but the first given type options. See #16 (version `0.1.6.9001)
+* Fix `plot.fm_mesh_2d` vectorisation bug (version `0.1.6.9002`)
+* Add new `fm_subdivide()` method for `fm_mesh_2d` meshes (version `0.1.6.9003`)
+
+# fmesher 0.1.6
+
+* Fix for hiding away-facing triangle edges in `plot.fm_mesh_2d()` and `lines.fm_segm()`.
+* Fix duplicated `fm_unify_coords.sf()` method. Thanks to Pablo Paccioretti for debugging and reporting, see #13 (version `0.1.5.9001`)
+* Use batched `fm_bary.fm_mesh_2d()` computations for data sizes of `2e5` and upwards. This improves performance of `fm_basis()`/`inla.spde.make.A()` for large data sets, see #14 (version `0.1.5.9002`)
+* Automatically convert raw `sfc` samplers objects to `sf` objects in `fm_int.list()` (version `0.1.5.9003`)
+* Detect and warn about unsupported use of `fm_segm` objects in `fm_int.list()` (version `0.1.5.9004`)
+* Add `fm_basis()` and `fm_fem()` support for `fm_tensor` function spaces (version `0.1.5.9005`)
+* Add `fm_CRS()` support for `terra` objects (version `0.1.5.9006`)
+
+# fmesher 0.1.5
+
 * Fix bug in `fm_matern_sample()` that prevented the use of a non-NULL `loc` argument.
   For earlier versions, the workaround is to make a separate call to `fm_evaluate()`
   after calling `fm_matern_sample()`.
+* Improve speed of `fm_block_log_shift()` by an order of magnitude for multi-block
+  cases.
+* Fix bug in `plot.fm_mesh_2d` for meshes with 2D coordinate storage (version `0.1.4.9002`)
 
 # fmesher 0.1.4
 

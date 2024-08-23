@@ -17,6 +17,7 @@
 #' the domain.
 #' @param dims Lattice dimensions.
 #' @param projector An `fm_evaluator` object.
+#' @param basis An [fm_basis] object.
 #' @param field Basis function weights, one per mesh basis function, describing
 #' the function to be evaluated at the projection locations
 #' @param projection One of `c("default", "longlat", "longsinlat",
@@ -107,13 +108,37 @@ fm_evaluate.fm_evaluator <-
     }
   }
 
+#' @export
+#' @rdname fm_evaluate
+fm_evaluate.fm_basis <-
+  function(basis, field, ...) {
+    if (is.data.frame(field)) {
+      field <- as.matrix(field)
+    }
+
+    if (is.null(dim(field))) {
+      data <- as.vector(basis$A %*% as.vector(field))
+      data[!basis$ok] <- NA
+      return(data)
+    } else if (inherits(field, "sparseMatrix")) {
+      data <- basis$A %*% field
+      data[!basis$ok, ] <- NA
+      return(data)
+    } else {
+      data <- as.matrix(basis$A %*% field)
+      data[!basis$ok, ] <- NA
+      return(data)
+    }
+  }
+
 
 # fm_evaluator ####
 
 #' @describeIn fm_evaluate
 #' Returns an `fm_evaluator` list object with evaluation information.
-#' The `proj` element contains a mapping matrix `A` and a logical vector `ok`,
-#' that indicates which locations were mappable to the input mesh.
+#' The `proj` element is a `fm_basis` object, containing (at least)
+#' a mapping matrix `A` and a logical vector `ok`, that indicates which
+#' locations were mappable to the input mesh.
 #' For `fm_mesh_2d` and `inla.mesh`
 #' input, `proj` also contains a matrix `bary` and vector `t`, with the
 #' barycentric coordinates within the triangle each input location falls in.
@@ -121,6 +146,16 @@ fm_evaluate.fm_evaluator <-
 #' @returns An `fm_evaluator` object
 fm_evaluator <- function(...) {
   UseMethod("fm_evaluator")
+}
+
+#' @export
+#' @describeIn fm_evaluate The default method calls `fm_basis` and creates
+#' a basic `fm_evaluator` object
+fm_evaluator.default <- function(...) {
+  structure(
+    list(proj = fm_basis(..., full = TRUE)),
+    class = "fm_evaluator"
+  )
 }
 
 #' @title Internal helper functions for mesh field evaluation
@@ -144,6 +179,53 @@ fm_evaluator_mesh_2d <- function(mesh,
                                  derivatives = NULL,
                                  crs = NULL,
                                  ...) {
+  fm_basis_mesh_2d(
+    mesh = mesh,
+    loc = loc,
+    weights = weights,
+    derivatives = derivatives,
+    crs = crs,
+    ...
+  )
+}
+
+#' @export
+#' @rdname fm_evaluator_helpers
+fm_evaluator_mesh_1d <- function(mesh,
+                                 loc,
+                                 weights = NULL,
+                                 derivatives = NULL,
+                                 ...) {
+  fm_basis_mesh_1d(
+    mesh = mesh,
+    loc = loc,
+    weights = weights,
+    derivatives = derivatives,
+    ...
+  )
+}
+
+#' @title Internal helper functions for mesh field evaluation
+#'
+#' @description Methods called internally by [fm_basis()] methods.
+#' @param weights Optional weight vector, one weight for each location
+#' @param derivatives logical; If true, also return matrices `dA` and `d2A`
+#' for `fm_mesh_1d` objects, and `dx`, `dy`, `dz` for `fm_mesh_2d`.
+#' @inheritParams fm_basis
+#' @export
+#' @keywords internal
+#' @returns A `fm_basis` object; a list of evaluator information objects,
+#' at least a matrix `A` and logical vector `ok`.
+#' @name fm_basis_helpers
+#' @examples
+#' str(fm_basis_mesh_2d(fmexample$mesh, loc = fmexample$loc))
+#'
+fm_basis_mesh_2d <- function(mesh,
+                             loc = NULL,
+                             weights = NULL,
+                             derivatives = NULL,
+                             crs = NULL,
+                             ...) {
   smorg <- fm_bary(mesh, loc = loc, crs = crs)
   ti <- matrix(0L, NROW(loc), 1)
   ti[, 1L] <- smorg$t
@@ -219,7 +301,10 @@ fm_evaluator_mesh_2d <- function(mesh,
       )
   }
 
-  info
+  structure(
+    info,
+    class = "fm_basis"
+  )
 }
 
 
@@ -227,13 +312,13 @@ fm_evaluator_mesh_2d <- function(mesh,
 #' "quadratic". With `NULL` or "default", uses the object definition of the
 #' function space. Otherwise overrides the object definition.
 #' @export
-#' @rdname fm_evaluator_helpers
-fm_evaluator_mesh_1d <- function(mesh,
-                                 loc,
-                                 weights = NULL,
-                                 derivatives = NULL,
-                                 method = deprecated(),
-                                 ...) {
+#' @rdname fm_basis_helpers
+fm_basis_mesh_1d <- function(mesh,
+                             loc,
+                             weights = NULL,
+                             derivatives = NULL,
+                             method = deprecated(),
+                             ...) {
   if (lifecycle::is_present(method)) {
     lifecycle::deprecate_soft(
       "0.0.9.9020",
@@ -250,7 +335,7 @@ fm_evaluator_mesh_1d <- function(mesh,
     if (!(method %in% "default") &&
       (mesh$degree != c(nearest = 0, linear = 1, quadratic = 2)[method])) {
       deg <- c(nearest = 0, linear = 1, quadratic = 2)[method]
-      info <- fm_evaluator_mesh_1d(
+      info <- fm_basis_mesh_1d(
         fm_mesh_1d(mesh$loc,
           interval = mesh$interval,
           boundary = mesh$boundary,
@@ -642,7 +727,11 @@ fm_evaluator_mesh_1d <- function(mesh,
   }
 
   info[["ok"]] <- rep(TRUE, length(loc))
-  return(info)
+
+  structure(
+    info,
+    class = "fm_basis"
+  )
 }
 
 
@@ -672,19 +761,39 @@ fm_evaluator.fm_mesh_2d <- function(mesh,
     crs <- lattice$crs
 
     if (is.null(mesh$crs) || is.null(lattice$crs)) {
-      proj <- fm_evaluator_mesh_2d(mesh, lattice$loc)
+      proj <- fm_basis_mesh_2d(mesh, lattice$loc)
     } else {
-      proj <- fm_evaluator_mesh_2d(mesh,
+      proj <- fm_basis_mesh_2d(mesh,
         loc = lattice$loc,
         crs = lattice$crs
       )
     }
-    projector <- list(x = x, y = y, lattice = lattice, loc = NULL, proj = proj, crs = crs)
-    class(projector) <- "fm_evaluator"
+    projector <-
+      structure(
+        list(
+          x = x,
+          y = y,
+          lattice = lattice,
+          loc = NULL,
+          proj = proj,
+          crs = crs
+        ),
+        class = "fm_evaluator"
+      )
   } else {
-    proj <- fm_evaluator_mesh_2d(mesh, loc = loc, crs = crs)
-    projector <- list(x = NULL, y = NULL, lattice = NULL, loc = loc, proj = proj, crs = crs)
-    class(projector) <- "fm_evaluator"
+    proj <- fm_basis_mesh_2d(mesh, loc = loc, crs = crs)
+    projector <-
+      structure(
+        list(
+          x = NULL,
+          y = NULL,
+          lattice = NULL,
+          loc = loc,
+          proj = proj,
+          crs = crs
+        ),
+        class = "fm_evaluator"
+      )
   }
 
   return(projector)
@@ -702,49 +811,21 @@ fm_evaluator.fm_mesh_1d <- function(mesh,
     loc <- seq(xlim[1], xlim[2], length.out = dims[1])
   }
 
-  proj <- fm_evaluator_mesh_1d(mesh, loc)
-  projector <- list(x = loc, lattice = NULL, loc = loc, proj = proj)
-  class(projector) <- "fm_evaluator"
+  proj <- fm_basis_mesh_1d(mesh, loc)
+  projector <-
+    structure(
+      list(
+        x = loc,
+        lattice = NULL,
+        loc = loc,
+        proj = proj
+      ),
+      class = "fm_evaluator"
+    )
 
   return(projector)
 }
 
-
-#' @param x [fm_tensor()] object
-#' @export
-#' @rdname fm_evaluate
-fm_evaluator.fm_tensor <- function(x,
-                                   loc,
-                                   ...) {
-  if (length(loc) != length(x[["fun_spaces"]])) {
-    stop("")
-  }
-  if (is.null(names(loc))) {
-    names(loc) <- names(x[["fun_spaces"]])
-  } else if (!setequal(names(x[["fun_spaces"]]), names(loc))) {
-    stop("")
-  }
-  proj <- lapply(
-    names(x[["fun_spaces"]]),
-    function(k) {
-      fm_evaluator(x[["fun_spaces"]][[k]], loc = loc[[k]])$proj
-    }
-  )
-
-  # Combine the matrices
-  # (A1, A2, A3) -> rowkron(A3, rowkron(A2, A1))
-  A <- proj[[1]][["A"]]
-  ok <- proj[[1]][["ok"]]
-  for (k in seq_len(length(x[["fun_spaces"]]) - 1)) {
-    A <- fm_row_kron(proj[[k + 1]][["A"]], A)
-    ok <- proj[[k + 1]][["ok"]] & ok
-  }
-
-  structure(
-    list(proj = list(A = A, ok = ok)),
-    class = "fm_evaluator"
-  )
-}
 
 
 #' @describeIn fm_evaluate
@@ -805,29 +886,16 @@ fm_evaluator_lattice <- function(mesh,
 
 
 #' @export
-#' @describeIn fm_evaluate The `...` arguments are passed on to `fm_evaluator_lattice()`
-#' if no `loc` or `lattice` is provided.
-fm_evaluator.inla.mesh <- function(mesh,
-                                   loc = NULL,
-                                   lattice = NULL,
-                                   crs = NULL,
-                                   ...) {
-  fm_evaluator.fm_mesh_2d(
-    fm_as_mesh_2d(mesh),
-    loc = loc,
-    lattice = lattice,
-    crs = crs,
-    ...
-  )
+#' @describeIn fm_evaluate Converts legacy `inla.mesh` to `fm_mesh_2d` and calls
+#' the `fm_evaluator` method again.
+fm_evaluator.inla.mesh <- function(mesh, ...) {
+  fm_evaluator(fm_as_mesh_2d(mesh), ...)
 }
 #' @export
-#' @rdname fm_evaluate
-fm_evaluator.inla.mesh.1d <- function(mesh,
-                                      loc = NULL,
-                                      xlim = mesh$interval,
-                                      dims = 100,
-                                      ...) {
-  fm_evaluator.fm_mesh_1d(fm_as_mesh_1d(mesh), loc = loc, xlim = xlim, dims = dims, ...)
+#' @describeIn fm_evaluate Converts legacy `inla.mesh` to `fm_mesh_1d` and calls
+#' the `fm_evaluator` method again.
+fm_evaluator.inla.mesh.1d <- function(mesh, ...) {
+  fm_evaluator(fm_as_mesh_1d(mesh), ...)
 }
 
 
@@ -987,86 +1055,189 @@ fm_is_within.default <- function(x, y, ...) {
 #' @description
 #'  Computes the basis mapping matrix between a function space on a mesh, and locations.
 #'
-#' @param x An object supported by the [fm_evaluator()] class
-#' @param loc A set of points of a class supported by `fm_evaluator(x, loc = loc)`
-#' @param \dots Currently unused
-#' @returns A `sparseMatrix`
+#' @param x An function space object
+#' @param loc A location/value information object (vector, matrix, `sf`, etc, depending on
+#' the class of `x`)
+#' @param full logical; if `TRUE`, return a `fm_basis` object, containing at least
+#' a projection matrix `A` and logical vector `ok` indicating which evaluations
+#' are valid. If `FALSE`, return only the projection matrix `A`. Default is `FALSE`.
+#' @param \dots Passed on to submethods
+#' @returns A `sparseMatrix` object (if `full = FALSE`),
+#' or a `fm_basis` object (if `full = TRUE` or `isTRUE(derivatives)`).
+#' The `fm_basis` object contains at least the projection matrix `A` and logical vector `ok`;
+#' `u(loc_i)=sum_j A_ij w_i`
 #' @seealso [fm_raw_basis()]
 #' @examples
 #' # Compute basis mapping matrix
 #' str(fm_basis(fmexample$mesh, fmexample$loc))
+#' print(fm_basis(fmexample$mesh, fmexample$loc), full = TRUE)
 #' @export
-fm_basis <- function(x, ...) {
+fm_basis <- function(x, ..., full = FALSE) {
   UseMethod("fm_basis")
 }
 
-#' @rdname fm_basis
+#' Print method for `fm_basis()`
+#'
+#' Prints information for an [fm_basis()] object.
+#'
+#' @param x [fm_basis()] object
+#' @param \dots Unused
+#' @returns `invisible(x)`
+#' @seealso [fm_basis()]
 #' @export
-fm_basis.default <- function(x, loc, ...) {
-  fm_evaluator(x, loc = loc)$proj$A
+#' @examples
+#' print(fm_basis(fmexample$mesh, fmexample$loc, full = TRUE))
+print.fm_basis <- function(x, ...) {
+  cat("fm_basis object\n")
+  cat("  Projection matrix (A): ", paste0(dim(x$A), collapse = "-by-"), "\n", sep = "")
+  cat("  Valid evaluations (ok): ", sum(x$ok), " out of ", length(x$ok), "\n", sep = "")
+  cat("  Additional information: ",
+    paste(names(x)[!names(x) %in% c("A", "ok")], collapse = ", "),
+    "\n",
+    sep = ""
+  )
+
+  invisible(x)
 }
 
-#' @param weights Optional weight matrix to apply (from the left)
-#' @param derivatives If non-NULL and logical, return a list, optionally
-#' including derivative matrices.
-#' @returns For `fm_mesh_1d`, a list with elements
-#' \item{A }{The projection matrix, `u(loc_i)=sum_j A_ij w_i`}
-#' \item{d1A, d2A }{Derivative weight matrices,
-#' `du/dx(loc_i)=sum_j dx_ij w_i`, etc.}
 #' @rdname fm_basis
 #' @export
-fm_basis.fm_mesh_1d <- function(x, loc, weights = NULL, derivatives = NULL, ...) {
-  result <- fm_evaluator_mesh_1d(
+fm_basis.default <- function(x, ..., full = FALSE) {
+  lifecycle::deprecate_stop(
+    "0.1.7.9002",
+    "fm_basis.default()",
+    details = "Each mesh class needs its own `fm_basis()` method."
+  )
+}
+
+#' @param weights Optional weight vector to apply (from the left, one
+#' weight for each row of the basis matrix)
+#' @param derivatives If non-NULL and logical, include derivative matrices
+#' in the output. Forces `full = TRUE`.
+#' @describeIn fm_basis The `fm_basis` object contains additional derivative weight matrices,
+#' `d1A` and `d2A`, `du/dx(loc_i)=sum_j dx_ij w_i`.
+#' @export
+fm_basis.fm_mesh_1d <- function(x, loc, weights = NULL, derivatives = NULL, ..., full = FALSE) {
+  result <- fm_basis_mesh_1d(
     x,
     loc = loc,
     weights = weights,
     derivatives = derivatives,
     ...
   )
-  if (is.null(derivatives)) {
-    return(result$A)
+  if (isTRUE(derivatives) && !full) {
+    full <- TRUE
   }
-  return(result)
+  fm_basis(result, full = full)
 }
 
-#' @return For `fm_mesh_2d`, a list with elements
-#' \item{A }{The projection matrix, `u(loc_i)=sum_j A_ij w_i`}
-#' \item{dx, dy, dz }{Derivative weight matrices, `du/dx(loc_i)=sum_j
-#' dx_ij w_i`, etc.}
-#' @rdname fm_basis
+#' @describeIn fm_basis If `derivatives=TRUE`, additional derivative weight matrices
+#' are included in the `full=TRUE` output: Derivative weight matrices
+#' `dx`, `dy`, `dz`; `du/dx(loc_i)=sum_j dx_ij w_i`, etc.
 #' @export
-fm_basis.fm_mesh_2d <- function(x, loc, weights = NULL, derivatives = NULL, ...) {
-  result <- fm_evaluator_mesh_2d(
+fm_basis.fm_mesh_2d <- function(x, loc, weights = NULL, derivatives = NULL, ...,
+                                full = FALSE) {
+  result <- fm_basis_mesh_2d(
     x,
     loc = loc,
     weights = weights,
     derivatives = derivatives,
     ...
   )
-  if (is.null(derivatives)) {
-    return(result$A)
+  if (isTRUE(derivatives) && !full) {
+    full <- TRUE
   }
-  return(result)
+  fm_basis(result, full = full)
 }
 
 #' @rdname fm_basis
 #' @export
 #' @method fm_basis inla.mesh.1d
-fm_basis.inla.mesh.1d <- function(x, loc, ...) {
-  fm_basis.fm_mesh_1d(fm_as_mesh_1d(x), loc = loc, ...)
+fm_basis.inla.mesh.1d <- function(x, ...) {
+  fm_basis.fm_mesh_1d(fm_as_mesh_1d(x), ...)
 }
 
 #' @rdname fm_basis
 #' @export
 #' @method fm_basis inla.mesh
-fm_basis.inla.mesh <- function(x, loc, ...) {
-  fm_basis.fm_mesh_2d(fm_as_mesh_2d(x), loc = loc, ...)
+fm_basis.inla.mesh <- function(x, ...) {
+  fm_basis.fm_mesh_2d(fm_as_mesh_2d(x), ...)
 }
 
 #' @rdname fm_basis
 #' @export
-fm_basis.fm_evaluator <- function(x, ...) {
-  x$proj$A
+fm_basis.fm_evaluator <- function(x, ..., full = FALSE) {
+  fm_basis(
+    structure(
+      x$proj,
+      class = "fm_basis"
+    ),
+    full = full
+  )
+}
+
+#' @rdname fm_basis
+#' @export
+fm_basis.fm_basis <- function(x, ..., full = FALSE) {
+  if (full) {
+    x
+  } else {
+    x[["A"]]
+  }
+}
+
+#' @param x [fm_tensor()] object
+#' @export
+#' @rdname fm_basis
+fm_basis.fm_tensor <- function(x,
+                               loc,
+                               weights = NULL,
+                               ...,
+                               full = FALSE) {
+  if (length(loc) != length(x[["fun_spaces"]])) {
+    stop(
+      paste0(
+        "Length of location list (",
+        length(loc), ") doesn't match the number of function spaces (",
+        length(x[["fun_spaces"]]),
+        ")"
+      )
+    )
+  }
+  if (is.null(names(loc))) {
+    names(loc) <- names(x[["fun_spaces"]])
+  } else if (!setequal(names(x[["fun_spaces"]]), names(loc))) {
+    stop("Name mismatch between location list names and function space names.")
+  }
+  idx <- names(x[["fun_spaces"]])
+  if (is.null(idx)) {
+    idx <- seq_along(x[["fun_spaces"]])
+  }
+  proj <- lapply(
+    idx,
+    function(k) {
+      fm_basis(x[["fun_spaces"]][[k]], loc = loc[[k]], full = TRUE)
+    }
+  )
+  names(proj) <- names(x[["fun_spaces"]])
+
+  # Combine the matrices
+  # (A1, A2, A3) -> rowkron(A3, rowkron(A2, A1))
+  A <- proj[[1]][["A"]]
+  if (!is.null(weights)) {
+    A <- Matrix::Diagonal(nrow(A), x = weights) %*% A
+  }
+  ok <- proj[[1]][["ok"]]
+  for (k in seq_len(length(x[["fun_spaces"]]) - 1)) {
+    A <- fm_row_kron(proj[[k + 1]][["A"]], A)
+    ok <- proj[[k + 1]][["ok"]] & ok
+  }
+
+  out <- structure(
+    list(A = A, ok = ok),
+    class = "fm_basis"
+  )
+  fm_basis(out, full = full)
 }
 
 
@@ -1625,14 +1796,26 @@ fm_block_log_shift <- function(block = NULL,
   block_k <- sort(unique(info$block))
   shift <- numeric(info$n_block)
   if (!is.null(info$log_weights)) {
-    shift[block_k] <-
-      vapply(
-        block_k,
-        function(k) {
-          max(info$log_weights[info$block == k])
-        },
-        0.0
-      )
+    if (info$n_block <= 200) {
+      # Fast for small n_block
+      shift[block_k] <-
+        vapply(
+          block_k,
+          function(k) {
+            max(info$log_weights[info$block == k])
+          },
+          0.0
+        )
+    } else {
+      # Fast for large n_block
+      shift[block_k] <-
+        stats::aggregate(
+          info[["log_weights"]],
+          by = list(block = info[["block"]]),
+          FUN = max,
+          simplify = TRUE
+        )$x
+    }
   }
 
   shift

@@ -34,6 +34,8 @@ plot.fm_segm <- function(x, ..., add = FALSE) {
   lines(x, add = add, rgl = FALSE, ...)
 }
 
+#' @param visibility If "front" only display mesh faces with normal pointing
+#' towards the camera.
 #' @rdname plot.fm_segm
 #' @export
 lines.fm_segm <- function(x, loc = NULL, col = NULL,
@@ -43,6 +45,7 @@ lines.fm_segm <- function(x, loc = NULL, col = NULL,
                           axes = FALSE,
                           xlab = "",
                           ylab = "",
+                          visibility = "front",
                           ...) {
   if (rgl) {
     lines_rgl(
@@ -87,8 +90,15 @@ lines.fm_segm <- function(x, loc = NULL, col = NULL,
     if (is.null(col)) {
       color <- colors[1 + (grp %% length(colors))]
     }
-    lines(loc[t(cbind(segm$idx[idx, , drop = FALSE], NA)), 1],
-      loc[t(cbind(segm$idx[idx, , drop = FALSE], NA)), 2],
+    ev <- segm$idx[idx, , drop = FALSE]
+    if (identical(visibility, "front") &&
+      (ncol(loc) >= 3)) {
+      keep <- (loc[ev[, 1], 3] >= 0) & (loc[ev[, 2], 3] >= 0)
+      ev <- ev[keep, , drop = FALSE]
+    }
+    ev <- t(cbind(ev, NA))
+    lines(loc[ev, 1],
+      loc[ev, 2],
       col = color,
       ...
     )
@@ -189,6 +199,10 @@ plot.fm_mesh_2d <- function(
   force(ylim)
   mesh <- x
 
+  if (ncol(mesh$loc) < 3) {
+    mesh$loc <- cbind(mesh$loc, 0.0)
+  }
+
   tv_info <- get_tv_sub(
     tv = mesh$graph$tv,
     loc = mesh$loc,
@@ -259,10 +273,16 @@ plot.fm_mesh_2d <- function(
   }
   if (draw.segments) {
     if (!is.null(mesh$segm$bnd)) {
-      lines(fm_as_fm(mesh$segm$bnd), mesh$loc, lwd = lwd + 1, ...)
+      lines(fm_as_fm(mesh$segm$bnd), mesh$loc,
+        lwd = lwd + 1, ...,
+        visibility = visibility
+      )
     }
     if (!is.null(mesh$segm$int)) {
-      lines(fm_as_fm(mesh$segm$int), mesh$loc, lwd = lwd + 1, ...)
+      lines(fm_as_fm(mesh$segm$int), mesh$loc,
+        lwd = lwd + 1, ...,
+        visibility = visibility
+      )
     }
   }
   return(invisible())
@@ -273,13 +293,13 @@ get_tv_sub <- function(tv, loc, t.sub, visibility = "front") {
   tv <- tv[t.sub, , drop = FALSE]
   # Filter out away-facing triangles
   if (identical(visibility, "front")) {
-    e0 <- loc[tv[, 2], ] - loc[tv[, 1], ]
-    e1 <- loc[tv[, 3], ] - loc[tv[, 1], ]
+    e0 <- loc[tv[, 2], , drop = FALSE] - loc[tv[, 1], , drop = FALSE]
+    e1 <- loc[tv[, 3], , drop = FALSE] - loc[tv[, 1], , drop = FALSE]
     normal <-
       cbind(
-        e0[, 2] * e1[, 3] - e1[, 3] * e1[, 2],
-        e0[, 3] * e1[, 1] - e0[, 1] * e1[, 3],
-        e0[, 1] * e1[, 2] - e0[, 2] * e1[, 1]
+        e0[, 2, drop = FALSE] * e1[, 3, drop = FALSE] - e1[, 3, drop = FALSE] * e1[, 2, drop = FALSE],
+        e0[, 3, drop = FALSE] * e1[, 1, drop = FALSE] - e0[, 1, drop = FALSE] * e1[, 3, drop = FALSE],
+        e0[, 1, drop = FALSE] * e1[, 2, drop = FALSE] - e0[, 2, drop = FALSE] * e1[, 1, drop = FALSE]
       )
     ok <- normal[, 3] > 0
     tv <- tv[ok, , drop = FALSE]

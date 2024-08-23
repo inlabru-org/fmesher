@@ -9,6 +9,8 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <map>
+#include <unordered_map>
 
 // Order must be RcppFmesher, Rcpp to allow the Rcpp classes
 // to find the fmesher types
@@ -177,32 +179,34 @@ Mesh Rcpp_import_mesh(Rcpp::NumericMatrix mesh_loc,
 
 
 
-// #include "qtool.h"
-//
-// //' @title Compute sparse matrix inverse
-// //'
-// //' @description
-// //' Requires RcppEigen which is not compiled in by default
-// //'
-// //' @param AA A sparse matrix
-// //' @keywords internal
-// // [[Rcpp::export]]
-// Rcpp::List C_qinv(SEXP AA) {
-// #ifdef FMESHER_WITH_EIGEN
-//   const EigenMSM<double> A(Rcpp::as<EigenMSM<double>>(AA));
-//
-//   QTool<double> Q;
-//   Q.Q(A);
-//
-//   Rcpp::List ret;
-//   ret["Qinv"] = Q.S();
-//   return ret;
-// #else
-//   Rcpp::stop("Unsupported method C_qinv; fmesher was built without FMESHER_WITH_EIGEN");
-//   Rcpp::List ret;
-//   return ret;
-// #endif
-// }
+#include "qtool.h"
+
+//' @title Compute sparse matrix inverse
+//'
+//' @description
+//' Requires RcppEigen which is not compiled in by default. Enable with
+//' `PKG_CPPFLAGS=-DFMESHER_WITH_EIGEN` in `src/Makevars` and add `RcppEigen`
+//' to the `DESCRIPTION` `LinkingTo` field.
+//'
+//' @param AA A sparse matrix
+//' @keywords internal
+// [[Rcpp::export]]
+Rcpp::List fmesher_qinv(SEXP AA) {
+#ifdef FMESHER_WITH_EIGEN
+  const EigenMSM<double> A(Rcpp::as<EigenMSM<double>>(AA));
+
+  QTool<double> Q;
+  Q.Q(A);
+
+  Rcpp::List ret;
+  ret["Qinv"] = Q.S();
+  return ret;
+#else
+  Rcpp::stop("Unsupported method fmesher_qinv; fmesher was built without FMESHER_WITH_EIGEN");
+  Rcpp::List ret;
+  return ret;
+#endif
+}
 
 
 
@@ -373,12 +377,15 @@ Rcpp::List fmesher_rcdt(Rcpp::List options,
         << std::endl);
     }
     /* Remove everything outside the boundary segments, if any. */
+    FMLOG("Prune exterior." << std::endl);
     MC.PruneExterior();
+    FMLOG("Invalidate unused vertex indices." << std::endl);
     invalidate_unused_vertex_indices(M, idx);
     /* Nothing more to do here.  Cannot refine non R2/S2 meshes. */
   } else {
     /* If we don't already have a triangulation, we must create one. */
     if (M.nT() == 0) {
+      FMLOG("Create covering triangulation." << std::endl);
       FMLOG("cet_sides = " << rcdt_options.cet_sides << std::endl);
       FMLOG("cet_margin = " << rcdt_options.cet_margin << std::endl);
       if (!MC.CET(rcdt_options.cet_sides, rcdt_options.cet_margin)) {
@@ -403,12 +410,15 @@ Rcpp::List fmesher_rcdt(Rcpp::List options,
     MC.DT(vertices);
 
     /* Remove everything outside the boundary segments, if any. */
+    FMLOG("Prune exterior." << std::endl);
     MC.PruneExterior();
+    FMLOG("Invalidate unused vertex indices." << std::endl);
     invalidate_unused_vertex_indices(M, idx);
 
     if ((rcdt_options.rcdt) &&
         (rcdt_options.rcdt_max_edge > 0)) {
       /* Calculate the RCDT: */
+      FMLOG("Construct refinement." << std::endl);
       MC.RCDT(rcdt_options.rcdt_min_angle,
               rcdt_options.rcdt_max_edge,
               rcdt_options.quality.raw(),
@@ -443,7 +453,7 @@ Rcpp::List fmesher_rcdt(Rcpp::List options,
 
   matrices.attach("tt", &M.TT());
   M.useVT(true);
-  matrices.attach("vt", &M.VT());
+//  matrices.attach("vt", &M.VT());
   M.useTTi(true);
   matrices.attach("tti", &M.TTi());
   matrices.attach("vv", std::make_unique<SparseMatrix<int>>(M.VV()),
@@ -508,7 +518,7 @@ Rcpp::List fmesher_bary(Rcpp::NumericMatrix mesh_loc,
   FMLOG("barycentric coordinate output." << std::endl);
   if ((M.type() != Mesh::Mtype::Plane) &&
       (M.type() != Mesh::Mtype::Sphere)) {
-    FMLOG_("Cannot calculate points2mesh mapping for non R2/S2 manifolds"
+    FMLOG_("Cannot currently calculate points2mesh mapping for non R2/S2 manifolds"
              << std::endl);
     return Rcpp::List();
   }
@@ -526,7 +536,9 @@ Rcpp::List fmesher_bary(Rcpp::NumericMatrix mesh_loc,
   matrices.matrixtype("bary", fmesh::IOMatrixtype::General);
   matrices.output("t").output("bary");
 
+  FMLOG("map_points_to_mesh start" << std::endl);
   map_points_to_mesh(M, points2mesh, points2mesh_t, points2mesh_b);
+  FMLOG("map_points_to_mesh done" << std::endl);
 
   return Rcpp::wrap(matrices);
 }
@@ -947,6 +959,212 @@ Rcpp::List fmesher_split_lines(
   return Rcpp::wrap(matrices);
 }
 
+
+
+typedef struct {
+  int start;
+  int finish;
+  int sequence_index; // 0, ..., subdivisions - 1
+} edge_point_t;
+bool operator==(const edge_point_t& lhs, const edge_point_t& rhs) {
+  return lhs.start == rhs.start && lhs.finish == rhs.finish &&
+    lhs.sequence_index == rhs.sequence_index;
+}
+template<>
+struct std::hash<edge_point_t>
+{
+  std::size_t operator()(const edge_point_t& ep) const noexcept
+  {
+    std::size_t h1 = std::hash<int>{}(ep.start);
+    std::size_t h2 = std::hash<int>{}(ep.finish);
+    std::size_t h3 = std::hash<int>{}(ep.sequence_index);
+    return ((h1 ^ (h2 << 1)) >>  1) ^ (h3 << 1);
+  }
+};
+
+
+
+
+//' @title Subdivide triangles
+//'
+//' @description
+//' Subdivide a mesh with congruent and anti-congruent subtriangles
+//'
+//' @param mesh_loc numeric matrix; mesh vertex coordinates
+//' @param mesh_tv 3-column integer matrix with 0-based vertex indices for each triangle
+//' @param mesh_boundary 2-column integer matrix with 0-based vertex indices for
+//' boundary constraints, currently ignored
+//' @param mesh_interior 2-column integer matrix with 0-based vertex indices for
+//' interior constraints, currently ignored
+//' @param subdivisions integer; number of new points along each edge.
+//' @param options list of triangulation options (`sphere_tolerance`)
+//' @returns A list of new `loc` and `tv` information
+//' @keywords internal
+//' @seealso [fm_subdivide()]
+//' @examples
+//' mesh <- fm_mesh_2d(
+//'   boundary = fm_segm(rbind(c(0,0), c(1,0), c(1,1), c(0, 1)), is.bnd = TRUE)
+//' )
+//' new_mesh <- fm_subdivide(mesh, n = 3)
+//' plot(new_mesh, edge.color = 2)
+//' plot(mesh, add = TRUE, edge.color = 1)
+// [[Rcpp::export]]
+Rcpp::List fmesher_subdivide(
+    Rcpp::NumericMatrix mesh_loc,
+    Rcpp::IntegerMatrix mesh_tv,
+    Rcpp::IntegerMatrix mesh_boundary,
+    Rcpp::IntegerMatrix mesh_interior,
+    int subdivisions,
+    Rcpp::List options) {
+  MatrixC matrices;
+  Mesh M = Rcpp_import_mesh(mesh_loc, mesh_tv, matrices, Rcpp::List());
+
+  FMLOG("Subdivide triangles." << std::endl);
+
+  matrices.attach("loc",
+                  std::make_unique<Matrix<double>>(Matrix3double(mesh_loc)));
+  matrices.attach("tv",
+                  std::make_unique<Matrix<int>>(Matrix3int()));
+  Matrix<double> &loc = matrices.DD("loc");
+  Matrix<int> &tv = matrices.DI("tv");
+
+  loc.capacity(M.nT() * (subdivisions + 2) * (subdivisions + 3) / 2);
+  tv.rows(M.nT() * (subdivisions + 1) * (subdivisions + 1));
+
+  FMLOG("Construct new points." << std::endl);
+  // Points along edge
+  std::unordered_map<edge_point_t, int> edge_to_point;
+
+  FMLOG("Construct triangles." << std::endl);
+  std::vector<std::vector<int>> triangle_to_point(subdivisions + 2);
+  for (int i = 0; i < subdivisions + 2; i++) {
+    triangle_to_point[i].resize(subdivisions + 2 - i, 0);
+  }
+
+  size_t t_offset = 0;
+  for (size_t t = 0; t < M.nT(); t++) {
+    FMLOG("Corner points" << std::endl);
+
+    triangle_to_point[0][0] = M.TV()(t, 0);
+    triangle_to_point[subdivisions + 1][0] = M.TV()(t, 1);
+    triangle_to_point[0][subdivisions + 1] = M.TV()(t, 2);
+
+    FMLOG("Edge points" << std::endl);
+
+    for (int i = 0; i < 3; i++) {
+      for (int k = 0; k < subdivisions; ++k) {
+        int new_vtx = loc.rows();
+        const std::unordered_map<edge_point_t, int>::const_iterator new_vtx_iter =
+          edge_to_point.find(
+          edge_point_t{M.TV()(t, (i+1) % 3), M.TV()(t, i), subdivisions - 1 - k});
+        if (new_vtx_iter != edge_to_point.end()) {
+          new_vtx = new_vtx_iter->second;
+        } else {
+          FMLOG("vtx 0: " << loc(M.TV()(t, i),0) << ", "
+                           << loc(M.TV()(t, i),1) << ", "
+                           << loc(M.TV()(t, i),2) << std::endl);
+          FMLOG("vtx 1: " << loc(M.TV()(t, (i+1) % 3),0) << ", "
+                           << loc(M.TV()(t, (i+1) % 3),1) << ", "
+                           << loc(M.TV()(t, (i+1) % 3),2) << std::endl);
+          FMLOG("subs - k = " << subdivisions - k << std::endl);
+          FMLOG("k + 1    = " << k + 1 << std::endl);
+          loc.rows(new_vtx + 1);
+          for (int dim = 0; dim < 3; ++dim) {
+            loc(new_vtx, dim) = (loc(M.TV()(t, i), dim) * (subdivisions - k) +
+              loc(M.TV()(t, (i+1) % 3), dim) * (k + 1)) / (subdivisions + 1);
+          }
+          FMLOG("interp: " << loc(new_vtx,0) << ", "
+                            << loc(new_vtx,1) << ", "
+                            << loc(new_vtx,2) << std::endl);
+          // TODO: project onto sphere for S2 meshes
+          // Now done in the R interface fm_subdivide
+          // FMLOG("TODO: fmesher_subdivide: handle spherical meshes." << std::endl);
+        }
+        edge_to_point.emplace(
+              edge_point_t{M.TV()(t, i), M.TV()(t, (i+1) % 3), k},
+              new_vtx);
+
+        if (i == 0) {
+          triangle_to_point[k + 1][0] =  new_vtx;
+        } else if (i == 1) {
+          triangle_to_point[subdivisions - k][k + 1] =  new_vtx;
+        } else { // i == 2
+          triangle_to_point[0][subdivisions - k] =  new_vtx;
+        }
+      }
+    }
+
+    FMLOG("Vertices = " << loc.rows() << std::endl);
+
+    FMLOG("Interior points" << std::endl);
+
+    // interior points:
+    // j = 1, ..., subs - 1
+    // i = 1, ..., subs - j
+    // total : subs * (subs - 1) / 2
+    int new_vtx = loc.rows();
+    loc.rows(loc.rows() + subdivisions * (subdivisions - 1) / 2);
+    for (int j = 1; j < subdivisions; ++j) {
+      for (int i = 1; i < subdivisions - j + 1; ++i) {
+        int k = subdivisions + 1 - i - j;
+        for (int dim = 0; dim < 3; ++dim) {
+          loc(new_vtx, dim) = (
+            loc(M.TV(t)[0], dim) * k +
+              loc(M.TV(t)[1], dim) * i +
+              loc(M.TV(t)[2], dim) * j) / (subdivisions + 1);
+        }
+        triangle_to_point[i][j] = new_vtx;
+        // TODO: project onto sphere for S2 meshes
+        // Now done in the R interface fm_subdivide
+        // FMLOG("TODO: fmesher_subdivide: handle spherical meshes." << std::endl);
+        ++new_vtx;
+      }
+    }
+
+    FMLOG("Triangle " << t << " = (" << M.TV()(t,0) <<
+      "," << M.TV()(t,1) << "," << M.TV()(t,2) << ")" << std::endl);
+
+    FMLOG("Triangles" << std::endl);
+
+    if (subdivisions <= 0) {
+      tv(t_offset, 0) = M.TV(t)[0];
+      tv(t_offset, 1) = M.TV(t)[1];
+      tv(t_offset, 2) = M.TV(t)[2];
+      ++t_offset;
+    } else {
+      // congruent triangles; (subs + 1) * (subs + 2) / 2
+      // converse triangles; subs * (subs + 1) / 2
+      // total : (subs + 1)^2
+      for (int j = 0; j < subdivisions + 1; ++j) {
+        // congruent triangles; subs + 1 - j
+        // converse triangles; subs - j
+        for (int i = 0; i < subdivisions - j + 1; ++i) {
+          // congruent triangle:
+          tv(t_offset, 0) = triangle_to_point[i][j];
+          tv(t_offset, 1) = triangle_to_point[i + 1][j];
+          tv(t_offset, 2) = triangle_to_point[i][j + 1];
+          ++t_offset;
+        }
+        for (int i = 0; i < subdivisions - j; ++i) {
+          // converse triangle:
+          tv(t_offset, 0) = triangle_to_point[i + 1][j + 1];
+          tv(t_offset, 1) = triangle_to_point[i][j + 1];
+          tv(t_offset, 2) = triangle_to_point[i + 1][j];
+          ++t_offset;
+        }
+      }
+    }
+  }
+
+  FMLOG("Done" << std::endl);
+
+  FMLOG("Vertices = " << loc.rows() << std::endl);
+  FMLOG("Triangles = " << tv.rows() << std::endl);
+
+  matrices.output("loc").output("tv");
+
+  return Rcpp::wrap(matrices);
+}
 
 
 // //' @title Test the matrix I/O system

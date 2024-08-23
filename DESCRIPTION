@@ -1,7 +1,7 @@
 Package: fmesher
 Type: Package
 Title: Triangle Meshes and Related Geometry Tools
-Version: 0.1.4.9001
+Version: 0.1.7.9002
 Authors@R: c(
   person("Finn", "Lindgren", email = "finn.lindgren@gmail.com",
          role = c("aut", "cre", "cph"),
@@ -43,7 +43,6 @@ Imports:
     Rcpp
 Suggests:
     ggplot2,
-    ggpolypath,
     inlabru (>= 2.8.0),
     knitr,
     testthat (>= 3.0.0),
@@ -58,7 +57,7 @@ BugReports: https://github.com/inlabru-org/fmesher/issues
 License: MPL-2.0
 Copyright: 2010-2023 Finn Lindgren, except src/predicates.cc by Jonathan Richard Shewchuk, 1996
 NeedsCompilation: yes
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 Config/testthat/edition: 3

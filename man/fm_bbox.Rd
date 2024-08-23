@@ -4,11 +4,15 @@
 \alias{fm_bbox}
 \alias{fm_bbox.list}
 \alias{fm_bbox.NULL}
+\alias{fm_bbox.numeric}
 \alias{fm_bbox.matrix}
+\alias{fm_bbox.Matrix}
 \alias{fm_bbox.fm_bbox}
+\alias{fm_bbox.fm_mesh_1d}
 \alias{fm_bbox.fm_mesh_2d}
 \alias{fm_bbox.fm_segm}
 \alias{fm_bbox.fm_lattice_2d}
+\alias{fm_bbox.fm_tensor}
 \alias{fm_bbox.sf}
 \alias{fm_bbox.sfg}
 \alias{fm_bbox.sfc}
@@ -27,15 +31,23 @@ fm_bbox(...)
 ## S3 method for class 'NULL'
 fm_bbox(...)
 
+\method{fm_bbox}{numeric}(x, ...)
+
 \method{fm_bbox}{matrix}(x, ...)
 
+\method{fm_bbox}{Matrix}(x, ...)
+
 \method{fm_bbox}{fm_bbox}(x, ...)
+
+\method{fm_bbox}{fm_mesh_1d}(x, ...)
 
 \method{fm_bbox}{fm_mesh_2d}(x, ...)
 
 \method{fm_bbox}{fm_segm}(x, ...)
 
 \method{fm_bbox}{fm_lattice_2d}(x, ...)
+
+\method{fm_bbox}{fm_tensor}(x, ...)
 
 \method{fm_bbox}{sf}(x, ...)
 
@@ -53,7 +65,7 @@ fm_as_bbox(x, ...)
 
 \method{[}{fm_bbox}(x, i)
 
-\method{c}{fm_bbox}(...)
+\method{c}{fm_bbox}(..., .join = FALSE)
 }
 \arguments{
 \item{...}{Passed on to sub-methods}
@@ -61,9 +73,13 @@ fm_as_bbox(x, ...)
 \item{x}{\code{fm_bbox} object from which to extract element(s)}
 
 \item{i}{indices specifying elements to extract}
+
+\item{.join}{logical; if \code{TRUE}, concatenate the bounding boxes into a single
+multi-dimensional bounding box. Default is \code{FALSE}.}
 }
 \value{
-A \code{fm_bbox_list} object
+For \code{\link[=c.fm_bbox]{c.fm_bbox()}}, a \code{fm_bbox_list} object if \code{join = FALSE} (the default)
+or an \code{fm_bbox} object if \code{join = TRUE}.
 }
 \description{
 Simple class for handling bounding box information
@@ -85,7 +101,7 @@ objects, or coercible with \code{fm_as_bbox(list(...))}.
 }}
 \examples{
 fm_bbox(matrix(1:6, 3, 2))
-m <- c(A = fm_bbox(cbind(1, 2), B = fm_bbox(cbind(3, 4))))
+m <- c(A = fm_bbox(cbind(1, 2)), B = fm_bbox(cbind(3, 4)))
 str(m)
 str(m[2])
 }

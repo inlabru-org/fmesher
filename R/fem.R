@@ -6,7 +6,7 @@
 #'
 #' @description (...)
 #'
-#' @param mesh `inla.mesh` object
+#' @param mesh `fm_mesh_1d` or other supported mesh class object
 #' @param order integer
 #' @param ... Currently unused
 #'
@@ -158,7 +158,8 @@ fm_fem.fm_mesh_1d <- function(mesh, order = 2, ...) {
         )),
         weights =
           c(knots.d * 8 / 9, knots.d * 5 / 9, knots.d * 5 / 9)^0.5,
-        derivatives = TRUE
+        derivatives = TRUE,
+        full = TRUE
       )
     c1 <- Matrix::t(info$A) %*% info$A
     g1 <- Matrix::t(info$dA) %*% info$dA
@@ -253,4 +254,53 @@ fm_fem.inla.mesh.1d <- function(mesh, order = 2, ...) {
 #' @method fm_fem inla.mesh
 fm_fem.inla.mesh <- function(mesh, order = 2, ...) {
   fm_fem(fm_as_fm(mesh), order = order, ...)
+}
+
+#' @rdname fm_fem
+#' @return `fm_fem.fm_tensor`: A list with elements `cc`, `g1`, `g2`.
+#' @export
+fm_fem.fm_tensor <- function(mesh, order = 2, ...) {
+  if (order > 2) {
+    warning("Only fem order <= 2 implemented for fm_tensor")
+    order <- 2
+  }
+
+  fem_list <- lapply(mesh$fun_spaces, fm_fem, order = order)
+  cc_list <- lapply(seq_along(mesh$fun_spaces), function(i) {
+    if (inherits(mesh$fun_spaces[[i]], "fm_mesh_1d") &&
+      mesh$fun_spaces[[i]]$degree == 2) {
+      return(fem_list[[i]]$c1)
+    }
+    fem_list[[i]]$c0
+  })
+
+  kron_multi <- function(x) {
+    if (length(x) == 1) {
+      return(x[[1]])
+    }
+    result <- x[[1]]
+    for (k in seq_len(length(x) - 1)) {
+      result <- kronecker(x[[k + 1]], result)
+    }
+    return(result)
+  }
+
+  cc <- kron_multi(cc_list)
+  g1 <- cc * 0.0
+  g2 <- cc * 0.0
+  mat_list <- cc_list
+  for (i in seq_along(fem_list)) {
+    mat_list[[i]] <- fem_list[[i]]$g2
+    g2 <- g2 + kron_multi(mat_list)
+    mat_list[[i]] <- fem_list[[i]]$g1
+    g1 <- g1 + kron_multi(mat_list)
+    for (j in seq_len(i - 1L)) {
+      mat_list[[j]] <- fem_list[[j]]$g1
+      g2 <- g2 + 2.0 * kron_multi(mat_list)
+      mat_list[[j]] <- cc_list[[j]]
+    }
+    mat_list[[i]] <- cc_list[[i]]
+  }
+
+  return(list(cc = cc, g1 = g1, g2 = g2))
 }

@@ -9,7 +9,14 @@
 #' @export
 #' @param x list of function space objects, such as [fm_mesh_2d()].
 #' @param ... Currently unused
-#' @returns A `fm_tensor` or `fm_tensor_list` object
+#' @returns A `fm_tensor` or `fm_tensor_list` object. Elements of `fm_tensor`:
+#' \describe{
+#' \item{fun_spaces}{`fm_list` of function space objects}
+#' \item{manifold}{character; manifold type summary. Regular subset of Rd "Rd",
+#' if all function spaces have type "R",
+#' torus connected "Td" if all function spaces have type "S", and otherwise "Md"
+#' In all cases, `d` is the sum of the manifold dimensions of the function spaces.}
+#' }
 #' @family object creation and conversion
 #' @examples
 #' m <- fm_tensor(list(
@@ -20,6 +27,8 @@
 #' m3 <- fm_as_tensor_list(list(m, m))
 #' c(fm_dof(m$fun_spaces$space) * fm_dof(m$fun_spaces$time), fm_dof(m))
 #' str(fm_evaluator(m, loc = list(space = cbind(0, 0), time = 2.5)))
+#' str(fm_basis(m, loc = list(space = cbind(0, 0), time = 2.5)))
+#' str(fm_fem(m))
 fm_tensor <- function(x, ...) {
   nn <- names(x)
   if (is.null(nn)) {
@@ -27,10 +36,22 @@ fm_tensor <- function(x, ...) {
   } else if (any(nn == "")) {
     stop("all or no elements of the list of function space objects need to be named.")
   }
-  structure(
-    list(fun_spaces = lapply(x, fm_as_fm)),
+  m <- structure(
+    list(
+      fun_spaces = fm_as_list(x),
+      manifold = ""
+    ),
     class = "fm_tensor"
   )
+  type <- vapply(m$fun_spaces, fm_manifold_type, character(1))
+  d <- vapply(m$fun_spaces, fm_manifold_dim, integer(1))
+  type <- unique(type)
+  if ((length(type) == 1L) && (type %in% c("R", "S", "T", "M"))) {
+    m$manifold <- paste0(list(R = "R", S = "T", T = "T", M = "M")[[type]], sum(d))
+  } else {
+    m$manifold <- paste0("M", sum(d))
+  }
+  m
 }
 
 #' @title Convert objects to `fm_tensor`

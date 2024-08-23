@@ -100,7 +100,7 @@ suppressPackageStartupMessages(library(ggplot2))
 #>   V / E / T: 57 / 152 / 96
 #>   Euler char.:   1
 #>   Constraints:   16 boundary edges (1 group: 1), 16 interior edges (1 group: 1)
-#>   Bounding box: (-1.499887, 1.499887) x (-1.499887, 1.499887) x (0,0)
+#>   Bounding box: (-1.499887, 1.499887) x (-1.499887, 1.499887)
 #>   Basis d.o.f.:  57
 ```
 

@@ -57,12 +57,15 @@ local_fm_testthat_tolerances <- function(tolerances = c(1e-4, 1e-2, 1e-1),
 local_fm_testthat_setup <- function(envir = parent.frame()) {
   local_fm_testthat_tolerances(envir = envir)
 
-  if (utils::compareVersion(getNamespaceVersion("sp"), "1.6-0") >= 0) {
-    old_sp_evolution_status <- sp::get_evolution_status()
-    withr::defer(
-      sp::set_evolution_status(old_sp_evolution_status),
-      envir = envir
-    )
+  sp_version <- getNamespaceVersion("sp")
+  if (utils::compareVersion(sp_version, "1.6-0") >= 0) {
+    if (utils::compareVersion(sp_version, "2.1-3") < 0) {
+      old_sp_evolution_status <- sp::get_evolution_status()
+      withr::defer(
+        sp::set_evolution_status(old_sp_evolution_status),
+        envir = envir
+      )
+    }
     fm_safe_sp(quietly = TRUE, force = TRUE)
   }
 
@@ -144,12 +147,24 @@ fm_safe_sp <- function(quietly = FALSE,
     return(invisible(FALSE))
   }
 
+  if (sp_version >= "2.1.4") {
+    return(invisible(TRUE))
+  }
+
   if (sp_version >= "1.6-0") {
     # Default to 2L to allow future sp to stop supporting
     # get_evolution_status; assume everything is fine if it fails.
-    evolution_status <- tryCatch(sp::get_evolution_status(),
-      error = function(e) 2L
-    )
+    if (sp_version < "2.1-3") {
+      # From at least version 2.1-3, sp gives a warning when using
+      # get_evolution_status, and the status is fixed to 2L, so no
+      # need to set it.
+      evolution_status <- tryCatch(
+        sp::get_evolution_status(),
+        error = function(e) 2L
+      )
+    } else {
+      evolution_status <- 2L
+    }
     rgdal_version <- tryCatch(utils::packageVersion("rgdal"),
       error = function(e) NA_character_
     )

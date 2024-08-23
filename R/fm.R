@@ -45,6 +45,12 @@ fm_as_fm.fm_mesh_2d <- function(x, ...) {
 }
 #' @rdname fm_as_fm
 #' @export
+fm_as_fm.fm_tensor <- function(x, ...) {
+  #  class(x) <- c("fm_tensor", setdiff(class(x), "fm_tensor"))
+  x
+}
+#' @rdname fm_as_fm
+#' @export
 fm_as_fm.fm_segm <- function(x, ...) {
   #  class(x) <- c("fm_segm", setdiff(class(x), "fm_segm"))
   x

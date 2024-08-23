@@ -19,6 +19,9 @@ test_that("Flat CDT works", {
   expect_equal(fm_manifold(mesh, "S"), FALSE)
   expect_equal(fm_manifold(mesh, "1"), FALSE)
   expect_equal(fm_manifold(mesh, "S1"), FALSE)
+  # Check issue #16, where it ignored all but the first type option:
+  expect_equal(fm_manifold(mesh, c("R", "S")), TRUE)
+  expect_equal(fm_manifold(mesh, c("S", "R")), TRUE)
 
   edges <- list(
     mesh$loc[mesh$graph$tv[, 2], ] - mesh$loc[mesh$graph$tv[, 1], ],
@@ -73,4 +76,13 @@ test_that("Spherical CDT works", {
   max.edge <- max(len)
 
   expect_lte(max.edge, max.edge0 + lowtol)
+})
+
+
+test_that("fm_lattice_2d ordering", {
+  latt1 <- fm_lattice_2d(1:4, 1:3)
+  latt2 <- fm_lattice_2d(rev(1:4), 1:3)
+  expect_equal(latt1$x, latt2$x)
+  expect_equal(latt1$y, latt2$y)
+  expect_equal(latt1$loc, latt2$loc)
 })

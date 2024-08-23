@@ -1,8 +1,7 @@
 #' @include deprecated.R
 #' @include print.R
-
-#' @importFrom sp coordinates proj4string `proj4string<-`
-
+#'
+#' @importFrom sp CRS
 
 #' @title Handling CRS/WKT
 #' @description Get and set CRS object or WKT string properties.
@@ -1176,6 +1175,18 @@ fm_CRS.fm_CRS <- function(x, oblique = NULL, ...) {
     fm_crs_oblique(x) <- oblique
   }
   x
+}
+
+#' @rdname fm_CRS_sp
+#' @export
+fm_CRS.SpatVector <- function(x, oblique = NULL, ...) {
+  fm_CRS(fm_crs(x, ...), oblique = oblique)
+}
+
+#' @rdname fm_CRS_sp
+#' @export
+fm_CRS.SpatRaster <- function(x, oblique = NULL, ...) {
+  fm_CRS(fm_crs(x, ...), oblique = oblique)
 }
 
 #' @rdname fm_CRS_sp

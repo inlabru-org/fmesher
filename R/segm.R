@@ -228,7 +228,7 @@ fm_segm_join <- function(x, grp = NULL, grp.default = 0L, is.bnd = NULL) {
       is.bnd <- vapply(segm_, function(x) all(fm_is_bnd(x)), TRUE)
       not.is.bnd <- vapply(segm_, function(x) all(!fm_is_bnd(x)), TRUE)
       if ((all(is.bnd) && all(!not.is.bnd)) ||
-          (all(!is.bnd) && all(not.is.bnd))) {
+        (all(!is.bnd) && all(not.is.bnd))) {
         is.bnd <- all(is.bnd) && all(!not.is.bnd)
       } else {
         warning("Inconsistent 'is.bnd' attributes.  Setting 'is.bnd=FALSE'.")

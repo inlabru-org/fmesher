@@ -271,3 +271,39 @@ print.fm_bbox <- function(x, ..., digits = NULL, verbose = TRUE, newline = TRUE)
   }
   return(invisible(x))
 }
+
+
+#' @param verbose logical
+#' @param digits a positive integer indicating how many significant digits are
+#' to be used for numeric and complex x. The default, NULL, uses `getOption("digits")`.
+#'
+#' @export
+#' @rdname fmesher-print
+print.fm_tensor <- function(x, ..., digits = NULL, verbose = FALSE) {
+  ret <- list(verbose = verbose)
+  ret <-
+    c(
+      ret,
+      list(
+        manifold = fm_manifold(x),
+        sub_manifolds = vapply(x[["fun_spaces"]], fm_manifold, character(1)),
+        sub_dof = vapply(x[["fun_spaces"]], fm_dof, 0L)
+      )
+    )
+
+
+  cat("fm_tensor object:\n", sep = "")
+  cat("  Manifold:\t", ret$manifold, " = ",
+    paste0(ret$sub_manifolds, collapse = " x "),
+    "\n",
+    sep = ""
+  )
+  cat("  ", sep = "")
+  print(fm_bbox(x), digits = digits)
+  cat("  Basis d.o.f.:\t", fm_dof(x), " = ",
+    paste0(ret$sub_dof, collapse = " x "),
+    "\n",
+    sep = ""
+  )
+  invisible(x)
+}

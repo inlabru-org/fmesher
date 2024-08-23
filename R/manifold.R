@@ -6,8 +6,7 @@
 #' @description
 #' Extract a manifold definition string, or a logical for matching
 #' manifold type
-#' @param x A [fm_mesh_1d] or [fm_mesh_2d] object (or other object containing a
-#' `manifold` element)
+#' @param x An object with `manifold` information, or a character string
 #' @param type `character`; if `NULL` (the default), returns the manifold definition string.
 #' If `character`, returns `TRUE` if the manifold type of `x` matches at least
 #' one of the character vector elements.
@@ -19,51 +18,77 @@
 #' fm_manifold_type(fmexample$mesh)
 #' fm_manifold_dim(fmexample$mesh)
 fm_manifold <- function(x, type = NULL) {
-  if (is.null(type)) {
-    return(x[["manifold"]])
+  if (!is.character(x)) {
+    x <- x[["manifold"]]
   }
-  if (is.null(x) || is.null(x[["manifold"]])) {
+  if (is.null(type)) {
+    return(x)
+  }
+  if (is.null(x)) {
+    return(FALSE)
+  }
+  any(vapply(type, function(t) fm_manifold_match(x, t), logical(1)))
+}
+
+# Check match for a single type
+fm_manifold_match <- function(x, type) {
+  if (is.null(x)) {
     return(FALSE)
   }
   # Match exact manifold?
-  if (x[["manifold"]] %in% type) {
+  if (x %in% type) {
     return(TRUE)
   }
-  # Match space name or dimension?
-  m <- intersect(c("M", "R", "S"), type)
-  d <- intersect(as.character(seq_len(3)), type)
-  if (length(c(m, d)) == 0) {
+  m <- fm_manifold_type(type)
+  if (!is.null(m) && !identical(m, fm_manifold_type(x))) {
     return(FALSE)
   }
-  grepl(paste0(c(m, d), collapse = "|"), x[["manifold"]])
+  d <- fm_manifold_dim(type)
+  if (!is.null(d) && !identical(d, fm_manifold_dim(x))) {
+    return(FALSE)
+  }
+  if (is.null(m) && is.null(d)) {
+    return(TRUE)
+  }
+  TRUE
 }
 
 #' @rdname fm_manifold
-#' @returns `fm_manifold_type()`: character or NULL; "M", "R", or "S"
+#' @returns `fm_manifold_type()`: character or NULL; "M", "R", "S", or "T"
 #' @export
 fm_manifold_type <- function(x) {
-  if (is.null(x) || is.null(x[["manifold"]])) {
+  if (!is.character(x)) {
+    x <- x[["manifold"]]
+  }
+  if (is.null(x)) {
     return(NULL)
   }
-  # Match space name or dimension?
-  m <- intersect(c("M", "R", "S"), strsplit(x[["manifold"]], "")[[1]])
-  if (length(m) == 0) {
+
+  splt <- strsplit(x, "")[[1]]
+  splt <- splt[splt %in% c("M", "R", "S", "T")]
+  if (length(splt) == 0) {
     return(NULL)
   }
-  m
+  paste0(splt, collapse = "")
 }
 
 #' @rdname fm_manifold
 #' @returns `fm_manifold_dim()`: integer or NULL
 #' @export
 fm_manifold_dim <- function(x) {
-  if (is.null(x) || is.null(x[["manifold"]])) {
+  if (!is.character(x)) {
+    x <- x[["manifold"]]
+  }
+  if (is.null(x)) {
     return(NULL)
   }
-  # Match space name or dimension?
-  d <- intersect(as.character(seq_len(3)), strsplit(x[["manifold"]], "")[[1]])
-  if (length(d) == 0) {
+
+  figures <- as.character(c(0, seq_len(9)))
+  splt <- strsplit(x, "")[[1]]
+  splt <- splt[splt %in% figures]
+  if (length(splt) == 0) {
     return(NULL)
   }
+  d <- paste0(splt, collapse = "")
   as.integer(d)
 }

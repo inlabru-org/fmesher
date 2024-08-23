@@ -1,9 +1,6 @@
 #' @include mesh.R
 #' @include deprecated.R
 
-#' @importFrom sp coordinates proj4string `proj4string<-`
-
-
 # fm_as_segm ####
 
 #' @export
@@ -36,6 +33,7 @@ fm_as_segm.matrix <-
 #' @rdname fm_as_segm
 fm_as_segm.SpatialPoints <-
   function(x, reverse = FALSE, grp = NULL, is.bnd = TRUE, closed = FALSE, ...) {
+    fm_safe_sp(force = TRUE)
     crs <- fm_CRS(x)
     loc <- sp::coordinates(x)
 

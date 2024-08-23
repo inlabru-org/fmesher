@@ -26,13 +26,13 @@ reference:
   - starts_with("fm_mesh")
   - starts_with("fm_rcdt")
   - starts_with("fm_delaunay")
+  - starts_with("fm_subdivide")
   - starts_with("fm_lattice")
   - starts_with("fm_segm")
   - starts_with("fm_nonconvex")
   - starts_with("fm_extensions")
   - starts_with("fm_simplify")
   - starts_with("fm_tensor")
-  - starts_with("fm_split_lines")
 - title: "Property methods"
   desc: "Functions for computing or accessing object properties"
   contents:
@@ -52,6 +52,7 @@ reference:
   - starts_with("fm_detect_manifold")
   - starts_with("fm_dof")
   - starts_with("fm_pixels")
+  - starts_with("fm_split_lines")
 - title: "Stochastic process methods"
   desc: "Functions for constructing stochastic PDE models"
   contents:

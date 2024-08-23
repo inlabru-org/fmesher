@@ -10,6 +10,17 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// fmesher_qinv
+Rcpp::List fmesher_qinv(SEXP AA);
+RcppExport SEXP _fmesher_fmesher_qinv(SEXP AASEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type AA(AASEXP);
+    rcpp_result_gen = Rcpp::wrap(fmesher_qinv(AA));
+    return rcpp_result_gen;
+END_RCPP
+}
 // fmesher_globe_points
 Rcpp::NumericMatrix fmesher_globe_points(Rcpp::IntegerVector globe);
 RcppExport SEXP _fmesher_fmesher_globe_points(SEXP globeSEXP) {
@@ -124,8 +135,25 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// fmesher_subdivide
+Rcpp::List fmesher_subdivide(Rcpp::NumericMatrix mesh_loc, Rcpp::IntegerMatrix mesh_tv, Rcpp::IntegerMatrix mesh_boundary, Rcpp::IntegerMatrix mesh_interior, int subdivisions, Rcpp::List options);
+RcppExport SEXP _fmesher_fmesher_subdivide(SEXP mesh_locSEXP, SEXP mesh_tvSEXP, SEXP mesh_boundarySEXP, SEXP mesh_interiorSEXP, SEXP subdivisionsSEXP, SEXP optionsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type mesh_loc(mesh_locSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerMatrix >::type mesh_tv(mesh_tvSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerMatrix >::type mesh_boundary(mesh_boundarySEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerMatrix >::type mesh_interior(mesh_interiorSEXP);
+    Rcpp::traits::input_parameter< int >::type subdivisions(subdivisionsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type options(optionsSEXP);
+    rcpp_result_gen = Rcpp::wrap(fmesher_subdivide(mesh_loc, mesh_tv, mesh_boundary, mesh_interior, subdivisions, options));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_fmesher_fmesher_qinv", (DL_FUNC) &_fmesher_fmesher_qinv, 1},
     {"_fmesher_fmesher_globe_points", (DL_FUNC) &_fmesher_fmesher_globe_points, 1},
     {"_fmesher_fmesher_rcdt", (DL_FUNC) &_fmesher_fmesher_rcdt, 7},
     {"_fmesher_fmesher_bary", (DL_FUNC) &_fmesher_fmesher_bary, 4},
@@ -134,6 +162,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_fmesher_fmesher_fem", (DL_FUNC) &_fmesher_fmesher_fem, 5},
     {"_fmesher_fmesher_fem_aniso", (DL_FUNC) &_fmesher_fmesher_fem_aniso, 4},
     {"_fmesher_fmesher_split_lines", (DL_FUNC) &_fmesher_fmesher_split_lines, 5},
+    {"_fmesher_fmesher_subdivide", (DL_FUNC) &_fmesher_fmesher_subdivide, 6},
     {NULL, NULL, 0}
 };
 
