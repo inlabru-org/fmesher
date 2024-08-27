@@ -326,10 +326,11 @@ print.fm_basis <- function(x, ..., prefix = "") {
   cat(prefix, "fm_basis object\n", sep = "")
   cat(prefix, "  Projection matrix (A): ", paste0(dim(x$A), collapse = "-by-"), "\n", sep = "")
   cat(prefix, "  Valid evaluations (ok): ", sum(x$ok), " out of ", length(x$ok), "\n", sep = "")
-  cat(prefix, "  Additional information: ",
-      paste(names(x)[!names(x) %in% c("A", "ok")], collapse = ", "),
-      "\n",
-      sep = ""
+  cat(
+    prefix, "  Additional information: ",
+    paste(names(x)[!names(x) %in% c("A", "ok")], collapse = ", "),
+    "\n",
+    sep = ""
   )
 
   invisible(x)
@@ -349,12 +350,12 @@ print.fm_basis <- function(x, ..., prefix = "") {
 print.fm_evaluator <- function(x, ...) {
   cat("fm_evaluator object\n  proj:\n", sep = "")
   print(fm_basis(x, full = TRUE), prefix = "    ")
-  cat("  Additional evaluator information: ",
-      paste(names(x)[!names(x) %in% c("proj")], collapse = ", "),
-      "\n",
-      sep = ""
+  cat(
+    "  Additional evaluator information: ",
+    paste(names(x)[!names(x) %in% c("proj")], collapse = ", "),
+    "\n",
+    sep = ""
   )
 
   invisible(x)
 }
-
