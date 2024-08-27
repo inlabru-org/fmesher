@@ -4,6 +4,7 @@
   to clarify input interpretation and ensure correct boundary orientation (version `0.1.7.9001`)
 * Add `full` argument to `fm_basis()` to toggle between matrix and full `fm_basis`
   object output (version `0.1.7.9002`)
+* Add print methods for `fm_basis` and `fm_evaluator` objects (version `0.1.7.9003`)
 
 # fmesher 0.1.7
 

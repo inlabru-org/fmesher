@@ -307,3 +307,54 @@ print.fm_tensor <- function(x, ..., digits = NULL, verbose = FALSE) {
   )
   invisible(x)
 }
+
+
+
+#' Print method for `fm_basis`
+#'
+#' Prints information for an [fm_basis] object.
+#'
+#' @param x [fm_basis()] object
+#' @param prefix a prefix to be used for each line. Default is an empty string.
+#' @param \dots Unused
+#' @returns `invisible(x)`
+#' @seealso [fm_basis()]
+#' @export
+#' @examples
+#' print(fm_basis(fmexample$mesh, fmexample$loc, full = TRUE))
+print.fm_basis <- function(x, ..., prefix = "") {
+  cat(prefix, "fm_basis object\n", sep = "")
+  cat(prefix, "  Projection matrix (A): ", paste0(dim(x$A), collapse = "-by-"), "\n", sep = "")
+  cat(prefix, "  Valid evaluations (ok): ", sum(x$ok), " out of ", length(x$ok), "\n", sep = "")
+  cat(prefix, "  Additional information: ",
+      paste(names(x)[!names(x) %in% c("A", "ok")], collapse = ", "),
+      "\n",
+      sep = ""
+  )
+
+  invisible(x)
+}
+
+#' Print method for `fm_evaluator()`
+#'
+#' Prints information for an [fm_evaluator] object.
+#'
+#' @param x [fm_evaluator()] object
+#' @param \dots Unused
+#' @returns `invisible(x)`
+#' @seealso [fm_evaluator()]
+#' @export
+#' @examples
+#' print(fm_evaluator(fmexample$mesh, fmexample$loc))
+print.fm_evaluator <- function(x, ...) {
+  cat("fm_evaluator object\n  proj:\n", sep = "")
+  print(fm_basis(x, full = TRUE), prefix = "    ")
+  cat("  Additional evaluator information: ",
+      paste(names(x)[!names(x) %in% c("proj")], collapse = ", "),
+      "\n",
+      sep = ""
+  )
+
+  invisible(x)
+}
+

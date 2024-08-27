@@ -1076,30 +1076,6 @@ fm_basis <- function(x, ..., full = FALSE) {
   UseMethod("fm_basis")
 }
 
-#' Print method for `fm_basis()`
-#'
-#' Prints information for an [fm_basis()] object.
-#'
-#' @param x [fm_basis()] object
-#' @param \dots Unused
-#' @returns `invisible(x)`
-#' @seealso [fm_basis()]
-#' @export
-#' @examples
-#' print(fm_basis(fmexample$mesh, fmexample$loc, full = TRUE))
-print.fm_basis <- function(x, ...) {
-  cat("fm_basis object\n")
-  cat("  Projection matrix (A): ", paste0(dim(x$A), collapse = "-by-"), "\n", sep = "")
-  cat("  Valid evaluations (ok): ", sum(x$ok), " out of ", length(x$ok), "\n", sep = "")
-  cat("  Additional information: ",
-    paste(names(x)[!names(x) %in% c("A", "ok")], collapse = ", "),
-    "\n",
-    sep = ""
-  )
-
-  invisible(x)
-}
-
 #' @rdname fm_basis
 #' @export
 fm_basis.default <- function(x, ..., full = FALSE) {
