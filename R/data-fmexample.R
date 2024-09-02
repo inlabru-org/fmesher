@@ -26,9 +26,9 @@
 
 #' Add sp data to fmexample
 #'
-#' Adds `loc_sp` and `boundary_sp` to `fmexample` for use
+#' Adds `loc_sp` and `boundary_sp` to [fmexample] for use
 #' in `sp` related code examples and tests.
-#' @return Returns a copy of `fmexample` with `loc_sp` (`SpatialPoints`) and
+#' @return Returns a copy of [fmexample] with `loc_sp` (`SpatialPoints`) and
 #' `boundary_sp` (`SpatialPolygons`) added.
 #' @export
 #' @examples
