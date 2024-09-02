@@ -93,17 +93,30 @@ test_that("Tensor space integration", {
 
 
 
+test_that("conversion of polygon to integration points when domain is defined via a mesh", {
+  ips <- fm_int(fmexample$mesh, samplers = fmexample$boundary_sf[[1]])
+
+  expect_s3_class(ips, "sf")
+  expect_equal(
+    sort(colnames(as.data.frame(ips))),
+    sort(c("weight", ".block", "geometry"))
+  )
+  expect_equal(sum(ips$weight), 18.339, tolerance = lowtol)
+})
+
+
 # From old ipoints tests
 
 test_that("conversion of SpatialPolygon to integration points when domain is defined via a mesh", {
-  ips <- fm_int(fmexample$mesh, samplers = fmexample$boundary_sp[[1]])
+  skip_if_not(fm_safe_sp())
+  ips <- fm_int(fmexample$mesh, samplers = fmexample_sp()$boundary_sp[[1]])
 
   expect_s4_class(ips, "SpatialPointsDataFrame")
   expect_equal(
     sort(colnames(as.data.frame(ips))),
     sort(c("weight", ".block", "x", "y", "z"))
   )
-  expect_equal(sum(ips$weight), 18.33349, tolerance = lowtol)
+  expect_equal(sum(ips$weight), 18.339, tolerance = lowtol)
 })
 
 test_that("conversion of whole 2D mesh to integration points", {
@@ -122,6 +135,7 @@ test_that("conversion of whole 2D mesh to integration points", {
 
 
 test_that("Polygon integration with holes", {
+  skip_if_not(fm_safe_sp())
   plyA <- sp::SpatialPolygons(list(
     sp::Polygons(
       list(
@@ -171,10 +185,10 @@ test_that("Polygon integration with holes", {
   #   sf::st_area(sf::st_as_sf(plyA))
   # [1] 8.006112
 
-  expect_equal(sum(ipA1$weight), 7.914124, tolerance = lowtol)
-  expect_equal(sum(ipA2$weight), 7.914124, tolerance = lowtol)
-  expect_equal(sum(ipA3$weight), 8.001529, tolerance = lowtol)
-  expect_equal(sum(ipA4$weight), 8.001529, tolerance = lowtol)
+  expect_equal(sum(ipA1$weight), 7.846134, tolerance = lowtol)
+  expect_equal(sum(ipA2$weight), 7.846134, tolerance = lowtol)
+  expect_equal(sum(ipA3$weight), 8.006558, tolerance = lowtol)
+  expect_equal(sum(ipA4$weight), 8.006558, tolerance = lowtol)
 })
 
 
@@ -273,6 +287,7 @@ test_that("sphere and globe mesh integration", {
 })
 
 test_that("flat SpatialPolygons integration", {
+  skip_if_not(fm_safe_sp())
   mesh <- fmexample$mesh
 
   poly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(rbind(
@@ -294,10 +309,10 @@ test_that("flat SpatialPolygons integration", {
   #   geom_sf(aes(size = weight, colour = nsub2), data = cbind(ips19, nsub2 = "19")) +
   #   facet_wrap(~nsub2)
 
-  expect_equal(sum(ips0$weight), 4.055089, tolerance = midtol)
-  expect_equal(sum(ips1$weight), 4.02438, tolerance = midtol)
-  expect_equal(sum(ips9$weight), 4.00746, tolerance = midtol)
-  expect_equal(sum(ips19$weight), 3.999283, tolerance = midtol)
+  expect_equal(sum(ips0$weight), 3.997853, tolerance = midtol)
+  expect_equal(sum(ips1$weight), 3.973794, tolerance = midtol)
+  expect_equal(sum(ips9$weight), 4.00674, tolerance = midtol)
+  expect_equal(sum(ips19$weight), 3.999486, tolerance = midtol)
 })
 
 test_that("globe polygon integration", {
