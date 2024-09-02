@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.7.9003</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.7.9004</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -122,8 +122,8 @@ give <code>NA</code> entries in <code>t</code> and <code>bary</code>.</p></li>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu">fm_bary</span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span>, <span class="va">fmexample</span><span class="op">$</span><span class="va">loc_sf</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ t   : int [1:10] 331 303 425 342 377 223 365 92 92 359</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ bary: num [1:10, 1:3] 0.316 0.137 0.485 0.292 0.625 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ t   : int [1:10] 358 301 413 337 369 221 363 329 329 142</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ bary: num [1:10, 1:3] 0.0699 0.1367 0.4852 0.0831 0.6245 ...</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu">fm_bary</span><span class="op">(</span><span class="fu"><a href="fm_mesh_1d.html">fm_mesh_1d</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5</span>, by <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> List of 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ t   : num [1:11, 1:2] 1 1 1 1 2 2 3 3 3 3 ...</span>
