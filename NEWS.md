@@ -7,6 +7,9 @@
 * Add print methods for `fm_basis` and `fm_evaluator` objects (version `0.1.7.9003`)
 * Remove `sp` objects from `fmexample` data. Use `fmexample_sp()` to access them if needed
   (version `0.1.7.9004`)
+* Add `fm_manifold_get()` generic method to extract manifold information from general
+  objects, so that external objects can implement their own manifold information
+  storage (version `0.1.7.9005`)
 
 # fmesher 0.1.7
 

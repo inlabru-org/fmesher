@@ -2,11 +2,20 @@
 % Please edit documentation in R/manifold.R
 \name{fm_manifold}
 \alias{fm_manifold}
+\alias{fm_manifold_get}
+\alias{fm_manifold_get.default}
+\alias{fm_manifold_get.character}
 \alias{fm_manifold_type}
 \alias{fm_manifold_dim}
 \title{Query the mesh manifold type}
 \usage{
 fm_manifold(x, type = NULL)
+
+fm_manifold_get(x)
+
+\method{fm_manifold_get}{default}(x)
+
+\method{fm_manifold_get}{character}(x)
 
 fm_manifold_type(x)
 
@@ -15,13 +24,16 @@ fm_manifold_dim(x)
 \arguments{
 \item{x}{An object with \code{manifold} information, or a character string}
 
-\item{type}{\code{character}; if \code{NULL} (the default), returns the manifold definition string.
+\item{type}{\code{character}; if \code{NULL} (the default), returns the manifold
+definition string by calling \code{fm_manifold_get(x)}.
 If \code{character}, returns \code{TRUE} if the manifold type of \code{x} matches at least
 one of the character vector elements.}
 }
 \value{
 \code{fm_manifold()}: Either logical (matching manifold type yes/no),
 or character (the stored manifold, when \code{is.null(type)} is \code{TRUE})
+
+\code{fm_manifold_get()}: \code{character} or \code{NULL}
 
 \code{fm_manifold_type()}: character or NULL; "M", "R", "S", or "T"
 
@@ -31,8 +43,16 @@ or character (the stored manifold, when \code{is.null(type)} is \code{TRUE})
 Extract a manifold definition string, or a logical for matching
 manifold type
 }
+\section{Functions}{
+\itemize{
+\item \code{fm_manifold_get()}: Method for obtaining a text representation of the
+manifold characteristics, e.g. "R1", "R2", "M2", "T3", etc.
+
+}}
 \examples{
+fm_manifold_get(fmexample$mesh)
 fm_manifold(fmexample$mesh)
+fm_manifold(fmexample$mesh, "R2")
 fm_manifold_type(fmexample$mesh)
 fm_manifold_dim(fmexample$mesh)
 }
