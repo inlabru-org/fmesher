@@ -35,7 +35,9 @@ or character (the stored manifold, when \code{is.null(type)} is \code{TRUE})
 
 \code{fm_manifold_get()}: \code{character} or \code{NULL}
 
-\code{fm_manifold_type()}: character or NULL; "M", "R", "S", or "T"
+\code{fm_manifold_type()}: character or NULL; "M" (curved manifold),
+"R" (flat space), "S" (generalised spherical space), "T"
+(general tensor product space), or "G" (metric graph)
 
 \code{fm_manifold_dim()}: integer or NULL
 }
