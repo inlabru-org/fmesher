@@ -48,7 +48,11 @@ manifold type
 \section{Functions}{
 \itemize{
 \item \code{fm_manifold_get()}: Method for obtaining a text representation of the
-manifold characteristics, e.g. "R1", "R2", "M2", "T3", etc.
+manifold characteristics, e.g. "R1", "R2", "M2", or "T3". The default
+method assumes that the manifold is stored as a \code{character} string in a
+"manifold" element of the object, so it can be extracted with \code{x[["manifold"]]}.
+Object classes that do not store the information in this way need to implement
+their own method.
 
 }}
 \examples{
