@@ -75,7 +75,9 @@ fm_manifold_match <- function(x, type) {
 }
 
 #' @rdname fm_manifold
-#' @returns `fm_manifold_type()`: character or NULL; "M", "R", "S", or "T"
+#' @returns `fm_manifold_type()`: character or NULL; "M" (curved manifold),
+#' "R" (flat space), "S" (generalised spherical space), "T"
+#' (general tensor product space), or "G" (metric graph)
 #' @export
 fm_manifold_type <- function(x) {
   x <- fm_manifold_get(x)
@@ -84,7 +86,7 @@ fm_manifold_type <- function(x) {
   }
 
   splt <- strsplit(x, "")[[1]]
-  splt <- splt[splt %in% c("M", "R", "S", "T")]
+  splt <- splt[splt %in% c("M", "R", "S", "T", "G")]
   if (length(splt) == 0) {
     return(NULL)
   }
