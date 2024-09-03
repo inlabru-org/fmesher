@@ -9,7 +9,7 @@ manifold type"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.7.9004</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.7.9005</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,6 +53,14 @@ manifold type</p>
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fm_manifold</span><span class="op">(</span><span class="va">x</span>, type <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
+<span><span class="fu">fm_manifold_get</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Default S3 method</span></span>
+<span><span class="fu">fm_manifold_get</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'character'</span></span>
+<span><span class="fu">fm_manifold_get</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span></span>
 <span><span class="fu">fm_manifold_type</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">fm_manifold_dim</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code></pre></div>
@@ -67,7 +75,8 @@ manifold type</p>
 
 
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
-<dd><p><code>character</code>; if <code>NULL</code> (the default), returns the manifold definition string.
+<dd><p><code>character</code>; if <code>NULL</code> (the default), returns the manifold
+definition string by calling <code>fm_manifold_get(x)</code>.
 If <code>character</code>, returns <code>TRUE</code> if the manifold type of <code>x</code> matches at least
 one of the character vector elements.</p></dd>
 
@@ -76,14 +85,25 @@ one of the character vector elements.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p><code>fm_manifold()</code>: Either logical (matching manifold type yes/no),
 or character (the stored manifold, when <code>is.null(type)</code> is <code>TRUE</code>)</p>
+<p><code>fm_manifold_get()</code>: <code>character</code> or <code>NULL</code></p>
 <p><code>fm_manifold_type()</code>: character or NULL; "M", "R", "S", or "T"</p>
 <p><code>fm_manifold_dim()</code>: integer or NULL</p>
     </div>
+    <div class="section level2">
+    <h2 id="functions">Functions<a class="anchor" aria-label="anchor" href="#functions"></a></h2>
+
+<ul><li><p><code>fm_manifold_get()</code>: Method for obtaining a text representation of the
+manifold characteristics, e.g. "R1", "R2", "M2", "T3", etc.</p></li>
+</ul></div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">fm_manifold</span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">fm_manifold_get</span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "R2"</span>
+<span class="r-in"><span><span class="fu">fm_manifold</span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "R2"</span>
+<span class="r-in"><span><span class="fu">fm_manifold</span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span>, <span class="st">"R2"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span><span class="fu">fm_manifold_type</span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "R"</span>
 <span class="r-in"><span><span class="fu">fm_manifold_dim</span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span><span class="op">)</span></span></span>
