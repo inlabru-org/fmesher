@@ -116,7 +116,7 @@ is required but not available
 \item \code{fm_as_sp_crs()}: Wrapper for \code{\link[=fm_CRS]{fm_CRS()}}
 \code{sp::Spatial} and \code{sp::CRS} objects.
 
-\item \code{fm_sp_get_crs()}: Wrapper for CRS(projargs) (PROJ4) and CRS(wkt) for
+\item \code{fm_sp_get_crs()}: Wrapper for \code{CRS(projargs)} (PROJ4) and \code{CRS(wkt)} for
 \code{sp::Spatial} objects.
 
 \item \code{fm_as_inla_mesh_segment()}: Conversion to inla.mesh.segment

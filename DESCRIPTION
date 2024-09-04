@@ -1,7 +1,7 @@
 Package: fmesher
 Type: Package
 Title: Triangle Meshes and Related Geometry Tools
-Version: 0.1.7.9005
+Version: 0.1.7.9006
 Authors@R: c(
   person("Finn", "Lindgren", email = "finn.lindgren@gmail.com",
          role = c("aut", "cre", "cph"),
@@ -35,7 +35,6 @@ Imports:
     Matrix,
     rlang,
     sf,
-    sp (>= 1.6-1),
     stats,
     tibble,
     utils,
@@ -43,13 +42,13 @@ Imports:
     Rcpp
 Suggests:
     ggplot2,
-    inlabru (>= 2.8.0),
     knitr,
     testthat (>= 3.0.0),
     terra,
     tidyterra,
     rgl,
     rmarkdown,
+    sp (>= 1.6-1),
     splancs,
     gsl
 URL: https://inlabru-org.github.io/fmesher/, https://github.com/inlabru-org/fmesher

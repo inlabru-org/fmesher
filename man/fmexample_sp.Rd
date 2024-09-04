@@ -16,6 +16,6 @@ in \code{sp} related code examples and tests.
 }
 \examples{
 if (fm_safe_sp()) {
-    fmexample_sp()
+  fmexample_sp()
 }
 }

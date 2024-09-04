@@ -18,6 +18,46 @@ knitr::opts_chunk$set(
 suppressPackageStartupMessages(library(fmesher))
 suppressPackageStartupMessages(library(tibble))
 
+convert_fun_link <- function(x, webref) {
+  pkg_name <- sub(
+    pattern = "^(([^:]*)::)?([^(]+)(\\(.*\\))(<-)?$",
+    replacement = "\\2",
+    x = x
+  )
+  if (identical(pkg_name, "")) {
+    pkg_name <- "fmesher"
+  }
+  nm <- sub(
+    pattern = "^(([^:]*)::)?([^(]+)(\\(.*\\))(<-)?$",
+    replacement = "\\3",
+    x = x
+  )
+  args <- sub(
+    pattern = "^(([^:]*)::)?([^(]+)(\\(.*\\))(<-)?$",
+    replacement = "\\4\\5",
+    x = x
+  )
+  help_name <- tryCatch(
+    {
+      basename(utils::help((nm), package = (pkg_name)))
+    },
+    error = function(e) {
+      nm
+    }
+  )
+  paste0(
+    '<a href="', webref[[pkg_name]], help_name, '.html">`',
+    if (!identical(pkg_name, "fmesher")) {
+      paste0(pkg_name, "::")
+    } else {
+      ""
+    },
+    nm,
+    args,
+    "`</a>"
+  )
+}
+
 convert_fun_links <- function(df) {
   webref <- list(
     fmesher = "../reference/",
@@ -28,38 +68,7 @@ convert_fun_links <- function(df) {
     df$fmesher[[k]] <-
       vapply(
         df$fmesher[[k]],
-        function(x) {
-          pkg_name <- sub(
-            pattern = "^(([^:]*)::)?([^(]+)(\\(.*\\))(<-)?$",
-            replacement = "\\2",
-            x = x
-          )
-          if (identical(pkg_name, "")) {
-            pkg_name <- "fmesher"
-          }
-          nm <- sub(
-            pattern = "^(([^:]*)::)?([^(]+)(\\(.*\\))(<-)?$",
-            replacement = "\\3",
-            x = x
-          )
-          args <- sub(
-            pattern = "^(([^:]*)::)?([^(]+)(\\(.*\\))(<-)?$",
-            replacement = "\\4\\5",
-            x = x
-          )
-          help_name <- basename(utils::help((nm), package = (pkg_name)))
-          paste0(
-            '<a href="', webref[[pkg_name]], help_name, '.html">`',
-            if (!identical(pkg_name, "fmesher")) {
-              paste0(pkg_name, "::")
-            } else {
-              ""
-            },
-            nm,
-            args,
-            "`</a>"
-          )
-        },
+        function(x) convert_fun_link(x, webref),
         ""
       )
   }

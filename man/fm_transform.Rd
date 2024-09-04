@@ -68,8 +68,8 @@ the input object.
 }
 \description{
 Handle transformation of various inla objects according to coordinate
-reference systems of \code{crs} (from \code{sf::st_crs()}), \code{fm_crs}, \code{sp::CRS} or
-\code{INLA::inla.CRS} class.
+reference systems of \code{crs} (from \code{sf::st_crs()}), \code{fm_crs}, \code{sp::CRS},
+\code{fm_CRS}, or \code{INLA::inla.CRS} class.
 }
 \examples{
 fm_transform(

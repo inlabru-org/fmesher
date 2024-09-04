@@ -1,7 +1,5 @@
 #' @include deprecated.R
 #' @include print.R
-#'
-#' @importFrom sp CRS
 
 #' @title Handling CRS/WKT
 #' @description Get and set CRS object or WKT string properties.
@@ -1116,12 +1114,14 @@ fm_crs.matrix <- function(x, oblique = NULL, ...) {
 #' @seealso [fm_crs()], [sp::CRS()], [`fm_crs_wkt`],
 #' [fm_sp_get_crs()], [fm_crs_is_identical()]
 #' @examples
-#' crs1 <- fm_CRS("longlat_globe")
-#' crs2 <- fm_CRS("lambert_globe")
-#' crs3 <- fm_CRS("mollweide_norm")
-#' crs4 <- fm_CRS("hammer_globe")
-#' crs5 <- fm_CRS("sphere")
-#' crs6 <- fm_CRS("globe")
+#' if (fm_safe_sp()) {
+#'   crs1 <- fm_CRS("longlat_globe")
+#'   crs2 <- fm_CRS("lambert_globe")
+#'   crs3 <- fm_CRS("mollweide_norm")
+#'   crs4 <- fm_CRS("hammer_globe")
+#'   crs5 <- fm_CRS("sphere")
+#'   crs6 <- fm_CRS("globe")
+#' }
 #' @export
 #' @rdname fm_CRS_sp
 fm_CRS <- function(x, oblique = NULL, ...) {
@@ -1554,16 +1554,17 @@ fm_list_as_CRS <- function(x, ...) {
 #' @export
 #' @keywords internal
 #' @examples
-#'
-#' crs0 <- fm_CRS("longlat_norm")
-#' p4s <- fm_proj4string(crs0)
-#' lst <- fm_CRSargs_as_list(p4s)
-#' crs1 <- fm_list_as_CRS(lst)
-#' lst$a <- 2
-#' crs2 <- fm_CRS(p4s, args = lst)
-#' print(fm_proj4string(crs0))
-#' print(fm_proj4string(crs1))
-#' print(fm_proj4string(crs2))
+#' if (fm_safe_sp()) {
+#'   crs0 <- fm_CRS("longlat_norm")
+#'   p4s <- fm_proj4string(crs0)
+#'   lst <- fm_CRSargs_as_list(p4s)
+#'   crs1 <- fm_list_as_CRS(lst)
+#'   lst$a <- 2
+#'   crs2 <- fm_CRS(p4s, args = lst)
+#'   print(fm_proj4string(crs0))
+#'   print(fm_proj4string(crs1))
+#'   print(fm_proj4string(crs2))
+#' }
 fm_CRSargs <- function(x, ...) {
   lifecycle::deprecate_warn("0.0.1", "fm_CRSargs()", "fm_proj4string()")
 
@@ -2032,8 +2033,8 @@ fm_detect_manifold.fm_mesh_2d <- function(x) {
 #'
 #' @description
 #' Handle transformation of various inla objects according to coordinate
-#' reference systems of `crs` (from `sf::st_crs()`), `fm_crs`, `sp::CRS` or
-#' `INLA::inla.CRS` class.
+#' reference systems of `crs` (from `sf::st_crs()`), `fm_crs`, `sp::CRS`,
+#' `fm_CRS`, or `INLA::inla.CRS` class.
 #'
 #' @param x
 #' The object that should be transformed from it's current CRS to a new CRS
@@ -2649,7 +2650,7 @@ fm_as_sp_crs <- function(x, ...) {
 
 
 
-#' @describeIn fmesher-deprecated Wrapper for CRS(projargs) (PROJ4) and CRS(wkt) for
+#' @describeIn fmesher-deprecated Wrapper for `CRS(projargs)` (PROJ4) and `CRS(wkt)` for
 #' `sp::Spatial` objects.
 #' @param x A `sp::Spatial` object
 #' @return A `CRS` object, or NULL if no valid CRS identified

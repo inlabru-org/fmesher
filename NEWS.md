@@ -10,6 +10,7 @@
 * Add `fm_manifold_get()` generic method to extract manifold information from general
   objects, so that external objects can implement their own manifold information
   storage (version `0.1.7.9005`)
+* Move `sp` dependency to Suggests, and remove `inlabru` dependency (version `0.1.7.9006`)
 
 # fmesher 0.1.7
 
