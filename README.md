@@ -52,7 +52,7 @@ You can install the development version of inlabru from
 [GitHub](https://github.com/inlabru-org/fmesher) with
 
 ``` r
-pak::pkg_install("inlabru-org/fmesher@devel")
+pak::pkg_install("inlabru-org/fmesher")
 ```
 
 or track the development version builds via

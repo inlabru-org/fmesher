@@ -55,7 +55,7 @@ pak::pkg_install("inlabru-org/fmesher@stable")
 
 You can install the development version of inlabru from [GitHub](https://github.com/inlabru-org/fmesher) with
 ```{r gh-installation-pak, eval = FALSE}
-pak::pkg_install("inlabru-org/fmesher@devel")
+pak::pkg_install("inlabru-org/fmesher")
 ```
 or track the development version builds via [inlabru-org.r-universe.dev](https://inlabru-org.r-universe.dev/builds):
 ```{r universe-installation-pak, eval = FALSE}
