@@ -114,7 +114,7 @@ suppressPackageStartupMessages(library(ggplot2))
   max.edge = c(0.5, 1)
 ))
 ```
-```{r example2-plot}
+```{r example2-plot,fig.alt="2D triangular mesh"}
 ggplot() +
   geom_fm(data = mesh) +
   theme_minimal()
@@ -128,7 +128,7 @@ ggplot() +
   degree = 2
 ))
 ```
-```{r example1-plot}
+```{r example1-plot,fig.alt="1D B-spline function space"}
 ggplot() +
   geom_fm(data = mesh, xlim = c(0, 7))
 ```

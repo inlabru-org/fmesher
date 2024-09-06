@@ -139,7 +139,7 @@ ggplot() +
   theme_minimal()
 ```
 
-<img src="man/figures/README-example2-plot-1.png" width="100%" />
+<img src="man/figures/README-example2-plot-1.png" alt="2D triangular mesh" width="100%" />
 
 ### 1D B-spline function spaces
 
@@ -162,7 +162,7 @@ ggplot() +
   geom_fm(data = mesh, xlim = c(0, 7))
 ```
 
-<img src="man/figures/README-example1-plot-1.png" width="100%" />
+<img src="man/figures/README-example1-plot-1.png" alt="1D B-spline function space" width="100%" />
 
 ### Extended helper methods for CRS handling
 
