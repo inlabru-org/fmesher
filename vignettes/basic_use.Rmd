@@ -29,7 +29,7 @@ set.seed(1234L)
 
 ## Mesh construction
 
-```{r basic2}
+```{r basic2,fig.cap="2D triangulation mesh"}
 domain <- cbind(rnorm(4, sd = 3), rnorm(4))
 (mesh2 <- fm_mesh_2d(
   boundary = fm_extensions(domain, c(2.5, 5)),
@@ -38,12 +38,13 @@ domain <- cbind(rnorm(4, sd = 3), rnorm(4))
 plot(mesh2, axes = TRUE)
 ```
 
-```{r basic1}
+```{r basic1,fig.cap="1D B-spline function space basis functions"}
 (mesh1 <- fm_mesh_1d(
   c(0, 2, 4, 7, 10),
   boundary = "free", # c("neumann", "dirichlet"),
   degree = 2
 ))
+plot(mesh2, axes = TRUE)
 ```
 
 ## Point lookup and evaluation
@@ -57,9 +58,14 @@ bary <- fm_bary(mesh2, loc = pts)
 sum(is.na(bary$t))
 head(bary$bary)
 
+# Evaluate basis functions
+basis <- fm_basis(mesh2, loc = pts) # Raw SparseMatrix
+basis_object <- fm_basis(mesh2, loc = pts, full = TRUE) # fm_basis object
+sum(!basis_object$ok)
+
 # Construct an evaluator object
 evaluator <- fm_evaluator(mesh2, loc = pts)
-sum(!evaluator$proj$ok)
+sum(!fm_basis(evaluator, full = TRUE)$ok)
 
 # Values for the basis function weights; for ordinary 2d meshes this coincides
 # with the resulting values at the vertices, but this is not true for e.g.
@@ -69,7 +75,7 @@ value <- fm_evaluate(evaluator, field = field)
 sum(abs(pts[, 1] - value), na.rm = TRUE)
 ```
 
-```{r lookup1}
+```{r lookup1,fig.cap="Evaluated 1D function"}
 pts1 <- seq(-2, 12, length.out = 1000)
 
 # Find what segment, and its interval Barycentric coordinates
@@ -79,10 +85,15 @@ bary1 <- fm_bary(mesh1, loc = pts1)
 sum(is.na(bary1$t))
 head(bary1$bary)
 
+# Evaluate basis functions
+basis1 <- fm_basis(mesh1, loc = pts1) # Raw SparseMatrix
+basis1_object <- fm_basis(mesh1, loc = pts1, full = TRUE) # fm_basis object
+sum(!basis1_object$ok)
+
 # Construct an evaluator object.
 evaluator1 <- fm_evaluator(mesh1, loc = pts1)
 # mesh_1d basis functions are defined everywhere
-sum(!evaluator1$proj$ok)
+sum(!fm_basis(evaluator1, full = TRUE)$ok)
 
 # Values for the basis function weights; for ordinary 2d meshes this coincides
 # with the resulting values at the vertices, but this is not true for e.g.
@@ -96,17 +107,18 @@ plot(pts1, value1, type = "l")
 
 ### Base graphics
 
-```{r}
+```{r,fig.cap="2D triangulation mesh (base graphics version)"}
 plot(mesh2)
 ```
 
 ### `ggplot` graphics
 
-```{r}
+```{r,fig.cap="2D triangulation mesh (ggplot version)"}
 suppressPackageStartupMessages(library(ggplot2))
 ggplot() +
   geom_fm(data = mesh2)
-
+```
+```{r,fig.cap="1D B-spline function space basis functions with evaluated function (ggplot version)"}
 ggplot() +
   geom_fm(data = mesh1, weights = field1 + 2, xlim = c(-2, 12)) +
   geom_fm(data = mesh1, linetype = 2, alpha = 0.5, xlim = c(-2, 12))
@@ -123,7 +135,7 @@ names(fem2)
 
 ## Stochastic process simulation
 
-```{r}
+```{r sim,fig.cap="Simulated 2D Matérn field"}
 samp <- fm_matern_sample(mesh2, alpha = 2, rho = 4, sigma = 1)[, 1]
 evaluator <- fm_evaluator(mesh2, lattice = fm_evaluator_lattice(mesh2, dims = c(150, 50)))
 image(evaluator$x, evaluator$y, fm_evaluate(evaluator, field = samp), asp = 1)
