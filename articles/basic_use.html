@@ -92,7 +92,11 @@ Lindgren</h4>
 <span><span class="co">#&gt;   Bounding box: (-11.963110,  8.246925) x (-5.522181, 5.499657)</span></span>
 <span><span class="co">#&gt;   Basis d.o.f.:  888</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mesh2</span>, axes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="basic_use_files/figure-html/basic2-1.png" width="672"></p>
+<div class="figure">
+<img src="basic_use_files/figure-html/basic2-1.png" alt="2D triangulation mesh" width="672"><p class="caption">
+2D triangulation mesh
+</p>
+</div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">(</span><span class="va">mesh1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_mesh_1d.html">fm_mesh_1d</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">7</span>, <span class="fl">10</span><span class="op">)</span>,</span>
@@ -105,7 +109,13 @@ Lindgren</h4>
 <span><span class="co">#&gt;   Interval:  ( 0, 10)</span></span>
 <span><span class="co">#&gt;   Boundary:  (free, free)</span></span>
 <span><span class="co">#&gt;   B-spline degree:   2</span></span>
-<span><span class="co">#&gt;   Basis d.o.f.:  6</span></span></code></pre></div>
+<span><span class="co">#&gt;   Basis d.o.f.:  6</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mesh2</span>, axes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<img src="basic_use_files/figure-html/basic1-1.png" alt="1D B-spline function space basis functions" width="672"><p class="caption">
+1D B-spline function space basis functions
+</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="point-lookup-and-evaluation">Point lookup and evaluation<a class="anchor" aria-label="anchor" href="#point-lookup-and-evaluation"></a>
@@ -127,9 +137,15 @@ Lindgren</h4>
 <span><span class="co">#&gt; [5,] 0.21259133 0.3686084 0.4188003</span></span>
 <span><span class="co">#&gt; [6,] 0.44390951 0.1739205 0.3821700</span></span>
 <span></span>
+<span><span class="co"># Evaluate basis functions</span></span>
+<span><span class="va">basis</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_basis.html">fm_basis</a></span><span class="op">(</span><span class="va">mesh2</span>, loc <span class="op">=</span> <span class="va">pts</span><span class="op">)</span> <span class="co"># Raw SparseMatrix</span></span>
+<span><span class="va">basis_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_basis.html">fm_basis</a></span><span class="op">(</span><span class="va">mesh2</span>, loc <span class="op">=</span> <span class="va">pts</span>, full <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># fm_basis object</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="op">!</span><span class="va">basis_object</span><span class="op">$</span><span class="va">ok</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 2</span></span>
+<span></span>
 <span><span class="co"># Construct an evaluator object</span></span>
 <span><span class="va">evaluator</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_evaluate.html">fm_evaluator</a></span><span class="op">(</span><span class="va">mesh2</span>, loc <span class="op">=</span> <span class="va">pts</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="op">!</span><span class="va">evaluator</span><span class="op">$</span><span class="va">proj</span><span class="op">$</span><span class="va">ok</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="../reference/fm_basis.html">fm_basis</a></span><span class="op">(</span><span class="va">evaluator</span>, full <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">ok</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 2</span></span>
 <span></span>
 <span><span class="co"># Values for the basis function weights; for ordinary 2d meshes this coincides</span></span>
@@ -157,10 +173,16 @@ Lindgren</h4>
 <span><span class="co">#&gt; [5,] 1.971972 -0.971972</span></span>
 <span><span class="co">#&gt; [6,] 1.964965 -0.964965</span></span>
 <span></span>
+<span><span class="co"># Evaluate basis functions</span></span>
+<span><span class="va">basis1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_basis.html">fm_basis</a></span><span class="op">(</span><span class="va">mesh1</span>, loc <span class="op">=</span> <span class="va">pts1</span><span class="op">)</span> <span class="co"># Raw SparseMatrix</span></span>
+<span><span class="va">basis1_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_basis.html">fm_basis</a></span><span class="op">(</span><span class="va">mesh1</span>, loc <span class="op">=</span> <span class="va">pts1</span>, full <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># fm_basis object</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="op">!</span><span class="va">basis1_object</span><span class="op">$</span><span class="va">ok</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0</span></span>
+<span></span>
 <span><span class="co"># Construct an evaluator object.</span></span>
 <span><span class="va">evaluator1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_evaluate.html">fm_evaluator</a></span><span class="op">(</span><span class="va">mesh1</span>, loc <span class="op">=</span> <span class="va">pts1</span><span class="op">)</span></span>
 <span><span class="co"># mesh_1d basis functions are defined everywhere</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="op">!</span><span class="va">evaluator1</span><span class="op">$</span><span class="va">proj</span><span class="op">$</span><span class="va">ok</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="../reference/fm_basis.html">fm_basis</a></span><span class="op">(</span><span class="va">evaluator1</span>, full <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">ok</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0</span></span>
 <span></span>
 <span><span class="co"># Values for the basis function weights; for ordinary 2d meshes this coincides</span></span>
@@ -169,7 +191,11 @@ Lindgren</h4>
 <span><span class="va">field1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fu"><a href="../reference/fm_dof.html">fm_dof</a></span><span class="op">(</span><span class="va">mesh1</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">value1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_evaluate.html">fm_evaluate</a></span><span class="op">(</span><span class="va">evaluator1</span>, field <span class="op">=</span> <span class="va">field1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pts1</span>, <span class="va">value1</span>, type <span class="op">=</span> <span class="st">"l"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="basic_use_files/figure-html/lookup1-1.png" width="672"></p>
+<div class="figure">
+<img src="basic_use_files/figure-html/lookup1-1.png" alt="Evaluated 1D function" width="672"><p class="caption">
+Evaluated 1D function
+</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="plotting">Plotting<a class="anchor" aria-label="anchor" href="#plotting"></a>
@@ -179,7 +205,11 @@ Lindgren</h4>
 </h3>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mesh2</span><span class="op">)</span></span></code></pre></div>
-<p><img src="basic_use_files/figure-html/unnamed-chunk-2-1.png" width="672"></p>
+<div class="figure">
+<img src="basic_use_files/figure-html/unnamed-chunk-2-1.png" alt="2D triangulation mesh (base graphics version)" width="672"><p class="caption">
+2D triangulation mesh (base graphics version)
+</p>
+</div>
 </div>
 <div class="section level3">
 <h3 id="ggplot-graphics">
@@ -189,13 +219,21 @@ Lindgren</h4>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_fm.html">geom_fm</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mesh2</span><span class="op">)</span></span></code></pre></div>
-<p><img src="basic_use_files/figure-html/unnamed-chunk-3-1.png" width="672"></p>
+<div class="figure">
+<img src="basic_use_files/figure-html/unnamed-chunk-3-1.png" alt="2D triangulation mesh (ggplot version)" width="672"><p class="caption">
+2D triangulation mesh (ggplot version)
+</p>
+</div>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_fm.html">geom_fm</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mesh1</span>, weights <span class="op">=</span> <span class="va">field1</span> <span class="op">+</span> <span class="fl">2</span>, xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2</span>, <span class="fl">12</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_fm.html">geom_fm</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mesh1</span>, linetype <span class="op">=</span> <span class="fl">2</span>, alpha <span class="op">=</span> <span class="fl">0.5</span>, xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2</span>, <span class="fl">12</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="basic_use_files/figure-html/unnamed-chunk-3-2.png" width="672"></p>
+<div class="figure">
+<img src="basic_use_files/figure-html/unnamed-chunk-4-1.png" alt="1D B-spline function space basis functions with evaluated function (ggplot version)" width="672"><p class="caption">
+1D B-spline function space basis functions with evaluated function
+(ggplot version)
+</p>
+</div>
 </div>
 </div>
 <div class="section level2">
@@ -216,7 +254,11 @@ Lindgren</h4>
 <code class="sourceCode R"><span><span class="va">samp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_gmrf.html">fm_matern_sample</a></span><span class="op">(</span><span class="va">mesh2</span>, alpha <span class="op">=</span> <span class="fl">2</span>, rho <span class="op">=</span> <span class="fl">4</span>, sigma <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span></span>
 <span><span class="va">evaluator</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_evaluate.html">fm_evaluator</a></span><span class="op">(</span><span class="va">mesh2</span>, lattice <span class="op">=</span> <span class="fu"><a href="../reference/fm_evaluate.html">fm_evaluator_lattice</a></span><span class="op">(</span><span class="va">mesh2</span>, dims <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">150</span>, <span class="fl">50</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/image.html" class="external-link">image</a></span><span class="op">(</span><span class="va">evaluator</span><span class="op">$</span><span class="va">x</span>, <span class="va">evaluator</span><span class="op">$</span><span class="va">y</span>, <span class="fu"><a href="../reference/fm_evaluate.html">fm_evaluate</a></span><span class="op">(</span><span class="va">evaluator</span>, field <span class="op">=</span> <span class="va">samp</span><span class="op">)</span>, asp <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-<p><img src="basic_use_files/figure-html/unnamed-chunk-5-1.png" width="672"></p>
+<div class="figure">
+<img src="basic_use_files/figure-html/sim-1.png" alt="Simulated 2D Matérn field" width="672"><p class="caption">
+Simulated 2D Matérn field
+</p>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
