@@ -45,6 +45,7 @@ class Mesh {
 
 public:
   enum class Mtype : int { Manifold = 0, Plane, Sphere };
+  friend std::ostream &operator<<(std::ostream &output, const Mesh::Mtype &type);
 
 private:
   Mtype type_;

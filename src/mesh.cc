@@ -2786,8 +2786,20 @@ Dart &Dart::orbit2rev() {
 }
 
 std::ostream &operator<<(std::ostream &output, const Mesh &M) {
-  output << "Mesh type:\t";
-  switch (M.type()) {
+  output << "Mesh type:\t" << M.type() << endl;
+  output << "Vertices:\t" << M.nV() << endl;
+  output << "Triangles:\t" << M.nT() << endl;
+  output << "Options:\t" << (M.useVT() ? "VT " : "")
+         << (M.useTTi() ? "TTi " : "")
+#ifdef FMESHER_WITH_X
+  << (M.useX11() ? "X11 " : "")
+#endif
+  << endl;
+  return output;
+}
+
+std::ostream &operator<<(std::ostream &output, const Mesh::Mtype &type) {
+  switch (type) {
   case Mesh::Mtype::Manifold:
     output << "Manifold (Rd)";
     break;
@@ -2798,15 +2810,6 @@ std::ostream &operator<<(std::ostream &output, const Mesh &M) {
     output << "Sphere (S2)";
     break;
   }
-  output << endl;
-  output << "Vertices:\t" << M.nV() << endl;
-  output << "Triangles:\t" << M.nT() << endl;
-  output << "Options:\t" << (M.useVT() ? "VT " : "")
-         << (M.useTTi() ? "TTi " : "")
-#ifdef FMESHER_WITH_X
-         << (M.useX11() ? "X11 " : "")
-#endif
-         << endl;
   return output;
 }
 
