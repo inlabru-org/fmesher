@@ -2,10 +2,12 @@ pandoc: 3.1.11
 pkgdown: 2.1.0
 pkgdown_sha: ~
 articles:
+  articles: articles.html
   basic_use: basic_use.html
+  articles/devel_flow: devel_flow.html
   fmesher_library: fmesher_library.html
   inla_conversion: inla_conversion.html
-last_built: 2024-09-06T14:08Z
+last_built: 2024-09-12T12:09Z
 urls:
   reference: https://inlabru-org.github.io/fmesher/reference
   article: https://inlabru-org.github.io/fmesher/articles

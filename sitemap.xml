@@ -1,7 +1,9 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://inlabru-org.github.io/fmesher/404.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/LICENSE-text.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/articles/articles.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/articles/basic_use.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/articles/devel_flow.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/articles/fmesher_library.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/articles/index.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/articles/inla_conversion.html</loc></url>
