@@ -5,11 +5,11 @@
 # This makes conversion to sp and sf polygons more difficult, which is why there
 # isn't a general fm_as_sp.inla.mesh.segment method, but fm_as_sfc() has partial support.
 
-test_that("Conversion from matrix to inla.mesh.segment", {
+test_that("Conversion from matrix to fm_segm", {
   ## sfc_POINT ##
 
-  # compare inla.mesh.segment with matrix input
-  # to fm_as_inla_mesh_segment with sf point input
+  # compare fm_segm with matrix input
+  # to fm_as_segm with sf point input
 
   # matrix version
   loc.bnd <- matrix(c(
@@ -21,7 +21,7 @@ test_that("Conversion from matrix to inla.mesh.segment", {
   segm.bnd <- fm_segm(
     loc.bnd,
     is.bnd = TRUE,
-    crs = fm_CRS()
+    crs = fm_crs()
   )
 
   segm.bnd.sp <- fm_as_segm(loc.bnd, is.bnd = TRUE, closed = TRUE)
@@ -30,7 +30,7 @@ test_that("Conversion from matrix to inla.mesh.segment", {
 })
 
 
-test_that("Conversion from Lines to inla.mesh.segment", {
+test_that("Conversion from Lines to fm_segm", {
   ## sp::Lines ##
 
   pts1 <- rbind(c(0, 3), c(0, 4), c(1, 5), c(2, 5))
@@ -39,20 +39,22 @@ test_that("Conversion from Lines to inla.mesh.segment", {
     loc = pts1,
     idx = seq_len(nrow(pts1)),
     is.bnd = FALSE,
-    crs = fm_CRS()
+    crs = fm_crs()
   )
 
   seg2 <- fm_segm(
     loc = pts2,
     idx = seq_len(nrow(pts2)),
     is.bnd = FALSE,
-    crs = fm_CRS()
+    crs = fm_crs()
   )
 
   seg <- fm_segm_join(list(seg1, seg2),
     grp = seq_len(2)
   )
   expect_identical(seg$grp, rep(1:2, each = 3))
+
+  skip_if_not(fm_safe_sp())
 
   seg_sp <- fm_as_segm(
     sp::Lines(list(sp::Line(pts1), sp::Line(pts2)), ID = "A"),
@@ -63,7 +65,9 @@ test_that("Conversion from Lines to inla.mesh.segment", {
 })
 
 
-test_that("Conversion from Polygons to inla.mesh.segment", {
+test_that("Conversion from Polygons to fm_segm", {
+  skip_if_not(fm_safe_sp())
+
   extract_sequences <- function(seg) {
     sequences <- list()
     unused_edges <- rep(TRUE, nrow(seg$idx))
@@ -89,13 +93,13 @@ test_that("Conversion from Polygons to inla.mesh.segment", {
   seg1 <- fm_segm(
     loc = pts1[1:4, , drop = FALSE],
     is.bnd = TRUE,
-    crs = fm_CRS()
+    crs = fm_crs()
   )
 
   seg2 <- fm_segm(
     loc = pts2[1:4, , drop = FALSE],
     is.bnd = TRUE,
-    crs = fm_CRS()
+    crs = fm_crs()
   )
 
   poly1 <- sp::Polygon(pts1[5:1, ], hole = FALSE)

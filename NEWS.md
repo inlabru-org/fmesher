@@ -11,6 +11,7 @@
   objects, so that external objects can implement their own manifold information
   storage (version `0.1.7.9005`)
 * Move `sp` dependency to Suggests, and remove `inlabru` dependency (version `0.1.7.9006`)
+* Further `sp` use protection (version `0.1.7.9007`)
 
 # fmesher 0.1.7
 

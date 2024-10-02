@@ -126,6 +126,8 @@ test_that("conversion of whole 2D mesh to integration points", {
   expect_equal(colnames(ips), c("weight", ".block", "geometry"))
   expect_equal(sum(ips$weight), 64.58135, tolerance = lowtol)
 
+  skip_if_not(fm_safe_sp())
+
   ips <- fm_int(fmexample$mesh, format = "sp")
 
   expect_s4_class(ips, "SpatialPointsDataFrame")
@@ -136,6 +138,7 @@ test_that("conversion of whole 2D mesh to integration points", {
 
 test_that("Polygon integration with holes", {
   skip_if_not(fm_safe_sp())
+
   plyA <- sp::SpatialPolygons(list(
     sp::Polygons(
       list(
@@ -250,8 +253,6 @@ test_that("flat mesh integration", {
 })
 
 test_that("sphere and globe mesh integration", {
-  skip_on_cran()
-
   mesh <- fm_rcdt_2d_inla(globe = 1)
 
   ips0 <- fm_int(mesh, int.args = list(nsub2 = 0))
@@ -269,9 +270,7 @@ test_that("sphere and globe mesh integration", {
   expect_equal(sum(ips0_$weight), 4 * pi * 1e6)
   expect_equal(sum(ips9_$weight), 4 * pi * 1e6)
 
-  suppressWarnings(
-    mesh_2 <- fm_rcdt_2d_inla(globe = 1, crs = fm_CRS("globe"))
-  )
+  mesh_2 <- fm_rcdt_2d_inla(globe = 1, crs = fm_crs("globe"))
 
   ips0_2 <- fm_int(mesh_2, int.args = list(nsub2 = 0))
   ips9_2 <- fm_int(mesh_2, int.args = list(nsub2 = 9))
@@ -286,14 +285,12 @@ test_that("sphere and globe mesh integration", {
   expect_equal(sum(ips9_3$weight), 4 * pi * 6370.997^2)
 })
 
-test_that("flat SpatialPolygons integration", {
-  skip_if_not(fm_safe_sp())
+test_that("flat SpatialPolygons/sf integration", {
   mesh <- fmexample$mesh
 
-  poly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(rbind(
-    c(-1, -1), c(-1, 1), c(1, 1), c(1, -1)
-  ))), ID = "A")))
-  poly <- sf::st_as_sf(poly)
+  poly <- sf::st_sfc(sf::st_polygon(x = list(
+    rbind(c(-1, -1), c(-1, 1), c(1, 1), c(1, -1), c(-1, -1))
+  )))
 
   ips0 <- fm_int(mesh, samplers = poly, int.args = list(nsub2 = 0, method = "direct"))
   ips1 <- fm_int(mesh, samplers = poly, int.args = list(nsub2 = 1, method = "direct"))
@@ -316,17 +313,15 @@ test_that("flat SpatialPolygons integration", {
 })
 
 test_that("globe polygon integration", {
-  skip_on_cran()
+  mesh <- fm_rcdt_2d_inla(globe = 1, crs = fm_crs("globe"))
 
-  suppressWarnings(
-    mesh <- fm_rcdt_2d_inla(globe = 1, crs = fm_crs("globe"))
-  )
-
-  poly <- sp::SpatialPolygons(
-    list(sp::Polygons(list(sp::Polygon(rbind(
-      c(-45, -45), c(-45, 45), c(45, 45), c(45, -45)
-    ))), ID = "A")),
-    proj4string = fm_CRS("longlat_globe")
+  poly <- sf::st_sfc(
+    sf::st_polygon(
+      list(rbind(
+        c(-45, -45), c(-45, 45), c(45, 45), c(45, -45), c(-45, -45)
+      ))
+    ),
+    crs = fm_crs("longlat_globe")
   )
 
   ips1 <- fm_int(mesh, samplers = poly, int.args = list(nsub = 2))

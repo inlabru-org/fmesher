@@ -210,13 +210,15 @@ valid_globeproj <- function(object, ...) {
 #' @export
 #' @seealso [old_globeproj()]
 #' @examples
-#' world_example <- data.frame(
-#'   PID = c(0L, 0L, 0L, 1L, 1L),
-#'   POS = c(1L, 2L, 3L, 1L, 2L),
-#'   X = c(10, 20, 30, 15, 25),
-#'   Y = c(10, 15, 70, -40, -50)
-#' )
-#' plot_PolySet(world_example, old_globeproj("longlat"), add = FALSE)
+#' if (require("sp", quietly = TRUE)) {
+#'   world_example <- data.frame(
+#'     PID = c(0L, 0L, 0L, 1L, 1L),
+#'     POS = c(1L, 2L, 3L, 1L, 2L),
+#'     X = c(10, 20, 30, 15, 25),
+#'     Y = c(10, 15, 70, -40, -50)
+#'   )
+#'   plot_PolySet(world_example, old_globeproj("longlat"), add = FALSE)
+#' }
 #' @keywords internal
 #' @returns An (invisible) `sp` object of projected lines
 plot_PolySet <- function(x, projection, add = FALSE, ...) {
@@ -446,8 +448,10 @@ old_tissot <-
 #' @author Finn Lindgren
 #' @export
 #' @examples
-#' proj <- old_globeproj("moll", orient = c(0, 0, 45))
-#' plot_globeproj(proj, graticule = c(24, 12), add = FALSE, asp = 1, lty = 2, lwd = 0.5)
+#' if (require("sp", quietly = TRUE)) {
+#'   proj <- old_globeproj("moll", orient = c(0, 0, 45))
+#'   plot_globeproj(proj, graticule = c(24, 12), add = FALSE, asp = 1, lty = 2, lwd = 0.5)
+#' }
 plot_globeproj <-
   function(x, xlim = NULL, ylim = NULL,
            outline = TRUE,

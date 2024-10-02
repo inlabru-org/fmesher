@@ -1,4 +1,9 @@
 test_that("CRS/WKT predefinitions", {
+  crs <- fm_crs("longlat_globe")
+  expect_s3_class(crs, "crs")
+
+  skip_if_not(fm_safe_sp())
+
   expect_warning(
     {
       crs <- fm_CRS("longlat")
@@ -9,9 +14,6 @@ test_that("CRS/WKT predefinitions", {
 
   crs <- fm_CRS("longlat_globe")
   expect_s4_class(crs, "CRS")
-
-  crs <- fm_crs("longlat_globe")
-  expect_s3_class(crs, "crs")
 })
 
 

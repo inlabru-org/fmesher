@@ -57,8 +57,14 @@ local_fm_testthat_tolerances <- function(tolerances = c(1e-4, 1e-2, 1e-1),
 local_fm_testthat_setup <- function(envir = parent.frame()) {
   local_fm_testthat_tolerances(envir = envir)
 
-  sp_version <- getNamespaceVersion("sp")
-  if (utils::compareVersion(sp_version, "1.6-0") >= 0) {
+  sp_version <- tryCatch(
+    getNamespaceVersion("sp"),
+    error = function(e) {
+      NULL
+    }
+  )
+  if (!is.null(sp_version) &&
+    utils::compareVersion(sp_version, "1.6-0") >= 0) {
     if (utils::compareVersion(sp_version, "2.1-3") < 0) {
       old_sp_evolution_status <- sp::get_evolution_status()
       withr::defer(

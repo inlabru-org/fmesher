@@ -1,5 +1,7 @@
 test_that("fm_pixels sp vs sf", {
   skip_on_cran()
+  skip_if_not(fm_safe_sp())
+
   mesh <- fm_mesh_2d_inla(
     cbind(0, 0),
     offset = 10,

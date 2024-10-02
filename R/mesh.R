@@ -155,7 +155,7 @@ fm_pixels <- function(mesh,
       mask <- as(mask, "SpatialPolygons")
     }
     mask <- sf::st_as_sf(mask)
-    pixels_within <- sf::st_within(pixels, mask)
+    pixels_within <- sf::st_covered_by(pixels, mask)
     pixels_within <- lengths(pixels_within) > 0
     pixels <- pixels[pixels_within, , drop = FALSE]
   }

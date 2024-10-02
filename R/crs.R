@@ -1864,11 +1864,15 @@ fm_crs_bounds <- function(crs, warn.unknown = FALSE) {
 fm_crs_bounds_check <- function(x, bounds) {
   stopifnot(inherits(x, "matrix"))
   if (all(is.finite(bounds$xlim)) && all(is.finite(bounds$ylim))) {
-    (sp::point.in.polygon(
-      x[, 1], x[, 2],
-      bounds$polygon[, 1], bounds$polygon[, 2]
+    # The polygon might numerically not be exactly closed. Force closedness.
+    sf::st_covered_by(
+      sf::st_cast(x = sf::st_sfc(sf::st_multipoint(x)), to = "POINT"),
+      sf::st_polygon(list(bounds$polygon[
+        c(seq_len(nrow(bounds$polygon)), 1L), ,
+        drop = FALSE
+      ])),
+      sparse = FALSE
     )
-    > 0)
   } else {
     rep(TRUE, nrow(x))
   }
@@ -2054,7 +2058,7 @@ fm_detect_manifold.fm_mesh_2d <- function(x) {
 #' @export
 #' @examples
 #' fm_transform(
-#'   rbind(c(0, 0), c(0, 90)),
+#'   rbind(c(0, 0), c(0, 90), c(0, 91)),
 #'   crs = fm_crs("sphere"),
 #'   crs0 = fm_crs("longlat_norm")
 #' )
@@ -2230,8 +2234,8 @@ fm_transform.matrix <- function(x, crs, ..., passthrough = FALSE, crs0 = NULL) {
   )
 
   if (!all(ok)) {
+    xx <- matrix(NA_real_, nrow = nrow(xx), ncol = ncol(x))
     xx[ok, ] <- x
-    xx[!ok, ] <- NA
     x <- xx
   }
 
