@@ -23,7 +23,7 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: macOS-12, r: 'release'}
+          - {os: macOS-latest, r: 'release'}
           - {os: windows-latest, r: 'release'}
           - {os: ubuntu-latest, r: 'devel', http-user-agent: 'release'}
           - {os: ubuntu-latest, r: 'release'}
@@ -47,11 +47,15 @@ jobs:
       - name: Install system dependencies on MacOS (X11, gdal)
         if: runner.os == 'macOS'
         run: |
+          brew install libsm
+          brew install libxrender
+          brew install cairo
           brew install --cask xquartz
           brew install pkg-config
           brew install proj@9
           brew install gdal
           brew install gsl
+          brew install udunits
 
       - name: Install system dependencies on Linux (GL)
         if: runner.os == 'Linux'
@@ -63,6 +67,7 @@ jobs:
           dependencies: '"hard"'
           extra-packages: |
              rcmdcheck
+             Cairo
              testthat
 
       - name: Session info
@@ -70,6 +75,10 @@ jobs:
           options(width = 100)
           pkgs <- installed.packages()[, "Package"]
           sessioninfo::session_info(pkgs, include_base = TRUE)
+          message("capabilities():")
+          capabilities()
+          message("Cairo::Cairo.capabilities():")
+          Cairo::Cairo.capabilities()
         shell: Rscript {0}
 
       - uses: r-lib/actions/check-r-package@v2
@@ -77,5 +86,4 @@ jobs:
           _R_CHECK_CRAN_INCOMING_REMOTE_: false
           _R_CHECK_FORCE_SUGGESTS_: false
         with:
-          build_args: 'c("--no-manual", "--no-build-vignettes")'
-          args: 'c("--no-manual", "--ignore-vignettes", "--as-cran")'
+          args: 'c("--no-manual", "--as-cran")'
