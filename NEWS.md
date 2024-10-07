@@ -12,6 +12,7 @@
   storage (version `0.1.7.9005`)
 * Move `sp` dependency to Suggests, and remove `inlabru` dependency (version `0.1.7.9006`)
 * Further `sp` use protection (version `0.1.7.9007`)
+* Add some length unit handling to `fm_crs_bounds()` (version `0.1.7.9008`)
 
 # fmesher 0.1.7
 

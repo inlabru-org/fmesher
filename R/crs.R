@@ -1817,7 +1817,15 @@ fm_crs_bounds <- function(crs, warn.unknown = FALSE) {
     axis[1] <- axis[1] * radius
     # TODO: handle eccentricity
     axis[2] <- axis[2] * sqrt(radius) * sqrt(radius)
-    # TODO: Handle units"
+
+    # Handle units:
+    units <- fm_crs_get_lengthunit(crs)
+    if (names(units)[1] %in% c("km", "kilometre")) {
+      axis <- axis / 1000
+    } else if (!(names(units)[1] %in% c("m", "metre"))) {
+      warning("Unsure of what the crs units are. Assuming 'metre'.")
+    }
+
     bounds <- list(
       type = "rectangle",
       xlim = c(-1, 1) * axis[1],
@@ -1829,7 +1837,15 @@ fm_crs_bounds <- function(crs, warn.unknown = FALSE) {
     radius <- fm_wkt_get_ellipsoid_radius(wkt)
     axis[1] <- axis[1] * radius / sqrt(1 / 2)
     axis[2] <- axis[2] * radius / sqrt(1 / 2)
-    # TODO: Handle "units"
+
+    # Handle units:
+    units <- fm_crs_get_lengthunit(crs)
+    if (names(units)[1] %in% c("km", "kilometre")) {
+      axis <- axis / 1000
+    } else if (!(names(units)[1] %in% c("m", "metre"))) {
+      warning("Unsure of what the crs units are. Assuming 'metre'.")
+    }
+
     bounds <- list(
       type = "ellipse", axis = axis, center = center,
       xlim = center[1] + c(-1, 1) * axis[1],
