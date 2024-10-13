@@ -36,6 +36,9 @@
 #'   fmexample_sp()
 #' }
 fmexample_sp <- function() {
+  if (!requireNamespace("sp", quietly = TRUE)) {
+    stop("The `sp` package is required by `fmexample_sp()`.")
+  }
   ex <- fmesher::fmexample
   ex$loc_sp <- sf::as_Spatial(ex$loc_sf)
   ex$boundary_sp <- lapply(ex$boundary_sf, sf::as_Spatial)
