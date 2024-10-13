@@ -1804,7 +1804,7 @@ fm_crs_bounds <- function(crs, warn.unknown = FALSE) {
     if (fm_wkt_is_geocent(wkt)) {
       bounds <- list(type = "rectangle", xlim = c(-Inf, Inf), ylim = c(-Inf, Inf))
     } else {
-      if (warn.unknown) {
+      if (warn.unknown && !fm_crs_is_null(crs)) {
         warning("Could not determine shape of transformation bounds. Using infinite rectangle.")
       }
       bounds <- list(type = "rectangle", xlim = c(-Inf, Inf), ylim = c(-Inf, Inf))
