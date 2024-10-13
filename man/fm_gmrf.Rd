@@ -34,7 +34,8 @@ is \code{nu = alpha - dim / 2}.}
 
 \item{Q}{A precision matrix}
 
-\item{A1, A2}{Matrices, typically obtained from \code{\link[=fm_basis]{fm_basis()}} and/or \code{\link[=fm_block]{fm_block()}}.}
+\item{A1, A2}{Matrices, typically obtained from \code{\link[=fm_basis]{fm_basis()}} and/or
+\code{\link[=fm_block]{fm_block()}}.}
 
 \item{partial}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} If \code{TRUE}, compute the
 partial inverse of \code{Q}, i.e. the elements of the inverse corresponding to

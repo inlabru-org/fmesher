@@ -34,7 +34,8 @@
 \item{\dots}{further arguments passed to or from other methods.}
 
 \item{digits}{a positive integer indicating how many significant digits are
-to be used for numeric and complex x. The default, NULL, uses \code{getOption("digits")}.}
+to be used for numeric and complex x. The default, NULL, uses
+\code{getOption("digits")}.}
 
 \item{verbose}{logical}
 

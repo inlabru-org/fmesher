@@ -73,12 +73,15 @@ fm_mesh_1d <- function(loc,
   loc.orig <- loc
   if (cyclic) {
     if (diff(interval) < diff(range(loc))) {
-      warning("Given cyclic interval is narrower than the range of knot locations.")
+      warning(
+        "Given cyclic interval is narrower than the range of knot locations."
+      )
     }
     loc_1 <- min(loc)
     if (loc_1 < interval[1]) {
       # Keep the point to the left of the interval, but adjacent
-      loc_1 <- (loc_1 - interval[1]) %% diff(interval) - diff(interval) + interval[1]
+      loc_1 <- (loc_1 - interval[1]) %% diff(interval) - diff(interval) +
+        interval[1]
     }
     if (loc_1 > interval[2]) {
       # Move the point into the interval
@@ -87,16 +90,28 @@ fm_mesh_1d <- function(loc,
     loc <- sort(unique((loc - loc_1) %% diff(interval))) + loc_1
   } else {
     if (loc[1] < interval[1]) {
-      warning("fm_mesh_1d: All 'loc' should be >= interval[1]. Moving to interval edge.")
+      warning(
+        "fm_mesh_1d: All 'loc' should be >= interval[1].",
+        " Moving to interval edge."
+      )
     }
     if (loc[2] > interval[2]) {
-      warning("fm_mesh_1d: All 'loc' should be <= interval[2]. Moving to interval edge.")
+      warning(
+        "fm_mesh_1d: All 'loc' should be <= interval[2].",
+        " Moving to interval edge."
+      )
     }
     if (min(loc) > interval[1]) {
-      warning("fm_mesh_1d: 'min(loc)' should be == interval[1]. Adding knot at interval edge.")
+      warning(
+        "fm_mesh_1d: 'min(loc)' should be == interval[1].",
+        " Adding knot at interval edge."
+      )
     }
     if (max(loc) < interval[2]) {
-      warning("fm_mesh_1d: 'max(loc)' should be == interval[2]. Adding knot at interval edge.")
+      warning(
+        "fm_mesh_1d: 'max(loc)' should be == interval[2].",
+        " Adding knot at interval edge."
+      )
     }
     loc <-
       sort(unique(c(

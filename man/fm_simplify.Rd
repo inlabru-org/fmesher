@@ -11,7 +11,8 @@ fm_simplify(x, eps = NULL, eps_rel = NULL, ...)
 
 \item{eps}{Absolute straightness tolerance. Default \code{NULL}, no constraint.}
 
-\item{eps_rel}{Relative straightness tolerance. Default \code{NULL}, no constraint.}
+\item{eps_rel}{Relative straightness tolerance. Default \code{NULL}, no
+constraint.}
 
 \item{...}{Currently unused.}
 }
@@ -24,8 +25,8 @@ Simplifies polygonal curve segments by joining nearly
 co-linear segments.
 
 Uses a variation of the binary splitting Ramer-Douglas-Peucker algorithm,
-with an ellipse of half-width \code{eps} ellipse instead of a rectangle, motivated by
-prediction ellipse for Brownian bridge.
+with an ellipse of half-width \code{eps} ellipse instead of a rectangle, motivated
+by prediction ellipse for Brownian bridge.
 }
 \details{
 Variation of Ramer-Douglas-Peucker.
@@ -53,8 +54,8 @@ lines(segm1, col = 2)
 lines(segm2, col = 3)
 }
 \references{
-Ramer, Urs (1972). "An iterative procedure for the polygonal approximation
-of plane curves". \emph{Computer Graphics and Image Processing}. \strong{1} (3): 244–256.
+Ramer, Urs (1972). "An iterative procedure for the polygonal approximation of
+plane curves". \emph{Computer Graphics and Image Processing}. \strong{1} (3): 244–256.
 \doi{10.1016/S0146-664X(72)80017-0}
 
 Douglas, David; Peucker, Thomas (1973). "Algorithms for the reduction of

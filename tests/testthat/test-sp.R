@@ -1,9 +1,11 @@
 # FL note: see the fm_segm documentation for the idx and is.bnd arguments
 # Further note: fm_segm has two ways of specifying the index;
-# as a sequence, or as a two-column matrix. But it is always stored as a two column matrix,
-# with no general guarantee that one line connects to the one in the next row.
+# as a sequence, or as a two-column matrix. But it is always stored as a two
+# column matrix, with no general guarantee that one line connects to the one in
+# the next row.
 # This makes conversion to sp and sf polygons more difficult, which is why there
-# isn't a general fm_as_sp.inla.mesh.segment method, but fm_as_sfc() has partial support.
+# isn't a general fm_as_sp.inla.mesh.segment method, but fm_as_sfc() has partial
+# support.
 
 test_that("Conversion from matrix to fm_segm", {
   ## sfc_POINT ##

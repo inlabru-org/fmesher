@@ -78,8 +78,8 @@ fm_as_bbox(x, ...)
 multi-dimensional bounding box. Default is \code{FALSE}.}
 }
 \value{
-For \code{\link[=c.fm_bbox]{c.fm_bbox()}}, a \code{fm_bbox_list} object if \code{join = FALSE} (the default)
-or an \code{fm_bbox} object if \code{join = TRUE}.
+For \code{\link[=c.fm_bbox]{c.fm_bbox()}}, a \code{fm_bbox_list} object if \code{join = FALSE} (the
+default) or an \code{fm_bbox} object if \code{join = TRUE}.
 }
 \description{
 Simple class for handling bounding box information
@@ -95,8 +95,8 @@ precomputed interval information, stored as a list of 2-vector ranges,
 \itemize{
 \item \code{[}: Extract sub-list
 
-\item \code{c(fm_bbox)}: The \code{...} arguments should be \code{fm_bbox}
-objects, or coercible with \code{fm_as_bbox(list(...))}.
+\item \code{c(fm_bbox)}: The \code{...} arguments should be \code{fm_bbox} objects, or
+coercible with \code{fm_as_bbox(list(...))}.
 
 }}
 \examples{

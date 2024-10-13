@@ -126,7 +126,10 @@ fm_segm.default <- function(loc = NULL, idx = NULL, grp = NULL, is.bnd = TRUE,
     is.bnd <- rep(is.bnd, nrow(idx))
   } else {
     if (any(is.bnd) && any(!is.bnd)) {
-      warning("Mixed is.bnd status within a single fm_segm is not yet supported, replacing with FALSE.")
+      warning(
+        "Mixed is.bnd status within a single fm_segm is",
+        " not yet supported, replacing with FALSE."
+      )
     }
     is.bnd <- rep(FALSE, nrow(idx))
   }
@@ -143,8 +146,8 @@ fm_segm.default <- function(loc = NULL, idx = NULL, grp = NULL, is.bnd = TRUE,
 #' Otherwise, it checks if the inputs are consistent.
 #' @param grp When joining segments, use these group labels for segments
 #' instead of the original group labels.
-#' @param grp.default If `grp.default` is `NULL`, use these group labels for segments
-#' with NULL group.
+#' @param grp.default If `grp.default` is `NULL`, use these group labels for
+#'   segments with NULL group.
 #' @export
 fm_segm.fm_segm <- function(..., grp = NULL, grp.default = 0L, is.bnd = NULL) {
   segm <- fm_as_segm_list(list(...))
@@ -154,8 +157,8 @@ fm_segm.fm_segm <- function(..., grp = NULL, grp.default = 0L, is.bnd = NULL) {
 #' a single `fm_segm` object. Equivalent to `fm_segm_join(x)`
 #' @param grp When joining segments, use these group labels for segments
 #' instead of the original group labels.
-#' @param grp.default If `grp.default` is `NULL`, use these group labels for segments
-#' with NULL group.
+#' @param grp.default If `grp.default` is `NULL`, use these group labels for
+#'   segments with NULL group.
 #' @param x A `fm_segm_list` object
 #' @export
 fm_segm.fm_segm_list <- function(x, grp = NULL, grp.default = 0L, ...) {
@@ -455,8 +458,8 @@ NULL
 }
 
 #' @export
-#' @describeIn fm_segm_list The `...` arguments should be coercible to `fm_segm_list`
-#' objects.
+#' @describeIn fm_segm_list The `...` arguments should be coercible to
+#'   `fm_segm_list` objects.
 `c.fm_segm_list` <- function(...) {
   if (!all(vapply(
     list(...),

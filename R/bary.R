@@ -4,12 +4,13 @@
 
 #' @title Compute barycentric coordinates
 #'
-#' @description Identify knot intervals or triangles and compute barycentric coordinates
+#' @description Identify knot intervals or triangles and compute barycentric
+#'   coordinates
 #'
 #' @param mesh `fm_mesh_1d` or `fm_mesh_2d` object
 #' @param loc Points for which to identify the containing interval/triangle, and
-#' corresponding barycentric coordinates. May be a vector (for 1d) or a matrix
-#' of raw coordinates, `sf`, or `sp` point information (for 2d).
+#'   corresponding barycentric coordinates. May be a vector (for 1d) or a matrix
+#'   of raw coordinates, `sf`, or `sp` point information (for 2d).
 #' @param \dots Arguments forwarded to sub-methods.
 #' @returns A list with elements `t`; either
 #' \itemize{
@@ -46,12 +47,11 @@ do.the.split <- function(knots, loc) {
 
 
 
-#' @describeIn fm_bary Return a list with elements
-#' `t` (start and endpoint knot indices) and `bary` (barycentric coordinates), both
-#' 2-column matrices.
+#' @describeIn fm_bary Return a list with elements `t` (start and endpoint knot
+#'   indices) and `bary` (barycentric coordinates), both 2-column matrices.
 #'
-#' For `method = "nearest"`, `t[,1]` contains the index of the nearest mesh knot,
-#' and each row of `bary` contains `c(1, 0)`.
+#' For `method = "nearest"`, `t[,1]` contains the index of the nearest mesh
+#' knot, and each row of `bary` contains `c(1, 0)`.
 #' @param method character; method for defining the barycentric coordinates,
 #' "linear" (default) or "nearest"
 #' @param restricted logical, used for `method="linear"`.
@@ -112,9 +112,9 @@ fm_bary.fm_mesh_1d <- function(mesh,
 
 #' @param crs Optional crs information for `loc`
 #'
-#' @describeIn fm_bary A list with elements `t` (vector of triangle indices) and `bary`
-#' (3-column matrix of barycentric coordinates). Points that were not found
-#' give `NA` entries in `t` and `bary`.
+#' @describeIn fm_bary A list with elements `t` (vector of triangle indices) and
+#'   `bary` (3-column matrix of barycentric coordinates). Points that were not
+#'   found give `NA` entries in `t` and `bary`.
 #'
 #' @export
 fm_bary.fm_mesh_2d <- function(mesh, loc, crs = NULL, ...) {

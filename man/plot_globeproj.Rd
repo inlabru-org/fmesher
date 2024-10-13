@@ -42,7 +42,10 @@ Plot a globeproj object
 \examples{
 if (require("sp", quietly = TRUE)) {
   proj <- old_globeproj("moll", orient = c(0, 0, 45))
-  plot_globeproj(proj, graticule = c(24, 12), add = FALSE, asp = 1, lty = 2, lwd = 0.5)
+  plot_globeproj(proj,
+    graticule = c(24, 12), add = FALSE,
+    asp = 1, lty = 2, lwd = 0.5
+  )
 }
 }
 \author{

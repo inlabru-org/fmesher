@@ -16,7 +16,8 @@ fm_vertex_projection(points, mesh)
 projected data attached
 }
 \description{
-Compute information for assigning points to the vertices of the covering triangle
+Compute information for assigning points to the vertices of the covering
+triangle
 }
 \examples{
 head(fm_vertex_projection(list(loc = fmexample$loc), fmexample$mesh))

@@ -13,7 +13,8 @@ fm_simplify_helper(loc, idx, eps = NULL, eps_rel = NULL)
 
 \item{eps}{Absolute straightness tolerance. Default \code{NULL}, no constraint.}
 
-\item{eps_rel}{Relative straightness tolerance. Default \code{NULL}, no constraint.}
+\item{eps_rel}{Relative straightness tolerance. Default \code{NULL}, no
+constraint.}
 }
 \value{
 An index vector into \code{loc} specifying the simplified polygonal
@@ -25,8 +26,8 @@ Helper from legacy \code{INLA::inla.simplify.curve()}
 Attempts to simplify a polygonal curve by joining nearly colinear segments.
 
 Uses a variation of the binary splitting Ramer-Douglas-Peucker algorithm,
-with an ellipse of half-width \code{eps} ellipse instead of a rectangle, motivated by
-prediction ellipse for Brownian bridge.
+with an ellipse of half-width \code{eps} ellipse instead of a rectangle, motivated
+by prediction ellipse for Brownian bridge.
 }
 \details{
 Variation of Ramer-Douglas-Peucker.

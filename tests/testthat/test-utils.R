@@ -21,7 +21,8 @@ test_that("Package requirements handling", {
 
   expect_message(
     {
-      require_unknown <- fmesher:::fm_require_message("this_package_really_should_not_exist")
+      require_unknown <-
+        fmesher:::fm_require_message("this_package_really_should_not_exist")
     },
     "Please install 'this_package_really_should_not_exist'"
   )

@@ -9,13 +9,31 @@ fm_segm_contour_helper(
   y = seq(0, 1, length.out = ncol(z)),
   z,
   nlevels = 10,
-  levels = pretty(range(z, na.rm = TRUE), nlevels),
-  groups = seq_len(length(levels)),
+  levels = NULL,
+  groups = NULL,
   positive = TRUE,
   eps = NULL,
   eps_rel = NULL,
   crs = NULL
 )
+}
+\arguments{
+\item{x, y, z}{The \code{x} and \code{y} coordinates of the grid, and the \code{z} values}
+
+\item{nlevels}{Number of contour levels}
+
+\item{levels}{The contour levels. If \code{NULL},
+\code{pretty(range(z, na.rm = TRUE), nlevels)} is used.}
+
+\item{groups}{The group values for each contour level.
+If \code{NULL}, \code{seq_len(length(levels))} is used.}
+
+\item{positive}{Logical; if \code{TRUE}, the contour lines are made to be
+CCW around positive excursions}
+
+\item{eps, eps_rel}{Polygonal curve simplification tolerances}
+
+\item{crs}{A coordinate reference system}
 }
 \value{
 An \code{fm_segm} object

@@ -52,7 +52,8 @@ plot(mesh2, axes = TRUE)
 ```{r lookup2}
 pts <- cbind(rnorm(400, sd = 3), rnorm(400))
 
-# Find what triangle each point is in, and it's triangular Barycentric coordinates
+# Find what triangle each point is in, and it triangular Barycentric
+# coordinates
 bary <- fm_bary(mesh2, loc = pts)
 # How many points are outside the mesh?
 sum(is.na(bary$t))
@@ -137,6 +138,9 @@ names(fem2)
 
 ```{r sim,fig.cap="Simulated 2D Matérn field"}
 samp <- fm_matern_sample(mesh2, alpha = 2, rho = 4, sigma = 1)[, 1]
-evaluator <- fm_evaluator(mesh2, lattice = fm_evaluator_lattice(mesh2, dims = c(150, 50)))
+evaluator <- fm_evaluator(
+  mesh2,
+  lattice = fm_evaluator_lattice(mesh2, dims = c(150, 50))
+)
 image(evaluator$x, evaluator$y, fm_evaluate(evaluator, field = samp), asp = 1)
 ```

@@ -297,9 +297,12 @@ get_tv_sub <- function(tv, loc, t.sub, visibility = "front") {
     e1 <- loc[tv[, 3], , drop = FALSE] - loc[tv[, 1], , drop = FALSE]
     normal <-
       cbind(
-        e0[, 2, drop = FALSE] * e1[, 3, drop = FALSE] - e1[, 3, drop = FALSE] * e1[, 2, drop = FALSE],
-        e0[, 3, drop = FALSE] * e1[, 1, drop = FALSE] - e0[, 1, drop = FALSE] * e1[, 3, drop = FALSE],
-        e0[, 1, drop = FALSE] * e1[, 2, drop = FALSE] - e0[, 2, drop = FALSE] * e1[, 1, drop = FALSE]
+        e0[, 2, drop = FALSE] * e1[, 3, drop = FALSE] -
+          e1[, 3, drop = FALSE] * e1[, 2, drop = FALSE],
+        e0[, 3, drop = FALSE] * e1[, 1, drop = FALSE] -
+          e0[, 1, drop = FALSE] * e1[, 3, drop = FALSE],
+        e0[, 1, drop = FALSE] * e1[, 2, drop = FALSE] -
+          e0[, 2, drop = FALSE] * e1[, 1, drop = FALSE]
       )
     ok <- normal[, 3] > 0
     tv <- tv[ok, , drop = FALSE]
@@ -524,7 +527,14 @@ plot_rgl.fm_mesh_2d <- function(x, col = "white", color.axis = NULL,
     rgl::lines3d(Ec[, 1], Ec[, 2], Ec[, 3], color = Ecol, lwd = lwd, ...)
   }
   if (draw.faces) {
-    rgl::triangles3d(Tx, Ty, Tz, color = Tcol, specular = specular, alpha = Talpha, ...)
+    rgl::triangles3d(Tx,
+      Ty,
+      Tz,
+      color = Tcol,
+      specular = specular,
+      alpha = Talpha,
+      ...
+    )
   }
 
   return(invisible(dev))

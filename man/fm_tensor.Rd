@@ -18,7 +18,8 @@ A \code{fm_tensor} or \code{fm_tensor_list} object. Elements of \code{fm_tensor}
 \item{manifold}{character; manifold type summary. Regular subset of Rd "Rd",
 if all function spaces have type "R",
 torus connected "Td" if all function spaces have type "S", and otherwise "Md"
-In all cases, \code{d} is the sum of the manifold dimensions of the function spaces.}
+In all cases, \code{d} is the sum of the manifold dimensions of the function
+spaces.}
 }
 }
 \description{

@@ -9,7 +9,8 @@
 #'  \describe{
 #'    \item{`loc`:}{ A `matrix` of points.}
 #'    \item{`loc_sf`:}{ An `sfc` version of `loc`.}
-#'    \item{`boundary_fm`:}{ A `fm_segm_list` of two `fm_segm` objects used in the mesh construction.}
+#'    \item{`boundary_fm`:}{ A `fm_segm_list` of two `fm_segm` objects used in
+#'      the mesh construction.}
 #'    \item{`boundary_sf`:}{ An `sfc` list version of `boundary`.}
 #'    \item{`mesh`:}{ An [fm_mesh_2d()] object.}
 #'  }

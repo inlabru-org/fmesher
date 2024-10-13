@@ -93,7 +93,7 @@ test_that("Tensor space integration", {
 
 
 
-test_that("conversion of polygon to integration points when domain is defined via a mesh", {
+test_that("Integrating a polygon on a mesh domain", {
   ips <- fm_int(fmexample$mesh, samplers = fmexample$boundary_sf[[1]])
 
   expect_s3_class(ips, "sf")
@@ -107,7 +107,7 @@ test_that("conversion of polygon to integration points when domain is defined vi
 
 # From old ipoints tests
 
-test_that("conversion of SpatialPolygon to integration points when domain is defined via a mesh", {
+test_that("Integrating a SpatialPolygon on a mesh domain", {
   skip_if_not(fm_safe_sp())
   ips <- fm_int(fmexample$mesh, samplers = fmexample_sp()$boundary_sp[[1]])
 
@@ -131,7 +131,10 @@ test_that("conversion of whole 2D mesh to integration points", {
   ips <- fm_int(fmexample$mesh, format = "sp")
 
   expect_s4_class(ips, "SpatialPointsDataFrame")
-  expect_equal(colnames(as.data.frame(ips)), c("weight", ".block", "x", "y", "z"))
+  expect_equal(
+    colnames(as.data.frame(ips)),
+    c("weight", ".block", "x", "y", "z")
+  )
   expect_equal(sum(ips$weight), 64.58135, tolerance = lowtol)
 })
 
@@ -292,19 +295,35 @@ test_that("flat SpatialPolygons/sf integration", {
     rbind(c(-1, -1), c(-1, 1), c(1, 1), c(1, -1), c(-1, -1))
   )))
 
-  ips0 <- fm_int(mesh, samplers = poly, int.args = list(nsub2 = 0, method = "direct"))
-  ips1 <- fm_int(mesh, samplers = poly, int.args = list(nsub2 = 1, method = "direct"))
-  ips9 <- fm_int(mesh, samplers = poly, int.args = list(nsub2 = 9, method = "direct"))
-  ips19 <- fm_int(mesh, samplers = poly, int.args = list(nsub2 = 19, method = "direct"))
+  ips0 <- fm_int(mesh,
+    samplers = poly,
+    int.args = list(nsub2 = 0, method = "direct")
+  )
+  ips1 <- fm_int(mesh,
+    samplers = poly,
+    int.args = list(nsub2 = 1, method = "direct")
+  )
+  ips9 <- fm_int(mesh,
+    samplers = poly,
+    int.args = list(nsub2 = 9, method = "direct")
+  )
+  ips19 <- fm_int(mesh,
+    samplers = poly,
+    int.args = list(nsub2 = 19, method = "direct")
+  )
 
   # require("ggplot2")
   # ggplot() +
   #   geom_fm(data = mesh) +
-  #   geom_sf(aes(size = weight, colour = nsub2), data = cbind(ips0, nsub2 = "0")) +
-  #   geom_sf(aes(size = weight, colour = nsub2), data = cbind(ips1, nsub2 = "1")) +
-  #   geom_sf(aes(size = weight, colour = nsub2), data = cbind(ips9, nsub2 = "9")) +
-  #   geom_sf(aes(size = weight, colour = nsub2), data = cbind(ips19, nsub2 = "19")) +
-  #   facet_wrap(~nsub2)
+  #   geom_sf(aes(size = weight, colour = nsub2),
+  #           data = cbind(ips0, nsub2 = "0")) +
+  #   geom_sf(aes(size = weight, colour = nsub2),
+  #           data = cbind(ips1, nsub2 = "1")) +
+  #   geom_sf(aes(size = weight, colour = nsub2),
+  #           data = cbind(ips9, nsub2 = "9")) +
+  #   geom_sf(aes(size = weight, colour = nsub2),
+  #           data = cbind(ips19, nsub2 = "19")) +
+  #   facet_wrap( ~ nsub2)
 
   expect_equal(sum(ips0$weight), 3.997853, tolerance = midtol)
   expect_equal(sum(ips1$weight), 3.973794, tolerance = midtol)

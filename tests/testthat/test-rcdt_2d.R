@@ -31,9 +31,12 @@ test_that("Flat CDT works", {
   min.angle <-
     180 / pi * min(acos(pmin(1, pmax(
       -1, c(
-        -rowSums(edges[[1]] * edges[[2]]) / rowSums(edges[[1]]^2)^0.5 / rowSums(edges[[2]]^2)^0.5,
-        -rowSums(edges[[2]] * edges[[3]]) / rowSums(edges[[2]]^2)^0.5 / rowSums(edges[[3]]^2)^0.5,
-        -rowSums(edges[[3]] * edges[[1]]) / rowSums(edges[[3]]^2)^0.5 / rowSums(edges[[1]]^2)^0.5
+        -rowSums(edges[[1]] * edges[[2]]) /
+          (rowSums(edges[[1]]^2)^0.5 * rowSums(edges[[2]]^2)^0.5),
+        -rowSums(edges[[2]] * edges[[3]]) /
+          (rowSums(edges[[2]]^2)^0.5 * rowSums(edges[[3]]^2)^0.5),
+        -rowSums(edges[[3]] * edges[[1]]) /
+          (rowSums(edges[[3]]^2)^0.5 * rowSums(edges[[1]]^2)^0.5)
       )
     ))))
   max.edge <- max(rowSums(do.call(rbind, edges)^2)^0.5)

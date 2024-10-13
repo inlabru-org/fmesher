@@ -57,8 +57,8 @@ instead of the original group labels.}
 
 \item{crs}{An optional \code{fm_crs()}, \code{sf::st_crs()} or \code{sp::CRS()} object}
 
-\item{grp.default}{If \code{grp.default} is \code{NULL}, use these group labels for segments
-with NULL group.}
+\item{grp.default}{If \code{grp.default} is \code{NULL}, use these group labels for
+segments with NULL group.}
 
 \item{x}{Mesh to extract segments from}
 

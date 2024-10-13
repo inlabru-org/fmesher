@@ -134,7 +134,11 @@ df <- tribble(
   "inla.mesh.1d()", "fm_mesh_1d()",
   "inla.mesh.lattice()", "fm_lattice_2d()",
   "inla.mesh.segment()", "fm_segm()",
-  "inla.nonconvex.hull()", c("fm_nonconvex_hull()", "fm_extensions()", "fm_simplify()"),
+  "inla.nonconvex.hull()", c(
+    "fm_nonconvex_hull()",
+    "fm_extensions()",
+    "fm_simplify()"
+  ),
   c(
     "inla.nonconvex.hull()",
     "inla.contour.segment()",
@@ -185,8 +189,19 @@ df <- tribble(
   ~INLA, ~fmesher, ~Comment,
   c("inla.mesh.fem()", "inla.mesh.1d.fem()"), "fm_fem()", " ",
   " ", "fm_matern_precision()", " ",
-  " ", "fm_matern_sample()", "Convenience function that combines `fm_matern_precision()` and `fm_sample()`.",
-  " ", "fm_covariance()", "Basic helper function for compution covariances between different locations. Can produce sparse inverses like `inla.qinv()`, but currently (version 0.1.1) only by a 'brute force' method.",
+  " ", "fm_matern_sample()", paste0(
+    "Convenience function that combines",
+    " `fm_matern_precision()`",
+    " and `fm_sample()`."
+  ),
+  " ", "fm_covariance()",
+  paste0(
+    "Basic helper function for computing",
+    " covariances between different locations.",
+    " Can produce sparse inverses like",
+    " `inla.qinv()`, but currently (version 0.1.1) only",
+    " by a 'brute force' method."
+  ),
   " ", "fm_sample()", "Basic sampling method, like `inla.qsample()`"
 )
 df <- convert_fun_links(df)
@@ -225,8 +240,18 @@ df <- convert_fun_links(
   tibble::tribble(
     ~INLA, ~fmesher, ~Comments,
     "inla.spTransform()", "fm_transform()", "",
-    "mesh$crs", c("fm_crs(mesh)", "fm_CRS(mesh)"), "The crs may now be stored in different formats; use `fm_crs()` for `sf` format, and `fm_CRS()` for `sp` format. `fmesher` will attempt to convert when needed.",
-    "mesh$crs<-", "fm_crs(mesh)<-", "Direct assignment of crs information should be avoided, but is allowed as long as its compatible with the actual mesh coordinates."
+    "mesh$crs", c("fm_crs(mesh)", "fm_CRS(mesh)"),
+    paste0(
+      "The crs may now be stored in different formats;",
+      " use `fm_crs()` for `sf` format, and `fm_CRS()` for `sp` format.",
+      " `fmesher` will attempt to convert when needed."
+    ),
+    "mesh$crs<-", "fm_crs(mesh)<-",
+    paste0(
+      "Direct assignment of crs information should be avoided,",
+      " but is allowed as long as its compatible with the actual",
+      " mesh coordinates."
+    )
   )
 )
 ```
@@ -240,8 +265,10 @@ knitr::kable(df)
 ```{r echo = FALSE}
 df <- tribble(
   ~INLA, ~fmesher, ~Comment,
-  "No ggplot support", c("geom_fm(data = mesh)", "geom_fm(data = segm)"), "Use `ggplot() + geom_fm(data = mesh)` and `inlabru::gg()` methods",
-  "plot.inla.mesh(rgl = FALSE)", c("plot.fm_mesh_2d()", "lines.fm_mesh_2d()"), "Use `plot()` or `lines()`",
+  "No ggplot support", c("geom_fm(data = mesh)", "geom_fm(data = segm)"),
+  "Use `ggplot() + geom_fm(data = mesh)` and `inlabru::gg()` methods",
+  "plot.inla.mesh(rgl = FALSE)", c("plot.fm_mesh_2d()", "lines.fm_mesh_2d()"),
+  "Use `plot()` or `lines()`",
   "lines.inla.mesh.segment(rgl = FALSE)", c(
     "plot.fm_segm()",
     "lines.fm_segm()"

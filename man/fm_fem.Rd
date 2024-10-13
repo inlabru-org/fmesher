@@ -28,18 +28,19 @@ fm_fem(mesh, order = 2, ...)
 
 \item{...}{Currently unused}
 
-\item{aniso}{If non-NULL, a \code{list(gamma, v)}. Calculates anisotropic structure
-matrices (in addition to the regular) for \eqn{\gamma}{gamma} and \eqn{v}{v} for
-an anisotropic operator \eqn{\nabla\cdot H \nabla}{div H grad}, where
-\eqn{H=\gamma I + v v^\top}{H = gamma I + v v'}.
-Currently (2023-08-05) the fields need to be given per vertex.}
+\item{aniso}{If non-NULL, a \code{list(gamma, v)}. Calculates anisotropic
+structure matrices (in addition to the regular) for \eqn{\gamma}{gamma} and
+\eqn{v}{v} for an anisotropic operator \eqn{\nabla\cdot H \nabla}{div H
+  grad}, where \eqn{H=\gamma I + v v^\top}{H = gamma I + v v'}. Currently
+(2023-08-05) the fields need to be given per vertex.}
 }
 \value{
 \code{fm_fem.fm_mesh_1d}: A list with elements \code{c0}, \code{c1}, \code{g1}, \code{g2}.
 When \code{mesh$degree == 2}, also \code{g01}, \code{g02}, and \code{g12}.
 
-\code{fm_fem.fm_mesh_2d}: A list with elements \code{c0}, \code{c1}, \code{g1}, \code{va}, \code{ta},
-and more if \code{order > 1}. When \code{aniso} is non-NULL, also \code{g1aniso} matrices, etc.
+\code{fm_fem.fm_mesh_2d}: A list with elements \code{c0}, \code{c1}, \code{g1}, \code{va},
+\code{ta}, and more if \code{order > 1}. When \code{aniso} is non-NULL, also \code{g1aniso}
+matrices, etc.
 
 \code{fm_fem.fm_tensor}: A list with elements \code{cc}, \code{g1}, \code{g2}.
 }

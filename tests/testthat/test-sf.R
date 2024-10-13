@@ -35,12 +35,14 @@ test_that("sf standards compliance: basic polygons", {
 # For is.bnd=TRUE, the idx default closes the polygon, but not for is.bnd=FALSE,
 # which is used for "linestring" type information.
 # Further note: fm_segm has two ways of specifying the index;
-# as a sequence, or as a two-column matrix. But it is always stored as a two column matrix,
-# with no general guarantee that one line connects to the one in the next row.
+# as a sequence, or as a two-column matrix. But it is always stored as a two
+# column matrix, with no general guarantee that one line connects to the one in
+# the next row.
 # This makes conversion to sp and sf polygons more difficult, which is why there
 # isn't a general fm_as_sp.fm_segm method. There is some code in various places,
-# including in 'excursions' that could be used as a starting point to doing it properly
-# for sf conversion.  This work has been started; see fm_as_sfc.fm_segm()
+# including in 'excursions' that could be used as a starting point to doing it
+# properly for sf conversion.
+# This work has been started; see fm_as_sfc.fm_segm()
 #
 # The fm_as_inla_mesh_segment.SpatialPoints method had a bug, w.r.t is.bnd
 # handling, and has now been fixed.
@@ -131,8 +133,14 @@ test_that("Conversion between sfc_(MULTI)LINESTRING and fm_segm", {
   seg_to_sf2 <- fm_as_sfc(seg, multi = TRUE)
   seg_one_group <- seg
   seg_one_group$grp <- rep(1L, nrow(seg$idx))
-  expect_identical(fm_as_segm(sf::st_union(sf::st_geometry(line_sf))), seg_one_group)
-  expect_identical(sf::st_union(sf::st_geometry(line_sf)), fm_as_sfc(seg, multi = TRUE))
+  expect_identical(
+    fm_as_segm(sf::st_union(sf::st_geometry(line_sf))),
+    seg_one_group
+  )
+  expect_identical(
+    sf::st_union(sf::st_geometry(line_sf)),
+    fm_as_sfc(seg, multi = TRUE)
+  )
 
   #  str(seg)
   #  str(seg_sf)
@@ -142,7 +150,8 @@ test_that("Conversion between sfc_(MULTI)LINESTRING and fm_segm", {
 test_that("Conversion from sfc_POLYGON to fm_segm", {
   ## sfc_POLYGON ##
 
-  pts0 <- rbind(c(-7, -7), c(7, -7), c(7, 7), c(-7, 7), c(-7, -7)) # covering (CCW)
+  # covering (CCW)
+  pts0 <- rbind(c(-7, -7), c(7, -7), c(7, 7), c(-7, 7), c(-7, -7))
   pts0b <- pts0 + 10
   pts1 <- rbind(c(0, 3), c(0, 4), c(1, 5), c(2, 5), c(0, 3)) # hole (CW)
   pts2 <- rbind(c(1, 2), c(0, 0), c(0, -1), c(-2, -2), c(1, 2)) # hole (CW)
@@ -200,7 +209,8 @@ test_that("Conversion from sfc_POLYGON to fm_segm", {
 test_that("Conversion from sfc_MULTIPOLYGON to fm_segm", {
   ## sfc_MULTIPOLYGON ##
 
-  pts0 <- rbind(c(-7, -7), c(7, -7), c(7, 7), c(-7, 7), c(-7, -7)) # covering (CCW)
+  # covering (CCW)
+  pts0 <- rbind(c(-7, -7), c(7, -7), c(7, 7), c(-7, 7), c(-7, -7))
   pts0b <- pts0 + 15
   pts1 <- rbind(c(0, 3), c(0, 4), c(1, 5), c(2, 5), c(0, 3)) # hole (CW)
   pts2 <- rbind(c(1, 2), c(0, 0), c(0, -1), c(-2, -2), c(1, 2)) # hole (CW)
@@ -287,7 +297,8 @@ test_that("Conversion from sfc_MULTIPOLYGON to fm_segm", {
 test_that("Conversion from sfc_GEOMETRY to fm_segm", {
   ## sfc_GEOMETRY ##
 
-  pts0 <- rbind(c(-7, -7), c(7, -7), c(7, 7), c(-7, 7), c(-7, -7)) # covering (CCW)
+  # covering (CCW)
+  pts0 <- rbind(c(-7, -7), c(7, -7), c(7, 7), c(-7, 7), c(-7, -7))
   pts0b <- pts0 + 15
   pts1 <- rbind(c(0, 3), c(0, 4), c(1, 5), c(2, 5), c(0, 3)) # hole (CW)
   pts2 <- rbind(c(1, 2), c(0, 0), c(0, -1), c(-2, -2), c(1, 2)) # hole (CW)

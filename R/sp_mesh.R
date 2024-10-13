@@ -9,7 +9,13 @@
 #' @param closed logical; whether to treat a point sequence as a closed polygon.
 #' Default: `FALSE`
 fm_as_segm.matrix <-
-  function(x, reverse = FALSE, grp = NULL, is.bnd = FALSE, crs = NULL, closed = FALSE, ...) {
+  function(x,
+           reverse = FALSE,
+           grp = NULL,
+           is.bnd = FALSE,
+           crs = NULL,
+           closed = FALSE,
+           ...) {
     loc <- x
     n <- dim(loc)[1L]
     if (closed) {
@@ -205,8 +211,8 @@ fm_as_segm.Polygon <-
 
 
 #' @export
-#' @describeIn fmesher-deprecated `r lifecycle::badge("deprecated")` in favour of
-#' [fm_as_segm()]
+#' @describeIn fmesher-deprecated `r lifecycle::badge("deprecated")` in favour
+#'   of [fm_as_segm()]
 fm_sp2segment <- function(...) {
   fm_as_segm(...)
 }

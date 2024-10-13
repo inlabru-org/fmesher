@@ -10,7 +10,8 @@
 #'
 #' @keywords internal
 #' @param loc Coordinates to be mapped.
-#' @param projection The projection type.
+#' @param projection The projection type. One of `NULL`,
+#'   "default", "longlat", "longsinlat", or "mollweide".
 #' @param inverse If `TRUE`, `loc` are map coordinates and
 #' coordinates in the spherical domain are calculated.  If `FALSE`, `loc`
 #' are coordinates in the spherical domain and the forward map projection is
@@ -28,10 +29,12 @@
 #' fm_mesh_2d_map(loc, "longlat", inverse = FALSE)
 #'
 fm_mesh_2d_map <- function(loc,
-                           projection =
-                             c("default", "longlat", "longsinlat", "mollweide"),
+                           projection = NULL,
                            inverse = TRUE) {
-  projection <- match.arg(projection)
+  projection <- match.arg(
+    projection,
+    c("default", "longlat", "longsinlat", "mollweide")
+  )
   if (identical(projection, "default")) {
     return(loc)
   } else if (identical(projection, "longlat")) {
@@ -108,9 +111,11 @@ fm_mesh_2d_map <- function(loc,
 #' @export
 #' @describeIn fm_mesh_2d_map Projection extent limit calculations
 fm_mesh_2d_map_lim <- function(loc = NULL,
-                               projection =
-                                 c("default", "longlat", "longsinlat", "mollweide")) {
-  projection <- match.arg(projection)
+                               projection = NULL) {
+  projection <- match.arg(
+    projection,
+    c("default", "longlat", "longsinlat", "mollweide")
+  )
   if (identical(projection, "default")) {
     if (is.null(loc)) {
       lim <- list(xlim = c(0, 1), ylim = c(0, 1))
@@ -148,14 +153,16 @@ fm_lattice_2d <- function(...) {
 #'
 #' Construct a lattice grid for [fm_mesh_2d()]
 #'
-#' @param x vector or grid matrix of x-values. Vector values are sorted before use.
-#' Matrix input is assumed to be a grid of x-values with the same ordering convention
-#' of `as.vector(x)` as `rep(x, times = dims[2])` for vector input.
-#' @param y vector of grid matrix of y-values. Vector values are sorted before use.
-#' Matrix input is assumed to be a grid of y-values with the same ordering convention
-#' of `as.vector(y)` as `rep(y, each = dims[1])` for vector input.
-#' @param z if x is a matrix, a grid matrix of z-values, with the same ordering as `x`
-#' and `y`. If `x` is a vector, `z` is ignored.
+#' @param x vector or grid matrix of x-values. Vector values are sorted before
+#'   use. Matrix input is assumed to be a grid of x-values with the same
+#'   ordering convention of `as.vector(x)` as `rep(x, times = dims[2])` for
+#'   vector input.
+#' @param y vector of grid matrix of y-values. Vector values are sorted before
+#'   use. Matrix input is assumed to be a grid of y-values with the same
+#'   ordering convention of `as.vector(y)` as `rep(y, each = dims[1])` for
+#'   vector input.
+#' @param z if x is a matrix, a grid matrix of z-values, with the same ordering
+#'   as `x` and `y`. If `x` is a vector, `z` is ignored.
 #' @param dims the size of the grid, length 2 vector
 #' @param units One of `c("default", "longlat", "longsinlat", "mollweide")`
 #' or NULL (equivalent to `"default"`).
@@ -165,7 +172,8 @@ fm_lattice_2d <- function(...) {
 #' \item{dims}{integer vector}
 #' \item{x}{x-values for original vector input}
 #' \item{y}{y-values for original vector input}
-#' \item{loc}{matrix of `(x, y)` values or `(x, y, z)` values. May be altered by [fm_transform()]}
+#' \item{loc}{matrix of `(x, y)` values or `(x, y, z)` values. May be altered by
+#' [fm_transform()]}
 #' \item{segm}{`fm_segm` object}
 #' \item{crs}{`fm_crs` object or `NULL`}
 #' }
@@ -217,7 +225,10 @@ fm_lattice_2d.default <- function(
     crs = NULL,
     ...) {
   if (is.null(crs)) {
-    units <- match.arg(units, c("default", "longlat", "longsinlat", "mollweide"))
+    units <- match.arg(
+      units,
+      c("default", "longlat", "longsinlat", "mollweide")
+    )
 
     lim <- fm_mesh_2d_map_lim(projection = units)
     xlim <- lim$xlim

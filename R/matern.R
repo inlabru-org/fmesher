@@ -90,7 +90,8 @@ fm_matern_sample <- function(x, alpha = 2, rho, sigma, n = 1, loc = NULL) {
 
 #' @describeIn fm_gmrf Compute the covariance between "A1 x" and "A2 x", when
 #' x is a basis vector with precision matrix `Q`.
-#' @param A1,A2 Matrices, typically obtained from [fm_basis()] and/or [fm_block()].
+#' @param A1,A2 Matrices, typically obtained from [fm_basis()] and/or
+#'   [fm_block()].
 #' @param partial `r lifecycle::badge("experimental")` If `TRUE`, compute the
 #' partial inverse of `Q`, i.e. the elements of the inverse corresponding to
 #' the non-zero pattern of `Q`. (Note: This can be done efficiently with

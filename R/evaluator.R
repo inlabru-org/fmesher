@@ -511,7 +511,8 @@ fm_basis_mesh_1d <- function(mesh,
       ## Left intervals for each basis function:
       i.l <- seq_along(info$t[, 1])
       j.l <- info$t[, 1] + 2L
-      x.l <- (info$bary[, 2] * d[info$t[, 2]] / d2[info$t[, 2]] * info$bary[, 2])
+      x.l <- (info$bary[, 2] * d[info$t[, 2]] / d2[info$t[, 2]] *
+        info$bary[, 2])
       if (derivatives) {
         x.d1.l <- (2 / d2[info$t[, 2]] * info$bary[, 2])
         x.d2.l <- (2 / d2[info$t[, 2]] / d[info$t[, 2]])
@@ -519,7 +520,8 @@ fm_basis_mesh_1d <- function(mesh,
       ## Right intervals for each basis function:
       i.r <- seq_along(info$t[, 1])
       j.r <- info$t[, 1]
-      x.r <- (info$bary[, 1] * d[info$t[, 2]] / d2[info$t[, 1]] * info$bary[, 1])
+      x.r <- (info$bary[, 1] * d[info$t[, 2]] / d2[info$t[, 1]] *
+        info$bary[, 1])
       if (derivatives) {
         x.d1.r <- -(2 / d2[info$t[, 2]] * info$bary[, 1])
         x.d2.r <- (2 / d2[info$t[, 1]] / d[info$t[, 2]])
@@ -527,9 +529,10 @@ fm_basis_mesh_1d <- function(mesh,
       ## Middle intervals for each basis function:
       i.m <- seq_along(info$t[, 1])
       j.m <- info$t[, 1] + 1L
-      x.m <- (1 - (info$bary[, 1] * d[info$t[, 2]] / d2[info$t[, 1]] * info$bary[, 1] +
-        info$bary[, 2] * d[info$t[, 2]] / d2[info$t[, 2]] * info$bary[, 2]
-      ))
+      x.m <- (1 - (info$bary[, 1] * d[info$t[, 2]] / d2[info$t[, 1]] *
+        info$bary[, 1] +
+        info$bary[, 2] * d[info$t[, 2]] / d2[info$t[, 2]] *
+          info$bary[, 2]))
       if (derivatives) {
         x.d1.m <- (2 / d2[info$t[, 1]] * info$bary[, 1]) -
           (2 / d2[info$t[, 2]] * info$bary[, 2])
@@ -565,7 +568,8 @@ fm_basis_mesh_1d <- function(mesh,
         bary[, 2] * d[index[, 2]] / d2[index[, 2]] * bary[, 2]
       ))
       if (derivatives) {
-        x.d1.m <- (2 / d2[index[, 1]] * bary[, 1]) - (2 / d2[index[, 2]] * bary[, 2])
+        x.d1.m <- (2 / d2[index[, 1]] * bary[, 1]) -
+          (2 / d2[index[, 2]] * bary[, 2])
         x.d2.m <- -(2 / d2[index[, 1]] / d[index[, 2]]) -
           (2 / d2[index[, 2]] / d[index[, 2]])
       }
@@ -741,8 +745,8 @@ fm_basis_mesh_1d <- function(mesh,
 
 
 #' @export
-#' @describeIn fm_evaluate The `...` arguments are passed on to `fm_evaluator_lattice()`
-#' if no `loc` or `lattice` is provided.
+#' @describeIn fm_evaluate The `...` arguments are passed on to
+#'   `fm_evaluator_lattice()` if no `loc` or `lattice` is provided.
 fm_evaluator.fm_mesh_2d <- function(mesh,
                                     loc = NULL,
                                     lattice = NULL,
@@ -906,20 +910,23 @@ fm_evaluator.inla.mesh.1d <- function(mesh, ...) {
 
 #' Check which mesh triangles are inside a polygon
 #'
-#' Wrapper for the [sf::st_contains()] (previously `sp::over()`) method to find triangle centroids
-#' or vertices inside `sf` or `sp` polygon objects
+#' Wrapper for the [sf::st_contains()] (previously `sp::over()`) method to find
+#' triangle centroids or vertices inside `sf` or `sp` polygon objects
 #'
-#' @param x geometry (typically an `sf` or `sp::SpatialPolygons` object) for the queries
+#' @param x geometry (typically an `sf` or `sp::SpatialPolygons` object) for the
+#'   queries
 #' @param y an [fm_mesh_2d()] or `inla.mesh` object
 #' @param \dots Passed on to other methods
-#' @param type the query type; either `'centroid'` (default, for triangle centroids),
-#' or `'vertex'` (for mesh vertices)
+#' @param type the query type; either `'centroid'` (default, for triangle
+#'   centroids), or `'vertex'` (for mesh vertices)
 #'
 #' @return List of vectors of triangle indices (when `type` is `'centroid'`) or
-#' vertex indices (when `type` is `'vertex'`). The list has one entry per row of the `sf` object.
-#' Use `unlist(fm_contains(...))` if the combined union is needed.
+#'   vertex indices (when `type` is `'vertex'`). The list has one entry per row
+#'   of the `sf` object. Use `unlist(fm_contains(...))` if the combined union is
+#'   needed.
 #'
-#' @author Haakon Bakka, \email{bakka@@r-inla.org}, and Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Haakon Bakka, \email{bakka@@r-inla.org}, and Finn Lindgren
+#'   \email{finn.lindgren@@gmail.com}
 #'
 #' @examples
 #' if (TRUE &&
@@ -945,7 +952,8 @@ fm_evaluator.inla.mesh.1d <- function(mesh, ...) {
 #'   ## 3 triangles found in the polygon
 #'   fm_contains(obj, mesh)
 #'
-#'   ## Multiple transformations can lead to slightly different results due to edge cases
+#'   ## Multiple transformations can lead to slightly different results
+#'   ## due to edge cases:
 #'   ## 4 triangles found in the polygon
 #'   fm_contains(
 #'     obj,
@@ -1052,20 +1060,21 @@ fm_is_within.default <- function(x, y, ...) {
 
 #' @title Compute mapping matrix between mesh function space and points
 #'
-#' @description
-#'  Computes the basis mapping matrix between a function space on a mesh, and locations.
+#' @description Computes the basis mapping matrix between a function space on a
+#' mesh, and locations.
 #'
 #' @param x An function space object
-#' @param loc A location/value information object (vector, matrix, `sf`, etc, depending on
-#' the class of `x`)
-#' @param full logical; if `TRUE`, return a `fm_basis` object, containing at least
-#' a projection matrix `A` and logical vector `ok` indicating which evaluations
-#' are valid. If `FALSE`, return only the projection matrix `A`. Default is `FALSE`.
+#' @param loc A location/value information object (vector, matrix, `sf`, etc,
+#'   depending on the class of `x`)
+#' @param full logical; if `TRUE`, return a `fm_basis` object, containing at
+#'   least a projection matrix `A` and logical vector `ok` indicating which
+#'   evaluations are valid. If `FALSE`, return only the projection matrix `A`.
+#'   Default is `FALSE`.
 #' @param \dots Passed on to submethods
-#' @returns A `sparseMatrix` object (if `full = FALSE`),
-#' or a `fm_basis` object (if `full = TRUE` or `isTRUE(derivatives)`).
-#' The `fm_basis` object contains at least the projection matrix `A` and logical vector `ok`;
-#' `u(loc_i)=sum_j A_ij w_i`
+#' @returns A `sparseMatrix` object (if `full = FALSE`), or a `fm_basis` object
+#'   (if `full = TRUE` or `isTRUE(derivatives)`). The `fm_basis` object contains
+#'   at least the projection matrix `A` and logical vector `ok`;
+#'   `u(loc_i)=sum_j A_ij w_i`
 #' @seealso [fm_raw_basis()]
 #' @examples
 #' # Compute basis mapping matrix
@@ -1090,10 +1099,15 @@ fm_basis.default <- function(x, ..., full = FALSE) {
 #' weight for each row of the basis matrix)
 #' @param derivatives If non-NULL and logical, include derivative matrices
 #' in the output. Forces `full = TRUE`.
-#' @describeIn fm_basis The `fm_basis` object contains additional derivative weight matrices,
-#' `d1A` and `d2A`, `du/dx(loc_i)=sum_j dx_ij w_i`.
+#' @describeIn fm_basis The `fm_basis` object contains additional derivative
+#'   weight matrices, `d1A` and `d2A`, `du/dx(loc_i)=sum_j dx_ij w_i`.
 #' @export
-fm_basis.fm_mesh_1d <- function(x, loc, weights = NULL, derivatives = NULL, ..., full = FALSE) {
+fm_basis.fm_mesh_1d <- function(x,
+                                loc,
+                                weights = NULL,
+                                derivatives = NULL,
+                                ...,
+                                full = FALSE) {
   result <- fm_basis_mesh_1d(
     x,
     loc = loc,
@@ -1107,8 +1121,8 @@ fm_basis.fm_mesh_1d <- function(x, loc, weights = NULL, derivatives = NULL, ...,
   fm_basis(result, full = full)
 }
 
-#' @describeIn fm_basis If `derivatives=TRUE`, additional derivative weight matrices
-#' are included in the `full=TRUE` output: Derivative weight matrices
+#' @describeIn fm_basis If `derivatives=TRUE`, additional derivative weight
+#'   matrices are included in the `full=TRUE` output: Derivative weight matrices
 #' `dx`, `dy`, `dz`; `du/dx(loc_i)=sum_j dx_ij w_i`, etc.
 #' @export
 fm_basis.fm_mesh_2d <- function(x, loc, weights = NULL, derivatives = NULL, ...,
@@ -1225,7 +1239,11 @@ fm_basis.fm_tensor <- function(x,
 
 
 
-internal_spline_mesh_1d <- function(interval, m, degree, boundary, free.clamped) {
+internal_spline_mesh_1d <- function(interval,
+                                    m,
+                                    degree,
+                                    boundary,
+                                    free.clamped) {
   boundary <-
     match.arg(
       boundary,
@@ -1433,7 +1451,8 @@ fm_raw_basis <- function(mesh,
           sqrt(2 * l + 1) *
             gsl::legendre_Pl(l = l, x = loc[, 3])
         for (m in seq_len(l)) {
-          scaling <- sqrt(2 * (2 * l + 1) * exp(lgamma(l - m + 1) - lgamma(l + m + 1)))
+          scaling <- sqrt(2 * (2 * l + 1) * exp(lgamma(l - m + 1) -
+            lgamma(l + m + 1)))
           poly <- gsl::legendre_Plm(l = l, m = m, x = loc[, 3])
           basis[, 1 + l * (l + 1) - m] <-
             scaling * sin(-m * angle) * poly
@@ -1477,7 +1496,8 @@ fm_raw_basis <- function(mesh,
 #'
 #' @returns A (sparse) matrix
 #' @export
-#' @describeIn fm_block A (sparse) matrix of size `n_block` times `length(block)`.
+#' @describeIn fm_block A (sparse) matrix of size `n_block` times
+#'   `length(block)`.
 #' @examples
 #' block <- rep(1:2, 3:2)
 #' fm_block(block)

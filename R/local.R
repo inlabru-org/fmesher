@@ -119,11 +119,13 @@ check_package_version_and_load <-
 #' Check for potential `sp` version compatibility issues
 #'
 #' Loads the sp package with `requireNamespace("sp", quietly = TRUE)`, and
-#' checks and optionally sets the `sp` evolution status flag if `rgdal` is unavailable.
+#' checks and optionally sets the `sp` evolution status flag if `rgdal` is
+#' unavailable.
 #' This function is only needed for backwards compatibility with `sp` versions
 #' before `2.0-0`.
 #'
-#' @param quietly logical; if `TRUE`, prints diagnostic messages. Default `FALSE`
+#' @param quietly logical; if `TRUE`, prints diagnostic messages. Default
+#'   `FALSE`
 #' @param force logical; If `rgdal` is unavailable
 #' and evolution status is less that `2L`, return `FALSE` if `force` is `FALSE`.
 #' If `force` is `TRUE`, return `TRUE` if the package configuration is safe,
@@ -132,8 +134,8 @@ check_package_version_and_load <-
 #' @param minimum_version character; the minimum required sp version.
 #' Default 1.4-5 (should always match the requirement in the package
 #' DESCRIPTION)
-#' @return Returns (invisibly) `FALSE` if a potential issue is detected, and give a
-#' message if `quietly` is `FALSE`. Otherwise returns `TRUE`
+#' @return Returns (invisibly) `FALSE` if a potential issue is detected, and
+#'   give a message if `quietly` is `FALSE`. Otherwise returns `TRUE`
 #' @export
 #' @examples
 #' if (fm_safe_sp()) {
@@ -176,12 +178,16 @@ fm_safe_sp <- function(quietly = FALSE,
     )
     if ((evolution_status < 2L) && is.na(rgdal_version)) {
       if (!quietly) {
-        message("'sp' version >= 1.6-0 detected, rgdal isn't installed, and evolution status is < 2L.")
+        message(
+          "'sp' version >= 1.6-0 detected, rgdal isn't installed,",
+          " and evolution status is < 2L."
+        )
       }
       if (!force) {
         if (!quietly) {
           message(
-            "This may cause issues with some CRS handling code. To avoid this, use 'sp::set_evolution_status(2L)'"
+            "This may cause issues with some CRS handling code.\n",
+            "To avoid this, use 'sp::set_evolution_status(2L)'"
           )
         }
         return(invisible(FALSE))
@@ -190,7 +196,8 @@ fm_safe_sp <- function(quietly = FALSE,
       sp::set_evolution_status(2L)
       if (!quietly) {
         message(
-          "Ran 'sp::set_evolution_status(2L)' to avoid issues with some CRS handling code."
+          "Ran 'sp::set_evolution_status(2L)' to avoid",
+          " issues with some CRS handling code."
         )
       }
     }

@@ -6,6 +6,16 @@
 #'
 #' @description
 #' Helper from legacy `INLA::inla.contour.segment()`
+#' @param x,y,z The `x` and `y` coordinates of the grid, and the `z` values
+#' @param nlevels Number of contour levels
+#' @param levels The contour levels. If `NULL`,
+#'   `pretty(range(z, na.rm = TRUE), nlevels)` is used.
+#' @param groups The group values for each contour level.
+#'   If `NULL`, `seq_len(length(levels))` is used.
+#' @param positive Logical; if `TRUE`, the contour lines are made to be
+#' CCW around positive excursions
+#' @param eps,eps_rel Polygonal curve simplification tolerances
+#' @param crs A coordinate reference system
 #' @returns An `fm_segm` object
 #' @export
 #' @keywords internal
@@ -16,8 +26,8 @@
 fm_segm_contour_helper <- function(x = seq(0, 1, length.out = nrow(z)),
                                    y = seq(0, 1, length.out = ncol(z)),
                                    z, nlevels = 10,
-                                   levels = pretty(range(z, na.rm = TRUE), nlevels),
-                                   groups = seq_len(length(levels)),
+                                   levels = NULL,
+                                   groups = NULL,
                                    positive = TRUE,
                                    eps = NULL,
                                    eps_rel = NULL,
@@ -44,6 +54,14 @@ fm_segm_contour_helper <- function(x = seq(0, 1, length.out = nrow(z)),
   if (is.null(eps)) {
     eps <- min(c(min(diff(x)), min(diff(y)))) / 8
   }
+
+  if (is.null(levels)) {
+    levels <- pretty(range(z, na.rm = TRUE), nlevels)
+  }
+  if (is.null(groups)) {
+    groups <- seq_len(length(levels))
+  }
+
   ## End of input checking.
 
   ## Get contour pieces
@@ -123,7 +141,8 @@ fm_segm_contour_helper <- function(x = seq(0, 1, length.out = nrow(z)),
     curve.idx <- cbind(seq_len(curve.n - 1L), seq_len(curve.n - 1L) + 1L)
 
     ## Check if the curve is closed, and adjust if it is:
-    if (max(abs(curve.loc[1, , drop = FALSE] - curve.loc[curve.n, , drop = FALSE])) < 1e-12) {
+    if (max(abs(curve.loc[1, , drop = FALSE] -
+      curve.loc[curve.n, , drop = FALSE])) < 1e-12) {
       curve.loc <- curve.loc[-curve.n, , drop = FALSE]
       curve.n <- nrow(curve.loc)
       curve.idx <-
@@ -369,10 +388,11 @@ fm_nonconvex_hull_inla_basic <- function(x, convex = -0.15, resolution = 40,
 #' @details
 #' Morphological dilation by `convex`, followed by closing by
 #' `concave`, with minimum concave curvature radius `concave`.  If
-#' the dilated set has no gaps of width between \deqn{2 \textrm{convex} (\sqrt{1+2
-#' \textrm{concave}/\textrm{convex}} - 1)}{2*convex*(sqrt(1+2*concave/convex) - 1)}
-#' and \eqn{2\textrm{concave}}{2*concave}, then the minimum convex curvature radius is
-#' `convex`.
+#' the dilated set has no gaps of width between \deqn{2 \textrm{convex}
+#' (\sqrt{1+2\textrm{concave}/\textrm{convex}} - 1)
+#' }{2*convex*(sqrt(1+2*concave/convex) - 1)}
+#' and \eqn{2\textrm{concave}}{2*concave}, then the minimum convex curvature
+#' radius is `convex`.
 #'
 #' The implementation is based on the identity \deqn{\textrm{dilation}(a) \&
 #' \textrm{closing}(b) = \textrm{dilation}(a+b) \& \textrm{erosion}(b)}{
@@ -382,11 +402,12 @@ fm_nonconvex_hull_inla_basic <- function(x, convex = -0.15, resolution = 40,
 #' @param x A spatial object
 #' @param x A spatial object
 #' @param convex numeric vector; How much to extend
-#' @param concave numeric vector; The minimum allowed reentrant curvature. Default equal to `convex`
+#' @param concave numeric vector; The minimum allowed reentrant curvature.
+#'   Default equal to `convex`
 #' @param preserveTopology logical; argument to `sf::st_simplify()`
-#' @param dTolerance If not zero, controls the `dTolerance` argument to `sf::st_simplify()`.
-#' The default is `pmin(convex, concave) / 40`, chosen to
-#' give approximately 4 or more subsegments per circular quadrant.
+#' @param dTolerance If not zero, controls the `dTolerance` argument to
+#'   `sf::st_simplify()`. The default is `pmin(convex, concave) / 40`, chosen to
+#'   give approximately 4 or more subsegments per circular quadrant.
 #' @param crs Options crs object for the resulting polygon
 #' @param ... Arguments passed on to the [fm_nonconvex_hull()] sub-methods
 #' @details When `convex`, `concave`, or `dTolerance` are negative,
@@ -455,7 +476,8 @@ fm_nonconvex_hull.sfc <- function(x,
       y_box <- sf::st_buffer(y, dist = 100000, nQuadSegs = nQuadSegs)
       y_box <- sf::st_union(y_box)
       y_inverse <- sf::st_difference(y_box, y)
-      y_inverse_expanded <- sf::st_buffer(y_inverse, concave, nQuadSegs = nQuadSegs)
+      y_inverse_expanded <-
+        sf::st_buffer(y_inverse, concave, nQuadSegs = nQuadSegs)
       y_inverse_expanded <- sf::st_union(y_inverse_expanded)
       y <- sf::st_difference(y, y_inverse_expanded)
     } else {

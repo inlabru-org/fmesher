@@ -11,7 +11,8 @@ fm_wkt_is_geocent <- function(wkt) {
   if (is.null(wkt) || identical(wkt, "") || is.na(wkt)) {
     return(FALSE)
   }
-  # See https://proceedings.esri.com/library/userconf/proc17/tech-workshops/tw_2588-212.pdf
+  # See https://proceedings.esri.com/library/userconf/proc17/
+  #   tech-workshops/tw_2588-212.pdf
   geo_crs_items <- c(
     "GEODCRS", "GEOGCRS",
     "BASEGEODCRS", "BASEGEOGCRS"
@@ -509,14 +510,14 @@ fm_length_unit.character <- function(x) {
 #' objects and return a plain `crs` object instead. For `crsonly = TRUE`, use
 #' `oblique = NA` instead. For `crsonly = FALSE`, use default, NULL, or non-NA
 #' `oblique`.
-#' @param oblique Numeric vector of length at most 4 of rotation angles (in degrees)
-#' for an oblique projection, all values defaulting to zero. The values
-#' indicate (longitude, latitude, orientation, orbit), as explained in the
-#' Details section below. When
-#' `oblique` is non-NULL, used to override the obliqueness parameters of a
-#' `fm_crs` object. When `NA`, remove obliqueness from the object, resulting
-#' in a return class of `sf::st_crs()`. When `NULL`, pass though any oblique
-#' information in the object, returning an `fm_crs()` object if needed.
+#' @param oblique Numeric vector of length at most 4 of rotation angles (in
+#'   degrees) for an oblique projection, all values defaulting to zero. The
+#'   values indicate (longitude, latitude, orientation, orbit), as explained in
+#'   the Details section below. When `oblique` is non-NULL, used to override the
+#'   obliqueness parameters of a `fm_crs` object. When `NA`, remove obliqueness
+#'   from the object, resulting in a return class of `sf::st_crs()`. When
+#'   `NULL`, pass though any oblique information in the object, returning an
+#'   `fm_crs()` object if needed.
 #'
 #' @details The first two
 #' elements of the `oblique` vector are the (longitude, latitude)
@@ -573,7 +574,8 @@ fm_crs <- function(x, oblique = NULL, ..., crsonly = deprecated()) {
         return(fm_crs(x, ..., oblique = NA))
       } else {
         msg <- c(
-          "Ignoring `crsonly = TRUE`, as it contradicts with the given `oblique`.",
+          "Ignoring `crsonly = TRUE`, as it contradicts with",
+          " the given `oblique`.",
           "We will use `oblique = oblique`."
         )
       }
@@ -607,12 +609,13 @@ fm_crs <- function(x, oblique = NULL, ..., crsonly = deprecated()) {
 #' @description
 #' Methods of checking whether various kinds of CRS objects are `NULL` or `NA`.
 #' Logically equivalent to either `is.na(fm_crs(x))` or
-#' `is.na(fm_crs(x, oblique = NA))`, but with a short-cut pre-check for `is.null(x)`.
+#' `is.na(fm_crs(x, oblique = NA))`, but with a short-cut pre-check for
+#' `is.null(x)`.
 #'
-#' @describeIn fm_crs_is_null Check if an object is or has `NULL` or `NA` CRS information.
-#' If not `NULL`, `is.na(fm_crs(x))` is returned. This allows the input to be e.g.
-#' a proj4string or epsg number, since the default [fm_crs()] method passes
-#' its argument on to `sf::st_crs()`.
+#' @describeIn fm_crs_is_null Check if an object is or has `NULL` or `NA` CRS
+#'   information. If not `NULL`, `is.na(fm_crs(x))` is returned. This allows the
+#'   input to be e.g. a proj4string or epsg number, since the default [fm_crs()]
+#'   method passes its argument on to `sf::st_crs()`.
 #'
 #' @param x An object supported by `fm_crs(x)`
 #' @param crsonly For crs objects with extended functionality, such as
@@ -640,8 +643,8 @@ fm_crs_is_null <- function(x, crsonly = FALSE) {
   is.null(x) || is.na(fm_crs(x))
 }
 
-#' @describeIn fm_crs_is_null Check if a `fm_crs` has `NA` crs information and `NA`
-#' obliqueness
+#' @describeIn fm_crs_is_null Check if a `fm_crs` has `NA` crs information and
+#'   `NA` obliqueness
 #' @export
 is.na.fm_crs <- function(x) {
   is.na(x[["crs"]]) && all(is.na(x[["oblique"]]))
@@ -671,9 +674,10 @@ st_crs.fm_crs <- function(x, ...) {
 }
 
 #' @rawNamespace S3method("$", fm_crs)
-#' @describeIn fm_crs For a `fm_crs` object `x`, `x$name` calls the accessor method for the
-#' `crs` object inside it. If `name` is "crs", the internal crs object itself is returned.
-#' If `name` is "oblique", the internal oblique angle parameter vector is returned.
+#' @describeIn fm_crs For a `fm_crs` object `x`, `x$name` calls the accessor
+#'   method for the `crs` object inside it. If `name` is "crs", the internal crs
+#'   object itself is returned. If `name` is "oblique", the internal oblique
+#'   angle parameter vector is returned.
 #' @param name element name
 `$.fm_crs` <- function(x, name) {
   if (name %in% c("crs", "oblique")) {
@@ -882,13 +886,14 @@ fm_crs.matrix <- function(x, oblique = NULL, ...) {
 #' @describeIn fm_crs-set
 #' Automatically converts the input value with
 #' `fm_crs(value)`, `fm_crs(value, oblique = NA)`,
-#' `fm_CRS(value)`, or `fm_CRS(value, oblique = NA)`, depending on the type of `x`.
+#' `fm_CRS(value)`, or `fm_CRS(value, oblique = NA)`,
+#' depending on the type of `x`.
 #'
 #' @param x Object to assign crs information to
 #' @param value For `fm_crs<-()`, object supported by `fm_crs(value)`.
 #'
-#' For `fm_crs_oblique<-()`, `NA` or a numeric vector, see
-#' the `oblique` argument for [fm_crs()]. For assignment, `NULL` is treated as `NA`.
+#' For `fm_crs_oblique<-()`, `NA` or a numeric vector, see the `oblique`
+#' argument for [fm_crs()]. For assignment, `NULL` is treated as `NA`.
 #' @returns The modified object
 #' @seealso [fm_crs()]
 #' @export
@@ -1344,16 +1349,161 @@ fm_CRS.default <- function(x, oblique = NULL,
 
 fm_wkt_predef <- function() {
   list(
-    hammer_norm = 'PROJCRS["unknown",BASEGEOGCRS["unknown",DATUM["unknown",ELLIPSOID["unknown",0.707106781186548,0,LENGTHUNIT["metre",1,ID["EPSG",9001]]]],PRIMEM["Reference meridian",0,ANGLEUNIT["degree",0.0174532925199433,ID["EPSG",9122]]]],CONVERSION["unknown",METHOD["PROJ hammer"]],CS[Cartesian,2],AXIS["(E)",east,ORDER[1],LENGTHUNIT["metre",1,ID["EPSG",9001]]],AXIS["(N)",north,ORDER[2],LENGTHUNIT["metre",1,ID["EPSG",9001]]]]',
-    lambert_norm = 'PROJCRS["unknown",BASEGEOGCRS["unknown",DATUM["unknown",ELLIPSOID["unknown",1,0,LENGTHUNIT["metre",1,ID["EPSG",9001]]]],PRIMEM["Reference meridian",0,ANGLEUNIT["degree",0.0174532925199433,ID["EPSG",9122]]]],CONVERSION["unknown",METHOD["Lambert Cylindrical Equal Area (Spherical)",ID["EPSG",9834]],PARAMETER["Latitude of 1st standard parallel",0,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8823]],PARAMETER["Longitude of natural origin",0,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8802]],PARAMETER["False easting",0,LENGTHUNIT["metre",1],ID["EPSG",8806]],PARAMETER["False northing",0,LENGTHUNIT["metre",1],ID["EPSG",8807]]],CS[Cartesian,2],AXIS["(E)",east,ORDER[1],LENGTHUNIT["metre",1,ID["EPSG",9001]]],AXIS["(N)",north,ORDER[2],LENGTHUNIT["metre",1,ID["EPSG",9001]]]]',
-    longlat_norm = 'GEOGCRS["unknown",DATUM["unknown",ELLIPSOID["unknown",1,0,LENGTHUNIT["metre",1,ID["EPSG",9001]]]],PRIMEM["Reference meridian",0,ANGLEUNIT["degree",0.0174532925199433,ID["EPSG",9122]]],CS[ellipsoidal,2],AXIS["longitude",east,ORDER[1],ANGLEUNIT["degree",0.0174532925199433,ID["EPSG",9122]]],AXIS["latitude",north,ORDER[2],ANGLEUNIT["degree",0.0174532925199433,ID["EPSG",9122]]]]',
-    mollweide_norm = 'PROJCRS["unknown",BASEGEOGCRS["unknown",DATUM["unknown",ELLIPSOID["unknown",0.707106781186548,0,LENGTHUNIT["metre",1,ID["EPSG",9001]]]],PRIMEM["Reference meridian",0,ANGLEUNIT["degree",0.0174532925199433,ID["EPSG",9122]]]],CONVERSION["unknown",METHOD["Mollweide"],PARAMETER["Longitude of natural origin",0,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8802]],PARAMETER["False easting",0,LENGTHUNIT["metre",1],ID["EPSG",8806]],PARAMETER["False northing",0,LENGTHUNIT["metre",1],ID["EPSG",8807]]],CS[Cartesian,2],AXIS["(E)",east,ORDER[1],LENGTHUNIT["metre",1,ID["EPSG",9001]]],AXIS["(N)",north,ORDER[2],LENGTHUNIT["metre",1,ID["EPSG",9001]]]]',
-    hammer_globe = 'PROJCRS["unknown",BASEGEOGCRS["unknown",DATUM["Unknown based on Normal Sphere (r=6370997) ellipsoid",ELLIPSOID["Normal Sphere (r=6370997)",6370997,0,LENGTHUNIT["metre",1,ID["EPSG",9001]]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8901]]],CONVERSION["unknown",METHOD["PROJ hammer"]],CS[Cartesian,2],AXIS["(E)",east,ORDER[1],LENGTHUNIT["kilometre",1000,ID["EPSG",9036]]],AXIS["(N)",north,ORDER[2],LENGTHUNIT["kilometre",1000,ID["EPSG",9036]]]]',
-    lambert_globe = 'PROJCRS["unknown",BASEGEOGCRS["unknown",DATUM["Unknown based on Normal Sphere (r=6370997) ellipsoid",ELLIPSOID["Normal Sphere (r=6370997)",6370997,0,LENGTHUNIT["metre",1,ID["EPSG",9001]]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8901]]],CONVERSION["unknown",METHOD["Lambert Cylindrical Equal Area (Spherical)",ID["EPSG",9834]],PARAMETER["Latitude of 1st standard parallel",0,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8823]],PARAMETER["Longitude of natural origin",0,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8802]],PARAMETER["False easting",0,LENGTHUNIT["kilometre",1000],ID["EPSG",8806]],PARAMETER["False northing",0,LENGTHUNIT["kilometre",1000],ID["EPSG",8807]]],CS[Cartesian,2],AXIS["(E)",east,ORDER[1],LENGTHUNIT["kilometre",1000,ID["EPSG",9036]]],AXIS["(N)",north,ORDER[2],LENGTHUNIT["kilometre",1000,ID["EPSG",9036]]]]',
-    longlat_globe = 'GEOGCRS["unknown",DATUM["Unknown based on Normal Sphere (r=6370997) ellipsoid",ELLIPSOID["Normal Sphere (r=6370997)",6370997,0,LENGTHUNIT["metre",1,ID["EPSG",9001]]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8901]],CS[ellipsoidal,2],AXIS["longitude",east,ORDER[1],ANGLEUNIT["degree",0.0174532925199433,ID["EPSG",9122]]],AXIS["latitude",north,ORDER[2],ANGLEUNIT["degree",0.0174532925199433,ID["EPSG",9122]]]]',
-    mollweide_globe = 'PROJCRS["unknown",BASEGEOGCRS["unknown",DATUM["Unknown based on Normal Sphere (r=6370997) ellipsoid",ELLIPSOID["Normal Sphere (r=6370997)",6370997,0,LENGTHUNIT["metre",1,ID["EPSG",9001]]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8901]]],CONVERSION["unknown",METHOD["Mollweide"],PARAMETER["Longitude of natural origin",0,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8802]],PARAMETER["False easting",0,LENGTHUNIT["kilometre",1000],ID["EPSG",8806]],PARAMETER["False northing",0,LENGTHUNIT["kilometre",1000],ID["EPSG",8807]]],CS[Cartesian,2],AXIS["(E)",east,ORDER[1],LENGTHUNIT["kilometre",1000,ID["EPSG",9036]]],AXIS["(N)",north,ORDER[2],LENGTHUNIT["kilometre",1000,ID["EPSG",9036]]]]',
-    sphere = 'GEODCRS["unknown",DATUM["unknown",ELLIPSOID["unknown",1,0,LENGTHUNIT["metre",1,ID["EPSG",9001]]]],PRIMEM["Reference meridian",0,ANGLEUNIT["degree",0.0174532925199433,ID["EPSG",9122]]],CS[Cartesian,3],AXIS["(X)",geocentricX,ORDER[1],LENGTHUNIT["metre",1,ID["EPSG",9001]]],AXIS["(Y)",geocentricY,ORDER[2],LENGTHUNIT["metre",1,ID["EPSG",9001]]],AXIS["(Z)",geocentricZ,ORDER[3],LENGTHUNIT["metre",1,ID["EPSG",9001]]]]',
-    globe = 'GEODCRS["unknown",DATUM["Unknown based on Normal Sphere (r=6370997) ellipsoid",ELLIPSOID["Normal Sphere (r=6370997)",6370997,0,LENGTHUNIT["metre",1,ID["EPSG",9001]]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8901]],CS[Cartesian,3],AXIS["(X)",geocentricX,ORDER[1],LENGTHUNIT["kilometre",1000,ID["EPSG",9036]]],AXIS["(Y)",geocentricY,ORDER[2],LENGTHUNIT["kilometre",1000,ID["EPSG",9036]]],AXIS["(Z)",geocentricZ,ORDER[3],LENGTHUNIT["kilometre",1000,ID["EPSG",9036]]]]'
+    hammer_norm = paste0(
+      'PROJCRS["unknown",BASEGEOGCRS["unknown",DATUM["unknown",',
+      'ELLIPSOID["unknown",0.707106781186548,0,',
+      'LENGTHUNIT["metre",1,ID["EPSG",9001]]]],',
+      'PRIMEM["Reference meridian",0,',
+      'ANGLEUNIT["degree",0.0174532925199433,ID["EPSG",9122]]]],',
+      'CONVERSION["unknown",METHOD["PROJ hammer"]],',
+      "CS[Cartesian,2],",
+      'AXIS["(E)",east,ORDER[1],LENGTHUNIT["metre",1,ID["EPSG",9001]]],',
+      'AXIS["(N)",north,ORDER[2],LENGTHUNIT["metre",1,ID["EPSG",9001]]]]'
+    ),
+    lambert_norm = paste0(
+      'PROJCRS["unknown",BASEGEOGCRS["unknown",DATUM["unknown",',
+      'ELLIPSOID["unknown",1,0,LENGTHUNIT["metre",1,ID["EPSG",9001]]]],',
+      'PRIMEM["Reference meridian",0,',
+      'ANGLEUNIT["degree",0.0174532925199433,ID["EPSG",9122]]]],',
+      'CONVERSION["unknown",',
+      'METHOD["Lambert Cylindrical Equal Area (Spherical)",ID["EPSG",9834]],',
+      'PARAMETER["Latitude of 1st standard parallel",0,',
+      'ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8823]],',
+      'PARAMETER["Longitude of natural origin",0,',
+      'ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8802]],',
+      'PARAMETER["False easting",0,LENGTHUNIT["metre",1],ID["EPSG",8806]],',
+      'PARAMETER["False northing",0,LENGTHUNIT["metre",1],ID["EPSG",8807]]],',
+      "CS[Cartesian,2],",
+      'AXIS["(E)",east,ORDER[1],',
+      'LENGTHUNIT["metre",1,ID["EPSG",9001]]],',
+      'AXIS["(N)",north,ORDER[2],',
+      'LENGTHUNIT["metre",1,ID["EPSG",9001]]]]'
+    ),
+    longlat_norm = paste0(
+      'GEOGCRS["unknown",DATUM["unknown",ELLIPSOID["unknown",1,0,',
+      'LENGTHUNIT["metre",1,ID["EPSG",9001]]]],',
+      'PRIMEM["Reference meridian",0,',
+      'ANGLEUNIT["degree",0.0174532925199433,ID["EPSG",9122]]],',
+      "CS[ellipsoidal,2],",
+      'AXIS["longitude",east,ORDER[1],',
+      'ANGLEUNIT["degree",0.0174532925199433,ID["EPSG",9122]]],',
+      'AXIS["latitude",north,ORDER[2],',
+      'ANGLEUNIT["degree",0.0174532925199433,ID["EPSG",9122]]]]'
+    ),
+    mollweide_norm = paste0(
+      'PROJCRS["unknown",BASEGEOGCRS["unknown",DATUM["unknown",',
+      'ELLIPSOID["unknown",0.707106781186548,0,',
+      'LENGTHUNIT["metre",1,ID["EPSG",9001]]]],',
+      'PRIMEM["Reference meridian",0,',
+      'ANGLEUNIT["degree",0.0174532925199433,ID["EPSG",9122]]]],',
+      'CONVERSION["unknown",METHOD["Mollweide"],',
+      'PARAMETER["Longitude of natural origin",0,',
+      'ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8802]],',
+      'PARAMETER["False easting",0,LENGTHUNIT["metre",1],ID["EPSG",8806]],',
+      'PARAMETER["False northing",0,LENGTHUNIT["metre",1],ID["EPSG",8807]]],',
+      "CS[Cartesian,2],",
+      'AXIS["(E)",east,ORDER[1],',
+      'LENGTHUNIT["metre",1,ID["EPSG",9001]]],AXIS["(N)",north,ORDER[2],',
+      'LENGTHUNIT["metre",1,ID["EPSG",9001]]]]'
+    ),
+    hammer_globe = paste0(
+      'PROJCRS["unknown",BASEGEOGCRS["unknown",',
+      'DATUM["Unknown based on Normal Sphere (r=6370997) ellipsoid",',
+      'ELLIPSOID["Normal Sphere (r=6370997)",6370997,0,',
+      'LENGTHUNIT["metre",1,ID["EPSG",9001]]]],',
+      'PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433],',
+      'ID["EPSG",8901]]],',
+      'CONVERSION["unknown",METHOD["PROJ hammer"]],',
+      "CS[Cartesian,2],",
+      'AXIS["(E)",east,ORDER[1],',
+      'LENGTHUNIT["kilometre",1000,ID["EPSG",9036]]],',
+      'AXIS["(N)",north,ORDER[2],',
+      'LENGTHUNIT["kilometre",1000,ID["EPSG",9036]]]]'
+    ),
+    lambert_globe = paste0(
+      'PROJCRS["unknown",BASEGEOGCRS["unknown",',
+      'DATUM["Unknown based on Normal Sphere (r=6370997) ellipsoid",',
+      'ELLIPSOID["Normal Sphere (r=6370997)",6370997,0,',
+      'LENGTHUNIT["metre",1,ID["EPSG",9001]]]],',
+      'PRIMEM["Greenwich",0,',
+      'ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8901]]],',
+      'CONVERSION["unknown",',
+      'METHOD["Lambert Cylindrical Equal Area (Spherical)",ID["EPSG",9834]],',
+      'PARAMETER["Latitude of 1st standard parallel",0,',
+      'ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8823]],',
+      'PARAMETER["Longitude of natural origin",0,',
+      'ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8802]],',
+      'PARAMETER["False easting",0,',
+      'LENGTHUNIT["kilometre",1000],ID["EPSG",8806]],',
+      'PARAMETER["False northing",0,',
+      'LENGTHUNIT["kilometre",1000],ID["EPSG",8807]]],',
+      "CS[Cartesian,2],",
+      'AXIS["(E)",east,ORDER[1],',
+      'LENGTHUNIT["kilometre",1000,ID["EPSG",9036]]],',
+      'AXIS["(N)",north,ORDER[2],',
+      'LENGTHUNIT["kilometre",1000,ID["EPSG",9036]]]]'
+    ),
+    longlat_globe = paste0(
+      'GEOGCRS["unknown",',
+      'DATUM["Unknown based on Normal Sphere (r=6370997) ellipsoid",',
+      'ELLIPSOID["Normal Sphere (r=6370997)",6370997,0,',
+      'LENGTHUNIT["metre",1,ID["EPSG",9001]]]],',
+      'PRIMEM["Greenwich",0,',
+      'ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8901]],',
+      "CS[ellipsoidal,2],",
+      'AXIS["longitude",east,ORDER[1],',
+      'ANGLEUNIT["degree",0.0174532925199433,ID["EPSG",9122]]],',
+      'AXIS["latitude",north,ORDER[2],',
+      'ANGLEUNIT["degree",0.0174532925199433,ID["EPSG",9122]]]]'
+    ),
+    mollweide_globe = paste0(
+      'PROJCRS["unknown",BASEGEOGCRS["unknown",',
+      'DATUM["Unknown based on Normal Sphere (r=6370997) ellipsoid",',
+      'ELLIPSOID["Normal Sphere (r=6370997)",6370997,0,',
+      'LENGTHUNIT["metre",1,ID["EPSG",9001]]]],',
+      'PRIMEM["Greenwich",0,',
+      'ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8901]]],',
+      'CONVERSION["unknown",METHOD["Mollweide"],',
+      'PARAMETER["Longitude of natural origin",0,',
+      'ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8802]],',
+      'PARAMETER["False easting",0,',
+      'LENGTHUNIT["kilometre",1000],ID["EPSG",8806]],',
+      'PARAMETER["False northing",0,',
+      'LENGTHUNIT["kilometre",1000],ID["EPSG",8807]]],',
+      "CS[Cartesian,2],",
+      'AXIS["(E)",east,ORDER[1],',
+      'LENGTHUNIT["kilometre",1000,ID["EPSG",9036]]],',
+      'AXIS["(N)",north,ORDER[2],',
+      'LENGTHUNIT["kilometre",1000,ID["EPSG",9036]]]]'
+    ),
+    sphere = paste0(
+      'GEODCRS["unknown",DATUM["unknown",ELLIPSOID["unknown",1,0,',
+      'LENGTHUNIT["metre",1,ID["EPSG",9001]]]],',
+      'PRIMEM["Reference meridian",0,',
+      'ANGLEUNIT["degree",0.0174532925199433,ID["EPSG",9122]]],',
+      "CS[Cartesian,3],",
+      'AXIS["(X)",geocentricX,ORDER[1],',
+      'LENGTHUNIT["metre",1,ID["EPSG",9001]]],',
+      'AXIS["(Y)",geocentricY,ORDER[2],',
+      'LENGTHUNIT["metre",1,ID["EPSG",9001]]],',
+      'AXIS["(Z)",geocentricZ,ORDER[3],',
+      'LENGTHUNIT["metre",1,ID["EPSG",9001]]]]'
+    ),
+    globe = paste0(
+      'GEODCRS["unknown",',
+      'DATUM["Unknown based on Normal Sphere (r=6370997) ellipsoid",',
+      'ELLIPSOID["Normal Sphere (r=6370997)",6370997,0,',
+      'LENGTHUNIT["metre",1,ID["EPSG",9001]]]],',
+      'PRIMEM["Greenwich",0,',
+      'ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8901]],',
+      "CS[Cartesian,3],",
+      'AXIS["(X)",geocentricX,ORDER[1],',
+      'LENGTHUNIT["kilometre",1000,ID["EPSG",9036]]],',
+      'AXIS["(Y)",geocentricY,ORDER[2],',
+      'LENGTHUNIT["kilometre",1000,ID["EPSG",9036]]],',
+      'AXIS["(Z)",geocentricZ,ORDER[3],',
+      'LENGTHUNIT["kilometre",1000,ID["EPSG",9036]]]]'
+    )
   )
 }
 
@@ -1471,7 +1621,8 @@ fm_wkt_tree_as_wkt <- function(x, pretty = FALSE, ...) {
 #' @param duplicate For items that have more than one match, `duplicate`
 #' indicates the index number of the desired version. Default: 1
 #' @rdname wkt_tree
-#' @returns `fm_wkt_tree_get_item` returns the value of an item found in the tree
+#' @returns `fm_wkt_tree_get_item` returns the value of an item found in the
+#'   tree
 #' @export
 
 fm_wkt_tree_get_item <- function(x, item, duplicate = 1) {
@@ -1496,7 +1647,8 @@ fm_wkt_tree_get_item <- function(x, item, duplicate = 1) {
 fm_wkt_tree_set_item <- function(x, item_tree, duplicate = 1) {
   success <- FALSE
   for (k in seq_along(x[["params"]])) {
-    if (is.list(x[["params"]][[k]]) && (x[["params"]][[k]][["label"]] == item_tree[["label"]])) {
+    if (is.list(x[["params"]][[k]]) &&
+      (x[["params"]][[k]][["label"]] == item_tree[["label"]])) {
       if (duplicate == 1) {
         x[["params"]][[k]] <- item_tree
       }
@@ -1572,7 +1724,8 @@ fm_CRSargs <- function(x, ...) {
 }
 
 
-#' @return For `fm_list_as_CRSargs()`, a CRS proj4 string for name=value pair list
+#' @return For `fm_list_as_CRSargs()`, a CRS proj4 string for name=value pair
+#'   list
 #' @rdname fm_CRSargs
 fm_list_as_CRSargs <- function(x, ...) {
   paste(
@@ -1590,7 +1743,8 @@ fm_list_as_CRSargs <- function(x, ...) {
   )
 }
 
-#' @return For `fm_CRSargs_as_list()`, a list of name=value pairs from CRS proj4 string
+#' @return For `fm_CRSargs_as_list()`, a list of name=value pairs from CRS
+#'   proj4string
 #' @rdname fm_CRSargs
 #' @export
 fm_CRSargs_as_list <- function(x, ...) {
@@ -1631,14 +1785,16 @@ print.fm_CRS <- function(x, ...) {
 
 # fm_wkt ----
 
-#' @describeIn fm_crs_wkt Returns a WKT2 string, for any input supported by [fm_crs()].
+#' @describeIn fm_crs_wkt Returns a WKT2 string, for any input supported by
+#'   [fm_crs()].
 #' @export
 
 fm_wkt <- function(crs) {
   fm_crs(crs, oblique = NA)$wkt
 }
 
-#' @describeIn fm_crs_wkt Returns a proj4 string, for any input supported by [fm_crs()].
+#' @describeIn fm_crs_wkt Returns a proj4 string, for any input supported by
+#'   [fm_crs()].
 #' @export
 fm_proj4string <- function(crs) {
   fm_crs(crs, oblique = NA)$proj4string
@@ -1743,7 +1899,8 @@ fm_crs_transform_oblique <- function(x, oblique, to.oblique = TRUE) {
 
 
 
-#' @describeIn fm_crs_wkt Returns "longlat", "lambert", "mollweide", "hammer", "tmerc", or `NULL`
+#' @describeIn fm_crs_wkt Returns "longlat", "lambert", "mollweide", "hammer",
+#'   "tmerc", or `NULL`
 #' @param wt A parsed wkt tree, see [fm_wkt_as_wkt_tree()]
 #' @export
 fm_wkt_tree_projection_type <- function(wt) {
@@ -1756,7 +1913,10 @@ fm_wkt_tree_projection_type <- function(wt) {
   conversion <- fm_wkt_tree_get_item(wt, "CONVERSION")
   if (!is.null(conversion)) {
     method <- fm_wkt_tree_get_item(conversion, "METHOD")
-    if (identical(method[["params"]][[1]], '"Lambert Cylindrical Equal Area (Spherical)"')) {
+    if (identical(
+      method[["params"]][[1]],
+      '"Lambert Cylindrical Equal Area (Spherical)"'
+    )) {
       return("lambert")
     }
     if (identical(method[["params"]][[1]], '"Mollweide"')) {
@@ -1802,12 +1962,25 @@ fm_crs_bounds <- function(crs, warn.unknown = FALSE) {
 
   if (is.null(type)) {
     if (fm_wkt_is_geocent(wkt)) {
-      bounds <- list(type = "rectangle", xlim = c(-Inf, Inf), ylim = c(-Inf, Inf))
+      bounds <- list(
+        type = "rectangle",
+        xlim = c(-Inf, Inf),
+        ylim = c(-Inf, Inf)
+      )
     } else {
       if (warn.unknown && !fm_crs_is_null(crs)) {
-        warning("Could not determine shape of transformation bounds. Using infinite rectangle.")
+        warning(
+          paste0(
+            "Could not determine shape of transformation bounds. ",
+            "Using infinite rectangle."
+          )
+        )
       }
-      bounds <- list(type = "rectangle", xlim = c(-Inf, Inf), ylim = c(-Inf, Inf))
+      bounds <- list(
+        type = "rectangle",
+        xlim = c(-Inf, Inf),
+        ylim = c(-Inf, Inf)
+      )
     }
   } else if (type == "longlat") {
     bounds <- list(type = "rectangle", xlim = c(-180, 180), ylim = c(-90, 90))
@@ -1852,9 +2025,16 @@ fm_crs_bounds <- function(crs, warn.unknown = FALSE) {
       ylim = center[2] + c(-1, 1) * axis[2]
     )
   } else if (type == "tmerc") {
-    bounds <- list(type = "rectangle", xlim = c(-Inf, Inf), ylim = c(-Inf, Inf))
+    bounds <- list(
+      type = "rectangle",
+      xlim = c(-Inf, Inf),
+      ylim = c(-Inf, Inf)
+    )
   } else {
-    stop("'fm_crs_bounds' internal error: transformation detected but not handled.")
+    stop(paste0(
+      "'fm_crs_bounds' internal error: ",
+      "transformation detected but not handled."
+    ))
   }
 
   if (bounds$type == "rectangle") {
@@ -1912,12 +2092,14 @@ fm_internal_update_crs <- function(crs, newcrs, mismatch.allowed) {
 
 
 #' @title Check if two CRS objects are identical
-#' @param crs0,crs1 Two `sf::crs`, `sp::CRS`, `fm_crs` or `inla.CRS` objects to be compared.
-#' @param crsonly logical. If `TRUE` and any of `crs0` and `crs1` are `fm_crs` or `inla.CRS`
-#' objects, extract and compare only the `sf::crs` or `sp::CRS` aspects. Default: `FALSE`
+#' @param crs0,crs1 Two `sf::crs`, `sp::CRS`, `fm_crs` or `inla.CRS` objects to
+#'   be compared.
+#' @param crsonly logical. If `TRUE` and any of `crs0` and `crs1` are `fm_crs`
+#'   or `inla.CRS` objects, extract and compare only the `sf::crs` or `sp::CRS`
+#'   aspects. Default: `FALSE`
 #' @export
 #' @returns logical, indicating if the two crs objects are identical in the
-#' specified sense (see the `crsonly` argument)
+#'   specified sense (see the `crsonly` argument)
 #' @seealso [fm_crs()], [fm_CRS()], [fm_crs_is_null()]
 #' @examples
 #'
@@ -2289,7 +2471,11 @@ fm_transform_sf <- function(x, crs, ..., passthrough) {
     coord <- sf::st_coordinates(x)
     M <- if ("M" %in% colnames(coord)) coord[, "M"] else NULL
     coord <- coord[, intersect(colnames(coord), c("X", "Y", "Z")), drop = FALSE]
-    coord <- fm_transform(coord, crs = crs1, crs0 = crs0, passthrough = passthrough)
+    coord <- fm_transform(coord,
+      crs = crs1,
+      crs0 = crs0,
+      passthrough = passthrough
+    )
     if (is.null(M)) {
       the_dim <- c("X", "XY", "XYZ")[ncol(coord)]
     } else {
@@ -2313,7 +2499,11 @@ fm_transform_sf <- function(x, crs, ..., passthrough) {
 #' @export
 #' @rdname fm_transform
 fm_transform.sf <- function(x, crs, ..., passthrough = FALSE) {
-  geo <- fm_transform(sf::st_geometry(x), crs = crs, ..., passthrough = passthrough)
+  geo <- fm_transform(sf::st_geometry(x),
+    crs = crs,
+    ...,
+    passthrough = passthrough
+  )
   sf::st_geometry(x) <- geo
   x
 }
@@ -2354,7 +2544,12 @@ fm_transform.fm_mesh_2d <- function(x,
                                     ...,
                                     passthrough = FALSE,
                                     crs0 = fm_crs(x)) {
-  x$loc <- fm_transform(x$loc, crs = crs, ..., crs0 = crs0, passthrough = passthrough)
+  x$loc <- fm_transform(x$loc,
+    crs = crs,
+    ...,
+    crs0 = crs0,
+    passthrough = passthrough
+  )
   x$crs <- fm_crs(crs)
   x$manifold <- fm_detect_manifold(x)
   x
@@ -2367,8 +2562,18 @@ fm_transform.fm_lattice_2d <- function(x,
                                        ...,
                                        passthrough = FALSE,
                                        crs0 = fm_crs(x)) {
-  x$segm <- fm_transform(x$segm, crs = crs, crs0 = crs0, ..., passthrough = passthrough)
-  x$loc <- fm_transform(x$loc, crs = crs, crs0 = crs0, ..., passthrough = passthrough)
+  x$segm <- fm_transform(x$segm,
+    crs = crs,
+    crs0 = crs0,
+    ...,
+    passthrough = passthrough
+  )
+  x$loc <- fm_transform(x$loc,
+    crs = crs,
+    crs0 = crs0,
+    ...,
+    passthrough = passthrough
+  )
   x$crs <- fm_crs(crs)
 
   x
@@ -2552,11 +2757,19 @@ fm_spTransform <- function(x, ...) {
   UseMethod("fm_spTransform")
 }
 
-#' @describeIn fmesher-deprecated The default method handles low level transformation of raw
-#' coordinates.
+#' @describeIn fmesher-deprecated The default method handles low level
+#'   transformation of raw coordinates.
 #' @export
-fm_spTransform.default <- function(x, crs0 = NULL, crs1 = NULL, passthrough = FALSE, ...) {
-  fm_transform(x, crs = crs1, crs0 = crs0, passthrough = passthrough)
+fm_spTransform.default <- function(x,
+                                   crs0 = NULL,
+                                   crs1 = NULL,
+                                   passthrough = FALSE,
+                                   ...) {
+  fm_transform(x,
+    crs = crs1,
+    crs0 = crs0,
+    passthrough = passthrough
+  )
 }
 
 #' @export
@@ -2576,13 +2789,19 @@ fm_spTransform.SpatialPointsDataFrame <- function(x,
 
 #' @export
 #' @rdname fmesher-deprecated
-fm_spTransform.inla.mesh.lattice <- function(x, CRSobj, passthrough = FALSE, ...) {
+fm_spTransform.inla.mesh.lattice <- function(x,
+                                             CRSobj,
+                                             passthrough = FALSE,
+                                             ...) {
   fm_transform(x, crs = CRSobj, passthrough = passthrough)
 }
 
 #' @export
 #' @rdname fmesher-deprecated
-fm_spTransform.inla.mesh.segment <- function(x, CRSobj, passthrough = FALSE, ...) {
+fm_spTransform.inla.mesh.segment <- function(x,
+                                             CRSobj,
+                                             passthrough = FALSE,
+                                             ...) {
   fm_transform(x, crs = CRSobj, passthrough = passthrough)
 }
 
@@ -2611,8 +2830,8 @@ fm_has_PROJ6 <- function() {
   TRUE
 }
 
-#' @describeIn fmesher-deprecated `fm_not_for_PROJ6` is called to warn about using old PROJ4
-#' features even though PROJ6 is available
+#' @describeIn fmesher-deprecated `fm_not_for_PROJ6` is called to warn about
+#'   using old PROJ4 features even though PROJ6 is available
 
 fm_not_for_PROJ6 <- function(fun = NULL) {
   lifecycle::deprecate_stop("0.0.1",
@@ -2621,9 +2840,8 @@ fm_not_for_PROJ6 <- function(fun = NULL) {
   )
 }
 
-#' @describeIn fmesher-deprecated `fm_not_for_PROJ4` is called to give an error when
-#' calling methods that are only available for PROJ6
-
+#' @describeIn fmesher-deprecated `fm_not_for_PROJ4` is called to give an error
+#'   when calling methods that are only available for PROJ6
 fm_not_for_PROJ4 <- function(fun = NULL) {
   lifecycle::deprecate_stop("0.0.1",
     "fm_not_for_PROJ4()",
@@ -2670,15 +2888,15 @@ fm_as_sp_crs <- function(x, ...) {
 
 
 
-#' @describeIn fmesher-deprecated Wrapper for `CRS(projargs)` (PROJ4) and `CRS(wkt)` for
-#' `sp::Spatial` objects.
+#' @describeIn fmesher-deprecated Wrapper for `CRS(projargs)` (PROJ4) and
+#'   `CRS(wkt)` for `sp::Spatial` objects.
 #' @param x A `sp::Spatial` object
 #' @return A `CRS` object, or NULL if no valid CRS identified
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
 #' @details This function is a convenience method to workaround PROJ4/PROJ6
-#' differences, and the lack of a crs extraction method for Spatial objects.
-#' For newer code, use [fm_crs()] instead, that returns `crs` objects,
-#' and use [fm_CRS()] to extract/construct/convert to old style `sp::CRS` objects.
+#'   differences, and the lack of a crs extraction method for Spatial objects.
+#'   For newer code, use [fm_crs()] instead, that returns `crs` objects, and use
+#'   [fm_CRS()] to extract/construct/convert to old style `sp::CRS` objects.
 #' @examples
 #' if (fm_safe_sp()) {
 #'   s <- sp::SpatialPoints(matrix(1:6, 3, 2), proj4string = fm_CRS("sphere"))

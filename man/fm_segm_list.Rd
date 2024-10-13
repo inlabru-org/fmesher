@@ -28,8 +28,8 @@ A \code{fm_segm_list} object
 }
 \section{Methods (by generic)}{
 \itemize{
-\item \code{c(fm_segm_list)}: The \code{...} arguments should be coercible to \code{fm_segm_list}
-objects.
+\item \code{c(fm_segm_list)}: The \code{...} arguments should be coercible to
+\code{fm_segm_list} objects.
 
 \item \code{[}: Extract sub-list
 

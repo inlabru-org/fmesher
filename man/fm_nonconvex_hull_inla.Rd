@@ -29,7 +29,8 @@ fm_nonconvex_hull_inla_basic(
 
 \item{convex}{numeric vector; How much to extend}
 
-\item{concave}{numeric vector; The minimum allowed reentrant curvature. Default equal to \code{convex}}
+\item{concave}{numeric vector; The minimum allowed reentrant curvature.
+Default equal to \code{convex}}
 
 \item{resolution}{The internal computation resolution.  A warning will be
 issued when this needs to be increased for higher accuracy, with the

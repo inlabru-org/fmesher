@@ -15,7 +15,8 @@
 #' \item{manifold}{character; manifold type summary. Regular subset of Rd "Rd",
 #' if all function spaces have type "R",
 #' torus connected "Td" if all function spaces have type "S", and otherwise "Md"
-#' In all cases, `d` is the sum of the manifold dimensions of the function spaces.}
+#' In all cases, `d` is the sum of the manifold dimensions of the function
+#' spaces.}
 #' }
 #' @family object creation and conversion
 #' @examples
@@ -34,7 +35,10 @@ fm_tensor <- function(x, ...) {
   if (is.null(nn)) {
     nn <- as.character(seq_along(x))
   } else if (any(nn == "")) {
-    stop("all or no elements of the list of function space objects need to be named.")
+    stop(
+      "All or no elements of the list of",
+      " function space objects need to be named."
+    )
   }
   m <- structure(
     list(
@@ -47,7 +51,12 @@ fm_tensor <- function(x, ...) {
   d <- vapply(m$fun_spaces, fm_manifold_dim, integer(1))
   type <- unique(type)
   if ((length(type) == 1L) && (type %in% c("R", "S", "T", "M"))) {
-    m$manifold <- paste0(list(R = "R", S = "T", T = "T", M = "M")[[type]], sum(d))
+    m$manifold <- paste0(list(
+      R = "R",
+      S = "T",
+      T = "T",
+      M = "M"
+    )[[type]], sum(d))
   } else {
     m$manifold <- paste0("M", sum(d))
   }

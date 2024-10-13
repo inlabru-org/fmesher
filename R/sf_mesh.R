@@ -189,7 +189,9 @@ fm_as_mesh_2d.sfg <-
 #' @export
 fm_as_mesh_2d.sfc_MULTIPOLYGON <- function(x, ...) {
   if (length(x) > 1) {
-    warning("More than one MULTIPOLYGON detected, but conversion method only uses one.",
+    warning(
+      "More than one MULTIPOLYGON detected,",
+      " but conversion method only uses one.",
       immediate. = TRUE
     )
   }

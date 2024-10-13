@@ -35,9 +35,11 @@ name/value pairs.
 
 For \code{fm_list_as_CRS}, a \code{CRS} or \code{inla.CRS} object.
 
-For \code{fm_list_as_CRSargs()}, a CRS proj4 string for name=value pair list
+For \code{fm_list_as_CRSargs()}, a CRS proj4 string for name=value pair
+list
 
-For \code{fm_CRSargs_as_list()}, a list of name=value pairs from CRS proj4 string
+For \code{fm_CRSargs_as_list()}, a list of name=value pairs from CRS
+proj4string
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}

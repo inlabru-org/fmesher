@@ -57,11 +57,11 @@ fm_int(domain, samplers = NULL, ...)
 \item{domain}{Functional space specification; single domain or a named list
 of domains}
 
-\item{samplers}{For single domain \code{fm_int} methods, an object specifying one or more
-subsets of the domain, and optional weighting in a \code{weight} variable.
-For \code{fm_int.list}, a list of sampling definitions, where data frame elements
-may contain information for multiple domains, in which case each row represent
-a separate tensor product integration subspace.}
+\item{samplers}{For single domain \code{fm_int} methods, an object specifying one
+or more subsets of the domain, and optional weighting in a \code{weight}
+variable. For \code{fm_int.list}, a list of sampling definitions, where data
+frame elements may contain information for multiple domains, in which case
+each row represent a separate tensor product integration subspace.}
 
 \item{\dots}{Additional arguments passed on to other methods}
 
@@ -83,8 +83,8 @@ Points per knot segment: \code{nsub1}
 the sampler type.}
 }
 \value{
-A \code{data.frame}, \code{tibble}, \code{sf}, or \code{SpatialPointsDataFrame} of 1D and
-2D integration points, including a \code{weight} column and \code{.block} column.
+A \code{data.frame}, \code{tibble}, \code{sf}, or \code{SpatialPointsDataFrame} of 1D
+and 2D integration points, including a \code{weight} column and \code{.block} column.
 }
 \description{
 Construct integration points on tensor product spaces

@@ -87,8 +87,8 @@ future version.
 \details{
 This function is a convenience method to workaround PROJ4/PROJ6
 differences, and the lack of a crs extraction method for Spatial objects.
-For newer code, use \code{\link[=fm_crs]{fm_crs()}} instead, that returns \code{crs} objects,
-and use \link[=fm_crs]{fm_CRS()} to extract/construct/convert to old style \code{sp::CRS} objects.
+For newer code, use \code{\link[=fm_crs]{fm_crs()}} instead, that returns \code{crs} objects, and use
+\link[=fm_crs]{fm_CRS()} to extract/construct/convert to old style \code{sp::CRS} objects.
 }
 \section{Functions}{
 \itemize{
@@ -96,16 +96,16 @@ and use \link[=fm_crs]{fm_CRS()} to extract/construct/convert to old style \code
 Handle transformation of various inla objects according to coordinate
 reference systems of \code{sp::CRS} or \code{INLA::inla.CRS} class.
 
-\item \code{fm_spTransform(default)}: The default method handles low level transformation of raw
-coordinates.
+\item \code{fm_spTransform(default)}: The default method handles low level
+transformation of raw coordinates.
 
 \item \code{fm_has_PROJ6()}: Detect whether PROJ6 is available
 
-\item \code{fm_not_for_PROJ6()}: \code{fm_not_for_PROJ6} is called to warn about using old PROJ4
-features even though PROJ6 is available
+\item \code{fm_not_for_PROJ6()}: \code{fm_not_for_PROJ6} is called to warn about
+using old PROJ4 features even though PROJ6 is available
 
-\item \code{fm_not_for_PROJ4()}: \code{fm_not_for_PROJ4} is called to give an error when
-calling methods that are only available for PROJ6
+\item \code{fm_not_for_PROJ4()}: \code{fm_not_for_PROJ4} is called to give an error
+when calling methods that are only available for PROJ6
 
 \item \code{fm_fallback_PROJ6()}: Called to warn about falling back
 to using old PROJ4 methods when a PROJ6 method hasn't been implemented
@@ -116,8 +116,8 @@ is required but not available
 \item \code{fm_as_sp_crs()}: Wrapper for \code{\link[=fm_CRS]{fm_CRS()}}
 \code{sp::Spatial} and \code{sp::CRS} objects.
 
-\item \code{fm_sp_get_crs()}: Wrapper for \code{CRS(projargs)} (PROJ4) and \code{CRS(wkt)} for
-\code{sp::Spatial} objects.
+\item \code{fm_sp_get_crs()}: Wrapper for \code{CRS(projargs)} (PROJ4) and
+\code{CRS(wkt)} for \code{sp::Spatial} objects.
 
 \item \code{fm_as_inla_mesh_segment()}: Conversion to inla.mesh.segment
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} in favour of \code{\link[=fm_as_segm]{fm_as_segm()}}.
@@ -125,8 +125,8 @@ is required but not available
 \item \code{fm_as_inla_mesh()}: Conversion to inla.mesh.
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} in favour of \code{\link[=fm_as_mesh_2d]{fm_as_mesh_2d()}}.
 
-\item \code{fm_sp2segment()}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} in favour of
-\code{\link[=fm_as_segm]{fm_as_segm()}}
+\item \code{fm_sp2segment()}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} in favour
+of \code{\link[=fm_as_segm]{fm_as_segm()}}
 
 }}
 \examples{

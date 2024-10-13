@@ -106,8 +106,8 @@ barycentric coordinates within the triangle each input location falls in.
 \item \code{fm_evaluator(default)}: The default method calls \code{fm_basis} and creates
 a basic \code{fm_evaluator} object
 
-\item \code{fm_evaluator(fm_mesh_2d)}: The \code{...} arguments are passed on to \code{fm_evaluator_lattice()}
-if no \code{loc} or \code{lattice} is provided.
+\item \code{fm_evaluator(fm_mesh_2d)}: The \code{...} arguments are passed on to
+\code{fm_evaluator_lattice()} if no \code{loc} or \code{lattice} is provided.
 
 \item \code{fm_evaluator_lattice()}: Creates an \code{\link[=fm_lattice_2d]{fm_lattice_2d()}} object, by default covering the input mesh.
 
