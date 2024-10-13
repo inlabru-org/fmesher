@@ -174,8 +174,8 @@ input, <code>proj</code> also contains a matrix <code>bary</code> and vector <co
 barycentric coordinates within the triangle each input location falls in.</p></li>
 <li><p><code>fm_evaluator(default)</code>: The default method calls <code>fm_basis</code> and creates
 a basic <code>fm_evaluator</code> object</p></li>
-<li><p><code>fm_evaluator(fm_mesh_2d)</code>: The <code>...</code> arguments are passed on to <code>fm_evaluator_lattice()</code>
-if no <code>loc</code> or <code>lattice</code> is provided.</p></li>
+<li><p><code>fm_evaluator(fm_mesh_2d)</code>: The <code>...</code> arguments are passed on to
+<code>fm_evaluator_lattice()</code> if no <code>loc</code> or <code>lattice</code> is provided.</p></li>
 <li><p><code>fm_evaluator_lattice()</code>: Creates an <code><a href="fm_lattice_2d.html">fm_lattice_2d()</a></code> object, by default covering the input mesh.</p></li>
 <li><p><code>fm_evaluator(inla.mesh)</code>: Converts legacy <code>inla.mesh</code> to <code>fm_mesh_2d</code> and calls
 the <code>fm_evaluator</code> method again.</p></li>

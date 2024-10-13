@@ -54,8 +54,8 @@
 <span>  y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, length.out <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">z</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  <span class="va">z</span>,</span>
 <span>  nlevels <span class="op">=</span> <span class="fl">10</span>,</span>
-<span>  levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/pretty.html" class="external-link">pretty</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="va">z</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, <span class="va">nlevels</span><span class="op">)</span>,</span>
-<span>  groups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">levels</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  levels <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  groups <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  positive <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  eps <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  eps_rel <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -63,6 +63,41 @@
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
+    <div class="section level2">
+    <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
+
+
+<dl><dt id="arg-x-y-z">x, y, z<a class="anchor" aria-label="anchor" href="#arg-x-y-z"></a></dt>
+<dd><p>The <code>x</code> and <code>y</code> coordinates of the grid, and the <code>z</code> values</p></dd>
+
+
+<dt id="arg-nlevels">nlevels<a class="anchor" aria-label="anchor" href="#arg-nlevels"></a></dt>
+<dd><p>Number of contour levels</p></dd>
+
+
+<dt id="arg-levels">levels<a class="anchor" aria-label="anchor" href="#arg-levels"></a></dt>
+<dd><p>The contour levels. If <code>NULL</code>,
+<code>pretty(range(z, na.rm = TRUE), nlevels)</code> is used.</p></dd>
+
+
+<dt id="arg-groups">groups<a class="anchor" aria-label="anchor" href="#arg-groups"></a></dt>
+<dd><p>The group values for each contour level.
+If <code>NULL</code>, <code>seq_len(length(levels))</code> is used.</p></dd>
+
+
+<dt id="arg-positive">positive<a class="anchor" aria-label="anchor" href="#arg-positive"></a></dt>
+<dd><p>Logical; if <code>TRUE</code>, the contour lines are made to be
+CCW around positive excursions</p></dd>
+
+
+<dt id="arg-eps-eps-rel">eps, eps_rel<a class="anchor" aria-label="anchor" href="#arg-eps-eps-rel"></a></dt>
+<dd><p>Polygonal curve simplification tolerances</p></dd>
+
+
+<dt id="arg-crs">crs<a class="anchor" aria-label="anchor" href="#arg-crs"></a></dt>
+<dd><p>A coordinate reference system</p></dd>
+
+</dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>An <code>fm_segm</code> object</p>

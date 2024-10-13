@@ -138,8 +138,8 @@ which uses the name of the calling function.</p></dd>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>This function is a convenience method to workaround PROJ4/PROJ6
 differences, and the lack of a crs extraction method for Spatial objects.
-For newer code, use <code><a href="fm_crs.html">fm_crs()</a></code> instead, that returns <code>crs</code> objects,
-and use <a href="fm_crs.html">fm_CRS()</a> to extract/construct/convert to old style <code><a href="https://edzer.github.io/sp/reference/CRS-class.html" class="external-link">sp::CRS</a></code> objects.</p>
+For newer code, use <code><a href="fm_crs.html">fm_crs()</a></code> instead, that returns <code>crs</code> objects, and use
+<a href="fm_crs.html">fm_CRS()</a> to extract/construct/convert to old style <code><a href="https://edzer.github.io/sp/reference/CRS-class.html" class="external-link">sp::CRS</a></code> objects.</p>
     </div>
     <div class="section level2">
     <h2 id="functions">Functions<a class="anchor" aria-label="anchor" href="#functions"></a></h2>
@@ -147,27 +147,27 @@ and use <a href="fm_crs.html">fm_CRS()</a> to extract/construct/convert to old s
 <ul><li><p><code>fm_spTransform()</code>: <a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> (See <code><a href="fm_transform.html">fm_transform()</a></code> instead)
 Handle transformation of various inla objects according to coordinate
 reference systems of <code><a href="https://edzer.github.io/sp/reference/CRS-class.html" class="external-link">sp::CRS</a></code> or <code>INLA::inla.CRS</code> class.</p></li>
-<li><p><code>fm_spTransform(default)</code>: The default method handles low level transformation of raw
-coordinates.</p></li>
+<li><p><code>fm_spTransform(default)</code>: The default method handles low level
+transformation of raw coordinates.</p></li>
 <li><p><code>fm_has_PROJ6()</code>: Detect whether PROJ6 is available</p></li>
-<li><p><code>fm_not_for_PROJ6()</code>: <code>fm_not_for_PROJ6</code> is called to warn about using old PROJ4
-features even though PROJ6 is available</p></li>
-<li><p><code>fm_not_for_PROJ4()</code>: <code>fm_not_for_PROJ4</code> is called to give an error when
-calling methods that are only available for PROJ6</p></li>
+<li><p><code>fm_not_for_PROJ6()</code>: <code>fm_not_for_PROJ6</code> is called to warn about
+using old PROJ4 features even though PROJ6 is available</p></li>
+<li><p><code>fm_not_for_PROJ4()</code>: <code>fm_not_for_PROJ4</code> is called to give an error
+when calling methods that are only available for PROJ6</p></li>
 <li><p><code>fm_fallback_PROJ6()</code>: Called to warn about falling back
 to using old PROJ4 methods when a PROJ6 method hasn't been implemented</p></li>
 <li><p><code>fm_requires_PROJ6()</code>: Called to give an error when PROJ6
 is required but not available</p></li>
 <li><p><code>fm_as_sp_crs()</code>: Wrapper for <code><a href="fm_CRS_sp.html">fm_CRS()</a></code>
 <code><a href="https://edzer.github.io/sp/reference/Spatial-class.html" class="external-link">sp::Spatial</a></code> and <code><a href="https://edzer.github.io/sp/reference/CRS-class.html" class="external-link">sp::CRS</a></code> objects.</p></li>
-<li><p><code>fm_sp_get_crs()</code>: Wrapper for <code>CRS(projargs)</code> (PROJ4) and <code>CRS(wkt)</code> for
-<code><a href="https://edzer.github.io/sp/reference/Spatial-class.html" class="external-link">sp::Spatial</a></code> objects.</p></li>
+<li><p><code>fm_sp_get_crs()</code>: Wrapper for <code>CRS(projargs)</code> (PROJ4) and
+<code>CRS(wkt)</code> for <code><a href="https://edzer.github.io/sp/reference/Spatial-class.html" class="external-link">sp::Spatial</a></code> objects.</p></li>
 <li><p><code>fm_as_inla_mesh_segment()</code>: Conversion to inla.mesh.segment
 <a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> in favour of <code><a href="fm_as_segm.html">fm_as_segm()</a></code>.</p></li>
 <li><p><code>fm_as_inla_mesh()</code>: Conversion to inla.mesh.
 <a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> in favour of <code><a href="fm_as_mesh_2d.html">fm_as_mesh_2d()</a></code>.</p></li>
-<li><p><code>fm_sp2segment()</code>: <a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> in favour of
-<code><a href="fm_as_segm.html">fm_as_segm()</a></code></p></li>
+<li><p><code>fm_sp2segment()</code>: <a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> in favour
+of <code><a href="fm_as_segm.html">fm_as_segm()</a></code></p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

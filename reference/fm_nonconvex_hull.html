@@ -103,7 +103,8 @@ by closing (dilation + erosion) by <code>concave</code>.</p>
 
 
 <dt id="arg-concave">concave<a class="anchor" aria-label="anchor" href="#arg-concave"></a></dt>
-<dd><p>numeric vector; The minimum allowed reentrant curvature. Default equal to <code>convex</code></p></dd>
+<dd><p>numeric vector; The minimum allowed reentrant curvature.
+Default equal to <code>convex</code></p></dd>
 
 
 <dt id="arg-preservetopology">preserveTopology<a class="anchor" aria-label="anchor" href="#arg-preservetopology"></a></dt>
@@ -111,8 +112,8 @@ by closing (dilation + erosion) by <code>concave</code>.</p>
 
 
 <dt id="arg-dtolerance">dTolerance<a class="anchor" aria-label="anchor" href="#arg-dtolerance"></a></dt>
-<dd><p>If not zero, controls the <code>dTolerance</code> argument to <code><a href="https://r-spatial.github.io/sf/reference/geos_unary.html" class="external-link">sf::st_simplify()</a></code>.
-The default is <code>pmin(convex, concave) / 40</code>, chosen to
+<dd><p>If not zero, controls the <code>dTolerance</code> argument to
+<code><a href="https://r-spatial.github.io/sf/reference/geos_unary.html" class="external-link">sf::st_simplify()</a></code>. The default is <code>pmin(convex, concave) / 40</code>, chosen to
 give approximately 4 or more subsegments per circular quadrant.</p></dd>
 
 
@@ -130,10 +131,11 @@ polygon object (regardless of the <code>x</code> class).</p>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Morphological dilation by <code>convex</code>, followed by closing by
 <code>concave</code>, with minimum concave curvature radius <code>concave</code>.  If
-the dilated set has no gaps of width between $$2 \textrm{convex} (\sqrt{1+2
-\textrm{concave}/\textrm{convex}} - 1)$$
-and \(2\textrm{concave}\), then the minimum convex curvature radius is
-<code>convex</code>.</p>
+the dilated set has no gaps of width between $$2 \textrm{convex}
+(\sqrt{1+2\textrm{concave}/\textrm{convex}} - 1)
+$$
+and \(2\textrm{concave}\), then the minimum convex curvature
+radius is <code>convex</code>.</p>
 <p>The implementation is based on the identity $$\textrm{dilation}(a) \&amp;
 \textrm{closing}(b) = \textrm{dilation}(a+b) \&amp; \textrm{erosion}(b)$$ where all operations
 are with respect to disks with the specified radii.</p>

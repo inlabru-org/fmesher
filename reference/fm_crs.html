@@ -139,14 +139,14 @@ predefined <code>wkt</code> string from “names(fm_wkt_predef())`.</p></dd>
 
 
 <dt id="arg-oblique">oblique<a class="anchor" aria-label="anchor" href="#arg-oblique"></a></dt>
-<dd><p>Numeric vector of length at most 4 of rotation angles (in degrees)
-for an oblique projection, all values defaulting to zero. The values
-indicate (longitude, latitude, orientation, orbit), as explained in the
-Details section below. When
-<code>oblique</code> is non-NULL, used to override the obliqueness parameters of a
-<code>fm_crs</code> object. When <code>NA</code>, remove obliqueness from the object, resulting
-in a return class of <code><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">sf::st_crs()</a></code>. When <code>NULL</code>, pass though any oblique
-information in the object, returning an <code>fm_crs()</code> object if needed.</p></dd>
+<dd><p>Numeric vector of length at most 4 of rotation angles (in
+degrees) for an oblique projection, all values defaulting to zero. The
+values indicate (longitude, latitude, orientation, orbit), as explained in
+the Details section below. When <code>oblique</code> is non-NULL, used to override the
+obliqueness parameters of a <code>fm_crs</code> object. When <code>NA</code>, remove obliqueness
+from the object, resulting in a return class of <code><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">sf::st_crs()</a></code>. When
+<code>NULL</code>, pass though any oblique information in the object, returning an
+<code>fm_crs()</code> object if needed.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -206,9 +206,10 @@ projection is only correct for perfect spheres.</p>
 <ul><li><p><code>st_crs(fm_crs)</code>: <code>st_crs(x, ...)</code> is equivalent to
 <code>fm_crs(x, ... oblique = NA)</code>
 when <code>x</code> is a <code>fm_crs</code> object.</p></li>
-<li><p><code>$</code>: For a <code>fm_crs</code> object <code>x</code>, <code>x$name</code> calls the accessor method for the
-<code>crs</code> object inside it. If <code>name</code> is "crs", the internal crs object itself is returned.
-If <code>name</code> is "oblique", the internal oblique angle parameter vector is returned.</p></li>
+<li><p><code>$</code>: For a <code>fm_crs</code> object <code>x</code>, <code>x$name</code> calls the accessor
+method for the <code>crs</code> object inside it. If <code>name</code> is "crs", the internal crs
+object itself is returned. If <code>name</code> is "oblique", the internal oblique
+angle parameter vector is returned.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="functions">Functions<a class="anchor" aria-label="anchor" href="#functions"></a></h2>
