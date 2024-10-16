@@ -5,14 +5,17 @@
 * Add `full` argument to `fm_basis()` to toggle between matrix and full `fm_basis`
   object output (version `0.1.7.9002`)
 * Add print methods for `fm_basis` and `fm_evaluator` objects (version `0.1.7.9003`)
-* Remove `sp` objects from `fmexample` data. Use `fmexample_sp()` to access them if needed
-  (version `0.1.7.9004`)
 * Add `fm_manifold_get()` generic method to extract manifold information from general
   objects, so that external objects can implement their own manifold information
   storage (version `0.1.7.9005`)
+* Add some length unit handling to `fm_crs_bounds()` (version `0.1.7.9008`)
+
+## sp deprecation updates
+
+* Remove `sp` objects from `fmexample` data. Use `fmexample_sp()` to access them if needed
+  (version `0.1.7.9004`)
 * Move `sp` dependency to Suggests, and remove `inlabru` dependency (version `0.1.7.9006`)
 * Further `sp` use protection (version `0.1.7.9007`)
-* Add some length unit handling to `fm_crs_bounds()` (version `0.1.7.9008`)
 
 # fmesher 0.1.7
 
