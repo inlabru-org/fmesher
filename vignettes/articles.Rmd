@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 ## Package examples
 
 These potentially longer running examples/tutorials are available on
-(https://inlabru-org.github.io/fmeher/)
+(https://inlabru-org.github.io/fmesher/)
 
 ```{r, echo=FALSE,results="asis"}
 files <- list.files("articles", "\\.Rmd$")
