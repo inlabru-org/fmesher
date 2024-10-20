@@ -76,12 +76,14 @@ may therefore change in the future.</p>
 <span><span class="fu">geom_fm</span><span class="op">(</span></span>
 <span>  mapping <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  data <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  mapping_int <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  mapping_bnd <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  defs_int <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  defs_bnd <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span>,</span>
-<span>  crs <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  mappings <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  defs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  crs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  mapping_int <span class="op">=</span> <span class="fu">deprecated</span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  mapping_bnd <span class="op">=</span> <span class="fu">deprecated</span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  defs_int <span class="op">=</span> <span class="fu">deprecated</span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  defs_bnd <span class="op">=</span> <span class="fu">deprecated</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'fm_segm'</span></span>
@@ -116,24 +118,24 @@ may therefore change in the future.</p>
 <dd><p>Arguments passed on to the geom method.</p></dd>
 
 
-<dt id="arg-mapping-int">mapping_int<a class="anchor" aria-label="anchor" href="#arg-mapping-int"></a></dt>
-<dd><p><code>aes</code> for interior constraint edges.</p></dd>
+<dt id="arg-mappings">mappings<a class="anchor" aria-label="anchor" href="#arg-mappings"></a></dt>
+<dd><p>optional list of <code>aes</code> mappings for the non-triangle parts of
+the mesh, named "int" for interior constraint edges, "bnd" for boundary
+edges, and "loc" for the vertices.</p></dd>
 
 
-<dt id="arg-mapping-bnd">mapping_bnd<a class="anchor" aria-label="anchor" href="#arg-mapping-bnd"></a></dt>
-<dd><p><code>aes</code> for boundary edges.</p></dd>
-
-
-<dt id="arg-defs-int">defs_int<a class="anchor" aria-label="anchor" href="#arg-defs-int"></a></dt>
-<dd><p>additional settings for interior constraint edges.</p></dd>
-
-
-<dt id="arg-defs-bnd">defs_bnd<a class="anchor" aria-label="anchor" href="#arg-defs-bnd"></a></dt>
-<dd><p>additional settings for boundary edges.</p></dd>
+<dt id="arg-defs">defs<a class="anchor" aria-label="anchor" href="#arg-defs"></a></dt>
+<dd><p>optional list of non-<code>aes</code> settings for the non-triangle parts of
+the mesh, named "int" for interior constraint edges, "bnd" for boundary
+edges, and "loc" for the vertices.</p></dd>
 
 
 <dt id="arg-crs">crs<a class="anchor" aria-label="anchor" href="#arg-crs"></a></dt>
 <dd><p>Optional crs to transform the object to before plotting.</p></dd>
+
+
+<dt id="arg-mapping-int-mapping-bnd-defs-int-defs-bnd">mapping_int, mapping_bnd, defs_int, defs_bnd<a class="anchor" aria-label="anchor" href="#arg-mapping-int-mapping-bnd-defs-int-defs-bnd"></a></dt>
+<dd><p><a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> arguments; see <code>mappings</code> and <code>defs</code>.</p></dd>
 
 
 <dt id="arg-xlim">xlim<a class="anchor" aria-label="anchor" href="#arg-xlim"></a></dt>
@@ -167,7 +169,15 @@ the resulting weighted sum.</p></dd>
     <h2 id="methods-by-class-">Methods (by class)<a class="anchor" aria-label="anchor" href="#methods-by-class-"></a></h2>
 
 <ul><li><p><code>geom_fm(fm_mesh_2d)</code>: Converts an <code><a href="fm_mesh_2d.html">fm_mesh_2d()</a></code> object to <code>sf</code> with <code><a href="fm_as_sfc.html">fm_as_sfc()</a></code> and uses
-<code>geom_sf</code> to visualize the triangles and edges.</p></li>
+<code>geom_sf</code> to visualize the triangles and edges.</p>
+<p>The mesh vertices are only plotted if <code>mappings$loc</code> or <code>defs$loc</code>
+is non-<code>NULL</code>, e.g. <code>defs = list(loc = list())</code>. Default argument settings:</p>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>... <span class="ot">=</span> linewidth <span class="ot">=</span> <span class="fl">0.25</span>, color <span class="ot">=</span> <span class="st">"grey"</span> <span class="co"># default for triangle mapping</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>defs <span class="ot">=</span> <span class="fu">list</span>(</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>  <span class="at">int =</span> <span class="fu">list</span>(<span class="at">linewidth =</span> <span class="fl">0.5</span>, <span class="at">color =</span> <span class="st">"blue"</span>),</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>  <span class="at">bnd =</span> <span class="fu">list</span>(<span class="at">linewidth =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">"black"</span>),</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>  <span class="at">loc =</span> <span class="fu">list</span>(<span class="at">size =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">"red"</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>)</span></code></pre><p></p></div></li>
 <li><p><code>geom_fm(fm_segm)</code>: Converts an <code><a href="fm_segm.html">fm_segm()</a></code> object to <code>sf</code> with <code><a href="fm_as_sfc.html">fm_as_sfc()</a></code> and uses
 <code>geom_sf</code> to visualize it.</p></li>
 <li><p><code>geom_fm(fm_mesh_1d)</code>: Evaluates and plots the basis functions defined by an <code><a href="fm_mesh_1d.html">fm_mesh_1d()</a></code> object.</p></li>
@@ -188,8 +198,11 @@ the resulting weighted sum.</p></dd>
 <span class="r-in"><span>  <span class="fu">geom_fm</span><span class="op">(</span>data <span class="op">=</span> <span class="va">m</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="geom_fm-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span></span>
-<span class="r-in"><span>  <span class="fu">geom_fm</span><span class="op">(</span>data <span class="op">=</span> <span class="va">m</span>, crs <span class="op">=</span> <span class="fu"><a href="fm_crs.html">fm_crs</a></span><span class="op">(</span><span class="st">"epsg:27700"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu">geom_fm</span><span class="op">(</span>data <span class="op">=</span> <span class="va">m</span>, defs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>loc <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="geom_fm-3.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span></span>
+<span class="r-in"><span>  <span class="fu">geom_fm</span><span class="op">(</span>data <span class="op">=</span> <span class="va">m</span>, crs <span class="op">=</span> <span class="fu"><a href="fm_crs.html">fm_crs</a></span><span class="op">(</span><span class="st">"epsg:27700"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="geom_fm-4.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="co"># Compute a mesh vertex based function on a different grid</span></span></span>
 <span class="r-in"><span><span class="va">px</span> <span class="op">&lt;-</span> <span class="fu"><a href="fm_pixels.html">fm_pixels</a></span><span class="op">(</span><span class="fu"><a href="fm_transform.html">fm_transform</a></span><span class="op">(</span><span class="va">m</span>, <span class="fu"><a href="fm_crs.html">fm_crs</a></span><span class="op">(</span><span class="st">"mollweide_globe"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
@@ -206,12 +219,12 @@ the resulting weighted sum.</p></dd>
 <span class="r-in"><span>    data <span class="op">=</span> <span class="va">m</span>, alpha <span class="op">=</span> <span class="fl">0.2</span>, linewidth <span class="op">=</span> <span class="fl">0.05</span>,</span></span>
 <span class="r-in"><span>    crs <span class="op">=</span> <span class="fu"><a href="fm_crs.html">fm_crs</a></span><span class="op">(</span><span class="st">"mollweide_globe"</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
-<span class="r-plt img"><img src="geom_fm-4.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="geom_fm-5.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="fm_mesh_1d.html">fm_mesh_1d</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">6</span>, <span class="fl">10</span><span class="op">)</span>, boundary <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"n"</span>, <span class="st">"d"</span><span class="op">)</span>, degree <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="fu">geom_fm</span><span class="op">(</span>data <span class="op">=</span> <span class="va">m</span>, weights <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">2</span>, <span class="fl">4</span>, <span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="geom_fm-5.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="geom_fm-6.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="fm_mesh_1d.html">fm_mesh_1d</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">7</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  boundary <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dirichlet"</span>, <span class="st">"neumann"</span><span class="op">)</span>,</span></span>
@@ -219,7 +232,7 @@ the resulting weighted sum.</p></dd>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="fu">geom_fm</span><span class="op">(</span>data <span class="op">=</span> <span class="va">m</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="geom_fm-6.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="geom_fm-7.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
