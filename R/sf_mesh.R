@@ -15,6 +15,13 @@
 #' @examples
 #' fm_as_sfc(fmexample$mesh)
 #' fm_as_sfc(fmexample$mesh, multi = TRUE)
+#' fm_as_sfc(fmexample$mesh, format = "loc")
+#'
+#' # Boundary edge conversion currently only supports (multi)linestring output,
+#' # and does not convert to polygons.
+#' suppressWarnings(
+#'   fm_as_sfc(fmexample$mesh, format = "boundary")
+#' )
 #'
 fm_as_sfc <- function(x, ...) {
   UseMethod("fm_as_sfc")
@@ -22,62 +29,70 @@ fm_as_sfc <- function(x, ...) {
 
 #' @describeIn fm_as_sfc `r lifecycle::badge("experimental")`
 #'
-#' @param multi logical; if `TRUE`, attempt to a `sfc_MULTIPOLYGON`, otherwise
-#' a set of `sfc_POLYGON`. Default `FALSE`
-#' @returns * `fm_as_sfc`: An `sfc_MULTIPOLYGON` or `sfc_POLYGON` object
+#' @param format One of "mesh", "boundary", "interior", or "loc". Default
+#'   "mesh".
+#' @param multi logical; if `TRUE`, attempt to a
+#'   `sfc_MULTIPOLYGON/LINESTRING/POINT`, otherwise a set of
+#'   `sfc_POLYGON/LINESTRING/POINT`. Default `FALSE`
+#' @returns * `fm_as_sfc`: An `sfc_MULTIPOLYGON/LINESTRING/POINT` or
+#' `sfc_POLYGON/LINESTRING/POINT` object
 #' @exportS3Method fm_as_sfc inla.mesh
 #' @export
-fm_as_sfc.inla.mesh <- function(x, ..., multi = FALSE) {
-  fm_as_sfc.fm_mesh_2d(fm_as_mesh_2d(x), ..., multi = multi)
-}
-
-#' @describeIn fm_as_sfc `r lifecycle::badge("experimental")`
-#'
-#' @param multi logical; if `TRUE`, attempt to a `sfc_MULTIPOLYGON`, otherwise
-#' a set of `sfc_POLYGON`. Default `FALSE`
-#' @returns * `fm_as_sfc`: An `sfc_MULTIPOLYGON` or `sfc_POLYGON` object
-#' @exportS3Method fm_as_sfc inla.mesh
-#' @export
-fm_as_sfc.fm_mesh_2d <- function(x, ..., multi = FALSE) {
+fm_as_sfc.fm_mesh_2d <- function(x,
+                                 ...,
+                                 format = NULL,
+                                 multi = FALSE) {
   stopifnot(inherits(x, "fm_mesh_2d"))
-  if (multi) {
-    geom <- sf::st_sfc(
-      sf::st_multipolygon(
+  format <- match.arg(format, c("mesh", "boundary", "interior", "loc"))
+  if (identical(format, "mesh")) {
+    if (multi) {
+      geom <- sf::st_sfc(
+        sf::st_multipolygon(
+          lapply(
+            seq_len(nrow(x$graph$tv)),
+            function(k) {
+              list(x$loc[x$graph$tv[k, c(1, 2, 3, 1)], , drop = FALSE])
+            }
+          ),
+          dim = "XYZ"
+        ),
+        check_ring_dir = TRUE,
+        crs = fm_crs(x$crs)
+      )
+    } else {
+      geom <- sf::st_sfc(
         lapply(
           seq_len(nrow(x$graph$tv)),
           function(k) {
-            list(x$loc[x$graph$tv[k, c(1, 2, 3, 1)], , drop = FALSE])
+            sf::st_polygon(
+              list(x$loc[x$graph$tv[k, c(1, 2, 3, 1)], , drop = FALSE]),
+              dim = "XYZ"
+            )
           }
         ),
-        dim = "XYZ"
-      ),
-      check_ring_dir = TRUE
-    )
-  } else {
-    geom <- sf::st_sfc(
-      lapply(
-        seq_len(nrow(x$graph$tv)),
-        function(k) {
-          sf::st_polygon(
-            list(x$loc[x$graph$tv[k, c(1, 2, 3, 1)], , drop = FALSE]),
-            dim = "XYZ"
-          )
-        }
+        crs = fm_crs(x$crs)
       )
+    }
+  } else if (format %in% c("boundary", "interior")) {
+    geom <- fm_as_sfc(
+      fm_segm(x, boundary = identical(format, "boundary")),
+      multi = multi
     )
+  } else if (identical(format, "loc")) {
+    geom <- sf::st_sfc(
+      sf::st_multipoint(x$loc, dim = "XYZ"),
+      crs = fm_crs(x$crs)
+    )
+    if (!multi) {
+      geom <- sf::st_geometry(sf::st_cast(sf::st_sf(geometry = geom), "POINT"))
+    }
+  } else {
+    stop("Unsupported mesh conversion format '", format, "'.")
   }
-  sf::st_crs(geom) <- fm_crs(x$crs)
   geom
 }
 
 
-#' @describeIn fm_as_sfc `r lifecycle::badge("experimental")`
-#'
-#' @exportS3Method fm_as_sfc inla.mesh.segment
-#' @export
-fm_as_sfc.inla.mesh.segment <- function(x, ..., multi = FALSE) {
-  fm_as_sfc.fm_segm(fm_as_segm(x), ..., multi = multi)
-}
 #' @describeIn fm_as_sfc `r lifecycle::badge("experimental")`
 #'
 #' @export
@@ -133,7 +148,8 @@ fm_as_sfc.fm_segm <- function(x, ..., multi = FALSE) {
           }
         ),
         dim = "XYZ"
-      )
+      ),
+      crs = fm_crs(x$crs)
     )
   } else {
     geom <- sf::st_sfc(
@@ -151,11 +167,10 @@ fm_as_sfc.fm_segm <- function(x, ..., multi = FALSE) {
             dim = "XYZ"
           )
         }
-      )
+      ),
+      crs = fm_crs(x$crs)
     )
   }
-
-  sf::st_crs(geom) <- fm_crs(x$crs)
   geom
 }
 
@@ -172,6 +187,25 @@ fm_as_sfc.sf <- function(x, ...) {
   sf::st_geometry(x)
 }
 
+
+
+#' @describeIn fm_as_sfc `r lifecycle::badge("deprecated")` since
+#'   `inla.mesh` is deprecated. See `fm_as_sfc.fm_mesh_2d` instead.
+#'
+#' @exportS3Method fm_as_sfc inla.mesh
+#' @export
+fm_as_sfc.inla.mesh <- function(x, ...) {
+  fm_as_sfc.fm_mesh_2d(fm_as_mesh_2d(x), ...)
+}
+
+#' @describeIn fm_as_sfc `r lifecycle::badge("deprecated")` since
+#'   `inla.mesh.segment` is deprecated. See `fm_as_sfc.fm_segm` instead.
+#'
+#' @exportS3Method fm_as_sfc inla.mesh.segment
+#' @export
+fm_as_sfc.inla.mesh.segment <- function(x, ..., multi = FALSE) {
+  fm_as_sfc.fm_segm(fm_as_segm(x), ..., multi = multi)
+}
 
 
 

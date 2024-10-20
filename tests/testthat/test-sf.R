@@ -345,3 +345,55 @@ test_that("Conversion from sfc_GEOMETRY to fm_segm", {
 
   expect_identical(seg_sf, seg_1)
 })
+
+test_that("Conversion from fm_mesh_2d to sfc", {
+  mesh_m_sfc <- fm_as_sfc(fmexample$mesh, format = "mesh")
+  expect_warning(
+    mesh_b_sfc <- fm_as_sfc(fmexample$mesh, format = "boundary"),
+    "fm_as_sfc currently only supports"
+  )
+  mesh_i_sfc <- fm_as_sfc(fmexample$mesh, format = "interior")
+  mesh_l_sfc <- fm_as_sfc(fmexample$mesh, format = "loc")
+
+  expect_equal(
+    as.character(sf::st_geometry_type(mesh_m_sfc)),
+    rep("POLYGON", nrow(fmexample$mesh$graph$tv))
+  )
+  expect_equal(
+    as.character(sf::st_geometry_type(mesh_b_sfc)),
+    "LINESTRING"
+  )
+  expect_equal(
+    as.character(sf::st_geometry_type(mesh_i_sfc)),
+    "LINESTRING"
+  )
+  expect_equal(
+    as.character(sf::st_geometry_type(mesh_l_sfc)),
+    rep("POINT", nrow(fmexample$mesh$loc))
+  )
+
+  mesh_m_sfc <- fm_as_sfc(fmexample$mesh, multi = TRUE, format = "mesh")
+  expect_warning(
+    mesh_b_sfc <- fm_as_sfc(fmexample$mesh, multi = TRUE, format = "boundary"),
+    "fm_as_sfc currently only supports"
+  )
+  mesh_i_sfc <- fm_as_sfc(fmexample$mesh, multi = TRUE, format = "interior")
+  mesh_l_sfc <- fm_as_sfc(fmexample$mesh, multi = TRUE, format = "loc")
+
+  expect_equal(
+    as.character(sf::st_geometry_type(mesh_m_sfc)),
+    "MULTIPOLYGON"
+  )
+  expect_equal(
+    as.character(sf::st_geometry_type(mesh_b_sfc)),
+    "MULTILINESTRING"
+  )
+  expect_equal(
+    as.character(sf::st_geometry_type(mesh_i_sfc)),
+    "MULTILINESTRING"
+  )
+  expect_equal(
+    as.character(sf::st_geometry_type(mesh_l_sfc)),
+    "MULTIPOINT"
+  )
+})

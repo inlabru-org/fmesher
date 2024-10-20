@@ -9,6 +9,8 @@
   objects, so that external objects can implement their own manifold information
   storage (version `0.1.7.9005`)
 * Add some length unit handling to `fm_crs_bounds()` (version `0.1.7.9008`)
+* Add `format="loc"` argument to `fm_as_sfc.fm_mesh_2d()` for converting mesh
+  node coordinates to `sfc_POINT` format (version `0.1.7.9009`)
 
 ## sp deprecation updates
 
