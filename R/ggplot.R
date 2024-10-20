@@ -129,9 +129,9 @@ geom_fm.fm_mesh_2d <- function(mapping = NULL,
       "geom_fm(defs = list(int = defs_int))"
     )
     if (!is.null(defs$int)) {
-      stop("Both defs_int and mappings$int are provided.")
+      stop("Both defs_int and defs$int are provided.")
     }
-    mappings$int <- defs_int
+    defs$int <- defs_int
   }
   if (lifecycle::is_present(defs_bnd)) {
     lifecycle::deprecate_warn(
@@ -140,9 +140,9 @@ geom_fm.fm_mesh_2d <- function(mapping = NULL,
       "geom_fm(defs = list(bnd = defs_bnd))"
     )
     if (!is.null(defs$bnd)) {
-      stop("Both defs_bnd and mappings$bnd are provided.")
+      stop("Both defs_bnd and defs$bnd are provided.")
     }
-    mappings$bnd <- defs_bnd
+    defs$bnd <- defs_bnd
   }
 
   if (!is.null(crs)) {
