@@ -20,7 +20,7 @@
 #' # Boundary edge conversion currently only supports (multi)linestring output,
 #' # and does not convert to polygons.
 #' suppressWarnings(
-#'   fm_as_sfc(fmexample$mesh, format = "boundary")
+#'   fm_as_sfc(fmexample$mesh, format = "bnd")
 #' )
 #'
 fm_as_sfc <- function(x, ...) {
@@ -29,7 +29,7 @@ fm_as_sfc <- function(x, ...) {
 
 #' @describeIn fm_as_sfc `r lifecycle::badge("experimental")`
 #'
-#' @param format One of "mesh", "boundary", "interior", or "loc". Default
+#' @param format One of "mesh", "int", "bnd", or "loc". Default
 #'   "mesh".
 #' @param multi logical; if `TRUE`, attempt to a
 #'   `sfc_MULTIPOLYGON/LINESTRING/POINT`, otherwise a set of
@@ -43,7 +43,7 @@ fm_as_sfc.fm_mesh_2d <- function(x,
                                  format = NULL,
                                  multi = FALSE) {
   stopifnot(inherits(x, "fm_mesh_2d"))
-  format <- match.arg(format, c("mesh", "boundary", "interior", "loc"))
+  format <- match.arg(format, c("mesh", "int", "bnd", "loc"))
   if (identical(format, "mesh")) {
     if (multi) {
       geom <- sf::st_sfc(
@@ -73,9 +73,9 @@ fm_as_sfc.fm_mesh_2d <- function(x,
         crs = fm_crs(x$crs)
       )
     }
-  } else if (format %in% c("boundary", "interior")) {
+  } else if (format %in% c("int", "bnd")) {
     geom <- fm_as_sfc(
-      fm_segm(x, boundary = identical(format, "boundary")),
+      fm_segm(x, boundary = identical(format, "bnd")),
       multi = multi
     )
   } else if (identical(format, "loc")) {

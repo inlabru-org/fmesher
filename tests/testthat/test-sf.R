@@ -349,10 +349,10 @@ test_that("Conversion from sfc_GEOMETRY to fm_segm", {
 test_that("Conversion from fm_mesh_2d to sfc", {
   mesh_m_sfc <- fm_as_sfc(fmexample$mesh, format = "mesh")
   expect_warning(
-    mesh_b_sfc <- fm_as_sfc(fmexample$mesh, format = "boundary"),
+    mesh_b_sfc <- fm_as_sfc(fmexample$mesh, format = "bnd"),
     "fm_as_sfc currently only supports"
   )
-  mesh_i_sfc <- fm_as_sfc(fmexample$mesh, format = "interior")
+  mesh_i_sfc <- fm_as_sfc(fmexample$mesh, format = "int")
   mesh_l_sfc <- fm_as_sfc(fmexample$mesh, format = "loc")
 
   expect_equal(
@@ -374,10 +374,10 @@ test_that("Conversion from fm_mesh_2d to sfc", {
 
   mesh_m_sfc <- fm_as_sfc(fmexample$mesh, multi = TRUE, format = "mesh")
   expect_warning(
-    mesh_b_sfc <- fm_as_sfc(fmexample$mesh, multi = TRUE, format = "boundary"),
+    mesh_b_sfc <- fm_as_sfc(fmexample$mesh, multi = TRUE, format = "bnd"),
     "fm_as_sfc currently only supports"
   )
-  mesh_i_sfc <- fm_as_sfc(fmexample$mesh, multi = TRUE, format = "interior")
+  mesh_i_sfc <- fm_as_sfc(fmexample$mesh, multi = TRUE, format = "int")
   mesh_l_sfc <- fm_as_sfc(fmexample$mesh, multi = TRUE, format = "loc")
 
   expect_equal(
