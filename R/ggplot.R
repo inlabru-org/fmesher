@@ -32,11 +32,26 @@ geom_fm <- function(mapping = NULL, data = NULL, ...) {
 #' Converts an [fm_mesh_2d()] object to `sf` with [fm_as_sfc()] and uses
 #' `geom_sf` to visualize the triangles and edges.
 #'
+#' The mesh vertices are only plotted if `mappings$loc` or `defs$loc`
+#' is non-`NULL`, e.g. `defs = list(loc = list())`. Default argument settings:
+#' ```
+#' ... = linewidth = 0.25, color = "grey" # default for triangle mapping
+#' defs = list(
+#'   int = list(linewidth = 0.5, color = "blue"),
+#'   bnd = list(linewidth = 1, color = "black"),
+#'   loc = list(size = 1, color = "red")
+#' )
+#' ```
+#'
 #' @export
-#' @param mapping_int `aes` for interior constraint edges.
-#' @param mapping_bnd `aes` for boundary edges.
-#' @param defs_int additional settings for interior constraint edges.
-#' @param defs_bnd additional settings for boundary edges.
+#' @param mappings optional list of `aes` mappings for the non-triangle parts of
+#'   the mesh, named "int" for interior constraint edges, "bnd" for boundary
+#'   edges, and "loc" for the vertices.
+#' @param defs optional list of non-`aes` settings for the non-triangle parts of
+#'   the mesh, named "int" for interior constraint edges, "bnd" for boundary
+#'   edges, and "loc" for the vertices.
+#' @param mapping_int,mapping_bnd,defs_int,defs_bnd
+#' `r lifecycle::badge("deprecated")` arguments; see `mappings` and `defs`.
 #' @param crs Optional crs to transform the object to before plotting.
 #' @importFrom utils modifyList
 #' @examplesIf require("ggplot2", quietly = TRUE)
@@ -48,6 +63,8 @@ geom_fm <- function(mapping = NULL, data = NULL, ...) {
 #' )
 #' ggplot() +
 #'   geom_fm(data = m)
+#' ggplot() +
+#'   geom_fm(data = m, defs = list(loc = list()))
 #' ggplot() +
 #'   geom_fm(data = m, crs = fm_crs("epsg:27700"))
 #' \donttest{
@@ -69,12 +86,65 @@ geom_fm <- function(mapping = NULL, data = NULL, ...) {
 #' }
 geom_fm.fm_mesh_2d <- function(mapping = NULL,
                                data = NULL,
-                               mapping_int = NULL,
-                               mapping_bnd = NULL,
-                               defs_int = NULL,
-                               defs_bnd = NULL,
                                ...,
-                               crs = NULL) {
+                               mappings = NULL,
+                               defs = NULL,
+                               crs = NULL,
+                               mapping_int = deprecated(),
+                               mapping_bnd = deprecated(),
+                               defs_int = deprecated(),
+                               defs_bnd = deprecated()) {
+  if (is.null(mappings)) {
+    mappings <- list()
+  }
+  if (is.null(defs)) {
+    mappings <- list()
+  }
+  if (lifecycle::is_present(mapping_int)) {
+    lifecycle::deprecate_warn(
+      "0.1.7.9009",
+      "geom_fm(mapping_int)",
+      "geom_fm(mappings = list(int = mapping_int))"
+    )
+    if (!is.null(mappings$int)) {
+      stop("Both mapping_int and mappings$int are provided.")
+    }
+    mappings$int <- mapping_int
+  }
+  if (lifecycle::is_present(mapping_bnd)) {
+    lifecycle::deprecate_warn(
+      "0.1.7.9009",
+      "geom_fm(mapping_bnd)",
+      "geom_fm(mappings = list(bnd = mapping_bnd))"
+    )
+    if (!is.null(mappings$bnd)) {
+      stop("Both mapping_bnd and mappings$bnd are provided.")
+    }
+    mappings$bnd <- mapping_bnd
+  }
+  if (lifecycle::is_present(defs_int)) {
+    lifecycle::deprecate_warn(
+      "0.1.7.9009",
+      "geom_fm(defs_int)",
+      "geom_fm(defs = list(int = defs_int))"
+    )
+    if (!is.null(defs$int)) {
+      stop("Both defs_int and mappings$int are provided.")
+    }
+    mappings$int <- defs_int
+  }
+  if (lifecycle::is_present(defs_bnd)) {
+    lifecycle::deprecate_warn(
+      "0.1.7.9009",
+      "geom_fm(defs_bnd)",
+      "geom_fm(defs = list(bnd = defs_bnd))"
+    )
+    if (!is.null(defs$bnd)) {
+      stop("Both defs_bnd and mappings$bnd are provided.")
+    }
+    mappings$bnd <- defs_bnd
+  }
+
   if (!is.null(crs)) {
     data <- fm_transform(data, crs = crs)
   }
@@ -86,17 +156,20 @@ geom_fm.fm_mesh_2d <- function(mapping = NULL,
   mesh_sf <- fm_as_sfc(data)
   int <- fm_segm(data, boundary = FALSE)
   bnd <- fm_segm(data, boundary = TRUE)
+  loc <- fm_as_sfc(data, format = "loc")
 
   maps <-
     list(
       mesh = mapping,
-      int = mapping_int,
-      bnd = mapping_bnd
+      int = mappings$int,
+      bnd = mappings$bnd,
+      loc = mappings$loc
     )
   maps_def <- list(
     mesh = ggplot2::aes(),
     int = ggplot2::aes(),
-    bnd = ggplot2::aes()
+    bnd = ggplot2::aes(),
+    loc = ggplot2::aes()
   )
   maps <- lapply(
     names(maps_def),
@@ -113,15 +186,17 @@ geom_fm.fm_mesh_2d <- function(mapping = NULL,
   defs <-
     list(
       mesh = list(...),
-      int = defs_int,
-      bnd = defs_bnd
+      int = defs$int,
+      bnd = defs$bnd,
+      loc = defs$loc
     )
   defs_def <- list(
     mesh = list(linewidth = 0.25, color = "grey"),
     int = list(linewidth = 0.5, color = "blue"),
-    bnd = list(linewidth = 1, color = "black")
+    bnd = list(linewidth = 1, color = "black"),
+    loc = list(size = 1, color = "red")
   )
-  defs <- lapply(
+  def <- lapply(
     names(defs_def),
     function(x) {
       if (is.null(defs[[x]])) {
@@ -131,19 +206,29 @@ geom_fm.fm_mesh_2d <- function(mapping = NULL,
       }
     }
   )
-  names(defs) <- names(defs_def)
+  names(def) <- names(defs_def)
 
-  c(
-    do.call(ggplot2::geom_sf, c(
-      list(mapping = maps$mesh, data = mesh_sf), defs$mesh
-    )),
-    do.call(geom_fm, c(
-      list(mapping = maps$int, data = int), defs$int
-    )),
-    do.call(geom_fm, c(
-      list(mapping = maps$bnd, data = bnd), defs$bnd
-    ))
-  )
+  geoms <-
+    c(
+      do.call(ggplot2::geom_sf, c(
+        list(mapping = maps$mesh, data = mesh_sf), def$mesh
+      )),
+      do.call(geom_fm, c(
+        list(mapping = maps$int, data = int), def$int
+      )),
+      do.call(geom_fm, c(
+        list(mapping = maps$bnd, data = bnd), def$bnd
+      ))
+    )
+  if (!is.null(defs$loc) || !is.null(mappings$loc)) {
+    geoms <- c(
+      geoms,
+      do.call(ggplot2::geom_sf, c(
+        list(mapping = maps$loc, data = loc), def$loc
+      ))
+    )
+  }
+  geoms
 }
 
 

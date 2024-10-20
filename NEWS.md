@@ -11,6 +11,9 @@
 * Add some length unit handling to `fm_crs_bounds()` (version `0.1.7.9008`)
 * Add `format="loc"` argument to `fm_as_sfc.fm_mesh_2d()` for converting mesh
   node coordinates to `sfc_POINT` format (version `0.1.7.9009`)
+* Add `loc` plotting option to `geom_fm.fm_mesh_2d` and modify the `ggplot`
+  mapping interface for interior and boundary segments in the same method
+  (version `0.1.7.9009`)
 
 ## sp deprecation updates
 

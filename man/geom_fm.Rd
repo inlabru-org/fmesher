@@ -12,12 +12,14 @@ geom_fm(mapping = NULL, data = NULL, ...)
 \method{geom_fm}{fm_mesh_2d}(
   mapping = NULL,
   data = NULL,
-  mapping_int = NULL,
-  mapping_bnd = NULL,
-  defs_int = NULL,
-  defs_bnd = NULL,
   ...,
-  crs = NULL
+  mappings = NULL,
+  defs = NULL,
+  crs = NULL,
+  mapping_int = deprecated(),
+  mapping_bnd = deprecated(),
+  defs_int = deprecated(),
+  defs_bnd = deprecated()
 )
 
 \method{geom_fm}{fm_segm}(mapping = NULL, data = NULL, ..., crs = NULL)
@@ -40,15 +42,17 @@ geom_fm(mapping = NULL, data = NULL, ...)
 
 \item{...}{Arguments passed on to the geom method.}
 
-\item{mapping_int}{\code{aes} for interior constraint edges.}
+\item{mappings}{optional list of \code{aes} mappings for the non-triangle parts of
+the mesh, named "int" for interior constraint edges, "bnd" for boundary
+edges, and "loc" for the vertices.}
 
-\item{mapping_bnd}{\code{aes} for boundary edges.}
-
-\item{defs_int}{additional settings for interior constraint edges.}
-
-\item{defs_bnd}{additional settings for boundary edges.}
+\item{defs}{optional list of non-\code{aes} settings for the non-triangle parts of
+the mesh, named "int" for interior constraint edges, "bnd" for boundary
+edges, and "loc" for the vertices.}
 
 \item{crs}{Optional crs to transform the object to before plotting.}
+
+\item{mapping_int, mapping_bnd, defs_int, defs_bnd}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} arguments; see \code{mappings} and \code{defs}.}
 
 \item{xlim}{numeric 2-vector; specifies the interval for which to compute
 functions. Default is \code{data$interval}}
@@ -83,6 +87,17 @@ may therefore change in the future.
 \item \code{geom_fm(fm_mesh_2d)}: Converts an \code{\link[=fm_mesh_2d]{fm_mesh_2d()}} object to \code{sf} with \code{\link[=fm_as_sfc]{fm_as_sfc()}} and uses
 \code{geom_sf} to visualize the triangles and edges.
 
+The mesh vertices are only plotted if \code{mappings$loc} or \code{defs$loc}
+is non-\code{NULL}, e.g. \code{defs = list(loc = list())}. Default argument settings:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{... = linewidth = 0.25, color = "grey" # default for triangle mapping
+defs = list(
+  int = list(linewidth = 0.5, color = "blue"),
+  bnd = list(linewidth = 1, color = "black"),
+  loc = list(size = 1, color = "red")
+)
+}\if{html}{\out{</div>}}
+
 \item \code{geom_fm(fm_segm)}: Converts an \code{\link[=fm_segm]{fm_segm()}} object to \code{sf} with \code{\link[=fm_as_sfc]{fm_as_sfc()}} and uses
 \code{geom_sf} to visualize it.
 
@@ -103,6 +118,8 @@ m <- fm_mesh_2d(
 )
 ggplot() +
   geom_fm(data = m)
+ggplot() +
+  geom_fm(data = m, defs = list(loc = list()))
 ggplot() +
   geom_fm(data = m, crs = fm_crs("epsg:27700"))
 \donttest{
