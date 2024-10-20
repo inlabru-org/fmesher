@@ -1,3 +1,9 @@
 qinv_check.pdf
 qinv_check_march.pdf
 test_results
+Untitled*.R
+mesh_smoothing.R
+row_kron_test_timings.R
+sparse_inverse_tests.R
+spde_theory.*
+spde_theory_files/
