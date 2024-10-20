@@ -29,7 +29,7 @@ fm_as_sfc(x, ...)
 
 \item{...}{Arguments passed on to other methods}
 
-\item{format}{One of "mesh", "boundary", "interior", or "loc". Default
+\item{format}{One of "mesh", "int", "bnd", or "loc". Default
 "mesh".}
 
 \item{multi}{logical; if \code{TRUE}, attempt to a
@@ -66,7 +66,7 @@ fm_as_sfc(fmexample$mesh, format = "loc")
 # Boundary edge conversion currently only supports (multi)linestring output,
 # and does not convert to polygons.
 suppressWarnings(
-  fm_as_sfc(fmexample$mesh, format = "boundary")
+  fm_as_sfc(fmexample$mesh, format = "bnd")
 )
 
 }
