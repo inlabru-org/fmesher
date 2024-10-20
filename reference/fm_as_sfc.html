@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.7.9008</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.7.9009</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,14 +51,8 @@
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fm_as_sfc</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># S3 method for class 'inla.mesh'</span></span>
-<span><span class="fu">fm_as_sfc</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, multi <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span></span>
 <span><span class="co"># S3 method for class 'fm_mesh_2d'</span></span>
-<span><span class="fu">fm_as_sfc</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, multi <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S3 method for class 'inla.mesh.segment'</span></span>
-<span><span class="fu">fm_as_sfc</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, multi <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu">fm_as_sfc</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, format <span class="op">=</span> <span class="cn">NULL</span>, multi <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'fm_segm'</span></span>
 <span><span class="fu">fm_as_sfc</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, multi <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
@@ -67,7 +61,13 @@
 <span><span class="fu">fm_as_sfc</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'sf'</span></span>
-<span><span class="fu">fm_as_sfc</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">fm_as_sfc</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'inla.mesh'</span></span>
+<span><span class="fu">fm_as_sfc</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'inla.mesh.segment'</span></span>
+<span><span class="fu">fm_as_sfc</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, multi <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -82,24 +82,32 @@
 <dd><p>Arguments passed on to other methods</p></dd>
 
 
+<dt id="arg-format">format<a class="anchor" aria-label="anchor" href="#arg-format"></a></dt>
+<dd><p>One of "mesh", "boundary", "interior", or "loc". Default
+"mesh".</p></dd>
+
+
 <dt id="arg-multi">multi<a class="anchor" aria-label="anchor" href="#arg-multi"></a></dt>
-<dd><p>logical; if <code>TRUE</code>, attempt to a <code>sfc_MULTIPOLYGON</code>, otherwise
-a set of <code>sfc_POLYGON</code>. Default <code>FALSE</code></p></dd>
+<dd><p>logical; if <code>TRUE</code>, attempt to a
+<code>sfc_MULTIPOLYGON/LINESTRING/POINT</code>, otherwise a set of
+<code>sfc_POLYGON/LINESTRING/POINT</code>. Default <code>FALSE</code></p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
 
-<ul><li><p><code>fm_as_sfc</code>: An <code>sfc_MULTIPOLYGON</code> or <code>sfc_POLYGON</code> object</p></li>
-</ul><ul><li><p><code>fm_as_sfc</code>: An <code>sfc_MULTIPOLYGON</code> or <code>sfc_POLYGON</code> object</p></li>
+<ul><li><p><code>fm_as_sfc</code>: An <code>sfc_MULTIPOLYGON/LINESTRING/POINT</code> or
+<code>sfc_POLYGON/LINESTRING/POINT</code> object</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="methods-by-class-">Methods (by class)<a class="anchor" aria-label="anchor" href="#methods-by-class-"></a></h2>
 
-<ul><li><p><code>fm_as_sfc(inla.mesh)</code>: <a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p></li>
-<li><p><code>fm_as_sfc(fm_mesh_2d)</code>: <a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p></li>
-<li><p><code>fm_as_sfc(inla.mesh.segment)</code>: <a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p></li>
+<ul><li><p><code>fm_as_sfc(fm_mesh_2d)</code>: <a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p></li>
 <li><p><code>fm_as_sfc(fm_segm)</code>: <a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p></li>
+<li><p><code>fm_as_sfc(inla.mesh)</code>: <a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> since
+<code>inla.mesh</code> is deprecated. See <code>fm_as_sfc.fm_mesh_2d</code> instead.</p></li>
+<li><p><code>fm_as_sfc(inla.mesh.segment)</code>: <a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> since
+<code>inla.mesh.segment</code> is deprecated. See <code>fm_as_sfc.fm_segm</code> instead.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -141,6 +149,31 @@ a set of <code>sfc_POLYGON</code>. Default <code>FALSE</code></p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> z_range:       zmin: 0 zmax: 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> CRS:           NA</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> MULTIPOLYGON Z (((1.603919 0.1315077 0, 1.47703...</span>
+<span class="r-in"><span><span class="fu">fm_as_sfc</span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span>, format <span class="op">=</span> <span class="st">"loc"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Geometry set for 279 features </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: POINT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Dimension:     XYZ</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: -5.331027 ymin: -3.998161 xmax: 4.061656 ymax: 5.415609</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> CRS:           NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> First 5 geometries:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> POINT Z (-4.991262 1.478543 0)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> POINT Z (-5.287832 0.6496857 0)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> POINT Z (-5.331027 -0.2295705 0)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> POINT Z (-5.08812 -1.151174 0)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> POINT Z (-4.710559 -1.781097 0)</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Boundary edge conversion currently only supports (multi)linestring output,</span></span></span>
+<span class="r-in"><span><span class="co"># and does not convert to polygons.</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu">fm_as_sfc</span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span>, format <span class="op">=</span> <span class="st">"boundary"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Geometry set for 1 feature </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: LINESTRING</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Dimension:     XYZ</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: -5.331027 ymin: -3.998161 xmax: 4.061656 ymax: 5.415609</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> z_range:       zmin: 0 zmax: 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> CRS:           NA</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> LINESTRING Z (-4.991262 1.478543 0, -5.287832 0...</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

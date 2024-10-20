@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.7.9008</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.7.9009</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,12 +47,16 @@
 <ul><li>Update documentation and vector coordinate inputs to <code><a href="../reference/fm_lattice_2d.html">fm_lattice_2d()</a></code> to clarify input interpretation and ensure correct boundary orientation (version <code>0.1.7.9001</code>)</li>
 <li>Add <code>full</code> argument to <code><a href="../reference/fm_basis.html">fm_basis()</a></code> to toggle between matrix and full <code>fm_basis</code> object output (version <code>0.1.7.9002</code>)</li>
 <li>Add print methods for <code>fm_basis</code> and <code>fm_evaluator</code> objects (version <code>0.1.7.9003</code>)</li>
-<li>Remove <code>sp</code> objects from <code>fmexample</code> data. Use <code><a href="../reference/fmexample_sp.html">fmexample_sp()</a></code> to access them if needed (version <code>0.1.7.9004</code>)</li>
 <li>Add <code><a href="../reference/fm_manifold.html">fm_manifold_get()</a></code> generic method to extract manifold information from general objects, so that external objects can implement their own manifold information storage (version <code>0.1.7.9005</code>)</li>
+<li>Add some length unit handling to <code><a href="../reference/fm_crs_wkt.html">fm_crs_bounds()</a></code> (version <code>0.1.7.9008</code>)</li>
+<li>Add <code>format="loc"</code> argument to <code><a href="../reference/fm_as_sfc.html">fm_as_sfc.fm_mesh_2d()</a></code> for converting mesh node coordinates to <code>sfc_POINT</code> format (version <code>0.1.7.9009</code>)</li>
+</ul><div class="section level3">
+<h3 id="sp-deprecation-updates-development-version">sp deprecation updates<a class="anchor" aria-label="anchor" href="#sp-deprecation-updates-development-version"></a></h3>
+<ul><li>Remove <code>sp</code> objects from <code>fmexample</code> data. Use <code><a href="../reference/fmexample_sp.html">fmexample_sp()</a></code> to access them if needed (version <code>0.1.7.9004</code>)</li>
 <li>Move <code>sp</code> dependency to Suggests, and remove <code>inlabru</code> dependency (version <code>0.1.7.9006</code>)</li>
 <li>Further <code>sp</code> use protection (version <code>0.1.7.9007</code>)</li>
-<li>Add some length unit handling to <code><a href="../reference/fm_crs_wkt.html">fm_crs_bounds()</a></code> (version <code>0.1.7.9008</code>)</li>
 </ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.7" id="fmesher-017">fmesher 0.1.7<a class="anchor" aria-label="anchor" href="#fmesher-017"></a></h2><p class="text-muted">CRAN release: 2024-07-01</p>
 <ul><li>Fix regression bug in <code><a href="../reference/fm_manifold.html">fm_manifold()</a></code> that made it ignore all but the first given type options. See <a href="https://github.com/inlabru-org/fmesher/issues/16" class="external-link">#16</a> (version `0.1.6.9001)</li>
