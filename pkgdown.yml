@@ -7,7 +7,7 @@ articles:
   articles/devel_flow: devel_flow.html
   fmesher_library: fmesher_library.html
   inla_conversion: inla_conversion.html
-last_built: 2024-10-20T22:12Z
+last_built: 2024-10-20T22:16Z
 urls:
   reference: https://inlabru-org.github.io/fmesher/reference
   article: https://inlabru-org.github.io/fmesher/articles
