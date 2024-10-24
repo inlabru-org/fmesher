@@ -18,7 +18,7 @@ A list of start_MGG(s), edges, end_MGG(s)
 Create an \code{graph_interval} object from known start, end and visiting edges.
 }
 \examples{
-if (require("ggplot2") & require("MetricGraph")) {
+if (requireNamespace("MetricGraph") && requireNamespace("lwgeom")) {
   g <- MetricGraph::metric_graph$new() # use metric graph example
   m <- sf_lines_to_path(
     g,

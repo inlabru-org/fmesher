@@ -643,7 +643,7 @@ path_MGG <- function(graph,
 #' @export
 #' @family object creation and conversion
 #' @examples
-#' if (require("ggplot2") & require("MetricGraph")) {
+#' if (requireNamespace("MetricGraph") && requireNamespace("lwgeom")) {
 #'   g <- MetricGraph::metric_graph$new() # use metric graph example
 #'   m <- sf_lines_to_path(
 #'     g,

@@ -211,8 +211,6 @@ test_that("integration two paths", {
   test_sampler <- tibble::tibble(x = list(p1, p2), weight = c(2, 1))
 
   # there is no mesh in the graph yet, test that fm_int checks for the mesh
-  #### does not work ----
-
   expect_error(
     fm_int(graph, samplers = test_sampler),
     "There is no mesh"
@@ -305,9 +303,9 @@ test_that("sf to MGG", {
   line1 <- sf::st_linestring(matrix(c(0, 0, 1, 0.5, 0, 0), nrow = 3))
   line1_g <- sf::st_geometry(line1)
   path_MGG1 <-
-    sf_lines_to_paths(
+    geometric_path_to_path_MGG(
       graph = graph,
-      sf_line = line1_g
+      geometric_path = line1_g
     )
   expect_equal(
     path_MGG1$start,
@@ -321,9 +319,9 @@ test_that("sf to MGG", {
   lines <- sf::st_sfc(list(line1, line2))
   lines <- sf::st_geometry(lines)
   path_MGGs <-
-    sf_lines_to_paths(
+    geometric_path_to_path_MGG(
       graph = graph,
-      sf_line = lines
+      geometric_path = lines
     )
   expect_equal(
     path_MGGs$start,

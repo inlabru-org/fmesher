@@ -42,7 +42,9 @@ Imports:
     Rcpp
 Suggests:
     ggplot2,
+    inlabru,
     knitr,
+    lwgeom,
     MetricGraph,
     testthat (>= 3.0.0),
     terra,
