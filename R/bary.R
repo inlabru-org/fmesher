@@ -4,12 +4,15 @@
 
 #' @title Compute barycentric coordinates
 #'
-#' @description Identify knot intervals or triangles and compute barycentric coordinates
+#' @description Identify knot intervals or triangles and compute barycentric
+#'   coordinates
 #'
-#' @param mesh `fm_mesh_1d` or `fm_mesh_2d` object
+#' @param mesh Any supported mesh object, such as `fm_mesh_1d` or `fm_mesh_2d`
+#'   object
 #' @param loc Points for which to identify the containing interval/triangle, and
-#' corresponding barycentric coordinates. May be a vector (for 1d) or a matrix
-#' of raw coordinates, `sf`, or `sp` point information (for 2d).
+#'   corresponding barycentric coordinates. May be a vector (for 1d) or a matrix
+#'   of raw coordinates, `sf`, or `sp` point information (for 2d). For
+#'   `metric_graph` should be either MGG, MGM or Euclidean coordinates.
 #' @param \dots Arguments forwarded to sub-methods.
 #' @returns A list with elements `t`; either
 #' \itemize{

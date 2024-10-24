@@ -45,6 +45,7 @@ Suggests:
     ggplot2,
     inlabru (>= 2.8.0),
     knitr,
+    MetricGraph,
     testthat (>= 3.0.0),
     terra,
     tidyterra,
@@ -92,6 +93,7 @@ Collate:
     'mesh.R'
     'mesh_1d.R'
     'mesh_2d.R'
+    'metric_graph.R'
     'nonconvex_hull.R'
     'onload.R'
     'plot.R'

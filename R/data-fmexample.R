@@ -33,7 +33,7 @@
 #' @export
 #' @examples
 #' if (fm_safe_sp()) {
-#'     fmexample_sp()
+#'   fmexample_sp()
 #' }
 fmexample_sp <- function() {
   ex <- fmesher::fmexample

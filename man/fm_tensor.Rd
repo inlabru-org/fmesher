@@ -40,6 +40,9 @@ str(fm_fem(m))
 }
 \seealso{
 Other object creation and conversion: 
+\code{\link{Euclidean_to_MGG}()},
+\code{\link{MGG_interval}()},
+\code{\link{MGG_non_normalized}()},
 \code{\link{fm_as_fm}()},
 \code{\link{fm_as_lattice_2d}()},
 \code{\link{fm_as_mesh_1d}()},
@@ -47,10 +50,16 @@ Other object creation and conversion:
 \code{\link{fm_as_segm}()},
 \code{\link{fm_as_sfc}()},
 \code{\link{fm_as_tensor}()},
+\code{\link{fm_bary_MGG}()},
+\code{\link{fm_bary_MGM}()},
 \code{\link{fm_lattice_2d}()},
 \code{\link{fm_mesh_1d}()},
 \code{\link{fm_mesh_2d}()},
 \code{\link{fm_segm}()},
-\code{\link{fm_simplify}()}
+\code{\link{fm_simplify}()},
+\code{\link{geometric_path_to_path_MGG}()},
+\code{\link{graph_to_mesh_coord}()},
+\code{\link{mesh_to_graph_coord}()},
+\code{\link{path_MGG}()}
 }
 \concept{object creation and conversion}
