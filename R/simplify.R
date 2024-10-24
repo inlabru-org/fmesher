@@ -8,13 +8,14 @@
 #' Attempts to simplify a polygonal curve by joining nearly colinear segments.
 #'
 #' Uses a variation of the binary splitting Ramer-Douglas-Peucker algorithm,
-#' with an ellipse of half-width `eps` ellipse instead of a rectangle, motivated by
-#' prediction ellipse for Brownian bridge.
+#' with an ellipse of half-width `eps` ellipse instead of a rectangle, motivated
+#' by prediction ellipse for Brownian bridge.
 #'
 #' @param loc Coordinate matrix.
 #' @param idx Index vector into `loc` specifying a polygonal curve.
 #' @param eps Absolute straightness tolerance. Default `NULL`, no constraint.
-#' @param eps_rel Relative straightness tolerance. Default `NULL`, no constraint.
+#' @param eps_rel Relative straightness tolerance. Default `NULL`, no
+#'   constraint.
 #' @return An index vector into `loc` specifying the simplified polygonal
 #' curve.
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
@@ -58,7 +59,8 @@ fm_simplify_helper <- function(loc, idx, eps = NULL, eps_rel = NULL) {
     ))
     ## Always split if any point is outside the circle
     epsi <- min(c(eps, eps_rel * segm.len / 2, segm.len / 2))
-    dist1 <- abs(vec[, 1] * segm[1] + vec[, 2] * segm[2]) / (segm.len / 2) * epsi
+    dist1 <- abs(vec[, 1] * segm[1] + vec[, 2] * segm[2]) /
+      (segm.len / 2) * epsi
     dist2 <- abs(vec[, 1] * segm.perp[1] + vec[, 2] * segm.perp[2])
     dist <- (dist1^2 + dist2^2)^0.5
 
@@ -87,12 +89,13 @@ fm_simplify_helper <- function(loc, idx, eps = NULL, eps_rel = NULL) {
 #' co-linear segments.
 #'
 #' Uses a variation of the binary splitting Ramer-Douglas-Peucker algorithm,
-#' with an ellipse of half-width `eps` ellipse instead of a rectangle, motivated by
-#' prediction ellipse for Brownian bridge.
+#' with an ellipse of half-width `eps` ellipse instead of a rectangle, motivated
+#' by prediction ellipse for Brownian bridge.
 #'
 #' @param x An [fm_segm()] object.
 #' @param eps Absolute straightness tolerance. Default `NULL`, no constraint.
-#' @param eps_rel Relative straightness tolerance. Default `NULL`, no constraint.
+#' @param eps_rel Relative straightness tolerance. Default `NULL`, no
+#'   constraint.
 #' @param ... Currently unused.
 #' @return The simplified [fm_segm()] object.
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
@@ -101,8 +104,8 @@ fm_simplify_helper <- function(loc, idx, eps = NULL, eps_rel = NULL) {
 #' Uses width epsilon ellipse instead of rectangle,
 #' motivated by prediction ellipse for Brownian bridge.
 #' @references
-#' Ramer, Urs (1972). "An iterative procedure for the polygonal approximation
-#' of plane curves". *Computer Graphics and Image Processing*. **1** (3): 244–256.
+#' Ramer, Urs (1972). "An iterative procedure for the polygonal approximation of
+#' plane curves". *Computer Graphics and Image Processing*. **1** (3): 244–256.
 #' \doi{10.1016/S0146-664X(72)80017-0}
 #'
 #' Douglas, David; Peucker, Thomas (1973). "Algorithms for the reduction of
@@ -156,15 +159,18 @@ fm_simplify <- function(x, eps = NULL, eps_rel = NULL, ...) {
         break
       }
       if (all(x$is.bnd)) {
-        next_seg <- not_handled_seg[which(x$idx[not_handled_seg, 1] == next_vtx)]
+        next_seg <-
+          not_handled_seg[which(x$idx[not_handled_seg, 1] == next_vtx)]
         if (length(next_seg) == 0) {
           break
         }
         next_seg <- next_seg[1]
         next_vtx <- x$idx[next_seg, 2]
       } else {
-        next_seg1 <- not_handled_seg[which(x$idx[not_handled_seg, 1] == next_vtx)]
-        next_seg2 <- not_handled_seg[which(x$idx[not_handled_seg, 2] == next_vtx)]
+        next_seg1 <-
+          not_handled_seg[which(x$idx[not_handled_seg, 1] == next_vtx)]
+        next_seg2 <-
+          not_handled_seg[which(x$idx[not_handled_seg, 2] == next_vtx)]
         if ((length(next_seg1) == 0) && (length(next_seg2) == 0)) {
           break
         }

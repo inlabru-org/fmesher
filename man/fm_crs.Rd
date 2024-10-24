@@ -86,14 +86,14 @@ fm_wkt_predef()
 If \code{character}, a string suitable for \code{sf::st_crs(x)}, or the name of a
 predefined \code{wkt} string from ``names(fm_wkt_predef())`.}
 
-\item{oblique}{Numeric vector of length at most 4 of rotation angles (in degrees)
-for an oblique projection, all values defaulting to zero. The values
-indicate (longitude, latitude, orientation, orbit), as explained in the
-Details section below. When
-\code{oblique} is non-NULL, used to override the obliqueness parameters of a
-\code{fm_crs} object. When \code{NA}, remove obliqueness from the object, resulting
-in a return class of \code{sf::st_crs()}. When \code{NULL}, pass though any oblique
-information in the object, returning an \code{fm_crs()} object if needed.}
+\item{oblique}{Numeric vector of length at most 4 of rotation angles (in
+degrees) for an oblique projection, all values defaulting to zero. The
+values indicate (longitude, latitude, orientation, orbit), as explained in
+the Details section below. When \code{oblique} is non-NULL, used to override the
+obliqueness parameters of a \code{fm_crs} object. When \code{NA}, remove obliqueness
+from the object, resulting in a return class of \code{sf::st_crs()}. When
+\code{NULL}, pass though any oblique information in the object, returning an
+\code{fm_crs()} object if needed.}
 
 \item{\dots}{Additional parameters. Not currently in use.}
 
@@ -155,9 +155,10 @@ projection is only correct for perfect spheres.
 \verb{fm_crs(x, ... oblique = NA)}
 when \code{x} is a \code{fm_crs} object.
 
-\item \code{$}: For a \code{fm_crs} object \code{x}, \code{x$name} calls the accessor method for the
-\code{crs} object inside it. If \code{name} is "crs", the internal crs object itself is returned.
-If \code{name} is "oblique", the internal oblique angle parameter vector is returned.
+\item \code{$}: For a \code{fm_crs} object \code{x}, \code{x$name} calls the accessor
+method for the \code{crs} object inside it. If \code{name} is "crs", the internal crs
+object itself is returned. If \code{name} is "oblique", the internal oblique
+angle parameter vector is returned.
 
 }}
 \section{Functions}{

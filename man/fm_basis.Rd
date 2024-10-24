@@ -35,12 +35,13 @@ fm_basis(x, ..., full = FALSE)
 
 \item{\dots}{Passed on to submethods}
 
-\item{full}{logical; if \code{TRUE}, return a \code{fm_basis} object, containing at least
-a projection matrix \code{A} and logical vector \code{ok} indicating which evaluations
-are valid. If \code{FALSE}, return only the projection matrix \code{A}. Default is \code{FALSE}.}
+\item{full}{logical; if \code{TRUE}, return a \code{fm_basis} object, containing at
+least a projection matrix \code{A} and logical vector \code{ok} indicating which
+evaluations are valid. If \code{FALSE}, return only the projection matrix \code{A}.
+Default is \code{FALSE}.}
 
-\item{loc}{A location/value information object (vector, matrix, \code{sf}, etc, depending on
-the class of \code{x})}
+\item{loc}{A location/value information object (vector, matrix, \code{sf}, etc,
+depending on the class of \code{x})}
 
 \item{weights}{Optional weight vector to apply (from the left, one
 weight for each row of the basis matrix)}
@@ -49,21 +50,22 @@ weight for each row of the basis matrix)}
 in the output. Forces \code{full = TRUE}.}
 }
 \value{
-A \code{sparseMatrix} object (if \code{full = FALSE}),
-or a \code{fm_basis} object (if \code{full = TRUE} or \code{isTRUE(derivatives)}).
-The \code{fm_basis} object contains at least the projection matrix \code{A} and logical vector \code{ok};
+A \code{sparseMatrix} object (if \code{full = FALSE}), or a \code{fm_basis} object
+(if \code{full = TRUE} or \code{isTRUE(derivatives)}). The \code{fm_basis} object contains
+at least the projection matrix \code{A} and logical vector \code{ok};
 \verb{u(loc_i)=sum_j A_ij w_i}
 }
 \description{
-Computes the basis mapping matrix between a function space on a mesh, and locations.
+Computes the basis mapping matrix between a function space on a
+mesh, and locations.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{fm_basis(fm_mesh_1d)}: The \code{fm_basis} object contains additional derivative weight matrices,
-\code{d1A} and \code{d2A}, \verb{du/dx(loc_i)=sum_j dx_ij w_i}.
+\item \code{fm_basis(fm_mesh_1d)}: The \code{fm_basis} object contains additional derivative
+weight matrices, \code{d1A} and \code{d2A}, \verb{du/dx(loc_i)=sum_j dx_ij w_i}.
 
-\item \code{fm_basis(fm_mesh_2d)}: If \code{derivatives=TRUE}, additional derivative weight matrices
-are included in the \code{full=TRUE} output: Derivative weight matrices
+\item \code{fm_basis(fm_mesh_2d)}: If \code{derivatives=TRUE}, additional derivative weight
+matrices are included in the \code{full=TRUE} output: Derivative weight matrices
 \code{dx}, \code{dy}, \code{dz}; \verb{du/dx(loc_i)=sum_j dx_ij w_i}, etc.
 
 }}

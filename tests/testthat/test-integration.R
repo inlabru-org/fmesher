@@ -93,7 +93,7 @@ test_that("Tensor space integration", {
 
 
 
-test_that("conversion of polygon to integration points when domain is defined via a mesh", {
+test_that("Integrating a polygon on a mesh domain", {
   ips <- fm_int(fmexample$mesh, samplers = fmexample$boundary_sf[[1]])
 
   expect_s3_class(ips, "sf")
@@ -107,7 +107,7 @@ test_that("conversion of polygon to integration points when domain is defined vi
 
 # From old ipoints tests
 
-test_that("conversion of SpatialPolygon to integration points when domain is defined via a mesh", {
+test_that("Integrating a SpatialPolygon on a mesh domain", {
   skip_if_not(fm_safe_sp())
   ips <- fm_int(fmexample$mesh, samplers = fmexample_sp()$boundary_sp[[1]])
 
@@ -126,16 +126,22 @@ test_that("conversion of whole 2D mesh to integration points", {
   expect_equal(colnames(ips), c("weight", ".block", "geometry"))
   expect_equal(sum(ips$weight), 64.58135, tolerance = lowtol)
 
+  skip_if_not(fm_safe_sp())
+
   ips <- fm_int(fmexample$mesh, format = "sp")
 
   expect_s4_class(ips, "SpatialPointsDataFrame")
-  expect_equal(colnames(as.data.frame(ips)), c("weight", ".block", "x", "y", "z"))
+  expect_equal(
+    colnames(as.data.frame(ips)),
+    c("weight", ".block", "x", "y", "z")
+  )
   expect_equal(sum(ips$weight), 64.58135, tolerance = lowtol)
 })
 
 
 test_that("Polygon integration with holes", {
   skip_if_not(fm_safe_sp())
+
   plyA <- sp::SpatialPolygons(list(
     sp::Polygons(
       list(
@@ -250,8 +256,6 @@ test_that("flat mesh integration", {
 })
 
 test_that("sphere and globe mesh integration", {
-  skip_on_cran()
-
   mesh <- fm_rcdt_2d_inla(globe = 1)
 
   ips0 <- fm_int(mesh, int.args = list(nsub2 = 0))
@@ -269,9 +273,7 @@ test_that("sphere and globe mesh integration", {
   expect_equal(sum(ips0_$weight), 4 * pi * 1e6)
   expect_equal(sum(ips9_$weight), 4 * pi * 1e6)
 
-  suppressWarnings(
-    mesh_2 <- fm_rcdt_2d_inla(globe = 1, crs = fm_CRS("globe"))
-  )
+  mesh_2 <- fm_rcdt_2d_inla(globe = 1, crs = fm_crs("globe"))
 
   ips0_2 <- fm_int(mesh_2, int.args = list(nsub2 = 0))
   ips9_2 <- fm_int(mesh_2, int.args = list(nsub2 = 9))
@@ -286,28 +288,42 @@ test_that("sphere and globe mesh integration", {
   expect_equal(sum(ips9_3$weight), 4 * pi * 6370.997^2)
 })
 
-test_that("flat SpatialPolygons integration", {
-  skip_if_not(fm_safe_sp())
+test_that("flat SpatialPolygons/sf integration", {
   mesh <- fmexample$mesh
 
-  poly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(rbind(
-    c(-1, -1), c(-1, 1), c(1, 1), c(1, -1)
-  ))), ID = "A")))
-  poly <- sf::st_as_sf(poly)
+  poly <- sf::st_sfc(sf::st_polygon(x = list(
+    rbind(c(-1, -1), c(-1, 1), c(1, 1), c(1, -1), c(-1, -1))
+  )))
 
-  ips0 <- fm_int(mesh, samplers = poly, int.args = list(nsub2 = 0, method = "direct"))
-  ips1 <- fm_int(mesh, samplers = poly, int.args = list(nsub2 = 1, method = "direct"))
-  ips9 <- fm_int(mesh, samplers = poly, int.args = list(nsub2 = 9, method = "direct"))
-  ips19 <- fm_int(mesh, samplers = poly, int.args = list(nsub2 = 19, method = "direct"))
+  ips0 <- fm_int(mesh,
+    samplers = poly,
+    int.args = list(nsub2 = 0, method = "direct")
+  )
+  ips1 <- fm_int(mesh,
+    samplers = poly,
+    int.args = list(nsub2 = 1, method = "direct")
+  )
+  ips9 <- fm_int(mesh,
+    samplers = poly,
+    int.args = list(nsub2 = 9, method = "direct")
+  )
+  ips19 <- fm_int(mesh,
+    samplers = poly,
+    int.args = list(nsub2 = 19, method = "direct")
+  )
 
   # require("ggplot2")
   # ggplot() +
   #   geom_fm(data = mesh) +
-  #   geom_sf(aes(size = weight, colour = nsub2), data = cbind(ips0, nsub2 = "0")) +
-  #   geom_sf(aes(size = weight, colour = nsub2), data = cbind(ips1, nsub2 = "1")) +
-  #   geom_sf(aes(size = weight, colour = nsub2), data = cbind(ips9, nsub2 = "9")) +
-  #   geom_sf(aes(size = weight, colour = nsub2), data = cbind(ips19, nsub2 = "19")) +
-  #   facet_wrap(~nsub2)
+  #   geom_sf(aes(size = weight, colour = nsub2),
+  #           data = cbind(ips0, nsub2 = "0")) +
+  #   geom_sf(aes(size = weight, colour = nsub2),
+  #           data = cbind(ips1, nsub2 = "1")) +
+  #   geom_sf(aes(size = weight, colour = nsub2),
+  #           data = cbind(ips9, nsub2 = "9")) +
+  #   geom_sf(aes(size = weight, colour = nsub2),
+  #           data = cbind(ips19, nsub2 = "19")) +
+  #   facet_wrap( ~ nsub2)
 
   expect_equal(sum(ips0$weight), 3.997853, tolerance = midtol)
   expect_equal(sum(ips1$weight), 3.973794, tolerance = midtol)
@@ -316,17 +332,15 @@ test_that("flat SpatialPolygons integration", {
 })
 
 test_that("globe polygon integration", {
-  skip_on_cran()
+  mesh <- fm_rcdt_2d_inla(globe = 1, crs = fm_crs("globe"))
 
-  suppressWarnings(
-    mesh <- fm_rcdt_2d_inla(globe = 1, crs = fm_crs("globe"))
-  )
-
-  poly <- sp::SpatialPolygons(
-    list(sp::Polygons(list(sp::Polygon(rbind(
-      c(-45, -45), c(-45, 45), c(45, 45), c(45, -45)
-    ))), ID = "A")),
-    proj4string = fm_CRS("longlat_globe")
+  poly <- sf::st_sfc(
+    sf::st_polygon(
+      list(rbind(
+        c(-45, -45), c(-45, 45), c(45, 45), c(45, -45), c(-45, -45)
+      ))
+    ),
+    crs = fm_crs("longlat_globe")
   )
 
   ips1 <- fm_int(mesh, samplers = poly, int.args = list(nsub = 2))

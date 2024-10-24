@@ -10,7 +10,7 @@ fm_qinv(A)
 \item{A}{A symmetric positive definite matrix}
 }
 \description{
-Compute sparse partial matrix inverse. Requires special build of the \code{fmesher}
-package.
+Compute sparse partial matrix inverse. Requires special build of the
+\code{fmesher} package.
 }
 \keyword{internal}

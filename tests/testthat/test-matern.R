@@ -9,7 +9,11 @@ test_that("GMRF methods, 1d", {
   expect_equal(dim(samp), c(fm_dof(mesh), 2))
 
   set.seed(12345L)
-  samp_constr <- fm_sample(n = 2, Q = Q, constr = list(A = matrix(1, 1, fm_dof(mesh)), e = 2))
+  samp_constr <- fm_sample(
+    n = 2,
+    Q = Q,
+    constr = list(A = matrix(1, 1, fm_dof(mesh)), e = 2)
+  )
   expect_equal(dim(samp), c(fm_dof(mesh), 2))
   expect_equal(colSums(samp_constr), c(2, 2))
 })
@@ -28,7 +32,11 @@ test_that("GMRF methods, 2d", {
   expect_equal(dim(samp), c(fm_dof(mesh), 2))
 
   set.seed(12345L)
-  samp_constr <- fm_sample(n = 2, Q = Q, constr = list(A = matrix(1, 1, fm_dof(mesh)), e = 2))
+  samp_constr <- fm_sample(
+    n = 2,
+    Q = Q,
+    constr = list(A = matrix(1, 1, fm_dof(mesh)), e = 2)
+  )
   expect_equal(dim(samp), c(fm_dof(mesh), 2))
   expect_equal(colSums(samp_constr), c(2, 2))
 })

@@ -49,12 +49,11 @@ do.the.split <- function(knots, loc) {
 
 
 
-#' @describeIn fm_bary Return a list with elements
-#' `t` (start and endpoint knot indices) and `bary` (barycentric coordinates), both
-#' 2-column matrices.
+#' @describeIn fm_bary Return a list with elements `t` (start and endpoint knot
+#'   indices) and `bary` (barycentric coordinates), both 2-column matrices.
 #'
-#' For `method = "nearest"`, `t[,1]` contains the index of the nearest mesh knot,
-#' and each row of `bary` contains `c(1, 0)`.
+#' For `method = "nearest"`, `t[,1]` contains the index of the nearest mesh
+#' knot, and each row of `bary` contains `c(1, 0)`.
 #' @param method character; method for defining the barycentric coordinates,
 #' "linear" (default) or "nearest"
 #' @param restricted logical, used for `method="linear"`.
@@ -115,9 +114,9 @@ fm_bary.fm_mesh_1d <- function(mesh,
 
 #' @param crs Optional crs information for `loc`
 #'
-#' @describeIn fm_bary A list with elements `t` (vector of triangle indices) and `bary`
-#' (3-column matrix of barycentric coordinates). Points that were not found
-#' give `NA` entries in `t` and `bary`.
+#' @describeIn fm_bary A list with elements `t` (vector of triangle indices) and
+#'   `bary` (3-column matrix of barycentric coordinates). Points that were not
+#'   found give `NA` entries in `t` and `bary`.
 #'
 #' @export
 fm_bary.fm_mesh_2d <- function(mesh, loc, crs = NULL, ...) {

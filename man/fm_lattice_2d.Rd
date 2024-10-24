@@ -24,16 +24,18 @@ fm_lattice_2d(...)
 \arguments{
 \item{...}{Passed on to submethods}
 
-\item{x}{vector or grid matrix of x-values. Vector values are sorted before use.
-Matrix input is assumed to be a grid of x-values with the same ordering convention
-of \code{as.vector(x)} as \code{rep(x, times = dims[2])} for vector input.}
+\item{x}{vector or grid matrix of x-values. Vector values are sorted before
+use. Matrix input is assumed to be a grid of x-values with the same
+ordering convention of \code{as.vector(x)} as \code{rep(x, times = dims[2])} for
+vector input.}
 
-\item{y}{vector of grid matrix of y-values. Vector values are sorted before use.
-Matrix input is assumed to be a grid of y-values with the same ordering convention
-of \code{as.vector(y)} as \code{rep(y, each = dims[1])} for vector input.}
+\item{y}{vector of grid matrix of y-values. Vector values are sorted before
+use. Matrix input is assumed to be a grid of y-values with the same
+ordering convention of \code{as.vector(y)} as \code{rep(y, each = dims[1])} for
+vector input.}
 
-\item{z}{if x is a matrix, a grid matrix of z-values, with the same ordering as \code{x}
-and \code{y}. If \code{x} is a vector, \code{z} is ignored.}
+\item{z}{if x is a matrix, a grid matrix of z-values, with the same ordering
+as \code{x} and \code{y}. If \code{x} is a vector, \code{z} is ignored.}
 
 \item{dims}{the size of the grid, length 2 vector}
 
@@ -48,7 +50,8 @@ An \code{fm_lattice_2d} object with elements
 \item{dims}{integer vector}
 \item{x}{x-values for original vector input}
 \item{y}{y-values for original vector input}
-\item{loc}{matrix of \verb{(x, y)} values or \verb{(x, y, z)} values. May be altered by \code{\link[=fm_transform]{fm_transform()}}}
+\item{loc}{matrix of \verb{(x, y)} values or \verb{(x, y, z)} values. May be altered by
+\code{\link[=fm_transform]{fm_transform()}}}
 \item{segm}{\code{fm_segm} object}
 \item{crs}{\code{fm_crs} object or \code{NULL}}
 }

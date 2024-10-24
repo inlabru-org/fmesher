@@ -61,16 +61,15 @@ coordinates
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{fm_bary(fm_mesh_1d)}: Return a list with elements
-\code{t} (start and endpoint knot indices) and \code{bary} (barycentric coordinates), both
-2-column matrices.
+\item \code{fm_bary(fm_mesh_1d)}: Return a list with elements \code{t} (start and endpoint knot
+indices) and \code{bary} (barycentric coordinates), both 2-column matrices.
 
-For \code{method = "nearest"}, \code{t[,1]} contains the index of the nearest mesh knot,
-and each row of \code{bary} contains \code{c(1, 0)}.
+For \code{method = "nearest"}, \code{t[,1]} contains the index of the nearest mesh
+knot, and each row of \code{bary} contains \code{c(1, 0)}.
 
-\item \code{fm_bary(fm_mesh_2d)}: A list with elements \code{t} (vector of triangle indices) and \code{bary}
-(3-column matrix of barycentric coordinates). Points that were not found
-give \code{NA} entries in \code{t} and \code{bary}.
+\item \code{fm_bary(fm_mesh_2d)}: A list with elements \code{t} (vector of triangle indices) and
+\code{bary} (3-column matrix of barycentric coordinates). Points that were not
+found give \code{NA} entries in \code{t} and \code{bary}.
 
 \item \code{fm_bary(metric_graph)}: Return a tibble with elements
 \code{fm_bary}

@@ -35,9 +35,11 @@ name/value pairs.
 
 For \code{fm_list_as_CRS}, a \code{CRS} or \code{inla.CRS} object.
 
-For \code{fm_list_as_CRSargs()}, a CRS proj4 string for name=value pair list
+For \code{fm_list_as_CRSargs()}, a CRS proj4 string for name=value pair
+list
 
-For \code{fm_CRSargs_as_list()}, a list of name=value pairs from CRS proj4 string
+For \code{fm_CRSargs_as_list()}, a list of name=value pairs from CRS
+proj4string
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
@@ -47,16 +49,17 @@ These methods should no longer be used with PROJ6/rgdal3;
 see \code{\link[=fm_wkt]{fm_wkt()}} and \code{\link[=fm_proj4string]{fm_proj4string()}} for a new approach.
 }
 \examples{
-
-crs0 <- fm_CRS("longlat_norm")
-p4s <- fm_proj4string(crs0)
-lst <- fm_CRSargs_as_list(p4s)
-crs1 <- fm_list_as_CRS(lst)
-lst$a <- 2
-crs2 <- fm_CRS(p4s, args = lst)
-print(fm_proj4string(crs0))
-print(fm_proj4string(crs1))
-print(fm_proj4string(crs2))
+if (fm_safe_sp()) {
+  crs0 <- fm_CRS("longlat_norm")
+  p4s <- fm_proj4string(crs0)
+  lst <- fm_CRSargs_as_list(p4s)
+  crs1 <- fm_list_as_CRS(lst)
+  lst$a <- 2
+  crs2 <- fm_CRS(p4s, args = lst)
+  print(fm_proj4string(crs0))
+  print(fm_proj4string(crs1))
+  print(fm_proj4string(crs2))
+}
 }
 \seealso{
 \code{\link[=fm_CRS]{fm_CRS()}}

@@ -35,7 +35,8 @@ A hierarchical list, describing WKT information as a tree
 
 \code{fm_wkt_tree_as_wkt} character; the WKT corresponding to the tree.
 
-\code{fm_wkt_tree_get_item} returns the value of an item found in the tree
+\code{fm_wkt_tree_get_item} returns the value of an item found in the
+tree
 
 \code{fm_wkt_tree_set_item} returns the modified tree
 }

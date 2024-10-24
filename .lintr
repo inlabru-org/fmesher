@@ -1,11 +1,12 @@
 linters: linters_with_defaults(
-    indentation_linter = NULL, #
-    line_length_linter = NULL, #
+    #line_length_linter = NULL, #
     object_name_linter = NULL, #
     commented_code_linter = NULL, #
     object_usage_linter = NULL, #
     object_length_linter = NULL, #
-    cyclocomp_linter = NULL #
+    cyclocomp_linter = NULL, #
+    indentation_linter = NULL
   )
 exclusions: list(
+    "vignettes/articles/devel_flow.Rmd"
   )

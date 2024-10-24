@@ -19,7 +19,10 @@
 #' @export
 #' @examples
 #' mesh <- fm_mesh_2d(
-#'   boundary = fm_segm(rbind(c(0, 0), c(1, 0), c(1, 1), c(0, 1)), is.bnd = TRUE)
+#'   boundary = fm_segm(
+#'     rbind(c(0, 0), c(1, 0), c(1, 1), c(0, 1)),
+#'     is.bnd = TRUE
+#'   )
 #' )
 #' splitter <- fm_segm(rbind(c(0.8, 0.2), c(0.2, 0.8)))
 #' segm_split <- fm_split_lines(mesh, splitter)

@@ -171,7 +171,15 @@ fm_fem.fm_mesh_1d <- function(mesh, order = 2, ...) {
 
     c0 <- Matrix::Diagonal(nrow(c1), Matrix::rowSums(c1))
 
-    return(list(c0 = c0, c1 = c1, g1 = g1, g2 = g2, g01 = g01, g02 = g02, g12 = g12))
+    return(list(
+      c0 = c0,
+      c1 = c1,
+      g1 = g1,
+      g2 = g2,
+      g01 = g01,
+      g02 = g02,
+      g12 = g12
+    ))
   } else {
     stop(paste("Mesh basis degree=", mesh$degree,
       " is not supported by fm_fem.fm_mesh_1d.",
@@ -183,13 +191,14 @@ fm_fem.fm_mesh_1d <- function(mesh, order = 2, ...) {
 }
 
 #' @rdname fm_fem
-#' @param aniso If non-NULL, a `list(gamma, v)`. Calculates anisotropic structure
-#' matrices (in addition to the regular) for \eqn{\gamma}{gamma} and \eqn{v}{v} for
-#' an anisotropic operator \eqn{\nabla\cdot H \nabla}{div H grad}, where
-#' \eqn{H=\gamma I + v v^\top}{H = gamma I + v v'}.
-#' Currently (2023-08-05) the fields need to be given per vertex.
-#' @return `fm_fem.fm_mesh_2d`: A list with elements `c0`, `c1`, `g1`, `va`, `ta`,
-#' and more if `order > 1`. When `aniso` is non-NULL, also `g1aniso` matrices, etc.
+#' @param aniso If non-NULL, a `list(gamma, v)`. Calculates anisotropic
+#'   structure matrices (in addition to the regular) for \eqn{\gamma}{gamma} and
+#'   \eqn{v}{v} for an anisotropic operator \eqn{\nabla\cdot H \nabla}{div H
+#'   grad}, where \eqn{H=\gamma I + v v^\top}{H = gamma I + v v'}. Currently
+#'   (2023-08-05) the fields need to be given per vertex.
+#' @return `fm_fem.fm_mesh_2d`: A list with elements `c0`, `c1`, `g1`, `va`,
+#'   `ta`, and more if `order > 1`. When `aniso` is non-NULL, also `g1aniso`
+#'   matrices, etc.
 #'
 #' @export
 fm_fem.fm_mesh_2d <- function(mesh, order = 2,

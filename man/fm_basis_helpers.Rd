@@ -25,8 +25,8 @@ fm_basis_mesh_1d(
 )
 }
 \arguments{
-\item{loc}{A location/value information object (vector, matrix, \code{sf}, etc, depending on
-the class of \code{x})}
+\item{loc}{A location/value information object (vector, matrix, \code{sf}, etc,
+depending on the class of \code{x})}
 
 \item{weights}{Optional weight vector, one weight for each location}
 

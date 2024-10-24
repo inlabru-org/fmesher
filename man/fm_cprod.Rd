@@ -11,13 +11,13 @@ fm_cprod(..., na.rm = NULL, .blockwise = FALSE)
 usually obtained by a call to an \code{\link[=fm_int]{fm_int()}} method.}
 
 \item{na.rm}{logical; if \code{TRUE}, the rows with weight \code{NA} from the
-non-overlapping full_join will be removed; if \code{FALSE}, set the undefined weights to \code{NA}.
-If \code{NULL} (default), act as \code{TRUE}, but warn if any elements needed removing.}
+non-overlapping full_join will be removed; if \code{FALSE}, set the undefined
+weights to \code{NA}. If \code{NULL} (default), act as \code{TRUE}, but warn if any
+elements needed removing.}
 
-\item{.blockwise}{logical; if \code{FALSE}, computes full tensor product integration.
-If \code{TRUE}, computes within-block tensor product integration (used internally
-by \code{\link[=fm_int]{fm_int()}}).
-Default \code{FALSE}}
+\item{.blockwise}{logical; if \code{FALSE}, computes full tensor product
+integration. If \code{TRUE}, computes within-block tensor product integration
+(used internally by \code{\link[=fm_int]{fm_int()}}). Default \code{FALSE}}
 }
 \value{
 A \code{data.frame}, \code{sf}, or \code{SpatialPointsDataFrame} of multidimensional

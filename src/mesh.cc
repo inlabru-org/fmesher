@@ -1,3 +1,11 @@
+/*
+ *  Copyright Finn Lindgren (2010-2024)
+ *
+ *  This Source Code Form is subject to the terms of the Mozilla Public License,
+ *  v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ *  obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 #include <cerrno>
 #include <cmath>
 #include <cstddef>
@@ -2786,8 +2794,20 @@ Dart &Dart::orbit2rev() {
 }
 
 std::ostream &operator<<(std::ostream &output, const Mesh &M) {
-  output << "Mesh type:\t";
-  switch (M.type()) {
+  output << "Mesh type:\t" << M.type() << endl;
+  output << "Vertices:\t" << M.nV() << endl;
+  output << "Triangles:\t" << M.nT() << endl;
+  output << "Options:\t" << (M.useVT() ? "VT " : "")
+         << (M.useTTi() ? "TTi " : "")
+#ifdef FMESHER_WITH_X
+  << (M.useX11() ? "X11 " : "")
+#endif
+  << endl;
+  return output;
+}
+
+std::ostream &operator<<(std::ostream &output, const Mesh::Mtype &type) {
+  switch (type) {
   case Mesh::Mtype::Manifold:
     output << "Manifold (Rd)";
     break;
@@ -2798,15 +2818,6 @@ std::ostream &operator<<(std::ostream &output, const Mesh &M) {
     output << "Sphere (S2)";
     break;
   }
-  output << endl;
-  output << "Vertices:\t" << M.nV() << endl;
-  output << "Triangles:\t" << M.nT() << endl;
-  output << "Options:\t" << (M.useVT() ? "VT " : "")
-         << (M.useTTi() ? "TTi " : "")
-#ifdef FMESHER_WITH_X
-         << (M.useX11() ? "X11 " : "")
-#endif
-         << endl;
   return output;
 }
 

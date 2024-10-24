@@ -33,13 +33,15 @@ To avoid a dependency on the \code{PBSmapping} package, the example below
 constructs a synthetic object of the same format.
 }
 \examples{
-world_example <- data.frame(
-  PID = c(0L, 0L, 0L, 1L, 1L),
-  POS = c(1L, 2L, 3L, 1L, 2L),
-  X = c(10, 20, 30, 15, 25),
-  Y = c(10, 15, 70, -40, -50)
-)
-plot_PolySet(world_example, old_globeproj("longlat"), add = FALSE)
+if (require("sp", quietly = TRUE)) {
+  world_example <- data.frame(
+    PID = c(0L, 0L, 0L, 1L, 1L),
+    POS = c(1L, 2L, 3L, 1L, 2L),
+    X = c(10, 20, 30, 15, 25),
+    Y = c(10, 15, 70, -40, -50)
+  )
+  plot_PolySet(world_example, old_globeproj("longlat"), add = FALSE)
+}
 }
 \seealso{
 \code{\link[=old_globeproj]{old_globeproj()}}

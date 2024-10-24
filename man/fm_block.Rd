@@ -107,7 +107,8 @@ weighting.
 }
 \section{Functions}{
 \itemize{
-\item \code{fm_block()}: A (sparse) matrix of size \code{n_block} times \code{length(block)}.
+\item \code{fm_block()}: A (sparse) matrix of size \code{n_block} times
+\code{length(block)}.
 
 \item \code{fm_block_eval()}: Evaluate aggregation. More efficient alternative to to
 \code{as.vector(fm_block(...) \%*\% values)}.

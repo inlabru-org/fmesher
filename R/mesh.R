@@ -155,7 +155,7 @@ fm_pixels <- function(mesh,
       mask <- as(mask, "SpatialPolygons")
     }
     mask <- sf::st_as_sf(mask)
-    pixels_within <- sf::st_within(pixels, mask)
+    pixels_within <- sf::st_covered_by(pixels, mask)
     pixels_within <- lengths(pixels_within) > 0
     pixels <- pixels[pixels_within, , drop = FALSE]
   }
@@ -368,12 +368,16 @@ fm_mesh_intersection <- function(mesh, poly) {
     fm_is_within(loc_tri, mesh) &
       fm_is_within(loc_tri, mesh_poly)
   if (any(ok_tri)) {
-    loc_subset <- unique(sort(as.vector(mesh_joint_cover$graph$tv[ok_tri, , drop = FALSE])))
+    loc_subset <- unique(sort(as.vector(
+      mesh_joint_cover$graph$tv[ok_tri, , drop = FALSE]
+    )))
     new_idx <- integer(mesh$n)
     new_idx[loc_subset] <- seq_along(loc_subset)
-    tv_subset <- matrix(new_idx[mesh_joint_cover$graph$tv[ok_tri, , drop = FALSE]],
-      ncol = 3
-    )
+    tv_subset <-
+      matrix(
+        new_idx[mesh_joint_cover$graph$tv[ok_tri, , drop = FALSE]],
+        ncol = 3
+      )
     loc_subset <- mesh_joint_cover$loc[loc_subset, , drop = FALSE]
     mesh_subset <- fm_rcdt_2d_inla(
       loc = loc_subset,

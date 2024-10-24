@@ -16,9 +16,10 @@ MGG coordinates, MGM coordinates or Euclidean coordinates (passed to fm_bary())}
 
 \item{...}{Passed on to submethods}
 
-\item{full}{logical; if \code{TRUE}, return a \code{fm_basis} object, containing at least
-a projection matrix \code{A} and logical vector \code{ok} indicating which evaluations
-are valid. If \code{FALSE}, return only the projection matrix \code{A}. Default is \code{FALSE}.}
+\item{full}{logical; if \code{TRUE}, return a \code{fm_basis} object, containing at
+least a projection matrix \code{A} and logical vector \code{ok} indicating which
+evaluations are valid. If \code{FALSE}, return only the projection matrix \code{A}.
+Default is \code{FALSE}.}
 }
 \value{
 A \code{fm_basis} object; a list of evaluator information objects,

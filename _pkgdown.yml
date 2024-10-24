@@ -17,6 +17,8 @@ navbar:
         href: articles/inla_conversion.html
       - text: The fmesher C++ library
         href: articles/fmesher_library.html
+      - text: "Devel: Internal algorithm flowcharts"
+        href: articles/devel_flow.html
 
 
 reference:

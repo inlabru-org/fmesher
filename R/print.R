@@ -19,7 +19,11 @@ NULL
 #' @export
 #' @param newline logical; if `TRUE` (default), end the printing with `\n`
 #' @rdname fmesher-print
-print.fm_segm <- function(x, ..., digits = NULL, verbose = TRUE, newline = TRUE) {
+print.fm_segm <- function(x,
+                          ...,
+                          digits = NULL,
+                          verbose = TRUE,
+                          newline = TRUE) {
   my.segm <- function(x) {
     if (is.null(x)) {
       return(list(n = 0, grps = NULL))
@@ -96,7 +100,11 @@ print.fm_segm <- function(x, ..., digits = NULL, verbose = TRUE, newline = TRUE)
 #' @export
 #' @param newline logical; if `TRUE` (default), end the printing with `\n`
 #' @rdname fmesher-print
-print.fm_segm_list <- function(x, ..., digits = NULL, verbose = FALSE, newline = TRUE) {
+print.fm_segm_list <- function(x,
+                               ...,
+                               digits = NULL,
+                               verbose = FALSE,
+                               newline = TRUE) {
   if (verbose) {
     cat("list of ", length(x), " fm_segm objects:\n", sep = "")
     lapply(x, function(xx) {
@@ -126,7 +134,8 @@ print.fm_segm_list <- function(x, ..., digits = NULL, verbose = FALSE, newline =
 
 #' @param verbose logical
 #' @param digits a positive integer indicating how many significant digits are
-#' to be used for numeric and complex x. The default, NULL, uses `getOption("digits")`.
+#'   to be used for numeric and complex x. The default, NULL, uses
+#'   `getOption("digits")`.
 #'
 #' @export
 #' @rdname fmesher-print
@@ -235,7 +244,11 @@ print.fm_mesh_1d <- function(x, ..., digits = NULL, verbose = FALSE) {
   ), ")\n", sep = "")
   clamped <- x$free.clamped & (x$boundary == "free")
   clamped <- c("", " and clamped")[clamped + 1]
-  cat("  Boundary:\t(", paste0(x$boundary, clamped, collapse = ", "), ")\n", sep = "")
+  cat("  Boundary:\t(",
+    paste0(x$boundary, clamped, collapse = ", "),
+    ")\n",
+    sep = ""
+  )
   cat("  B-spline degree:\t", x$degree, "\n", sep = "")
   cat("  Basis d.o.f.:\t", fm_dof(x), "\n", sep = "")
 
@@ -246,7 +259,11 @@ print.fm_mesh_1d <- function(x, ..., digits = NULL, verbose = FALSE) {
 
 #' @export
 #' @rdname fmesher-print
-print.fm_bbox <- function(x, ..., digits = NULL, verbose = TRUE, newline = TRUE) {
+print.fm_bbox <- function(x,
+                          ...,
+                          digits = NULL,
+                          verbose = TRUE,
+                          newline = TRUE) {
   if (verbose) {
     cat("Bounding box: ", sep = "")
   }
@@ -275,7 +292,8 @@ print.fm_bbox <- function(x, ..., digits = NULL, verbose = TRUE, newline = TRUE)
 
 #' @param verbose logical
 #' @param digits a positive integer indicating how many significant digits are
-#' to be used for numeric and complex x. The default, NULL, uses `getOption("digits")`.
+#'   to be used for numeric and complex x. The default, NULL, uses
+#'   `getOption("digits")`.
 #'
 #' @export
 #' @rdname fmesher-print
@@ -324,8 +342,20 @@ print.fm_tensor <- function(x, ..., digits = NULL, verbose = FALSE) {
 #' print(fm_basis(fmexample$mesh, fmexample$loc, full = TRUE))
 print.fm_basis <- function(x, ..., prefix = "") {
   cat(prefix, "fm_basis object\n", sep = "")
-  cat(prefix, "  Projection matrix (A): ", paste0(dim(x$A), collapse = "-by-"), "\n", sep = "")
-  cat(prefix, "  Valid evaluations (ok): ", sum(x$ok), " out of ", length(x$ok), "\n", sep = "")
+  cat(prefix,
+    "  Projection matrix (A): ",
+    paste0(dim(x$A), collapse = "-by-"),
+    "\n",
+    sep = ""
+  )
+  cat(prefix,
+    "  Valid evaluations (ok): ",
+    sum(x$ok),
+    " out of ",
+    length(x$ok),
+    "\n",
+    sep = ""
+  )
   cat(
     prefix, "  Additional information: ",
     paste(names(x)[!names(x) %in% c("A", "ok")], collapse = ", "),
