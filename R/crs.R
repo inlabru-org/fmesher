@@ -2398,7 +2398,7 @@ fm_transform.matrix <- function(x, crs, ..., passthrough = FALSE, crs0 = NULL) {
       current_crs <- crs_sphere
     }
     obl0 <- fm_crs_oblique(crs0)
-    if (!is.na(obl0)) {
+    if (!all(is.na(obl0))) {
       x <- fm_crs_transform_oblique(
         x,
         obl0,
@@ -2407,7 +2407,7 @@ fm_transform.matrix <- function(x, crs, ..., passthrough = FALSE, crs0 = NULL) {
     }
 
     obl1 <- fm_crs_oblique(crs1)
-    if (!is.na(obl1)) {
+    if (!all(is.na(obl1))) {
       x <- fm_crs_transform_oblique(
         x,
         obl1,

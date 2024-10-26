@@ -89,6 +89,7 @@ reference:
   - starts_with("geom_fm")
   - starts_with("plot")
   - starts_with("lines")
+  - starts_with("fm_crs_plot")
 - title: "Printing methods"
   desc: "Functions for printing."
   contents:
