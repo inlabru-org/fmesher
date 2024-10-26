@@ -32,6 +32,7 @@
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_crs.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_crs_is_identical.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_crs_is_null.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_crs_plot.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_crs_wkt.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_detect_manifold.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_diameter.html</loc></url>
@@ -90,13 +91,10 @@
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fmexample.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fmexample_sp.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/geom_fm.html</loc></url>
-<url><loc>https://inlabru-org.github.io/fmesher/reference/globeproj.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/index.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/local_testthat.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/plot.fm_mesh_2d.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/plot.fm_segm.html</loc></url>
-<url><loc>https://inlabru-org.github.io/fmesher/reference/plot_PolySet.html</loc></url>
-<url><loc>https://inlabru-org.github.io/fmesher/reference/plot_globeproj.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/plot_rgl.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/print.fm_basis.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/print.fm_evaluator.html</loc></url>
