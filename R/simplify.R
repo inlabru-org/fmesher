@@ -16,7 +16,7 @@
 #' @param eps Absolute straightness tolerance. Default `NULL`, no constraint.
 #' @param eps_rel Relative straightness tolerance. Default `NULL`, no
 #'   constraint.
-#' @return An index vector into `loc` specifying the simplified polygonal
+#' @returns An index vector into `loc` specifying the simplified polygonal
 #' curve.
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
 #' @details
@@ -97,7 +97,7 @@ fm_simplify_helper <- function(loc, idx, eps = NULL, eps_rel = NULL) {
 #' @param eps_rel Relative straightness tolerance. Default `NULL`, no
 #'   constraint.
 #' @param ... Currently unused.
-#' @return The simplified [fm_segm()] object.
+#' @returns The simplified [fm_segm()] object.
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
 #' @details
 #' Variation of Ramer-Douglas-Peucker.

@@ -10,7 +10,7 @@
 #' @param mesh An `fm_mesh_2d` or `inla.mesh` object
 #' @param segm An [fm_segm()] object with segments to be split
 #' @param ... Unused.
-#' @return An [fm_segm()] object with the same crs as the mesh,
+#' @returns An [fm_segm()] object with the same crs as the mesh,
 #' with an added field `origin`, that for each new segment gives the
 #' originator index into to original `segm` object for each new line segment.
 #'

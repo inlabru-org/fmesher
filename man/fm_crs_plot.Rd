@@ -75,6 +75,9 @@ graticules/indicatrices, see the \code{graticule} and \code{tissot} arguments.}
 
 \item{diff.eps}{Pre-scaling}
 }
+\value{
+\code{NULL}, invisibly
+}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} Plot the outline of a \code{crs}
 or \code{\link[=fm_crs]{fm_crs()}} projection, with optional graticules (transformed parallels

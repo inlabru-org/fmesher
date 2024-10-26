@@ -16,7 +16,7 @@
 #' coordinates in the spherical domain are calculated.  If `FALSE`, `loc`
 #' are coordinates in the spherical domain and the forward map projection is
 #' calculated. Default: `TRUE`
-#' @return For `fm_mesh_2d_map_lim`, a list:
+#' @returns For `fm_mesh_2d_map_lim`, a list:
 #' \item{xlim }{X axis limits in the map domain}
 #' \item{ylim }{Y axis limits in the map domain}
 #' No attempt is
@@ -167,7 +167,7 @@ fm_lattice_2d <- function(...) {
 #' @param units One of `c("default", "longlat", "longsinlat", "mollweide")`
 #' or NULL (equivalent to `"default"`).
 #' @param crs An optional `fm_crs`, `sf::st_crs`, or `sp::CRS` object
-#' @return An `fm_lattice_2d` object with elements
+#' @returns An `fm_lattice_2d` object with elements
 #' \describe{
 #' \item{dims}{integer vector}
 #' \item{x}{x-values for original vector input}

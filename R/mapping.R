@@ -61,6 +61,7 @@ fm_internal_clip <- function(bounds, coords, eps = 0.05) {
 #' @param eps Clipping tolerance for rudimentary boundary clipping
 #' @param \dots Additional arguments passed on to the internal calls to
 #' `plot` and `lines`.
+#' @returns `NULL`, invisibly
 #' @author Finn Lindgren <finn.lindgren@@gmail.com>
 #' @seealso [fm_crs()]
 #' @examples
@@ -128,7 +129,7 @@ fm_crs_plot <- function(x, xlim = NULL, ylim = NULL,
 #' @param do.plot logical; If TRUE, do plotting
 #' @export
 fm_crs_graticule <- function(x, by = c(15, 15, 45), add = FALSE, do.plot = TRUE,
-                               eps = 0.05, ...) {
+                             eps = 0.05, ...) {
   stopifnot(requireNamespace("sp"))
 
   ## Graticule
@@ -152,8 +153,9 @@ fm_crs_graticule <- function(x, by = c(15, 15, 45), add = FALSE, do.plot = TRUE,
     }
     meridians <- as.matrix(expand.grid(lat, lon)[, 2:1])
     proj.mer.coords <- fm_transform(meridians,
-                                    crs0 = fmesher::fm_CRS("longlat_norm"),
-                                    crs = x)
+      crs0 = fmesher::fm_CRS("longlat_norm"),
+      crs = x
+    )
     proj.mer.coords1 <- matrix(
       proj.mer.coords[, 1], length(lat),
       length(lon)
@@ -183,11 +185,13 @@ fm_crs_graticule <- function(x, by = c(15, 15, 45), add = FALSE, do.plot = TRUE,
       if (by[3] > 0) {
         lon <- ((1 - n[3]):n[3]) * by[3]
         lat <- seq(-90 + 1e-6, -n[2] * by[2],
-                   length.out = ceiling((90 - n[2] * by[2]) / 2) + 1)
+          length.out = ceiling((90 - n[2] * by[2]) / 2) + 1
+        )
         meridians <- as.matrix(expand.grid(lat, lon)[, 2:1])
         proj.mer.coords <- fm_transform(meridians,
-                                        crs0 = fmesher::fm_CRS("longlat_norm"),
-                                        crs = x)
+          crs0 = fmesher::fm_CRS("longlat_norm"),
+          crs = x
+        )
         proj.mer.coords1 <- matrix(
           proj.mer.coords[, 1], length(lat),
           length(lon)
@@ -218,8 +222,9 @@ fm_crs_graticule <- function(x, by = c(15, 15, 45), add = FALSE, do.plot = TRUE,
         lat <- seq(n[2] * by[2], 90 - 1e-6, length.out = ceiling((90 - n[2] * by[2]) / 2) + 1)
         meridians <- as.matrix(expand.grid(lat, lon)[, 2:1])
         proj.mer.coords <- fm_transform(meridians,
-                                        crs0 = fmesher::fm_CRS("longlat_norm"),
-                                        crs = x)
+          crs0 = fmesher::fm_CRS("longlat_norm"),
+          crs = x
+        )
         proj.mer.coords1 <- matrix(
           proj.mer.coords[, 1], length(lat),
           length(lon)
@@ -270,8 +275,9 @@ fm_crs_graticule <- function(x, by = c(15, 15, 45), add = FALSE, do.plot = TRUE,
     lat <- ((-n[2]):n[2]) * by[2]
     parallels <- as.matrix(expand.grid(lon, lat))
     proj.par.coords <- fm_transform(parallels,
-                                    crs0 = fmesher::fm_CRS("longlat_norm"),
-                                    crs = x)
+      crs0 = fmesher::fm_CRS("longlat_norm"),
+      crs = x
+    )
     proj.par.coords1 <- matrix(
       proj.par.coords[, 1], length(lon),
       length(lat)
@@ -319,7 +325,7 @@ fm_crs_graticule <- function(x, by = c(15, 15, 45), add = FALSE, do.plot = TRUE,
 #' @param diff.eps Pre-scaling
 #' @export
 fm_crs_tissot <- function(x, by = c(30, 30, 30), add = FALSE, do.plot = TRUE,
-                            eps = 0.05, diff.eps = 1e-2, ...) {
+                          eps = 0.05, diff.eps = 1e-2, ...) {
   stopifnot(requireNamespace("sp"))
 
   if (is.null(by)) {

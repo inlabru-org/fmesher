@@ -249,7 +249,7 @@ fm_crs_set_ellipsoid_radius <- function(crs, radius) {
 #' @param params Length unit definitions, in the list format produced by
 #' `fm_wkt_unit_params()`, Default: NULL, which invokes
 #' `fm_wkt_unit_params()`
-#' @return For `fm_wkt_unit_params`, a
+#' @returns For `fm_wkt_unit_params`, a
 #' list of named unit definitions
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
 #' @examples
@@ -295,7 +295,7 @@ fm_wkt_unit_params <- function() {
 
 #' @export
 #' @rdname fm_crs_wkt
-#' @return For `fm_wkt_get_lengthunit`, a
+#' @returns For `fm_wkt_get_lengthunit`, a
 #' list of length units used in the wkt string, excluding the ellipsoid radius
 #' unit.
 
@@ -337,7 +337,7 @@ fm_wkt_get_lengthunit <- function(wkt) {
 
 #' @export
 #' @rdname fm_crs_wkt
-#' @return For `fm_wkt_set_lengthunit`, a
+#' @returns For `fm_wkt_set_lengthunit`, a
 #' WKT2 string with altered length units.
 #' Note that the length unit for the ellipsoid radius is unchanged.
 
@@ -392,7 +392,7 @@ fm_wkt_set_lengthunit <- function(wkt, unit, params = NULL) {
 }
 
 
-#' @return For `fm_crs_get_lengthunit`, a
+#' @returns For `fm_crs_get_lengthunit`, a
 #' list of length units used in the wkt string, excluding the ellipsoid radius
 #' unit. (For legacy PROJ4 code, the raw units from the proj4string are
 #' returned, if present.)
@@ -437,7 +437,7 @@ fm_length_unit.character <- function(x) {
 
 
 
-#' @return For `fm_length_unit<-`, a crs object with
+#' @returns For `fm_length_unit<-`, a crs object with
 #' altered length units.
 #' Note that the length unit for the ellipsoid radius is unchanged.
 #' @rdname fm_crs_wkt
@@ -544,7 +544,7 @@ fm_length_unit.character <- function(x) {
 #' When `oblique[2]` or `oblique[3]` are non-zero, the resulting
 #' projection is only correct for perfect spheres.
 #' @param \dots Additional parameters. Not currently in use.
-#' @return Either an `sf::crs` object or an `fm_crs` object,
+#' @returns Either an `sf::crs` object or an `fm_crs` object,
 #' depending on if the coordinate reference system described by the parameters
 #' can be expressed with a pure `crs` object or not.
 #'
@@ -1108,7 +1108,7 @@ fm_crs.matrix <- function(x, oblique = NULL, ...) {
 #' @param SRS_string a WKT2 string defining the coordinate system;
 #' see `sp::CRS`. This takes precedence over `projargs`.
 #' @param \dots Additional parameters, passed on to sub-methods.
-#' @return Either an `sp::CRS` object or an `inla.CRS` object,
+#' @returns Either an `sp::CRS` object or an `inla.CRS` object,
 #' depending on if the coordinate reference system described by the parameters
 #' can be expressed with a pure `sp::CRS` object or not.
 #'
@@ -1341,7 +1341,7 @@ fm_CRS.default <- function(x, oblique = NULL,
   x
 }
 
-#' @return `fm_wkt_predef` returns a WKT2 string defining a projection
+#' @returns `fm_wkt_predef` returns a WKT2 string defining a projection
 #' @examples
 #' names(fm_wkt_predef())
 #' @export
@@ -1694,7 +1694,7 @@ fm_list_as_CRS <- function(x, ...) {
 #' `fm_CRSargs_as_list`), or a list (for `fm_list_as_CRS` and
 #' `fm_list_as_CRSargs`).
 #' @param \dots Additional arguments passed on to other methods.
-#' @return For `fm_CRSargs` and `fm_list_as_CRSargs`, a character
+#' @returns For `fm_CRSargs` and `fm_list_as_CRSargs`, a character
 #' string with PROJ.4 arguments.
 #'
 #' For `fm_CRS_as_list` and `fm_CRSargs_as_list`, a list of
@@ -1724,7 +1724,7 @@ fm_CRSargs <- function(x, ...) {
 }
 
 
-#' @return For `fm_list_as_CRSargs()`, a CRS proj4 string for name=value pair
+#' @returns For `fm_list_as_CRSargs()`, a CRS proj4 string for name=value pair
 #'   list
 #' @rdname fm_CRSargs
 fm_list_as_CRSargs <- function(x, ...) {
@@ -1743,7 +1743,7 @@ fm_list_as_CRSargs <- function(x, ...) {
   )
 }
 
-#' @return For `fm_CRSargs_as_list()`, a list of name=value pairs from CRS
+#' @returns For `fm_CRSargs_as_list()`, a list of name=value pairs from CRS
 #'   proj4string
 #' @rdname fm_CRSargs
 #' @export
@@ -2891,7 +2891,7 @@ fm_as_sp_crs <- function(x, ...) {
 #' @describeIn fmesher-deprecated Wrapper for `CRS(projargs)` (PROJ4) and
 #'   `CRS(wkt)` for `sp::Spatial` objects.
 #' @param x A `sp::Spatial` object
-#' @return A `CRS` object, or NULL if no valid CRS identified
+#' @returns A `CRS` object, or NULL if no valid CRS identified
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
 #' @details This function is a convenience method to workaround PROJ4/PROJ6
 #'   differences, and the lack of a crs extraction method for Spatial objects.

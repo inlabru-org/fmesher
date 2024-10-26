@@ -920,7 +920,7 @@ fm_evaluator.inla.mesh.1d <- function(mesh, ...) {
 #' @param type the query type; either `'centroid'` (default, for triangle
 #'   centroids), or `'vertex'` (for mesh vertices)
 #'
-#' @return List of vectors of triangle indices (when `type` is `'centroid'`) or
+#' @returns List of vectors of triangle indices (when `type` is `'centroid'`) or
 #'   vertex indices (when `type` is `'vertex'`). The list has one entry per row
 #'   of the `sf` object. Use `unlist(fm_contains(...))` if the combined union is
 #'   needed.

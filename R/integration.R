@@ -22,7 +22,7 @@
 #' @param .blockwise logical; if `FALSE`, computes full tensor product
 #'   integration. If `TRUE`, computes within-block tensor product integration
 #'   (used internally by [fm_int()]). Default `FALSE`
-#' @return A `data.frame`, `sf`, or `SpatialPointsDataFrame` of multidimensional
+#' @returns A `data.frame`, `sf`, or `SpatialPointsDataFrame` of multidimensional
 #' integration points and their weights
 #'
 #' @examples
@@ -803,7 +803,7 @@ fm_int.fm_mesh_2d <- function(domain,
 #'
 #' @param points A `SpatialPointsDataFrame`, `sf`, or `list` object
 #' @param mesh An `fm_mesh_2d` or `inla.mesh` object
-#' @return `SpatialPointsDataFrame`, `sf`, or `list` of mesh vertices with
+#' @returns `SpatialPointsDataFrame`, `sf`, or `list` of mesh vertices with
 #' projected data attached
 #' @importFrom rlang .data
 #' @keywords internal
@@ -1201,7 +1201,7 @@ fm_int_mesh_2d.sfc_MULTILINESTRING <- function(samplers,
 #'    `(nsub + 1)^2` proto-integration points used to compute
 #'   the vertex weights
 #'   (default `nsub=9`, giving 100 integration points for each triangle)
-#' @return `list` with elements `loc` and `weight` with
+#' @returns `list` with elements `loc` and `weight` with
 #'   integration points for the mesh
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
 #' @keywords internal

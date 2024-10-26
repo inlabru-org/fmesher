@@ -23,7 +23,7 @@
 #' or a numeric vector of x-values
 #' @param ny `r lifecycle::badge("deprecated")` Number of pixels in y direction,
 #' or a numeric vector of y-values
-#' @return `sf`, `SpatRaster`, or `SpatialPixelsDataFrame` covering the mesh or
+#' @returns `sf`, `SpatRaster`, or `SpatialPixelsDataFrame` covering the mesh or
 #' mask.
 #'
 #' @examples
@@ -185,7 +185,7 @@ fm_pixels <- function(mesh,
 #' @param mesh An [fm_mesh_2d()] object
 #' @param refine A list of refinement options passed on to
 #' [fm_rcdt_2d_inla]
-#' @return A refined `fm_mesh_2d` object
+#' @returns A refined `fm_mesh_2d` object
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
 #' @export
 #' @examples
@@ -213,7 +213,7 @@ fm_refine <- function(mesh, refine = list(max.edge = 1)) {
 #'
 #' @param mesh an [fm_mesh_2d] object
 #' @param n number of added points along each edge. Default is 1.
-#' @return A refined [fm_mesh_2d] object
+#' @returns A refined [fm_mesh_2d] object
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
 #' @export
 #' @examples
