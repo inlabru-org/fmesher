@@ -14,6 +14,8 @@
 * Add `loc` plotting option to `geom_fm.fm_mesh_2d` and modify the `ggplot`
   mapping interface for interior and boundary segments in the same method
   (version `0.1.7.9009`)
+* Add `fm_crs_plot()` method for plotting `fm_crs` objects with optional
+  graticules and Tissot indicatrices (version `0.1.7.9010`)
 
 ## sp deprecation updates
 
