@@ -22,8 +22,8 @@
 #' @param .blockwise logical; if `FALSE`, computes full tensor product
 #'   integration. If `TRUE`, computes within-block tensor product integration
 #'   (used internally by [fm_int()]). Default `FALSE`
-#' @returns A `data.frame`, `sf`, or `SpatialPointsDataFrame` of multidimensional
-#' integration points and their weights
+#' @returns A `data.frame`, `sf`, or `SpatialPointsDataFrame` of
+#'   multidimensional integration points and their weights
 #'
 #' @examples
 #' \donttest{

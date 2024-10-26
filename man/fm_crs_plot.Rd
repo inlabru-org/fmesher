@@ -99,14 +99,20 @@ Returns a list with one element, \code{tissot}, which is a \code{SpatialLines} o
 \examples{
 \donttest{
 if (require("sf") && require("sp")) {
-  for (projtype in c("longlat_norm", "lambert_norm", "mollweide_norm", "hammer_norm")) {
+  for (projtype in c("longlat_norm",
+                     "lambert_norm",
+                     "mollweide_norm",
+                     "hammer_norm")) {
     fm_crs_plot(fm_crs(projtype), main = projtype)
   }
 }
 
 if (require("sf") && require("sp")) {
   oblique <- c(0, 45, 45, 0)
-  for (projtype in c("longlat_norm", "lambert_norm", "mollweide_norm", "hammer_norm")) {
+  for (projtype in c("longlat_norm",
+                     "lambert_norm",
+                     "mollweide_norm",
+                     "hammer_norm")) {
     fm_crs_plot(
       fm_crs(projtype, oblique = oblique),
       main = paste("oblique", projtype)

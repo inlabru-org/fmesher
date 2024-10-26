@@ -20,8 +20,8 @@ integration. If \code{TRUE}, computes within-block tensor product integration
 (used internally by \code{\link[=fm_int]{fm_int()}}). Default \code{FALSE}}
 }
 \value{
-A \code{data.frame}, \code{sf}, or \code{SpatialPointsDataFrame} of multidimensional
-integration points and their weights
+A \code{data.frame}, \code{sf}, or \code{SpatialPointsDataFrame} of
+multidimensional integration points and their weights
 }
 \description{
 Calculates the groupwise cross product of integration points in different

@@ -71,10 +71,10 @@ fm_matern_precision <- function(x, alpha, rho, sigma) {
 #' @param loc locations to evaluate the random field, compatible with
 #' `fm_evaluate(x, loc = loc, field = ...)`
 #'
-#' @returns `fm_matern_sample()` returns a matrix, where each column is a sampled
-#' field. If `loc` is `NULL`, the `fm_dof(mesh)` basis weights are given.
-#' Otherwise, the evaluated field at the `nrow(loc)` locations `loc` are given
-#' (from version `0.1.4.9001`)
+#' @returns `fm_matern_sample()` returns a matrix, where each column is a
+#'   sampled field. If `loc` is `NULL`, the `fm_dof(mesh)` basis weights are
+#'   given. Otherwise, the evaluated field at the `nrow(loc)` locations `loc`
+#'   are given (from version `0.1.4.9001`)
 #' @export
 
 fm_matern_sample <- function(x, alpha = 2, rho, sigma, n = 1, loc = NULL) {

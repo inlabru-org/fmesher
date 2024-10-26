@@ -37,9 +37,9 @@ st_signed_area <- function(sfg) {
 # @aliases st_check_polygon
 # @export
 # @param sfg A POLYGON sfg object
-# @returns LOGICAL; `TRUE` if the `sfg` holes are entirely inside the outer ring,
-#   and are disjoint, otherwise `FALSE`. When `FALSE`, the attribute `Message`
-#   is set to a character vector describing the detected reasons.
+# @returns logical; `TRUE` if the `sfg` holes are entirely inside the outer
+#   ring, and are disjoint, otherwise `FALSE`. When `FALSE`, the attribute
+#   `Message` is set to a character vector describing the detected reasons.
 # @keywords internal
 
 st_check_polygon <- function(sfg) {
