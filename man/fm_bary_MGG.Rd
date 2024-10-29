@@ -26,7 +26,7 @@ if (requireNamespace("MetricGraph")) {
   edge4 <- cbind(sin(theta), 1 + cos(theta))
   edges <- list(edge1, edge2, edge3, edge4)
   graph <- MetricGraph::metric_graph$new(edges = edges)
-  m <- fm_bary_MGG(graph, c(1, 0.5))
+  m <- fm_bary_MGG(graph, matrix(c(1, 0.5),nrow=1))
   class(m) # "fm_bary_MGG", "fm_bary", "tbl_df", "tbl", "data.frame"
 }
 
@@ -35,7 +35,6 @@ if (requireNamespace("MetricGraph")) {
 Other object creation and conversion: 
 \code{\link{Euclidean_to_MGG}()},
 \code{\link{MGG_interval}()},
-\code{\link{MGG_non_normalized}()},
 \code{\link{fm_as_fm}()},
 \code{\link{fm_as_lattice_2d}()},
 \code{\link{fm_as_mesh_1d}()},

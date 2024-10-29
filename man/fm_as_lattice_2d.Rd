@@ -41,7 +41,6 @@ str(fm_as_lattice_2d_list(list(fm_lattice_2d(), fm_lattice_2d())))
 Other object creation and conversion: 
 \code{\link{Euclidean_to_MGG}()},
 \code{\link{MGG_interval}()},
-\code{\link{MGG_non_normalized}()},
 \code{\link{fm_as_fm}()},
 \code{\link{fm_as_mesh_1d}()},
 \code{\link{fm_as_mesh_2d}()},

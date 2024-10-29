@@ -13,7 +13,7 @@ path_MGG(graph, start_MGG, edges, end_MGG)
 
 \item{edges}{Ordered list of edge indices related to MGG}
 
-\item{end_loc}{MGG coordinates for end}
+\item{end_MGG}{MGG coordinates for end}
 }
 \value{
 A \code{path_MGG} object
@@ -48,7 +48,6 @@ if (requireNamespace("MetricGraph")) {
 Other object creation and conversion: 
 \code{\link{Euclidean_to_MGG}()},
 \code{\link{MGG_interval}()},
-\code{\link{MGG_non_normalized}()},
 \code{\link{fm_as_fm}()},
 \code{\link{fm_as_lattice_2d}()},
 \code{\link{fm_as_mesh_1d}()},

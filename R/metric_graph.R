@@ -54,6 +54,7 @@
 
 #' @title bru_mapper for the metric_graph class
 #' @param mesh a metric_graph object
+#' @param n_eta number of components in linear predictor
 #' @param \dots arguments passed to sub-methods
 #' @rdname bru_mapper_metric_graph
 bru_mapper.metric_graph <- function(mesh, n_eta = 1, ...) {
@@ -210,6 +211,7 @@ fm_dof.metric_graph <- function(x) {
 #'   edge4 <- cbind(sin(theta), 1 + cos(theta))
 #'   edges <- list(edge1, edge2, edge3, edge4)
 #'   graph <- MetricGraph::metric_graph$new(edges = edges)
+#'   graph$build_mesh(h=0.01)
 #'   p1 <- path_MGG(
 #'     graph = graph,
 #'     start_MGG = matrix(c(1, 0.2), nrow = 1),
@@ -217,10 +219,10 @@ fm_dof.metric_graph <- function(x) {
 #'     end_MGG = matrix(c(3, 0.8), nrow = 1)
 #'   )
 #'   samplers <- tibble::tibble(x = list(p1), weight = c(1))
-#'   ips <- fm_int(
-#'     graph,
-#'     samplers
-#'   )
+#'   #ips <- fm_int(
+#'   #  graph,
+#'   #  samplers
+#'   #)
 #' }
 fm_int.metric_graph <- function(domain, samplers = NULL, name = "x", int.args = NULL, ...) {
   int.args.default <- list(method = "stable", nsub1 = 30, nsub2 = 9)
@@ -335,8 +337,7 @@ fm_int.metric_graph <- function(domain, samplers = NULL, name = "x", int.args = 
 #'   edges <- list(edge1, edge2, edge3, edge4)
 #'   graph <- MetricGraph::metric_graph$new(edges = edges)
 #'   m <- Euclidean_to_MGG(graph,
-#'     c(0, 1),
-#'     normalized = TRUE
+#'     matrix(c(0, 1),nrow=1)
 #'   )
 #'   # c(2,1)
 #'   m
@@ -367,9 +368,10 @@ Euclidean_to_MGG <- function(graph, loc) {
 #'   edge4 <- cbind(sin(theta), 1 + cos(theta))
 #'   edges <- list(edge1, edge2, edge3, edge4)
 #'   graph <- MetricGraph::metric_graph$new(edges = edges)
+#'   graph$build_mesh(h=0.005)
 #'   mgm <- graph_to_mesh_coord(
 #'     graph,
-#'     c(1, 0.5)
+#'     matrix(c(1, 0.5),nrow=1)
 #'   )
 #'   mgm
 #' }
@@ -421,9 +423,10 @@ graph_to_mesh_coord <- function(graph,
 #'   edge4 <- cbind(sin(theta), 1 + cos(theta))
 #'   edges <- list(edge1, edge2, edge3, edge4)
 #'   graph <- MetricGraph::metric_graph$new(edges = edges)
+#'   graph$build_mesh(h=0.01)
 #'   mgg <- mesh_to_graph_coord(
 #'     graph,
-#'     c(5, 1)
+#'     matrix(c(5, 1),nrow=1)
 #'   )
 #'   mgg
 #' }
@@ -449,50 +452,6 @@ mesh_to_graph_coord <- function(graph,
 }
 
 
-#' @title convert graph coordinates from non-normalized to normalized
-#' @description
-#' Create a fm_bary_MGG` object from non-normalized graph coords
-#'
-#' @param graph metric_graph that the location should be mapped to.
-#' @param loc fm_bary_MGG format (non-normalized)
-#' @author Karina Lilleborge \email{karina.lilleborge@@gmail.com}
-#' @returns An `fm_bary_MGG` object
-#' @export
-#' @family object creation and conversion
-#' @examples
-#' if (requireNamespace("MetricGraph")) {
-#'   edge1 <- rbind(c(0, 0), c(1, 0))
-#'   edge2 <- rbind(c(0, 0), c(0, 1))
-#'   edge3 <- rbind(c(0, 1), c(-1, 1))
-#'   theta <- seq(from = pi, to = 3 * pi / 2, length.out = 20)
-#'   edge4 <- cbind(sin(theta), 1 + cos(theta))
-#'   edges <- list(edge1, edge2, edge3, edge4)
-#'   graph <- MetricGraph::metric_graph$new(edges = edges)
-#'   mgg <- MGG_non_normalized(graph,
-#'     matrix(c(1, 1, 0.3, 0.8)),
-#'     normalized = FALSE
-#'   )
-#'   mgg
-#' }
-#'
-MGG_non_normalized <- function(graph,
-                               loc,
-                               normalized = TRUE) {
-  if (normalized == FALSE) {
-    loc <- cbind(loc[, 1], loc[, 2] / graph$edge_lengths[loc[, 1]])
-  }
-  res <- tibble::tibble(
-    index = as.integer(res[, 1]),
-    where = as.numeric(res[, 2])
-  )
-  mesh_coords <-
-    structure(
-      res,
-      class = c("fm_bary_MGG", "fm_bary", "tbl_df", "tbl", "data.frame")
-    )
-  return(mesh_coords)
-}
-
 #' @title Make a MGM object
 #' @description
 #' Create a `fm_bary_MGM` object
@@ -512,9 +471,9 @@ MGG_non_normalized <- function(graph,
 #'   edge4 <- cbind(sin(theta), 1 + cos(theta))
 #'   edges <- list(edge1, edge2, edge3, edge4)
 #'   graph <- MetricGraph::metric_graph$new(edges = edges)
+#'   graph$build_mesh(h=0.01)
 #'   m <- fm_bary_MGM(graph,
-#'     c(1, 1),
-#'     normalized = TRUE
+#'     matrix(c(1, 1),nrow=1)
 #'   )
 #'   class(m) # "fm_bary_MGM", "fm_bary", "tbl_df", "tbl", "data.frame"
 #' }
@@ -553,7 +512,7 @@ fm_bary_MGM <- function(graph,
 #'   edge4 <- cbind(sin(theta), 1 + cos(theta))
 #'   edges <- list(edge1, edge2, edge3, edge4)
 #'   graph <- MetricGraph::metric_graph$new(edges = edges)
-#'   m <- fm_bary_MGG(graph, c(1, 0.5))
+#'   m <- fm_bary_MGG(graph, matrix(c(1, 0.5),nrow=1))
 #'   class(m) # "fm_bary_MGG", "fm_bary", "tbl_df", "tbl", "data.frame"
 #' }
 #'
@@ -572,13 +531,13 @@ fm_bary_MGG <- function(graph,
 }
 
 
-#' @title Make an inter edge-interval on graph object
+#' @title Make an inter edge interval on graph object
 #' @description
 #' Create an `MGG_interval` object.
 #'
-#' @param graph metric_graph that the interval should be mapped to.
-#' @param start_loc Euclidean coord.
-#' @param end_loc Euclidean_coord.
+#' @param graph `metric_graph` that the interval should be mapped to.
+#' @param start_MGG Start location for inter edge interval
+#' @param end_MGG End location for inter edge interval
 #' @author Karina Lilleborge \email{karina.lilleborge@@gmail.com}
 #' @returns An `MGG_interval` object
 #' @export
@@ -594,8 +553,8 @@ fm_bary_MGG <- function(graph,
 #'   graph <- MetricGraph::metric_graph$new(edges = edges)
 #'   int <- MGG_interval(
 #'     graph,
-#'     c(1, 0.8),
-#'     c(1, 0.5)
+#'     matrix(c(1, 0.8),nrow=1),
+#'     matrix(c(1, 0.5),nrow=1)
 #'   )
 #'   int
 #' }
@@ -620,7 +579,7 @@ MGG_interval <- function(graph,
 #' @param graph metric_graph that the interval should be mapped to.
 #' @param start_MGG MGG coordinates for start
 #' @param edges Ordered list of edge indices related to MGG
-#' @param end_loc MGG coordinates for end
+#' @param end_MGG MGG coordinates for end
 #' @author Karina Lilleborge \email{karina.lilleborge@@gmail.com}
 #' @returns A `path_MGG` object
 #' @export
@@ -734,7 +693,7 @@ path_MGG <- function(graph,
   return(path)
 }
 
-#' @title Make an interval on graph object from sf object
+#' @title Make an interval on graph object from sf object (NOT FINISHED)
 #' @description
 #' Create an `graph_interval` object from `sf::st_geometry` (`LINESTRING`)
 #'

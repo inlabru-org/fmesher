@@ -18,6 +18,8 @@ ibm_jacobian.bru_mapper_metric_graph(mapper, input, ...)
 \arguments{
 \item{mesh}{a metric_graph object}
 
+\item{n_eta}{number of components in linear predictor}
+
 \item{\dots}{arguments passed to sub-methods}
 
 \item{mapper}{A \code{bru_mapper_metric_graph} object}

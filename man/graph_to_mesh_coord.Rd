@@ -26,9 +26,10 @@ if (requireNamespace("MetricGraph")) {
   edge4 <- cbind(sin(theta), 1 + cos(theta))
   edges <- list(edge1, edge2, edge3, edge4)
   graph <- MetricGraph::metric_graph$new(edges = edges)
+  graph$build_mesh(h=0.005)
   mgm <- graph_to_mesh_coord(
     graph,
-    c(1, 0.5)
+    matrix(c(1, 0.5),nrow=1)
   )
   mgm
 }
@@ -38,7 +39,6 @@ if (requireNamespace("MetricGraph")) {
 Other object creation and conversion: 
 \code{\link{Euclidean_to_MGG}()},
 \code{\link{MGG_interval}()},
-\code{\link{MGG_non_normalized}()},
 \code{\link{fm_as_fm}()},
 \code{\link{fm_as_lattice_2d}()},
 \code{\link{fm_as_mesh_1d}()},

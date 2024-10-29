@@ -27,8 +27,7 @@ if (requireNamespace("MetricGraph")) {
   edges <- list(edge1, edge2, edge3, edge4)
   graph <- MetricGraph::metric_graph$new(edges = edges)
   m <- Euclidean_to_MGG(graph,
-    c(0, 1),
-    normalized = TRUE
+    matrix(c(0, 1),nrow=1)
   )
   # c(2,1)
   m
@@ -38,7 +37,6 @@ if (requireNamespace("MetricGraph")) {
 \seealso{
 Other object creation and conversion: 
 \code{\link{MGG_interval}()},
-\code{\link{MGG_non_normalized}()},
 \code{\link{fm_as_fm}()},
 \code{\link{fm_as_lattice_2d}()},
 \code{\link{fm_as_mesh_1d}()},
