@@ -4,7 +4,7 @@
 \alias{path_MGG}
 \title{Make an interval on graph object}
 \usage{
-path_MGG(graph, start_MGG, edges, end_MGG, ...)
+path_MGG(graph, start_MGG, edges, end_MGG)
 }
 \arguments{
 \item{graph}{metric_graph that the interval should be mapped to.}
@@ -13,25 +13,34 @@ path_MGG(graph, start_MGG, edges, end_MGG, ...)
 
 \item{edges}{Ordered list of edge indices related to MGG}
 
-\item{\dots}{Additional options, currently unused.}
-
 \item{end_loc}{MGG coordinates for end}
 }
 \value{
-An \code{path_MGG} object
+A \code{path_MGG} object
 }
 \description{
-Create an \code{graph_interval} object from known start, end and visiting edges.
+Create a \code{path_MGG} object from known start, end and visiting edges.
 }
 \examples{
-if (require("ggplot2") & require("MetricGraph")) {
-  g <- MetricGraph::metric_graph$new()
-  m <- path_MGG(
-    g,
-    c(1, 1),
-    c(0, 1)
+if (requireNamespace("MetricGraph")) {
+  edge1 <- rbind(c(0, 0), c(1, 0))
+  edge2 <- rbind(c(0, 0), c(0, 1))
+  edge3 <- rbind(c(0, 1), c(-1, 1))
+  theta <- seq(from = pi, to = 3 * pi / 2, length.out = 20)
+  edge4 <- cbind(sin(theta), 1 + cos(theta))
+  edges <- list(edge1, edge2, edge3, edge4)
+  graph <- MetricGraph::metric_graph$new(edges = edges)
+  path <- path_MGG(
+    graph,
+    start_MGG = matrix(c(1, 0.5), nrow = 1),
+    edges = c(2),
+    end_MGG = matrix(c(3, 0.6), nrow = 1)
   )
-  g$plot(X = 1, X_loc = m)
+  # a tibble with three interedge intervals
+  # 1  0.5  0
+  # 2  0    1
+  # 3  0    0.6
+  path
 }
 
 }
@@ -55,7 +64,7 @@ Other object creation and conversion:
 \code{\link{fm_segm}()},
 \code{\link{fm_simplify}()},
 \code{\link{fm_tensor}()},
-\code{\link{geometric_path_to_path_MGG}()},
+\code{\link{geom_path_to_path_MGG}()},
 \code{\link{graph_to_mesh_coord}()},
 \code{\link{mesh_to_graph_coord}()}
 }

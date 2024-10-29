@@ -160,10 +160,24 @@ ips <- fm_int(
 )
 plot(ips$x, ips$weight)
 
-ips <- fm_int(
-  graph,
-  samplers
-)
-plot(ips$x, ips$weight)
-
+if (requireNamespace("MetricGraph")) {
+  edge1 <- rbind(c(0, 0), c(1, 0))
+  edge2 <- rbind(c(0, 0), c(0, 1))
+  edge3 <- rbind(c(0, 1), c(-1, 1))
+  theta <- seq(from = pi, to = 3 * pi / 2, length.out = 20)
+  edge4 <- cbind(sin(theta), 1 + cos(theta))
+  edges <- list(edge1, edge2, edge3, edge4)
+  graph <- MetricGraph::metric_graph$new(edges = edges)
+  p1 <- path_MGG(
+    graph = graph,
+    start_MGG = matrix(c(1, 0.2), nrow = 1),
+    edges = c(2),
+    end_MGG = matrix(c(3, 0.8), nrow = 1)
+  )
+  samplers <- tibble::tibble(x = list(p1), weight = c(1))
+  ips <- fm_int(
+    graph,
+    samplers
+  )
+}
 }

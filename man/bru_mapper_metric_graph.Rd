@@ -7,7 +7,7 @@
 \alias{ibm_jacobian.bru_mapper_metric_graph}
 \title{bru_mapper for the metric_graph class}
 \usage{
-bru_mapper.metric_graph(mesh, ...)
+bru_mapper.metric_graph(mesh, n_eta = 1, ...)
 
 ibm_n.bru_mapper_metric_graph(mapper, ...)
 

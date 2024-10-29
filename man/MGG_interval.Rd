@@ -4,12 +4,10 @@
 \alias{MGG_interval}
 \title{Make an inter edge-interval on graph object}
 \usage{
-MGG_interval(graph, start_MGG, end_MGG, ...)
+MGG_interval(graph, start_MGG, end_MGG)
 }
 \arguments{
 \item{graph}{metric_graph that the interval should be mapped to.}
-
-\item{\dots}{Additional options, currently unused.}
 
 \item{start_loc}{Euclidean coord.}
 
@@ -22,14 +20,20 @@ An \code{MGG_interval} object
 Create an \code{MGG_interval} object.
 }
 \examples{
-if (require("ggplot2") & require("MetricGraph")) {
-  g <- MetricGraph::metric_graph$new()
-  m <- inter_edge_interval(
-    g,
-    c(1, 1),
-    c(0, 1)
+if (requireNamespace("MetricGraph")) {
+  edge1 <- rbind(c(0, 0), c(1, 0))
+  edge2 <- rbind(c(0, 0), c(0, 1))
+  edge3 <- rbind(c(0, 1), c(-1, 1))
+  theta <- seq(from = pi, to = 3 * pi / 2, length.out = 20)
+  edge4 <- cbind(sin(theta), 1 + cos(theta))
+  edges <- list(edge1, edge2, edge3, edge4)
+  graph <- MetricGraph::metric_graph$new(edges = edges)
+  int <- MGG_interval(
+    graph,
+    c(1, 0.8),
+    c(1, 0.5)
   )
-  g$plot(X = 1, X_loc = m)
+  int
 }
 
 }
@@ -52,7 +56,7 @@ Other object creation and conversion:
 \code{\link{fm_segm}()},
 \code{\link{fm_simplify}()},
 \code{\link{fm_tensor}()},
-\code{\link{geometric_path_to_path_MGG}()},
+\code{\link{geom_path_to_path_MGG}()},
 \code{\link{graph_to_mesh_coord}()},
 \code{\link{mesh_to_graph_coord}()},
 \code{\link{path_MGG}()}

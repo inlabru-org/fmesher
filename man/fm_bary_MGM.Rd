@@ -4,14 +4,12 @@
 \alias{fm_bary_MGM}
 \title{Make a MGM object}
 \usage{
-fm_bary_MGM(graph, loc, ...)
+fm_bary_MGM(graph, loc)
 }
 \arguments{
 \item{graph}{metric_graph that the location should be mapped to.}
 
 \item{loc}{MGM coordinates}
-
-\item{\dots}{Additional options, currently unused.}
 }
 \value{
 An \code{fm_bary_MGG} object
@@ -20,13 +18,19 @@ An \code{fm_bary_MGG} object
 Create a \code{fm_bary_MGM} object
 }
 \examples{
-if (require("ggplot2") & require("MetricGraph")) {
-  g <- MetricGraph::metric_graph$new()
-  m <- mesh_coord(g,
+if (requireNamespace("MetricGraph")) {
+  edge1 <- rbind(c(0, 0), c(1, 0))
+  edge2 <- rbind(c(0, 0), c(0, 1))
+  edge3 <- rbind(c(0, 1), c(-1, 1))
+  theta <- seq(from = pi, to = 3 * pi / 2, length.out = 20)
+  edge4 <- cbind(sin(theta), 1 + cos(theta))
+  edges <- list(edge1, edge2, edge3, edge4)
+  graph <- MetricGraph::metric_graph$new(edges = edges)
+  m <- fm_bary_MGM(graph,
     c(1, 1),
     normalized = TRUE
   )
-  g$plot(X = 1, X_loc = m)
+  class(m) # "fm_bary_MGM", "fm_bary", "tbl_df", "tbl", "data.frame"
 }
 
 }
@@ -49,7 +53,7 @@ Other object creation and conversion:
 \code{\link{fm_segm}()},
 \code{\link{fm_simplify}()},
 \code{\link{fm_tensor}()},
-\code{\link{geometric_path_to_path_MGG}()},
+\code{\link{geom_path_to_path_MGG}()},
 \code{\link{graph_to_mesh_coord}()},
 \code{\link{mesh_to_graph_coord}()},
 \code{\link{path_MGG}()}

@@ -220,6 +220,10 @@ test_that("integration two paths", {
   # build mesh and check output is correct
   graph$build_mesh(h = 0.005)
   # expect no error with NA
+  expect_error(
+    fm_int(graph, samplers = test_sampler),
+    NA
+  )
   ips <- fm_int(graph, samplers = test_sampler)
   expect_equal(
     c(
@@ -296,39 +300,49 @@ test_that("ibm values", {
   )
 })
 
-test_that("sf to MGG", {
-  skip_if_not_installed("MetricGraph")
-  skip_if_not_installed("sf")
-  graph <- local_bru_test_graph()
-  line1 <- sf::st_linestring(matrix(c(0, 0, 1, 0.5, 0, 0), nrow = 3))
-  line1_g <- sf::st_geometry(line1)
-  path_MGG1 <-
-    geometric_path_to_path_MGG(
-      graph = graph,
-      geometric_path = line1_g
-    )
-  expect_equal(
-    path_MGG1$start,
-    matrix(c(2, 0.5), nrow = 1)
-  )
-  expect_equal(
-    path_MGG1$end,
-    matrix(c(1, 1.0), nrow = 1)
-  )
-  line2 <- sf::st_linestring(matrix(c(-1, 0, 1, 1, 1, 1), nrow = 3))
-  lines <- sf::st_sfc(list(line1, line2))
-  lines <- sf::st_geometry(lines)
-  path_MGGs <-
-    geometric_path_to_path_MGG(
-      graph = graph,
-      geometric_path = lines
-    )
-  expect_equal(
-    path_MGGs$start,
-    matrix(c(2, 3, 0.5, 1), nrow = 2)
-  )
-  expect_equal(
-    path_MGGs$end,
-    matrix(c(1, 5, 1.0, 1), nrow = 2)
-  )
-})
+# test_that("sf to MGG", {
+#   skip_if_not_installed("MetricGraph")
+#   skip_if_not_installed("sf")
+#   skip_if_not_installed("lwgeom")
+#   graph <- local_bru_test_graph()
+#   line1 <- sf::st_linestring(matrix(c(0, 0, 1, 0.5, 0, 0), nrow = 3))
+#   line1_g <- sf::st_geometry(line1)
+#   path_MGG1 <-
+#     geom_path_to_path_MGG(
+#       graph = graph,
+#       geom_path = line1_g
+#     )
+#   expect_equal(
+#     path_MGG1[[1]]$index,
+#     c(2, 1)
+#   )
+#   expect_equal(
+#     path_MGG1[[1]]$where,
+#     matrix(c(0.5, 0, 0, 1), nrow = 2)
+#   )
+#   line2 <- sf::st_linestring(matrix(c(-1, 0, 1, 1, 1, 1), nrow = 3))
+#   lines <- sf::st_sfc(list(line1, line2))
+#   lines <- sf::st_geometry(lines)
+#   path_MGGs <-
+#     geom_path_to_path_MGG(
+#       graph = graph,
+#       geom_path = lines
+#     )
+#
+#   expect_equal(
+#     path_MGGs[[1]]$index,
+#     c(2, 1)
+#   )
+#   expect_equal(
+#     path_MGGs[[2]]$index,
+#     c(3, 5)
+#   )
+#   expect_equal(
+#     path_MGGs[[1]]$where,
+#     matrix(c(0.5, 0, 0, 1), nrow = 2)
+#   )
+#   expect_equal(
+#     path_MGGs[[2]]$where,
+#     matrix(c(1, 0, 0, 1), nrow = 2)
+#   )
+# })

@@ -4,7 +4,7 @@
 \alias{fm_basis.metric_graph}
 \title{Internal helper functions for metric graph evaluation}
 \usage{
-\method{fm_basis}{metric_graph}(x, loc, weights = NULL, ..., full = FALSE)
+\method{fm_basis}{metric_graph}(x, loc, weights = NULL, n_eta = 1, ..., full = FALSE)
 }
 \arguments{
 \item{x}{metric_graph object}
