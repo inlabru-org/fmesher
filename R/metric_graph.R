@@ -816,4 +816,3 @@ geom_path_to_path_MGG <- function(graph, geom_path) {
 
   return(paths)
 }
-
