@@ -219,10 +219,10 @@ fm_dof.metric_graph <- function(x) {
 #'     end_MGG = matrix(c(3, 0.8), nrow = 1)
 #'   )
 #'   samplers <- tibble::tibble(x = list(p1), weight = c(1))
-#'   #ips <- fm_int(
-#'   #  graph,
-#'   #  samplers
-#'   #)
+#'   ips <- fm_int(
+#'     graph,
+#'     samplers
+#'   )
 #' }
 fm_int.metric_graph <- function(domain, samplers = NULL, name = "x", int.args = NULL, ...) {
   int.args.default <- list(method = "stable", nsub1 = 30, nsub2 = 9)
@@ -251,7 +251,7 @@ fm_int.metric_graph <- function(domain, samplers = NULL, name = "x", int.args = 
     .block <- seq_len(NROW(samplers))
   }
 
-  for (j in seq_len(length(samplers))) {
+  for (j in seq_len(NROW(samplers))) {
     # for a graph interval
     subsampler <- samplers[[name]][[j]]
     theweight <- samplers[["weight"]][[j]]
