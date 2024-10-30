@@ -9,7 +9,8 @@ Euclidean_to_MGG(graph, loc)
 \arguments{
 \item{graph}{metric_graph that the location should be mapped to.}
 
-\item{loc}{Euclidean coords (if not on graph, they are mapped to the closest point on graph)}
+\item{loc}{Euclidean coords (if not on graph, they are mapped to the closest
+point on graph)}
 }
 \value{
 An \code{fm_bary_MGM} object
@@ -26,8 +27,9 @@ if (requireNamespace("MetricGraph")) {
   edge4 <- cbind(sin(theta), 1 + cos(theta))
   edges <- list(edge1, edge2, edge3, edge4)
   graph <- MetricGraph::metric_graph$new(edges = edges)
-  m <- Euclidean_to_MGG(graph,
-    matrix(c(0, 1),nrow=1)
+  m <- Euclidean_to_MGG(
+    graph,
+    matrix(c(0, 1), nrow = 1)
   )
   # c(2,1)
   m

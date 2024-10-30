@@ -54,7 +54,7 @@ fm_int(domain, samplers = NULL, ...)
   ...
 )
 
-\method{fm_int}{metric_graph}(domain, samplers = NULL, name = "x", int.args = NULL, ...)
+\method{fm_int}{metric_graph}(domain, samplers = NULL, name = "x", ...)
 }
 \arguments{
 \item{domain}{Functional space specification; single domain or a named list
@@ -118,12 +118,10 @@ Construct integration points on tensor product spaces
 \item \code{fm_int(fm_mesh_2d)}: \code{fm_mesh_2d} integration. Any sampler class with an
 associated \code{\link[=fm_int_mesh_2d]{fm_int_mesh_2d()}} method is supported.
 
-\item \code{fm_int(metric_graph)}: \code{metric_graph} integration. Supported samplers:
-\itemize{
-\item \code{NULL} for integration over the entire domain;
-\item A tibble with a named column containing a matrix with single edge intervals (ordered), and optionally a
+\item \code{fm_int(metric_graph)}: \code{metric_graph} integration. Supported samplers: * \code{NULL}
+for integration over the entire domain; * A tibble with a named column
+containing a matrix with single edge intervals (ordered), and optionally a
 \code{weight} column.
-}
 
 }}
 \examples{
@@ -168,7 +166,7 @@ if (requireNamespace("MetricGraph")) {
   edge4 <- cbind(sin(theta), 1 + cos(theta))
   edges <- list(edge1, edge2, edge3, edge4)
   graph <- MetricGraph::metric_graph$new(edges = edges)
-  graph$build_mesh(h=0.01)
+  graph$build_mesh(h = 0.01)
   p1 <- path_MGG(
     graph = graph,
     start_MGG = matrix(c(1, 0.2), nrow = 1),

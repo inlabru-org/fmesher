@@ -30,8 +30,8 @@ if (requireNamespace("MetricGraph")) {
   graph <- MetricGraph::metric_graph$new(edges = edges)
   int <- MGG_interval(
     graph,
-    matrix(c(1, 0.8),nrow=1),
-    matrix(c(1, 0.5),nrow=1)
+    matrix(c(1, 0.8), nrow = 1),
+    matrix(c(1, 0.5), nrow = 1)
   )
   int
 }

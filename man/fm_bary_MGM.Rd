@@ -26,9 +26,10 @@ if (requireNamespace("MetricGraph")) {
   edge4 <- cbind(sin(theta), 1 + cos(theta))
   edges <- list(edge1, edge2, edge3, edge4)
   graph <- MetricGraph::metric_graph$new(edges = edges)
-  graph$build_mesh(h=0.01)
-  m <- fm_bary_MGM(graph,
-    matrix(c(1, 1),nrow=1)
+  graph$build_mesh(h = 0.01)
+  m <- fm_bary_MGM(
+    graph,
+    matrix(c(1, 1), nrow = 1)
   )
   class(m) # "fm_bary_MGM", "fm_bary", "tbl_df", "tbl", "data.frame"
 }

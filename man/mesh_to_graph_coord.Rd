@@ -26,10 +26,10 @@ if (requireNamespace("MetricGraph")) {
   edge4 <- cbind(sin(theta), 1 + cos(theta))
   edges <- list(edge1, edge2, edge3, edge4)
   graph <- MetricGraph::metric_graph$new(edges = edges)
-  graph$build_mesh(h=0.01)
+  graph$build_mesh(h = 0.01)
   mgg <- mesh_to_graph_coord(
     graph,
-    matrix(c(5, 1),nrow=1)
+    matrix(c(5, 1), nrow = 1)
   )
   mgg
 }

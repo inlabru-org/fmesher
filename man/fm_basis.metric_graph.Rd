@@ -4,13 +4,13 @@
 \alias{fm_basis.metric_graph}
 \title{Internal helper functions for metric graph evaluation}
 \usage{
-\method{fm_basis}{metric_graph}(x, loc, weights = NULL, n_eta = 1, ..., full = FALSE)
+\method{fm_basis}{metric_graph}(x, loc, weights = NULL, ..., full = FALSE)
 }
 \arguments{
 \item{x}{metric_graph object}
 
-\item{loc}{Observation locations, can be either
-MGG coordinates, MGM coordinates or Euclidean coordinates (passed to fm_bary())}
+\item{loc}{Observation locations, can be either MGG coordinates, MGM
+coordinates or Euclidean coordinates (passed to fm_bary())}
 
 \item{weights}{Optional weight vector, one weight for each location}
 
