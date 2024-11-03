@@ -67,20 +67,24 @@ fm_internal_clip <- function(bounds, coords, eps = 0.05) {
 #' @examples
 #' \donttest{
 #' if (require("sf") && require("sp")) {
-#'   for (projtype in c("longlat_norm",
-#'                      "lambert_norm",
-#'                      "mollweide_norm",
-#'                      "hammer_norm")) {
+#'   for (projtype in c(
+#'     "longlat_norm",
+#'     "lambert_norm",
+#'     "mollweide_norm",
+#'     "hammer_norm"
+#'   )) {
 #'     fm_crs_plot(fm_crs(projtype), main = projtype)
 #'   }
 #' }
 #'
 #' if (require("sf") && require("sp")) {
 #'   oblique <- c(0, 45, 45, 0)
-#'   for (projtype in c("longlat_norm",
-#'                      "lambert_norm",
-#'                      "mollweide_norm",
-#'                      "hammer_norm")) {
+#'   for (projtype in c(
+#'     "longlat_norm",
+#'     "lambert_norm",
+#'     "mollweide_norm",
+#'     "hammer_norm"
+#'   )) {
 #'     fm_crs_plot(
 #'       fm_crs(projtype, oblique = oblique),
 #'       main = paste("oblique", projtype)
@@ -240,8 +244,9 @@ fm_crs_graticule <- function(x, by = c(15, 15, 45), add = FALSE, do.plot = TRUE,
           )
 
         lat <- seq(n[2] * by[2],
-                   90 - 1e-6,
-                   length.out = ceiling((90 - n[2] * by[2]) / 2) + 1)
+          90 - 1e-6,
+          length.out = ceiling((90 - n[2] * by[2]) / 2) + 1
+        )
         meridians <- as.matrix(expand.grid(lat, lon)[, 2:1])
         proj.mer.coords <- fm_transform(meridians,
           crs0 = fmesher::fm_CRS("longlat_norm"),
