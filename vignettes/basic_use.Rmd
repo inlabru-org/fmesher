@@ -14,8 +14,8 @@ knitr::opts_chunk$set(
   comment = "#>",
   dev = "png",
   dev.args = list(type = "cairo-png"),
-  fig.width = 7,
-  fig.height = 5
+  fig.width = 5,
+  fig.height = 5*5/7
   #  out.width = 250,
   #  out.height = 250
 )
@@ -35,7 +35,6 @@ domain <- cbind(rnorm(4, sd = 3), rnorm(4))
   boundary = fm_extensions(domain, c(2.5, 5)),
   max.edge = c(0.5, 2)
 ))
-plot(mesh2, axes = TRUE)
 ```
 
 ```{r basic1,fig.cap="1D B-spline function space basis functions"}
@@ -44,7 +43,6 @@ plot(mesh2, axes = TRUE)
   boundary = "free", # c("neumann", "dirichlet"),
   degree = 2
 ))
-plot(mesh2, axes = TRUE)
 ```
 
 ## Point lookup and evaluation
