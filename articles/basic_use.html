@@ -91,13 +91,7 @@ Lindgren</h4>
 <span><span class="co">#&gt;   Euler char.:   1</span></span>
 <span><span class="co">#&gt;   Constraints:   39 boundary edges (1 group: 1), 115 interior edges (1 group: 1)</span></span>
 <span><span class="co">#&gt;   Bounding box: (-11.963110,  8.246925) x (-5.522181, 5.499657)</span></span>
-<span><span class="co">#&gt;   Basis d.o.f.:  888</span></span>
-<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mesh2</span>, axes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="basic_use_files/figure-html/basic2-1.png" alt="2D triangulation mesh" width="672"><p class="caption">
-2D triangulation mesh
-</p>
-</div>
+<span><span class="co">#&gt;   Basis d.o.f.:  888</span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">(</span><span class="va">mesh1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_mesh_1d.html">fm_mesh_1d</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">7</span>, <span class="fl">10</span><span class="op">)</span>,</span>
@@ -110,13 +104,7 @@ Lindgren</h4>
 <span><span class="co">#&gt;   Interval:  ( 0, 10)</span></span>
 <span><span class="co">#&gt;   Boundary:  (free, free)</span></span>
 <span><span class="co">#&gt;   B-spline degree:   2</span></span>
-<span><span class="co">#&gt;   Basis d.o.f.:  6</span></span>
-<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mesh2</span>, axes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="basic_use_files/figure-html/basic1-1.png" alt="1D B-spline function space basis functions" width="672"><p class="caption">
-1D B-spline function space basis functions
-</p>
-</div>
+<span><span class="co">#&gt;   Basis d.o.f.:  6</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="point-lookup-and-evaluation">Point lookup and evaluation<a class="anchor" aria-label="anchor" href="#point-lookup-and-evaluation"></a>
@@ -194,7 +182,7 @@ Lindgren</h4>
 <span><span class="va">value1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_evaluate.html">fm_evaluate</a></span><span class="op">(</span><span class="va">evaluator1</span>, field <span class="op">=</span> <span class="va">field1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pts1</span>, <span class="va">value1</span>, type <span class="op">=</span> <span class="st">"l"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="basic_use_files/figure-html/lookup1-1.png" alt="Evaluated 1D function" width="672"><p class="caption">
+<img src="basic_use_files/figure-html/lookup1-1.png" alt="Evaluated 1D function" width="480"><p class="caption">
 Evaluated 1D function
 </p>
 </div>
@@ -208,7 +196,7 @@ Evaluated 1D function
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mesh2</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="basic_use_files/figure-html/unnamed-chunk-2-1.png" alt="2D triangulation mesh (base graphics version)" width="672"><p class="caption">
+<img src="basic_use_files/figure-html/unnamed-chunk-2-1.png" alt="2D triangulation mesh (base graphics version)" width="480"><p class="caption">
 2D triangulation mesh (base graphics version)
 </p>
 </div>
@@ -222,7 +210,7 @@ Evaluated 1D function
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_fm.html">geom_fm</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mesh2</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="basic_use_files/figure-html/unnamed-chunk-3-1.png" alt="2D triangulation mesh (ggplot version)" width="672"><p class="caption">
+<img src="basic_use_files/figure-html/unnamed-chunk-3-1.png" alt="2D triangulation mesh (ggplot version)" width="480"><p class="caption">
 2D triangulation mesh (ggplot version)
 </p>
 </div>
@@ -231,7 +219,7 @@ Evaluated 1D function
 <span>  <span class="fu"><a href="../reference/geom_fm.html">geom_fm</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mesh1</span>, weights <span class="op">=</span> <span class="va">field1</span> <span class="op">+</span> <span class="fl">2</span>, xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2</span>, <span class="fl">12</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_fm.html">geom_fm</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mesh1</span>, linetype <span class="op">=</span> <span class="fl">2</span>, alpha <span class="op">=</span> <span class="fl">0.5</span>, xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2</span>, <span class="fl">12</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="basic_use_files/figure-html/unnamed-chunk-4-1.png" alt="1D B-spline function space basis functions with evaluated function (ggplot version)" width="672"><p class="caption">
+<img src="basic_use_files/figure-html/unnamed-chunk-4-1.png" alt="1D B-spline function space basis functions with evaluated function (ggplot version)" width="480"><p class="caption">
 1D B-spline function space basis functions with evaluated function
 (ggplot version)
 </p>
@@ -260,7 +248,7 @@ Evaluated 1D function
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/image.html" class="external-link">image</a></span><span class="op">(</span><span class="va">evaluator</span><span class="op">$</span><span class="va">x</span>, <span class="va">evaluator</span><span class="op">$</span><span class="va">y</span>, <span class="fu"><a href="../reference/fm_evaluate.html">fm_evaluate</a></span><span class="op">(</span><span class="va">evaluator</span>, field <span class="op">=</span> <span class="va">samp</span><span class="op">)</span>, asp <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="basic_use_files/figure-html/sim-1.png" alt="Simulated 2D Matérn field" width="672"><p class="caption">
+<img src="basic_use_files/figure-html/sim-1.png" alt="Simulated 2D Matérn field" width="480"><p class="caption">
 Simulated 2D Matérn field
 </p>
 </div>
