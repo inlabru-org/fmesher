@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.7.9010</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.7.9011</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,7 @@
 <li>Add <code>format="loc"</code> argument to <code><a href="../reference/fm_as_sfc.html">fm_as_sfc.fm_mesh_2d()</a></code> for converting mesh node coordinates to <code>sfc_POINT</code> format (version <code>0.1.7.9009</code>)</li>
 <li>Add <code>loc</code> plotting option to <code>geom_fm.fm_mesh_2d</code> and modify the <code>ggplot</code> mapping interface for interior and boundary segments in the same method (version <code>0.1.7.9009</code>)</li>
 <li>Add <code><a href="../reference/fm_crs_plot.html">fm_crs_plot()</a></code> method for plotting <code>fm_crs</code> objects with optional graticules and Tissot indicatrices (version <code>0.1.7.9010</code>)</li>
+<li>Add control argument <code>max_batch_size</code> to <code><a href="../reference/fm_bary.html">fm_bary.fm_mesh_2d()</a></code>, that can be supplied via <code><a href="../reference/fm_basis.html">fm_basis()</a></code>, for optional override of the default maximal batch calculation size, see <a href="https://github.com/inlabru-org/fmesher/issues/14" class="external-link">#14</a> (version <code>0.1.7.9011</code>)</li>
 </ul><div class="section level3">
 <h3 id="sp-deprecation-updates-development-version">sp deprecation updates<a class="anchor" aria-label="anchor" href="#sp-deprecation-updates-development-version"></a></h3>
 <ul><li>Remove <code>sp</code> objects from <code>fmexample</code> data. Use <code><a href="../reference/fmexample_sp.html">fmexample_sp()</a></code> to access them if needed (version <code>0.1.7.9004</code>)</li>

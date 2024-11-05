@@ -9,7 +9,7 @@ coordinates"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.7.9010</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.7.9011</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,7 +58,7 @@ coordinates</p>
 <span><span class="fu">fm_bary</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">loc</span>, method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"linear"</span>, <span class="st">"nearest"</span><span class="op">)</span>, restricted <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'fm_mesh_2d'</span></span>
-<span><span class="fu">fm_bary</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">loc</span>, crs <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">fm_bary</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">loc</span>, crs <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span>, max_batch_size <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'inla.mesh'</span></span>
 <span><span class="fu">fm_bary</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">...</span><span class="op">)</span></span>
@@ -100,6 +100,14 @@ interval.</p></dd>
 
 <dt id="arg-crs">crs<a class="anchor" aria-label="anchor" href="#arg-crs"></a></dt>
 <dd><p>Optional crs information for <code>loc</code></p></dd>
+
+
+<dt id="arg-max-batch-size">max_batch_size<a class="anchor" aria-label="anchor" href="#arg-max-batch-size"></a></dt>
+<dd><p>integer; maximum number of points to process in a
+single batch. This speeds up calculations by avoiding repeated large
+internal memory allocations and data copies. The default, <code>NULL</code>, uses
+<code>max_batch_size = 2e5L</code>, chosen based on empirical time measurements to
+give an approximately optimal runtime.</p></dd>
 
 </dl></div>
     <div class="section level2">
