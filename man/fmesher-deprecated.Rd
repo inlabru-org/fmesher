@@ -9,11 +9,6 @@
 \alias{fm_spTransform.inla.mesh.lattice}
 \alias{fm_spTransform.inla.mesh.segment}
 \alias{fm_spTransform.inla.mesh}
-\alias{fm_has_PROJ6}
-\alias{fm_not_for_PROJ6}
-\alias{fm_not_for_PROJ4}
-\alias{fm_fallback_PROJ6}
-\alias{fm_requires_PROJ6}
 \alias{fm_as_sp_crs}
 \alias{fm_sp_get_crs}
 \alias{fm_as_inla_mesh_segment}
@@ -34,16 +29,6 @@ fm_spTransform(x, ...)
 \method{fm_spTransform}{inla.mesh.segment}(x, CRSobj, passthrough = FALSE, ...)
 
 \method{fm_spTransform}{inla.mesh}(x, CRSobj, passthrough = FALSE, ...)
-
-fm_has_PROJ6()
-
-fm_not_for_PROJ6(fun = NULL)
-
-fm_not_for_PROJ4(fun = NULL)
-
-fm_fallback_PROJ6(fun = NULL)
-
-fm_requires_PROJ6(fun = NULL)
 
 fm_as_sp_crs(x, ...)
 
@@ -69,9 +54,6 @@ Setting to TRUE allows objects with no CRS information to be passed
 through without transformation.}
 
 \item{CRSobj}{The target sp::CRS or inla.CRS object}
-
-\item{fun}{The name of the function that requires PROJ6. Default: NULL,
-which uses the name of the calling function.}
 }
 \value{
 A \code{CRS} object, or NULL if no valid CRS identified
@@ -98,20 +80,6 @@ reference systems of \code{sp::CRS} or \code{INLA::inla.CRS} class.
 
 \item \code{fm_spTransform(default)}: The default method handles low level
 transformation of raw coordinates.
-
-\item \code{fm_has_PROJ6()}: Detect whether PROJ6 is available
-
-\item \code{fm_not_for_PROJ6()}: \code{fm_not_for_PROJ6} is called to warn about
-using old PROJ4 features even though PROJ6 is available
-
-\item \code{fm_not_for_PROJ4()}: \code{fm_not_for_PROJ4} is called to give an error
-when calling methods that are only available for PROJ6
-
-\item \code{fm_fallback_PROJ6()}: Called to warn about falling back
-to using old PROJ4 methods when a PROJ6 method hasn't been implemented
-
-\item \code{fm_requires_PROJ6()}: Called to give an error when PROJ6
-is required but not available
 
 \item \code{fm_as_sp_crs()}: Wrapper for \code{\link[=fm_CRS]{fm_CRS()}}
 \code{sp::Spatial} and \code{sp::CRS} objects.

@@ -585,7 +585,7 @@ fm_crs <- function(x, oblique = NULL, ..., crsonly = deprecated()) {
       )
     }
 
-    lifecycle::deprecate_soft(
+    lifecycle::deprecate_warn(
       "0.0.1",
       "fm_crs(crsonly=' should no longer be used')",
       "fm_crs(oblique)",
@@ -1718,7 +1718,7 @@ fm_list_as_CRS <- function(x, ...) {
 #'   print(fm_proj4string(crs2))
 #' }
 fm_CRSargs <- function(x, ...) {
-  lifecycle::deprecate_warn("0.0.1", "fm_CRSargs()", "fm_proj4string()")
+  lifecycle::deprecate_stop("0.0.1", "fm_CRSargs()", "fm_proj4string()")
 
   fm_proj4string(x)
 }
@@ -1805,7 +1805,7 @@ fm_proj4string <- function(crs) {
 #' instead.
 
 fm_crs_get_wkt <- function(crs) {
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     "0.0.1",
     "fm_crs_get_wkt()",
     "fm_wkt()"
@@ -2125,7 +2125,7 @@ fm_crs_is_identical <- function(crs0, crs1, crsonly = FALSE) {
 #' by `fm_crs_is_identical()`.
 #' @export
 fm_identical_CRS <- function(crs0, crs1, crsonly = FALSE) {
-  lifecycle::deprecate_soft(
+  lifecycle::deprecate_warn(
     "0.1.0",
     "fm_identical_CRS()",
     "fm_crs_is_identical()"
@@ -2753,7 +2753,7 @@ fm_transform.inla.mesh.segment <- function(x, crs, ...) {
 #' @seealso [fm_transform()]
 #' @export
 fm_spTransform <- function(x, ...) {
-  lifecycle::deprecate_soft("0.0.1", "fm_spTransform()", "fm_transform()")
+  lifecycle::deprecate_warn("0.0.1", "fm_spTransform()", "fm_transform()")
   UseMethod("fm_spTransform")
 }
 
@@ -2815,69 +2815,12 @@ fm_spTransform.inla.mesh <- function(x, CRSobj, passthrough = FALSE, ...) {
 
 # Deprecated methods ####
 
-#' @describeIn fmesher-deprecated Detect whether PROJ6 is available
-#'
-#' @export
-
-fm_has_PROJ6 <- function() {
-  lifecycle::deprecate_warn("0.0.1",
-    "fm_has_PROJ6()",
-    details = c(
-      i = "Since inlabru 2.7.1, fm_has_PROJ6() always returns TRUE",
-      i = "rgdal/PROJ4 is no longer supported."
-    )
-  )
-  TRUE
-}
-
-#' @describeIn fmesher-deprecated `fm_not_for_PROJ6` is called to warn about
-#'   using old PROJ4 features even though PROJ6 is available
-
-fm_not_for_PROJ6 <- function(fun = NULL) {
-  lifecycle::deprecate_stop("0.0.1",
-    "fm_not_for_PROJ6()",
-    details = c(x = "rgdal/PROJ4 is no longer supported.")
-  )
-}
-
-#' @describeIn fmesher-deprecated `fm_not_for_PROJ4` is called to give an error
-#'   when calling methods that are only available for PROJ6
-fm_not_for_PROJ4 <- function(fun = NULL) {
-  lifecycle::deprecate_stop("0.0.1",
-    "fm_not_for_PROJ4()",
-    details = c(x = "rgdal/PROJ4 is no longer supported.")
-  )
-}
-
-#' @describeIn fmesher-deprecated Called to warn about falling back
-#' to using old PROJ4 methods when a PROJ6 method hasn't been implemented
-
-fm_fallback_PROJ6 <- function(fun = NULL) {
-  lifecycle::deprecate_stop("0.0.1",
-    "fm_not_for_PROJ4()",
-    details = c(x = "rgdal/PROJ4 requested by PROJ4 is no longer supported.")
-  )
-}
-
-
-#' @param fun The name of the function that requires PROJ6. Default: NULL,
-#' which uses the name of the calling function.
-#' @describeIn fmesher-deprecated Called to give an error when PROJ6
-#' is required but not available
-
-fm_requires_PROJ6 <- function(fun = NULL) {
-  lifecycle::deprecate_stop("0.0.1",
-    "fm_requires_PROJ6()",
-    details = c(x = "rgdal/PROJ4 is no longer supported.")
-  )
-}
-
 
 #' @describeIn fmesher-deprecated Wrapper for [fm_CRS()]
 #' `sp::Spatial` and `sp::CRS` objects.
 #' @export
 fm_as_sp_crs <- function(x, ...) {
-  lifecycle::deprecate_soft(
+  lifecycle::deprecate_warn(
     "0.0.1",
     "fm_as_sp_crs()",
     "fm_CRS()"
@@ -2905,6 +2848,6 @@ fm_as_sp_crs <- function(x, ...) {
 #' @export
 
 fm_sp_get_crs <- function(x) {
-  lifecycle::deprecate_warn("0.0.1", "fm_sp_get_crs()", "fm_CRS()")
+  lifecycle::deprecate_stop("0.0.1", "fm_sp_get_crs()", "fm_CRS()")
   fm_CRS(x)
 }

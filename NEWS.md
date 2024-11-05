@@ -28,12 +28,13 @@
   supplied via `fm_basis()`, for optional override of the default maximal batch
   calculation size, see #14 (version `0.1.7.9011`)
 
-## sp deprecation updates
+## Deprecation updates
 
 * Remove `sp` objects from `fmexample` data. Use `fmexample_sp()` to access them if needed
   (version `0.1.7.9004`)
 * Move `sp` dependency to Suggests, and remove `inlabru` dependency (version `0.1.7.9006`)
 * Further `sp` use protection (version `0.1.7.9007`)
+* Increased deprecation warning and error messages for old unsupported methods
 
 # fmesher 0.1.7
 

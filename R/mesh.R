@@ -86,7 +86,7 @@ fm_pixels <- function(mesh,
 
   x <- NULL
   if (lifecycle::is_present(nx)) {
-    lifecycle::deprecate_soft(
+    lifecycle::deprecate_warn(
       "0.0.1",
       "fm_pixels(nx)",
       "fm_pixels(dim)"
@@ -99,7 +99,7 @@ fm_pixels <- function(mesh,
   }
   y <- NULL
   if (lifecycle::is_present(ny)) {
-    lifecycle::deprecate_soft(
+    lifecycle::deprecate_warn(
       "0.0.1",
       "fm_pixels(ny)",
       "fm_pixels(dim)"
@@ -652,7 +652,7 @@ fm_dof.fm_tensor <- function(x) {
 #' @export
 fm_as_inla_mesh_segment <-
   function(...) {
-    lifecycle::deprecate_soft(
+    lifecycle::deprecate_warn(
       "0.0.1",
       "fm_as_inla_mesh_segment()",
       "fm_as_segm()"
@@ -665,7 +665,7 @@ fm_as_inla_mesh_segment <-
 #' @returns An `fm_mesh_2d` object
 #' @export
 fm_as_inla_mesh <- function(...) {
-  lifecycle::deprecate_soft(
+  lifecycle::deprecate_warn(
     "0.0.1",
     "fm_as_inla_mesh()",
     "fm_as_mesh_2d()"
