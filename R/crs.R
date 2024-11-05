@@ -2815,6 +2815,16 @@ fm_spTransform.inla.mesh <- function(x, CRSobj, passthrough = FALSE, ...) {
 
 # Deprecated methods ####
 
+#' @describeIn fmesher-deprecated Old checker for PROJ6.
+#' @export
+fm_has_PROJ6 <- function() {
+  lifecycle::deprecate_stop(
+    "0.0.1",
+    "fm_has_PROJ6()",
+    details = "Should no longer be used."
+  )
+}
+
 
 #' @describeIn fmesher-deprecated Wrapper for [fm_CRS()]
 #' `sp::Spatial` and `sp::CRS` objects.
