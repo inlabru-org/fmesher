@@ -1,21 +1,29 @@
 # fmesher (development version)
 
-* Update documentation and vector coordinate inputs to `fm_lattice_2d()`
-  to clarify input interpretation and ensure correct boundary orientation (version `0.1.7.9001`)
-* Add `full` argument to `fm_basis()` to toggle between matrix and full `fm_basis`
-  object output (version `0.1.7.9002`)
+## New methods
+
 * Add print methods for `fm_basis` and `fm_evaluator` objects (version `0.1.7.9003`)
 * Add `fm_manifold_get()` generic method to extract manifold information from general
   objects, so that external objects can implement their own manifold information
   storage (version `0.1.7.9005`)
-* Add some length unit handling to `fm_crs_bounds()` (version `0.1.7.9008`)
-* Add `format="loc"` argument to `fm_as_sfc.fm_mesh_2d()` for converting mesh
-  node coordinates to `sfc_POINT` format (version `0.1.7.9009`)
+* Add `fm_crs_plot()` method for plotting `fm_crs` objects with optional
+  graticules and Tissot indicatrices (version `0.1.7.9010`)
+
+## New method options
+
+* Add `full` argument to `fm_basis()` to toggle between matrix and full `fm_basis`
+  object output (version `0.1.7.9002`)
 * Add `loc` plotting option to `geom_fm.fm_mesh_2d` and modify the `ggplot`
   mapping interface for interior and boundary segments in the same method
   (version `0.1.7.9009`)
-* Add `fm_crs_plot()` method for plotting `fm_crs` objects with optional
-  graticules and Tissot indicatrices (version `0.1.7.9010`)
+* Add `format="loc"` argument to `fm_as_sfc.fm_mesh_2d()` for converting mesh
+  node coordinates to `sfc_POINT` format (version `0.1.7.9009`)
+
+## Minor updates
+
+* Update documentation and vector coordinate inputs to `fm_lattice_2d()`
+  to clarify input interpretation and ensure correct boundary orientation (version `0.1.7.9001`)
+* Add some length unit handling to `fm_crs_bounds()` (version `0.1.7.9008`)
 * Add control argument `max_batch_size` to `fm_bary.fm_mesh_2d()`, that can be
   supplied via `fm_basis()`, for optional override of the default maximal batch
   calculation size, see #14 (version `0.1.7.9011`)
