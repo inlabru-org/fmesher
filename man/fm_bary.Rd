@@ -12,7 +12,7 @@ fm_bary(mesh, loc, ...)
 
 \method{fm_bary}{fm_mesh_1d}(mesh, loc, method = c("linear", "nearest"), restricted = FALSE, ...)
 
-\method{fm_bary}{fm_mesh_2d}(mesh, loc, crs = NULL, ...)
+\method{fm_bary}{fm_mesh_2d}(mesh, loc, crs = NULL, ..., max_batch_size = NULL)
 
 \method{fm_bary}{inla.mesh}(mesh, ...)
 
@@ -37,6 +37,12 @@ extrapolation. If \code{TRUE}, the barycentric weights are clamped to the (0, 1)
 interval.}
 
 \item{crs}{Optional crs information for \code{loc}}
+
+\item{max_batch_size}{integer; maximum number of points to process in a
+single batch. This speeds up calculations by avoiding repeated large
+internal memory allocations and data copies. The default, \code{NULL}, uses
+\code{max_batch_size = 2e5L}, chosen based on empirical time measurements to
+give an approximately optimal runtime.}
 }
 \value{
 A list with elements \code{t}; either

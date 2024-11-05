@@ -16,6 +16,9 @@
   (version `0.1.7.9009`)
 * Add `fm_crs_plot()` method for plotting `fm_crs` objects with optional
   graticules and Tissot indicatrices (version `0.1.7.9010`)
+* Add control argument `max_batch_size` to `fm_bary.fm_mesh_2d()`, that can be
+  supplied via `fm_basis()`, for optional override of the default maximal batch
+  calculation size, see #14 (version `0.1.7.9011`)
 
 ## sp deprecation updates
 
@@ -34,7 +37,8 @@
 
 * Fix for hiding away-facing triangle edges in `plot.fm_mesh_2d()` and `lines.fm_segm()`.
 * Fix duplicated `fm_unify_coords.sf()` method. Thanks to Pablo Paccioretti for debugging and reporting, see #13 (version `0.1.5.9001`)
-* Use batched `fm_bary.fm_mesh_2d()` computations for data sizes of `2e5` and upwards. This improves performance of `fm_basis()`/`inla.spde.make.A()` for large data sets, see #14 (version `0.1.5.9002`)
+* Use batched `fm_bary.fm_mesh_2d()` computations for data sizes of `2e5` and upwards.
+  This improves performance of `fm_basis()`/`inla.spde.make.A()` for large data sets, see #14 (version `0.1.5.9002`)
 * Automatically convert raw `sfc` samplers objects to `sf` objects in `fm_int.list()` (version `0.1.5.9003`)
 * Detect and warn about unsupported use of `fm_segm` objects in `fm_int.list()` (version `0.1.5.9004`)
 * Add `fm_basis()` and `fm_fem()` support for `fm_tensor` function spaces (version `0.1.5.9005`)

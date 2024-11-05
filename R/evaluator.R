@@ -226,7 +226,7 @@ fm_basis_mesh_2d <- function(mesh,
                              derivatives = NULL,
                              crs = NULL,
                              ...) {
-  smorg <- fm_bary(mesh, loc = loc, crs = crs)
+  smorg <- fm_bary(mesh, loc = loc, crs = crs, ...)
   ti <- matrix(0L, NROW(loc), 1)
   ti[, 1L] <- smorg$t
   b <- smorg$bary

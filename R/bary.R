@@ -115,9 +115,22 @@ fm_bary.fm_mesh_1d <- function(mesh,
 #' @describeIn fm_bary A list with elements `t` (vector of triangle indices) and
 #'   `bary` (3-column matrix of barycentric coordinates). Points that were not
 #'   found give `NA` entries in `t` and `bary`.
+#' @param max_batch_size integer; maximum number of points to process in a
+#'   single batch. This speeds up calculations by avoiding repeated large
+#'   internal memory allocations and data copies. The default, `NULL`, uses
+#'   `max_batch_size = 2e5L`, chosen based on empirical time measurements to
+#'   give an approximately optimal runtime.
 #'
 #' @export
-fm_bary.fm_mesh_2d <- function(mesh, loc, crs = NULL, ...) {
+fm_bary.fm_mesh_2d <- function(mesh,
+                               loc,
+                               crs = NULL,
+                               ...,
+                               max_batch_size = NULL) {
+  if (is.null(max_batch_size)) {
+    max_batch_size <- 2e5L
+  }
+
   loc <- fm_onto_mesh(mesh, loc, crs = crs)
 
   # Avoid sphere accuracy issues by scaling to unit sphere
@@ -133,7 +146,7 @@ fm_bary.fm_mesh_2d <- function(mesh, loc, crs = NULL, ...) {
       nrow = nrow(loc),
       ncol = ncol(loc)
     )) == 0)
-  if (length(pre_ok_idx) <= 2e5) {
+  if (length(pre_ok_idx) <= max_batch_size) {
     result <- fmesher_bary(
       mesh_loc = mesh$loc * scale,
       mesh_tv = mesh$graph$tv - 1L,
@@ -148,7 +161,7 @@ fm_bary.fm_mesh_2d <- function(mesh, loc, crs = NULL, ...) {
   } else {
     tri <- rep(NA_integer_, nrow(loc))
     bary <- matrix(NA_real_, nrow(loc), 3)
-    n_batches <- ceiling(length(pre_ok_idx) / 2e5)
+    n_batches <- ceiling(length(pre_ok_idx) / max_batch_size)
     batch_idx <- round(seq(0, length(pre_ok_idx), length.out = n_batches + 1))
     subindex <- split(pre_ok_idx, rep(seq_len(n_batches), diff(batch_idx)))
     for (k in seq_along(subindex)) {
