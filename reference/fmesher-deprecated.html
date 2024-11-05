@@ -9,7 +9,7 @@ future version."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.7.9011</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,14 +74,6 @@ future version.</p>
 <span></span>
 <span><span class="fu">fm_has_PROJ6</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">fm_not_for_PROJ6</span><span class="op">(</span>fun <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">fm_not_for_PROJ4</span><span class="op">(</span>fun <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">fm_fallback_PROJ6</span><span class="op">(</span>fun <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">fm_requires_PROJ6</span><span class="op">(</span>fun <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
-<span></span>
 <span><span class="fu">fm_as_sp_crs</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">fm_sp_get_crs</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
@@ -122,11 +114,6 @@ through without transformation.</p></dd>
 <dt id="arg-crsobj">CRSobj<a class="anchor" aria-label="anchor" href="#arg-crsobj"></a></dt>
 <dd><p>The target sp::CRS or inla.CRS object</p></dd>
 
-
-<dt id="arg-fun">fun<a class="anchor" aria-label="anchor" href="#arg-fun"></a></dt>
-<dd><p>The name of the function that requires PROJ6. Default: NULL,
-which uses the name of the calling function.</p></dd>
-
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -149,15 +136,7 @@ Handle transformation of various inla objects according to coordinate
 reference systems of <code><a href="https://edzer.github.io/sp/reference/CRS-class.html" class="external-link">sp::CRS</a></code> or <code>INLA::inla.CRS</code> class.</p></li>
 <li><p><code>fm_spTransform(default)</code>: The default method handles low level
 transformation of raw coordinates.</p></li>
-<li><p><code>fm_has_PROJ6()</code>: Detect whether PROJ6 is available</p></li>
-<li><p><code>fm_not_for_PROJ6()</code>: <code>fm_not_for_PROJ6</code> is called to warn about
-using old PROJ4 features even though PROJ6 is available</p></li>
-<li><p><code>fm_not_for_PROJ4()</code>: <code>fm_not_for_PROJ4</code> is called to give an error
-when calling methods that are only available for PROJ6</p></li>
-<li><p><code>fm_fallback_PROJ6()</code>: Called to warn about falling back
-to using old PROJ4 methods when a PROJ6 method hasn't been implemented</p></li>
-<li><p><code>fm_requires_PROJ6()</code>: Called to give an error when PROJ6
-is required but not available</p></li>
+<li><p><code>fm_has_PROJ6()</code>: Old checker for PROJ6.</p></li>
 <li><p><code>fm_as_sp_crs()</code>: Wrapper for <code><a href="fm_CRS_sp.html">fm_CRS()</a></code>
 <code><a href="https://edzer.github.io/sp/reference/Spatial-class.html" class="external-link">sp::Spatial</a></code> and <code><a href="https://edzer.github.io/sp/reference/CRS-class.html" class="external-link">sp::CRS</a></code> objects.</p></li>
 <li><p><code>fm_sp_get_crs()</code>: Wrapper for <code>CRS(projargs)</code> (PROJ4) and
