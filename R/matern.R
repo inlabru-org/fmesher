@@ -71,10 +71,10 @@ fm_matern_precision <- function(x, alpha, rho, sigma) {
 #' @param loc locations to evaluate the random field, compatible with
 #' `fm_evaluate(x, loc = loc, field = ...)`
 #'
-#' @return `fm_matern_sample()` returns a matrix, where each column is a sampled
-#' field. If `loc` is `NULL`, the `fm_dof(mesh)` basis weights are given.
-#' Otherwise, the evaluated field at the `nrow(loc)` locations `loc` are given
-#' (from version `0.1.4.9001`)
+#' @returns `fm_matern_sample()` returns a matrix, where each column is a
+#'   sampled field. If `loc` is `NULL`, the `fm_dof(mesh)` basis weights are
+#'   given. Otherwise, the evaluated field at the `nrow(loc)` locations `loc`
+#'   are given (from version `0.1.4.9001`)
 #' @export
 
 fm_matern_sample <- function(x, alpha = 2, rho, sigma, n = 1, loc = NULL) {
@@ -90,7 +90,8 @@ fm_matern_sample <- function(x, alpha = 2, rho, sigma, n = 1, loc = NULL) {
 
 #' @describeIn fm_gmrf Compute the covariance between "A1 x" and "A2 x", when
 #' x is a basis vector with precision matrix `Q`.
-#' @param A1,A2 Matrices, typically obtained from [fm_basis()] and/or [fm_block()].
+#' @param A1,A2 Matrices, typically obtained from [fm_basis()] and/or
+#'   [fm_block()].
 #' @param partial `r lifecycle::badge("experimental")` If `TRUE`, compute the
 #' partial inverse of `Q`, i.e. the elements of the inverse corresponding to
 #' the non-zero pattern of `Q`. (Note: This can be done efficiently with

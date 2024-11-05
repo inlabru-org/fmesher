@@ -93,11 +93,11 @@ fm_int_mesh_2d_NULL(samplers, domain, name = NULL, int.args = NULL, ...)
 )
 }
 \arguments{
-\item{samplers}{For single domain \code{fm_int} methods, an object specifying one or more
-subsets of the domain, and optional weighting in a \code{weight} variable.
-For \code{fm_int.list}, a list of sampling definitions, where data frame elements
-may contain information for multiple domains, in which case each row represent
-a separate tensor product integration subspace.}
+\item{samplers}{For single domain \code{fm_int} methods, an object specifying one
+or more subsets of the domain, and optional weighting in a \code{weight}
+variable. For \code{fm_int.list}, a list of sampling definitions, where data
+frame elements may contain information for multiple domains, in which case
+each row represent a separate tensor product integration subspace.}
 
 \item{domain}{Functional space specification; single domain or a named list
 of domains}

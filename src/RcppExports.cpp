@@ -10,6 +10,17 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// fmesher_qinv
+Rcpp::List fmesher_qinv(SEXP AA);
+RcppExport SEXP _fmesher_fmesher_qinv(SEXP AASEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type AA(AASEXP);
+    rcpp_result_gen = Rcpp::wrap(fmesher_qinv(AA));
+    return rcpp_result_gen;
+END_RCPP
+}
 // fmesher_globe_points
 Rcpp::NumericMatrix fmesher_globe_points(Rcpp::IntegerVector globe);
 RcppExport SEXP _fmesher_fmesher_globe_points(SEXP globeSEXP) {
@@ -128,6 +139,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_fmesher_fmesher_qinv", (DL_FUNC) &_fmesher_fmesher_qinv, 1},
     {"_fmesher_fmesher_globe_points", (DL_FUNC) &_fmesher_fmesher_globe_points, 1},
     {"_fmesher_fmesher_rcdt", (DL_FUNC) &_fmesher_fmesher_rcdt, 7},
     {"_fmesher_fmesher_bary", (DL_FUNC) &_fmesher_fmesher_bary, 4},

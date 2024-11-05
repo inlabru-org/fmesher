@@ -186,12 +186,12 @@ fm_as_bbox <- function(x, ...) {
 }
 
 #' @export
-#' @describeIn fm_bbox The `...` arguments should be `fm_bbox`
-#' objects, or coercible with `fm_as_bbox(list(...))`.
+#' @describeIn fm_bbox The `...` arguments should be `fm_bbox` objects, or
+#'   coercible with `fm_as_bbox(list(...))`.
 #' @param .join logical; if `TRUE`, concatenate the bounding boxes into a single
-#' multi-dimensional bounding box. Default is `FALSE`.
-#' @returns For [c.fm_bbox()], a `fm_bbox_list` object if `join = FALSE` (the default)
-#' or an `fm_bbox` object if `join = TRUE`.
+#'   multi-dimensional bounding box. Default is `FALSE`.
+#' @returns For [c.fm_bbox()], a `fm_bbox_list` object if `join = FALSE` (the
+#'   default) or an `fm_bbox` object if `join = TRUE`.
 #' @examples
 #' m <- c(A = fm_bbox(cbind(1, 2)), B = fm_bbox(cbind(3, 4)))
 #' str(m)

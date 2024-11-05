@@ -15,14 +15,7 @@ fm_evaluator_mesh_2d(
   ...
 )
 
-fm_evaluator_mesh_1d(
-  mesh,
-  loc,
-  weights = NULL,
-  derivatives = NULL,
-  method = deprecated(),
-  ...
-)
+fm_evaluator_mesh_1d(mesh, loc, weights = NULL, derivatives = NULL, ...)
 }
 \arguments{
 \item{mesh}{An \code{inla.mesh} or \code{inla.mesh.1d} object.}
@@ -39,10 +32,6 @@ for \code{fm_mesh_1d} objects, and \code{dx}, \code{dy}, \code{dz} for \code{fm_
 and/or \code{lattice}.}
 
 \item{...}{Additional arguments passed on to methods.}
-
-\item{method}{character; either "default", "nearest", "linear", or
-"quadratic". With \code{NULL} or "default", uses the object definition of the
-function space. Otherwise overrides the object definition.}
 }
 \value{
 A list of evaluator information objects, at least a matrix \code{A} and

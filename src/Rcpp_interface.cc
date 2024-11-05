@@ -1,3 +1,11 @@
+/*
+ *  Copyright Finn Lindgren (2010-2024)
+ *
+ *  This Source Code Form is subject to the terms of the Mozilla Public License,
+ *  v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ *  obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 #ifdef FMESHER_WITH_R
 
 #include <algorithm>
@@ -179,32 +187,34 @@ Mesh Rcpp_import_mesh(Rcpp::NumericMatrix mesh_loc,
 
 
 
-// #include "qtool.h"
-//
-// //' @title Compute sparse matrix inverse
-// //'
-// //' @description
-// //' Requires RcppEigen which is not compiled in by default
-// //'
-// //' @param AA A sparse matrix
-// //' @keywords internal
-// // [[Rcpp::export]]
-// Rcpp::List C_qinv(SEXP AA) {
-// #ifdef FMESHER_WITH_EIGEN
-//   const EigenMSM<double> A(Rcpp::as<EigenMSM<double>>(AA));
-//
-//   QTool<double> Q;
-//   Q.Q(A);
-//
-//   Rcpp::List ret;
-//   ret["Qinv"] = Q.S();
-//   return ret;
-// #else
-//   Rcpp::stop("Unsupported method C_qinv; fmesher was built without FMESHER_WITH_EIGEN");
-//   Rcpp::List ret;
-//   return ret;
-// #endif
-// }
+#include "qtool.h"
+
+//' @title Compute sparse matrix inverse
+//'
+//' @description
+//' Requires RcppEigen which is not compiled in by default. Enable with
+//' `PKG_CPPFLAGS=-DFMESHER_WITH_EIGEN` in `src/Makevars` and add `RcppEigen`
+//' to the `DESCRIPTION` `LinkingTo` field.
+//'
+//' @param AA A sparse matrix
+//' @keywords internal
+// [[Rcpp::export]]
+Rcpp::List fmesher_qinv(SEXP AA) {
+#ifdef FMESHER_WITH_EIGEN
+  const EigenMSM<double> A(Rcpp::as<EigenMSM<double>>(AA));
+
+  QTool<double> Q;
+  Q.Q(A);
+
+  Rcpp::List ret;
+  ret["Qinv"] = Q.S();
+  return ret;
+#else
+  Rcpp::stop("Unsupported method fmesher_qinv; fmesher was built without FMESHER_WITH_EIGEN");
+  Rcpp::List ret;
+  return ret;
+#endif
+}
 
 
 

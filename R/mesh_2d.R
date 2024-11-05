@@ -93,6 +93,7 @@ fm_unify_coords.default <- function(x, crs = NULL) {
 #' @rdname fm_unify_coords
 #' @export
 fm_unify_coords.Spatial <- function(x, crs = NULL) {
+  fm_safe_sp(force = TRUE)
   x <- fm_transform(
     sp::coordinates(x),
     crs0 = fm_crs(x),
@@ -286,8 +287,9 @@ handle_rcdt_options_inla <- function(
 #' @description
 #' Computes a refined constrained Delaunay triangulation on R2 or S2.
 #'
-#' @param loc Input coordinates that should be part of the mesh. Can be a matrix, `sf`, `sfc`, `SpatialPoints`,
-#' or other object supported by [fm_unify_coords()].
+#' @param loc Input coordinates that should be part of the mesh. Can be a
+#'   matrix, `sf`, `sfc`, `SpatialPoints`, or other object supported by
+#'   [fm_unify_coords()].
 #' @param tv Initial triangulation, as a N-by-3 index vector into `loc`
 #' @param boundary,interior Objects supported by [fm_as_segm()].
 #' If `boundary` is `numeric`, `fm_nonconvex_hull(loc, convex = boundary)` is
@@ -373,7 +375,11 @@ fm_rcdt_2d_inla <- function(loc = NULL,
     loc.globe <- fmesher_globe_points(globe = globe)
     crs.globe <- fm_crs("sphere")
     if (!fm_crs_is_null(crs.globe) && !fm_crs_is_null(crs)) {
-      loc.globe <- fm_transform(loc.globe, crs = crs, passthrough = TRUE, crs0 = crs.globe)
+      loc.globe <- fm_transform(loc.globe,
+        crs = crs,
+        passthrough = TRUE,
+        crs0 = crs.globe
+      )
       loc.globe <- fm_unify_coords(loc.globe)
     }
     loc <- rbind(loc, loc.globe)
@@ -709,19 +715,19 @@ fm_mesh_2d <- function(...) {
 #' activates displaying the
 #' result after each step of the multi-step domain extension algorithm.
 #' @param crs An optional [fm_crs()], `sf::crs` or `sp::CRS` object
-#' @return An `inla.mesh` object.
+#' @returns An `inla.mesh` object.
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
 #' @seealso [fm_rcdt_2d()], [fm_mesh_2d()], [fm_delaunay_2d()],
 #' [fm_nonconvex_hull()], [fm_extensions()], [fm_refine()]
-fm_mesh_2d_inla <- function(loc = NULL, ## Points to include in final triangulation
-                            loc.domain = NULL, ## Points that determine the automatic domain
-                            offset = NULL, ## Size of automatic extensions
-                            n = NULL, ## Sides of automatic extension polygons
-                            boundary = NULL, ## User-specified domains (list of length 2)
-                            interior = NULL, ## User-specified constraints for the inner domain
+fm_mesh_2d_inla <- function(loc = NULL,
+                            loc.domain = NULL,
+                            offset = NULL,
+                            n = NULL,
+                            boundary = NULL,
+                            interior = NULL,
                             max.edge = NULL,
-                            min.angle = NULL, ## Angle constraint for the entire domain
-                            cutoff = 1e-12, ## Only add input points further apart than this
+                            min.angle = NULL,
+                            cutoff = 1e-12,
                             max.n.strict = NULL,
                             max.n = NULL,
                             plot.delay = NULL,
@@ -731,7 +737,7 @@ fm_mesh_2d_inla <- function(loc = NULL, ## Points to include in final triangulat
   ## NULL --> No plotting
   ## <0  --> Intermediate meshes displayed at the end
   ## TRUE  --> Intermediate meshes displayed at the end
-  ## >0   --> Dynamical fmesher X11 plotting is not avoailable in the R interface
+  ## >0   --> Dynamical fmesher X11 plotting is not available in the R interface
   if (is.null(plot.delay)) {
     plot.intermediate <- FALSE
   } else if (is.logical(plot.delay)) {
@@ -744,7 +750,6 @@ fm_mesh_2d_inla <- function(loc = NULL, ## Points to include in final triangulat
     (missing(max.n.strict) || is.null(max.n.strict)) &&
     (missing(max.n) || is.null(max.n))) {
     max.edge <- NA
-    #    stop("At least one of max.edge, max.n.strict, and max.n must be specified")
   }
 
   if (!is.null(crs)) {

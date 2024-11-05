@@ -10,7 +10,7 @@
 #' @param mesh An `fm_mesh_2d` or `inla.mesh` object
 #' @param segm An [fm_segm()] object with segments to be split
 #' @param ... Unused.
-#' @return An [fm_segm()] object with the same crs as the mesh,
+#' @returns An [fm_segm()] object with the same crs as the mesh,
 #' with an added field `origin`, that for each new segment gives the
 #' originator index into to original `segm` object for each new line segment.
 #'
@@ -19,7 +19,10 @@
 #' @export
 #' @examples
 #' mesh <- fm_mesh_2d(
-#'   boundary = fm_segm(rbind(c(0, 0), c(1, 0), c(1, 1), c(0, 1)), is.bnd = TRUE)
+#'   boundary = fm_segm(
+#'     rbind(c(0, 0), c(1, 0), c(1, 1), c(0, 1)),
+#'     is.bnd = TRUE
+#'   )
 #' )
 #' splitter <- fm_segm(rbind(c(0.8, 0.2), c(0.2, 0.8)))
 #' segm_split <- fm_split_lines(mesh, splitter)

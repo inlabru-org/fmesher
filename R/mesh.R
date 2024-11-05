@@ -23,7 +23,7 @@
 #' or a numeric vector of x-values
 #' @param ny `r lifecycle::badge("deprecated")` Number of pixels in y direction,
 #' or a numeric vector of y-values
-#' @return `sf`, `SpatRaster`, or `SpatialPixelsDataFrame` covering the mesh or
+#' @returns `sf`, `SpatRaster`, or `SpatialPixelsDataFrame` covering the mesh or
 #' mask.
 #'
 #' @examples
@@ -86,7 +86,7 @@ fm_pixels <- function(mesh,
 
   x <- NULL
   if (lifecycle::is_present(nx)) {
-    lifecycle::deprecate_soft(
+    lifecycle::deprecate_warn(
       "0.0.1",
       "fm_pixels(nx)",
       "fm_pixels(dim)"
@@ -99,7 +99,7 @@ fm_pixels <- function(mesh,
   }
   y <- NULL
   if (lifecycle::is_present(ny)) {
-    lifecycle::deprecate_soft(
+    lifecycle::deprecate_warn(
       "0.0.1",
       "fm_pixels(ny)",
       "fm_pixels(dim)"
@@ -155,7 +155,7 @@ fm_pixels <- function(mesh,
       mask <- as(mask, "SpatialPolygons")
     }
     mask <- sf::st_as_sf(mask)
-    pixels_within <- sf::st_within(pixels, mask)
+    pixels_within <- sf::st_covered_by(pixels, mask)
     pixels_within <- lengths(pixels_within) > 0
     pixels <- pixels[pixels_within, , drop = FALSE]
   }
@@ -185,7 +185,7 @@ fm_pixels <- function(mesh,
 #' @param mesh An [fm_mesh_2d()] object
 #' @param refine A list of refinement options passed on to
 #' [fm_rcdt_2d_inla]
-#' @return A refined `fm_mesh_2d` object
+#' @returns A refined `fm_mesh_2d` object
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
 #' @export
 #' @examples
@@ -213,7 +213,7 @@ fm_refine <- function(mesh, refine = list(max.edge = 1)) {
 #'
 #' @param mesh an [fm_mesh_2d] object
 #' @param n number of added points along each edge. Default is 1.
-#' @return A refined [fm_mesh_2d] object
+#' @returns A refined [fm_mesh_2d] object
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
 #' @export
 #' @examples
@@ -368,12 +368,16 @@ fm_mesh_intersection <- function(mesh, poly) {
     fm_is_within(loc_tri, mesh) &
       fm_is_within(loc_tri, mesh_poly)
   if (any(ok_tri)) {
-    loc_subset <- unique(sort(as.vector(mesh_joint_cover$graph$tv[ok_tri, , drop = FALSE])))
+    loc_subset <- unique(sort(as.vector(
+      mesh_joint_cover$graph$tv[ok_tri, , drop = FALSE]
+    )))
     new_idx <- integer(mesh$n)
     new_idx[loc_subset] <- seq_along(loc_subset)
-    tv_subset <- matrix(new_idx[mesh_joint_cover$graph$tv[ok_tri, , drop = FALSE]],
-      ncol = 3
-    )
+    tv_subset <-
+      matrix(
+        new_idx[mesh_joint_cover$graph$tv[ok_tri, , drop = FALSE]],
+        ncol = 3
+      )
     loc_subset <- mesh_joint_cover$loc[loc_subset, , drop = FALSE]
     mesh_subset <- fm_rcdt_2d_inla(
       loc = loc_subset,
@@ -552,6 +556,7 @@ fm_onto_mesh <- function(mesh, loc, crs = NULL) {
   }
 
   if (inherits(loc, c("SpatialPoints", "SpatialPointsDataFrame"))) {
+    fm_safe_sp(force = TRUE)
     loc <- sp::coordinates(loc)
   } else if (inherits(loc, c("sf", "sfc", "sfg"))) {
     loc <- sf::st_coordinates(loc)
@@ -647,7 +652,7 @@ fm_dof.fm_tensor <- function(x) {
 #' @export
 fm_as_inla_mesh_segment <-
   function(...) {
-    lifecycle::deprecate_soft(
+    lifecycle::deprecate_warn(
       "0.0.1",
       "fm_as_inla_mesh_segment()",
       "fm_as_segm()"
@@ -660,7 +665,7 @@ fm_as_inla_mesh_segment <-
 #' @returns An `fm_mesh_2d` object
 #' @export
 fm_as_inla_mesh <- function(...) {
-  lifecycle::deprecate_soft(
+  lifecycle::deprecate_warn(
     "0.0.1",
     "fm_as_inla_mesh()",
     "fm_as_mesh_2d()"

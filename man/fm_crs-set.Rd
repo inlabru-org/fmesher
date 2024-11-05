@@ -70,8 +70,8 @@ fm_crs_oblique(x) <- value
 
 \item{value}{For \verb{fm_crs<-()}, object supported by \code{fm_crs(value)}.
 
-For \verb{fm_crs_oblique<-()}, \code{NA} or a numeric vector, see
-the \code{oblique} argument for \code{\link[=fm_crs]{fm_crs()}}. For assignment, \code{NULL} is treated as \code{NA}.}
+For \verb{fm_crs_oblique<-()}, \code{NA} or a numeric vector, see the \code{oblique}
+argument for \code{\link[=fm_crs]{fm_crs()}}. For assignment, \code{NULL} is treated as \code{NA}.}
 }
 \value{
 The modified object
@@ -83,7 +83,8 @@ Assigns new crs information.
 \itemize{
 \item \code{fm_crs(x) <- value}: Automatically converts the input value with
 \code{fm_crs(value)}, \code{fm_crs(value, oblique = NA)},
-\code{fm_CRS(value)}, or \code{fm_CRS(value, oblique = NA)}, depending on the type of \code{x}.
+\code{fm_CRS(value)}, or \code{fm_CRS(value, oblique = NA)},
+depending on the type of \code{x}.
 
 \item \code{fm_crs_oblique(x) <- value}: Assigns new \code{oblique} information.
 

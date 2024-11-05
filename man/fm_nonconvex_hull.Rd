@@ -39,12 +39,13 @@ fm_extensions(x, convex = -0.15, concave = convex, dTolerance = NULL, ...)
 
 \item{convex}{numeric vector; How much to extend}
 
-\item{concave}{numeric vector; The minimum allowed reentrant curvature. Default equal to \code{convex}}
+\item{concave}{numeric vector; The minimum allowed reentrant curvature.
+Default equal to \code{convex}}
 
 \item{preserveTopology}{logical; argument to \code{sf::st_simplify()}}
 
-\item{dTolerance}{If not zero, controls the \code{dTolerance} argument to \code{sf::st_simplify()}.
-The default is \code{pmin(convex, concave) / 40}, chosen to
+\item{dTolerance}{If not zero, controls the \code{dTolerance} argument to
+\code{sf::st_simplify()}. The default is \code{pmin(convex, concave) / 40}, chosen to
 give approximately 4 or more subsegments per circular quadrant.}
 
 \item{crs}{Options crs object for the resulting polygon}
@@ -64,10 +65,11 @@ by closing (dilation + erosion) by \code{concave}.
 \details{
 Morphological dilation by \code{convex}, followed by closing by
 \code{concave}, with minimum concave curvature radius \code{concave}.  If
-the dilated set has no gaps of width between \deqn{2 \textrm{convex} (\sqrt{1+2
-\textrm{concave}/\textrm{convex}} - 1)}{2*convex*(sqrt(1+2*concave/convex) - 1)}
-and \eqn{2\textrm{concave}}{2*concave}, then the minimum convex curvature radius is
-\code{convex}.
+the dilated set has no gaps of width between \deqn{2 \textrm{convex}
+(\sqrt{1+2\textrm{concave}/\textrm{convex}} - 1)
+}{2*convex*(sqrt(1+2*concave/convex) - 1)}
+and \eqn{2\textrm{concave}}{2*concave}, then the minimum convex curvature
+radius is \code{convex}.
 
 The implementation is based on the identity \deqn{\textrm{dilation}(a) \&
 \textrm{closing}(b) = \textrm{dilation}(a+b) \& \textrm{erosion}(b)}{

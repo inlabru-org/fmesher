@@ -7,20 +7,21 @@
 #' Extract a manifold definition string, or a logical for matching
 #' manifold type
 #' @param x An object with `manifold` information, or a character string
-#' @param type `character`; if `NULL` (the default), returns the manifold definition string.
+#' @param type `character`; if `NULL` (the default), returns the manifold
+#' definition string by calling `fm_manifold_get(x)`.
 #' If `character`, returns `TRUE` if the manifold type of `x` matches at least
 #' one of the character vector elements.
 #' @returns `fm_manifold()`: Either logical (matching manifold type yes/no),
 #' or character (the stored manifold, when `is.null(type)` is `TRUE`)
 #' @export
 #' @examples
+#' fm_manifold_get(fmexample$mesh)
 #' fm_manifold(fmexample$mesh)
+#' fm_manifold(fmexample$mesh, "R2")
 #' fm_manifold_type(fmexample$mesh)
 #' fm_manifold_dim(fmexample$mesh)
 fm_manifold <- function(x, type = NULL) {
-  if (!is.character(x)) {
-    x <- x[["manifold"]]
-  }
+  x <- fm_manifold_get(x)
   if (is.null(type)) {
     return(x)
   }
@@ -28,6 +29,31 @@ fm_manifold <- function(x, type = NULL) {
     return(FALSE)
   }
   any(vapply(type, function(t) fm_manifold_match(x, t), logical(1)))
+}
+
+#' @describeIn fm_manifold Method for obtaining a text representation of the
+#' manifold characteristics, e.g. "R1", "R2", "M2", or "T3". The default
+#' method assumes that the manifold is stored as a `character` string in a
+#' "manifold" element of the object, so it can be extracted with
+#' `x[["manifold"]]`.
+#' Object classes that do not store the information in this way need to
+#' implement their own method.
+#' @returns `fm_manifold_get()`: `character` or `NULL`
+#' @export
+fm_manifold_get <- function(x) {
+  UseMethod("fm_manifold_get")
+}
+
+#' @rdname fm_manifold
+#' @export
+fm_manifold_get.default <- function(x) {
+  x[["manifold"]]
+}
+
+#' @rdname fm_manifold
+#' @export
+fm_manifold_get.character <- function(x) {
+  x
 }
 
 # Check match for a single type
@@ -54,18 +80,18 @@ fm_manifold_match <- function(x, type) {
 }
 
 #' @rdname fm_manifold
-#' @returns `fm_manifold_type()`: character or NULL; "M", "R", "S", or "T"
+#' @returns `fm_manifold_type()`: character or NULL; "M" (curved manifold),
+#' "R" (flat space), "S" (generalised spherical space), "T"
+#' (general tensor product space), or "G" (metric graph)
 #' @export
 fm_manifold_type <- function(x) {
-  if (!is.character(x)) {
-    x <- x[["manifold"]]
-  }
+  x <- fm_manifold_get(x)
   if (is.null(x)) {
     return(NULL)
   }
 
   splt <- strsplit(x, "")[[1]]
-  splt <- splt[splt %in% c("M", "R", "S", "T")]
+  splt <- splt[splt %in% c("M", "R", "S", "T", "G")]
   if (length(splt) == 0) {
     return(NULL)
   }
@@ -76,9 +102,7 @@ fm_manifold_type <- function(x) {
 #' @returns `fm_manifold_dim()`: integer or NULL
 #' @export
 fm_manifold_dim <- function(x) {
-  if (!is.character(x)) {
-    x <- x[["manifold"]]
-  }
+  x <- fm_manifold_get(x)
   if (is.null(x)) {
     return(NULL)
   }

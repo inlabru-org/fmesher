@@ -12,7 +12,7 @@ fm_bary(mesh, loc, ...)
 
 \method{fm_bary}{fm_mesh_1d}(mesh, loc, method = c("linear", "nearest"), restricted = FALSE, ...)
 
-\method{fm_bary}{fm_mesh_2d}(mesh, loc, crs = NULL, ...)
+\method{fm_bary}{fm_mesh_2d}(mesh, loc, crs = NULL, ..., max_batch_size = NULL)
 
 \method{fm_bary}{inla.mesh}(mesh, ...)
 
@@ -37,6 +37,12 @@ extrapolation. If \code{TRUE}, the barycentric weights are clamped to the (0, 1)
 interval.}
 
 \item{crs}{Optional crs information for \code{loc}}
+
+\item{max_batch_size}{integer; maximum number of points to process in a
+single batch. This speeds up calculations by avoiding repeated large
+internal memory allocations and data copies. The default, \code{NULL}, uses
+\code{max_batch_size = 2e5L}, chosen based on empirical time measurements to
+give an approximately optimal runtime.}
 }
 \value{
 A list with elements \code{t}; either
@@ -48,20 +54,20 @@ A list with elements \code{t}; either
 and \code{bary}, a matrix of barycentric coordinates.
 }
 \description{
-Identify knot intervals or triangles and compute barycentric coordinates
+Identify knot intervals or triangles and compute barycentric
+coordinates
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{fm_bary(fm_mesh_1d)}: Return a list with elements
-\code{t} (start and endpoint knot indices) and \code{bary} (barycentric coordinates), both
-2-column matrices.
+\item \code{fm_bary(fm_mesh_1d)}: Return a list with elements \code{t} (start and endpoint knot
+indices) and \code{bary} (barycentric coordinates), both 2-column matrices.
 
-For \code{method = "nearest"}, \code{t[,1]} contains the index of the nearest mesh knot,
-and each row of \code{bary} contains \code{c(1, 0)}.
+For \code{method = "nearest"}, \code{t[,1]} contains the index of the nearest mesh
+knot, and each row of \code{bary} contains \code{c(1, 0)}.
 
-\item \code{fm_bary(fm_mesh_2d)}: A list with elements \code{t} (vector of triangle indices) and \code{bary}
-(3-column matrix of barycentric coordinates). Points that were not found
-give \code{NA} entries in \code{t} and \code{bary}.
+\item \code{fm_bary(fm_mesh_2d)}: A list with elements \code{t} (vector of triangle indices) and
+\code{bary} (3-column matrix of barycentric coordinates). Points that were not
+found give \code{NA} entries in \code{t} and \code{bary}.
 
 }}
 \examples{

@@ -31,25 +31,65 @@ crs/CRS support started as an add-on feature of
 
 ## Installation
 
-You can install the current [CRAN](https://CRAN.R-project.org) version
-of `fmesher`:
+You can install the current [CRAN
+version](https://cran.r-project.org/package=fmesher) version of fmesher:
 
 ``` r
 install.packages("fmesher")
 ```
 
-You can install the latest stable release of `fmesher` from
-[GitHub](https://github.com/):
+### Installation using [pak](https://pak.r-lib.org/)
+
+You can install the latest bugfix release of fmesher from
+[GitHub](https://github.com/inlabru-org/fmesher) with:
+
+``` r
+# install.packages("pak")
+pak::pkg_install("inlabru-org/fmesher@stable")
+```
+
+You can install the development version of inlabru from
+[GitHub](https://github.com/inlabru-org/fmesher) with
+
+``` r
+pak::pkg_install("inlabru-org/fmesher")
+```
+
+or track the development version builds via
+[inlabru-org.r-universe.dev](https://inlabru-org.r-universe.dev/builds):
+
+``` r
+# Enable universe(s) by inlabru-org
+pak::repo_add(inlabruorg = "https://inlabru-org.r-universe.dev")
+pak::pkg_install("fmesher")
+```
+
+This will pick the r-universe version if it is more recent than the CRAN
+version.
+
+To install and run `fmesher` in full debug mode (this is quite an
+experience!), use
+
+``` r
+# install.packages("pkgbuild")
+source("https://raw.githubusercontent.com/inlabru-org/fmesher/devel/misc/build.R")
+fmesher_install(repo = "inlabru-org/fmesher", debug = TRUE)
+```
+
+### Installation using `remotes`
+
+You can install the latest bugfix release of fmesher from
+[GitHub](https://github.com/inlabru-org/fmesher) with:
 
 ``` r
 # install.packages("remotes")
 remotes::install_github("inlabru-org/fmesher", ref = "stable")
 ```
 
-And the development version with:
+You can install the development version of fmesher from
+[GitHub](https://github.com/inlabru-org/fmesher) with
 
 ``` r
-# install.packages("remotes")
 remotes::install_github("inlabru-org/fmesher")
 ```
 
@@ -60,20 +100,9 @@ or track the development version builds via
 # Enable universe(s) by inlabru-org
 options(repos = c(
   inlabruorg = "https://inlabru-org.r-universe.dev",
-  INLA = "https://inla.r-inla-download.org/R/testing",
-  CRAN = "https://cloud.r-project.org"
+  getOption("repos")
 ))
-
 install.packages("fmesher")
-```
-
-To install and run `fmesher` in full debug mode (this is quite an
-experience!), use
-
-``` r
-# install.packages("pkgbuild")
-source("https://raw.githubusercontent.com/inlabru-org/fmesher/devel/misc/build.R")
-fmesher_install(repo = "inlabru-org/fmesher", debug = TRUE)
 ```
 
 ## Online documentation
@@ -110,7 +139,7 @@ ggplot() +
   theme_minimal()
 ```
 
-<img src="man/figures/README-example2-plot-1.png" width="100%" />
+<img src="man/figures/README-example2-plot-1.png" alt="2D triangular mesh" width="100%" />
 
 ### 1D B-spline function spaces
 
@@ -133,7 +162,7 @@ ggplot() +
   geom_fm(data = mesh, xlim = c(0, 7))
 ```
 
-<img src="man/figures/README-example1-plot-1.png" width="100%" />
+<img src="man/figures/README-example1-plot-1.png" alt="1D B-spline function space" width="100%" />
 
 ### Extended helper methods for CRS handling
 
@@ -167,9 +196,6 @@ print(fm_crs("longlat_globe"))
 #>             ORDER[2],
 #>             ANGLEUNIT["degree",0.0174532925199433,
 #>                 ID["EPSG",9122]]]]
-```
-
-``` r
 
 # longlat for a sphere of radius 1m
 print(fm_crs("longlat_norm"))
@@ -193,9 +219,6 @@ print(fm_crs("longlat_norm"))
 #>             ORDER[2],
 #>             ANGLEUNIT["degree",0.0174532925199433,
 #>                 ID["EPSG",9122]]]]
-```
-
-``` r
 
 # A sphere of radius 1m
 print(fm_crs("sphere"))

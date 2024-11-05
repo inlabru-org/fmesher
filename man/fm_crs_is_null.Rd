@@ -22,17 +22,18 @@ logical
 \description{
 Methods of checking whether various kinds of CRS objects are \code{NULL} or \code{NA}.
 Logically equivalent to either \code{is.na(fm_crs(x))} or
-\code{is.na(fm_crs(x, oblique = NA))}, but with a short-cut pre-check for \code{is.null(x)}.
+\code{is.na(fm_crs(x, oblique = NA))}, but with a short-cut pre-check for
+\code{is.null(x)}.
 }
 \section{Functions}{
 \itemize{
-\item \code{fm_crs_is_null()}: Check if an object is or has \code{NULL} or \code{NA} CRS information.
-If not \code{NULL}, \code{is.na(fm_crs(x))} is returned. This allows the input to be e.g.
-a proj4string or epsg number, since the default \code{\link[=fm_crs]{fm_crs()}} method passes
-its argument on to \code{sf::st_crs()}.
+\item \code{fm_crs_is_null()}: Check if an object is or has \code{NULL} or \code{NA} CRS
+information. If not \code{NULL}, \code{is.na(fm_crs(x))} is returned. This allows the
+input to be e.g. a proj4string or epsg number, since the default \code{\link[=fm_crs]{fm_crs()}}
+method passes its argument on to \code{sf::st_crs()}.
 
-\item \code{is.na(fm_crs)}: Check if a \code{fm_crs} has \code{NA} crs information and \code{NA}
-obliqueness
+\item \code{is.na(fm_crs)}: Check if a \code{fm_crs} has \code{NA} crs information and
+\code{NA} obliqueness
 
 }}
 \examples{

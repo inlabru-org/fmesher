@@ -14,7 +14,7 @@
 #' `manifold="S2"` for great circle distances on the unit sphere (this is
 #' set automatically for `fm_fmesh_2d` objects).
 #' @param \dots Additional parameters passed on to the submethods.
-#' @return A scalar, upper bound for the diameter of the convex hull of the
+#' @returns A scalar, upper bound for the diameter of the convex hull of the
 #' point set.
 #' @author Finn Lindgren <finn.lindgren@@gmail.com>
 #' @examples

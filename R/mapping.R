@@ -2,659 +2,423 @@
 ##
 ##   Copyright (C) 2015, Finn Lindgren
 
-# old_globeproj ####
-
-#' @title Old globe projection methods
-#' @description Deprecated globe projection methods that may be removed in the
-#' future
-#' @keywords internal
-#' @param type Projection type, see [.globeproj.types()]
-#' @param orient long,lat,rotation
-#' @param xlim x-axis limits
-#' @param ylim y-axis limits
-#' @param scale x- and y- scaling factors
-#' @author Finn Lindgren
-#' @name globeproj
-#' @export
-#' @examples
-#' old_globeproj("mollweide")
-#'
-old_globeproj <- function(type = NULL,
-                          orient = NULL,
-                          xlim = NULL,
-                          ylim = NULL,
-                          scale = NULL) {
-  if (missing(type)) {
-    return(.globeproj.types())
-  }
-  type <- match.arg(type, .globeproj.types())
-
-  name <- type
-  if (identical(type, "lambert")) {
-    type <- "orthocyl"
-    if (is.null(scale)) scale <- c(1, 1)
-    if (is.null(orient)) orient <- c(0, 0, 0, 0)
-  } else if (identical(type, "gall-peters")) {
-    type <- "orthocyl"
-    if (is.null(scale)) scale <- c(1, 1)
-    scale <- scale * c(1 * cos(pi / 4), 1 / cos(pi / 4))
-    if (is.null(orient)) orient <- c(0, 0, 0, 0)
-  }
-
-  if (identical(type, "longlat")) {
-    if (is.null(orient)) orient <- c(0, 0, 0, 0)
-    if (is.null(scale)) scale <- c(1, 1)
-    if (is.null(xlim)) xlim <- c(-180, 180) * scale[1]
-    if (is.null(ylim)) ylim <- c(-90, 90) * scale[2]
-  } else if (identical(type, "orthocyl")) {
-    if (is.null(orient)) orient <- c(0, 0, 0, 0)
-    if (is.null(scale)) scale <- c(1, 1)
-    if (is.null(xlim)) xlim <- c(-pi, pi) * scale[1]
-    if (is.null(ylim)) ylim <- c(-1, 1) * scale[2]
-  } else if (identical(type, "mollweide")) {
-    if (is.null(orient)) orient <- c(0, 0, 0, 0)
-    if (is.null(scale)) scale <- c(1, 1) / sqrt(2)
-    if (is.null(xlim)) xlim <- c(-2, 2) * sqrt(2) * scale[1]
-    if (is.null(ylim)) ylim <- c(-1, 1) * sqrt(2) * scale[2]
-  } else if (identical(type, "hammer")) {
-    if (is.null(orient)) orient <- c(0, 0, 0, 0)
-    if (is.null(scale)) scale <- c(1, 1) / sqrt(2)
-    if (is.null(xlim)) xlim <- c(-2, 2) * sqrt(2) * scale[1]
-    if (is.null(ylim)) ylim <- c(-1, 1) * sqrt(2) * scale[2]
-  }
-  while (length(orient) < 4) {
-    orient <- c(orient, 0)
-  }
-
-  x <- structure(
-    list(
-      name = name, type = type,
-      orient = orient,
-      xlim = xlim, ylim = ylim, scale = scale
-    ),
-    class = "globeproj"
-  )
-  .validobject_globeproj(x)
-  x
-}
-
-
-##' @describeIn globeproj Types of globe projections
-##' @param x A [globeproj] object.
-##' @param \dots Not used.
-##' @return A vector of names of available projection types; "longlat",
-##' "mollweide", "hammer", "orthocyl", "lambert", "gall-peters"
-##' @author Finn Lindgren
-.globeproj.types <-
-  function(x, ...) {
-    c(
-      "longlat",
-      "mollweide", "hammer",
-      "orthocyl",
-      "lambert", "gall-peters"
-    )
-  }
-
-
-valid_globeproj <- function(object, ...) {
-  msg <- c()
-  if (!(object$type %in% .globeproj.types())) {
-    msg <- c(
-      msg,
-      paste("'type' should be one of (",
-        paste("'", .globeproj.types(), "'",
-          collapse = ", ", sep = ""
-        ),
-        "), not '", object$type, "'.",
-        sep = ""
-      )
-    )
-  }
-  if (length(object$xlim) != 2) {
-    msg <- c(
-      msg,
-      paste("'xlim' should have length 2, not ",
-        length(object$xlim), ".",
-        sep = ""
-      )
-    )
-  }
-  if (length(object$ylim) != 2) {
-    msg <- c(
-      msg,
-      paste("'ylim' should have length 2, not ",
-        length(object$ylim), ".",
-        sep = ""
-      )
-    )
-  }
-  if (length(msg) == 0) {
-    TRUE
-  } else {
-    msg
-  }
-}
-
-
-.validobject_globeproj <- function(x, test = FALSE, ...) {
-  ## Mostly from validObject
-  errors <- valid_globeproj(x)
-  if (length(errors) > 1 || is.character(errors[1])) {
-    if (test) {
-      errors
-    } else {
-      msg <- gettextf("invalid class %s object", dQuote(class(x)))
-      if (length(errors) > 1L) {
-        stop(paste(paste0(msg, ":"), paste(seq_along(errors),
-          errors,
-          sep = ": "
-        ),
-        collapse = "\n"
-        ), domain = NA)
-      } else {
-        stop(msg, ": ", errors, domain = NA)
-      }
-    }
-  } else {
-    TRUE
-  }
-}
 
 
 
-
-
-.clip_globeproj <- function(x, coords) {
-  ## Clip and generate a list of Line objects
+fm_internal_clip <- function(bounds, coords, eps = 0.05) {
+  stopifnot(requireNamespace("sp"))
+  ## Clip 2D coordinate matrix of polylines and generate a list of Line objects
+  ## bounds is from inla.crs.bounds
+  ## This implementation only removes "long" line segments.
   thelines <- list()
   ## Rudimentary cutting:
   toolong <-
     which(c(
       TRUE,
-      diff(coords[, 1])^2 / diff(x$xlim)^2
-        + diff(coords[, 2])^2 / diff(x$ylim)^2
-      > 0.1^2,
+      (diff(coords[, 1]) / diff(bounds$xlim))^2
+        + (diff(coords[, 2]) / diff(bounds$ylim))^2
+      > eps^2,
       TRUE
     ))
   start <- toolong[-length(toolong)]
   ending <- toolong[-1] - 1
   for (i in seq_along(start)) {
-    coords1 <- coords[start[i]:ending[i], 1]
-    coords2 <- coords[start[i]:ending[i], 2]
-    thelines <-
-      c(
-        thelines,
-        list(sp::Line(cbind(coords1, coords2)))
-      )
+    if (start[i] < ending[i]) {
+      thelines <-
+        c(
+          thelines,
+          list(sp::Line(coords[start[i]:ending[i], 1:2]))
+        )
+    }
   }
   thelines
 }
 
-# plot_Polyset ####
 
-#' @title Plot a projected PolySet
-#' @param x A PolySet (see `PBSmapping`)
-#' @param projection a `globeproj` objcet
-#' @param add logical; If TRUE, add to existing plot
-#' @param \dots Additional parameters passed on to `sp::plot`
-#' @details This function is a legacy method for plotting data from the
-#' `PBSmapping` package, with
+
+#' @title Plot CRS and fm_crs objects
 #'
-#' ```
-#' data(worldLL, package = "PBSmapping")
-#' plot_PolySet(worldLL, old_globeproj("longlat"), add = FALSE)
-#' ```
+#' @description `r lifecycle::badge("experimental")` Plot the outline of a `crs`
+#'   or [fm_crs()] projection, with optional graticules (transformed parallels
+#'   and meridians) and Tissot indicatrices.
 #'
-#' To avoid a dependency on the `PBSmapping` package, the example below
-#' constructs a synthetic object of the same format.
-#' @export
-#' @seealso [old_globeproj()]
+#' @param x A `crs` or [fm_crs()] object.
+#' @param xlim Optional x-axis limits.
+#' @param ylim Optional y-axis limits.
+#' @param outline Logical, if `TRUE`, draw the outline of the projection.
+#' @param graticule Vector of length at most 3, to plot meridians with spacing
+#' `graticule[1]` degrees and parallels with spacing `graticule[2]`
+#' degrees. `graticule[3]` optionally specifies the spacing above and
+#' below the first and last parallel.  When `graticule[1]==0` no meridians
+#' are drawn, and when `graticule[2]==0` no parallels are drawn. Use
+#' `graticule=NULL` to skip drawing a graticule.
+#' @param tissot Vector of length at most 3, to plot Tissot's indicatrices with
+#' spacing `tissot[1]` degrees and parallels with spacing `tissot[2]`
+#' degrees. `tissot[3]` specifices a scaling factor.  Use
+#' `tissot=NULL` to skip drawing a Tissot's indicatrices.
+#' @param asp The aspect ratio for the plot, default 1.
+#' @param add If `TRUE`, add the projecton plot to an existing plot.
+#' @param eps Clipping tolerance for rudimentary boundary clipping
+#' @param \dots Additional arguments passed on to the internal calls to
+#' `plot` and `lines`.
+#' @returns `NULL`, invisibly
+#' @author Finn Lindgren <finn.lindgren@@gmail.com>
+#' @seealso [fm_crs()]
 #' @examples
-#' world_example <- data.frame(
-#'   PID = c(0L, 0L, 0L, 1L, 1L),
-#'   POS = c(1L, 2L, 3L, 1L, 2L),
-#'   X = c(10, 20, 30, 15, 25),
-#'   Y = c(10, 15, 70, -40, -50)
-#' )
-#' plot_PolySet(world_example, old_globeproj("longlat"), add = FALSE)
-#' @keywords internal
-#' @returns An (invisible) `sp` object of projected lines
-plot_PolySet <- function(x, projection, add = FALSE, ...) {
-  coords <- old_project(projection, cbind(x$X, x$Y))
-  proj <-
-    sp::SpatialLines(list(sp::Lines(
+#' \donttest{
+#' if (require("sf") && require("sp")) {
+#'   for (projtype in c(
+#'     "longlat_norm",
+#'     "lambert_norm",
+#'     "mollweide_norm",
+#'     "hammer_norm"
+#'   )) {
+#'     fm_crs_plot(fm_crs(projtype), main = projtype)
+#'   }
+#' }
+#'
+#' if (require("sf") && require("sp")) {
+#'   oblique <- c(0, 45, 45, 0)
+#'   for (projtype in c(
+#'     "longlat_norm",
+#'     "lambert_norm",
+#'     "mollweide_norm",
+#'     "hammer_norm"
+#'   )) {
+#'     fm_crs_plot(
+#'       fm_crs(projtype, oblique = oblique),
+#'       main = paste("oblique", projtype)
+#'     )
+#'   }
+#' }
+#' }
+#' @export
+fm_crs_plot <- function(x, xlim = NULL, ylim = NULL,
+                        outline = TRUE,
+                        graticule = c(15, 15, 45),
+                        tissot = c(30, 30, 30),
+                        asp = 1,
+                        add = FALSE,
+                        eps = 0.05,
+                        ...) {
+  stopifnot(requireNamespace("sp"))
+
+  bounds <- fm_crs_bounds(x)
+  if (is.null(xlim)) xlim <- bounds$xlim
+  if (is.null(ylim)) ylim <- bounds$ylim
+  if (!add) {
+    args <- list(x = NA, type = "n", xlim = xlim, ylim = ylim, asp = asp, ...)
+    args <- args[intersect(names(args), names(formals(graphics::plot.default)))]
+    do.call(sp::plot, args)
+  }
+  ## Outline
+  if (outline) {
+    args <- list(x = bounds$polygon, ...)
+    args <- args[intersect(names(args), union(
+      names(formals(graphics::lines.default)),
+      names(formals(graphics::plot.xy))
+    ))]
+    do.call(lines, args)
+  }
+  ## Graticule
+  fm_crs_graticule(
+    x,
+    by = graticule,
+    add = TRUE,
+    do.plot = TRUE,
+    eps = eps,
+    ...
+  )
+  ## Tissot
+  fm_crs_tissot(
+    x,
+    by = tissot,
+    add = TRUE,
+    do.plot = TRUE,
+    eps = eps,
+    ...
+  )
+  invisible(NULL)
+}
+
+
+#' @describeIn fm_crs_plot
+#'   `r lifecycle::badge("experimental")` Constructs graticule
+#'   information for a given `CRS` or [fm_crs()] and optionally plots the
+#'   graticules.
+#' Returns a list with two elements, `meridians` and `parallels`, which are
+#'  `SpatialLines` objects.
+#' @param by The spacing between `(long, lat, long_at_poles)`
+#'   graticules/indicatrices, see the `graticule` and `tissot` arguments.
+#' @param do.plot logical; If TRUE, do plotting
+#' @export
+fm_crs_graticule <- function(x, by = c(15, 15, 45), add = FALSE, do.plot = TRUE,
+                             eps = 0.05, ...) {
+  stopifnot(requireNamespace("sp"))
+
+  ## Graticule
+  if (is.null(by)) {
+    return(invisible(list()))
+  }
+  if (length(by) < 2) {
+    by <- by[c(1, 1, 1)]
+  } else if (length(by) < 3) {
+    by <- by[c(1, 2, 1)]
+  }
+  n <- c(floor(180 / by[1]), ceiling(90 / by[2]) - 1, floor(180 / by[3]))
+  bounds <- fm_crs_bounds(x)
+  if (by[1] > 0) {
+    special.poles <- (by[1] != by[3]) && (by[2] > 0)
+    lon <- ((1 - n[1]):n[1]) * by[1]
+    if (special.poles) {
+      lat <- seq(-n[2] * by[2], n[2] * by[2], length.out = 91)
+    } else {
+      lat <- seq(-90 + 1e-6, 90 - 1e-6, length.out = 91)
+    }
+    meridians <- as.matrix(expand.grid(lat, lon)[, 2:1])
+    proj.mer.coords <- fm_transform(meridians,
+      crs0 = fmesher::fm_CRS("longlat_norm"),
+      crs = x
+    )
+    proj.mer.coords1 <- matrix(
+      proj.mer.coords[, 1], length(lat),
+      length(lon)
+    )
+    proj.mer.coords2 <- matrix(
+      proj.mer.coords[, 2], length(lat),
+      length(lon)
+    )
+
+    mer.coords <-
       unlist(
         lapply(
-          unique(x$PID),
+          seq_along(lon),
           function(k) {
-            .clip_globeproj(
-              projection,
-              coords[sum(x$PID < k) +
-                x$POS[x$PID == k], , drop = FALSE]
+            fm_internal_clip(bounds, cbind(
+              proj.mer.coords1[, k, drop = FALSE],
+              proj.mer.coords2[, k, drop = FALSE]
+            ),
+            eps = eps
             )
           }
         ),
         recursive = FALSE
-      ),
-      ID = "shape"
-    )))
-  if (add) {
-    sp::plot(proj, add = TRUE, ...)
-  } else {
-    sp::plot(proj, ...)
-  }
-  invisible(proj)
-}
+      )
 
-# old_outline ####
-
-#' @param x A [globeproj] object
-#' @param add logical; If TRUE, add to existing plot
-#' @param do.plot logical; If try, do plotting
-#' @param \dots Additional parameters passed to other methods
-#' @return A
-#' @author Finn Lindgren
-#' @export old_outline
-#' @aliases outline
-#' @aliases old_outline
-#' @rdname globeproj
-
-old_outline <-
-  function(x, add = FALSE, do.plot = TRUE,
-           ...) {
-    thebox <-
-      sp::SpatialPolygons(list(sp::Polygons(
-        list(sp::Polygon(
-          cbind(
-            c(
-              x$xlim[1], x$xlim[1],
-              x$xlim[2], x$xlim[2], x$xlim[1]
-            ),
-            c(
-              x$ylim[1], x$ylim[2],
-              x$ylim[2], x$ylim[1], x$ylim[1]
+    if (special.poles) {
+      if (by[3] > 0) {
+        lon <- ((1 - n[3]):n[3]) * by[3]
+        lat <- seq(-90 + 1e-6, -n[2] * by[2],
+          length.out = ceiling((90 - n[2] * by[2]) / 2) + 1
+        )
+        meridians <- as.matrix(expand.grid(lat, lon)[, 2:1])
+        proj.mer.coords <- fm_transform(meridians,
+          crs0 = fmesher::fm_CRS("longlat_norm"),
+          crs = x
+        )
+        proj.mer.coords1 <- matrix(
+          proj.mer.coords[, 1], length(lat),
+          length(lon)
+        )
+        proj.mer.coords2 <- matrix(
+          proj.mer.coords[, 2], length(lat),
+          length(lon)
+        )
+        mer.coords <-
+          c(
+            mer.coords,
+            unlist(
+              lapply(
+                seq_along(lon),
+                function(k) {
+                  fm_internal_clip(bounds, cbind(
+                    proj.mer.coords1[, k, drop = FALSE],
+                    proj.mer.coords2[, k, drop = FALSE]
+                  ),
+                  eps = eps
+                  )
+                }
+              ),
+              recursive = FALSE
             )
           )
-        )),
-        ID = "box"
-      )))
-    thebox <- sf::st_as_sfc(thebox)
-    if (x$type %in% c("longlat", "orthocyl")) {
-      theoutline <- thebox
-    } else if (x$type %in% c("mollweide", "hammer")) {
-      angle <- seq(0, 2 * pi, length = 361)
-      circle <- cbind(cos(angle), -sin(angle))
-      theboundary <-
-        sp::SpatialPolygons(list(sp::Polygons(
-          list(sp::Polygon(
-            cbind(
-              circle[, 1] * 2 * sqrt(2) * x$scale[1],
-              circle[, 2] * sqrt(2) * x$scale[2]
+
+        lat <- seq(n[2] * by[2],
+          90 - 1e-6,
+          length.out = ceiling((90 - n[2] * by[2]) / 2) + 1
+        )
+        meridians <- as.matrix(expand.grid(lat, lon)[, 2:1])
+        proj.mer.coords <- fm_transform(meridians,
+          crs0 = fmesher::fm_CRS("longlat_norm"),
+          crs = x
+        )
+        proj.mer.coords1 <- matrix(
+          proj.mer.coords[, 1], length(lat),
+          length(lon)
+        )
+        proj.mer.coords2 <- matrix(
+          proj.mer.coords[, 2], length(lat),
+          length(lon)
+        )
+        mer.coords <-
+          c(
+            mer.coords,
+            unlist(
+              lapply(
+                seq_along(lon),
+                function(k) {
+                  fm_internal_clip(bounds, cbind(
+                    proj.mer.coords1[, k, drop = FALSE],
+                    proj.mer.coords2[, k, drop = FALSE]
+                  ),
+                  eps = eps
+                  )
+                }
+              ),
+              recursive = FALSE
             )
-          )),
-          ID = "boundary"
-        )))
-      theboundary <- sf::st_as_sfc(theboundary)
-      theoutline <- sf::st_intersection(theboundary, thebox)
+          )
+      }
     }
-    theoutline <- sf::as_Spatial(theoutline)
+
+    proj.mer <-
+      sp::SpatialLines(
+        list(sp::Lines(mer.coords, ID = "meridians")),
+        proj4string = fm_CRS(x, oblique = NA)
+      )
     if (do.plot) {
+      args <- list(x = proj.mer, ...)
       if (add) {
-        sp::plot(theoutline, add = TRUE, ...)
-      } else {
-        sp::plot(theoutline, ...)
+        args[["add"]] <- TRUE
       }
+      do.call(sp::plot, args)
+      add <- TRUE
     }
-    invisible(theoutline)
+  } else {
+    proj.mer <- NULL
   }
-
-# old_graticule ####
-
-#' @rdname globeproj
-#' @param x A [globeproj] object
-#' @param n The number of graticules (n-long, n-lat) to compute
-#' @param add logical; If TRUE, add to existing plot
-#' @param do.plot logical; If TRUE, do plotting
-#' @param \dots Additional parameters passed on to other methods
-#' @return A
-#' @author Finn Lindgren
-#' @export old_graticule
-#' @aliases graticule
-#' @aliases old_graticule
-old_graticule <-
-  function(x, n = c(24, 12), add = FALSE, do.plot = TRUE,
-           ...) {
-    ## Graticule
-    if (n[1] > 0) {
-      graticule1 <- floor(n[1] / 2)
-      lon <- ((-graticule1):graticule1) * 2 / n[1] * 180
-      lat <- seq(-90, 90, by = 2)
-      meridians <- expand.grid(lat, lon)[, 2:1]
-      ## TODO: Add oblique support (requires cutting), etc
-      proj.mer.coords <- old_project(x, meridians)
-      proj.mer.coords1 <- matrix(
-        proj.mer.coords[, 1], length(lat),
-        length(lon)
-      )
-      proj.mer.coords2 <- matrix(
-        proj.mer.coords[, 2], length(lat),
-        length(lon)
-      )
-
-      proj.mer <-
-        sp::SpatialLines(list(sp::Lines(
-          unlist(
-            lapply(
-              seq_along(lon),
-              function(k) {
-                .clip_globeproj(x, cbind(
-                  proj.mer.coords1[, k],
-                  proj.mer.coords2[, k]
-                ))
-              }
-            ),
-            recursive = FALSE
-          ),
-          ID = "meridians"
-        )))
-      if (do.plot) {
-        if (add) {
-          sp::plot(proj.mer, add = TRUE, ...)
-        } else {
-          sp::plot(proj.mer, ...)
-          add <- TRUE
-        }
-      }
-    } else {
-      proj.mer <- NULL
-    }
-    if (n[2] > 1) {
-      lon <- seq(-180, 180, by = 2)
-      lat <- seq(-90, 90, length = 1 + n[2])[-c(1, 1 + n[2])]
-      parallels <- expand.grid(lon, lat)
-      proj.par.coords <- old_project(x, parallels)
-      proj.par.coords1 <- matrix(
-        proj.par.coords[, 1], length(lon),
-        length(lat)
-      )
-      proj.par.coords2 <- matrix(
-        proj.par.coords[, 2], length(lon),
-        length(lat)
-      )
-      proj.par <-
-        sp::SpatialLines(list(sp::Lines(
+  if (by[2] > 0) {
+    lon <- seq(-180 + 1e-6, 180 - 1e-6, length.out = 181)
+    lat <- ((-n[2]):n[2]) * by[2]
+    parallels <- as.matrix(expand.grid(lon, lat))
+    proj.par.coords <- fm_transform(parallels,
+      crs0 = fmesher::fm_CRS("longlat_norm"),
+      crs = x
+    )
+    proj.par.coords1 <- matrix(
+      proj.par.coords[, 1], length(lon),
+      length(lat)
+    )
+    proj.par.coords2 <- matrix(
+      proj.par.coords[, 2], length(lon),
+      length(lat)
+    )
+    proj.par <-
+      sp::SpatialLines(
+        list(sp::Lines(
           unlist(
             lapply(
               seq_along(lat),
               function(k) {
-                .clip_globeproj(x, cbind(
+                fm_internal_clip(bounds, cbind(
                   proj.par.coords1[, k],
                   proj.par.coords2[, k]
-                ))
+                ), eps = eps)
               }
             ),
             recursive = FALSE
           ),
           ID = "parallels"
-        )))
-      if (do.plot) {
-        if (add) {
-          sp::plot(proj.par, add = TRUE, ...)
-        } else {
-          sp::plot(proj.par, ...)
-        }
+        )),
+        proj4string = fm_CRS(x, oblique = NA)
+      )
+    if (do.plot) {
+      args <- list(x = proj.par, ...)
+      if (add) {
+        args[["add"]] <- TRUE
       }
-    } else {
-      proj.par <- NULL
+      do.call(sp::plot, args)
     }
-    invisible(list(meridians = proj.mer, parallels = proj.par))
+  } else {
+    proj.par <- NULL
   }
+  invisible(list(meridians = proj.mer, parallels = proj.par))
+}
 
-
-# old_tissot ####
-
-##' @rdname globeproj
-##' @param x A [globeproj] object
-##' @param n The number of Tissot indicatrices (n-long, n-lat) to compute
-##' @param add logical; If TRUE, add to existing plot
-##' @param do.plot logical; If TRUE, do plotting
-##' @param \dots Additional parameters passed on to other methods
-##' @return A
-##' @author Finn Lindgren
-##' @export old_tissot
-##' @aliases tissot
-##' @aliases old_tissot
-old_tissot <-
-  function(x, n = c(12, 6), add = FALSE, do.plot = TRUE,
-           ...) {
-    ## Tissot
-  }
-
-
-# plot_globeproj ####
-
-#' @title Plot a globeproj object
-#' @param x A [globeproj] object
-#' @param xlim,ylim The x- and y-axis limits
-#' @param outline logical
-#' @param graticule The number of graticules (n-long, n-lat) to compute
-#' @param tissot The number of Tissot indicatrices (n-long, n-lat) to compute
-#' @param asp the aspect ratio. Default = 1
-#' @param add logical; If `TRUE`, add to existing plot. Default: `FALSE`
-#' @param \dots Additional parameters passed on to other methods
-#' @return Nothing
-#' @author Finn Lindgren
+#' @describeIn fm_crs_plot
+#' `r lifecycle::badge("experimental")` Constructs Tissot indicatrix information
+#' for a given `CRS` or [fm_crs()] and optionally plots the indicatrices.
+#' Returns a list with one element, `tissot`, which is a `SpatialLines` object.
+#' @param diff.eps Pre-scaling
 #' @export
-#' @examples
-#' proj <- old_globeproj("moll", orient = c(0, 0, 45))
-#' plot_globeproj(proj, graticule = c(24, 12), add = FALSE, asp = 1, lty = 2, lwd = 0.5)
-plot_globeproj <-
-  function(x, xlim = NULL, ylim = NULL,
-           outline = TRUE,
-           graticule = c(24, 12),
-           tissot = c(12, 6),
-           asp = 1,
-           add = FALSE,
-           ...) {
-    if (is.null(xlim)) xlim <- x$xlim
-    if (is.null(ylim)) ylim <- x$ylim
-    if (!add) {
-      plot.new()
-      plot(NA, type = "n", xlim = xlim, ylim = ylim, asp = asp, ...)
+fm_crs_tissot <- function(x, by = c(30, 30, 30), add = FALSE, do.plot = TRUE,
+                          eps = 0.05, diff.eps = 1e-2, ...) {
+  stopifnot(requireNamespace("sp"))
+
+  if (is.null(by)) {
+    return(invisible(list()))
+  }
+  if (length(by) < 2) {
+    by <- c(by[1], by[1], 30)
+  } else if (length(by) < 3) {
+    by <- c(by[1:2], 30)
+  }
+  bounds <- fm_crs_bounds(x)
+  n <- c(floor(180 / by[1]), ceiling(90 / by[2]) - 1)
+  lon <- ((1 - n[1]):n[1]) * by[1]
+  lat <- ((-n[2]):n[2]) * by[2]
+  loc0.lon <- loc0.lat <- loc0 <-
+    cbind(as.matrix(expand.grid(lat, lon)[, 2:1]), 0)
+  loc0.lon[, 1] <- loc0.lon[, 1] + diff.eps / cos(loc0.lat[, 2] * pi / 180)
+  loc0.lat[, 2] <- loc0.lat[, 2] + diff.eps
+  crs.longlat <- fm_CRS("longlat_norm")
+
+  loc1 <- fm_transform(loc0, crs0 = crs.longlat, crs = x)
+  loc1.lon <- fm_transform(loc0.lon, crs0 = crs.longlat, crs = x)
+  loc1.lat <- fm_transform(loc0.lat, crs0 = crs.longlat, crs = x)
+  ok <- (rowSums(is.na(loc1)) +
+    rowSums(is.na(loc1.lon)) +
+    rowSums(is.na(loc1.lat)) == 0)
+  loc1 <- loc1[ok, , drop = FALSE]
+  loc1.lon <- loc1.lon[ok, , drop = FALSE]
+  loc1.lat <- loc1.lat[ok, , drop = FALSE]
+
+  diff.lon <- (loc1.lon - loc1) / eps
+  diff.lat <- (loc1.lat - loc1) / eps
+
+  scale <- by[3]
+  theta <- seq(0, 2 * pi, length.out = 181)
+  ct <- cos(theta) * scale
+  st <- sin(theta) * scale
+
+  collection <-
+    sp::SpatialLines(
+      list(sp::Lines(
+        unlist(
+          lapply(
+            seq_len(nrow(loc1)),
+            function(k) {
+              loc1.ellipse <-
+                cbind(
+                  loc1[k, 1] + diff.lon[k, 1] * ct + diff.lat[k, 1] * st,
+                  loc1[k, 2] + diff.lon[k, 2] * ct + diff.lat[k, 2] * st
+                )
+              fm_internal_clip(bounds, loc1.ellipse, eps = eps)
+            }
+          ),
+          recursive = FALSE
+        ),
+        ID = "parallels"
+      )),
+      proj4string = fm_CRS(x, oblique = NA)
+    )
+  if (do.plot) {
+    args <- list(x = collection, ...)
+    if (add) {
+      args[["add"]] <- TRUE
     }
-    ## Outline
-    if (outline) {
-      old_outline(x, add = TRUE, ...)
-    }
-    ## Graticule
-    old_graticule(x, n = graticule, add = TRUE, ...)
-    ## Tissot
-    old_tissot(x, n = tissot, add = TRUE, asp = asp, ...)
-    invisible(NULL)
+    do.call(sp::plot, args)
   }
 
-
-# old_limits ####
-
-##' @describeIn globeproj Calculates projection axis limits
-##'
-##' @param x A [globeproj] object
-##' @param loc Coordinates to be mapped.
-##' @param \dots Additional parameters passed on to other methods
-##' @return A list:
-##' \item{xlim }{X axis limits in the map domain}
-##' \item{ylim }{Y axis limits in the map domain}
-##' @author Finn Lindgren
-##' @export old_limits
-##' @aliases limits
-##' @aliases old_limits
-old_limits <-
-  function(x,
-           loc = NULL,
-           ...) {
-    if (!is(x, "globeproj")) {
-      stop("'x' must be a 'globeproj'")
-    }
-    lim <- list(xlim = x$xlim, ylim = x$ylim)
-    if (!is.null(loc)) {
-      locproj <- old_project(x, loc)
-      xlim <- range(locproj[, 1], na.rm = TRUE)
-      ylim <- range(locproj[, 2], na.rm = TRUE)
-      lim$xlim <- c(max(lim$xlim[1], xlim[1]), min(lim$xlim[2], xlim[2]))
-      lim$ylim <- c(max(lim$ylim[1], ylim[1]), min(lim$ylim[2], ylim[2]))
-    }
-    lim
-  }
-
-
-
-
-# old_project ####
-
-#' @rdname globeproj
-#' @param x A [globeproj] object
-#' @param loc Coordinates to be mapped.
-#' @param inverse logical
-#' @param \dots Additional parameters passed on to other methods
-#' @return B
-#' @author Finn Lindgren
-#'
-#' @export old_project
-#' @aliases project
-#' @aliases old_project
-old_project <-
-  function(x, loc, inverse = FALSE, ...) {
-    if (!is(x, "globeproj")) {
-      stop("'x' must be a 'globeproj'")
-    }
-    if (inverse) {
-      ## Convert coordinates to standardised scale
-      loc <- loc %*% diag(1 / x$scale, 2)
-    } else {
-      if (ncol(loc) == 2) {
-        ## Standardise (long,lat) to Cartesian coordinates.
-        loc <-
-          cbind(
-            x = cos(loc[, 1] * pi / 180) * cos(loc[, 2] * pi / 180),
-            y = sin(loc[, 1] * pi / 180) * cos(loc[, 2] * pi / 180),
-            z = sin(loc[, 2] * pi / 180)
-          )
-      }
-      ## Transform to oblique orientation
-      ## 1) Rotate -orient[1] around (0,0,1)
-      ## 2) Rotate +orient[2] around (0,1,0)
-      ## 3) Rotate -orient[3] around (1,0,0)
-      ## 3) Rotate -orient[4] around (0,0,1)
-      loc <- loc %*% fm_rotmat3213(c(-1, 1, -1, -1) * x$orient * pi / 180)
-    }
-    if (identical(x$type, "longlat")) {
-      if (inverse) {
-        proj <-
-          cbind(
-            x = cos(loc[, 1] * pi / 180) * cos(loc[, 2] * pi / 180),
-            y = sin(loc[, 1] * pi / 180) * cos(loc[, 2] * pi / 180),
-            z = sin(loc[, 2] * pi / 180)
-          )
-      } else {
-        proj <-
-          cbind(
-            x = atan2(loc[, 2], loc[, 1]) * 180 / pi,
-            y = asin(pmax(-1, pmin(+1, loc[, 3]))) * 180 / pi
-          )
-      }
-    } else if (identical(x$type, "orthocyl")) {
-      if (inverse) {
-        coslat <- sqrt(pmax(0, 1 - loc[, 2]^2))
-        proj <-
-          cbind(
-            x = cos(loc[, 1] * pi / 180) * coslat,
-            y = sin(loc[, 1] * pi / 180) * coslat,
-            z = loc[, 2]
-          )
-      } else {
-        proj <-
-          cbind(
-            x = atan2(loc[, 2], loc[, 1]),
-            y = loc[, 3]
-          )
-      }
-    } else if (identical(x$type, "mollweide")) {
-      if (inverse) {
-        ok <- ((loc[, 1]^2 / 2 + 2 * loc[, 2]^2) <= 4)
-        cos.theta <- sqrt(pmax(0, 1 - loc[ok, 2]^2 / 2))
-        theta <- atan2(loc[ok, 2] / sqrt(2), cos.theta)
-        sin.lat <- (2 * theta + sin(2 * theta)) / pi
-        cos.lat <- sqrt(pmax(0, 1 - sin.lat^2))
-        lon <- loc[ok, 1] / sqrt(2) * pi / 2 / (cos.theta + (cos.theta == 0))
-        lon[cos.theta == 0] <- pi / 2 * sign(theta[cos.theta == 0])
-        proj <- matrix(NA, nrow(loc), 3)
-        proj[ok, ] <- cbind(
-          x = cos(lon) * cos.lat,
-          y = sin(lon) * cos.lat,
-          z = sin.lat
-        )
-      } else {
-        lon <- atan2(loc[, 2], loc[, 1])
-        z <- pmin(1, pmax(-1, loc[, 3]))
-        sin.theta <- z
-        cos.theta <- sqrt(pmax(0, 1 - sin.theta^2))
-        ## NR-solver for sin.theta.
-        ## Typically finishes after at most 7 iterations.
-        ## When cos.theta=0, sin.theta is already correct, +/- 1.
-        notok <- (cos.theta > 0)
-        for (k in 1:20) {
-          if (!any(notok)) {
-            break
-          }
-          delta <-
-            (atan2(sin.theta[notok], cos.theta[notok]) +
-              sin.theta[notok] * cos.theta[notok] - pi / 2 * z[notok]) /
-              (2 * cos.theta[notok])
-          sin.theta[notok] <- sin.theta[notok] - delta
-          cos.theta[notok] <- sqrt(1 - sin.theta[notok]^2)
-          notok[notok] <- (abs(delta) > 1e-14)
-        }
-        proj <- cbind(
-          x = 2 * lon / pi * cos.theta * sqrt(2),
-          y = sin.theta[, drop = TRUE] * sqrt(2)
-        )
-      }
-    } else if (identical(x$type, "hammer")) {
-      if (inverse) {
-        ok <- ((loc[, 1]^2 / 2 + 2 * loc[, 2]^2) <= 4)
-        z2 <- 1 - (loc[ok, 1] / 4)^2 - (loc[ok, 2] / 2)^2
-        z <- sqrt(z2)
-        lon <- 2 * atan(z * loc[ok, 1] / (2 * (2 * z2 - 1)))
-        sin.lat <- z * loc[ok, 2]
-        cos.lat <- sqrt(pmax(0, 1 - sin.lat^2))
-        proj <- matrix(NA, nrow(loc), 3)
-        proj[ok, ] <- cbind(
-          x = cos(lon) * cos.lat,
-          y = sin(lon) * cos.lat,
-          z = sin.lat
-        )
-      } else {
-        lon <- atan2(loc[, 2], loc[, 1])
-        sin.lat <- pmin(1, pmax(-1, loc[, 3]))
-        cos.lat <- sqrt(pmax(0, 1 - sin.lat^2))
-        cos.lon2 <- cos(lon / 2)
-        sin.lon2 <- sin(lon / 2)
-        scale <- sqrt(2) / sqrt(1 + cos.lat * cos.lon2)
-        proj <- cbind(
-          x = 2 * cos.lat * sin.lon2 * scale,
-          y = sin.lat * scale
-        )
-      }
-    }
-    if (inverse) {
-      ## Transform back from oblique orientation
-      ## 1) Rotate +orient[4] around (0,0,1)
-      ## 2) Rotate +orient[3] around (1,0,0)
-      ## 3) Rotate -orient[2] around (0,1,0)
-      ## 4) Rotate +orient[1] around (0,0,1)
-      proj <- proj %*% fm_rotmat3123(c(1, -1, 1, 1) * x$orient * pi / 180)
-    } else {
-      proj <- cbind(x = proj[, 1] * x$scale[1], y = proj[, 2] * x$scale[2])
-    }
-    proj
-  }
+  invisible(list(tissot = collection))
+}

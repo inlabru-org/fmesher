@@ -31,9 +31,12 @@ test_that("Flat CDT works", {
   min.angle <-
     180 / pi * min(acos(pmin(1, pmax(
       -1, c(
-        -rowSums(edges[[1]] * edges[[2]]) / rowSums(edges[[1]]^2)^0.5 / rowSums(edges[[2]]^2)^0.5,
-        -rowSums(edges[[2]] * edges[[3]]) / rowSums(edges[[2]]^2)^0.5 / rowSums(edges[[3]]^2)^0.5,
-        -rowSums(edges[[3]] * edges[[1]]) / rowSums(edges[[3]]^2)^0.5 / rowSums(edges[[1]]^2)^0.5
+        -rowSums(edges[[1]] * edges[[2]]) /
+          (rowSums(edges[[1]]^2)^0.5 * rowSums(edges[[2]]^2)^0.5),
+        -rowSums(edges[[2]] * edges[[3]]) /
+          (rowSums(edges[[2]]^2)^0.5 * rowSums(edges[[3]]^2)^0.5),
+        -rowSums(edges[[3]] * edges[[1]]) /
+          (rowSums(edges[[3]]^2)^0.5 * rowSums(edges[[1]]^2)^0.5)
       )
     ))))
   max.edge <- max(rowSums(do.call(rbind, edges)^2)^0.5)
@@ -76,4 +79,13 @@ test_that("Spherical CDT works", {
   max.edge <- max(len)
 
   expect_lte(max.edge, max.edge0 + lowtol)
+})
+
+
+test_that("fm_lattice_2d ordering", {
+  latt1 <- fm_lattice_2d(1:4, 1:3)
+  latt2 <- fm_lattice_2d(rev(1:4), 1:3)
+  expect_equal(latt1$x, latt2$x)
+  expect_equal(latt1$y, latt2$y)
+  expect_equal(latt1$loc, latt2$loc)
 })
