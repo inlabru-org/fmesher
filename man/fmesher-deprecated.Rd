@@ -9,6 +9,7 @@
 \alias{fm_spTransform.inla.mesh.lattice}
 \alias{fm_spTransform.inla.mesh.segment}
 \alias{fm_spTransform.inla.mesh}
+\alias{fm_has_PROJ6}
 \alias{fm_as_sp_crs}
 \alias{fm_sp_get_crs}
 \alias{fm_as_inla_mesh_segment}
@@ -29,6 +30,8 @@ fm_spTransform(x, ...)
 \method{fm_spTransform}{inla.mesh.segment}(x, CRSobj, passthrough = FALSE, ...)
 
 \method{fm_spTransform}{inla.mesh}(x, CRSobj, passthrough = FALSE, ...)
+
+fm_has_PROJ6()
 
 fm_as_sp_crs(x, ...)
 
@@ -80,6 +83,8 @@ reference systems of \code{sp::CRS} or \code{INLA::inla.CRS} class.
 
 \item \code{fm_spTransform(default)}: The default method handles low level
 transformation of raw coordinates.
+
+\item \code{fm_has_PROJ6()}: Old checker for PROJ6.
 
 \item \code{fm_as_sp_crs()}: Wrapper for \code{\link[=fm_CRS]{fm_CRS()}}
 \code{sp::Spatial} and \code{sp::CRS} objects.

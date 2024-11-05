@@ -1,4 +1,4 @@
-# fmesher (development version)
+# fmesher 0.2.0
 
 ## New methods
 
