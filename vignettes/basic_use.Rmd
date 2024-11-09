@@ -50,7 +50,7 @@ domain <- cbind(rnorm(4, sd = 3), rnorm(4))
 ```{r lookup2}
 pts <- cbind(rnorm(400, sd = 3), rnorm(400))
 
-# Find what triangle each point is in, and it triangular Barycentric
+# Find what triangle each point is in, and its triangular Barycentric
 # coordinates
 bary <- fm_bary(mesh2, loc = pts)
 # How many points are outside the mesh?
