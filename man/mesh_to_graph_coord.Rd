@@ -29,7 +29,7 @@ if (requireNamespace("MetricGraph")) {
   graph$build_mesh(h = 0.01)
   mgg <- mesh_to_graph_coord(
     graph,
-    matrix(c(5, 1), nrow = 1)
+    cbind(5, 1)
   )
   mgg
 }
@@ -39,6 +39,8 @@ if (requireNamespace("MetricGraph")) {
 Other object creation and conversion: 
 \code{\link{Euclidean_to_MGG}()},
 \code{\link{MGG_interval}()},
+\code{\link{as_MGG}()},
+\code{\link{as_MGM}()},
 \code{\link{fm_as_fm}()},
 \code{\link{fm_as_lattice_2d}()},
 \code{\link{fm_as_mesh_1d}()},
@@ -46,8 +48,6 @@ Other object creation and conversion:
 \code{\link{fm_as_segm}()},
 \code{\link{fm_as_sfc}()},
 \code{\link{fm_as_tensor}()},
-\code{\link{fm_bary_MGG}()},
-\code{\link{fm_bary_MGM}()},
 \code{\link{fm_lattice_2d}()},
 \code{\link{fm_mesh_1d}()},
 \code{\link{fm_mesh_2d}()},

@@ -15,7 +15,7 @@ geom_path_to_path_MGG(graph, geom_path)
 A \code{path_MGG} object
 }
 \description{
-Create an \code{graph_interval} object from \code{sf::st_geometry} (\code{LINESTRING})
+Create a list of \code{path_MGG} objects from \code{sf::st_geometry} (\code{LINESTRING})
 }
 \examples{
 if (requireNamespace("MetricGraph") && requireNamespace("lwgeom") &&
@@ -27,11 +27,11 @@ if (requireNamespace("MetricGraph") && requireNamespace("lwgeom") &&
   edge4 <- cbind(sin(theta), 1 + cos(theta))
   edges <- list(edge1, edge2, edge3, edge4)
   graph <- MetricGraph::metric_graph$new(edges = edges)
-  geom_path <- sf::st_sfc(sf::st_linestring(matrix(
-    c(-1., 0., 0., 1., 1., 0.2),
-    nrow = 3
-  )))
-  path <- geom_path_to_path_MGG(graph, geom_path)
+  graph$build_mesh(h = 0.01)
+  geom_path <- sf::st_linestring(cbind(c(0, 0, 0.7),
+                                       c(0.5, 0, 0)))
+  path <- geom_path_to_path_MGG(graph,
+                                sf::st_geometry(geom_path))
   path
 }
 
@@ -40,6 +40,8 @@ if (requireNamespace("MetricGraph") && requireNamespace("lwgeom") &&
 Other object creation and conversion: 
 \code{\link{Euclidean_to_MGG}()},
 \code{\link{MGG_interval}()},
+\code{\link{as_MGG}()},
+\code{\link{as_MGM}()},
 \code{\link{fm_as_fm}()},
 \code{\link{fm_as_lattice_2d}()},
 \code{\link{fm_as_mesh_1d}()},
@@ -47,8 +49,6 @@ Other object creation and conversion:
 \code{\link{fm_as_segm}()},
 \code{\link{fm_as_sfc}()},
 \code{\link{fm_as_tensor}()},
-\code{\link{fm_bary_MGG}()},
-\code{\link{fm_bary_MGM}()},
 \code{\link{fm_lattice_2d}()},
 \code{\link{fm_mesh_1d}()},
 \code{\link{fm_mesh_2d}()},

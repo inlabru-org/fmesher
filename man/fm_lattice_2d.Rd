@@ -92,6 +92,8 @@ mesh <- fm_rcdt_2d(lattice = lattice, refine = list(max.edge = 0.08))
 Other object creation and conversion: 
 \code{\link{Euclidean_to_MGG}()},
 \code{\link{MGG_interval}()},
+\code{\link{as_MGG}()},
+\code{\link{as_MGM}()},
 \code{\link{fm_as_fm}()},
 \code{\link{fm_as_lattice_2d}()},
 \code{\link{fm_as_mesh_1d}()},
@@ -99,8 +101,6 @@ Other object creation and conversion:
 \code{\link{fm_as_segm}()},
 \code{\link{fm_as_sfc}()},
 \code{\link{fm_as_tensor}()},
-\code{\link{fm_bary_MGG}()},
-\code{\link{fm_bary_MGM}()},
 \code{\link{fm_mesh_1d}()},
 \code{\link{fm_mesh_2d}()},
 \code{\link{fm_segm}()},

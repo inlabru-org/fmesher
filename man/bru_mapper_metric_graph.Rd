@@ -7,18 +7,18 @@
 \alias{ibm_jacobian.bru_mapper_metric_graph}
 \title{bru_mapper for the metric_graph class}
 \usage{
-bru_mapper.metric_graph(mesh, n_eta = 1, ...)
+\method{bru_mapper}{metric_graph}(mesh, n_eta = 0, ...)
 
-ibm_n.bru_mapper_metric_graph(mapper, ...)
+\method{ibm_n}{bru_mapper_metric_graph}(mapper, ...)
 
-ibm_values.bru_mapper_metric_graph(mapper, ...)
+\method{ibm_values}{bru_mapper_metric_graph}(mapper, ...)
 
-ibm_jacobian.bru_mapper_metric_graph(mapper, input, ...)
+\method{ibm_jacobian}{bru_mapper_metric_graph}(mapper, input, ...)
 }
 \arguments{
 \item{mesh}{a metric_graph object}
 
-\item{n_eta}{number of components in linear predictor}
+\item{n_eta}{number of components in linear predictor (if 0 we use fm_dof(m))}
 
 \item{\dots}{arguments passed to sub-methods}
 
@@ -29,12 +29,14 @@ ibm_jacobian.bru_mapper_metric_graph(mapper, input, ...)
 \description{
 bru_mapper for the metric_graph class
 }
-\section{Functions}{
+\section{Methods (by generic)}{
 \itemize{
-\item \code{ibm_n.bru_mapper_metric_graph()}: Returns the degrees of freedom (number of vertices in the mesh)
+\item \code{ibm_n(bru_mapper_metric_graph)}: Returns the degrees of freedom (number of
+vertices in the mesh)
 
-\item \code{ibm_values.bru_mapper_metric_graph()}: Returns a vector with indices for the degrees of freedom
+\item \code{ibm_values(bru_mapper_metric_graph)}: Returns a vector with indices for the
+degrees of freedom
 
-\item \code{ibm_jacobian.bru_mapper_metric_graph()}: Returns the mapping matrix between
+\item \code{ibm_jacobian(bru_mapper_metric_graph)}: Returns the mapping matrix between
 
 }}

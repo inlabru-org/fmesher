@@ -40,12 +40,12 @@ test_that("MGG bary", {
 
 test_that("MGG to MGM", {
   skip_if_not_installed("MetricGraph")
-  graph <- local_bru_test_graph()
-  graph$build_mesh(h = 0.005)
-  locs <- as.matrix(rbind(c(1, 0.6), c(3, 0.20)))
+  graph0 <- local_bru_test_graph()
+  graph0$build_mesh(h = 0.005)
+  locs <- rbind(c(1, 0.6), c(3, 0.20))
   mgm <-
     graph_to_mesh_coord(
-      graph = graph,
+      graph = graph0,
       coord = locs
     )
 
@@ -55,8 +55,8 @@ test_that("MGG to MGM", {
       mgm$index[2, drop = FALSE]
     ),
     c(
-      126,
-      444
+      120,
+      440
     )
   )
   expect_equal(
@@ -65,8 +65,8 @@ test_that("MGG to MGM", {
       mgm$where[2, drop = FALSE]
     ),
     c(
-      0,
-      0
+      1,
+      1
     )
   )
 })
@@ -108,7 +108,7 @@ test_that("MGM to MGG", {
 test_that("bary MGG to MGG", {
   skip_if_not_installed("MetricGraph")
   graph <- local_bru_test_graph()
-  locs <- fm_bary_MGG(graph, matrix(c(c(2, 5), c(0.8, 0.2)), ncol = 2))
+  locs <- as_MGG(graph, matrix(c(c(2, 5), c(0.8, 0.2)), ncol = 2))
   b <-
     fm_bary(
       mesh = graph,
@@ -131,7 +131,7 @@ test_that("bary MGM to MGM", {
   skip_if_not_installed("MetricGraph")
   graph <- local_bru_test_graph()
   graph$build_mesh(h = 0.005)
-  locs <- fm_bary_MGM(graph, matrix(c(c(300, 1250), c(0.5, 1.0)), ncol = 2))
+  locs <- as_MGM(graph, matrix(c(c(300, 1250), c(0.5, 1.0)), ncol = 2))
   b <-
     fm_bary(
       mesh = graph,
@@ -154,6 +154,58 @@ test_that("bary MGM to MGM", {
 test_that("path construction", {
   skip_if_not_installed("MetricGraph")
   graph <- local_bru_test_graph()
+
+  # same edge interval
+  start <- matrix(c(2, 0.5), nrow = 1)
+  edges <- c()
+  end <- matrix(c(2, 0.8), nrow = 1)
+  p <-
+    path_MGG(
+      graph = graph,
+      start_MGG = start,
+      edges = edges,
+      end_MGG = end
+    )
+
+  expect_equal(
+    c(
+      p$index,
+      p$where[, 1, drop = FALSE],
+      p$where[, 2, drop = FALSE]
+    ),
+    c(
+      2,
+      0.5,
+      0.8
+    )
+  )
+
+  # neighboring edges
+  start <- matrix(c(2, 0.5), nrow = 1)
+  edges <- c()
+  end <- matrix(c(4, 0.8), nrow = 1)
+  p <-
+    path_MGG(
+      graph = graph,
+      start_MGG = start,
+      edges = edges,
+      end_MGG = end
+    )
+
+  expect_equal(
+    c(
+      p$index,
+      p$where[, 1, drop = FALSE],
+      p$where[, 2, drop = FALSE]
+    ),
+    c(
+      2, 4,
+      0.5, 0,
+      0, 0.8
+    )
+  )
+
+  # with edges
   start <- matrix(c(2, 0.5), nrow = 1)
   edges <- c(1, 6, 5)
   end <- matrix(c(3, 0.8), nrow = 1)
@@ -300,49 +352,42 @@ test_that("ibm values", {
   )
 })
 
-# test_that("sf to MGG", {
-#   skip_if_not_installed("MetricGraph")
-#   skip_if_not_installed("sf")
-#   skip_if_not_installed("lwgeom")
-#   graph <- local_bru_test_graph()
-#   line1 <- sf::st_linestring(matrix(c(0, 0, 1, 0.5, 0, 0), nrow = 3))
-#   line1_g <- sf::st_geometry(line1)
-#   path_MGG1 <-
-#     geom_path_to_path_MGG(
-#       graph = graph,
-#       geom_path = line1_g
-#     )
-#   expect_equal(
-#     path_MGG1[[1]]$index,
-#     c(2, 1)
-#   )
-#   expect_equal(
-#     path_MGG1[[1]]$where,
-#     matrix(c(0.5, 0, 0, 1), nrow = 2)
-#   )
-#   line2 <- sf::st_linestring(matrix(c(-1, 0, 1, 1, 1, 1), nrow = 3))
-#   lines <- sf::st_sfc(list(line1, line2))
-#   lines <- sf::st_geometry(lines)
-#   path_MGGs <-
-#     geom_path_to_path_MGG(
-#       graph = graph,
-#       geom_path = lines
-#     )
-#
-#   expect_equal(
-#     path_MGGs[[1]]$index,
-#     c(2, 1)
-#   )
-#   expect_equal(
-#     path_MGGs[[2]]$index,
-#     c(3, 5)
-#   )
-#   expect_equal(
-#     path_MGGs[[1]]$where,
-#     matrix(c(0.5, 0, 0, 1), nrow = 2)
-#   )
-#   expect_equal(
-#     path_MGGs[[2]]$where,
-#     matrix(c(1, 0, 0, 1), nrow = 2)
-#   )
-# })
+test_that("sf to MGG", {
+  skip_if_not_installed("MetricGraph")
+  skip_if_not_installed("sf")
+  skip_if_not_installed("lwgeom")
+  graph <- local_bru_test_graph()
+  graph$build_mesh(h = 0.005)
+  line1 <- sf::st_linestring(matrix(c(0, 0, 1, 0.5, 0, 0), nrow = 3))
+  line1_g <- sf::st_geometry(line1)
+  path_MGG1 <-
+    geom_path_to_path_MGG(
+      graph = graph,
+      geom_path = line1_g
+    )
+  expect_equal(
+    path_MGG1$index,
+    c(2, 1)
+  )
+  expect_equal(
+    path_MGG1$where,
+    cbind(c(0.5, 0), c(0, 1))
+  )
+  line2 <- sf::st_linestring(cbind(c(-1, 0, 1), c(1, 1, 1)))
+  lines <- sf::st_sfc(list(line1, line2))
+  lines <- sf::st_geometry(lines)
+  path_MGGs <-
+    geom_path_to_path_MGG(
+      graph = graph,
+      geom_path = lines
+    )
+
+  expect_equal(
+    path_MGGs$index,
+    c(2, 1, 3, 5)
+  )
+  expect_equal(
+    path_MGGs$where,
+    cbind(c(0.5, 0, 1, 0), c(0, 1, 0, 1))
+  )
+})

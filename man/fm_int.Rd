@@ -169,9 +169,9 @@ if (requireNamespace("MetricGraph")) {
   graph$build_mesh(h = 0.01)
   p1 <- path_MGG(
     graph = graph,
-    start_MGG = matrix(c(1, 0.2), nrow = 1),
+    start_MGG = cbind(1, 0.2),
     edges = c(2),
-    end_MGG = matrix(c(3, 0.8), nrow = 1)
+    end_MGG = cbind(3, 0.8)
   )
   samplers <- tibble::tibble(x = list(p1), weight = c(1))
   ips <- fm_int(

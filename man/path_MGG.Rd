@@ -32,9 +32,9 @@ if (requireNamespace("MetricGraph")) {
   graph <- MetricGraph::metric_graph$new(edges = edges)
   path <- path_MGG(
     graph,
-    start_MGG = matrix(c(1, 0.5), nrow = 1),
+    start_MGG = cbind(1, 0.5),
     edges = c(2),
-    end_MGG = matrix(c(3, 0.6), nrow = 1)
+    end_MGG = cbind(3, 0.6)
   )
   # a tibble with three interedge intervals
   # 1  0.5  0
@@ -48,6 +48,8 @@ if (requireNamespace("MetricGraph")) {
 Other object creation and conversion: 
 \code{\link{Euclidean_to_MGG}()},
 \code{\link{MGG_interval}()},
+\code{\link{as_MGG}()},
+\code{\link{as_MGM}()},
 \code{\link{fm_as_fm}()},
 \code{\link{fm_as_lattice_2d}()},
 \code{\link{fm_as_mesh_1d}()},
@@ -55,8 +57,6 @@ Other object creation and conversion:
 \code{\link{fm_as_segm}()},
 \code{\link{fm_as_sfc}()},
 \code{\link{fm_as_tensor}()},
-\code{\link{fm_bary_MGG}()},
-\code{\link{fm_bary_MGM}()},
 \code{\link{fm_lattice_2d}()},
 \code{\link{fm_mesh_1d}()},
 \code{\link{fm_mesh_2d}()},
