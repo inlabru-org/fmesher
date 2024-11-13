@@ -113,6 +113,8 @@ fm_segm(fmexample$mesh, boundary = FALSE)
 Other object creation and conversion: 
 \code{\link{Euclidean_to_MGG}()},
 \code{\link{MGG_interval}()},
+\code{\link{MGG_to_MGM}()},
+\code{\link{MGM_to_MGG}()},
 \code{\link{as_MGG}()},
 \code{\link{as_MGM}()},
 \code{\link{fm_as_fm}()},
@@ -128,8 +130,6 @@ Other object creation and conversion:
 \code{\link{fm_simplify}()},
 \code{\link{fm_tensor}()},
 \code{\link{geom_path_to_path_MGG}()},
-\code{\link{graph_to_mesh_coord}()},
-\code{\link{mesh_to_graph_coord}()},
 \code{\link{path_MGG}()}
 }
 \concept{object creation and conversion}

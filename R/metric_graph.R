@@ -166,11 +166,11 @@ fm_bary.metric_graph <- function(mesh,
     if (MGG) {
       bary_coord <- loc
     } else {
-      bary_coord <- graph_to_mesh_coord(mesh, loc)
+      bary_coord <- MGG_to_MGM(mesh, loc)
     }
   } else if (inherits(loc, "fm_bary_MGM")) {
     if (MGG) {
-      bary_coord <- mesh_to_graph_coord(mesh, loc)
+      bary_coord <- MGM_to_MGG(mesh, loc)
     } else {
       bary_coord <- loc
     }
@@ -180,7 +180,7 @@ fm_bary.metric_graph <- function(mesh,
     if (MGG) {
       bary_coord <- res
     } else {
-      bary_coord <- graph_to_mesh_coord(mesh, res)
+      bary_coord <- MGG_to_MGM(mesh, res)
     }
   }
   return(bary_coord)
@@ -275,7 +275,7 @@ fm_int.metric_graph <- function(domain,
         inside <- (loc_mid >= interedge$where[1, 1]) & (loc_mid <= interedge$where[1, 2])
       }
       # convert to MGM
-      loc_mid_MGM <- graph_to_mesh_coord(
+      loc_mid_MGM <- MGG_to_MGM(
         graph = domain,
         coord = cbind(interedge$index, loc_mid)
       )
@@ -373,14 +373,14 @@ Euclidean_to_MGG <- function(graph, loc) {
 #'   edges <- list(edge1, edge2, edge3, edge4)
 #'   graph <- MetricGraph::metric_graph$new(edges = edges)
 #'   graph$build_mesh(h = 0.005)
-#'   mgm <- graph_to_mesh_coord(
+#'   mgm <- MGG_to_MGM(
 #'     graph,
 #'     cbind(1, 0.5)
 #'   )
 #'   mgm
 #' }
 #'
-graph_to_mesh_coord <- function(graph,
+MGG_to_MGM <- function(graph,
                                 coord) {
   if (is.null(graph$mesh)) {
     # error
@@ -498,14 +498,14 @@ graph_to_mesh_coord <- function(graph,
 #'   edges <- list(edge1, edge2, edge3, edge4)
 #'   graph <- MetricGraph::metric_graph$new(edges = edges)
 #'   graph$build_mesh(h = 0.01)
-#'   mgg <- mesh_to_graph_coord(
+#'   mgg <- MGM_to_MGG(
 #'     graph,
 #'     cbind(5, 1)
 #'   )
 #'   mgg
 #' }
 #'
-mesh_to_graph_coord <- function(graph,
+MGM_to_MGG <- function(graph,
                                 coord) {
   mesh_loc <- graph$mesh$VtE
   new_coord <- matrix(nrow = nrow(coord), ncol = ncol(coord))
