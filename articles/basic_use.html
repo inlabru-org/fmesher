@@ -112,7 +112,7 @@ Lindgren</h4>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">400</span>, sd <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">400</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Find what triangle each point is in, and it triangular Barycentric</span></span>
+<span><span class="co"># Find what triangle each point is in, and its triangular Barycentric</span></span>
 <span><span class="co"># coordinates</span></span>
 <span><span class="va">bary</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_bary.html">fm_bary</a></span><span class="op">(</span><span class="va">mesh2</span>, loc <span class="op">=</span> <span class="va">pts</span><span class="op">)</span></span>
 <span><span class="co"># How many points are outside the mesh?</span></span>
