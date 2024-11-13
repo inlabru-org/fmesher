@@ -9,7 +9,7 @@ future version."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,7 +41,7 @@ future version."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Deprecated functions in fmesher</h1>
-      <small class="dont-index">Source: <a href="https://github.com/inlabru-org/fmesher/blob/devel/R/deprecated.R" class="external-link"><code>R/deprecated.R</code></a>, <a href="https://github.com/inlabru-org/fmesher/blob/devel/R/crs.R" class="external-link"><code>R/crs.R</code></a>, <a href="https://github.com/inlabru-org/fmesher/blob/devel/R/mesh.R" class="external-link"><code>R/mesh.R</code></a>, and 1 more</small>
+      <small class="dont-index">Source: <a href="https://github.com/inlabru-org/fmesher/blob/devel/R/deprecated.R" class="external-link"><code>R/deprecated.R</code></a>, <a href="https://github.com/inlabru-org/fmesher/blob/devel/R/crs.R" class="external-link"><code>R/crs.R</code></a>, <a href="https://github.com/inlabru-org/fmesher/blob/devel/R/sp_mesh.R" class="external-link"><code>R/sp_mesh.R</code></a></small>
       <div class="d-none name"><code>fmesher-deprecated.Rd</code></div>
     </div>
 
@@ -63,24 +63,11 @@ future version.</p>
 <span><span class="co"># S3 method for class 'SpatialPointsDataFrame'</span></span>
 <span><span class="fu">fm_spTransform</span><span class="op">(</span><span class="va">x</span>, <span class="va">CRSobj</span>, passthrough <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># S3 method for class 'inla.mesh.lattice'</span></span>
-<span><span class="fu">fm_spTransform</span><span class="op">(</span><span class="va">x</span>, <span class="va">CRSobj</span>, passthrough <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S3 method for class 'inla.mesh.segment'</span></span>
-<span><span class="fu">fm_spTransform</span><span class="op">(</span><span class="va">x</span>, <span class="va">CRSobj</span>, passthrough <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S3 method for class 'inla.mesh'</span></span>
-<span><span class="fu">fm_spTransform</span><span class="op">(</span><span class="va">x</span>, <span class="va">CRSobj</span>, passthrough <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
-<span></span>
 <span><span class="fu">fm_has_PROJ6</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">fm_as_sp_crs</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">fm_sp_get_crs</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">fm_as_inla_mesh_segment</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">fm_as_inla_mesh</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">fm_sp2segment</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -118,8 +105,6 @@ through without transformation.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A <code>CRS</code> object, or NULL if no valid CRS identified</p>
-<p>An <code>fm_segm</code> object</p>
-<p>An <code>fm_mesh_2d</code> object</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -141,10 +126,6 @@ transformation of raw coordinates.</p></li>
 <code><a href="https://edzer.github.io/sp/reference/Spatial-class.html" class="external-link">sp::Spatial</a></code> and <code><a href="https://edzer.github.io/sp/reference/CRS-class.html" class="external-link">sp::CRS</a></code> objects.</p></li>
 <li><p><code>fm_sp_get_crs()</code>: Wrapper for <code>CRS(projargs)</code> (PROJ4) and
 <code>CRS(wkt)</code> for <code><a href="https://edzer.github.io/sp/reference/Spatial-class.html" class="external-link">sp::Spatial</a></code> objects.</p></li>
-<li><p><code>fm_as_inla_mesh_segment()</code>: Conversion to inla.mesh.segment
-<a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> in favour of <code><a href="fm_as_segm.html">fm_as_segm()</a></code>.</p></li>
-<li><p><code>fm_as_inla_mesh()</code>: Conversion to inla.mesh.
-<a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> in favour of <code><a href="fm_as_mesh_2d.html">fm_as_mesh_2d()</a></code>.</p></li>
 <li><p><code>fm_sp2segment()</code>: <a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> in favour
 of <code><a href="fm_as_segm.html">fm_as_segm()</a></code></p></li>
 </ul></div>

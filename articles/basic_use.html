@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -115,17 +115,23 @@ Lindgren</h4>
 <span><span class="co"># Find what triangle each point is in, and its triangular Barycentric</span></span>
 <span><span class="co"># coordinates</span></span>
 <span><span class="va">bary</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_bary.html">fm_bary</a></span><span class="op">(</span><span class="va">mesh2</span>, loc <span class="op">=</span> <span class="va">pts</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">bary</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 2</span></span></span>
+<span><span class="co">#&gt;   index where[,1]  [,2]  [,3]</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>   831    0.047<span style="text-decoration: underline;">2</span> 0.581 0.371</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>  <span style="text-decoration: underline;">1</span>421    0.140  0.721 0.139</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>  <span style="text-decoration: underline;">1</span>008    0.432  0.138 0.430</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>  <span style="text-decoration: underline;">1</span>110    0.200  0.372 0.428</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>   984    0.213  0.369 0.419</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>   169    0.444  0.174 0.382</span></span>
 <span><span class="co"># How many points are outside the mesh?</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">bary</span><span class="op">$</span><span class="va">t</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">bary</span><span class="op">$</span><span class="va">index</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 2</span></span>
-<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">bary</span><span class="op">$</span><span class="va">bary</span><span class="op">)</span></span>
-<span><span class="co">#&gt;            [,1]      [,2]      [,3]</span></span>
-<span><span class="co">#&gt; [1,] 0.04720217 0.5813611 0.3714367</span></span>
-<span><span class="co">#&gt; [2,] 0.13950532 0.7212692 0.1392255</span></span>
-<span><span class="co">#&gt; [3,] 0.43189448 0.1384910 0.4296145</span></span>
-<span><span class="co">#&gt; [4,] 0.20031702 0.3721526 0.4275303</span></span>
-<span><span class="co">#&gt; [5,] 0.21259133 0.3686084 0.4188003</span></span>
-<span><span class="co">#&gt; [6,] 0.44390951 0.1739205 0.3821700</span></span>
+<span><span class="va">bary</span><span class="op">$</span><span class="va">where</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">bary</span><span class="op">$</span><span class="va">index</span><span class="op">)</span>, <span class="op">]</span></span>
+<span><span class="co">#&gt;      [,1] [,2] [,3]</span></span>
+<span><span class="co">#&gt; [1,]   NA   NA   NA</span></span>
+<span><span class="co">#&gt; [2,]   NA   NA   NA</span></span>
 <span></span>
 <span><span class="co"># Evaluate basis functions</span></span>
 <span><span class="va">basis</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_basis.html">fm_basis</a></span><span class="op">(</span><span class="va">mesh2</span>, loc <span class="op">=</span> <span class="va">pts</span><span class="op">)</span> <span class="co"># Raw SparseMatrix</span></span>
@@ -152,16 +158,18 @@ Lindgren</h4>
 <span><span class="va">bary1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_bary.html">fm_bary</a></span><span class="op">(</span><span class="va">mesh1</span>, loc <span class="op">=</span> <span class="va">pts1</span><span class="op">)</span></span>
 <span><span class="co"># Points outside the interval are treated differently depending on the</span></span>
 <span><span class="co"># boundary conditions:</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">bary1</span><span class="op">$</span><span class="va">t</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">bary1</span><span class="op">$</span><span class="va">index</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0</span></span>
-<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">bary1</span><span class="op">$</span><span class="va">bary</span><span class="op">)</span></span>
-<span><span class="co">#&gt;          [,1]      [,2]</span></span>
-<span><span class="co">#&gt; [1,] 2.000000 -1.000000</span></span>
-<span><span class="co">#&gt; [2,] 1.992993 -0.992993</span></span>
-<span><span class="co">#&gt; [3,] 1.985986 -0.985986</span></span>
-<span><span class="co">#&gt; [4,] 1.978979 -0.978979</span></span>
-<span><span class="co">#&gt; [5,] 1.971972 -0.971972</span></span>
-<span><span class="co">#&gt; [6,] 1.964965 -0.964965</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">bary1</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 2</span></span></span>
+<span><span class="co">#&gt;   index where[,1]   [,2]</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>     1      2    -<span style="color: #BB0000;">1</span>    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>     1      1.99 -<span style="color: #BB0000;">0.993</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>     1      1.99 -<span style="color: #BB0000;">0.986</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>     1      1.98 -<span style="color: #BB0000;">0.979</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>     1      1.97 -<span style="color: #BB0000;">0.972</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>     1      1.96 -<span style="color: #BB0000;">0.965</span></span></span>
 <span></span>
 <span><span class="co"># Evaluate basis functions</span></span>
 <span><span class="va">basis1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_basis.html">fm_basis</a></span><span class="op">(</span><span class="va">mesh1</span>, loc <span class="op">=</span> <span class="va">pts1</span><span class="op">)</span> <span class="co"># Raw SparseMatrix</span></span>

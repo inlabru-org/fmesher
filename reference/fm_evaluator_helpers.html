@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,7 +66,8 @@
 
 
 <dl><dt id="arg-mesh">mesh<a class="anchor" aria-label="anchor" href="#arg-mesh"></a></dt>
-<dd><p>An <code>inla.mesh</code> or <code>inla.mesh.1d</code> object.</p></dd>
+<dd><p>An <a href="fm_mesh_1d.html">fm_mesh_1d</a>, <a href="fm_mesh_2d.html">fm_mesh_2d</a>, or other object supported by a
+sub-method.</p></dd>
 
 
 <dt id="arg-loc">loc<a class="anchor" aria-label="anchor" href="#arg-loc"></a></dt>
@@ -101,9 +102,10 @@ logical vector <code>ok</code>.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu">fm_evaluator_mesh_2d</span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span>, loc <span class="op">=</span> <span class="va">fmexample</span><span class="op">$</span><span class="va">loc</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> List of 4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ t   : int [1:10, 1] 358 301 413 337 369 221 363 329 329 142</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ bary: num [1:10, 1:3] 0.0699 0.1367 0.4852 0.0831 0.6245 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> List of 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ bary: fm_bary [10 × 2] (S3: fm_bary/tbl_df/tbl/data.frame)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ index: int [1:10] 358 301 413 337 369 221 363 329 329 142</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ where: num [1:10, 1:3] 0.0699 0.1367 0.4852 0.0831 0.6245 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ A   :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ i       : int [1:30] 1 9 3 7 8 5 0 6 4 2 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ p       : int [1:280] 0 0 0 0 0 0 0 0 0 0 ...</span>

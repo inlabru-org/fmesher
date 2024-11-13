@@ -9,7 +9,7 @@ coordinates"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,26 +52,38 @@ coordinates</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fm_bary</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">loc</span>, <span class="va">...</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fm_bary</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'fm_bary'</span></span>
+<span><span class="fu">fm_bary</span><span class="op">(</span><span class="va">bary</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'list'</span></span>
+<span><span class="fu">fm_bary</span><span class="op">(</span><span class="va">bary</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'tbl_df'</span></span>
+<span><span class="fu">fm_bary</span><span class="op">(</span><span class="va">bary</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'fm_mesh_1d'</span></span>
 <span><span class="fu">fm_bary</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">loc</span>, method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"linear"</span>, <span class="st">"nearest"</span><span class="op">)</span>, restricted <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'fm_mesh_2d'</span></span>
-<span><span class="fu">fm_bary</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">loc</span>, crs <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span>, max_batch_size <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S3 method for class 'inla.mesh'</span></span>
-<span><span class="fu">fm_bary</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">...</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S3 method for class 'inla.mesh.1d'</span></span>
-<span><span class="fu">fm_bary</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">fm_bary</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">loc</span>, crs <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span>, max_batch_size <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-mesh">mesh<a class="anchor" aria-label="anchor" href="#arg-mesh"></a></dt>
+<dl><dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>Arguments forwarded to sub-methods.</p></dd>
+
+
+<dt id="arg-bary">bary<a class="anchor" aria-label="anchor" href="#arg-bary"></a></dt>
+<dd><p>An <code>fm_bary</code> object, or an object that can be converted to
+<code>fm_bary</code>.</p></dd>
+
+
+<dt id="arg-mesh">mesh<a class="anchor" aria-label="anchor" href="#arg-mesh"></a></dt>
 <dd><p><code>fm_mesh_1d</code> or <code>fm_mesh_2d</code> object</p></dd>
 
 
@@ -79,10 +91,6 @@ coordinates</p>
 <dd><p>Points for which to identify the containing interval/triangle, and
 corresponding barycentric coordinates. May be a vector (for 1d) or a matrix
 of raw coordinates, <code>sf</code>, or <code>sp</code> point information (for 2d).</p></dd>
-
-
-<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Arguments forwarded to sub-methods.</p></dd>
 
 
 <dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
@@ -112,33 +120,42 @@ give an approximately optimal runtime.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A list with elements <code>t</code>; either</p><ul><li><p>vector of triangle indices (triangle meshes),</p></li>
+    <p>A <code>fm_bary</code> object, a <code>tibble</code> with columns <code>index</code>; either</p><ul><li><p>vector of triangle indices (triangle meshes),</p></li>
 <li><p>matrix of interval knot indices (1D meshes), or</p></li>
 <li><p>matrix of lower left box indices (2D lattices),</p></li>
-</ul><p>and <code>bary</code>, a matrix of barycentric coordinates.</p>
+</ul><p>and <code>where</code>, a matrix of barycentric coordinates.</p>
     </div>
     <div class="section level2">
     <h2 id="methods-by-class-">Methods (by class)<a class="anchor" aria-label="anchor" href="#methods-by-class-"></a></h2>
 
-<ul><li><p><code>fm_bary(fm_mesh_1d)</code>: Return a list with elements <code>t</code> (start and endpoint knot
-indices) and <code>bary</code> (barycentric coordinates), both 2-column matrices.</p>
-<p>For <code>method = "nearest"</code>, <code>t[,1]</code> contains the index of the nearest mesh
-knot, and each row of <code>bary</code> contains <code>c(1, 0)</code>.</p></li>
-<li><p><code>fm_bary(fm_mesh_2d)</code>: A list with elements <code>t</code> (vector of triangle indices) and
-<code>bary</code> (3-column matrix of barycentric coordinates). Points that were not
-found give <code>NA</code> entries in <code>t</code> and <code>bary</code>.</p></li>
+<ul><li><p><code>fm_bary(fm_bary)</code>: Returns the <code>bary</code> input unchanged</p></li>
+<li><p><code>fm_bary(list)</code>: Converts a <code>list</code> <code>bary</code> to <code>fm_bary</code>.
+In the list elements are unnamed, the names <code>index</code> and <code>where</code> are assumed.</p></li>
+<li><p><code>fm_bary(tbl_df)</code>: Converts a <code><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble::tibble()</a></code> <code>bary</code> to <code>fm_bary</code></p></li>
+<li><p><code>fm_bary(fm_mesh_1d)</code>: Return an <code>fm_bary</code> object with elements <code>index</code> (starting knot indices
+indices) and <code>where</code> (barycentric coordinates), both 2-column matrices.
+Use <code><a href="fm_bary_simplex.html">fm_bary_simplex()</a></code> to obtain the corresponding endpoint knot indices.</p>
+<p>For <code>method = "nearest"</code>, <code>index</code> contains the index of the nearest mesh
+knot, and <code>where</code> is a single-column all-ones matrix.</p></li>
+<li><p><code>fm_bary(fm_mesh_2d)</code>: An <code>fm_bary</code> object with columns <code>index</code> (vector of
+triangle indices) and <code>where</code> (3-column matrix of barycentric coordinates).
+Points that were not found give <code>NA</code> entries in <code>index</code> and <code>where</code>.</p></li>
 </ul></div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p><code><a href="fm_bary_simplex.html">fm_bary_simplex()</a></code></p></div>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu">fm_bary</span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span>, <span class="va">fmexample</span><span class="op">$</span><span class="va">loc_sf</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ t   : int [1:10] 358 301 413 337 369 221 363 329 329 142</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ bary: num [1:10, 1:3] 0.0699 0.1367 0.4852 0.0831 0.6245 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fm_bary [10 × 2] (S3: fm_bary/tbl_df/tbl/data.frame)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ index: int [1:10] 358 301 413 337 369 221 363 329 329 142</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ where: num [1:10, 1:3] 0.0699 0.1367 0.4852 0.0831 0.6245 ...</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu">fm_bary</span><span class="op">(</span><span class="fu"><a href="fm_mesh_1d.html">fm_mesh_1d</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5</span>, by <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ t   : num [1:11, 1:2] 1 1 1 1 2 2 3 3 3 3 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ bary: num [1:11, 1:2] 2 1.5 1 0.5 1 0.5 1 0.5 0 -0.5 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fm_bary [11 × 2] (S3: fm_bary/tbl_df/tbl/data.frame)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ index: int [1:11] 1 1 1 1 2 2 3 3 3 3 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ where: num [1:11, 1:2] 2 1.5 1 0.5 1 0.5 1 0.5 0 -0.5 ...</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -9,7 +9,7 @@ defined on a mesh or function space."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,13 +82,7 @@ defined on a mesh or function space.</p>
 <span>  projection <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  crs <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S3 method for class 'inla.mesh'</span></span>
-<span><span class="fu">fm_evaluator</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">...</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S3 method for class 'inla.mesh.1d'</span></span>
-<span><span class="fu">fm_evaluator</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -100,7 +94,8 @@ defined on a mesh or function space.</p>
 
 
 <dt id="arg-mesh">mesh<a class="anchor" aria-label="anchor" href="#arg-mesh"></a></dt>
-<dd><p>An <code>inla.mesh</code> or <code>inla.mesh.1d</code> object.</p></dd>
+<dd><p>An <a href="fm_mesh_1d.html">fm_mesh_1d</a>, <a href="fm_mesh_2d.html">fm_mesh_2d</a>, or other object supported by a
+sub-method.</p></dd>
 
 
 <dt id="arg-field">field<a class="anchor" aria-label="anchor" href="#arg-field"></a></dt>
@@ -169,18 +164,14 @@ shortcut to <code>fm_evaluate(fm_evaluator(mesh, ...), field = field)</code>.</p
 The <code>proj</code> element is a <code>fm_basis</code> object, containing (at least)
 a mapping matrix <code>A</code> and a logical vector <code>ok</code>, that indicates which
 locations were mappable to the input mesh.
-For <code>fm_mesh_2d</code> and <code>inla.mesh</code>
-input, <code>proj</code> also contains a matrix <code>bary</code> and vector <code>t</code>, with the
+For <code>fm_mesh_2d</code>
+input, <code>proj</code> also contains a <code>bary</code> <a href="fm_bary.html">fm_bary</a> object, with the
 barycentric coordinates within the triangle each input location falls in.</p></li>
 <li><p><code>fm_evaluator(default)</code>: The default method calls <code>fm_basis</code> and creates
 a basic <code>fm_evaluator</code> object</p></li>
 <li><p><code>fm_evaluator(fm_mesh_2d)</code>: The <code>...</code> arguments are passed on to
 <code>fm_evaluator_lattice()</code> if no <code>loc</code> or <code>lattice</code> is provided.</p></li>
 <li><p><code>fm_evaluator_lattice()</code>: Creates an <code><a href="fm_lattice_2d.html">fm_lattice_2d()</a></code> object, by default covering the input mesh.</p></li>
-<li><p><code>fm_evaluator(inla.mesh)</code>: Converts legacy <code>inla.mesh</code> to <code>fm_mesh_2d</code> and calls
-the <code>fm_evaluator</code> method again.</p></li>
-<li><p><code>fm_evaluator(inla.mesh.1d)</code>: Converts legacy <code>inla.mesh</code> to <code>fm_mesh_1d</code> and calls
-the <code>fm_evaluator</code> method again.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
