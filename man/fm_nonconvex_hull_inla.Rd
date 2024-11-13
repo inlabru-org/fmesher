@@ -45,7 +45,7 @@ details.}
 \item{\dots}{Unused.}
 }
 \value{
-\code{fm_nonconvex_hull_inla()} returns an \code{fm_segm}/\code{inla.mesh.segment}
+\code{fm_nonconvex_hull_inla()} returns an \link{fm_segm}
 object, for compatibility with \code{inla.nonconvex.hull()}.
 }
 \description{

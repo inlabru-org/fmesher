@@ -12,7 +12,8 @@ fm_is_within(x, y, ...)
 \arguments{
 \item{x}{A set of points of a class supported by \code{fm_evaluator(y, loc = x)}}
 
-\item{y}{An \code{inla.mesh}}
+\item{y}{An \link{fm_mesh_2d} or other class supported by
+\code{fm_evaluator(y, loc = x)}}
 
 \item{\dots}{Currently unused}
 }

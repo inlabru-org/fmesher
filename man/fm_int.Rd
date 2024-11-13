@@ -10,9 +10,6 @@
 \alias{fm_int.fm_lattice_2d}
 \alias{fm_int.fm_mesh_1d}
 \alias{fm_int.fm_mesh_2d}
-\alias{fm_int.inla.mesh.lattice}
-\alias{fm_int.inla.mesh.1d}
-\alias{fm_int.inla.mesh}
 \title{Multi-domain integration}
 \usage{
 fm_int(domain, samplers = NULL, ...)
@@ -32,19 +29,6 @@ fm_int(domain, samplers = NULL, ...)
 \method{fm_int}{fm_mesh_1d}(domain, samplers = NULL, name = "x", int.args = NULL, ...)
 
 \method{fm_int}{fm_mesh_2d}(
-  domain,
-  samplers = NULL,
-  name = NULL,
-  int.args = NULL,
-  format = NULL,
-  ...
-)
-
-\method{fm_int}{inla.mesh.lattice}(domain, samplers = NULL, name = "x", ...)
-
-\method{fm_int}{inla.mesh.1d}(domain, samplers = NULL, name = "x", int.args = NULL, ...)
-
-\method{fm_int}{inla.mesh}(
   domain,
   samplers = NULL,
   name = NULL,

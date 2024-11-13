@@ -62,7 +62,7 @@ An object of some \verb{fm_*} class
 }
 \description{
 Used for conversion from general objects
-(usually \code{inla.mesh} and other INLA specific classes)
+(usually \code{inla.mesh} and other legacy INLA specific classes)
 to \code{fmesher} classes.
 }
 \examples{

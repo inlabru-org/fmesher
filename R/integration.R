@@ -548,7 +548,7 @@ fm_int.SpatRaster <- function(domain, samplers = NULL, name = "x", ...) {
 #' @export
 #' @describeIn fm_int `fm_lattice_2d` integration. Not yet implemented.
 fm_int.fm_lattice_2d <- function(domain, samplers = NULL, name = "x", ...) {
-  stop("'inla.mesh.lattice' integration is not yet implemented.")
+  stop("'fm_lattice_2d' integration is not yet implemented.")
 }
 
 
@@ -802,7 +802,7 @@ fm_int.fm_mesh_2d <- function(domain,
 #' triangle
 #'
 #' @param points A `SpatialPointsDataFrame`, `sf`, or `list` object
-#' @param mesh An `fm_mesh_2d` or `inla.mesh` object
+#' @param mesh An `fm_mesh_2d` object
 #' @returns `SpatialPointsDataFrame`, `sf`, or `list` of mesh vertices with
 #' projected data attached
 #' @importFrom rlang .data
@@ -821,8 +821,8 @@ fm_vertex_projection <- function(points, mesh) {
     n_points <- NROW(points$loc)
     res <- fm_evaluator(mesh, points$loc)
   }
-  tri <- res$proj$t
-  bary <- res$proj$bary
+  tri <- res$proj$bary$index
+  bary <- res$proj$bary$where
 
   if (is.null(points$weight)) {
     points$weight <- rep(1L, n_points)
@@ -909,7 +909,7 @@ fm_int_mesh_2d <- function(samplers,
                            name = NULL,
                            int.args = NULL,
                            ...) {
-  stopifnot(inherits(domain, c("fm_mesh_2d", "inla.mesh")))
+  stopifnot(inherits(domain, "fm_mesh_2d"))
 
   if (missing(samplers) || is.null(samplers)) {
     return(
@@ -1515,49 +1515,4 @@ fm_int_mesh_2d.Spatial <- function(samplers,
     )
 
   ips
-}
-
-
-
-
-# Legacy class support ####
-
-#' @export
-#' @rdname fm_int
-fm_int.inla.mesh.lattice <- function(domain, samplers = NULL, name = "x", ...) {
-  stop("'inla.mesh.lattice' integration is not yet implemented.")
-}
-
-#' @rdname fm_int
-#' @export
-fm_int.inla.mesh.1d <- function(domain,
-                                samplers = NULL,
-                                name = "x",
-                                int.args = NULL,
-                                ...) {
-  fm_int.fm_mesh_1d(
-    fm_as_mesh_1d(domain),
-    samplers = samplers,
-    name = name,
-    int.args = NULL,
-    ...
-  )
-}
-
-#' @export
-#' @rdname fm_int
-fm_int.inla.mesh <- function(domain,
-                             samplers = NULL,
-                             name = NULL,
-                             int.args = NULL,
-                             format = NULL,
-                             ...) {
-  fm_int.fm_mesh_2d(
-    fm_as_mesh_2d(domain),
-    samplers = samplers,
-    name = name,
-    int.args = int.args,
-    format = format,
-    ...
-  )
 }

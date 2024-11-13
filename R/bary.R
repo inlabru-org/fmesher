@@ -12,20 +12,60 @@
 #'   corresponding barycentric coordinates. May be a vector (for 1d) or a matrix
 #'   of raw coordinates, `sf`, or `sp` point information (for 2d).
 #' @param \dots Arguments forwarded to sub-methods.
-#' @returns A list with elements `t`; either
+#' @returns A `fm_bary` object, a `tibble` with columns `index`; either
 #' \itemize{
 #' \item{vector of triangle indices (triangle meshes),}
 #' \item{matrix of interval knot indices (1D meshes), or}
 #' \item{matrix of lower left box indices (2D lattices),}
 #' }
-#' and `bary`, a matrix of barycentric coordinates.
+#' and `where`, a matrix of barycentric coordinates.
 #'
+#' @seealso [fm_bary_simplex()]
 #' @export
 #' @examples
 #' str(fm_bary(fmexample$mesh, fmexample$loc_sf))
 #' str(fm_bary(fm_mesh_1d(1:4), seq(0, 5, by = 0.5)))
-fm_bary <- function(mesh, loc, ...) {
+fm_bary <- function(...) {
   UseMethod("fm_bary")
+}
+
+#' @describeIn fm_bary Returns the `bary` input unchanged
+#' @param bary An `fm_bary` object, or an object that can be converted to
+#' `fm_bary`.
+#' @export
+fm_bary.fm_bary <- function(bary, ...) {
+  bary
+}
+
+#' @describeIn fm_bary Converts a `list` `bary` to `fm_bary`.
+#' In the list elements are unnamed, the names `index` and `where` are assumed.
+#' @export
+fm_bary.list <- function(bary, ...) {
+  if (is.null(names(bary))) {
+    names(bary) <- c("index", "where")
+  }
+  bary <- tibble::tibble(
+    index = bary[["index"]],
+    where = bary[["where"]]
+  )
+  storage.mode(bary[["index"]]) <- "integer"
+  structure(
+    bary,
+    class = c("fm_bary", class(bary))
+  )
+}
+
+#' @describeIn fm_bary Converts a [tibble::tibble()] `bary` to `fm_bary`
+#' @export
+fm_bary.tbl_df <- function(bary, ...) {
+  stopifnot(
+    all(c("index", "where") %in% names(bary))
+  )
+  storage.mode(bary[["index"]]) <- "integer"
+  structure(
+    bary,
+    class = c("fm_bary", class(bary))
+  )
 }
 
 
@@ -47,11 +87,12 @@ do.the.split <- function(knots, loc) {
 
 
 
-#' @describeIn fm_bary Return a list with elements `t` (start and endpoint knot
-#'   indices) and `bary` (barycentric coordinates), both 2-column matrices.
+#' @describeIn fm_bary Return an `fm_bary` object with elements `index` (starting knot indices
+#'   indices) and `where` (barycentric coordinates), both 2-column matrices.
+#'   Use [fm_bary_simplex()] to obtain the corresponding endpoint knot indices.
 #'
-#' For `method = "nearest"`, `t[,1]` contains the index of the nearest mesh
-#' knot, and each row of `bary` contains `c(1, 0)`.
+#' For `method = "nearest"`, `index` contains the index of the nearest mesh
+#' knot, and `where` is a single-column all-ones matrix.
 #' @param method character; method for defining the barycentric coordinates,
 #' "linear" (default) or "nearest"
 #' @param restricted logical, used for `method="linear"`.
@@ -80,41 +121,33 @@ fm_bary.fm_mesh_1d <- function(mesh,
   if (method == "nearest") {
     if (mesh$cyclic) {
       idx <- idx + (u > 0.5)
-      u <- numeric(length(loc))
       idx <- (idx - 1L) %% mesh$n + 1L
-      idx_next <- idx %% mesh$n + 1L
     } else { # !cyclic
       idx <- idx + (u > 0.5)
       idx_next <- idx + 1L
-      u <- numeric(length(loc))
-      found <- (idx == mesh$n)
-      idx_next[found] <- mesh$n - 1L
-      u[found] <- 0.0
     }
+    bary <- matrix(1.0, length(loc), 1)
   } else { ## (method=="linear") {
-    if (mesh$cyclic) {
-      idx_next <- idx %% mesh$n + 1L
-    } else { # !cyclic
-      idx_next <- idx + 1L
-      if (restricted) {
-        u[u < 0.0] <- 0.0
-        u[u > 1.0] <- 1.0
-      }
+    if (!mesh$cyclic && restricted) {
+      u[u < 0.0] <- 0.0
+      u[u > 1.0] <- 1.0
     }
+    bary <- cbind(1 - u, u, deparse.level = 0)
   }
 
-  index <- cbind(idx, idx_next, deparse.level = 0)
-  bary <- cbind(1 - u, u, deparse.level = 0)
-
-  return(list(t = index, bary = bary))
+  fm_bary(
+    tibble::tibble(
+      index = idx,
+      where = bary
+    )
+  )
 }
 
 
+#' @describeIn fm_bary An `fm_bary` object with columns `index` (vector of
+#'   triangle indices) and `where` (3-column matrix of barycentric coordinates).
+#'   Points that were not found give `NA` entries in `index` and `where`.
 #' @param crs Optional crs information for `loc`
-#'
-#' @describeIn fm_bary A list with elements `t` (vector of triangle indices) and
-#'   `bary` (3-column matrix of barycentric coordinates). Points that were not
-#'   found give `NA` entries in `t` and `bary`.
 #' @param max_batch_size integer; maximum number of points to process in a
 #'   single batch. This speeds up calculations by avoiding repeated large
 #'   internal memory allocations and data copies. The default, `NULL`, uses
@@ -154,13 +187,13 @@ fm_bary.fm_mesh_2d <- function(mesh,
       options = list()
     )
     tri <- rep(NA_integer_, nrow(loc))
-    bary <- matrix(NA_real_, nrow(loc), 3)
-    ok <- result$t >= 0
-    tri[pre_ok_idx[ok]] <- result$t[ok] + 1L
-    bary[pre_ok_idx[ok], ] <- result$bary[ok, ]
+    where <- matrix(NA_real_, nrow(loc), 3)
+    ok <- result$index >= 0
+    tri[pre_ok_idx[ok]] <- result$index[ok] + 1L
+    where[pre_ok_idx[ok], ] <- result$where[ok, ]
   } else {
     tri <- rep(NA_integer_, nrow(loc))
-    bary <- matrix(NA_real_, nrow(loc), 3)
+    where <- matrix(NA_real_, nrow(loc), 3)
     n_batches <- ceiling(length(pre_ok_idx) / max_batch_size)
     batch_idx <- round(seq(0, length(pre_ok_idx), length.out = n_batches + 1))
     subindex <- split(pre_ok_idx, rep(seq_len(n_batches), diff(batch_idx)))
@@ -171,26 +204,79 @@ fm_bary.fm_mesh_2d <- function(mesh,
         loc = loc[subindex[[k]], , drop = FALSE],
         options = list()
       )
-      ok <- result$t >= 0
-      tri[subindex[[k]][ok]] <- result$t[ok] + 1L
-      bary[subindex[[k]][ok], ] <- result$bary[ok, ]
+      ok <- result$index >= 0
+      tri[subindex[[k]][ok]] <- result$index[ok] + 1L
+      where[subindex[[k]][ok], ] <- result$where[ok, ]
     }
   }
-  list(t = tri, bary = bary)
+
+  fm_bary(
+    tibble::tibble(
+      index = tri,
+      where = where
+    )
+  )
 }
 
 
-
-#' @rdname fm_bary
+#' @title Extract Simplex information for Barycentric coordinates
+#'
+#' @description
+#' Extract the simplex vertex information for a combination of a mesh
+#' and `fm_bary` coordinates.
+#'
+#' @param mesh A mesh object, e.g. [fm_mesh_2d] or [fm_mesh_1d].
+#' @param bary An `fm_bary` object. If NULL, return the full simplex
+#' information for the mesh.
+#' @param \dots Further arguments potentially used by sub-methods.
+#' @returns A matrix of vertex indices, one row per point in `bary`.
+#' @seealso [fm_bary()]
 #' @export
-#' @method fm_bary inla.mesh
-fm_bary.inla.mesh <- function(mesh, ...) {
-  fm_bary.fm_mesh_2d(fm_as_mesh_2d(mesh), ...)
+fm_bary_simplex <- function(mesh, bary = NULL, ...) {
+  UseMethod("fm_bary_simplex")
 }
 
-#' @rdname fm_bary
+#' @describeIn fm_bary_simplex Extract the triangle vertex indices for a 2D mesh
 #' @export
-#' @method fm_bary inla.mesh.1d
-fm_bary.inla.mesh.1d <- function(mesh, ...) {
-  fm_bary.fm_mesh_1d(fm_as_mesh_1d(mesh), ...)
+#'
+#' @examples
+#' bary <- fm_bary(fmexample$mesh, fmexample$loc_sf)
+#' fm_bary_simplex(fmexample$mesh, bary)
+fm_bary_simplex.fm_mesh_2d <- function(mesh, bary = NULL, ...) {
+  if (is.null(bary)) {
+    return(mesh$graph$tv)
+  }
+  if (NROW(bary) == 0L) {
+    return(matrix(integer(1), 0L, 3L))
+  }
+  mesh$graph$tv[bary$index, , drop = FALSE]
+}
+
+#' @describeIn fm_bary_simplex Extract the edge vertex indices for a 1D mesh
+#'
+#' @export
+#' @examples
+#' mesh1 <- fm_mesh_1d(1:4)
+#' (bary1 <- fm_bary(mesh1, seq(0, 5, by = 0.5)))
+#' (bary1 <- fm_bary(mesh1, seq(0, 5, by = 0.5), restricted = TRUE))
+#' fm_bary_simplex(mesh1, bary1)
+fm_bary_simplex.fm_mesh_1d <- function(mesh, bary = NULL, ...) {
+  if (is.null(bary)) {
+    if (mesh$cyclic) {
+      return(cbind(seq_len(mesh$n), seq_len(mesh$n) %% mesh$n + 1L))
+    }
+    return(cbind(seq_len(mesh$n - 1L), seq_len(mesh$n - 1L) + 1L))
+  }
+  if (NCOL(bary$where) == 1L) {
+    return(matrix(bary$index, NROW(bary), 1L))
+  }
+  if (NROW(bary) == 0L) {
+    return(matrix(integer(1), 0L, 2L))
+  }
+  if (mesh$cyclic) {
+    idx_next <- bary$index %% mesh$n + 1L
+  } else { # !cyclic
+    idx_next <- bary$index + 1L
+  }
+  cbind(bary$index, idx_next, deparse.level = 0)
 }

@@ -5,7 +5,7 @@
 #' @title Convert objects to fmesher objects
 #' @description
 #' Used for conversion from general objects
-#' (usually `inla.mesh` and other INLA specific classes)
+#' (usually `inla.mesh` and other legacy INLA specific classes)
 #' to `fmesher` classes.
 #'
 #' @param x Object to be converted

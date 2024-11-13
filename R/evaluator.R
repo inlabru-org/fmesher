@@ -7,7 +7,8 @@
 #' @description Calculate evaluation information and/or evaluate a function
 #' defined on a mesh or function space.
 #'
-#' @param mesh An `inla.mesh` or `inla.mesh.1d` object.
+#' @param mesh An [fm_mesh_1d], [fm_mesh_2d], or other object supported by a
+#' sub-method.
 #' @param loc Projection locations.  Can be a matrix, `SpatialPoints`,
 #' `SpatialPointsDataFrame`, `sf`, `sfc`, or `sfg` object.
 #' @param lattice An [fm_lattice_2d()] object.
@@ -139,8 +140,8 @@ fm_evaluate.fm_basis <-
 #' The `proj` element is a `fm_basis` object, containing (at least)
 #' a mapping matrix `A` and a logical vector `ok`, that indicates which
 #' locations were mappable to the input mesh.
-#' For `fm_mesh_2d` and `inla.mesh`
-#' input, `proj` also contains a matrix `bary` and vector `t`, with the
+#' For `fm_mesh_2d`
+#' input, `proj` also contains a `bary` [fm_bary] object, with the
 #' barycentric coordinates within the triangle each input location falls in.
 #' @export
 #' @returns An `fm_evaluator` object
@@ -228,8 +229,8 @@ fm_basis_mesh_2d <- function(mesh,
                              ...) {
   smorg <- fm_bary(mesh, loc = loc, crs = crs, ...)
   ti <- matrix(0L, NROW(loc), 1)
-  ti[, 1L] <- smorg$t
-  b <- smorg$bary
+  ti[, 1L] <- smorg$index
+  b <- smorg$where
 
   ok <- !is.na(ti[, 1L])
 
@@ -247,12 +248,12 @@ fm_basis_mesh_2d <- function(mesh,
     x = as.numeric(as.vector(b[ii, ]) * weights[rep(ii, 3)])
   ))
 
-  mesh_deriv <- function(mesh, info, weights) {
+  mesh_deriv <- function(mesh, bary, ok, weights) {
     n.mesh <- mesh$n
 
-    ii <- which(info$ok)
-    n.ok <- sum(info$ok)
-    tv <- mesh$graph$tv[info$t[ii, 1L], , drop = FALSE]
+    ii <- which(ok)
+    n.ok <- sum(ok)
+    tv <- mesh$graph$tv[bary$index[ii], , drop = FALSE]
     e1 <- mesh$loc[tv[, 3], , drop = FALSE] - mesh$loc[tv[, 2], , drop = FALSE]
     e2 <- mesh$loc[tv[, 1], , drop = FALSE] - mesh$loc[tv[, 3], , drop = FALSE]
     e3 <- mesh$loc[tv[, 2], , drop = FALSE] - mesh$loc[tv[, 1], , drop = FALSE]
@@ -287,7 +288,7 @@ fm_basis_mesh_2d <- function(mesh,
     return(list(dx = dx, dy = dy, dz = dz))
   }
 
-  info <- list(t = ti, bary = b, A = A, ok = ok)
+  info <- list(bary = smorg, A = A, ok = ok)
 
   if (!is.null(derivatives) && derivatives) {
     info <-
@@ -295,7 +296,8 @@ fm_basis_mesh_2d <- function(mesh,
         info,
         mesh_deriv(
           mesh = mesh,
-          info = info,
+          bary = info$bary,
+          ok = info$ok,
           weights = weights
         )
       )
@@ -357,14 +359,15 @@ fm_basis_mesh_1d <- function(mesh,
   }
 
   derivatives <- !is.null(derivatives) && derivatives
-  info <- list()
+  info_ <- list()
 
   ## Compute basis based on mesh$degree and mesh$boundary
   if (mesh$degree == 0) {
     info <- fm_bary(mesh, loc = loc, method = "nearest")
+    info_ <- list(bary = info)
     i_ <- seq_along(loc)
-    j_ <- info$t[, 1]
-    x_ <- info$bary[, 1]
+    j_ <- info$index
+    x_ <- info$where[, 1]
     if (derivatives) {
       if (mesh$cyclic) {
         j_prev <- (j_ - 2L) %% mesh$n + 1L
@@ -408,12 +411,14 @@ fm_basis_mesh_1d <- function(mesh,
     }
   } else if (mesh$degree == 1) {
     info <- fm_bary(mesh, loc = loc, method = "linear")
+    info_ <- list(bary = info)
     i_ <- c(seq_along(loc), seq_along(loc))
-    j_ <- as.vector(info$t)
-    x_ <- as.vector(info$bary)
+    simplex <- fm_bary_simplex(mesh, info)
+    j_ <- as.vector(simplex)
+    x_ <- as.vector(info$where)
     if (derivatives) {
-      j_curr <- info$t[, 1]
-      j_next <- info$t[, 2]
+      j_curr <- simplex[, 1]
+      j_next <- simplex[, 2]
       if (mesh$cyclic) {
         if (mesh$n > 1) {
           dist <- (mesh$loc[j_next] - mesh$loc[j_curr]) %% diff(mesh$interval)
@@ -492,6 +497,7 @@ fm_basis_mesh_1d <- function(mesh,
         loc = loc,
         method = "linear"
       )
+    info_ <- list(bary = info)
 
     if (mesh$cyclic) {
       d <-
@@ -509,45 +515,47 @@ fm_basis_mesh_1d <- function(mesh,
 
     if (mesh$cyclic) {
       ## Left intervals for each basis function:
-      i.l <- seq_along(info$t[, 1])
-      j.l <- info$t[, 1] + 2L
-      x.l <- (info$bary[, 2] * d[info$t[, 2]] / d2[info$t[, 2]] *
-        info$bary[, 2])
+      simplex <- fm_bary_simplex(mesh, info)
+      i.l <- seq_along(simplex[, 1])
+      j.l <- simplex[, 1] + 2L
+      x.l <- (info$where[, 2] * d[simplex[, 2]] / d2[simplex[, 2]] *
+        info$where[, 2])
       if (derivatives) {
-        x.d1.l <- (2 / d2[info$t[, 2]] * info$bary[, 2])
-        x.d2.l <- (2 / d2[info$t[, 2]] / d[info$t[, 2]])
+        x.d1.l <- (2 / d2[simplex[, 2]] * info$where[, 2])
+        x.d2.l <- (2 / d2[simplex[, 2]] / d[simplex[, 2]])
       }
       ## Right intervals for each basis function:
-      i.r <- seq_along(info$t[, 1])
-      j.r <- info$t[, 1]
-      x.r <- (info$bary[, 1] * d[info$t[, 2]] / d2[info$t[, 1]] *
-        info$bary[, 1])
+      i.r <- seq_along(simplex[, 1])
+      j.r <- simplex[, 1]
+      x.r <- (info$where[, 1] * d[simplex[, 2]] / d2[simplex[, 1]] *
+        info$where[, 1])
       if (derivatives) {
-        x.d1.r <- -(2 / d2[info$t[, 2]] * info$bary[, 1])
-        x.d2.r <- (2 / d2[info$t[, 1]] / d[info$t[, 2]])
+        x.d1.r <- -(2 / d2[simplex[, 2]] * info$where[, 1])
+        x.d2.r <- (2 / d2[simplex[, 1]] / d[simplex[, 2]])
       }
       ## Middle intervals for each basis function:
-      i.m <- seq_along(info$t[, 1])
-      j.m <- info$t[, 1] + 1L
-      x.m <- (1 - (info$bary[, 1] * d[info$t[, 2]] / d2[info$t[, 1]] *
-        info$bary[, 1] +
-        info$bary[, 2] * d[info$t[, 2]] / d2[info$t[, 2]] *
-          info$bary[, 2]))
+      i.m <- seq_along(simplex[, 1])
+      j.m <- simplex[, 1] + 1L
+      x.m <- (1 - (info$where[, 1] * d[simplex[, 2]] / d2[simplex[, 1]] *
+        info$where[, 1] +
+        info$where[, 2] * d[simplex[, 2]] / d2[simplex[, 2]] *
+          info$where[, 2]))
       if (derivatives) {
-        x.d1.m <- (2 / d2[info$t[, 1]] * info$bary[, 1]) -
-          (2 / d2[info$t[, 2]] * info$bary[, 2])
-        x.d2.m <- -(2 / d2[info$t[, 1]] / info$t[, 2]) -
-          (2 / d2[info$t[, 2]] / info$t[, 2])
+        x.d1.m <- (2 / d2[simplex[, 1]] * info$where[, 1]) -
+          (2 / d2[simplex[, 2]] * info$where[, 2])
+        x.d2.m <- -(2 / d2[simplex[, 1]] / d[simplex[, 2]]) -
+          (2 / d2[simplex[, 2]] / d[simplex[, 2]])
       }
     } else {
       d2 <- c(2 * d[1], 2 * d[1], d2, 2 * d[length(d)], 2 * d[length(d)])
       d <- c(d[1], d[2], d, d[length(d)], d[length(d)])
-      ok <- (info$t[, 1] >= 1L) & (info$t[, 2] <= length(knots))
-      index <- info$t[ok, , drop = FALSE] + 1L
-      bary <- info$bary[ok, , drop = FALSE]
+      simplex <- fm_bary_simplex(mesh, info)
+      ok <- (simplex[, 1] >= 1L) & (simplex[, 2] <= length(knots))
+      index <- simplex[ok, , drop = FALSE] + 1L
+      bary <- info$where[ok, , drop = FALSE]
       ## Left intervals for each basis function:
       i.l <- seq_along(loc)[ok]
-      j.l <- index[, 1] + 1L
+      j.l <- index[, 2]
       x.l <- (bary[, 2] * d[index[, 2]] / d2[index[, 2]] * bary[, 2])
       if (derivatives) {
         x.d1.l <- (2 / d2[index[, 2]] * bary[, 2])
@@ -584,6 +592,8 @@ fm_basis_mesh_1d <- function(mesh,
     }
 
     if (!mesh$cyclic) {
+      simplex <- fm_bary_simplex(mesh, info)
+
       # Convert boundary basis functions to linear
       # First remove anything from above outside the interval, then add back in
       # the appropriate values
@@ -597,12 +607,12 @@ fm_basis_mesh_1d <- function(mesh,
       }
 
       # left
-      ok <- (loc < 0) & (info$t[, 1] == 1L)
+      ok <- (loc < 0) & (simplex[, 1] == 1L)
       i_l <- c(seq_along(loc)[ok], seq_along(loc)[ok])
-      j_l <- c(info$t[ok, 1], info$t[ok, 2])
+      j_l <- c(simplex[ok, 1], simplex[ok, 2])
       x_l <- c(
-        0.5 + (info$bary[ok, 1] - 1),
-        0.5 - (info$bary[ok, 1] - 1)
+        0.5 + (info$where[ok, 1] - 1),
+        0.5 - (info$where[ok, 1] - 1)
       )
       if (derivatives) {
         x_d1_l <- rep(c(-1, 1) / d[1], each = sum(ok))
@@ -610,12 +620,12 @@ fm_basis_mesh_1d <- function(mesh,
       }
 
       # right
-      ok <- (loc > inter[2]) & (info$t[, 2] == length(knots))
+      ok <- (loc > inter[2]) & (simplex[, 2] == length(knots))
       i_r <- c(seq_along(loc)[ok], seq_along(loc)[ok])
-      j_r <- c(info$t[ok, 2], info$t[ok, 1]) + 1L
+      j_r <- c(simplex[ok, 2], simplex[ok, 1]) + 1L
       x_r <- c(
-        0.5 + (info$bary[ok, 2] - 1),
-        0.5 - (info$bary[ok, 2] - 1)
+        0.5 + (info$where[ok, 2] - 1),
+        0.5 - (info$where[ok, 2] - 1)
       )
       if (derivatives) {
         x_d1_r <- rep(c(1, -1) / d[length(d)], each = sum(ok))
@@ -709,20 +719,20 @@ fm_basis_mesh_1d <- function(mesh,
     stop("Unsupported B-spline degree = ", mesh$degree)
   }
 
-  info$A <- Matrix::sparseMatrix(
+  info_$A <- Matrix::sparseMatrix(
     i = i_,
     j = j_,
     x = (weights[i_] * x_),
     dims = c(length(loc), mesh$m)
   )
   if (derivatives) {
-    info$dA <- Matrix::sparseMatrix(
+    info_$dA <- Matrix::sparseMatrix(
       i = i_,
       j = j_,
       x = weights[i_] * x_d1,
       dims = c(length(loc), mesh$m)
     )
-    info$d2A <- Matrix::sparseMatrix(
+    info_$d2A <- Matrix::sparseMatrix(
       i = i_,
       j = j_,
       x = weights[i_] * x_d2,
@@ -730,10 +740,10 @@ fm_basis_mesh_1d <- function(mesh,
     )
   }
 
-  info[["ok"]] <- rep(TRUE, length(loc))
+  info_[["ok"]] <- rep(TRUE, length(loc))
 
   structure(
-    info,
+    info_,
     class = "fm_basis"
   )
 }
@@ -842,7 +852,7 @@ fm_evaluator_lattice <- function(mesh,
                                  projection = NULL,
                                  crs = NULL,
                                  ...) {
-  stopifnot(inherits(mesh, c("fm_mesh_2d", "inla.mesh")))
+  stopifnot(inherits(mesh, "fm_mesh_2d"))
   if (fm_manifold(mesh, "R2") &&
     (is.null(mesh$crs) || is.null(crs))) {
     units <- "default"
@@ -889,23 +899,6 @@ fm_evaluator_lattice <- function(mesh,
 }
 
 
-#' @export
-#' @describeIn fm_evaluate Converts legacy `inla.mesh` to `fm_mesh_2d` and calls
-#' the `fm_evaluator` method again.
-fm_evaluator.inla.mesh <- function(mesh, ...) {
-  fm_evaluator(fm_as_mesh_2d(mesh), ...)
-}
-#' @export
-#' @describeIn fm_evaluate Converts legacy `inla.mesh` to `fm_mesh_1d` and calls
-#' the `fm_evaluator` method again.
-fm_evaluator.inla.mesh.1d <- function(mesh, ...) {
-  fm_evaluator(fm_as_mesh_1d(mesh), ...)
-}
-
-
-
-
-
 # fm_contains ####
 
 #' Check which mesh triangles are inside a polygon
@@ -915,7 +908,7 @@ fm_evaluator.inla.mesh.1d <- function(mesh, ...) {
 #'
 #' @param x geometry (typically an `sf` or `sp::SpatialPolygons` object) for the
 #'   queries
-#' @param y an [fm_mesh_2d()] or `inla.mesh` object
+#' @param y an [fm_mesh_2d()] object
 #' @param \dots Passed on to other methods
 #' @param type the query type; either `'centroid'` (default, for triangle
 #'   centroids), or `'vertex'` (for mesh vertices)
@@ -981,9 +974,9 @@ fm_contains.sf <- function(x, y, ...) {
 #' @rdname fm_contains
 #' @export
 fm_contains.sfc <- function(x, y, ..., type = c("centroid", "vertex")) {
-  if (!inherits(y, c("fm_mesh_2d", "inla.mesh"))) {
+  if (!inherits(y, "fm_mesh_2d")) {
     stop(paste0(
-      "'y' must be an 'fm_mesh_2d' or 'inla.mesh' object, not '",
+      "'y' must be an 'fm_mesh_2d' object, not '",
       paste0(class(y), collapse = ", "),
       "'."
     ))
@@ -1038,7 +1031,8 @@ fm_contains.sfc <- function(x, y, ..., type = c("centroid", "vertex")) {
 #'  Queries whether each input point is within a mesh or not.
 #'
 #' @param x A set of points of a class supported by `fm_evaluator(y, loc = x)`
-#' @param y An `inla.mesh`
+#' @param y An [fm_mesh_2d] or other class supported by
+#' `fm_evaluator(y, loc = x)`
 #' @param \dots Currently unused
 #' @returns A logical vector
 #' @examples
@@ -1138,20 +1132,6 @@ fm_basis.fm_mesh_2d <- function(x, loc, weights = NULL, derivatives = NULL, ...,
     full <- TRUE
   }
   fm_basis(result, full = full)
-}
-
-#' @rdname fm_basis
-#' @export
-#' @method fm_basis inla.mesh.1d
-fm_basis.inla.mesh.1d <- function(x, ...) {
-  fm_basis.fm_mesh_1d(fm_as_mesh_1d(x), ...)
-}
-
-#' @rdname fm_basis
-#' @export
-#' @method fm_basis inla.mesh
-fm_basis.inla.mesh <- function(x, ...) {
-  fm_basis.fm_mesh_2d(fm_as_mesh_2d(x), ...)
 }
 
 #' @rdname fm_basis

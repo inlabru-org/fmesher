@@ -18,7 +18,8 @@ fm_evaluator_mesh_2d(
 fm_evaluator_mesh_1d(mesh, loc, weights = NULL, derivatives = NULL, ...)
 }
 \arguments{
-\item{mesh}{An \code{inla.mesh} or \code{inla.mesh.1d} object.}
+\item{mesh}{An \link{fm_mesh_1d}, \link{fm_mesh_2d}, or other object supported by a
+sub-method.}
 
 \item{loc}{Projection locations.  Can be a matrix, \code{SpatialPoints},
 \code{SpatialPointsDataFrame}, \code{sf}, \code{sfc}, or \code{sfg} object.}

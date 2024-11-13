@@ -715,7 +715,7 @@ fm_mesh_2d <- function(...) {
 #' activates displaying the
 #' result after each step of the multi-step domain extension algorithm.
 #' @param crs An optional [fm_crs()], `sf::crs` or `sp::CRS` object
-#' @returns An `inla.mesh` object.
+#' @returns An `fm_mesh_2d` object.
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
 #' @seealso [fm_rcdt_2d()], [fm_mesh_2d()], [fm_delaunay_2d()],
 #' [fm_nonconvex_hull()], [fm_extensions()], [fm_refine()]
@@ -944,8 +944,8 @@ fm_mesh_2d_inla <- function(loc = NULL,
     proj <- fm_evaluator(mesh3, loc = segm.loc)$proj
     mesh3$idx$segm <- rep(NA, nrow(segm.loc))
     if (any(proj$ok)) {
-      t.idx <- proj$t[proj$ok]
-      tv.idx <- max.col(proj$bary[proj$ok, , drop = FALSE],
+      t.idx <- proj$bary$index[proj$ok]
+      tv.idx <- max.col(proj$bary$where[proj$ok, , drop = FALSE],
         ties.method = "first"
       )
       mesh3$idx$segm[proj$ok] <-

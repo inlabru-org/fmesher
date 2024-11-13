@@ -5,8 +5,6 @@
 \alias{fm_basis.default}
 \alias{fm_basis.fm_mesh_1d}
 \alias{fm_basis.fm_mesh_2d}
-\alias{fm_basis.inla.mesh.1d}
-\alias{fm_basis.inla.mesh}
 \alias{fm_basis.fm_evaluator}
 \alias{fm_basis.fm_basis}
 \alias{fm_basis.fm_tensor}
@@ -19,10 +17,6 @@ fm_basis(x, ..., full = FALSE)
 \method{fm_basis}{fm_mesh_1d}(x, loc, weights = NULL, derivatives = NULL, ..., full = FALSE)
 
 \method{fm_basis}{fm_mesh_2d}(x, loc, weights = NULL, derivatives = NULL, ..., full = FALSE)
-
-\method{fm_basis}{inla.mesh.1d}(x, ...)
-
-\method{fm_basis}{inla.mesh}(x, ...)
 
 \method{fm_basis}{fm_evaluator}(x, ..., full = FALSE)
 

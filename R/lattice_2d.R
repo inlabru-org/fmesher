@@ -149,7 +149,7 @@ fm_lattice_2d <- function(...) {
   UseMethod("fm_lattice_2d")
 }
 
-#' Lattice grids for inla.mesh
+#' Lattice grids for fm_mesh_2d
 #'
 #' Construct a lattice grid for [fm_mesh_2d()]
 #'

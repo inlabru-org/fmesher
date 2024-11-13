@@ -2651,25 +2651,6 @@ fm_crs.inla.CRS <- function(x, oblique = NULL, ...) {
   )
 }
 
-#' @rdname fm_crs
-#' @export
-#' @method fm_crs inla.mesh
-fm_crs.inla.mesh <- function(x, oblique = NULL, ...) {
-  fm_crs(x[["crs"]], oblique = oblique, ...)
-}
-
-#' @rdname fm_crs
-#' @export
-fm_crs.inla.mesh.lattice <- function(x, oblique = NULL, ...) {
-  fm_crs(x[["crs"]], oblique = oblique, ...)
-}
-
-#' @rdname fm_crs
-#' @export
-fm_crs.inla.mesh.segment <- function(x, oblique = NULL, ...) {
-  fm_crs(x[["crs"]], oblique = oblique, ...)
-}
-
 #' @export
 #' @rdname fm_crs-set
 `fm_crs_oblique<-.inla.CRS` <- function(x, value) {
@@ -2689,43 +2670,6 @@ is.na.inla.CRS <- function(x) {
 #' @export
 fm_CRS.inla.CRS <- function(x, oblique = NULL, ...) {
   fm_CRS(fm_crs(x, oblique = oblique, ...))
-}
-
-#' @rdname fm_CRS_sp
-#' @export
-fm_CRS.inla.mesh <- function(x, oblique = NULL, ...) {
-  fm_CRS(x[["crs"]], oblique = oblique, ...)
-}
-
-#' @rdname fm_CRS_sp
-#' @export
-fm_CRS.inla.mesh.lattice <- function(x, oblique = NULL, ...) {
-  fm_CRS(x[["crs"]], oblique = oblique, ...)
-}
-
-#' @rdname fm_CRS_sp
-#' @export
-fm_CRS.inla.mesh.segment <- function(x, oblique = NULL, ...) {
-  fm_CRS(x[["crs"]], oblique = oblique, ...)
-}
-
-#' @export
-#' @rdname fm_transform
-fm_transform.inla.mesh <- function(x,
-                                   crs = fm_crs(x),
-                                   ...) {
-  fm_transform.fm_mesh_2d(fm_as_mesh_2d(x), crs = crs, ...)
-}
-
-#' @export
-#' @rdname fm_transform
-fm_transform.inla.mesh.lattice <- function(x, crs, ...) {
-  fm_transform.fm_lattice_2d(fm_as_lattice_2d(x), crs = crs, ...)
-}
-#' @export
-#' @rdname fm_transform
-fm_transform.inla.mesh.segment <- function(x, crs, ...) {
-  fm_transform.fm_segm(fm_as_segm(x), crs = crs, ...)
 }
 
 
@@ -2784,30 +2728,6 @@ fm_spTransform.SpatialPointsDataFrame <- function(x,
                                                   CRSobj,
                                                   passthrough = FALSE,
                                                   ...) {
-  fm_transform(x, crs = CRSobj, passthrough = passthrough)
-}
-
-#' @export
-#' @rdname fmesher-deprecated
-fm_spTransform.inla.mesh.lattice <- function(x,
-                                             CRSobj,
-                                             passthrough = FALSE,
-                                             ...) {
-  fm_transform(x, crs = CRSobj, passthrough = passthrough)
-}
-
-#' @export
-#' @rdname fmesher-deprecated
-fm_spTransform.inla.mesh.segment <- function(x,
-                                             CRSobj,
-                                             passthrough = FALSE,
-                                             ...) {
-  fm_transform(x, crs = CRSobj, passthrough = passthrough)
-}
-
-#' @export
-#' @rdname fmesher-deprecated
-fm_spTransform.inla.mesh <- function(x, CRSobj, passthrough = FALSE, ...) {
   fm_transform(x, crs = CRSobj, passthrough = passthrough)
 }
 

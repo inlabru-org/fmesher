@@ -1,5 +1,15 @@
 # fmesher (development version)
 
+* Convert `fm_bary()` output to a dedicated `fm_bary` class, with elements 'index'
+  (index of the containing simplex) and 'where' (matrix of barycentric weights).
+  (version `0.20.0.9001`)
+* Add `fm_bary_simplex()` method to extract the simplex vertex indices for an
+  `fm_bary` object.
+  (version `0.20.0.9001`)
+* Remove long deprecated `inla.mesh` etc legacy methods; need to explicitly
+  convert old objects. Retaining the `inla.mesh` etc class suffixes for now.
+  (version `0.20.0.9001`)
+
 # fmesher 0.2.0
 
 ## New methods

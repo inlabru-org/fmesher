@@ -223,20 +223,6 @@ fm_fem.fm_mesh_2d <- function(mesh, order = 2,
 }
 
 #' @rdname fm_fem
-#' @export
-#' @method fm_fem inla.mesh.1d
-fm_fem.inla.mesh.1d <- function(mesh, order = 2, ...) {
-  fm_fem(fm_as_fm(mesh), order = order, ...)
-}
-
-#' @rdname fm_fem
-#' @export
-#' @method fm_fem inla.mesh
-fm_fem.inla.mesh <- function(mesh, order = 2, ...) {
-  fm_fem(fm_as_fm(mesh), order = order, ...)
-}
-
-#' @rdname fm_fem
 #' @returns `fm_fem.fm_tensor`: A list with elements `cc`, `g1`, `g2`.
 #' @export
 fm_fem.fm_tensor <- function(mesh, order = 2, ...) {

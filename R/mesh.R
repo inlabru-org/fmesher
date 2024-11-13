@@ -490,7 +490,7 @@ fm_vertices <- function(x, format = NULL) {
 #' object.
 #'
 #' @export
-#' @param x An `fm_mesh_2d` or `inla.mesh` object.
+#' @param x An `fm_mesh_2d` object.
 #' @param format character; `"sf"`, `"df"`, `"sp"`
 #' @return
 #' An `sf`, `data.frame`, or `SpatialPointsDataFrame` object, with the vertex
@@ -639,36 +639,4 @@ fm_dof.fm_mesh_2d <- function(x) {
 #' @export
 fm_dof.fm_tensor <- function(x) {
   prod(vapply(x$fun_spaces, fm_dof, 0L))
-}
-
-
-
-
-# Deprecated ####
-
-#' @describeIn fmesher-deprecated Conversion to inla.mesh.segment
-#' `r lifecycle::badge("deprecated")` in favour of [fm_as_segm()].
-#' @returns An `fm_segm` object
-#' @export
-fm_as_inla_mesh_segment <-
-  function(...) {
-    lifecycle::deprecate_warn(
-      "0.0.1",
-      "fm_as_inla_mesh_segment()",
-      "fm_as_segm()"
-    )
-    fm_as_segm(...)
-  }
-
-#' @describeIn fmesher-deprecated Conversion to inla.mesh.
-#' `r lifecycle::badge("deprecated")` in favour of [fm_as_mesh_2d()].
-#' @returns An `fm_mesh_2d` object
-#' @export
-fm_as_inla_mesh <- function(...) {
-  lifecycle::deprecate_warn(
-    "0.0.1",
-    "fm_as_inla_mesh()",
-    "fm_as_mesh_2d()"
-  )
-  fm_as_mesh_2d(...)
 }

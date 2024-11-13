@@ -10,8 +10,6 @@
 \alias{fm_evaluator.fm_mesh_2d}
 \alias{fm_evaluator.fm_mesh_1d}
 \alias{fm_evaluator_lattice}
-\alias{fm_evaluator.inla.mesh}
-\alias{fm_evaluator.inla.mesh.1d}
 \title{Methods for projecting to/from mesh objects}
 \usage{
 fm_evaluate(...)
@@ -39,15 +37,12 @@ fm_evaluator_lattice(
   crs = NULL,
   ...
 )
-
-\method{fm_evaluator}{inla.mesh}(mesh, ...)
-
-\method{fm_evaluator}{inla.mesh.1d}(mesh, ...)
 }
 \arguments{
 \item{\dots}{Additional arguments passed on to methods.}
 
-\item{mesh}{An \code{inla.mesh} or \code{inla.mesh.1d} object.}
+\item{mesh}{An \link{fm_mesh_1d}, \link{fm_mesh_2d}, or other object supported by a
+sub-method.}
 
 \item{field}{Basis function weights, one per mesh basis function, describing
 the function to be evaluated at the projection locations}
@@ -99,8 +94,8 @@ shortcut to \code{fm_evaluate(fm_evaluator(mesh, ...), field = field)}.
 The \code{proj} element is a \code{fm_basis} object, containing (at least)
 a mapping matrix \code{A} and a logical vector \code{ok}, that indicates which
 locations were mappable to the input mesh.
-For \code{fm_mesh_2d} and \code{inla.mesh}
-input, \code{proj} also contains a matrix \code{bary} and vector \code{t}, with the
+For \code{fm_mesh_2d}
+input, \code{proj} also contains a \code{bary} \link{fm_bary} object, with the
 barycentric coordinates within the triangle each input location falls in.
 
 \item \code{fm_evaluator(default)}: The default method calls \code{fm_basis} and creates
@@ -110,12 +105,6 @@ a basic \code{fm_evaluator} object
 \code{fm_evaluator_lattice()} if no \code{loc} or \code{lattice} is provided.
 
 \item \code{fm_evaluator_lattice()}: Creates an \code{\link[=fm_lattice_2d]{fm_lattice_2d()}} object, by default covering the input mesh.
-
-\item \code{fm_evaluator(inla.mesh)}: Converts legacy \code{inla.mesh} to \code{fm_mesh_2d} and calls
-the \code{fm_evaluator} method again.
-
-\item \code{fm_evaluator(inla.mesh.1d)}: Converts legacy \code{inla.mesh} to \code{fm_mesh_1d} and calls
-the \code{fm_evaluator} method again.
 
 }}
 \examples{

@@ -512,7 +512,8 @@ Rcpp::List fmesher_rcdt(Rcpp::List options,
 //'                   m$tv,
 //'                   matrix(c(0.5, 0.5), 1, 2),
 //'                   list())
-//' @returns A list with vector `t` and matrix `bary`
+//' @returns A list with vector `index` (triangle index) and matrix `where`
+//' (3-column barycentric matrix)
 //' @export
 // [[Rcpp::export]]
 Rcpp::List fmesher_bary(Rcpp::NumericMatrix mesh_loc,
@@ -537,12 +538,12 @@ Rcpp::List fmesher_bary(Rcpp::NumericMatrix mesh_loc,
 
   size_t points_n = points2mesh.rows();
   Matrix<int> &points2mesh_t =
-    matrices.attach(string("t"), std::make_unique<Matrix<int>>(points_n, 1));
+    matrices.attach(string("index"), std::make_unique<Matrix<int>>(points_n, 1));
   Matrix<double> &points2mesh_b = matrices.attach(
-    string("bary"), std::make_unique<Matrix<double>>(points_n, 3));
-  matrices.matrixtype("t", fmesh::IOMatrixtype::General);
-  matrices.matrixtype("bary", fmesh::IOMatrixtype::General);
-  matrices.output("t").output("bary");
+    string("where"), std::make_unique<Matrix<double>>(points_n, 3));
+  matrices.matrixtype("index", fmesh::IOMatrixtype::General);
+  matrices.matrixtype("where", fmesh::IOMatrixtype::General);
+  matrices.output("index").output("where");
 
   FMLOG("map_points_to_mesh start" << std::endl);
   map_points_to_mesh(M, points2mesh, points2mesh_t, points2mesh_b);
