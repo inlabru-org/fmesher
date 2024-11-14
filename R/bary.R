@@ -87,12 +87,13 @@ do.the.split <- function(knots, loc) {
 
 
 
-#' @describeIn fm_bary Return an `fm_bary` object with elements `index` (starting knot indices
-#'   indices) and `where` (barycentric coordinates), both 2-column matrices.
-#'   Use [fm_bary_simplex()] to obtain the corresponding endpoint knot indices.
+#' @describeIn fm_bary Return an `fm_bary` object with elements `index`
+#'   (starting knot indices indices) and `where` (barycentric coordinates), both
+#'   2-column matrices. Use [fm_bary_simplex()] to obtain the corresponding
+#'   endpoint knot indices.
 #'
-#' For `method = "nearest"`, `index` contains the index of the nearest mesh
-#' knot, and `where` is a single-column all-ones matrix.
+#'   For `method = "nearest"`, `index` contains the index of the nearest mesh
+#'   knot, and `where` is a single-column all-ones matrix.
 #' @param method character; method for defining the barycentric coordinates,
 #' "linear" (default) or "nearest"
 #' @param restricted logical, used for `method="linear"`.
