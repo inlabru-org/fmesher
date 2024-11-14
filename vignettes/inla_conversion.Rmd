@@ -276,12 +276,10 @@ df <- tribble(
   c("geom_fm(data = mesh)", "geom_fm(data = segm)"),
   "inlabru::gg(mesh)",
   "Use `ggplot() + geom_fm(data = mesh)` and `inlabru::gg()` methods",
-  
   "plot.inla.mesh(rgl = FALSE)",
   c("plot.fm_mesh_2d()", "lines.fm_mesh_2d()"),
   character(0),
   "Use `plot()` or `lines()`",
-  
   "lines.inla.mesh.segment(rgl = FALSE)",
   c(
     "plot.fm_segm()",
@@ -289,12 +287,10 @@ df <- tribble(
   ),
   character(0),
   "Use `plot()` or `lines()`",
-  
   "plot.inla.mesh(rgl = TRUE)",
   c("plot_rgl()", "lines_rgl()"),
   character(0),
   "",
-
   "lines.inla.mesh.segment(rgl = TRUE)",
   c(
     "plot_rgl()",
