@@ -9,6 +9,7 @@
 * Remove long deprecated `inla.mesh` etc legacy methods; need to explicitly
   convert old objects. Retaining the `inla.mesh` etc class suffixes for now.
   (version `0.20.0.9001`)
+* Handle `NA` location inputs to `fm_basis.fm_mesh_1d()` (version `0.20.0.9002`)
 
 # fmesher 0.2.0
 

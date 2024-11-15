@@ -75,13 +75,17 @@ fm_bary.tbl_df <- function(bary, ...) {
 do.the.split <- function(knots, loc) {
   n <- length(knots)
   if (n <= 2L) {
-    return(rep(1L, length(loc)))
+    result <- rep(1L, length(loc))
+    result[is.na(loc)] <- NA_integer_
+    return(result)
   }
+  ok <- !is.na(loc)
   split <- 1L + (n - 1L) %/% 2L ## Split point
-  upper <- (loc >= knots[split])
+  upper <- (loc[ok] >= knots[split])
   idx <- rep(0, length(loc))
-  idx[!upper] <- do.the.split(knots[1:split], loc[!upper])
-  idx[upper] <- split - 1L + do.the.split(knots[split:n], loc[upper])
+  idx[ok][!upper] <- do.the.split(knots[1:split], loc[ok][!upper])
+  idx[ok][upper] <- split - 1L + do.the.split(knots[split:n], loc[ok][upper])
+  idx[!ok] <- NA_integer_
   return(idx)
 }
 
@@ -117,22 +121,24 @@ fm_bary.fm_mesh_1d <- function(mesh,
   }
 
   idx <- do.the.split(knots, loc)
-  u <- (loc - knots[idx]) / (knots[idx + 1L] - knots[idx])
+  ok <- !is.na(idx)
+
+  u <- numeric(length(loc))
+  u[ok] <- (loc[ok] - knots[idx[ok]]) / (knots[idx[ok] + 1L] - knots[idx[ok]])
 
   if (method == "nearest") {
+    idx[ok] <- idx[ok] + (u[ok] > 0.5)
     if (mesh$cyclic) {
-      idx <- idx + (u > 0.5)
-      idx <- (idx - 1L) %% mesh$n + 1L
-    } else { # !cyclic
-      idx <- idx + (u > 0.5)
-      idx_next <- idx + 1L
+      idx[ok] <- (idx[ok] - 1L) %% mesh$n + 1L
     }
     bary <- matrix(1.0, length(loc), 1)
+    bary[!ok, 1L] <- NA_real_
   } else { ## (method=="linear") {
     if (!mesh$cyclic && restricted) {
-      u[u < 0.0] <- 0.0
-      u[u > 1.0] <- 1.0
+      u[ok][u[ok] < 0.0] <- 0.0
+      u[ok][u[ok] > 1.0] <- 1.0
     }
+    u[!ok] <- NA_real_
     bary <- cbind(1 - u, u, deparse.level = 0)
   }
 

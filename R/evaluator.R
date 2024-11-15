@@ -365,9 +365,10 @@ fm_basis_mesh_1d <- function(mesh,
   if (mesh$degree == 0) {
     info <- fm_bary(mesh, loc = loc, method = "nearest")
     info_ <- list(bary = info)
-    i_ <- seq_along(loc)
-    j_ <- info$index
-    x_ <- info$where[, 1]
+    bary_ok <- !is.na(info$index)
+    i_ <- seq_along(loc)[bary_ok]
+    j_ <- info$index[bary_ok]
+    x_ <- info$where[bary_ok, 1]
     if (derivatives) {
       if (mesh$cyclic) {
         j_prev <- (j_ - 2L) %% mesh$n + 1L
@@ -412,7 +413,9 @@ fm_basis_mesh_1d <- function(mesh,
   } else if (mesh$degree == 1) {
     info <- fm_bary(mesh, loc = loc, method = "linear")
     info_ <- list(bary = info)
-    i_ <- c(seq_along(loc), seq_along(loc))
+    bary_ok <- !is.na(info$index)
+    info <- info[bary_ok, ]
+    i_ <- c(which(bary_ok), which(bary_ok))
     simplex <- fm_bary_simplex(mesh, info)
     j_ <- as.vector(simplex)
     x_ <- as.vector(info$where)
@@ -430,7 +433,7 @@ fm_basis_mesh_1d <- function(mesh,
       }
       i_d <- i_
       j_d <- c(j_curr, j_next)
-      x_d <- rep(c(-1, 1), each = length(loc)) / rep(dist, times = 2)
+      x_d <- rep(c(-1, 1), each = sum(bary_ok)) / rep(dist, times = 2)
     }
 
     if (mesh$boundary[1] == "dirichlet") {
@@ -498,6 +501,8 @@ fm_basis_mesh_1d <- function(mesh,
         method = "linear"
       )
     info_ <- list(bary = info)
+    bary_ok <- !is.na(info$index)
+    info <- info[bary_ok, ]
 
     if (mesh$cyclic) {
       d <-
@@ -516,7 +521,7 @@ fm_basis_mesh_1d <- function(mesh,
     if (mesh$cyclic) {
       ## Left intervals for each basis function:
       simplex <- fm_bary_simplex(mesh, info)
-      i.l <- seq_along(simplex[, 1])
+      i.l <- which(bary_ok)
       j.l <- simplex[, 1] + 2L
       x.l <- (info$where[, 2] * d[simplex[, 2]] / d2[simplex[, 2]] *
         info$where[, 2])
@@ -554,7 +559,7 @@ fm_basis_mesh_1d <- function(mesh,
       index <- simplex[ok, , drop = FALSE] + 1L
       bary <- info$where[ok, , drop = FALSE]
       ## Left intervals for each basis function:
-      i.l <- seq_along(loc)[ok]
+      i.l <- which(bary_ok)[ok]
       j.l <- index[, 2]
       x.l <- (bary[, 2] * d[index[, 2]] / d2[index[, 2]] * bary[, 2])
       if (derivatives) {
@@ -562,7 +567,7 @@ fm_basis_mesh_1d <- function(mesh,
         x.d2.l <- (2 / d2[index[, 2]] / d[index[, 2]])
       }
       ## Right intervals for each basis function:
-      i.r <- seq_along(loc)[ok]
+      i.r <- which(bary_ok)[ok]
       j.r <- index[, 1] - 1L
       x.r <- (bary[, 1] * d[index[, 2]] / d2[index[, 1]] * bary[, 1])
       if (derivatives) {
@@ -570,7 +575,7 @@ fm_basis_mesh_1d <- function(mesh,
         x.d2.r <- (2 / d2[index[, 1]] / d[index[, 2]])
       }
       ## Middle intervals for each basis function:
-      i.m <- seq_along(loc)[ok]
+      i.m <- which(bary_ok)[ok]
       j.m <- index[, 1]
       x.m <- (1 - (bary[, 1] * d[index[, 2]] / d2[index[, 1]] * bary[, 1] +
         bary[, 2] * d[index[, 2]] / d2[index[, 2]] * bary[, 2]
@@ -597,7 +602,7 @@ fm_basis_mesh_1d <- function(mesh,
       # Convert boundary basis functions to linear
       # First remove anything from above outside the interval, then add back in
       # the appropriate values
-      ok <- (loc >= inter[1]) & (loc <= inter[2])
+      ok <- (loc[bary_ok] >= inter[1]) & (loc[bary_ok] <= inter[2])
       i_ <- i_[ok]
       j_ <- j_[ok]
       x_ <- x_[ok]
@@ -608,7 +613,7 @@ fm_basis_mesh_1d <- function(mesh,
 
       # left
       ok <- (loc < 0) & (simplex[, 1] == 1L)
-      i_l <- c(seq_along(loc)[ok], seq_along(loc)[ok])
+      i_l <- c(which(bary_ok)[ok], which(bary_ok)[ok])
       j_l <- c(simplex[ok, 1], simplex[ok, 2])
       x_l <- c(
         0.5 + (info$where[ok, 1] - 1),
@@ -621,7 +626,7 @@ fm_basis_mesh_1d <- function(mesh,
 
       # right
       ok <- (loc > inter[2]) & (simplex[, 2] == length(knots))
-      i_r <- c(seq_along(loc)[ok], seq_along(loc)[ok])
+      i_r <- c(which(bary_ok)[ok], which(bary_ok)[ok])
       j_r <- c(simplex[ok, 2], simplex[ok, 1]) + 1L
       x_r <- c(
         0.5 + (info$where[ok, 2] - 1),
@@ -726,21 +731,31 @@ fm_basis_mesh_1d <- function(mesh,
     dims = c(length(loc), mesh$m)
   )
   if (derivatives) {
-    info_$dA <- Matrix::sparseMatrix(
-      i = i_,
-      j = j_,
-      x = weights[i_] * x_d1,
-      dims = c(length(loc), mesh$m)
-    )
-    info_$d2A <- Matrix::sparseMatrix(
-      i = i_,
-      j = j_,
-      x = weights[i_] * x_d2,
-      dims = c(length(loc), mesh$m)
-    )
+    if (mesh$degree <= 1) {
+      info_$dA <- Matrix::sparseMatrix(
+        i = i_d,
+        j = j_d,
+        x = weights[i_d] * x_d,
+        dims = c(length(loc), mesh$m)
+      )
+    } else {
+      # degree is 2
+      info_$dA <- Matrix::sparseMatrix(
+        i = i_,
+        j = j_,
+        x = weights[i_] * x_d1,
+        dims = c(length(loc), mesh$m)
+      )
+      info_$d2A <- Matrix::sparseMatrix(
+        i = i_,
+        j = j_,
+        x = weights[i_] * x_d2,
+        dims = c(length(loc), mesh$m)
+      )
+    }
   }
 
-  info_[["ok"]] <- rep(TRUE, length(loc))
+  info_[["ok"]] <- bary_ok
 
   structure(
     info_,
