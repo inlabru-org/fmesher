@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9003</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -22,9 +22,10 @@
     <li><a class="dropdown-item" href="../articles/basic_use.html">Basic use</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Concepts</h6></li>
-    <li><a class="dropdown-item" href="../articles/inla_conversion.html">Conversion from legacy INLA package methods</a></li>
+    <li><a class="dropdown-item" href="../articles/custom_classes.html">Custom classes</a></li>
     <li><a class="dropdown-item" href="../articles/fmesher_library.html">The fmesher C++ library</a></li>
     <li><a class="dropdown-item" href="../articles/devel_flow.html">Devel: Internal algorithm flowcharts</a></li>
+    <li><a class="dropdown-item" href="../articles/inla_conversion.html">Conversion from legacy INLA package methods</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -48,6 +49,7 @@
 <li>Add <code><a href="../reference/fm_bary_simplex.html">fm_bary_simplex()</a></code> method to extract the simplex vertex indices for an <code>fm_bary</code> object. (version <code>0.20.0.9001</code>)</li>
 <li>Remove long deprecated <code>inla.mesh</code> etc legacy methods; need to explicitly convert old objects. Retaining the <code>inla.mesh</code> etc class suffixes for now. (version <code>0.20.0.9001</code>)</li>
 <li>Handle <code>NA</code> location inputs to <code><a href="../reference/fm_basis.html">fm_basis.fm_mesh_1d()</a></code> (version <code>0.20.0.9002</code>)</li>
+<li>Simplify <code>fm_basis</code> object creation, and add <code>custom_classes</code> developers vignette (version <code>0.20.0.9003</code>)</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.0" id="fmesher-020">fmesher 0.2.0<a class="anchor" aria-label="anchor" href="#fmesher-020"></a></h2><p class="text-muted">CRAN release: 2024-11-06</p>

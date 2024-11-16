@@ -4,10 +4,11 @@ pkgdown_sha: ~
 articles:
   articles: articles.html
   basic_use: basic_use.html
+  custom_classes: custom_classes.html
   articles/devel_flow: devel_flow.html
   fmesher_library: fmesher_library.html
   inla_conversion: inla_conversion.html
-last_built: 2024-11-15T09:41Z
+last_built: 2024-11-16T01:33Z
 urls:
   reference: https://inlabru-org.github.io/fmesher/reference
   article: https://inlabru-org.github.io/fmesher/articles

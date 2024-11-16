@@ -3,6 +3,7 @@
 <url><loc>https://inlabru-org.github.io/fmesher/LICENSE-text.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/articles/articles.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/articles/basic_use.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/articles/custom_classes.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/articles/devel_flow.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/articles/fmesher_library.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/articles/index.html</loc></url>
@@ -39,7 +40,6 @@
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_diameter.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_dof.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_evaluate.html</loc></url>
-<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_evaluator_helpers.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_fem.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_generate_colors.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_gmrf.html</loc></url>
