@@ -159,52 +159,710 @@ fm_evaluator.default <- function(...) {
   )
 }
 
-#' @title Internal helper functions for mesh field evaluation
-#'
-#' @description Methods called internally by [fm_evaluator()] methods.
-#' @param weights Optional weight vector, one weight for each location
-#' @param derivatives logical; If true, also return matrices `dA` and `d2A`
-#' for `fm_mesh_1d` objects, and `dx`, `dy`, `dz` for `fm_mesh_2d`.
-#' @inheritParams fm_evaluate
+
+
 #' @export
-#' @keywords internal
-#' @returns A list of evaluator information objects, at least a matrix `A` and
-#' logical vector `ok`.
-#' @name fm_evaluator_helpers
-#' @examples
-#' str(fm_evaluator_mesh_2d(fmexample$mesh, loc = fmexample$loc))
-#'
-fm_evaluator_mesh_2d <- function(mesh,
-                                 loc = NULL,
-                                 weights = NULL,
-                                 derivatives = NULL,
+#' @describeIn fm_evaluate The `...` arguments are passed on to
+#'   `fm_evaluator_lattice()` if no `loc` or `lattice` is provided.
+fm_evaluator.fm_mesh_2d <- function(mesh,
+                                    loc = NULL,
+                                    lattice = NULL,
+                                    crs = NULL,
+                                    ...) {
+  if (missing(loc) || is.null(loc)) {
+    if (missing(lattice) || is.null(lattice)) {
+      lattice <- fm_evaluator_lattice(mesh,
+        crs = crs,
+        ...
+      )
+    }
+    dims <- lattice$dims
+    x <- lattice$x
+    y <- lattice$y
+    crs <- lattice$crs
+
+    if (is.null(mesh$crs) || is.null(lattice$crs)) {
+      proj <- fm_basis_mesh_2d(mesh, lattice$loc)
+    } else {
+      proj <- fm_basis_mesh_2d(mesh,
+        loc = lattice$loc,
+        crs = lattice$crs
+      )
+    }
+    projector <-
+      structure(
+        list(
+          x = x,
+          y = y,
+          lattice = lattice,
+          loc = NULL,
+          proj = proj,
+          crs = crs
+        ),
+        class = "fm_evaluator"
+      )
+  } else {
+    proj <- fm_basis_mesh_2d(mesh, loc = loc, crs = crs)
+    projector <-
+      structure(
+        list(
+          x = NULL,
+          y = NULL,
+          lattice = NULL,
+          loc = loc,
+          proj = proj,
+          crs = crs
+        ),
+        class = "fm_evaluator"
+      )
+  }
+
+  return(projector)
+}
+
+
+#' @export
+#' @rdname fm_evaluate
+fm_evaluator.fm_mesh_1d <- function(mesh,
+                                    loc = NULL,
+                                    xlim = mesh$interval,
+                                    dims = 100,
+                                    ...) {
+  if (missing(loc) || is.null(loc)) {
+    loc <- seq(xlim[1], xlim[2], length.out = dims[1])
+  }
+
+  proj <- fm_basis_mesh_1d(mesh, loc)
+  projector <-
+    structure(
+      list(
+        x = loc,
+        lattice = NULL,
+        loc = loc,
+        proj = proj
+      ),
+      class = "fm_evaluator"
+    )
+
+  return(projector)
+}
+
+
+
+#' @describeIn fm_evaluate
+#' Creates an [fm_lattice_2d()] object, by default covering the input mesh.
+#' @export
+fm_evaluator_lattice <- function(mesh,
+                                 xlim = NULL,
+                                 ylim = NULL,
+                                 dims = c(100, 100),
+                                 projection = NULL,
                                  crs = NULL,
                                  ...) {
-  fm_basis_mesh_2d(
-    mesh = mesh,
-    loc = loc,
-    weights = weights,
-    derivatives = derivatives,
-    crs = crs,
-    ...
+  stopifnot(inherits(mesh, "fm_mesh_2d"))
+  if (fm_manifold(mesh, "R2") &&
+    (is.null(mesh$crs) || is.null(crs))) {
+    units <- "default"
+    lim <- list(
+      xlim = if (is.null(xlim)) range(mesh$loc[, 1]) else xlim,
+      ylim = if (is.null(ylim)) range(mesh$loc[, 2]) else ylim
+    )
+  } else if (fm_manifold(mesh, "S2") &&
+    (is.null(mesh$crs) || is.null(crs))) {
+    projection <-
+      match.arg(projection, c(
+        "longlat", "longsinlat",
+        "mollweide"
+      ))
+    units <- projection
+    lim <- fm_mesh_2d_map_lim(loc = mesh$loc, projection = projection)
+  } else {
+    lim <- fm_crs_bounds(crs)
+    if (fm_manifold(mesh, "R2")) {
+      lim0 <- list(
+        xlim = if (is.null(xlim)) range(mesh$loc[, 1]) else xlim,
+        ylim = if (is.null(ylim)) range(mesh$loc[, 2]) else ylim
+      )
+      lim$xlim[1] <- max(lim$xlim[1], lim0$xlim[1])
+      lim$xlim[2] <- min(lim$xlim[2], lim0$xlim[2])
+      lim$ylim[1] <- max(lim$ylim[1], lim0$ylim[1])
+      lim$ylim[2] <- min(lim$ylim[2], lim0$ylim[2])
+    }
+  }
+  if (missing(xlim) && is.null(xlim)) {
+    xlim <- lim$xlim
+  }
+  if (missing(ylim) && is.null(ylim)) {
+    ylim <- lim$ylim
+  }
+  x <- seq(xlim[1], xlim[2], length.out = dims[1])
+  y <- seq(ylim[1], ylim[2], length.out = dims[2])
+  if (is.null(mesh$crs) || is.null(crs)) {
+    lattice <- fm_lattice_2d(x = x, y = y, units = units)
+  } else {
+    lattice <- fm_lattice_2d(x = x, y = y, crs = crs)
+  }
+  lattice
+}
+
+
+# fm_contains ####
+
+#' Check which mesh triangles are inside a polygon
+#'
+#' Wrapper for the [sf::st_contains()] (previously `sp::over()`) method to find
+#' triangle centroids or vertices inside `sf` or `sp` polygon objects
+#'
+#' @param x geometry (typically an `sf` or `sp::SpatialPolygons` object) for the
+#'   queries
+#' @param y an [fm_mesh_2d()] object
+#' @param \dots Passed on to other methods
+#' @param type the query type; either `'centroid'` (default, for triangle
+#'   centroids), or `'vertex'` (for mesh vertices)
+#'
+#' @returns List of vectors of triangle indices (when `type` is `'centroid'`) or
+#'   vertex indices (when `type` is `'vertex'`). The list has one entry per row
+#'   of the `sf` object. Use `unlist(fm_contains(...))` if the combined union is
+#'   needed.
+#'
+#' @author Haakon Bakka, \email{bakka@@r-inla.org}, and Finn Lindgren
+#'   \email{finn.lindgren@@gmail.com}
+#'
+#' @examples
+#' if (TRUE &&
+#'   fm_safe_sp()) {
+#'   # Create a polygon and a mesh
+#'   obj <- sp::SpatialPolygons(
+#'     list(sp::Polygons(
+#'       list(sp::Polygon(rbind(
+#'         c(0, 0),
+#'         c(50, 0),
+#'         c(50, 50),
+#'         c(0, 50)
+#'       ))),
+#'       ID = 1
+#'     )),
+#'     proj4string = fm_CRS("longlat_globe")
+#'   )
+#'   mesh <- fm_rcdt_2d_inla(globe = 2, crs = fm_crs("sphere"))
+#'
+#'   ## 3 vertices found in the polygon
+#'   fm_contains(obj, mesh, type = "vertex")
+#'
+#'   ## 3 triangles found in the polygon
+#'   fm_contains(obj, mesh)
+#'
+#'   ## Multiple transformations can lead to slightly different results
+#'   ## due to edge cases:
+#'   ## 4 triangles found in the polygon
+#'   fm_contains(
+#'     obj,
+#'     fm_transform(mesh, crs = fm_crs("mollweide_norm"))
+#'   )
+#' }
+#'
+#' @export
+fm_contains <- function(x, y, ...) {
+  UseMethod("fm_contains")
+}
+
+#' @rdname fm_contains
+#' @export
+fm_contains.Spatial <- function(x, y, ...) {
+  fm_contains(sf::st_as_sf(x), y = y, ...)
+}
+
+#' @rdname fm_contains
+#' @export
+fm_contains.sf <- function(x, y, ...) {
+  fm_contains(sf::st_geometry(x), y = y, ...)
+}
+
+#' @rdname fm_contains
+#' @export
+fm_contains.sfc <- function(x, y, ..., type = c("centroid", "vertex")) {
+  if (!inherits(y, "fm_mesh_2d")) {
+    stop(paste0(
+      "'y' must be an 'fm_mesh_2d' object, not '",
+      paste0(class(y), collapse = ", "),
+      "'."
+    ))
+  }
+
+  type <- match.arg(type)
+  if (identical(type, "centroid")) {
+    ## Extract triangle centroids
+    points <- (y$loc[y$graph$tv[, 1], , drop = FALSE] +
+      y$loc[y$graph$tv[, 2], , drop = FALSE] +
+      y$loc[y$graph$tv[, 3], , drop = FALSE]) / 3
+  } else if (identical(type, "vertex")) {
+    ## Extract vertices
+    points <- y$loc
+  }
+  if (fm_manifold(y, "S2")) {
+    points <- points / rowSums(points^2)^0.5
+  }
+  ## Convert to sf points
+  ## Extract coordinate system information
+  if (fm_manifold(y, "S2")) {
+    crs <- fm_crs("sphere")
+  } else {
+    crs <- fm_crs(y)
+  }
+  crs_x <- fm_crs(x)
+  ## Create sfc_POINT object and transform the coordinates.
+  points <- sf::st_as_sf(as.data.frame(points),
+    coords = seq_len(ncol(points)),
+    crs = crs
+  )
+  if (!fm_crs_is_null(crs) &&
+    !fm_crs_is_null(crs_x)) {
+    ## Convert to the target object CRS
+    points <- fm_transform(points, crs = crs_x)
+  }
+
+  ## Find indices:
+  ids <- sf::st_contains(x, points, sparse = TRUE)
+
+  ids
+}
+
+
+
+
+# fm_is_within ####
+
+#' @title Query if points are inside a mesh
+#'
+#' @description
+#'  Queries whether each input point is within a mesh or not.
+#'
+#' @param x A set of points of a class supported by `fm_evaluator(y, loc = x)`
+#' @param y An [fm_mesh_2d] or other class supported by
+#' `fm_evaluator(y, loc = x)`
+#' @param \dots Currently unused
+#' @returns A logical vector
+#' @examples
+#' all(fm_is_within(fmexample$loc, fmexample$mesh))
+#' @export
+fm_is_within <- function(x, y, ...) {
+  UseMethod("fm_is_within")
+}
+
+#' @rdname fm_is_within
+#' @export
+fm_is_within.default <- function(x, y, ...) {
+  fm_evaluator(y, loc = x)$proj$ok
+}
+
+
+
+# fm_basis ####
+
+#' @title Compute mapping matrix between mesh function space and points
+#'
+#' @description Computes the basis mapping matrix between a function space on a
+#' mesh, and locations.
+#'
+#' @param x An function space object
+#' @param loc A location/value information object (vector, matrix, `sf`, etc,
+#'   depending on the class of `x`)
+#' @param full logical; if `TRUE`, return a `fm_basis` object, containing at
+#'   least a projection matrix `A` and logical vector `ok` indicating which
+#'   evaluations are valid. If `FALSE`, return only the projection matrix `A`.
+#'   Default is `FALSE`.
+#' @param \dots Passed on to submethods
+#' @returns A `sparseMatrix` object (if `full = FALSE`), or a `fm_basis` object
+#'   (if `full = TRUE` or `isTRUE(derivatives)`). The `fm_basis` object contains
+#'   at least the projection matrix `A` and logical vector `ok`;
+#'   `u(loc_i)=sum_j A_ij w_i`
+#' @seealso [fm_raw_basis()]
+#' @examples
+#' # Compute basis mapping matrix
+#' str(fm_basis(fmexample$mesh, fmexample$loc))
+#' print(fm_basis(fmexample$mesh, fmexample$loc), full = TRUE)
+#' @export
+fm_basis <- function(x, ..., full = FALSE) {
+  UseMethod("fm_basis")
+}
+
+#' @rdname fm_basis
+#' @export
+fm_basis.default <- function(x, ..., full = FALSE) {
+  lifecycle::deprecate_stop(
+    "0.1.7.9002",
+    "fm_basis.default()",
+    details = "Each mesh class needs its own `fm_basis()` method."
   )
 }
 
+#' @describeIn fm_basis Creates a new `fm_basis` object from a plain list
+#'   containing at least elements `A` and `ok`. If `full = FALSE`,
+#'   extracts the `A` matrix.
 #' @export
-#' @rdname fm_evaluator_helpers
-fm_evaluator_mesh_1d <- function(mesh,
-                                 loc,
-                                 weights = NULL,
-                                 derivatives = NULL,
-                                 ...) {
-  fm_basis_mesh_1d(
-    mesh = mesh,
+fm_basis.list <- function(x, ..., full = FALSE) {
+  stopifnot(all(c("A", "ok") %in% names(x)))
+  if (!full) {
+    return(x[["A"]])
+  }
+  structure(
+    x,
+    class = "fm_basis"
+  )
+}
+
+#' @rdname fm_basis
+#' @export
+fm_basis.fm_basis <- function(x, ..., full = FALSE) {
+  if (full) {
+    x
+  } else {
+    x[["A"]]
+  }
+}
+
+#' @param weights Optional weight vector to apply (from the left, one
+#' weight for each row of the basis matrix)
+#' @param derivatives If non-NULL and logical, include derivative matrices
+#' in the output. Forces `full = TRUE`.
+#' @describeIn fm_basis The `fm_basis` object contains additional derivative
+#'   weight matrices, `d1A` and `d2A`, `du/dx(loc_i)=sum_j dx_ij w_i`.
+#' @export
+fm_basis.fm_mesh_1d <- function(x,
+                                loc,
+                                weights = NULL,
+                                derivatives = NULL,
+                                ...,
+                                full = FALSE) {
+  result <- fm_basis_mesh_1d(
+    x,
     loc = loc,
     weights = weights,
     derivatives = derivatives,
     ...
   )
+  if (isTRUE(derivatives) && !full) {
+    full <- TRUE
+  }
+  fm_basis(result, full = full)
 }
+
+#' @describeIn fm_basis If `derivatives=TRUE`, additional derivative weight
+#'   matrices are included in the `full=TRUE` output: Derivative weight matrices
+#' `dx`, `dy`, `dz`; `du/dx(loc_i)=sum_j dx_ij w_i`, etc.
+#' @export
+fm_basis.fm_mesh_2d <- function(x, loc, weights = NULL, derivatives = NULL, ...,
+                                full = FALSE) {
+  result <- fm_basis_mesh_2d(
+    x,
+    loc = loc,
+    weights = weights,
+    derivatives = derivatives,
+    ...
+  )
+  if (isTRUE(derivatives) && !full) {
+    full <- TRUE
+  }
+  fm_basis(result, full = full)
+}
+
+#' @rdname fm_basis
+#' @export
+fm_basis.fm_evaluator <- function(x, ..., full = FALSE) {
+  fm_basis(x$proj, full = full)
+}
+
+#' @param x [fm_tensor()] object
+#' @export
+#' @rdname fm_basis
+fm_basis.fm_tensor <- function(x,
+                               loc,
+                               weights = NULL,
+                               ...,
+                               full = FALSE) {
+  if (length(loc) != length(x[["fun_spaces"]])) {
+    stop(
+      paste0(
+        "Length of location list (",
+        length(loc), ") doesn't match the number of function spaces (",
+        length(x[["fun_spaces"]]),
+        ")"
+      )
+    )
+  }
+  if (is.null(names(loc))) {
+    names(loc) <- names(x[["fun_spaces"]])
+  } else if (!setequal(names(x[["fun_spaces"]]), names(loc))) {
+    stop("Name mismatch between location list names and function space names.")
+  }
+  idx <- names(x[["fun_spaces"]])
+  if (is.null(idx)) {
+    idx <- seq_along(x[["fun_spaces"]])
+  }
+  proj <- lapply(
+    idx,
+    function(k) {
+      fm_basis(x[["fun_spaces"]][[k]], loc = loc[[k]], full = TRUE)
+    }
+  )
+  names(proj) <- names(x[["fun_spaces"]])
+
+  # Combine the matrices
+  # (A1, A2, A3) -> rowkron(A3, rowkron(A2, A1))
+  A <- proj[[1]][["A"]]
+  if (!is.null(weights)) {
+    A <- Matrix::Diagonal(nrow(A), x = weights) %*% A
+  }
+  ok <- proj[[1]][["ok"]]
+  for (k in seq_len(length(x[["fun_spaces"]]) - 1)) {
+    A <- fm_row_kron(proj[[k + 1]][["A"]], A)
+    ok <- proj[[k + 1]][["ok"]] & ok
+  }
+
+  fm_basis(
+    list(A = A, ok = ok),
+    full = full
+  )
+}
+
+
+
+
+
+
+
+
+
+
+internal_spline_mesh_1d <- function(interval,
+                                    m,
+                                    degree,
+                                    boundary,
+                                    free.clamped) {
+  boundary <-
+    match.arg(
+      boundary,
+      c("neumann", "dirichlet", "free", "cyclic")
+    )
+  if (degree <= 1) {
+    n <- (switch(boundary,
+      neumann = m,
+      dirichlet = m + 2,
+      free = m,
+      cyclic = m + 1
+    ))
+    if (n < 2) {
+      n <- 2
+      degree <- 0
+      boundary <- "c"
+    }
+  } else {
+    stopifnot(degree == 2)
+    n <- (switch(boundary,
+      neumann = m + 1,
+      dirichlet = m + 1,
+      free = m - 1,
+      cyclic = m
+    ))
+    if (boundary == "free") {
+      if (m <= 1) {
+        n <- 2
+        degree <- 0
+        boundary <- "c"
+      } else if (m == 2) {
+        n <- 2
+        degree <- 1
+      }
+    } else if (boundary == "cyclic") {
+      if (m <= 1) {
+        n <- 2
+        degree <- 0
+      }
+    }
+  }
+  return(fm_mesh_1d(seq(interval[1], interval[2], length.out = n),
+    degree = degree,
+    boundary = boundary,
+    free.clamped = free.clamped
+  ))
+}
+
+
+#' Basis functions for mesh manifolds
+#'
+#' Calculate basis functions on [fm_mesh_1d()] or [fm_mesh_2d()],
+#' without necessarily matching the default function space of the given mesh
+#' object.
+#'
+#' @param mesh An [fm_mesh_1d()] or [fm_mesh_2d()] object.
+#' @param type `b.spline` (default) for B-spline basis functions,
+#' `sph.harm` for spherical harmonics (available only for meshes on the
+#' sphere)
+#' @param n For B-splines, the number of basis functions in each direction (for
+#' 1d meshes `n` must be a scalar, and for planar 2d meshes a 2-vector).
+#' For spherical harmonics, `n` is the maximal harmonic order.
+#' @param degree Degree of B-spline polynomials.  See
+#' [fm_mesh_1d()].
+#' @param knot.placement For B-splines on the sphere, controls the latitudinal
+#' placements of knots. `"uniform.area"` (default) gives uniform spacing
+#' in `sin(latitude)`, `"uniform.latitude"` gives uniform spacing in
+#' latitudes.
+#' @param rot.inv For spherical harmonics on a sphere, `rot.inv=TRUE`
+#' gives the rotationally invariant subset of basis functions.
+#' @param boundary Boundary specification, default is free boundaries.  See
+#' [fm_mesh_1d()] for more information.
+#' @param free.clamped If `TRUE` and `boundary` is `"free"`, the
+#' boundary basis functions are clamped to 0/1 at the interval boundary by
+#' repeating the boundary knots. See
+#' [fm_mesh_1d()] for more information.
+#' @param ... Unused
+#' @returns A matrix with evaluated basis function
+#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @seealso [fm_mesh_1d()], [fm_mesh_2d()], [fm_basis()]
+#' @examples
+#'
+#' loc <- rbind(c(0, 0), c(1, 0), c(1, 1), c(0, 1))
+#' mesh <- fm_mesh_2d(loc, max.edge = 0.15)
+#' basis <- fm_raw_basis(mesh, n = c(4, 5))
+#'
+#' proj <- fm_evaluator(mesh, dims = c(10, 10))
+#' image(proj$x, proj$y, fm_evaluate(proj, basis[, 7]), asp = 1)
+#' \donttest{
+#' if (interactive() && require("rgl")) {
+#'   plot_rgl(mesh, col = basis[, 7], draw.edges = FALSE, draw.vertices = FALSE)
+#' }
+#' }
+#'
+#' @export
+fm_raw_basis <- function(mesh,
+                         type = "b.spline",
+                         n = 3,
+                         degree = 2,
+                         knot.placement = "uniform.area",
+                         rot.inv = TRUE,
+                         boundary = "free",
+                         free.clamped = TRUE,
+                         ...) {
+  type <- match.arg(type, c("b.spline", "sph.harm"))
+  knot.placement <- (match.arg(
+    knot.placement,
+    c(
+      "uniform.area",
+      "uniform.latitude"
+    )
+  ))
+
+  if (identical(type, "b.spline")) {
+    if (fm_manifold(mesh, c("R1", "S1"))) {
+      mesh1 <-
+        internal_spline_mesh_1d(
+          mesh$interval, n, degree,
+          boundary, free.clamped
+        )
+      basis <- fm_basis(mesh1, mesh$loc)
+    } else if (identical(mesh$manifold, "R2")) {
+      if (length(n) == 1) {
+        n <- rep(n, 2)
+      }
+      if (length(degree) == 1) {
+        degree <- rep(degree, 2)
+      }
+      if (length(boundary) == 1) {
+        boundary <- rep(boundary, 2)
+      }
+      if (length(free.clamped) == 1) {
+        free.clamped <- rep(free.clamped, 2)
+      }
+      mesh1x <-
+        internal_spline_mesh_1d(
+          range(mesh$loc[, 1]),
+          n[1], degree[1],
+          boundary[1], free.clamped[1]
+        )
+      mesh1y <-
+        internal_spline_mesh_1d(
+          range(mesh$loc[, 2]),
+          n[2], degree[2],
+          boundary[2], free.clamped[2]
+        )
+      basis <-
+        fm_row_kron(
+          fm_basis(mesh1y, mesh$loc[, 2]),
+          fm_basis(mesh1x, mesh$loc[, 1])
+        )
+    } else if (identical(mesh$manifold, "S2")) {
+      loc <- mesh$loc
+      uniform.lat <- identical(knot.placement, "uniform.latitude")
+      degree <- max(0L, min(n - 1L, degree))
+      basis <- fmesher_spherical_bsplines1(
+        loc[, 3],
+        n = n,
+        degree = degree,
+        uniform = uniform.lat
+      )
+      if (!rot.inv) {
+        warning("Currently only 'rot.inv=TRUE' is supported for B-splines.")
+      }
+    } else {
+      stop("Only know how to make B-splines on R2 and S2.")
+    }
+  } else if (identical(type, "sph.harm")) {
+    if (!identical(mesh$manifold, "S2")) {
+      stop("Only know how to make spherical harmonics on S2.")
+    }
+    # With GSL activated:
+    #        if (rot.inv) {
+    #            basis <- (inla.fmesher.smorg(
+    #                mesh$loc,
+    #                mesh$graph$tv,
+    #                sph0 = n
+    #            )$sph0)
+    #        } else {
+    #            basis <- (inla.fmesher.smorg(
+    #                mesh$loc,
+    #                mesh$graph$tv,
+    #                sph = n
+    #            )$sph)
+    #        }
+
+    fm_require_stop(
+      "gsl",
+      "The 'gsl' R package is needed for spherical harmonics."
+    )
+
+    # Make sure we have radius-1 coordinates
+    loc <- mesh$loc / rowSums(mesh$loc^2)^0.5
+    if (rot.inv) {
+      basis <- matrix(0, nrow(loc), n + 1)
+      for (l in seq(0, n)) {
+        basis[, l + 1] <- sqrt(2 * l + 1) *
+          gsl::legendre_Pl(l = l, x = loc[, 3])
+      }
+    } else {
+      angle <- atan2(loc[, 2], loc[, 1])
+      basis <- matrix(0, nrow(loc), (n + 1)^2)
+      for (l in seq(0, n)) {
+        basis[, 1 + l * (l + 1)] <-
+          sqrt(2 * l + 1) *
+            gsl::legendre_Pl(l = l, x = loc[, 3])
+        for (m in seq_len(l)) {
+          scaling <- sqrt(2 * (2 * l + 1) * exp(lgamma(l - m + 1) -
+            lgamma(l + m + 1)))
+          poly <- gsl::legendre_Plm(l = l, m = m, x = loc[, 3])
+          basis[, 1 + l * (l + 1) - m] <-
+            scaling * sin(-m * angle) * poly
+          basis[, 1 + l * (l + 1) + m] <-
+            scaling * cos(m * angle) * poly
+        }
+      }
+    }
+  }
+
+  return(basis)
+}
+
+
+
 
 #' @title Internal helper functions for mesh field evaluation
 #'
@@ -303,10 +961,7 @@ fm_basis_mesh_2d <- function(mesh,
       )
   }
 
-  structure(
-    info,
-    class = "fm_basis"
-  )
+  fm_basis(info, full = TRUE)
 }
 
 
@@ -757,710 +1412,8 @@ fm_basis_mesh_1d <- function(mesh,
 
   info_[["ok"]] <- bary_ok
 
-  structure(
-    info_,
-    class = "fm_basis"
-  )
+  fm_basis(info_, full = TRUE)
 }
-
-
-
-
-
-
-
-#' @export
-#' @describeIn fm_evaluate The `...` arguments are passed on to
-#'   `fm_evaluator_lattice()` if no `loc` or `lattice` is provided.
-fm_evaluator.fm_mesh_2d <- function(mesh,
-                                    loc = NULL,
-                                    lattice = NULL,
-                                    crs = NULL,
-                                    ...) {
-  if (missing(loc) || is.null(loc)) {
-    if (missing(lattice) || is.null(lattice)) {
-      lattice <- fm_evaluator_lattice(mesh,
-        crs = crs,
-        ...
-      )
-    }
-    dims <- lattice$dims
-    x <- lattice$x
-    y <- lattice$y
-    crs <- lattice$crs
-
-    if (is.null(mesh$crs) || is.null(lattice$crs)) {
-      proj <- fm_basis_mesh_2d(mesh, lattice$loc)
-    } else {
-      proj <- fm_basis_mesh_2d(mesh,
-        loc = lattice$loc,
-        crs = lattice$crs
-      )
-    }
-    projector <-
-      structure(
-        list(
-          x = x,
-          y = y,
-          lattice = lattice,
-          loc = NULL,
-          proj = proj,
-          crs = crs
-        ),
-        class = "fm_evaluator"
-      )
-  } else {
-    proj <- fm_basis_mesh_2d(mesh, loc = loc, crs = crs)
-    projector <-
-      structure(
-        list(
-          x = NULL,
-          y = NULL,
-          lattice = NULL,
-          loc = loc,
-          proj = proj,
-          crs = crs
-        ),
-        class = "fm_evaluator"
-      )
-  }
-
-  return(projector)
-}
-
-
-#' @export
-#' @rdname fm_evaluate
-fm_evaluator.fm_mesh_1d <- function(mesh,
-                                    loc = NULL,
-                                    xlim = mesh$interval,
-                                    dims = 100,
-                                    ...) {
-  if (missing(loc) || is.null(loc)) {
-    loc <- seq(xlim[1], xlim[2], length.out = dims[1])
-  }
-
-  proj <- fm_basis_mesh_1d(mesh, loc)
-  projector <-
-    structure(
-      list(
-        x = loc,
-        lattice = NULL,
-        loc = loc,
-        proj = proj
-      ),
-      class = "fm_evaluator"
-    )
-
-  return(projector)
-}
-
-
-
-#' @describeIn fm_evaluate
-#' Creates an [fm_lattice_2d()] object, by default covering the input mesh.
-#' @export
-fm_evaluator_lattice <- function(mesh,
-                                 xlim = NULL,
-                                 ylim = NULL,
-                                 dims = c(100, 100),
-                                 projection = NULL,
-                                 crs = NULL,
-                                 ...) {
-  stopifnot(inherits(mesh, "fm_mesh_2d"))
-  if (fm_manifold(mesh, "R2") &&
-    (is.null(mesh$crs) || is.null(crs))) {
-    units <- "default"
-    lim <- list(
-      xlim = if (is.null(xlim)) range(mesh$loc[, 1]) else xlim,
-      ylim = if (is.null(ylim)) range(mesh$loc[, 2]) else ylim
-    )
-  } else if (fm_manifold(mesh, "S2") &&
-    (is.null(mesh$crs) || is.null(crs))) {
-    projection <-
-      match.arg(projection, c(
-        "longlat", "longsinlat",
-        "mollweide"
-      ))
-    units <- projection
-    lim <- fm_mesh_2d_map_lim(loc = mesh$loc, projection = projection)
-  } else {
-    lim <- fm_crs_bounds(crs)
-    if (fm_manifold(mesh, "R2")) {
-      lim0 <- list(
-        xlim = if (is.null(xlim)) range(mesh$loc[, 1]) else xlim,
-        ylim = if (is.null(ylim)) range(mesh$loc[, 2]) else ylim
-      )
-      lim$xlim[1] <- max(lim$xlim[1], lim0$xlim[1])
-      lim$xlim[2] <- min(lim$xlim[2], lim0$xlim[2])
-      lim$ylim[1] <- max(lim$ylim[1], lim0$ylim[1])
-      lim$ylim[2] <- min(lim$ylim[2], lim0$ylim[2])
-    }
-  }
-  if (missing(xlim) && is.null(xlim)) {
-    xlim <- lim$xlim
-  }
-  if (missing(ylim) && is.null(ylim)) {
-    ylim <- lim$ylim
-  }
-  x <- seq(xlim[1], xlim[2], length.out = dims[1])
-  y <- seq(ylim[1], ylim[2], length.out = dims[2])
-  if (is.null(mesh$crs) || is.null(crs)) {
-    lattice <- fm_lattice_2d(x = x, y = y, units = units)
-  } else {
-    lattice <- fm_lattice_2d(x = x, y = y, crs = crs)
-  }
-  lattice
-}
-
-
-# fm_contains ####
-
-#' Check which mesh triangles are inside a polygon
-#'
-#' Wrapper for the [sf::st_contains()] (previously `sp::over()`) method to find
-#' triangle centroids or vertices inside `sf` or `sp` polygon objects
-#'
-#' @param x geometry (typically an `sf` or `sp::SpatialPolygons` object) for the
-#'   queries
-#' @param y an [fm_mesh_2d()] object
-#' @param \dots Passed on to other methods
-#' @param type the query type; either `'centroid'` (default, for triangle
-#'   centroids), or `'vertex'` (for mesh vertices)
-#'
-#' @returns List of vectors of triangle indices (when `type` is `'centroid'`) or
-#'   vertex indices (when `type` is `'vertex'`). The list has one entry per row
-#'   of the `sf` object. Use `unlist(fm_contains(...))` if the combined union is
-#'   needed.
-#'
-#' @author Haakon Bakka, \email{bakka@@r-inla.org}, and Finn Lindgren
-#'   \email{finn.lindgren@@gmail.com}
-#'
-#' @examples
-#' if (TRUE &&
-#'   fm_safe_sp()) {
-#'   # Create a polygon and a mesh
-#'   obj <- sp::SpatialPolygons(
-#'     list(sp::Polygons(
-#'       list(sp::Polygon(rbind(
-#'         c(0, 0),
-#'         c(50, 0),
-#'         c(50, 50),
-#'         c(0, 50)
-#'       ))),
-#'       ID = 1
-#'     )),
-#'     proj4string = fm_CRS("longlat_globe")
-#'   )
-#'   mesh <- fm_rcdt_2d_inla(globe = 2, crs = fm_crs("sphere"))
-#'
-#'   ## 3 vertices found in the polygon
-#'   fm_contains(obj, mesh, type = "vertex")
-#'
-#'   ## 3 triangles found in the polygon
-#'   fm_contains(obj, mesh)
-#'
-#'   ## Multiple transformations can lead to slightly different results
-#'   ## due to edge cases:
-#'   ## 4 triangles found in the polygon
-#'   fm_contains(
-#'     obj,
-#'     fm_transform(mesh, crs = fm_crs("mollweide_norm"))
-#'   )
-#' }
-#'
-#' @export
-fm_contains <- function(x, y, ...) {
-  UseMethod("fm_contains")
-}
-
-#' @rdname fm_contains
-#' @export
-fm_contains.Spatial <- function(x, y, ...) {
-  fm_contains(sf::st_as_sf(x), y = y, ...)
-}
-
-#' @rdname fm_contains
-#' @export
-fm_contains.sf <- function(x, y, ...) {
-  fm_contains(sf::st_geometry(x), y = y, ...)
-}
-
-#' @rdname fm_contains
-#' @export
-fm_contains.sfc <- function(x, y, ..., type = c("centroid", "vertex")) {
-  if (!inherits(y, "fm_mesh_2d")) {
-    stop(paste0(
-      "'y' must be an 'fm_mesh_2d' object, not '",
-      paste0(class(y), collapse = ", "),
-      "'."
-    ))
-  }
-
-  type <- match.arg(type)
-  if (identical(type, "centroid")) {
-    ## Extract triangle centroids
-    points <- (y$loc[y$graph$tv[, 1], , drop = FALSE] +
-      y$loc[y$graph$tv[, 2], , drop = FALSE] +
-      y$loc[y$graph$tv[, 3], , drop = FALSE]) / 3
-  } else if (identical(type, "vertex")) {
-    ## Extract vertices
-    points <- y$loc
-  }
-  if (fm_manifold(y, "S2")) {
-    points <- points / rowSums(points^2)^0.5
-  }
-  ## Convert to sf points
-  ## Extract coordinate system information
-  if (fm_manifold(y, "S2")) {
-    crs <- fm_crs("sphere")
-  } else {
-    crs <- fm_crs(y)
-  }
-  crs_x <- fm_crs(x)
-  ## Create sfc_POINT object and transform the coordinates.
-  points <- sf::st_as_sf(as.data.frame(points),
-    coords = seq_len(ncol(points)),
-    crs = crs
-  )
-  if (!fm_crs_is_null(crs) &&
-    !fm_crs_is_null(crs_x)) {
-    ## Convert to the target object CRS
-    points <- fm_transform(points, crs = crs_x)
-  }
-
-  ## Find indices:
-  ids <- sf::st_contains(x, points, sparse = TRUE)
-
-  ids
-}
-
-
-
-
-# fm_is_within ####
-
-#' @title Query if points are inside a mesh
-#'
-#' @description
-#'  Queries whether each input point is within a mesh or not.
-#'
-#' @param x A set of points of a class supported by `fm_evaluator(y, loc = x)`
-#' @param y An [fm_mesh_2d] or other class supported by
-#' `fm_evaluator(y, loc = x)`
-#' @param \dots Currently unused
-#' @returns A logical vector
-#' @examples
-#' all(fm_is_within(fmexample$loc, fmexample$mesh))
-#' @export
-fm_is_within <- function(x, y, ...) {
-  UseMethod("fm_is_within")
-}
-
-#' @rdname fm_is_within
-#' @export
-fm_is_within.default <- function(x, y, ...) {
-  fm_evaluator(y, loc = x)$proj$ok
-}
-
-
-
-# fm_basis ####
-
-#' @title Compute mapping matrix between mesh function space and points
-#'
-#' @description Computes the basis mapping matrix between a function space on a
-#' mesh, and locations.
-#'
-#' @param x An function space object
-#' @param loc A location/value information object (vector, matrix, `sf`, etc,
-#'   depending on the class of `x`)
-#' @param full logical; if `TRUE`, return a `fm_basis` object, containing at
-#'   least a projection matrix `A` and logical vector `ok` indicating which
-#'   evaluations are valid. If `FALSE`, return only the projection matrix `A`.
-#'   Default is `FALSE`.
-#' @param \dots Passed on to submethods
-#' @returns A `sparseMatrix` object (if `full = FALSE`), or a `fm_basis` object
-#'   (if `full = TRUE` or `isTRUE(derivatives)`). The `fm_basis` object contains
-#'   at least the projection matrix `A` and logical vector `ok`;
-#'   `u(loc_i)=sum_j A_ij w_i`
-#' @seealso [fm_raw_basis()]
-#' @examples
-#' # Compute basis mapping matrix
-#' str(fm_basis(fmexample$mesh, fmexample$loc))
-#' print(fm_basis(fmexample$mesh, fmexample$loc), full = TRUE)
-#' @export
-fm_basis <- function(x, ..., full = FALSE) {
-  UseMethod("fm_basis")
-}
-
-#' @rdname fm_basis
-#' @export
-fm_basis.default <- function(x, ..., full = FALSE) {
-  lifecycle::deprecate_stop(
-    "0.1.7.9002",
-    "fm_basis.default()",
-    details = "Each mesh class needs its own `fm_basis()` method."
-  )
-}
-
-#' @param weights Optional weight vector to apply (from the left, one
-#' weight for each row of the basis matrix)
-#' @param derivatives If non-NULL and logical, include derivative matrices
-#' in the output. Forces `full = TRUE`.
-#' @describeIn fm_basis The `fm_basis` object contains additional derivative
-#'   weight matrices, `d1A` and `d2A`, `du/dx(loc_i)=sum_j dx_ij w_i`.
-#' @export
-fm_basis.fm_mesh_1d <- function(x,
-                                loc,
-                                weights = NULL,
-                                derivatives = NULL,
-                                ...,
-                                full = FALSE) {
-  result <- fm_basis_mesh_1d(
-    x,
-    loc = loc,
-    weights = weights,
-    derivatives = derivatives,
-    ...
-  )
-  if (isTRUE(derivatives) && !full) {
-    full <- TRUE
-  }
-  fm_basis(result, full = full)
-}
-
-#' @describeIn fm_basis If `derivatives=TRUE`, additional derivative weight
-#'   matrices are included in the `full=TRUE` output: Derivative weight matrices
-#' `dx`, `dy`, `dz`; `du/dx(loc_i)=sum_j dx_ij w_i`, etc.
-#' @export
-fm_basis.fm_mesh_2d <- function(x, loc, weights = NULL, derivatives = NULL, ...,
-                                full = FALSE) {
-  result <- fm_basis_mesh_2d(
-    x,
-    loc = loc,
-    weights = weights,
-    derivatives = derivatives,
-    ...
-  )
-  if (isTRUE(derivatives) && !full) {
-    full <- TRUE
-  }
-  fm_basis(result, full = full)
-}
-
-#' @rdname fm_basis
-#' @export
-fm_basis.fm_evaluator <- function(x, ..., full = FALSE) {
-  fm_basis(
-    structure(
-      x$proj,
-      class = "fm_basis"
-    ),
-    full = full
-  )
-}
-
-#' @rdname fm_basis
-#' @export
-fm_basis.fm_basis <- function(x, ..., full = FALSE) {
-  if (full) {
-    x
-  } else {
-    x[["A"]]
-  }
-}
-
-#' @param x [fm_tensor()] object
-#' @export
-#' @rdname fm_basis
-fm_basis.fm_tensor <- function(x,
-                               loc,
-                               weights = NULL,
-                               ...,
-                               full = FALSE) {
-  if (length(loc) != length(x[["fun_spaces"]])) {
-    stop(
-      paste0(
-        "Length of location list (",
-        length(loc), ") doesn't match the number of function spaces (",
-        length(x[["fun_spaces"]]),
-        ")"
-      )
-    )
-  }
-  if (is.null(names(loc))) {
-    names(loc) <- names(x[["fun_spaces"]])
-  } else if (!setequal(names(x[["fun_spaces"]]), names(loc))) {
-    stop("Name mismatch between location list names and function space names.")
-  }
-  idx <- names(x[["fun_spaces"]])
-  if (is.null(idx)) {
-    idx <- seq_along(x[["fun_spaces"]])
-  }
-  proj <- lapply(
-    idx,
-    function(k) {
-      fm_basis(x[["fun_spaces"]][[k]], loc = loc[[k]], full = TRUE)
-    }
-  )
-  names(proj) <- names(x[["fun_spaces"]])
-
-  # Combine the matrices
-  # (A1, A2, A3) -> rowkron(A3, rowkron(A2, A1))
-  A <- proj[[1]][["A"]]
-  if (!is.null(weights)) {
-    A <- Matrix::Diagonal(nrow(A), x = weights) %*% A
-  }
-  ok <- proj[[1]][["ok"]]
-  for (k in seq_len(length(x[["fun_spaces"]]) - 1)) {
-    A <- fm_row_kron(proj[[k + 1]][["A"]], A)
-    ok <- proj[[k + 1]][["ok"]] & ok
-  }
-
-  out <- structure(
-    list(A = A, ok = ok),
-    class = "fm_basis"
-  )
-  fm_basis(out, full = full)
-}
-
-
-
-
-
-
-
-
-
-
-internal_spline_mesh_1d <- function(interval,
-                                    m,
-                                    degree,
-                                    boundary,
-                                    free.clamped) {
-  boundary <-
-    match.arg(
-      boundary,
-      c("neumann", "dirichlet", "free", "cyclic")
-    )
-  if (degree <= 1) {
-    n <- (switch(boundary,
-      neumann = m,
-      dirichlet = m + 2,
-      free = m,
-      cyclic = m + 1
-    ))
-    if (n < 2) {
-      n <- 2
-      degree <- 0
-      boundary <- "c"
-    }
-  } else {
-    stopifnot(degree == 2)
-    n <- (switch(boundary,
-      neumann = m + 1,
-      dirichlet = m + 1,
-      free = m - 1,
-      cyclic = m
-    ))
-    if (boundary == "free") {
-      if (m <= 1) {
-        n <- 2
-        degree <- 0
-        boundary <- "c"
-      } else if (m == 2) {
-        n <- 2
-        degree <- 1
-      }
-    } else if (boundary == "cyclic") {
-      if (m <= 1) {
-        n <- 2
-        degree <- 0
-      }
-    }
-  }
-  return(fm_mesh_1d(seq(interval[1], interval[2], length.out = n),
-    degree = degree,
-    boundary = boundary,
-    free.clamped = free.clamped
-  ))
-}
-
-
-#' Basis functions for mesh manifolds
-#'
-#' Calculate basis functions on [fm_mesh_1d()] or [fm_mesh_2d()],
-#' without necessarily matching the default function space of the given mesh
-#' object.
-#'
-#' @param mesh An [fm_mesh_1d()] or [fm_mesh_2d()] object.
-#' @param type `b.spline` (default) for B-spline basis functions,
-#' `sph.harm` for spherical harmonics (available only for meshes on the
-#' sphere)
-#' @param n For B-splines, the number of basis functions in each direction (for
-#' 1d meshes `n` must be a scalar, and for planar 2d meshes a 2-vector).
-#' For spherical harmonics, `n` is the maximal harmonic order.
-#' @param degree Degree of B-spline polynomials.  See
-#' [fm_mesh_1d()].
-#' @param knot.placement For B-splines on the sphere, controls the latitudinal
-#' placements of knots. `"uniform.area"` (default) gives uniform spacing
-#' in `sin(latitude)`, `"uniform.latitude"` gives uniform spacing in
-#' latitudes.
-#' @param rot.inv For spherical harmonics on a sphere, `rot.inv=TRUE`
-#' gives the rotationally invariant subset of basis functions.
-#' @param boundary Boundary specification, default is free boundaries.  See
-#' [fm_mesh_1d()] for more information.
-#' @param free.clamped If `TRUE` and `boundary` is `"free"`, the
-#' boundary basis functions are clamped to 0/1 at the interval boundary by
-#' repeating the boundary knots. See
-#' [fm_mesh_1d()] for more information.
-#' @param ... Unused
-#' @returns A matrix with evaluated basis function
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
-#' @seealso [fm_mesh_1d()], [fm_mesh_2d()], [fm_basis()]
-#' @examples
-#'
-#' loc <- rbind(c(0, 0), c(1, 0), c(1, 1), c(0, 1))
-#' mesh <- fm_mesh_2d(loc, max.edge = 0.15)
-#' basis <- fm_raw_basis(mesh, n = c(4, 5))
-#'
-#' proj <- fm_evaluator(mesh, dims = c(10, 10))
-#' image(proj$x, proj$y, fm_evaluate(proj, basis[, 7]), asp = 1)
-#' \donttest{
-#' if (interactive() && require("rgl")) {
-#'   plot_rgl(mesh, col = basis[, 7], draw.edges = FALSE, draw.vertices = FALSE)
-#' }
-#' }
-#'
-#' @export
-fm_raw_basis <- function(mesh,
-                         type = "b.spline",
-                         n = 3,
-                         degree = 2,
-                         knot.placement = "uniform.area",
-                         rot.inv = TRUE,
-                         boundary = "free",
-                         free.clamped = TRUE,
-                         ...) {
-  type <- match.arg(type, c("b.spline", "sph.harm"))
-  knot.placement <- (match.arg(
-    knot.placement,
-    c(
-      "uniform.area",
-      "uniform.latitude"
-    )
-  ))
-
-  if (identical(type, "b.spline")) {
-    if (fm_manifold(mesh, c("R1", "S1"))) {
-      mesh1 <-
-        internal_spline_mesh_1d(
-          mesh$interval, n, degree,
-          boundary, free.clamped
-        )
-      basis <- fm_basis(mesh1, mesh$loc)
-    } else if (identical(mesh$manifold, "R2")) {
-      if (length(n) == 1) {
-        n <- rep(n, 2)
-      }
-      if (length(degree) == 1) {
-        degree <- rep(degree, 2)
-      }
-      if (length(boundary) == 1) {
-        boundary <- rep(boundary, 2)
-      }
-      if (length(free.clamped) == 1) {
-        free.clamped <- rep(free.clamped, 2)
-      }
-      mesh1x <-
-        internal_spline_mesh_1d(
-          range(mesh$loc[, 1]),
-          n[1], degree[1],
-          boundary[1], free.clamped[1]
-        )
-      mesh1y <-
-        internal_spline_mesh_1d(
-          range(mesh$loc[, 2]),
-          n[2], degree[2],
-          boundary[2], free.clamped[2]
-        )
-      basis <-
-        fm_row_kron(
-          fm_basis(mesh1y, mesh$loc[, 2]),
-          fm_basis(mesh1x, mesh$loc[, 1])
-        )
-    } else if (identical(mesh$manifold, "S2")) {
-      loc <- mesh$loc
-      uniform.lat <- identical(knot.placement, "uniform.latitude")
-      degree <- max(0L, min(n - 1L, degree))
-      basis <- fmesher_spherical_bsplines1(
-        loc[, 3],
-        n = n,
-        degree = degree,
-        uniform = uniform.lat
-      )
-      if (!rot.inv) {
-        warning("Currently only 'rot.inv=TRUE' is supported for B-splines.")
-      }
-    } else {
-      stop("Only know how to make B-splines on R2 and S2.")
-    }
-  } else if (identical(type, "sph.harm")) {
-    if (!identical(mesh$manifold, "S2")) {
-      stop("Only know how to make spherical harmonics on S2.")
-    }
-    # With GSL activated:
-    #        if (rot.inv) {
-    #            basis <- (inla.fmesher.smorg(
-    #                mesh$loc,
-    #                mesh$graph$tv,
-    #                sph0 = n
-    #            )$sph0)
-    #        } else {
-    #            basis <- (inla.fmesher.smorg(
-    #                mesh$loc,
-    #                mesh$graph$tv,
-    #                sph = n
-    #            )$sph)
-    #        }
-
-    fm_require_stop(
-      "gsl",
-      "The 'gsl' R package is needed for spherical harmonics."
-    )
-
-    # Make sure we have radius-1 coordinates
-    loc <- mesh$loc / rowSums(mesh$loc^2)^0.5
-    if (rot.inv) {
-      basis <- matrix(0, nrow(loc), n + 1)
-      for (l in seq(0, n)) {
-        basis[, l + 1] <- sqrt(2 * l + 1) *
-          gsl::legendre_Pl(l = l, x = loc[, 3])
-      }
-    } else {
-      angle <- atan2(loc[, 2], loc[, 1])
-      basis <- matrix(0, nrow(loc), (n + 1)^2)
-      for (l in seq(0, n)) {
-        basis[, 1 + l * (l + 1)] <-
-          sqrt(2 * l + 1) *
-            gsl::legendre_Pl(l = l, x = loc[, 3])
-        for (m in seq_len(l)) {
-          scaling <- sqrt(2 * (2 * l + 1) * exp(lgamma(l - m + 1) -
-            lgamma(l + m + 1)))
-          poly <- gsl::legendre_Plm(l = l, m = m, x = loc[, 3])
-          basis[, 1 + l * (l + 1) - m] <-
-            scaling * sin(-m * angle) * poly
-          basis[, 1 + l * (l + 1) + m] <-
-            scaling * cos(m * angle) * poly
-        }
-      }
-    }
-  }
-
-  return(basis)
-}
-
 
 
 
@@ -1580,14 +1533,27 @@ fm_block_eval <- function(block = NULL,
       rescale = rescale
     )
 
-  val <-
-    Matrix::sparseMatrix(
-      i = info$block,
-      j = rep(1L, length(info$block)),
-      x = as.numeric(values * weights),
-      dims = c(info$n_block, 1)
+  if (FALSE) {
+    val <-
+      Matrix::sparseMatrix(
+        i = info$block,
+        j = rep(1L, length(info$block)),
+        x = as.numeric(values * weights),
+        dims = c(info$n_block, 1)
+      )
+    as.vector(val)
+  } else {
+    agg <- stats::aggregate(
+      data.frame(x = values * weights),
+      by = list(block = info[["block"]]),
+      FUN = sum,
+      simplify = TRUE,
+      drop = TRUE
     )
-  as.vector(val)
+    val <- numeric(info$n_block)
+    val[agg[["block"]]] <- agg[["x"]]
+    val
+  }
 }
 
 

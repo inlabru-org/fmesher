@@ -3,10 +3,11 @@
 \name{fm_basis}
 \alias{fm_basis}
 \alias{fm_basis.default}
+\alias{fm_basis.list}
+\alias{fm_basis.fm_basis}
 \alias{fm_basis.fm_mesh_1d}
 \alias{fm_basis.fm_mesh_2d}
 \alias{fm_basis.fm_evaluator}
-\alias{fm_basis.fm_basis}
 \alias{fm_basis.fm_tensor}
 \title{Compute mapping matrix between mesh function space and points}
 \usage{
@@ -14,13 +15,15 @@ fm_basis(x, ..., full = FALSE)
 
 \method{fm_basis}{default}(x, ..., full = FALSE)
 
+\method{fm_basis}{list}(x, ..., full = FALSE)
+
+\method{fm_basis}{fm_basis}(x, ..., full = FALSE)
+
 \method{fm_basis}{fm_mesh_1d}(x, loc, weights = NULL, derivatives = NULL, ..., full = FALSE)
 
 \method{fm_basis}{fm_mesh_2d}(x, loc, weights = NULL, derivatives = NULL, ..., full = FALSE)
 
 \method{fm_basis}{fm_evaluator}(x, ..., full = FALSE)
-
-\method{fm_basis}{fm_basis}(x, ..., full = FALSE)
 
 \method{fm_basis}{fm_tensor}(x, loc, weights = NULL, ..., full = FALSE)
 }
@@ -55,6 +58,10 @@ mesh, and locations.
 }
 \section{Methods (by class)}{
 \itemize{
+\item \code{fm_basis(list)}: Creates a new \code{fm_basis} object from a plain list
+containing at least elements \code{A} and \code{ok}. If \code{full = FALSE},
+extracts the \code{A} matrix.
+
 \item \code{fm_basis(fm_mesh_1d)}: The \code{fm_basis} object contains additional derivative
 weight matrices, \code{d1A} and \code{d2A}, \verb{du/dx(loc_i)=sum_j dx_ij w_i}.
 
