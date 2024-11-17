@@ -88,7 +88,8 @@ mesh, and locations.</p>
 
 
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>An function space object</p></dd>
+<dd><p>An function space object, or other supported object
+(<code>matrix</code>, <code>Matrix</code>, <code>list</code>)</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -100,6 +101,12 @@ mesh, and locations.</p>
 least a projection matrix <code>A</code> and logical vector <code>ok</code> indicating which
 evaluations are valid. If <code>FALSE</code>, return only the projection matrix <code>A</code>.
 Default is <code>FALSE</code>.</p></dd>
+
+
+<dt id="arg-ok">ok<a class="anchor" aria-label="anchor" href="#arg-ok"></a></dt>
+<dd><p>numerical of length <code>NROW(x)</code>, indicating which rows of <code>x</code> are
+valid/successful basis evaluations. If <code>NULL</code>, inferred as
+<code>rep(TRUE, NROW(x))</code>.</p></dd>
 
 
 <dt id="arg-loc">loc<a class="anchor" aria-label="anchor" href="#arg-loc"></a></dt>
@@ -130,13 +137,13 @@ at least the projection matrix <code>A</code> and logical vector <code>ok</code>
 <ul><li><p><code>fm_basis(matrix)</code>: Creates a new <code>fm_basis</code> object with elements <code>A</code> and
 <code>ok</code>, from a pre-evaluated basis matrix, including optional additional
 elements in the <code>...</code> arguments. If a <code>ok</code> is <code>NULL</code>, it is inferred as
-<code>rep(TRUE, NROW(x$A))</code>, indicating that all rows correspond to successful
+<code>rep(TRUE, NROW(x))</code>, indicating that all rows correspond to successful
 basis evaluations. If <code>full = FALSE</code>,
 returns the matrix unchanged.</p></li>
 <li><p><code>fm_basis(Matrix)</code>: Creates a new <code>fm_basis</code> object with elements <code>A</code> and
 <code>ok</code>, from a pre-evaluated basis matrix, including optional additional
 elements in the <code>...</code> arguments. If a <code>ok</code> is <code>NULL</code>, it is inferred as
-<code>rep(TRUE, NROW(x$A))</code>, indicating that all rows correspond to successful
+<code>rep(TRUE, NROW(x))</code>, indicating that all rows correspond to successful
 basis evaluations. If <code>full = FALSE</code>,
 returns the matrix unchanged.</p></li>
 <li><p><code>fm_basis(list)</code>: Creates a new <code>fm_basis</code> object from a plain list
