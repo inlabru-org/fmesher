@@ -11,7 +11,7 @@
   (version `0.20.0.9001`)
 * Handle `NA` location inputs to `fm_basis.fm_mesh_1d()` (version `0.20.0.9002`)
 * Simplify `fm_basis` object creation, and add `custom_classes` developers
-  vignette (version `0.20.0.9003`)
+  vignette (version `0.20.0.9004`)
 
 # fmesher 0.2.0
 

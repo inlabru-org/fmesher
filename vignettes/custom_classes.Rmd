@@ -75,7 +75,7 @@ fm_basis.custom <- function(x, loc, ..., full = FALSE) {
   result <- structure(
     list(
       A = A,
-      ok = ok,
+      ok = ok, # Required prior to version 0.2.0.9003
       loc = loc
     ),
     class = "fm_basis"
@@ -86,14 +86,22 @@ fm_basis.custom <- function(x, loc, ..., full = FALSE) {
 }
 ```
 
-Note: From version `0.2.0.9003`, the `fm_basis.list` method can be used to
-shorten the above code, by creating the object and optionally extracting `A`
-in a single call:
+Note: From version `0.2.0.9004`, the `fm_basis.matrix`, `fm_basis.Matrix`, and
+`fm_basis.list` methods provide an easier way to construct the `fm_basis`
+object, by creating the object and optionally extracting `A` in a single call:
 ```{r, eval=FALSE}
+# 'matrix' and 'Matrix' methods:
+fm_basis(
+  A = A,
+  ok = ok, # If missing or NULL, inferred to be all TRUE
+  loc = loc, # Optional additional content
+  full = full
+)
+# 'list' method:
 fm_basis(
   list(
     A = A,
-    ok = ok,
+    ok = ok, # If missing or NULL, inferred to be all TRUE
     loc = loc
   ),
   full = full

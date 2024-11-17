@@ -3,6 +3,8 @@
 \name{fm_basis}
 \alias{fm_basis}
 \alias{fm_basis.default}
+\alias{fm_basis.matrix}
+\alias{fm_basis.Matrix}
 \alias{fm_basis.list}
 \alias{fm_basis.fm_basis}
 \alias{fm_basis.fm_mesh_1d}
@@ -14,6 +16,10 @@
 fm_basis(x, ..., full = FALSE)
 
 \method{fm_basis}{default}(x, ..., full = FALSE)
+
+\method{fm_basis}{matrix}(x, ok = NULL, ..., full = FALSE)
+
+\method{fm_basis}{Matrix}(x, ok = NULL, ..., full = FALSE)
 
 \method{fm_basis}{list}(x, ..., full = FALSE)
 
@@ -28,7 +34,7 @@ fm_basis(x, ..., full = FALSE)
 \method{fm_basis}{fm_tensor}(x, loc, weights = NULL, ..., full = FALSE)
 }
 \arguments{
-\item{x}{\code{\link[=fm_tensor]{fm_tensor()}} object}
+\item{x}{An function space object}
 
 \item{\dots}{Passed on to submethods}
 
@@ -58,16 +64,41 @@ mesh, and locations.
 }
 \section{Methods (by class)}{
 \itemize{
+\item \code{fm_basis(matrix)}: Creates a new \code{fm_basis} object with elements \code{A} and
+\code{ok}, from a pre-evaluated basis matrix, including optional additional
+elements in the \code{...} arguments. If a \code{ok} is \code{NULL}, it is inferred as
+\code{rep(TRUE, NROW(x$A))}, indicating that all rows correspond to successful
+basis evaluations. If \code{full = FALSE},
+returns the matrix unchanged.
+
+\item \code{fm_basis(Matrix)}: Creates a new \code{fm_basis} object with elements \code{A} and
+\code{ok}, from a pre-evaluated basis matrix, including optional additional
+elements in the \code{...} arguments. If a \code{ok} is \code{NULL}, it is inferred as
+\code{rep(TRUE, NROW(x$A))}, indicating that all rows correspond to successful
+basis evaluations. If \code{full = FALSE},
+returns the matrix unchanged.
+
 \item \code{fm_basis(list)}: Creates a new \code{fm_basis} object from a plain list
-containing at least elements \code{A} and \code{ok}. If \code{full = FALSE},
+containing at least an element \code{A}. If an \code{ok} element is missing,
+it is inferred as \code{rep(TRUE, NROW(x$A))}. If \code{full = FALSE},
 extracts the \code{A} matrix.
 
-\item \code{fm_basis(fm_mesh_1d)}: The \code{fm_basis} object contains additional derivative
-weight matrices, \code{d1A} and \code{d2A}, \verb{du/dx(loc_i)=sum_j dx_ij w_i}.
+\item \code{fm_basis(fm_basis)}: If \code{full} is \code{TRUE}, returns \code{x} unchanged, otherwise
+returns the \code{A} matrix contained in \code{x}.
+
+\item \code{fm_basis(fm_mesh_1d)}: If \code{derivatives=TRUE}, the \code{fm_basis} object contains
+additional derivative weight matrices, \code{d1A} and \code{d2A}, \verb{du/dx(loc_i)=sum_j dx_ij w_i}.
 
 \item \code{fm_basis(fm_mesh_2d)}: If \code{derivatives=TRUE}, additional derivative weight
 matrices are included in the \code{full=TRUE} output: Derivative weight matrices
 \code{dx}, \code{dy}, \code{dz}; \verb{du/dx(loc_i)=sum_j dx_ij w_i}, etc.
+
+\item \code{fm_basis(fm_evaluator)}: Extract \code{fm_basis} information from an \code{fm_evaluator}
+object. If \code{full = FALSE}, returns the \code{A} matrix contained in the
+\code{fm_basis} object.
+
+\item \code{fm_basis(fm_tensor)}: Evaluates a basis matrix for a \code{fm_tensor} function
+space.
 
 }}
 \examples{

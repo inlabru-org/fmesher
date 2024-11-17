@@ -496,22 +496,58 @@ fm_basis.default <- function(x, ..., full = FALSE) {
   )
 }
 
+#' @describeIn fm_basis Creates a new `fm_basis` object with elements `A` and
+#'   `ok`, from a pre-evaluated basis matrix, including optional additional
+#'   elements in the `...` arguments. If a `ok` is `NULL`, it is inferred as
+#'   `rep(TRUE, NROW(x$A))`, indicating that all rows correspond to successful
+#'   basis evaluations. If `full = FALSE`,
+#'   returns the matrix unchanged.
+#' @export
+fm_basis.matrix <- function(x, ok = NULL, ..., full = FALSE) {
+  if (!full) {
+    return(x)
+  }
+  fm_basis(list(A = x, ok = ok, ...), full = TRUE)
+}
+
+#' @describeIn fm_basis Creates a new `fm_basis` object with elements `A` and
+#'   `ok`, from a pre-evaluated basis matrix, including optional additional
+#'   elements in the `...` arguments. If a `ok` is `NULL`, it is inferred as
+#'   `rep(TRUE, NROW(x$A))`, indicating that all rows correspond to successful
+#'   basis evaluations. If `full = FALSE`,
+#'   returns the matrix unchanged.
+#' @export
+fm_basis.Matrix <- function(x, ok = NULL, ..., full = FALSE) {
+  if (!full) {
+    return(x)
+  }
+  fm_basis(list(A = x, ok = ok, ...), full = TRUE)
+}
+
 #' @describeIn fm_basis Creates a new `fm_basis` object from a plain list
-#'   containing at least elements `A` and `ok`. If `full = FALSE`,
+#'   containing at least an element `A`. If an `ok` element is missing,
+#'   it is inferred as `rep(TRUE, NROW(x$A))`. If `full = FALSE`,
 #'   extracts the `A` matrix.
 #' @export
 fm_basis.list <- function(x, ..., full = FALSE) {
-  stopifnot(all(c("A", "ok") %in% names(x)))
+  stopifnot("A" %in% names(x))
   if (!full) {
     return(x[["A"]])
   }
-  structure(
-    x,
-    class = "fm_basis"
-  )
+  if (is.null(x[["ok"]])) {
+    x[["ok"]] <- rep(TRUE, NROW(x[["A"]]))
+  } else if (!is.logical(x[["ok"]]) ||
+    (length(x[["ok"]]) != NROW(x[["A"]]))) {
+    stop(
+      "Invalid 'ok' element in 'x'; should be a logical vector of length ",
+      NROW(x[["A"]])
+    )
+  }
+  structure(x, class = "fm_basis")
 }
 
-#' @rdname fm_basis
+#' @describeIn fm_basis If `full` is `TRUE`, returns `x` unchanged, otherwise
+#'   returns the `A` matrix contained in `x`.
 #' @export
 fm_basis.fm_basis <- function(x, ..., full = FALSE) {
   if (full) {
@@ -525,8 +561,9 @@ fm_basis.fm_basis <- function(x, ..., full = FALSE) {
 #' weight for each row of the basis matrix)
 #' @param derivatives If non-NULL and logical, include derivative matrices
 #' in the output. Forces `full = TRUE`.
-#' @describeIn fm_basis The `fm_basis` object contains additional derivative
-#'   weight matrices, `d1A` and `d2A`, `du/dx(loc_i)=sum_j dx_ij w_i`.
+#' @describeIn fm_basis If `derivatives=TRUE`, the `fm_basis` object contains
+#'   additional derivative weight matrices, `d1A` and `d2A`, `du/dx(loc_i)=sum_j
+#'   dx_ij w_i`.
 #' @export
 fm_basis.fm_mesh_1d <- function(x,
                                 loc,
@@ -566,15 +603,17 @@ fm_basis.fm_mesh_2d <- function(x, loc, weights = NULL, derivatives = NULL, ...,
   fm_basis(result, full = full)
 }
 
-#' @rdname fm_basis
+#' @describeIn fm_basis Extract `fm_basis` information from an `fm_evaluator`
+#'   object. If `full = FALSE`, returns the `A` matrix contained in the
+#'   `fm_basis` object.
 #' @export
 fm_basis.fm_evaluator <- function(x, ..., full = FALSE) {
   fm_basis(x$proj, full = full)
 }
 
-#' @param x [fm_tensor()] object
 #' @export
-#' @rdname fm_basis
+#' @describeIn fm_basis Evaluates a basis matrix for a `fm_tensor` function
+#'   space.
 fm_basis.fm_tensor <- function(x,
                                loc,
                                weights = NULL,
