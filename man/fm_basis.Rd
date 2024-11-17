@@ -17,11 +17,11 @@ fm_basis(x, ..., full = FALSE)
 
 \method{fm_basis}{default}(x, ..., full = FALSE)
 
-\method{fm_basis}{matrix}(x, ok = NULL, ..., full = FALSE)
+\method{fm_basis}{matrix}(x, ok = NULL, weights = NULL, ..., full = FALSE)
 
-\method{fm_basis}{Matrix}(x, ok = NULL, ..., full = FALSE)
+\method{fm_basis}{Matrix}(x, ok = NULL, weights = NULL, ..., full = FALSE)
 
-\method{fm_basis}{list}(x, ..., full = FALSE)
+\method{fm_basis}{list}(x, weights = NULL, ..., full = FALSE)
 
 \method{fm_basis}{fm_basis}(x, ..., full = FALSE)
 
@@ -48,11 +48,11 @@ Default is \code{FALSE}.}
 valid/successful basis evaluations. If \code{NULL}, inferred as
 \code{rep(TRUE, NROW(x))}.}
 
-\item{loc}{A location/value information object (vector, matrix, \code{sf}, etc,
-depending on the class of \code{x})}
-
 \item{weights}{Optional weight vector to apply (from the left, one
 weight for each row of the basis matrix)}
+
+\item{loc}{A location/value information object (vector, matrix, \code{sf}, etc,
+depending on the class of \code{x})}
 
 \item{derivatives}{If non-NULL and logical, include derivative matrices
 in the output. Forces \code{full = TRUE}.}
@@ -108,8 +108,8 @@ space.
 }}
 \examples{
 # Compute basis mapping matrix
-str(fm_basis(fmexample$mesh, fmexample$loc))
-print(fm_basis(fmexample$mesh, fmexample$loc), full = TRUE)
+dim(fm_basis(fmexample$mesh, fmexample$loc))
+print(fm_basis(fmexample$mesh, fmexample$loc, full = TRUE))
 }
 \seealso{
 \code{\link[=fm_raw_basis]{fm_raw_basis()}}

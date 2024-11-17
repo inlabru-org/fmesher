@@ -480,8 +480,8 @@ fm_is_within.default <- function(x, y, ...) {
 #' @seealso [fm_raw_basis()]
 #' @examples
 #' # Compute basis mapping matrix
-#' str(fm_basis(fmexample$mesh, fmexample$loc))
-#' print(fm_basis(fmexample$mesh, fmexample$loc), full = TRUE)
+#' dim(fm_basis(fmexample$mesh, fmexample$loc))
+#' print(fm_basis(fmexample$mesh, fmexample$loc, full = TRUE))
 #' @export
 fm_basis <- function(x, ..., full = FALSE) {
   UseMethod("fm_basis")
@@ -506,12 +506,14 @@ fm_basis.default <- function(x, ..., full = FALSE) {
 #' @param ok numerical of length `NROW(x)`, indicating which rows of `x` are
 #'   valid/successful basis evaluations. If `NULL`, inferred as
 #'   `rep(TRUE, NROW(x))`.
+#' @param weights Optional weight vector to apply (from the left, one
+#' weight for each row of the basis matrix)
 #' @export
-fm_basis.matrix <- function(x, ok = NULL, ..., full = FALSE) {
+fm_basis.matrix <- function(x, ok = NULL, weights = NULL, ..., full = FALSE) {
   if (!full) {
     return(x)
   }
-  fm_basis(list(A = x, ok = ok, ...), full = TRUE)
+  fm_basis(list(A = x, ok = ok, ...), weights = weights, full = TRUE)
 }
 
 #' @describeIn fm_basis Creates a new `fm_basis` object with elements `A` and
@@ -521,11 +523,11 @@ fm_basis.matrix <- function(x, ok = NULL, ..., full = FALSE) {
 #'   basis evaluations. If `full = FALSE`,
 #'   returns the matrix unchanged.
 #' @export
-fm_basis.Matrix <- function(x, ok = NULL, ..., full = FALSE) {
+fm_basis.Matrix <- function(x, ok = NULL, weights = NULL, ..., full = FALSE) {
   if (!full) {
     return(x)
   }
-  fm_basis(list(A = x, ok = ok, ...), full = TRUE)
+  fm_basis(list(A = x, ok = ok, ...), weights = weights, full = TRUE)
 }
 
 #' @describeIn fm_basis Creates a new `fm_basis` object from a plain list
@@ -533,8 +535,11 @@ fm_basis.Matrix <- function(x, ok = NULL, ..., full = FALSE) {
 #'   it is inferred as `rep(TRUE, NROW(x$A))`. If `full = FALSE`,
 #'   extracts the `A` matrix.
 #' @export
-fm_basis.list <- function(x, ..., full = FALSE) {
+fm_basis.list <- function(x, weights = NULL, ..., full = FALSE) {
   stopifnot("A" %in% names(x))
+  if (!is.null(weights)) {
+    x[["A"]] <- Matrix::Diagonal(nrow(x[["A"]]), x = weights) %*% x[["A"]]
+  }
   if (!full) {
     return(x[["A"]])
   }
@@ -561,8 +566,6 @@ fm_basis.fm_basis <- function(x, ..., full = FALSE) {
   }
 }
 
-#' @param weights Optional weight vector to apply (from the left, one
-#' weight for each row of the basis matrix)
 #' @param derivatives If non-NULL and logical, include derivative matrices
 #' in the output. Forces `full = TRUE`.
 #' @describeIn fm_basis If `derivatives=TRUE`, the `fm_basis` object contains
