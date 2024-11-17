@@ -34,7 +34,8 @@ fm_basis(x, ..., full = FALSE)
 \method{fm_basis}{fm_tensor}(x, loc, weights = NULL, ..., full = FALSE)
 }
 \arguments{
-\item{x}{An function space object}
+\item{x}{An function space object, or other supported object
+(\code{matrix}, \code{Matrix}, \code{list})}
 
 \item{\dots}{Passed on to submethods}
 
@@ -42,6 +43,10 @@ fm_basis(x, ..., full = FALSE)
 least a projection matrix \code{A} and logical vector \code{ok} indicating which
 evaluations are valid. If \code{FALSE}, return only the projection matrix \code{A}.
 Default is \code{FALSE}.}
+
+\item{ok}{numerical of length \code{NROW(x)}, indicating which rows of \code{x} are
+valid/successful basis evaluations. If \code{NULL}, inferred as
+\code{rep(TRUE, NROW(x))}.}
 
 \item{loc}{A location/value information object (vector, matrix, \code{sf}, etc,
 depending on the class of \code{x})}
@@ -67,14 +72,14 @@ mesh, and locations.
 \item \code{fm_basis(matrix)}: Creates a new \code{fm_basis} object with elements \code{A} and
 \code{ok}, from a pre-evaluated basis matrix, including optional additional
 elements in the \code{...} arguments. If a \code{ok} is \code{NULL}, it is inferred as
-\code{rep(TRUE, NROW(x$A))}, indicating that all rows correspond to successful
+\code{rep(TRUE, NROW(x))}, indicating that all rows correspond to successful
 basis evaluations. If \code{full = FALSE},
 returns the matrix unchanged.
 
 \item \code{fm_basis(Matrix)}: Creates a new \code{fm_basis} object with elements \code{A} and
 \code{ok}, from a pre-evaluated basis matrix, including optional additional
 elements in the \code{...} arguments. If a \code{ok} is \code{NULL}, it is inferred as
-\code{rep(TRUE, NROW(x$A))}, indicating that all rows correspond to successful
+\code{rep(TRUE, NROW(x))}, indicating that all rows correspond to successful
 basis evaluations. If \code{full = FALSE},
 returns the matrix unchanged.
 

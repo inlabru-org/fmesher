@@ -464,7 +464,8 @@ fm_is_within.default <- function(x, y, ...) {
 #' @description Computes the basis mapping matrix between a function space on a
 #' mesh, and locations.
 #'
-#' @param x An function space object
+#' @param x An function space object, or other supported object
+#'   (`matrix`, `Matrix`, `list`)
 #' @param loc A location/value information object (vector, matrix, `sf`, etc,
 #'   depending on the class of `x`)
 #' @param full logical; if `TRUE`, return a `fm_basis` object, containing at
@@ -499,9 +500,12 @@ fm_basis.default <- function(x, ..., full = FALSE) {
 #' @describeIn fm_basis Creates a new `fm_basis` object with elements `A` and
 #'   `ok`, from a pre-evaluated basis matrix, including optional additional
 #'   elements in the `...` arguments. If a `ok` is `NULL`, it is inferred as
-#'   `rep(TRUE, NROW(x$A))`, indicating that all rows correspond to successful
+#'   `rep(TRUE, NROW(x))`, indicating that all rows correspond to successful
 #'   basis evaluations. If `full = FALSE`,
 #'   returns the matrix unchanged.
+#' @param ok numerical of length `NROW(x)`, indicating which rows of `x` are
+#'   valid/successful basis evaluations. If `NULL`, inferred as
+#'   `rep(TRUE, NROW(x))`.
 #' @export
 fm_basis.matrix <- function(x, ok = NULL, ..., full = FALSE) {
   if (!full) {
@@ -513,7 +517,7 @@ fm_basis.matrix <- function(x, ok = NULL, ..., full = FALSE) {
 #' @describeIn fm_basis Creates a new `fm_basis` object with elements `A` and
 #'   `ok`, from a pre-evaluated basis matrix, including optional additional
 #'   elements in the `...` arguments. If a `ok` is `NULL`, it is inferred as
-#'   `rep(TRUE, NROW(x$A))`, indicating that all rows correspond to successful
+#'   `rep(TRUE, NROW(x))`, indicating that all rows correspond to successful
 #'   basis evaluations. If `full = FALSE`,
 #'   returns the matrix unchanged.
 #' @export
