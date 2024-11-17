@@ -59,13 +59,13 @@ mesh, and locations.</p>
 <span><span class="fu">fm_basis</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, full <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'matrix'</span></span>
-<span><span class="fu">fm_basis</span><span class="op">(</span><span class="va">x</span>, ok <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span>, full <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu">fm_basis</span><span class="op">(</span><span class="va">x</span>, ok <span class="op">=</span> <span class="cn">NULL</span>, weights <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span>, full <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'Matrix'</span></span>
-<span><span class="fu">fm_basis</span><span class="op">(</span><span class="va">x</span>, ok <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span>, full <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu">fm_basis</span><span class="op">(</span><span class="va">x</span>, ok <span class="op">=</span> <span class="cn">NULL</span>, weights <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span>, full <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'list'</span></span>
-<span><span class="fu">fm_basis</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, full <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu">fm_basis</span><span class="op">(</span><span class="va">x</span>, weights <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span>, full <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'fm_basis'</span></span>
 <span><span class="fu">fm_basis</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, full <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
@@ -109,14 +109,14 @@ valid/successful basis evaluations. If <code>NULL</code>, inferred as
 <code>rep(TRUE, NROW(x))</code>.</p></dd>
 
 
-<dt id="arg-loc">loc<a class="anchor" aria-label="anchor" href="#arg-loc"></a></dt>
-<dd><p>A location/value information object (vector, matrix, <code>sf</code>, etc,
-depending on the class of <code>x</code>)</p></dd>
-
-
 <dt id="arg-weights">weights<a class="anchor" aria-label="anchor" href="#arg-weights"></a></dt>
 <dd><p>Optional weight vector to apply (from the left, one
 weight for each row of the basis matrix)</p></dd>
+
+
+<dt id="arg-loc">loc<a class="anchor" aria-label="anchor" href="#arg-loc"></a></dt>
+<dd><p>A location/value information object (vector, matrix, <code>sf</code>, etc,
+depending on the class of <code>x</code>)</p></dd>
 
 
 <dt id="arg-derivatives">derivatives<a class="anchor" aria-label="anchor" href="#arg-derivatives"></a></dt>
@@ -171,54 +171,13 @@ space.</p></li>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Compute basis mapping matrix</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu">fm_basis</span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span>, <span class="va">fmexample</span><span class="op">$</span><span class="va">loc</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Formal class 'dgCMatrix' [package "Matrix"] with 6 slots</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..@ i       : int [1:30] 1 9 3 7 8 5 0 6 4 2 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..@ p       : int [1:280] 0 0 0 0 0 0 0 0 0 0 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..@ Dim     : int [1:2] 10 279</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..@ Dimnames:List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..@ x       : num [1:30] 0.3065 0.0477 0.0831 0.6947 0.4188 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..@ factors : list()</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu">fm_basis</span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span>, <span class="va">fmexample</span><span class="op">$</span><span class="va">loc</span><span class="op">)</span>, full <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;S4 Type Object&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"i")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 1 9 3 7 8 5 0 6 4 2 3 1 5 1 0 3 9 5 0 6 6 7 8 2 4 2 4 9 7 8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"p")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [1]  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [26]  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [51]  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [76]  0  0  0  0  0  0  0  0  0  1  2  2  2  3  5  5  5  5  5  5  5  5  6  6  6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [101]  6  6  6  7  7  7  7  7  7  7  7  8  9  9 10 10 10 10 10 10 10 10 10 10 10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [126] 11 11 11 11 11 12 12 13 13 13 13 13 13 13 13 13 13 13 13 14 14 14 14 14 15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [151] 15 15 15 15 15 15 15 15 15 15 15 15 16 16 16 16 16 16 17 17 18 18 19 19 20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [176] 23 23 23 23 23 23 23 23 23 23 23 23 23 23 23 23 23 23 23 23 23 23 24 24 25</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [201] 26 26 26 26 26 26 26 26 26 26 26 26 26 27 28 30 30 30 30 30 30 30 30 30 30</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [226] 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [251] 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [276] 30 30 30 30 30</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"Dim")</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="fu">fm_basis</span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span>, <span class="va">fmexample</span><span class="op">$</span><span class="va">loc</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1]  10 279</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"Dimnames")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"Dimnames")[[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"Dimnames")[[2]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"x")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 0.30649174 0.04765979 0.08314353 0.69474011 0.41877998 0.02530602</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] 0.03552982 0.33316542 0.02108322 0.21657062 0.58669638 0.13670741</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [13] 0.41395969 0.55680084 0.89457972 0.33016010 0.91911732 0.56073430</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [19] 0.06989045 0.36303944 0.30379514 0.27939227 0.37184709 0.48518787</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [25] 0.62452377 0.29824151 0.35439301 0.03322289 0.02586761 0.20937293</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"factors")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> list()</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "dgCMatrix"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")attr(,"package")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Matrix"</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu">fm_basis</span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span>, <span class="va">fmexample</span><span class="op">$</span><span class="va">loc</span>, full <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fm_basis object</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Projection matrix (A): 10-by-279</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Valid evaluations (ok): 10 out of 10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Additional information: bary</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
