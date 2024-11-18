@@ -15,7 +15,7 @@ fm_bary_simplex(mesh, bary = NULL, ...)
 \arguments{
 \item{mesh}{A mesh object, e.g. \link{fm_mesh_2d} or \link{fm_mesh_1d}.}
 
-\item{bary}{An \code{fm_bary} object. If NULL, return the full simplex
+\item{bary}{An \link{fm_bary} object. If NULL, return the full simplex
 information for the mesh.}
 
 \item{\dots}{Further arguments potentially used by sub-methods.}
@@ -25,7 +25,7 @@ A matrix of vertex indices, one row per point in \code{bary}.
 }
 \description{
 Extract the simplex vertex information for a combination of a mesh
-and \code{fm_bary} coordinates.
+and \link{fm_bary} coordinates.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -43,5 +43,5 @@ mesh1 <- fm_mesh_1d(1:4)
 fm_bary_simplex(mesh1, bary1)
 }
 \seealso{
-\code{\link[=fm_bary]{fm_bary()}}
+\code{\link[=fm_bary]{fm_bary()}}, \code{\link[=fm_bary_loc]{fm_bary_loc()}}
 }

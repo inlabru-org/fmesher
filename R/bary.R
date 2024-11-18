@@ -20,7 +20,8 @@
 #' }
 #' and `where`, a matrix of barycentric coordinates.
 #'
-#' @seealso [fm_bary_simplex()]
+#' @seealso [fm_bary_simplex()], [fm_bary_loc()]
+#'
 #' @export
 #' @examples
 #' str(fm_bary(fmexample$mesh, fmexample$loc_sf))
@@ -226,18 +227,20 @@ fm_bary.fm_mesh_2d <- function(mesh,
 }
 
 
+# Simplex extraction ####
+
 #' @title Extract Simplex information for Barycentric coordinates
 #'
 #' @description
 #' Extract the simplex vertex information for a combination of a mesh
-#' and `fm_bary` coordinates.
+#' and [fm_bary] coordinates.
 #'
 #' @param mesh A mesh object, e.g. [fm_mesh_2d] or [fm_mesh_1d].
-#' @param bary An `fm_bary` object. If NULL, return the full simplex
+#' @param bary An [fm_bary] object. If NULL, return the full simplex
 #' information for the mesh.
 #' @param \dots Further arguments potentially used by sub-methods.
 #' @returns A matrix of vertex indices, one row per point in `bary`.
-#' @seealso [fm_bary()]
+#' @seealso [fm_bary()], [fm_bary_loc()]
 #' @export
 fm_bary_simplex <- function(mesh, bary = NULL, ...) {
   UseMethod("fm_bary_simplex")
@@ -286,4 +289,88 @@ fm_bary_simplex.fm_mesh_1d <- function(mesh, bary = NULL, ...) {
     idx_next <- bary$index + 1L
   }
   cbind(bary$index, idx_next, deparse.level = 0)
+}
+
+
+# Location extraction ####
+
+#' @title Extract Euclidean Sgeometry from Barycentric coordinates
+#'
+#' @description
+#' Extract the Euclidean coordinates for location identified by an [fm_bary]
+#' object. This acts as the inverse of `fm_bary()`.
+#'
+#' @param mesh A mesh object, e.g. [fm_mesh_2d] or [fm_mesh_1d].
+#' @param bary An `fm_bary` object. If `NULL`, return the mesh nodes is the mesh
+#' class supports it, otherwise gives an error.
+#' @param \dots Further arguments potentially used by sub-methods.
+#' @param format Optional format for the output. If `NULL`, the output format
+#' is determined by the default for the mesh object.
+#' @returns Output format depends on the mesh `class`.
+#' @seealso [fm_bary()], [fm_bary_simplex()]
+#' @export
+fm_bary_loc <- function(mesh, bary = NULL, ..., format = NULL) {
+  UseMethod("fm_bary_loc")
+}
+
+#' @describeIn fm_bary_loc Extract points on a triangle mesh. Implemented
+#' formats are `"matrix"` (default) and `"sf"`.
+#' @export
+#'
+#' @examples
+#' head(fm_bary_loc(fmexample$mesh))
+#' bary <- fm_bary(fmexample$mesh, fmexample$loc_sf)
+#' fm_bary_loc(fmexample$mesh, bary, format = "matrix")
+#' fm_bary_loc(fmexample$mesh, bary, format = "sf")
+fm_bary_loc.fm_mesh_2d <- function(mesh, bary = NULL, ..., format = NULL) {
+  format = match.arg(format, c("matrix", "sf"))
+  if (is.null(bary)) {
+    loc <- mesh$loc
+  } else if (NROW(bary) == 0L) {
+    loc <- matrix(0.0, 0L, ncol(mesh$loc))
+  } else {
+    loc <- matrix(NA_real_, NROW(bary), ncol(mesh$loc))
+    ok <- !is.na(bary$index)
+    simplex <- fm_bary_simplex(mesh, bary = bary[ok, ])
+    loc[ok, ] <- (mesh$loc[simplex[, 1L], , drop = FALSE] * bary$where[ok, 1] +
+              mesh$loc[simplex[, 2L], , drop = FALSE] * bary$where[ok, 2] +
+              mesh$loc[simplex[, 3L], , drop = FALSE] * bary$where[ok, 3])
+    if (fm_manifold(mesh, "S2")) {
+      loc[ok, ] <- loc[ok, ] / rowSums(loc[ok, ]^2)^0.5 *
+        mean(rowSums(mesh$loc^2)^0.5)
+    }
+  }
+  if (format == "sf") {
+    loc <- sf::st_as_sf(as.data.frame(loc),
+                        coords = seq_len(ncol(loc)),
+                        crs = fm_crs(loc))
+  }
+  loc
+}
+
+#' @describeIn fm_bary_loc Extract points on a 1D mesh. Implemented
+#' formats are `"numeric"` (default).
+#'
+#' @export
+#' @examples
+#' mesh1 <- fm_mesh_1d(1:4)
+#' fm_bary_loc(mesh1)
+#' (bary1 <- fm_bary(mesh1, seq(0, 5, by = 0.5)))
+#' fm_bary_loc(mesh1, bary1)
+#' (bary1 <- fm_bary(mesh1, seq(0, 5, by = 0.5), restricted = TRUE))
+#' fm_bary_loc(mesh1, bary1)
+fm_bary_loc.fm_mesh_1d <- function(mesh, bary = NULL, ..., format = NULL) {
+  format = match.arg(format, c("numeric"))
+  if (is.null(bary)) {
+    loc <- mesh$loc
+  } else if (NROW(bary) == 0L) {
+    loc <- numeric(0L)
+  } else {
+    loc <- rep(NA_real_, NROW(bary))
+    ok <- !is.na(bary$index)
+    simplex <- fm_bary_simplex(mesh, bary = bary[ok, ])
+    loc[ok] <- (mesh$loc[simplex[, 1L]] * bary$where[ok, 1] +
+                  mesh$loc[simplex[, 2L]] * bary$where[ok, 2])
+  }
+  loc
 }

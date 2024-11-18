@@ -90,5 +90,5 @@ str(fm_bary(fmexample$mesh, fmexample$loc_sf))
 str(fm_bary(fm_mesh_1d(1:4), seq(0, 5, by = 0.5)))
 }
 \seealso{
-\code{\link[=fm_bary_simplex]{fm_bary_simplex()}}
+\code{\link[=fm_bary_simplex]{fm_bary_simplex()}}, \code{\link[=fm_bary_loc]{fm_bary_loc()}}
 }
