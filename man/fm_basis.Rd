@@ -44,8 +44,8 @@ least a projection matrix \code{A} and logical vector \code{ok} indicating which
 evaluations are valid. If \code{FALSE}, return only the projection matrix \code{A}.
 Default is \code{FALSE}.}
 
-\item{loc}{A location/value information object (vector, matrix, \code{sf}, etc,
-depending on the class of \code{x})}
+\item{loc}{A location/value information object (\code{numeric}, \code{matrix}, \code{sf},
+\code{fm_bary}, etc, depending on the class of \code{x})}
 
 \item{weights}{Optional weight vector to apply (from the left, one
 weight for each row of the basis matrix)}
@@ -112,6 +112,10 @@ object. If \code{full = FALSE}, returns the \code{A} matrix contained in the
 # Compute basis mapping matrix
 dim(fm_basis(fmexample$mesh, fmexample$loc))
 print(fm_basis(fmexample$mesh, fmexample$loc, full = TRUE))
+
+# From precomputed `fm_bary` information:
+bary <- fm_bary(fmexample$mesh, fmexample$loc)
+print(fm_basis(fmexample$mesh, bary, full = TRUE))
 }
 \seealso{
 \code{\link[=fm_raw_basis]{fm_raw_basis()}}

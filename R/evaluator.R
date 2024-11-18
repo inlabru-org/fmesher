@@ -466,8 +466,8 @@ fm_is_within.default <- function(x, y, ...) {
 #'
 #' @param x An function space object, or other supported object
 #'   (`matrix`, `Matrix`, `list`)
-#' @param loc A location/value information object (vector, matrix, `sf`, etc,
-#'   depending on the class of `x`)
+#' @param loc A location/value information object (`numeric`, `matrix`, `sf`,
+#' `fm_bary`, etc, depending on the class of `x`)
 #' @param full logical; if `TRUE`, return a `fm_basis` object, containing at
 #'   least a projection matrix `A` and logical vector `ok` indicating which
 #'   evaluations are valid. If `FALSE`, return only the projection matrix `A`.
@@ -484,6 +484,10 @@ fm_is_within.default <- function(x, y, ...) {
 #' # Compute basis mapping matrix
 #' dim(fm_basis(fmexample$mesh, fmexample$loc))
 #' print(fm_basis(fmexample$mesh, fmexample$loc, full = TRUE))
+#'
+#' # From precomputed `fm_bary` information:
+#' bary <- fm_bary(fmexample$mesh, fmexample$loc)
+#' print(fm_basis(fmexample$mesh, bary, full = TRUE))
 #' @export
 fm_basis <- function(x, ..., full = FALSE) {
   UseMethod("fm_basis")
@@ -928,25 +932,25 @@ fm_basis_mesh_2d <- function(mesh,
                              derivatives = NULL,
                              crs = NULL,
                              ...) {
-  smorg <- fm_bary(mesh, loc = loc, crs = crs, ...)
-  ti <- matrix(0L, NROW(loc), 1)
-  ti[, 1L] <- smorg$index
-  b <- smorg$where
+  if (!inherits(loc, "fm_bary")) {
+    loc <- fm_bary(mesh, loc = loc, crs = crs, ...)
+  }
+  n_loc <- NROW(loc)
 
-  ok <- !is.na(ti[, 1L])
+  ok <- !is.na(loc$index)
 
   if (is.null(weights)) {
-    weights <- rep(1.0, NROW(loc))
+    weights <- rep(1.0, n_loc)
   } else if (length(weights) == 1) {
-    weights <- rep(weights, NROW(loc))
+    weights <- rep(weights, n_loc)
   }
 
   ii <- which(ok)
   A <- (Matrix::sparseMatrix(
-    dims = c(NROW(loc), mesh$n),
+    dims = c(n_loc, mesh$n),
     i = rep(ii, 3),
-    j = as.vector(mesh$graph$tv[ti[ii, 1L], ]),
-    x = as.numeric(as.vector(b[ii, ]) * weights[rep(ii, 3)])
+    j = as.vector(mesh$graph$tv[loc$index[ii], ]),
+    x = as.numeric(as.vector(loc$where[ii, ]) * weights[rep(ii, 3)])
   ))
 
   mesh_deriv <- function(mesh, bary, ok, weights) {
@@ -968,19 +972,19 @@ fm_basis_mesh_2d <- function(mesh,
     y <- cbind(g1[, 2], g2[, 2], g3[, 2])
     z <- cbind(g1[, 3], g2[, 3], g3[, 3])
     dx <- (Matrix::sparseMatrix(
-      dims = c(nrow(loc), n.mesh),
+      dims = c(n_loc, n.mesh),
       i = rep(ii, 3),
       j = as.vector(tv),
       x = as.vector(x) * weights[rep(ii, 3)]
     ))
     dy <- (Matrix::sparseMatrix(
-      dims = c(nrow(loc), n.mesh),
+      dims = c(n_loc, n.mesh),
       i = rep(ii, 3),
       j = as.vector(tv),
       x = as.vector(y) * weights[rep(ii, 3)]
     ))
     dz <- (Matrix::sparseMatrix(
-      dims = c(nrow(loc), n.mesh),
+      dims = c(n_loc, n.mesh),
       i = rep(ii, 3),
       j = as.vector(tv),
       x = as.vector(z) * weights[rep(ii, 3)]
@@ -989,7 +993,7 @@ fm_basis_mesh_2d <- function(mesh,
     return(list(dx = dx, dy = dy, dz = dz))
   }
 
-  info <- list(bary = smorg, A = A, ok = ok)
+  info <- list(bary = loc, A = A, ok = ok)
 
   if (!is.null(derivatives) && derivatives) {
     info <-
