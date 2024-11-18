@@ -7,8 +7,8 @@
 fm_cprod(..., na.rm = NULL, .blockwise = FALSE)
 }
 \arguments{
-\item{...}{\code{data.frame}, \code{sf}, or \code{SpatialPointsDataFrame} objects, each one
-usually obtained by a call to an \code{\link[=fm_int]{fm_int()}} method.}
+\item{...}{\code{tibble}, \code{data.frame}, \code{sf}, or \code{SpatialPointsDataFrame} objects,
+each one usually obtained by a call to an \code{\link[=fm_int]{fm_int()}} method.}
 
 \item{na.rm}{logical; if \code{TRUE}, the rows with weight \code{NA} from the
 non-overlapping full_join will be removed; if \code{FALSE}, set the undefined

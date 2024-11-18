@@ -1,7 +1,7 @@
 test_that("Discrete integration", {
   domain <- 2:5
   samplers <- 3:7
-  ips_ <- data.frame(x = 3:5, weight = rep(1, 3), .block = 1L:3L)
+  ips_ <- tibble::tibble(x = 3:5, weight = rep(1, 3), .block = 1L:3L)
 
   ips <- fm_int(domain, samplers = samplers)
   expect_identical(ips, ips_)
@@ -24,7 +24,7 @@ test_that("Continuous integration", {
   domain <- fm_mesh_1d(2:5)
 
   samplers <- c(3, 5)
-  ips_ <- data.frame(
+  ips_ <- tibble::tibble(
     x = c(3:5, 3.5, 4.5),
     weight = c(1 / 6, 1 / 3, 1 / 6, 2 / 3, 2 / 3),
     .block = 1L
@@ -45,7 +45,7 @@ test_that("Continuous integration", {
   domain <- fm_mesh_1d(2:5, degree = 2)
 
   samplers <- c(3, 5)
-  ips_ <- data.frame(
+  ips_ <- tibble::tibble(
     x = c(3:5, 3.5, 4.5),
     weight = c(1 / 6, 1 / 3, 1 / 6, 2 / 3, 2 / 3),
     .block = 1L

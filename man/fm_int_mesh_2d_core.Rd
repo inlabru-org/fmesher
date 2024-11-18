@@ -18,7 +18,7 @@ the vertex weights
 (default \code{nsub=9}, giving 100 integration points for each triangle)}
 }
 \value{
-\code{list} with elements \code{loc} and \code{weight} with
+\code{tibble} with columns \code{loc} and \code{weight} with
 integration points for the mesh
 }
 \description{
