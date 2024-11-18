@@ -475,8 +475,10 @@ fm_is_within.default <- function(x, y, ...) {
 #' @param \dots Passed on to submethods
 #' @returns A `sparseMatrix` object (if `full = FALSE`), or a `fm_basis` object
 #'   (if `full = TRUE` or `isTRUE(derivatives)`). The `fm_basis` object contains
-#'   at least the projection matrix `A` and logical vector `ok`;
-#'   `u(loc_i)=sum_j A_ij w_i`
+#'   at least the projection matrix `A` and logical vector `ok`; If `x_j`
+#'   denotes the latent basis coefficient for basis function `j`, the field is
+#'   defined as `u(loc_i)=sum_j A_ij x_j` for all `i` where `ok[i]` is `TRUE`,
+#'   and `u(loc_i)=0.0` where `ok[i]` is `FALSE`.
 #' @seealso [fm_raw_basis()]
 #' @examples
 #' # Compute basis mapping matrix
@@ -496,6 +498,104 @@ fm_basis.default <- function(x, ..., full = FALSE) {
     details = "Each mesh class needs its own `fm_basis()` method."
   )
 }
+
+#' @param derivatives If non-NULL and logical, include derivative matrices
+#' in the output. Forces `full = TRUE`.
+#' @describeIn fm_basis If `derivatives=TRUE`, the `fm_basis` object contains
+#'   additional derivative weight matrices, `d1A` and `d2A`, `du/dx(loc_i)=sum_j
+#'   dx_ij w_i`.
+#' @export
+fm_basis.fm_mesh_1d <- function(x,
+                                loc,
+                                weights = NULL,
+                                derivatives = NULL,
+                                ...,
+                                full = FALSE) {
+  result <- fm_basis_mesh_1d(
+    x,
+    loc = loc,
+    weights = weights,
+    derivatives = derivatives,
+    ...
+  )
+  if (isTRUE(derivatives) && !full) {
+    full <- TRUE
+  }
+  fm_basis(result, full = full)
+}
+
+#' @describeIn fm_basis If `derivatives=TRUE`, additional derivative weight
+#'   matrices are included in the `full=TRUE` output: Derivative weight matrices
+#' `dx`, `dy`, `dz`; `du/dx(loc_i)=sum_j dx_ij w_i`, etc.
+#' @export
+fm_basis.fm_mesh_2d <- function(x, loc, weights = NULL, derivatives = NULL, ...,
+                                full = FALSE) {
+  result <- fm_basis_mesh_2d(
+    x,
+    loc = loc,
+    weights = weights,
+    derivatives = derivatives,
+    ...
+  )
+  if (isTRUE(derivatives) && !full) {
+    full <- TRUE
+  }
+  fm_basis(result, full = full)
+}
+
+#' @export
+#' @describeIn fm_basis Evaluates a basis matrix for a `fm_tensor` function
+#'   space.
+fm_basis.fm_tensor <- function(x,
+                               loc,
+                               weights = NULL,
+                               ...,
+                               full = FALSE) {
+  if (length(loc) != length(x[["fun_spaces"]])) {
+    stop(
+      paste0(
+        "Length of location list (",
+        length(loc), ") doesn't match the number of function spaces (",
+        length(x[["fun_spaces"]]),
+        ")"
+      )
+    )
+  }
+  if (is.null(names(loc))) {
+    names(loc) <- names(x[["fun_spaces"]])
+  } else if (!setequal(names(x[["fun_spaces"]]), names(loc))) {
+    stop("Name mismatch between location list names and function space names.")
+  }
+  idx <- names(x[["fun_spaces"]])
+  if (is.null(idx)) {
+    idx <- seq_along(x[["fun_spaces"]])
+  }
+  proj <- lapply(
+    idx,
+    function(k) {
+      fm_basis(x[["fun_spaces"]][[k]], loc = loc[[k]], full = TRUE)
+    }
+  )
+  names(proj) <- names(x[["fun_spaces"]])
+
+  # Combine the matrices
+  # (A1, A2, A3) -> rowkron(A3, rowkron(A2, A1))
+  A <- proj[[1]][["A"]]
+  if (!is.null(weights)) {
+    A <- Matrix::Diagonal(nrow(A), x = weights) %*% A
+  }
+  ok <- proj[[1]][["ok"]]
+  for (k in seq_len(length(x[["fun_spaces"]]) - 1)) {
+    A <- fm_row_kron(proj[[k + 1]][["A"]], A)
+    ok <- proj[[k + 1]][["ok"]] & ok
+  }
+
+  fm_basis(
+    list(A = A, ok = ok),
+    full = full
+  )
+}
+
 
 #' @describeIn fm_basis Creates a new `fm_basis` object with elements `A` and
 #'   `ok`, from a pre-evaluated basis matrix, including optional additional
@@ -566,50 +666,6 @@ fm_basis.fm_basis <- function(x, ..., full = FALSE) {
   }
 }
 
-#' @param derivatives If non-NULL and logical, include derivative matrices
-#' in the output. Forces `full = TRUE`.
-#' @describeIn fm_basis If `derivatives=TRUE`, the `fm_basis` object contains
-#'   additional derivative weight matrices, `d1A` and `d2A`, `du/dx(loc_i)=sum_j
-#'   dx_ij w_i`.
-#' @export
-fm_basis.fm_mesh_1d <- function(x,
-                                loc,
-                                weights = NULL,
-                                derivatives = NULL,
-                                ...,
-                                full = FALSE) {
-  result <- fm_basis_mesh_1d(
-    x,
-    loc = loc,
-    weights = weights,
-    derivatives = derivatives,
-    ...
-  )
-  if (isTRUE(derivatives) && !full) {
-    full <- TRUE
-  }
-  fm_basis(result, full = full)
-}
-
-#' @describeIn fm_basis If `derivatives=TRUE`, additional derivative weight
-#'   matrices are included in the `full=TRUE` output: Derivative weight matrices
-#' `dx`, `dy`, `dz`; `du/dx(loc_i)=sum_j dx_ij w_i`, etc.
-#' @export
-fm_basis.fm_mesh_2d <- function(x, loc, weights = NULL, derivatives = NULL, ...,
-                                full = FALSE) {
-  result <- fm_basis_mesh_2d(
-    x,
-    loc = loc,
-    weights = weights,
-    derivatives = derivatives,
-    ...
-  )
-  if (isTRUE(derivatives) && !full) {
-    full <- TRUE
-  }
-  fm_basis(result, full = full)
-}
-
 #' @describeIn fm_basis Extract `fm_basis` information from an `fm_evaluator`
 #'   object. If `full = FALSE`, returns the `A` matrix contained in the
 #'   `fm_basis` object.
@@ -617,65 +673,6 @@ fm_basis.fm_mesh_2d <- function(x, loc, weights = NULL, derivatives = NULL, ...,
 fm_basis.fm_evaluator <- function(x, ..., full = FALSE) {
   fm_basis(x$proj, full = full)
 }
-
-#' @export
-#' @describeIn fm_basis Evaluates a basis matrix for a `fm_tensor` function
-#'   space.
-fm_basis.fm_tensor <- function(x,
-                               loc,
-                               weights = NULL,
-                               ...,
-                               full = FALSE) {
-  if (length(loc) != length(x[["fun_spaces"]])) {
-    stop(
-      paste0(
-        "Length of location list (",
-        length(loc), ") doesn't match the number of function spaces (",
-        length(x[["fun_spaces"]]),
-        ")"
-      )
-    )
-  }
-  if (is.null(names(loc))) {
-    names(loc) <- names(x[["fun_spaces"]])
-  } else if (!setequal(names(x[["fun_spaces"]]), names(loc))) {
-    stop("Name mismatch between location list names and function space names.")
-  }
-  idx <- names(x[["fun_spaces"]])
-  if (is.null(idx)) {
-    idx <- seq_along(x[["fun_spaces"]])
-  }
-  proj <- lapply(
-    idx,
-    function(k) {
-      fm_basis(x[["fun_spaces"]][[k]], loc = loc[[k]], full = TRUE)
-    }
-  )
-  names(proj) <- names(x[["fun_spaces"]])
-
-  # Combine the matrices
-  # (A1, A2, A3) -> rowkron(A3, rowkron(A2, A1))
-  A <- proj[[1]][["A"]]
-  if (!is.null(weights)) {
-    A <- Matrix::Diagonal(nrow(A), x = weights) %*% A
-  }
-  ok <- proj[[1]][["ok"]]
-  for (k in seq_len(length(x[["fun_spaces"]]) - 1)) {
-    A <- fm_row_kron(proj[[k + 1]][["A"]], A)
-    ok <- proj[[k + 1]][["ok"]] & ok
-  }
-
-  fm_basis(
-    list(A = A, ok = ok),
-    full = full
-  )
-}
-
-
-
-
-
-
 
 
 
