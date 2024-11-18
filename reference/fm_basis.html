@@ -58,6 +58,15 @@ mesh, and locations.</p>
 <span><span class="co"># Default S3 method</span></span>
 <span><span class="fu">fm_basis</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, full <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># S3 method for class 'fm_mesh_1d'</span></span>
+<span><span class="fu">fm_basis</span><span class="op">(</span><span class="va">x</span>, <span class="va">loc</span>, weights <span class="op">=</span> <span class="cn">NULL</span>, derivatives <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span>, full <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'fm_mesh_2d'</span></span>
+<span><span class="fu">fm_basis</span><span class="op">(</span><span class="va">x</span>, <span class="va">loc</span>, weights <span class="op">=</span> <span class="cn">NULL</span>, derivatives <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span>, full <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'fm_tensor'</span></span>
+<span><span class="fu">fm_basis</span><span class="op">(</span><span class="va">x</span>, <span class="va">loc</span>, weights <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span>, full <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
 <span><span class="co"># S3 method for class 'matrix'</span></span>
 <span><span class="fu">fm_basis</span><span class="op">(</span><span class="va">x</span>, ok <span class="op">=</span> <span class="cn">NULL</span>, weights <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span>, full <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
@@ -70,17 +79,8 @@ mesh, and locations.</p>
 <span><span class="co"># S3 method for class 'fm_basis'</span></span>
 <span><span class="fu">fm_basis</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, full <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># S3 method for class 'fm_mesh_1d'</span></span>
-<span><span class="fu">fm_basis</span><span class="op">(</span><span class="va">x</span>, <span class="va">loc</span>, weights <span class="op">=</span> <span class="cn">NULL</span>, derivatives <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span>, full <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S3 method for class 'fm_mesh_2d'</span></span>
-<span><span class="fu">fm_basis</span><span class="op">(</span><span class="va">x</span>, <span class="va">loc</span>, weights <span class="op">=</span> <span class="cn">NULL</span>, derivatives <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span>, full <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span></span>
 <span><span class="co"># S3 method for class 'fm_evaluator'</span></span>
-<span><span class="fu">fm_basis</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, full <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S3 method for class 'fm_tensor'</span></span>
-<span><span class="fu">fm_basis</span><span class="op">(</span><span class="va">x</span>, <span class="va">loc</span>, weights <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span>, full <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">fm_basis</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, full <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -103,10 +103,9 @@ evaluations are valid. If <code>FALSE</code>, return only the projection matrix 
 Default is <code>FALSE</code>.</p></dd>
 
 
-<dt id="arg-ok">ok<a class="anchor" aria-label="anchor" href="#arg-ok"></a></dt>
-<dd><p>numerical of length <code>NROW(x)</code>, indicating which rows of <code>x</code> are
-valid/successful basis evaluations. If <code>NULL</code>, inferred as
-<code>rep(TRUE, NROW(x))</code>.</p></dd>
+<dt id="arg-loc">loc<a class="anchor" aria-label="anchor" href="#arg-loc"></a></dt>
+<dd><p>A location/value information object (vector, matrix, <code>sf</code>, etc,
+depending on the class of <code>x</code>)</p></dd>
 
 
 <dt id="arg-weights">weights<a class="anchor" aria-label="anchor" href="#arg-weights"></a></dt>
@@ -114,27 +113,37 @@ valid/successful basis evaluations. If <code>NULL</code>, inferred as
 weight for each row of the basis matrix)</p></dd>
 
 
-<dt id="arg-loc">loc<a class="anchor" aria-label="anchor" href="#arg-loc"></a></dt>
-<dd><p>A location/value information object (vector, matrix, <code>sf</code>, etc,
-depending on the class of <code>x</code>)</p></dd>
-
-
 <dt id="arg-derivatives">derivatives<a class="anchor" aria-label="anchor" href="#arg-derivatives"></a></dt>
 <dd><p>If non-NULL and logical, include derivative matrices
 in the output. Forces <code>full = TRUE</code>.</p></dd>
+
+
+<dt id="arg-ok">ok<a class="anchor" aria-label="anchor" href="#arg-ok"></a></dt>
+<dd><p>numerical of length <code>NROW(x)</code>, indicating which rows of <code>x</code> are
+valid/successful basis evaluations. If <code>NULL</code>, inferred as
+<code>rep(TRUE, NROW(x))</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A <code>sparseMatrix</code> object (if <code>full = FALSE</code>), or a <code>fm_basis</code> object
 (if <code>full = TRUE</code> or <code>isTRUE(derivatives)</code>). The <code>fm_basis</code> object contains
-at least the projection matrix <code>A</code> and logical vector <code>ok</code>;
-<code>u(loc_i)=sum_j A_ij w_i</code></p>
+at least the projection matrix <code>A</code> and logical vector <code>ok</code>; If <code>x_j</code>
+denotes the latent basis coefficient for basis function <code>j</code>, the field is
+defined as <code>u(loc_i)=sum_j A_ij x_j</code> for all <code>i</code> where <code>ok[i]</code> is <code>TRUE</code>,
+and <code>u(loc_i)=0.0</code> where <code>ok[i]</code> is <code>FALSE</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="methods-by-class-">Methods (by class)<a class="anchor" aria-label="anchor" href="#methods-by-class-"></a></h2>
 
-<ul><li><p><code>fm_basis(matrix)</code>: Creates a new <code>fm_basis</code> object with elements <code>A</code> and
+<ul><li><p><code>fm_basis(fm_mesh_1d)</code>: If <code>derivatives=TRUE</code>, the <code>fm_basis</code> object contains
+additional derivative weight matrices, <code>d1A</code> and <code>d2A</code>, <code>du/dx(loc_i)=sum_j dx_ij w_i</code>.</p></li>
+<li><p><code>fm_basis(fm_mesh_2d)</code>: If <code>derivatives=TRUE</code>, additional derivative weight
+matrices are included in the <code>full=TRUE</code> output: Derivative weight matrices
+<code>dx</code>, <code>dy</code>, <code>dz</code>; <code>du/dx(loc_i)=sum_j dx_ij w_i</code>, etc.</p></li>
+<li><p><code>fm_basis(fm_tensor)</code>: Evaluates a basis matrix for a <code>fm_tensor</code> function
+space.</p></li>
+<li><p><code>fm_basis(matrix)</code>: Creates a new <code>fm_basis</code> object with elements <code>A</code> and
 <code>ok</code>, from a pre-evaluated basis matrix, including optional additional
 elements in the <code>...</code> arguments. If a <code>ok</code> is <code>NULL</code>, it is inferred as
 <code>rep(TRUE, NROW(x))</code>, indicating that all rows correspond to successful
@@ -152,16 +161,9 @@ it is inferred as <code>rep(TRUE, NROW(x$A))</code>. If <code>full = FALSE</code
 extracts the <code>A</code> matrix.</p></li>
 <li><p><code>fm_basis(fm_basis)</code>: If <code>full</code> is <code>TRUE</code>, returns <code>x</code> unchanged, otherwise
 returns the <code>A</code> matrix contained in <code>x</code>.</p></li>
-<li><p><code>fm_basis(fm_mesh_1d)</code>: If <code>derivatives=TRUE</code>, the <code>fm_basis</code> object contains
-additional derivative weight matrices, <code>d1A</code> and <code>d2A</code>, <code>du/dx(loc_i)=sum_j dx_ij w_i</code>.</p></li>
-<li><p><code>fm_basis(fm_mesh_2d)</code>: If <code>derivatives=TRUE</code>, additional derivative weight
-matrices are included in the <code>full=TRUE</code> output: Derivative weight matrices
-<code>dx</code>, <code>dy</code>, <code>dz</code>; <code>du/dx(loc_i)=sum_j dx_ij w_i</code>, etc.</p></li>
 <li><p><code>fm_basis(fm_evaluator)</code>: Extract <code>fm_basis</code> information from an <code>fm_evaluator</code>
 object. If <code>full = FALSE</code>, returns the <code>A</code> matrix contained in the
 <code>fm_basis</code> object.</p></li>
-<li><p><code>fm_basis(fm_tensor)</code>: Evaluates a basis matrix for a <code>fm_tensor</code> function
-space.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
