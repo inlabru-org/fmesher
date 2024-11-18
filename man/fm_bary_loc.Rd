@@ -50,6 +50,13 @@ fm_bary_loc(mesh1)
 fm_bary_loc(mesh1, bary1)
 (bary1 <- fm_bary(mesh1, seq(0, 5, by = 0.5), restricted = TRUE))
 fm_bary_loc(mesh1, bary1)
+fm_basis(mesh1, bary1)
+(bary1 <- fm_bary(mesh1, bary1, method = "nearest"))
+fm_bary_loc(mesh1, bary1)
+fm_basis(mesh1, bary1)
+(bary1 <- fm_bary(mesh1, bary1, method = "linear"))
+fm_bary_loc(mesh1, bary1)
+fm_basis(mesh1, bary1)
 }
 \seealso{
 \code{\link[=fm_bary]{fm_bary()}}, \code{\link[=fm_bary_simplex]{fm_bary_simplex()}}

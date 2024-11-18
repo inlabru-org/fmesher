@@ -1191,6 +1191,7 @@ fm_basis_mesh_1d <- function(mesh,
       inter <- range(knots)
     }
 
+    # Note: If loc is `fm_bary`, it's still valid for this local fm_mesh_1d.
     info <-
       fm_bary(
         fm_mesh_1d(
@@ -1430,7 +1431,7 @@ fm_basis_mesh_1d <- function(mesh,
     i = i_,
     j = j_,
     x = (weights[i_] * x_),
-    dims = c(length(loc), mesh$m)
+    dims = c(NROW(loc), mesh$m)
   )
   if (derivatives) {
     if (mesh$degree <= 1) {
@@ -1438,7 +1439,7 @@ fm_basis_mesh_1d <- function(mesh,
         i = i_d,
         j = j_d,
         x = weights[i_d] * x_d,
-        dims = c(length(loc), mesh$m)
+        dims = c(NROW(loc), mesh$m)
       )
     } else {
       # degree is 2
@@ -1452,7 +1453,7 @@ fm_basis_mesh_1d <- function(mesh,
         i = i_,
         j = j_,
         x = weights[i_] * x_d2,
-        dims = c(length(loc), mesh$m)
+        dims = c(NROW(loc), mesh$m)
       )
     }
   }

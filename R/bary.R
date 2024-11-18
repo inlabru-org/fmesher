@@ -115,14 +115,23 @@ fm_bary.fm_mesh_1d <- function(mesh,
   method <- match.arg(method)
 
   if (inherits(loc, "fm_bary")) {
-    if (method != "nearest" || (ncol(loc$where) == 1L)) {
+    if (method == "nearest") {
+      if (ncol(loc$where) == 1L) {
+        return(loc)
+      }
+      simplex <- fm_bary_simplex(mesh, loc)
+      ok <- !is.na(loc$index)
+      is_second <- loc$where[, 1] < loc$where[, 2]
+      idx <- rep(NA_integer_, length(loc$index))
+      idx[ok & !is_second] <- simplex[ok & !is_second, 1L]
+      idx[ok & is_second] <- simplex[ok & is_second, 2L]
+      return(fm_bary(list(index = idx, where = matrix(1.0, nrow(loc), 1L))))
+    }
+    if (ncol(loc$where) == 2L) {
       return(loc)
     }
-    simplex <- fm_bary_simplex(mesh, loc)
-    is_second <- loc$where[, 1] < loc$where[, 2]
-    idx <- loc$index
-    idx[is_second] <- simplex[loc$index[is_second], 2L]
-    return(fm_bary(list(index = idx, where = matrix(1.0, nrow(loc), 1L))))
+    loc_ <- fm_bary_loc(mesh, loc)
+    return(fm_bary(mesh, loc_, method = "linear"))
   }
 
   if (mesh$cyclic) {
@@ -377,6 +386,13 @@ fm_bary_loc.fm_mesh_2d <- function(mesh, bary = NULL, ..., format = NULL) {
 #' fm_bary_loc(mesh1, bary1)
 #' (bary1 <- fm_bary(mesh1, seq(0, 5, by = 0.5), restricted = TRUE))
 #' fm_bary_loc(mesh1, bary1)
+#' fm_basis(mesh1, bary1)
+#' (bary1 <- fm_bary(mesh1, bary1, method = "nearest"))
+#' fm_bary_loc(mesh1, bary1)
+#' fm_basis(mesh1, bary1)
+#' (bary1 <- fm_bary(mesh1, bary1, method = "linear"))
+#' fm_bary_loc(mesh1, bary1)
+#' fm_basis(mesh1, bary1)
 fm_bary_loc.fm_mesh_1d <- function(mesh, bary = NULL, ..., format = NULL) {
   format = match.arg(format, c("numeric"))
   if (is.null(bary)) {
@@ -386,9 +402,13 @@ fm_bary_loc.fm_mesh_1d <- function(mesh, bary = NULL, ..., format = NULL) {
   } else {
     loc <- rep(NA_real_, NROW(bary))
     ok <- !is.na(bary$index)
-    simplex <- fm_bary_simplex(mesh, bary = bary[ok, ])
-    loc[ok] <- (mesh$loc[simplex[, 1L]] * bary$where[ok, 1] +
-                  mesh$loc[simplex[, 2L]] * bary$where[ok, 2])
+    if (ncol(bary$where) == 1L) {
+      loc[ok] <- mesh$loc[bary$index[ok]]
+    } else {
+      simplex <- fm_bary_simplex(mesh, bary = bary[ok, ])
+      loc[ok] <- (mesh$loc[simplex[, 1L]] * bary$where[ok, 1] +
+                    mesh$loc[simplex[, 2L]] * bary$where[ok, 2])
+    }
   }
   loc
 }
