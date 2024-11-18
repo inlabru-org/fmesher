@@ -14,8 +14,8 @@
   convert old objects. Retaining the `inla.mesh` etc class suffixes for now.
   (version `0.2.0.9001`)
 * Handle `NA` location inputs to `fm_basis.fm_mesh_1d()` (version `0.2.0.9002`)
-* Add `loc=fm_bary(...)` support to `fm_basis.fm_mesh_2d(mesh, loc)`
-  (version `0.2.0.9006`)
+* Add `fm_basis(mesh, loc = fm_bary(mesh, ...))` support for `fm_mesh_1d`
+  and `fm_mesh_2d` objects (version `0.2.0.9006`)
 
 # fmesher 0.2.0
 
