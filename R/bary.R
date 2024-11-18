@@ -350,7 +350,7 @@ fm_bary_loc <- function(mesh, bary = NULL, ..., format = NULL) {
 #' fm_bary_loc(fmexample$mesh, bary, format = "matrix")
 #' fm_bary_loc(fmexample$mesh, bary, format = "sf")
 fm_bary_loc.fm_mesh_2d <- function(mesh, bary = NULL, ..., format = NULL) {
-  format = match.arg(format, c("matrix", "sf"))
+  format <- match.arg(format, c("matrix", "sf"))
   if (is.null(bary)) {
     loc <- mesh$loc
   } else if (NROW(bary) == 0L) {
@@ -359,18 +359,22 @@ fm_bary_loc.fm_mesh_2d <- function(mesh, bary = NULL, ..., format = NULL) {
     loc <- matrix(NA_real_, NROW(bary), ncol(mesh$loc))
     ok <- !is.na(bary$index)
     simplex <- fm_bary_simplex(mesh, bary = bary[ok, ])
-    loc[ok, ] <- (mesh$loc[simplex[, 1L], , drop = FALSE] * bary$where[ok, 1] +
-              mesh$loc[simplex[, 2L], , drop = FALSE] * bary$where[ok, 2] +
-              mesh$loc[simplex[, 3L], , drop = FALSE] * bary$where[ok, 3])
+    loc[ok, ] <- (
+      mesh$loc[simplex[, 1L], , drop = FALSE] * bary$where[ok, 1] +
+        mesh$loc[simplex[, 2L], , drop = FALSE] * bary$where[ok, 2] +
+        mesh$loc[simplex[, 3L], , drop = FALSE] * bary$where[ok, 3]
+    )
     if (fm_manifold(mesh, "S2")) {
       loc[ok, ] <- loc[ok, ] / rowSums(loc[ok, ]^2)^0.5 *
         mean(rowSums(mesh$loc^2)^0.5)
     }
   }
   if (format == "sf") {
-    loc <- sf::st_as_sf(as.data.frame(loc),
-                        coords = seq_len(ncol(loc)),
-                        crs = fm_crs(loc))
+    loc <- sf::st_as_sf(
+      as.data.frame(loc),
+      coords = seq_len(ncol(loc)),
+      crs = fm_crs(loc)
+    )
   }
   loc
 }
@@ -394,7 +398,7 @@ fm_bary_loc.fm_mesh_2d <- function(mesh, bary = NULL, ..., format = NULL) {
 #' fm_bary_loc(mesh1, bary1)
 #' fm_basis(mesh1, bary1)
 fm_bary_loc.fm_mesh_1d <- function(mesh, bary = NULL, ..., format = NULL) {
-  format = match.arg(format, c("numeric"))
+  format <- match.arg(format, c("numeric"))
   if (is.null(bary)) {
     loc <- mesh$loc
   } else if (NROW(bary) == 0L) {
@@ -406,8 +410,10 @@ fm_bary_loc.fm_mesh_1d <- function(mesh, bary = NULL, ..., format = NULL) {
       loc[ok] <- mesh$loc[bary$index[ok]]
     } else {
       simplex <- fm_bary_simplex(mesh, bary = bary[ok, ])
-      loc[ok] <- (mesh$loc[simplex[, 1L]] * bary$where[ok, 1] +
-                    mesh$loc[simplex[, 2L]] * bary$where[ok, 2])
+      loc[ok] <- (
+        mesh$loc[simplex[, 1L]] * bary$where[ok, 1] +
+          mesh$loc[simplex[, 2L]] * bary$where[ok, 2]
+      )
     }
   }
   loc
