@@ -19,7 +19,7 @@ test_that("MGG bary", {
   skip_if_not_installed("MetricGraph")
   graph <- local_bru_test_graph()
   graph$build_mesh(h = 0.005)
-  locs <- as.matrix(rbind(c(0, 0.6), c(1, 0.20)))
+  locs <- rbind(c(0, 0.6), c(1, 0.20))
   b <-
     fm_bary(
       mesh = graph,
@@ -44,9 +44,9 @@ test_that("MGG to MGM", {
   graph0$build_mesh(h = 0.005)
   locs <- rbind(c(1, 0.6), c(3, 0.20))
   mgm <-
-    graph_to_mesh_coord(
+    MGG_to_MGM(
       graph = graph0,
-      coord = locs
+      coord = as_MGG(locs)
     )
 
   expect_equal(
@@ -78,9 +78,9 @@ test_that("MGM to MGG", {
   graph$build_mesh(h = 0.005)
   locs <- as.matrix(rbind(c(300, 0.5), c(1250, 1)))
   mgg <-
-    mesh_to_graph_coord(
+    MGM_to_MGG(
       graph = graph,
-      coord = locs
+      coord = as_MGM(locs)
     )
 
   expect_equal(
@@ -108,7 +108,7 @@ test_that("MGM to MGG", {
 test_that("bary MGG to MGG", {
   skip_if_not_installed("MetricGraph")
   graph <- local_bru_test_graph()
-  locs <- as_MGG(graph, matrix(c(c(2, 5), c(0.8, 0.2)), ncol = 2))
+  locs <- as_MGG(cbind(c(2, 5), c(0.8, 0.2)))
   b <-
     fm_bary(
       mesh = graph,
@@ -131,7 +131,7 @@ test_that("bary MGM to MGM", {
   skip_if_not_installed("MetricGraph")
   graph <- local_bru_test_graph()
   graph$build_mesh(h = 0.005)
-  locs <- as_MGM(graph, matrix(c(c(300, 1250), c(0.5, 1.0)), ncol = 2))
+  locs <- as_MGM(matrix(c(c(300, 1250), c(0.5, 1.0)), ncol = 2))
   b <-
     fm_bary(
       mesh = graph,
@@ -313,7 +313,7 @@ test_that("fm_basis paths", {
   ips <- fm_int(graph, samplers = test_sampler)
   basis <- fm_basis(x = graph, loc = ips$x, weights = ips$weight)
   n <- NROW(ips)
-  MGM_locs <- graph_to_mesh_coord(graph, ips$x)
+  MGM_locs <- MGG_to_MGM(graph, ips$x)
   true_A <- Matrix::sparseMatrix(
     i = c(seq_len(n), seq_len(n)),
     j = c(graph$mesh$E[MGM_locs$index, 1], graph$mesh$E[MGM_locs$index, 2]),
@@ -344,11 +344,11 @@ test_that("ibm values", {
   skip_if_not_installed("MetricGraph")
   graph <- local_bru_test_graph()
   graph$build_mesh(h = 0.005)
-  mapper <- inlabru::bru_mapper(graph)
+  mapper <- inlabru::bru_mapper(graph, n_rep = 2)
   values <- inlabru::ibm_values(mapper)
   expect_equal(
     values,
-    seq_len(NROW(graph$mesh$V))
+    seq_len(2 * NROW(graph$mesh$V))
   )
 })
 
@@ -356,13 +356,13 @@ test_that("sf to MGG", {
   skip_if_not_installed("MetricGraph")
   skip_if_not_installed("sf")
   skip_if_not_installed("lwgeom")
-  graph <- local_bru_test_graph()
-  graph$build_mesh(h = 0.005)
-  line1 <- sf::st_linestring(matrix(c(0, 0, 1, 0.5, 0, 0), nrow = 3))
+  graph0 <- local_bru_test_graph()
+  graph0$build_mesh(h = 0.005)
+  line1 <- sf::st_linestring(cbind(c(0, 0, 1), c(0.5, 0, 0)))
   line1_g <- sf::st_geometry(line1)
   path_MGG1 <-
     geom_path_to_path_MGG(
-      graph = graph,
+      graph = graph0,
       geom_path = line1_g
     )
   expect_equal(
@@ -378,7 +378,7 @@ test_that("sf to MGG", {
   lines <- sf::st_geometry(lines)
   path_MGGs <-
     geom_path_to_path_MGG(
-      graph = graph,
+      graph = graph0,
       geom_path = lines
     )
 

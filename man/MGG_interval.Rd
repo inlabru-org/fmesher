@@ -4,14 +4,15 @@
 \alias{MGG_interval}
 \title{Make an inter edge interval on graph object}
 \usage{
-MGG_interval(graph, start_MGG, end_MGG)
+MGG_interval(start_MGG, end_MGG, graph = NULL)
 }
 \arguments{
-\item{graph}{\code{metric_graph} that the interval should be mapped to.}
+\item{start_MGG}{Start location for inter edge interval.}
 
-\item{start_MGG}{Start location for inter edge interval}
+\item{end_MGG}{End location for inter edge interval.}
 
-\item{end_MGG}{End location for inter edge interval}
+\item{graph}{\code{metric_graph} that the interval should be mapped to. Must be
+provided if input should be converted}
 }
 \value{
 An \code{MGG_interval} object
@@ -29,9 +30,9 @@ if (requireNamespace("MetricGraph")) {
   edges <- list(edge1, edge2, edge3, edge4)
   graph <- MetricGraph::metric_graph$new(edges = edges)
   int <- MGG_interval(
-    graph,
     cbind(1, 0.8),
-    cbind(1, 0.5)
+    cbind(1, 0.5),
+    graph
   )
   int
 }

@@ -2,17 +2,19 @@
 % Please edit documentation in R/metric_graph.R
 \name{as_MGM}
 \alias{as_MGM}
-\title{Make a MGM object}
+\title{Make a \code{fm_bary_MGM} object}
 \usage{
-as_MGM(graph, loc)
+as_MGM(loc, graph = NULL)
 }
 \arguments{
-\item{graph}{metric_graph that the location should be mapped to.}
-
 \item{loc}{MGM coordinates}
+
+\item{graph}{metric_graph that the location should be mapped to (must be
+provided if loc should be converted)}
 }
 \value{
-An \code{fm_bary_MGG} object
+An \code{fm_bary_MGG} object from \code{matrix}, \code{data.frame}, \code{list}, \code{tibble}
+etc.
 }
 \description{
 Create a \code{fm_bary_MGM} object
@@ -28,8 +30,8 @@ if (requireNamespace("MetricGraph")) {
   graph <- MetricGraph::metric_graph$new(edges = edges)
   graph$build_mesh(h = 0.01)
   m <- as_MGM(
-    graph,
-    cbind(1, 1)
+    cbind(1, 1),
+    graph
   )
   class(m) # "fm_bary_MGM", "fm_bary", "tbl_df", "tbl", "data.frame"
 }

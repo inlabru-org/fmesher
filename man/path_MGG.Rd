@@ -19,7 +19,8 @@ path_MGG(graph, start_MGG, edges, end_MGG)
 A \code{path_MGG} object
 }
 \description{
-Create a \code{path_MGG} object from known start, end and visiting edges.
+Create a \code{path_MGG} object from known start (MGG), end (MGG) and visiting
+edges (MGG).
 }
 \examples{
 if (requireNamespace("MetricGraph")) {

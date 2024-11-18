@@ -2,20 +2,22 @@
 % Please edit documentation in R/metric_graph.R
 \name{as_MGG}
 \alias{as_MGG}
-\title{Make a graph_coord object from normalized PtE}
+\title{Make a \code{fm_bary_MGG} object}
 \usage{
-as_MGG(graph, loc)
+as_MGG(loc, graph = NULL)
 }
 \arguments{
-\item{graph}{metric_graph that the location should be mapped to.}
+\item{loc}{MGG coordinates}
 
-\item{loc}{PtE format (normalized)}
+\item{graph}{metric_graph that the location should be mapped to (must be
+provided if loc should be converted)}
 }
 \value{
 An \code{fm_bary_MGM} object
 }
 \description{
-Create a \code{graph_coord} object from normalized PtE.
+Create a \code{fm_bary_MGG} object from \code{matrix}, \code{data.frame}, \code{list}, \code{tibble}
+etc.
 }
 \examples{
 if (requireNamespace("MetricGraph")) {
@@ -26,7 +28,7 @@ if (requireNamespace("MetricGraph")) {
   edge4 <- cbind(sin(theta), 1 + cos(theta))
   edges <- list(edge1, edge2, edge3, edge4)
   graph <- MetricGraph::metric_graph$new(edges = edges)
-  m <- as_MGG(graph, cbind(1, 0.5))
+  m <- as_MGG(cbind(1, 0.5))
   class(m) # "fm_bary_MGG", "fm_bary", "tbl_df", "tbl", "data.frame"
 }
 

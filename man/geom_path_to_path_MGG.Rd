@@ -28,10 +28,14 @@ if (requireNamespace("MetricGraph") && requireNamespace("lwgeom") &&
   edges <- list(edge1, edge2, edge3, edge4)
   graph <- MetricGraph::metric_graph$new(edges = edges)
   graph$build_mesh(h = 0.01)
-  geom_path <- sf::st_linestring(cbind(c(0, 0, 0.7),
-                                       c(0.5, 0, 0)))
-  path <- geom_path_to_path_MGG(graph,
-                                sf::st_geometry(geom_path))
+  geom_path <- sf::st_linestring(cbind(
+    c(0, 0, 0.7),
+    c(0.5, 0, 0)
+  ))
+  path <- geom_path_to_path_MGG(
+    graph,
+    sf::st_geometry(geom_path)
+  )
   path
 }
 

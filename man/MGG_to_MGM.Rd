@@ -29,7 +29,7 @@ if (requireNamespace("MetricGraph")) {
   graph$build_mesh(h = 0.005)
   mgm <- MGG_to_MGM(
     graph,
-    cbind(1, 0.5)
+    as_MGG(cbind(1, 0.5))
   )
   mgm
 }

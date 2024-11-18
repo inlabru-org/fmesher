@@ -7,7 +7,7 @@
 \alias{ibm_jacobian.bru_mapper_metric_graph}
 \title{bru_mapper for the metric_graph class}
 \usage{
-\method{bru_mapper}{metric_graph}(mesh, n_eta = 0, ...)
+\method{bru_mapper}{metric_graph}(mesh, n_rep = 1, ...)
 
 \method{ibm_n}{bru_mapper_metric_graph}(mapper, ...)
 
@@ -18,7 +18,7 @@
 \arguments{
 \item{mesh}{a metric_graph object}
 
-\item{n_eta}{number of components in linear predictor (if 0 we use fm_dof(m))}
+\item{n_rep}{number of components in linear predictor (if 0 we use fm_dof(m))}
 
 \item{\dots}{arguments passed to sub-methods}
 
