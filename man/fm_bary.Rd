@@ -73,8 +73,9 @@ In the list elements are unnamed, the names \code{index} and \code{where} are as
 \item \code{fm_bary(tbl_df)}: Converts a \code{\link[tibble:tibble]{tibble::tibble()}} \code{bary} to \code{fm_bary}
 
 \item \code{fm_bary(fm_mesh_1d)}: Return an \code{fm_bary} object with elements \code{index}
-(starting knot indices indices) and \code{where} (barycentric coordinates), both
-2-column matrices. Use \code{\link[=fm_bary_simplex]{fm_bary_simplex()}} to obtain the corresponding
+(edge index vector pointing to the first knot of each edge) and
+\code{where} (barycentric coordinates,
+2-column matrices). Use \code{\link[=fm_bary_simplex]{fm_bary_simplex()}} to obtain the corresponding
 endpoint knot indices.
 
 For \code{method = "nearest"}, \code{index} contains the index of the nearest mesh
@@ -86,8 +87,9 @@ Points that were not found give \code{NA} entries in \code{index} and \code{wher
 
 }}
 \examples{
+bary <- fm_bary(fm_mesh_1d(1:4), seq(0, 5, by = 0.5))
+bary
 str(fm_bary(fmexample$mesh, fmexample$loc_sf))
-str(fm_bary(fm_mesh_1d(1:4), seq(0, 5, by = 0.5)))
 }
 \seealso{
 \code{\link[=fm_bary_simplex]{fm_bary_simplex()}}, \code{\link[=fm_bary_loc]{fm_bary_loc()}}

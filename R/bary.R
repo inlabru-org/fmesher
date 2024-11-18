@@ -23,9 +23,6 @@
 #' @seealso [fm_bary_simplex()], [fm_bary_loc()]
 #'
 #' @export
-#' @examples
-#' str(fm_bary(fmexample$mesh, fmexample$loc_sf))
-#' str(fm_bary(fm_mesh_1d(1:4), seq(0, 5, by = 0.5)))
 fm_bary <- function(...) {
   UseMethod("fm_bary")
 }
@@ -93,8 +90,9 @@ do.the.split <- function(knots, loc) {
 
 
 #' @describeIn fm_bary Return an `fm_bary` object with elements `index`
-#'   (starting knot indices indices) and `where` (barycentric coordinates), both
-#'   2-column matrices. Use [fm_bary_simplex()] to obtain the corresponding
+#'   (edge index vector pointing to the first knot of each edge) and
+#'   `where` (barycentric coordinates,
+#'   2-column matrices). Use [fm_bary_simplex()] to obtain the corresponding
 #'   endpoint knot indices.
 #'
 #'   For `method = "nearest"`, `index` contains the index of the nearest mesh
@@ -107,11 +105,25 @@ do.the.split <- function(knots, loc) {
 #' extrapolation. If `TRUE`, the barycentric weights are clamped to the (0, 1)
 #' interval.
 #' @export
+#' @examples
+#' bary <- fm_bary(fm_mesh_1d(1:4), seq(0, 5, by = 0.5))
+#' bary
 fm_bary.fm_mesh_1d <- function(mesh,
                                loc,
                                method = c("linear", "nearest"),
                                restricted = FALSE, ...) {
   method <- match.arg(method)
+
+  if (inherits(loc, "fm_bary")) {
+    if (method != "nearest" || (ncol(loc$where) == 1L)) {
+      return(loc)
+    }
+    simplex <- fm_bary_simplex(mesh, loc)
+    is_second <- loc$where[, 1] < loc$where[, 2]
+    idx <- loc$index
+    idx[is_second] <- simplex[loc$index[is_second], 2L]
+    return(fm_bary(list(index = idx, where = matrix(1.0, nrow(loc), 1L))))
+  }
 
   if (mesh$cyclic) {
     knots <- c(mesh$loc - mesh$loc[1], diff(mesh$interval))
@@ -163,11 +175,17 @@ fm_bary.fm_mesh_1d <- function(mesh,
 #'   give an approximately optimal runtime.
 #'
 #' @export
+#' @examples
+#' str(fm_bary(fmexample$mesh, fmexample$loc_sf))
 fm_bary.fm_mesh_2d <- function(mesh,
                                loc,
                                crs = NULL,
                                ...,
                                max_batch_size = NULL) {
+  if (inherits(loc, "fm_bary")) {
+    return(loc)
+  }
+
   if (is.null(max_batch_size)) {
     max_batch_size <- 2e5L
   }
