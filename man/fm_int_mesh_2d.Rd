@@ -118,8 +118,9 @@ Points per knot segment: \code{nsub1}
 \item{...}{Additional arguments passed on to other methods}
 
 \item{format}{character; determines the output format, as either "sf"
-(default when the sampler is \code{NULL}) or "sp". When \code{NULL}, determined by
-the sampler type.}
+(default for \code{fm_mesh_2d} when the sampler is \code{NULL}),
+"numeric" (default for \code{fm_mesh_1d}), "bary", or "sp".
+When \code{NULL}, determined by the domain and sampler types.}
 }
 \value{
 A \code{list}, \code{sf}, or \code{Spatial} object with

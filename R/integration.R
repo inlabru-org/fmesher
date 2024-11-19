@@ -575,7 +575,10 @@ fm_int.fm_mesh_1d <- function(domain,
                               samplers = NULL,
                               name = "x",
                               int.args = NULL,
+                              format = NULL,
                               ...) {
+  format <- match.arg(format, c("numeric", "bary"))
+
   int.args.default <- list(method = "stable", nsub1 = 30, nsub2 = 9)
   if (is.null(int.args)) {
     int.args <- list()
@@ -733,6 +736,12 @@ fm_int.fm_mesh_1d <- function(domain,
     )
   }
 
+  if (identical(format, "bary")) {
+    # TODO: Reverse the logic above, and construct barycentric coordinates
+    # directly
+    ips[[name]] <- fm_bary(domain, ips[[name]])
+  }
+
   ips
 }
 
@@ -743,8 +752,9 @@ fm_int.fm_mesh_1d <- function(domain,
 #' @describeIn fm_int `fm_mesh_2d` integration. Any sampler class with an
 #' associated [fm_int_mesh_2d()] method is supported.
 #' @param format character; determines the output format, as either "sf"
-#'   (default when the sampler is `NULL`) or "sp". When `NULL`, determined by
-#'   the sampler type.
+#'   (default for `fm_mesh_2d` when the sampler is `NULL`),
+#'   "numeric" (default for `fm_mesh_1d`), "bary", or "sp".
+#'   When `NULL`, determined by the domain and sampler types.
 fm_int.fm_mesh_2d <- function(domain,
                               samplers = NULL,
                               name = NULL,
@@ -773,12 +783,15 @@ fm_int.fm_mesh_2d <- function(domain,
     format <- "sp"
   }
   if (!is.null(format)) {
-    if ((format == "sf") && !inherits(ips, "sf")) {
+    if (identical(format, "bary")) {
+      # TODO: Reverse the logic of fm_in_mesh_2d() to generate fm_bary directly
+      ips <- fm_bary(domain, ips)
+    } else if (identical(format, "sf") && !inherits(ips, "sf")) {
       ips <- sf::st_as_sf(ips)
       if (!is.null(name) && (name != attr(ips, "sf_column"))) {
         ips <- dplyr::rename(ips, "{name}" := attr(ips, "sf_column"))
       }
-    } else if ((format == "sp") && !inherits(ips, "Spatial")) {
+    } else if (identical(format, "sp") && !inherits(ips, "Spatial")) {
       ips <- as(ips, "Spatial")
       cnames <- sp::coordnames(ips)
       sp::coordnames(ips) <- c("x", "y", "z")[seq_along(cnames)]
