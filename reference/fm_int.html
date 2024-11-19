@@ -128,7 +128,7 @@ the sampler type.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A <code>data.frame</code>, <code>tibble</code>, <code>sf</code>, or <code>SpatialPointsDataFrame</code> of 1D
+    <p>A <code>tibble</code>, <code>sf</code>, or <code>SpatialPointsDataFrame</code> of 1D
 and 2D integration points, including a <code>weight</code> column and <code>.block</code> column.</p>
     </div>
     <div class="section level2">
@@ -158,7 +158,6 @@ associated <code><a href="fm_int_mesh_2d.html">fm_int_mesh_2d()</a></code> metho
 <span class="r-plt img"><img src="fm_int-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create integration points for the two intervals [0,3] and [5,10]</span></span></span>
-<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">ips</span> <span class="op">&lt;-</span> <span class="fu">fm_int</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="fm_mesh_1d.html">fm_mesh_1d</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">10</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span>, byrow <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
