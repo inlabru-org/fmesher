@@ -19,7 +19,7 @@ fm_fem <- function(mesh, order = 2, ...) {
 }
 
 #' @rdname fm_fem
-#' @return `fm_fem.fm_mesh_1d`: A list with elements `c0`, `c1`, `g1`, `g2`.
+#' @returns `fm_fem.fm_mesh_1d`: A list with elements `c0`, `c1`, `g1`, `g2`.
 #' When `mesh$degree == 2`, also `g01`, `g02`, and `g12`.
 #' @export
 fm_fem.fm_mesh_1d <- function(mesh, order = 2, ...) {
@@ -196,7 +196,7 @@ fm_fem.fm_mesh_1d <- function(mesh, order = 2, ...) {
 #'   \eqn{v}{v} for an anisotropic operator \eqn{\nabla\cdot H \nabla}{div H
 #'   grad}, where \eqn{H=\gamma I + v v^\top}{H = gamma I + v v'}. Currently
 #'   (2023-08-05) the fields need to be given per vertex.
-#' @return `fm_fem.fm_mesh_2d`: A list with elements `c0`, `c1`, `g1`, `va`,
+#' @returns `fm_fem.fm_mesh_2d`: A list with elements `c0`, `c1`, `g1`, `va`,
 #'   `ta`, and more if `order > 1`. When `aniso` is non-NULL, also `g1aniso`
 #'   matrices, etc.
 #'
@@ -223,21 +223,7 @@ fm_fem.fm_mesh_2d <- function(mesh, order = 2,
 }
 
 #' @rdname fm_fem
-#' @export
-#' @method fm_fem inla.mesh.1d
-fm_fem.inla.mesh.1d <- function(mesh, order = 2, ...) {
-  fm_fem(fm_as_fm(mesh), order = order, ...)
-}
-
-#' @rdname fm_fem
-#' @export
-#' @method fm_fem inla.mesh
-fm_fem.inla.mesh <- function(mesh, order = 2, ...) {
-  fm_fem(fm_as_fm(mesh), order = order, ...)
-}
-
-#' @rdname fm_fem
-#' @return `fm_fem.fm_tensor`: A list with elements `cc`, `g1`, `g2`.
+#' @returns `fm_fem.fm_tensor`: A list with elements `cc`, `g1`, `g2`.
 #' @export
 fm_fem.fm_tensor <- function(mesh, order = 2, ...) {
   if (order > 2) {

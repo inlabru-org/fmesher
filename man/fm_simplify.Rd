@@ -84,7 +84,7 @@ Other object creation and conversion:
 \code{\link{fm_segm}()},
 \code{\link{fm_tensor}()},
 \code{\link{geom_path_to_path_MGG}()},
-\code{\link{path_MGG}()}
+\code{\link{simple_path_MGG}()}
 }
 \author{
 Finn Lindgren \email{finn.lindgren@gmail.com}

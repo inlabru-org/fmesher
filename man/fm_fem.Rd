@@ -4,8 +4,6 @@
 \alias{fm_fem}
 \alias{fm_fem.fm_mesh_1d}
 \alias{fm_fem.fm_mesh_2d}
-\alias{fm_fem.inla.mesh.1d}
-\alias{fm_fem.inla.mesh}
 \alias{fm_fem.fm_tensor}
 \title{Compute finite element matrices}
 \usage{
@@ -14,10 +12,6 @@ fm_fem(mesh, order = 2, ...)
 \method{fm_fem}{fm_mesh_1d}(mesh, order = 2, ...)
 
 \method{fm_fem}{fm_mesh_2d}(mesh, order = 2, aniso = NULL, ...)
-
-\method{fm_fem}{inla.mesh.1d}(mesh, order = 2, ...)
-
-\method{fm_fem}{inla.mesh}(mesh, order = 2, ...)
 
 \method{fm_fem}{fm_tensor}(mesh, order = 2, ...)
 }

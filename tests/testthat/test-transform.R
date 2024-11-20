@@ -1,5 +1,4 @@
 test_that("fm_transform: geocentric globe transformation", {
-  skip_on_cran()
   skip_if_not_installed("sf")
   skip_if_not(fm_safe_sp())
 
@@ -25,7 +24,6 @@ test_that("fm_transform: geocentric globe transformation", {
 })
 
 test_that("fm_transform: geocentric globe transformation", {
-  skip_on_cran()
   skip_if_not_installed("sf")
   skip_if_not(fm_safe_sp())
 
@@ -59,7 +57,6 @@ test_that("fm_transform: geocentric globe transformation", {
 
 
 test_that("fm_transform: geocentric globe transformation, sp involved", {
-  skip_on_cran()
   skip_if_not_installed("sf")
   skip_if_not(fm_safe_sp())
 
@@ -87,7 +84,6 @@ test_that("fm_transform: geocentric globe transformation, sp involved", {
 })
 
 test_that("fm_transform: geocentric sphere transformation, sp involved", {
-  skip_on_cran()
   skip_if_not_installed("sf")
   skip_if_not(fm_safe_sp())
 

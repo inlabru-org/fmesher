@@ -17,8 +17,6 @@
 \alias{fm_bbox.sfg}
 \alias{fm_bbox.sfc}
 \alias{fm_bbox.bbox}
-\alias{fm_bbox.inla.mesh}
-\alias{fm_bbox.inla.mesh.segment}
 \alias{fm_as_bbox}
 \alias{[.fm_bbox}
 \alias{c.fm_bbox}
@@ -56,10 +54,6 @@ fm_bbox(...)
 \method{fm_bbox}{sfc}(x, ...)
 
 \method{fm_bbox}{bbox}(x, ...)
-
-\method{fm_bbox}{inla.mesh}(x, ...)
-
-\method{fm_bbox}{inla.mesh.segment}(x, ...)
 
 fm_as_bbox(x, ...)
 

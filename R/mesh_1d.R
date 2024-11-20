@@ -206,14 +206,14 @@ fm_mesh_1d <- function(loc,
 
   if (degree < 2) {
     mesh$idx$loc <-
-      fm_bary(mesh, loc.orig, method = "nearest")$t[, 1]
+      fm_bary(mesh, loc.orig, method = "nearest")$index
   } else {
     if (length(mid) >= 2) {
       mesh$idx$loc <-
         fm_bary(fm_mesh_1d(mid, degree = 0),
           loc.orig,
           method = "nearest"
-        )$t[, 1]
+        )$index
     } else {
       mesh$idx$loc <- rep(1, length(loc.orig))
     }

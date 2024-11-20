@@ -36,7 +36,6 @@ fm_as_sfc <- function(x, ...) {
 #'   `sfc_POLYGON/LINESTRING/POINT`. Default `FALSE`
 #' @returns * `fm_as_sfc`: An `sfc_MULTIPOLYGON/LINESTRING/POINT` or
 #' `sfc_POLYGON/LINESTRING/POINT` object
-#' @exportS3Method fm_as_sfc inla.mesh
 #' @export
 fm_as_sfc.fm_mesh_2d <- function(x,
                                  ...,
@@ -188,24 +187,6 @@ fm_as_sfc.sf <- function(x, ...) {
 }
 
 
-
-#' @describeIn fm_as_sfc `r lifecycle::badge("deprecated")` since
-#'   `inla.mesh` is deprecated. See `fm_as_sfc.fm_mesh_2d` instead.
-#'
-#' @exportS3Method fm_as_sfc inla.mesh
-#' @export
-fm_as_sfc.inla.mesh <- function(x, ...) {
-  fm_as_sfc.fm_mesh_2d(fm_as_mesh_2d(x), ...)
-}
-
-#' @describeIn fm_as_sfc `r lifecycle::badge("deprecated")` since
-#'   `inla.mesh.segment` is deprecated. See `fm_as_sfc.fm_segm` instead.
-#'
-#' @exportS3Method fm_as_sfc inla.mesh.segment
-#' @export
-fm_as_sfc.inla.mesh.segment <- function(x, ..., multi = FALSE) {
-  fm_as_sfc.fm_segm(fm_as_segm(x), ..., multi = multi)
-}
 
 
 

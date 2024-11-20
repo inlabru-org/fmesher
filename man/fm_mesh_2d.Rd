@@ -74,7 +74,7 @@ result after each step of the multi-step domain extension algorithm.}
 \item{crs}{An optional \code{\link[=fm_crs]{fm_crs()}}, \code{sf::crs} or \code{sp::CRS} object}
 }
 \value{
-An \code{inla.mesh} object.
+An \code{fm_mesh_2d} object.
 }
 \description{
 Make a 2D mesh object
@@ -124,7 +124,7 @@ Other object creation and conversion:
 \code{\link{fm_simplify}()},
 \code{\link{fm_tensor}()},
 \code{\link{geom_path_to_path_MGG}()},
-\code{\link{path_MGG}()}
+\code{\link{simple_path_MGG}()}
 }
 \author{
 Finn Lindgren \email{finn.lindgren@gmail.com}

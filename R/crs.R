@@ -249,7 +249,7 @@ fm_crs_set_ellipsoid_radius <- function(crs, radius) {
 #' @param params Length unit definitions, in the list format produced by
 #' `fm_wkt_unit_params()`, Default: NULL, which invokes
 #' `fm_wkt_unit_params()`
-#' @return For `fm_wkt_unit_params`, a
+#' @returns For `fm_wkt_unit_params`, a
 #' list of named unit definitions
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
 #' @examples
@@ -295,7 +295,7 @@ fm_wkt_unit_params <- function() {
 
 #' @export
 #' @rdname fm_crs_wkt
-#' @return For `fm_wkt_get_lengthunit`, a
+#' @returns For `fm_wkt_get_lengthunit`, a
 #' list of length units used in the wkt string, excluding the ellipsoid radius
 #' unit.
 
@@ -337,7 +337,7 @@ fm_wkt_get_lengthunit <- function(wkt) {
 
 #' @export
 #' @rdname fm_crs_wkt
-#' @return For `fm_wkt_set_lengthunit`, a
+#' @returns For `fm_wkt_set_lengthunit`, a
 #' WKT2 string with altered length units.
 #' Note that the length unit for the ellipsoid radius is unchanged.
 
@@ -392,7 +392,7 @@ fm_wkt_set_lengthunit <- function(wkt, unit, params = NULL) {
 }
 
 
-#' @return For `fm_crs_get_lengthunit`, a
+#' @returns For `fm_crs_get_lengthunit`, a
 #' list of length units used in the wkt string, excluding the ellipsoid radius
 #' unit. (For legacy PROJ4 code, the raw units from the proj4string are
 #' returned, if present.)
@@ -437,7 +437,7 @@ fm_length_unit.character <- function(x) {
 
 
 
-#' @return For `fm_length_unit<-`, a crs object with
+#' @returns For `fm_length_unit<-`, a crs object with
 #' altered length units.
 #' Note that the length unit for the ellipsoid radius is unchanged.
 #' @rdname fm_crs_wkt
@@ -544,7 +544,7 @@ fm_length_unit.character <- function(x) {
 #' When `oblique[2]` or `oblique[3]` are non-zero, the resulting
 #' projection is only correct for perfect spheres.
 #' @param \dots Additional parameters. Not currently in use.
-#' @return Either an `sf::crs` object or an `fm_crs` object,
+#' @returns Either an `sf::crs` object or an `fm_crs` object,
 #' depending on if the coordinate reference system described by the parameters
 #' can be expressed with a pure `crs` object or not.
 #'
@@ -585,7 +585,7 @@ fm_crs <- function(x, oblique = NULL, ..., crsonly = deprecated()) {
       )
     }
 
-    lifecycle::deprecate_soft(
+    lifecycle::deprecate_warn(
       "0.0.1",
       "fm_crs(crsonly=' should no longer be used')",
       "fm_crs(oblique)",
@@ -1108,7 +1108,7 @@ fm_crs.matrix <- function(x, oblique = NULL, ...) {
 #' @param SRS_string a WKT2 string defining the coordinate system;
 #' see `sp::CRS`. This takes precedence over `projargs`.
 #' @param \dots Additional parameters, passed on to sub-methods.
-#' @return Either an `sp::CRS` object or an `inla.CRS` object,
+#' @returns Either an `sp::CRS` object or an `inla.CRS` object,
 #' depending on if the coordinate reference system described by the parameters
 #' can be expressed with a pure `sp::CRS` object or not.
 #'
@@ -1341,7 +1341,7 @@ fm_CRS.default <- function(x, oblique = NULL,
   x
 }
 
-#' @return `fm_wkt_predef` returns a WKT2 string defining a projection
+#' @returns `fm_wkt_predef` returns a WKT2 string defining a projection
 #' @examples
 #' names(fm_wkt_predef())
 #' @export
@@ -1694,7 +1694,7 @@ fm_list_as_CRS <- function(x, ...) {
 #' `fm_CRSargs_as_list`), or a list (for `fm_list_as_CRS` and
 #' `fm_list_as_CRSargs`).
 #' @param \dots Additional arguments passed on to other methods.
-#' @return For `fm_CRSargs` and `fm_list_as_CRSargs`, a character
+#' @returns For `fm_CRSargs` and `fm_list_as_CRSargs`, a character
 #' string with PROJ.4 arguments.
 #'
 #' For `fm_CRS_as_list` and `fm_CRSargs_as_list`, a list of
@@ -1718,13 +1718,13 @@ fm_list_as_CRS <- function(x, ...) {
 #'   print(fm_proj4string(crs2))
 #' }
 fm_CRSargs <- function(x, ...) {
-  lifecycle::deprecate_warn("0.0.1", "fm_CRSargs()", "fm_proj4string()")
+  lifecycle::deprecate_stop("0.0.1", "fm_CRSargs()", "fm_proj4string()")
 
   fm_proj4string(x)
 }
 
 
-#' @return For `fm_list_as_CRSargs()`, a CRS proj4 string for name=value pair
+#' @returns For `fm_list_as_CRSargs()`, a CRS proj4 string for name=value pair
 #'   list
 #' @rdname fm_CRSargs
 fm_list_as_CRSargs <- function(x, ...) {
@@ -1743,7 +1743,7 @@ fm_list_as_CRSargs <- function(x, ...) {
   )
 }
 
-#' @return For `fm_CRSargs_as_list()`, a list of name=value pairs from CRS
+#' @returns For `fm_CRSargs_as_list()`, a list of name=value pairs from CRS
 #'   proj4string
 #' @rdname fm_CRSargs
 #' @export
@@ -1805,7 +1805,7 @@ fm_proj4string <- function(crs) {
 #' instead.
 
 fm_crs_get_wkt <- function(crs) {
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     "0.0.1",
     "fm_crs_get_wkt()",
     "fm_wkt()"
@@ -2125,7 +2125,7 @@ fm_crs_is_identical <- function(crs0, crs1, crsonly = FALSE) {
 #' by `fm_crs_is_identical()`.
 #' @export
 fm_identical_CRS <- function(crs0, crs1, crsonly = FALSE) {
-  lifecycle::deprecate_soft(
+  lifecycle::deprecate_warn(
     "0.1.0",
     "fm_identical_CRS()",
     "fm_crs_is_identical()"
@@ -2398,7 +2398,7 @@ fm_transform.matrix <- function(x, crs, ..., passthrough = FALSE, crs0 = NULL) {
       current_crs <- crs_sphere
     }
     obl0 <- fm_crs_oblique(crs0)
-    if (!is.na(obl0)) {
+    if (!all(is.na(obl0))) {
       x <- fm_crs_transform_oblique(
         x,
         obl0,
@@ -2407,7 +2407,7 @@ fm_transform.matrix <- function(x, crs, ..., passthrough = FALSE, crs0 = NULL) {
     }
 
     obl1 <- fm_crs_oblique(crs1)
-    if (!is.na(obl1)) {
+    if (!all(is.na(obl1))) {
       x <- fm_crs_transform_oblique(
         x,
         obl1,
@@ -2651,25 +2651,6 @@ fm_crs.inla.CRS <- function(x, oblique = NULL, ...) {
   )
 }
 
-#' @rdname fm_crs
-#' @export
-#' @method fm_crs inla.mesh
-fm_crs.inla.mesh <- function(x, oblique = NULL, ...) {
-  fm_crs(x[["crs"]], oblique = oblique, ...)
-}
-
-#' @rdname fm_crs
-#' @export
-fm_crs.inla.mesh.lattice <- function(x, oblique = NULL, ...) {
-  fm_crs(x[["crs"]], oblique = oblique, ...)
-}
-
-#' @rdname fm_crs
-#' @export
-fm_crs.inla.mesh.segment <- function(x, oblique = NULL, ...) {
-  fm_crs(x[["crs"]], oblique = oblique, ...)
-}
-
 #' @export
 #' @rdname fm_crs-set
 `fm_crs_oblique<-.inla.CRS` <- function(x, value) {
@@ -2689,43 +2670,6 @@ is.na.inla.CRS <- function(x) {
 #' @export
 fm_CRS.inla.CRS <- function(x, oblique = NULL, ...) {
   fm_CRS(fm_crs(x, oblique = oblique, ...))
-}
-
-#' @rdname fm_CRS_sp
-#' @export
-fm_CRS.inla.mesh <- function(x, oblique = NULL, ...) {
-  fm_CRS(x[["crs"]], oblique = oblique, ...)
-}
-
-#' @rdname fm_CRS_sp
-#' @export
-fm_CRS.inla.mesh.lattice <- function(x, oblique = NULL, ...) {
-  fm_CRS(x[["crs"]], oblique = oblique, ...)
-}
-
-#' @rdname fm_CRS_sp
-#' @export
-fm_CRS.inla.mesh.segment <- function(x, oblique = NULL, ...) {
-  fm_CRS(x[["crs"]], oblique = oblique, ...)
-}
-
-#' @export
-#' @rdname fm_transform
-fm_transform.inla.mesh <- function(x,
-                                   crs = fm_crs(x),
-                                   ...) {
-  fm_transform.fm_mesh_2d(fm_as_mesh_2d(x), crs = crs, ...)
-}
-
-#' @export
-#' @rdname fm_transform
-fm_transform.inla.mesh.lattice <- function(x, crs, ...) {
-  fm_transform.fm_lattice_2d(fm_as_lattice_2d(x), crs = crs, ...)
-}
-#' @export
-#' @rdname fm_transform
-fm_transform.inla.mesh.segment <- function(x, crs, ...) {
-  fm_transform.fm_segm(fm_as_segm(x), crs = crs, ...)
 }
 
 
@@ -2753,7 +2697,7 @@ fm_transform.inla.mesh.segment <- function(x, crs, ...) {
 #' @seealso [fm_transform()]
 #' @export
 fm_spTransform <- function(x, ...) {
-  lifecycle::deprecate_soft("0.0.1", "fm_spTransform()", "fm_transform()")
+  lifecycle::deprecate_warn("0.0.1", "fm_spTransform()", "fm_transform()")
   UseMethod("fm_spTransform")
 }
 
@@ -2787,88 +2731,17 @@ fm_spTransform.SpatialPointsDataFrame <- function(x,
   fm_transform(x, crs = CRSobj, passthrough = passthrough)
 }
 
-#' @export
-#' @rdname fmesher-deprecated
-fm_spTransform.inla.mesh.lattice <- function(x,
-                                             CRSobj,
-                                             passthrough = FALSE,
-                                             ...) {
-  fm_transform(x, crs = CRSobj, passthrough = passthrough)
-}
-
-#' @export
-#' @rdname fmesher-deprecated
-fm_spTransform.inla.mesh.segment <- function(x,
-                                             CRSobj,
-                                             passthrough = FALSE,
-                                             ...) {
-  fm_transform(x, crs = CRSobj, passthrough = passthrough)
-}
-
-#' @export
-#' @rdname fmesher-deprecated
-fm_spTransform.inla.mesh <- function(x, CRSobj, passthrough = FALSE, ...) {
-  fm_transform(x, crs = CRSobj, passthrough = passthrough)
-}
-
 
 
 # Deprecated methods ####
 
-#' @describeIn fmesher-deprecated Detect whether PROJ6 is available
-#'
+#' @describeIn fmesher-deprecated Old checker for PROJ6.
 #' @export
-
 fm_has_PROJ6 <- function() {
-  lifecycle::deprecate_warn("0.0.1",
+  lifecycle::deprecate_stop(
+    "0.0.1",
     "fm_has_PROJ6()",
-    details = c(
-      i = "Since inlabru 2.7.1, fm_has_PROJ6() always returns TRUE",
-      i = "rgdal/PROJ4 is no longer supported."
-    )
-  )
-  TRUE
-}
-
-#' @describeIn fmesher-deprecated `fm_not_for_PROJ6` is called to warn about
-#'   using old PROJ4 features even though PROJ6 is available
-
-fm_not_for_PROJ6 <- function(fun = NULL) {
-  lifecycle::deprecate_stop("0.0.1",
-    "fm_not_for_PROJ6()",
-    details = c(x = "rgdal/PROJ4 is no longer supported.")
-  )
-}
-
-#' @describeIn fmesher-deprecated `fm_not_for_PROJ4` is called to give an error
-#'   when calling methods that are only available for PROJ6
-fm_not_for_PROJ4 <- function(fun = NULL) {
-  lifecycle::deprecate_stop("0.0.1",
-    "fm_not_for_PROJ4()",
-    details = c(x = "rgdal/PROJ4 is no longer supported.")
-  )
-}
-
-#' @describeIn fmesher-deprecated Called to warn about falling back
-#' to using old PROJ4 methods when a PROJ6 method hasn't been implemented
-
-fm_fallback_PROJ6 <- function(fun = NULL) {
-  lifecycle::deprecate_stop("0.0.1",
-    "fm_not_for_PROJ4()",
-    details = c(x = "rgdal/PROJ4 requested by PROJ4 is no longer supported.")
-  )
-}
-
-
-#' @param fun The name of the function that requires PROJ6. Default: NULL,
-#' which uses the name of the calling function.
-#' @describeIn fmesher-deprecated Called to give an error when PROJ6
-#' is required but not available
-
-fm_requires_PROJ6 <- function(fun = NULL) {
-  lifecycle::deprecate_stop("0.0.1",
-    "fm_requires_PROJ6()",
-    details = c(x = "rgdal/PROJ4 is no longer supported.")
+    details = "Should no longer be used."
   )
 }
 
@@ -2877,7 +2750,7 @@ fm_requires_PROJ6 <- function(fun = NULL) {
 #' `sp::Spatial` and `sp::CRS` objects.
 #' @export
 fm_as_sp_crs <- function(x, ...) {
-  lifecycle::deprecate_soft(
+  lifecycle::deprecate_warn(
     "0.0.1",
     "fm_as_sp_crs()",
     "fm_CRS()"
@@ -2891,7 +2764,7 @@ fm_as_sp_crs <- function(x, ...) {
 #' @describeIn fmesher-deprecated Wrapper for `CRS(projargs)` (PROJ4) and
 #'   `CRS(wkt)` for `sp::Spatial` objects.
 #' @param x A `sp::Spatial` object
-#' @return A `CRS` object, or NULL if no valid CRS identified
+#' @returns A `CRS` object, or NULL if no valid CRS identified
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
 #' @details This function is a convenience method to workaround PROJ4/PROJ6
 #'   differences, and the lack of a crs extraction method for Spatial objects.
@@ -2905,6 +2778,6 @@ fm_as_sp_crs <- function(x, ...) {
 #' @export
 
 fm_sp_get_crs <- function(x) {
-  lifecycle::deprecate_warn("0.0.1", "fm_sp_get_crs()", "fm_CRS()")
+  lifecycle::deprecate_stop("0.0.1", "fm_sp_get_crs()", "fm_CRS()")
   fm_CRS(x)
 }

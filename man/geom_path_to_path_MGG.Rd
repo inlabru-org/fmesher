@@ -4,12 +4,12 @@
 \alias{geom_path_to_path_MGG}
 \title{Make an interval on graph object from sf object (NOT FINISHED)}
 \usage{
-geom_path_to_path_MGG(graph, geom_path)
+geom_path_to_path_MGG(geom_path, graph)
 }
 \arguments{
-\item{graph}{metric_graph that the interval should be mapped to.}
-
 \item{geom_path}{\code{sf::st_geometry} (\code{LINESTRING}) on a graph}
+
+\item{graph}{metric_graph that the interval should be mapped to.}
 }
 \value{
 A \code{path_MGG} object
@@ -33,8 +33,8 @@ if (requireNamespace("MetricGraph") && requireNamespace("lwgeom") &&
     c(0.5, 0, 0)
   ))
   path <- geom_path_to_path_MGG(
-    graph,
-    sf::st_geometry(geom_path)
+    sf::st_geometry(geom_path),
+    graph
   )
   path
 }
@@ -61,7 +61,7 @@ Other object creation and conversion:
 \code{\link{fm_segm}()},
 \code{\link{fm_simplify}()},
 \code{\link{fm_tensor}()},
-\code{\link{path_MGG}()}
+\code{\link{simple_path_MGG}()}
 }
 \author{
 Karina Lilleborge \email{karina.lilleborge@gmail.com}

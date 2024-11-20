@@ -23,10 +23,10 @@ test_that("point location", {
 
   expect_equal(
     rbind(
-      b$bary[1, , drop = FALSE] %*%
-        mesh_loc[mesh_tv[b$t[1] + 1L, ], , drop = FALSE],
-      b$bary[2, , drop = FALSE] %*%
-        mesh_loc[mesh_tv[b$t[2] + 1L, ], , drop = FALSE]
+      b$where[1, , drop = FALSE] %*%
+        mesh_loc[mesh_tv[b$index[1] + 1L, ], , drop = FALSE],
+      b$where[2, , drop = FALSE] %*%
+        mesh_loc[mesh_tv[b$index[2] + 1L, ], , drop = FALSE]
     ),
     loc
   )
@@ -52,10 +52,10 @@ test_that("point location", {
 
   expect_equal(
     rbind(
-      b$bary[1, , drop = FALSE] %*%
-        mesh_loc[mesh_tv[b$t[1], ], , drop = FALSE],
-      b$bary[2, , drop = FALSE] %*%
-        mesh_loc[mesh_tv[b$t[2], ], , drop = FALSE]
+      b$where[1, , drop = FALSE] %*%
+        mesh_loc[mesh_tv[b$index[1], ], , drop = FALSE],
+      b$where[2, , drop = FALSE] %*%
+        mesh_loc[mesh_tv[b$index[2], ], , drop = FALSE]
     ),
     loc
   )

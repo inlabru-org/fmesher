@@ -158,18 +158,6 @@ fm_bbox.bbox <- function(x, ...) {
 
 #' @rdname fm_bbox
 #' @export
-fm_bbox.inla.mesh <- function(x, ...) {
-  fm_bbox(fm_as_fm(x))
-}
-
-#' @rdname fm_bbox
-#' @export
-fm_bbox.inla.mesh.segment <- function(x, ...) {
-  fm_bbox(fm_as_fm(x))
-}
-
-#' @rdname fm_bbox
-#' @export
 fm_as_bbox <- function(x, ...) {
   fm_bbox(x, ...)
 }

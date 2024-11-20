@@ -10,9 +10,6 @@
 \alias{fm_int.fm_lattice_2d}
 \alias{fm_int.fm_mesh_1d}
 \alias{fm_int.fm_mesh_2d}
-\alias{fm_int.inla.mesh.lattice}
-\alias{fm_int.inla.mesh.1d}
-\alias{fm_int.inla.mesh}
 \alias{fm_int.metric_graph}
 \title{Multi-domain integration}
 \usage{
@@ -33,19 +30,6 @@ fm_int(domain, samplers = NULL, ...)
 \method{fm_int}{fm_mesh_1d}(domain, samplers = NULL, name = "x", int.args = NULL, ...)
 
 \method{fm_int}{fm_mesh_2d}(
-  domain,
-  samplers = NULL,
-  name = NULL,
-  int.args = NULL,
-  format = NULL,
-  ...
-)
-
-\method{fm_int}{inla.mesh.lattice}(domain, samplers = NULL, name = "x", ...)
-
-\method{fm_int}{inla.mesh.1d}(domain, samplers = NULL, name = "x", int.args = NULL, ...)
-
-\method{fm_int}{inla.mesh}(
   domain,
   samplers = NULL,
   name = NULL,
@@ -86,7 +70,7 @@ Points per knot segment: \code{nsub1}
 the sampler type.}
 }
 \value{
-A \code{data.frame}, \code{tibble}, \code{sf}, or \code{SpatialPointsDataFrame} of 1D
+A \code{tibble}, \code{sf}, or \code{SpatialPointsDataFrame} of 1D
 and 2D integration points, including a \code{weight} column and \code{.block} column.
 }
 \description{
@@ -130,7 +114,6 @@ ips <- fm_int(fm_mesh_1d(0:4), samplers = cbind(2, 3.5))
 plot(ips$x, ips$weight)
 
 # Create integration points for the two intervals [0,3] and [5,10]
-
 ips <- fm_int(
   fm_mesh_1d(0:10),
   matrix(c(0, 3, 5, 10), nrow = 2, byrow = TRUE)

@@ -4,12 +4,12 @@
 \alias{Euclidean_to_MGG}
 \title{Make a fm_bary_MGG object from Euclidean coordinates}
 \usage{
-Euclidean_to_MGG(graph, loc)
+Euclidean_to_MGG(loc, graph)
 }
 \arguments{
-\item{graph}{metric_graph that the location should be mapped to.}
+\item{loc}{Euclidean coords (if not on graph, they are mapped to the closest}
 
-\item{loc}{Euclidean coords (if not on graph, they are mapped to the closest
+\item{graph}{metric_graph that the location should be mapped to.
 point on graph)}
 }
 \value{
@@ -57,7 +57,7 @@ Other object creation and conversion:
 \code{\link{fm_simplify}()},
 \code{\link{fm_tensor}()},
 \code{\link{geom_path_to_path_MGG}()},
-\code{\link{path_MGG}()}
+\code{\link{simple_path_MGG}()}
 }
 \author{
 Karina Lilleborge \email{karina.lilleborge@gmail.com}

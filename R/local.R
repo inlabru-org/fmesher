@@ -134,7 +134,7 @@ check_package_version_and_load <-
 #' @param minimum_version character; the minimum required sp version.
 #' Default 1.4-5 (should always match the requirement in the package
 #' DESCRIPTION)
-#' @return Returns (invisibly) `FALSE` if a potential issue is detected, and
+#' @returns Returns (invisibly) `FALSE` if a potential issue is detected, and
 #'   give a message if `quietly` is `FALSE`. Otherwise returns `TRUE`
 #' @export
 #' @examples

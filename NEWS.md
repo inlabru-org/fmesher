@@ -1,26 +1,59 @@
 # fmesher (development version)
 
-* Update documentation and vector coordinate inputs to `fm_lattice_2d()`
-  to clarify input interpretation and ensure correct boundary orientation (version `0.1.7.9001`)
-* Add `full` argument to `fm_basis()` to toggle between matrix and full `fm_basis`
-  object output (version `0.1.7.9002`)
+* Convert `fm_bary()` output to a dedicated `fm_bary` class, with elements 'index'
+  (index of the containing simplex) and 'where' (matrix of barycentric weights).
+  (version `0.2.0.9001`)
+* Add `fm_bary_simplex()` generic method to extract the simplex vertex indices for an
+  `fm_bary` object.
+  (version `0.2.0.9001`)
+* Add `fm_bary_loc()` generic method for converting `fm_bary` information to
+  Euclidean coordinates (version `0.2.0.9005`)
+* Simplify `fm_basis` object creation, and add `custom_classes` developers
+  vignette (version `0.2.0.9004`)
+* Remove long deprecated `inla.mesh` etc legacy methods; need to explicitly
+  convert old objects. Retaining the `inla.mesh` etc class suffixes for now.
+  (version `0.2.0.9001`)
+* Handle `NA` location inputs to `fm_basis.fm_mesh_1d()` (version `0.2.0.9002`)
+* Add `fm_basis(mesh, loc = fm_bary(mesh, ...))` support for `fm_mesh_1d`
+  and `fm_mesh_2d` objects (version `0.2.0.9006`)
+
+# fmesher 0.2.0
+
+## New methods
+
 * Add print methods for `fm_basis` and `fm_evaluator` objects (version `0.1.7.9003`)
 * Add `fm_manifold_get()` generic method to extract manifold information from general
   objects, so that external objects can implement their own manifold information
   storage (version `0.1.7.9005`)
-* Add some length unit handling to `fm_crs_bounds()` (version `0.1.7.9008`)
-* Add `format="loc"` argument to `fm_as_sfc.fm_mesh_2d()` for converting mesh
-  node coordinates to `sfc_POINT` format (version `0.1.7.9009`)
+* Add `fm_crs_plot()` method for plotting `fm_crs` objects with optional
+  graticules and Tissot indicatrices (version `0.1.7.9010`)
+
+## New method options
+
+* Add `full` argument to `fm_basis()` to toggle between matrix and full `fm_basis`
+  object output (version `0.1.7.9002`)
 * Add `loc` plotting option to `geom_fm.fm_mesh_2d` and modify the `ggplot`
   mapping interface for interior and boundary segments in the same method
   (version `0.1.7.9009`)
+* Add `format="loc"` argument to `fm_as_sfc.fm_mesh_2d()` for converting mesh
+  node coordinates to `sfc_POINT` format (version `0.1.7.9009`)
 
-## sp deprecation updates
+## Minor updates
+
+* Update documentation and vector coordinate inputs to `fm_lattice_2d()`
+  to clarify input interpretation and ensure correct boundary orientation (version `0.1.7.9001`)
+* Add some length unit handling to `fm_crs_bounds()` (version `0.1.7.9008`)
+* Add control argument `max_batch_size` to `fm_bary.fm_mesh_2d()`, that can be
+  supplied via `fm_basis()`, for optional override of the default maximal batch
+  calculation size, see #14 (version `0.1.7.9011`)
+
+## Deprecation updates
 
 * Remove `sp` objects from `fmexample` data. Use `fmexample_sp()` to access them if needed
   (version `0.1.7.9004`)
 * Move `sp` dependency to Suggests, and remove `inlabru` dependency (version `0.1.7.9006`)
 * Further `sp` use protection (version `0.1.7.9007`)
+* Increased deprecation warning and error messages for old unsupported methods
 
 # fmesher 0.1.7
 
@@ -32,7 +65,8 @@
 
 * Fix for hiding away-facing triangle edges in `plot.fm_mesh_2d()` and `lines.fm_segm()`.
 * Fix duplicated `fm_unify_coords.sf()` method. Thanks to Pablo Paccioretti for debugging and reporting, see #13 (version `0.1.5.9001`)
-* Use batched `fm_bary.fm_mesh_2d()` computations for data sizes of `2e5` and upwards. This improves performance of `fm_basis()`/`inla.spde.make.A()` for large data sets, see #14 (version `0.1.5.9002`)
+* Use batched `fm_bary.fm_mesh_2d()` computations for data sizes of `2e5` and upwards.
+  This improves performance of `fm_basis()`/`inla.spde.make.A()` for large data sets, see #14 (version `0.1.5.9002`)
 * Automatically convert raw `sfc` samplers objects to `sf` objects in `fm_int.list()` (version `0.1.5.9003`)
 * Detect and warn about unsupported use of `fm_segm` objects in `fm_int.list()` (version `0.1.5.9004`)
 * Add `fm_basis()` and `fm_fem()` support for `fm_tensor` function spaces (version `0.1.5.9005`)

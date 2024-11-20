@@ -23,7 +23,7 @@
 #' or a numeric vector of x-values
 #' @param ny `r lifecycle::badge("deprecated")` Number of pixels in y direction,
 #' or a numeric vector of y-values
-#' @return `sf`, `SpatRaster`, or `SpatialPixelsDataFrame` covering the mesh or
+#' @returns `sf`, `SpatRaster`, or `SpatialPixelsDataFrame` covering the mesh or
 #' mask.
 #'
 #' @examples
@@ -86,7 +86,7 @@ fm_pixels <- function(mesh,
 
   x <- NULL
   if (lifecycle::is_present(nx)) {
-    lifecycle::deprecate_soft(
+    lifecycle::deprecate_warn(
       "0.0.1",
       "fm_pixels(nx)",
       "fm_pixels(dim)"
@@ -99,7 +99,7 @@ fm_pixels <- function(mesh,
   }
   y <- NULL
   if (lifecycle::is_present(ny)) {
-    lifecycle::deprecate_soft(
+    lifecycle::deprecate_warn(
       "0.0.1",
       "fm_pixels(ny)",
       "fm_pixels(dim)"
@@ -185,7 +185,7 @@ fm_pixels <- function(mesh,
 #' @param mesh An [fm_mesh_2d()] object
 #' @param refine A list of refinement options passed on to
 #' [fm_rcdt_2d_inla]
-#' @return A refined `fm_mesh_2d` object
+#' @returns A refined `fm_mesh_2d` object
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
 #' @export
 #' @examples
@@ -213,7 +213,7 @@ fm_refine <- function(mesh, refine = list(max.edge = 1)) {
 #'
 #' @param mesh an [fm_mesh_2d] object
 #' @param n number of added points along each edge. Default is 1.
-#' @return A refined [fm_mesh_2d] object
+#' @returns A refined [fm_mesh_2d] object
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
 #' @export
 #' @examples
@@ -490,7 +490,7 @@ fm_vertices <- function(x, format = NULL) {
 #' object.
 #'
 #' @export
-#' @param x An `fm_mesh_2d` or `inla.mesh` object.
+#' @param x An `fm_mesh_2d` object.
 #' @param format character; `"sf"`, `"df"`, `"sp"`
 #' @return
 #' An `sf`, `data.frame`, or `SpatialPointsDataFrame` object, with the vertex
@@ -639,36 +639,4 @@ fm_dof.fm_mesh_2d <- function(x) {
 #' @export
 fm_dof.fm_tensor <- function(x) {
   prod(vapply(x$fun_spaces, fm_dof, 0L))
-}
-
-
-
-
-# Deprecated ####
-
-#' @describeIn fmesher-deprecated Conversion to inla.mesh.segment
-#' `r lifecycle::badge("deprecated")` in favour of [fm_as_segm()].
-#' @returns An `fm_segm` object
-#' @export
-fm_as_inla_mesh_segment <-
-  function(...) {
-    lifecycle::deprecate_soft(
-      "0.0.1",
-      "fm_as_inla_mesh_segment()",
-      "fm_as_segm()"
-    )
-    fm_as_segm(...)
-  }
-
-#' @describeIn fmesher-deprecated Conversion to inla.mesh.
-#' `r lifecycle::badge("deprecated")` in favour of [fm_as_mesh_2d()].
-#' @returns An `fm_mesh_2d` object
-#' @export
-fm_as_inla_mesh <- function(...) {
-  lifecycle::deprecate_soft(
-    "0.0.1",
-    "fm_as_inla_mesh()",
-    "fm_as_mesh_2d()"
-  )
-  fm_as_mesh_2d(...)
 }

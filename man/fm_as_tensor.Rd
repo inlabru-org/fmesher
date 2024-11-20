@@ -55,6 +55,6 @@ Other object creation and conversion:
 \code{\link{fm_simplify}()},
 \code{\link{fm_tensor}()},
 \code{\link{geom_path_to_path_MGG}()},
-\code{\link{path_MGG}()}
+\code{\link{simple_path_MGG}()}
 }
 \concept{object creation and conversion}

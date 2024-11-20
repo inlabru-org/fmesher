@@ -62,7 +62,7 @@ An object of some \verb{fm_*} class
 }
 \description{
 Used for conversion from general objects
-(usually \code{inla.mesh} and other INLA specific classes)
+(usually \code{inla.mesh} and other legacy INLA specific classes)
 to \code{fmesher} classes.
 }
 \examples{
@@ -90,6 +90,6 @@ Other object creation and conversion:
 \code{\link{fm_simplify}()},
 \code{\link{fm_tensor}()},
 \code{\link{geom_path_to_path_MGG}()},
-\code{\link{path_MGG}()}
+\code{\link{simple_path_MGG}()}
 }
 \concept{object creation and conversion}

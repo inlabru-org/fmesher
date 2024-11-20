@@ -13,9 +13,6 @@
 \alias{fm_transform.fm_lattice_2d}
 \alias{fm_transform.fm_segm}
 \alias{fm_transform.fm_list}
-\alias{fm_transform.inla.mesh}
-\alias{fm_transform.inla.mesh.lattice}
-\alias{fm_transform.inla.mesh.segment}
 \title{Object coordinate transformation}
 \usage{
 fm_transform(x, crs, ...)
@@ -42,12 +39,6 @@ fm_transform(x, crs, ...)
 \method{fm_transform}{fm_segm}(x, crs = fm_crs(x), ..., passthrough = FALSE, crs0 = fm_crs(x))
 
 \method{fm_transform}{fm_list}(x, crs, ...)
-
-\method{fm_transform}{inla.mesh}(x, crs = fm_crs(x), ...)
-
-\method{fm_transform}{inla.mesh.lattice}(x, crs, ...)
-
-\method{fm_transform}{inla.mesh.segment}(x, crs, ...)
 }
 \arguments{
 \item{x}{The object that should be transformed from it's current CRS to a new CRS}

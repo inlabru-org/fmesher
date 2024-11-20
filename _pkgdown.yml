@@ -13,12 +13,14 @@ navbar:
         href: articles/basic_use.html
       - text: ---
       - text: Concepts
-      - text: Conversion from legacy INLA package methods
-        href: articles/inla_conversion.html
+      - text: Custom classes
+        href: articles/custom_classes.html
       - text: The fmesher C++ library
         href: articles/fmesher_library.html
       - text: "Devel: Internal algorithm flowcharts"
         href: articles/devel_flow.html
+      - text: Conversion from legacy INLA package methods
+        href: articles/inla_conversion.html
 
 
 reference:
@@ -89,6 +91,7 @@ reference:
   - starts_with("geom_fm")
   - starts_with("plot")
   - starts_with("lines")
+  - starts_with("fm_crs_plot")
 - title: "Printing methods"
   desc: "Functions for printing."
   contents:

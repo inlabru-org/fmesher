@@ -7,13 +7,13 @@
 fm_vertex_projection(points, mesh)
 }
 \arguments{
-\item{points}{A \code{SpatialPointsDataFrame}, \code{sf}, or \code{list} object}
+\item{points}{A \code{SpatialPointsDataFrame}, \code{sf}, \code{tibble}, or \code{list} object}
 
-\item{mesh}{An \code{fm_mesh_2d} or \code{inla.mesh} object}
+\item{mesh}{An \code{fm_mesh_2d} object}
 }
 \value{
-\code{SpatialPointsDataFrame}, \code{sf}, or \code{list} of mesh vertices with
-projected data attached
+\code{SpatialPointsDataFrame}, \code{sf}, \code{tibble}, or \code{list} of mesh
+vertices with projected data attached
 }
 \description{
 Compute information for assigning points to the vertices of the covering

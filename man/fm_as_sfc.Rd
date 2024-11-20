@@ -6,8 +6,6 @@
 \alias{fm_as_sfc.fm_segm}
 \alias{fm_as_sfc.sfc}
 \alias{fm_as_sfc.sf}
-\alias{fm_as_sfc.inla.mesh}
-\alias{fm_as_sfc.inla.mesh.segment}
 \title{Conversion methods from mesh related objects to sfc}
 \usage{
 fm_as_sfc(x, ...)
@@ -19,10 +17,6 @@ fm_as_sfc(x, ...)
 \method{fm_as_sfc}{sfc}(x, ...)
 
 \method{fm_as_sfc}{sf}(x, ...)
-
-\method{fm_as_sfc}{inla.mesh}(x, ...)
-
-\method{fm_as_sfc}{inla.mesh.segment}(x, ..., multi = FALSE)
 }
 \arguments{
 \item{x}{An object to be coerced/transformed/converted into another class}
@@ -50,12 +44,6 @@ Conversion methods from mesh related objects to sfc
 \item \code{fm_as_sfc(fm_mesh_2d)}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 \item \code{fm_as_sfc(fm_segm)}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-
-\item \code{fm_as_sfc(inla.mesh)}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} since
-\code{inla.mesh} is deprecated. See \code{fm_as_sfc.fm_mesh_2d} instead.
-
-\item \code{fm_as_sfc(inla.mesh.segment)}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} since
-\code{inla.mesh.segment} is deprecated. See \code{fm_as_sfc.fm_segm} instead.
 
 }}
 \examples{
@@ -91,7 +79,7 @@ Other object creation and conversion:
 \code{\link{fm_simplify}()},
 \code{\link{fm_tensor}()},
 \code{\link{geom_path_to_path_MGG}()},
-\code{\link{path_MGG}()}
+\code{\link{simple_path_MGG}()}
 }
 \concept{fm_as}
 \concept{object creation and conversion}

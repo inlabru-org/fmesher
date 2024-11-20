@@ -4,12 +4,12 @@
 \alias{MGM_to_MGG}
 \title{Convert fm_bary_MGM coordinates to a fm_bary_MGG coordinates}
 \usage{
-MGM_to_MGG(graph, coord)
+MGM_to_MGG(coord, graph)
 }
 \arguments{
-\item{graph}{metric_graph that the location should be mapped to.}
-
 \item{coord}{MGM coordinates}
+
+\item{graph}{metric_graph that the location should be mapped to.}
 }
 \value{
 An \code{fm_bary_MGG} object
@@ -28,8 +28,8 @@ if (requireNamespace("MetricGraph")) {
   graph <- MetricGraph::metric_graph$new(edges = edges)
   graph$build_mesh(h = 0.01)
   mgg <- MGM_to_MGG(
-    graph,
-    as_MGM(cbind(5, 1))
+    as_MGM(cbind(5, 1)),
+    graph
   )
   mgg
 }
@@ -56,7 +56,7 @@ Other object creation and conversion:
 \code{\link{fm_simplify}()},
 \code{\link{fm_tensor}()},
 \code{\link{geom_path_to_path_MGG}()},
-\code{\link{path_MGG}()}
+\code{\link{simple_path_MGG}()}
 }
 \author{
 Karina Lilleborge \email{karina.lilleborge@gmail.com}

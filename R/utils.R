@@ -330,7 +330,7 @@ fm_as_dgTMatrix.fmesher_sparse <- function(x, unique = TRUE, ...) {
 #' `INLA::inla.spde.make.A()`.
 #' @param weights Optional scaling weights to be applied row-wise to the
 #' resulting matrix.
-#' @return A `Matrix::sparseMatrix` object.
+#' @returns A `Matrix::sparseMatrix` object.
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
 #' @export
 #' @examples

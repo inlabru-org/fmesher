@@ -50,10 +50,10 @@ is reimplemented.)}
 \code{A} and \code{e}. Should only be used for a small number of exact constraints.}
 }
 \value{
-\code{fm_matern_sample()} returns a matrix, where each column is a sampled
-field. If \code{loc} is \code{NULL}, the \code{fm_dof(mesh)} basis weights are given.
-Otherwise, the evaluated field at the \code{nrow(loc)} locations \code{loc} are given
-(from version \verb{0.1.4.9001})
+\code{fm_matern_sample()} returns a matrix, where each column is a
+sampled field. If \code{loc} is \code{NULL}, the \code{fm_dof(mesh)} basis weights are
+given. Otherwise, the evaluated field at the \code{nrow(loc)} locations \code{loc}
+are given (from version \verb{0.1.4.9001})
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}

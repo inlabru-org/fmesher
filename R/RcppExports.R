@@ -65,7 +65,8 @@ fmesher_rcdt <- function(options, loc, tv = NULL, boundary = NULL, interior = NU
 #'                   m$tv,
 #'                   matrix(c(0.5, 0.5), 1, 2),
 #'                   list())
-#' @returns A list with vector `t` and matrix `bary`
+#' @returns A list with vector `index` (triangle index) and matrix `where`
+#' (3-column barycentric matrix)
 #' @export
 fmesher_bary <- function(mesh_loc, mesh_tv, loc, options) {
     .Call(`_fmesher_fmesher_bary`, mesh_loc, mesh_tv, loc, options)
