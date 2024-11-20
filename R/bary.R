@@ -30,15 +30,20 @@ fm_bary <- function(...) {
 #' @describeIn fm_bary Returns the `bary` input unchanged
 #' @param bary An `fm_bary` object, or an object that can be converted to
 #' `fm_bary`.
+#' @param extra_class character; If non-`NULL` and not already in the class
+#'   vector of `bary`, add it to the front of the class vector.
 #' @export
-fm_bary.fm_bary <- function(bary, ...) {
+fm_bary.fm_bary <- function(bary, ..., extra_class = NULL) {
+  if (!is.null(extra_class) && !(extra_class %in% class(bary))) {
+    class(bary) <- c(extra_class, class(bary))
+  }
   bary
 }
 
 #' @describeIn fm_bary Converts a `list` `bary` to `fm_bary`.
 #' In the list elements are unnamed, the names `index` and `where` are assumed.
 #' @export
-fm_bary.list <- function(bary, ...) {
+fm_bary.list <- function(bary, ..., extra_class = NULL) {
   if (is.null(names(bary))) {
     names(bary) <- c("index", "where")
   }
@@ -47,22 +52,28 @@ fm_bary.list <- function(bary, ...) {
     where = bary[["where"]]
   )
   storage.mode(bary[["index"]]) <- "integer"
-  structure(
-    bary,
-    class = c("fm_bary", class(bary))
+  fm_bary(
+    structure(
+      bary,
+      class = c("fm_bary", class(bary))
+    ),
+    extra_class = extra_class
   )
 }
 
 #' @describeIn fm_bary Converts a [tibble::tibble()] `bary` to `fm_bary`
 #' @export
-fm_bary.tbl_df <- function(bary, ...) {
+fm_bary.tbl_df <- function(bary, ..., extra_class = NULL) {
   stopifnot(
     all(c("index", "where") %in% names(bary))
   )
   storage.mode(bary[["index"]]) <- "integer"
-  structure(
-    bary,
-    class = c("fm_bary", class(bary))
+  fm_bary(
+    structure(
+      bary,
+      class = c("fm_bary", class(bary))
+    ),
+    extra_class = extra_class
   )
 }
 

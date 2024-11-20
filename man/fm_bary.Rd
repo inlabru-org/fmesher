@@ -11,11 +11,11 @@
 \usage{
 fm_bary(...)
 
-\method{fm_bary}{fm_bary}(bary, ...)
+\method{fm_bary}{fm_bary}(bary, ..., extra_class = NULL)
 
-\method{fm_bary}{list}(bary, ...)
+\method{fm_bary}{list}(bary, ..., extra_class = NULL)
 
-\method{fm_bary}{tbl_df}(bary, ...)
+\method{fm_bary}{tbl_df}(bary, ..., extra_class = NULL)
 
 \method{fm_bary}{fm_mesh_1d}(mesh, loc, method = c("linear", "nearest"), restricted = FALSE, ...)
 
@@ -26,6 +26,9 @@ fm_bary(...)
 
 \item{bary}{An \code{fm_bary} object, or an object that can be converted to
 \code{fm_bary}.}
+
+\item{extra_class}{character; If non-\code{NULL} and not already in the class
+vector of \code{bary}, add it to the front of the class vector.}
 
 \item{mesh}{\code{fm_mesh_1d} or \code{fm_mesh_2d} object}
 
