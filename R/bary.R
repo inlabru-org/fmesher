@@ -281,6 +281,14 @@ fm_bary.fm_lattice_2d <- function(mesh,
                                   ...,
                                   max_batch_size = NULL) {
   if (inherits(loc, "fm_bary")) {
+    if ((nrow(loc) > 0) && (
+      min(loc[["index"]]) < 1L ||
+        max(loc[["index"]]) > (length(mesh$x) - 1L) * (length(mesh$y) - 1L))) {
+      warning("Some 'index' information is outside the lattice.")
+    }
+    if (ncol(loc[["where"]]) != 4L) {
+      stop("Invalid 'where' matrix; should have 4 columns.")
+    }
     return(loc)
   }
 
