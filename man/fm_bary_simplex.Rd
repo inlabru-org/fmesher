@@ -4,6 +4,7 @@
 \alias{fm_bary_simplex}
 \alias{fm_bary_simplex.fm_mesh_2d}
 \alias{fm_bary_simplex.fm_mesh_1d}
+\alias{fm_bary_simplex.fm_lattice_2d}
 \title{Extract Simplex information for Barycentric coordinates}
 \usage{
 fm_bary_simplex(mesh, bary = NULL, ...)
@@ -11,6 +12,8 @@ fm_bary_simplex(mesh, bary = NULL, ...)
 \method{fm_bary_simplex}{fm_mesh_2d}(mesh, bary = NULL, ...)
 
 \method{fm_bary_simplex}{fm_mesh_1d}(mesh, bary = NULL, ...)
+
+\method{fm_bary_simplex}{fm_lattice_2d}(mesh, bary = NULL, ...)
 }
 \arguments{
 \item{mesh}{A mesh object, e.g. \link{fm_mesh_2d} or \link{fm_mesh_1d}.}
@@ -33,6 +36,8 @@ and \link{fm_bary} coordinates.
 
 \item \code{fm_bary_simplex(fm_mesh_1d)}: Extract the edge vertex indices for a 1D mesh
 
+\item \code{fm_bary_simplex(fm_lattice_2d)}: Extract the cell vertex indices for a 2D lattice
+
 }}
 \examples{
 bary <- fm_bary(fmexample$mesh, fmexample$loc_sf)
@@ -41,6 +46,9 @@ mesh1 <- fm_mesh_1d(1:4)
 (bary1 <- fm_bary(mesh1, seq(0, 5, by = 0.5)))
 (bary1 <- fm_bary(mesh1, seq(0, 5, by = 0.5), restricted = TRUE))
 fm_bary_simplex(mesh1, bary1)
+m <- fm_lattice_2d(x = 1:3, y = 1:4)
+bary <- fm_bary(m, cbind(1.5, 3.2))
+fm_bary_simplex(m, bary)
 }
 \seealso{
 \code{\link[=fm_bary]{fm_bary()}}, \code{\link[=fm_bary_loc]{fm_bary_loc()}}

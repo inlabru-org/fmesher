@@ -15,8 +15,8 @@
 #' @returns A `fm_bary` object, a `tibble` with columns `index`; either
 #' \itemize{
 #' \item{vector of triangle indices (triangle meshes),}
-#' \item{matrix of interval knot indices (1D meshes), or}
-#' \item{matrix of lower left box indices (2D lattices),}
+#' \item{vector of knot indices (1D meshes, either for edges or individual knots), or}
+#' \item{vector of lower left box indices (2D lattices),}
 #' }
 #' and `where`, a matrix of barycentric coordinates.
 #'
@@ -265,6 +265,73 @@ fm_bary.fm_mesh_2d <- function(mesh,
 }
 
 
+
+#' @describeIn fm_bary An `fm_bary` object with columns `index` (vector of
+#'   lattice cell indices) and `where` (4-column matrix of barycentric
+#'   coordinates). Points that are outside the lattice are given `NA` entries in
+#'   `index` and `where`.
+#' @param crs Optional crs information for `loc`
+#'
+#' @export
+#' @examples
+#' str(fm_bary(fmexample$mesh, fmexample$loc_sf))
+fm_bary.fm_lattice_2d <- function(mesh,
+                                  loc,
+                                  crs = NULL,
+                                  ...,
+                                  max_batch_size = NULL) {
+  if (inherits(loc, "fm_bary")) {
+    return(loc)
+  }
+
+  loc <- fm_transform(loc, crs = mesh$crs0, crs0 = crs, passthrough = TRUE)
+  if (inherits(loc, "sf")) {
+    loc <- sf::st_coordinates(loc)[, c("X", "Y"), drop = FALSE]
+  } else if (inherits(loc, "Spatial")) {
+    stopifnot(fm_safe_sp())
+    loc <- sp::coordinates(loc)
+  }
+
+  # # Avoid sphere accuracy issues by scaling to unit sphere
+  # scale <- 1
+  # if (fm_manifold(mesh, "S2")) {
+  #   scale <- 1 / mean(rowSums(mesh$loc^2)^0.5)
+  #   loc <- loc / rowSums(loc^2)^0.5
+  # }
+
+  pre_ok <-
+    which(rowSums(matrix(
+      is.na(as.vector(loc)),
+      nrow = nrow(loc),
+      ncol = ncol(loc)
+    )) == 0)
+
+  loc <- loc[pre_ok, , drop = FALSE]
+  x_idx <- findInterval(loc[, 1L], mesh$x, rightmost.closed = TRUE)
+  y_idx <- findInterval(loc[, 2L], mesh$y, rightmost.closed = TRUE)
+  ok <- which(x_idx > 0 &
+                   y_idx > 0 &
+                   x_idx < length(mesh$x) &
+                   y_idx < length(mesh$y))
+  x_loc <- (loc[ok, 1] - mesh$x[x_idx[ok]]) / diff(mesh$x)[x_idx[ok]]
+  y_loc <- (loc[ok, 2] - mesh$y[y_idx[ok]]) / diff(mesh$y)[y_idx[ok]]
+  simplex_idx <- x_idx + (y_idx - 1L) * (length(mesh$x) - 1L)
+
+  bary <- fm_bary(
+    tibble::tibble(
+      index = simplex_idx,
+      where = cbind(
+        (1 - x_loc) * (1 - y_loc),
+        x_loc * (1 - y_loc),
+        x_loc * y_loc,
+        (1 - x_loc) * y_loc
+      )
+    )
+  )
+
+  bary
+}
+
 # Simplex extraction ####
 
 #' @title Extract Simplex information for Barycentric coordinates
@@ -327,6 +394,46 @@ fm_bary_simplex.fm_mesh_1d <- function(mesh, bary = NULL, ...) {
     idx_next <- bary$index + 1L
   }
   cbind(bary$index, idx_next, deparse.level = 0)
+}
+
+#' @describeIn fm_bary_simplex Extract the cell vertex indices for a 2D lattice
+#' @export
+#'
+#' @examples
+#' m <- fm_lattice_2d(x = 1:3, y = 1:4)
+#' bary <- fm_bary(m, cbind(1.5, 3.2))
+#' fm_bary_simplex(m, bary)
+fm_bary_simplex.fm_lattice_2d <- function(mesh, bary = NULL, ...) {
+  simplex <- matrix(0L,
+                    nrow = (length(mesh$x) - 1L) * (length(mesh$y) - 1L),
+                    ncol = 4L)
+  simplex[, 1L] <-
+    rep(seq_len(length(mesh$x) - 1L),
+        times = length(mesh$y) - 1L) +
+    rep((seq_len(length(mesh$y) - 1L) - 1L) * length(mesh$x),
+        each = length(mesh$x) - 1L)
+  simplex[, 2L] <-
+    rep(seq_len(length(mesh$x) - 1L) + 1L,
+        times = length(mesh$y) - 1L) +
+    rep((seq_len(length(mesh$y) - 1L) - 1L) * length(mesh$x),
+        each = length(mesh$x) - 1L)
+  simplex[, 3L] <-
+    rep(seq_len(length(mesh$x) - 1L) + 1L,
+        times = length(mesh$y) - 1L) +
+    rep((seq_len(length(mesh$y) - 1L) - 1L + 1L) * length(mesh$x),
+        each = length(mesh$x) - 1L)
+  simplex[, 4L] <-
+    rep(seq_len(length(mesh$x) - 1L),
+        times = length(mesh$y) - 1L) +
+    rep((seq_len(length(mesh$y) - 1L) - 1L + 1L) * length(mesh$x),
+        each = length(mesh$x) - 1L)
+  if (is.null(bary)) {
+    return(simplex)
+  }
+  if (NROW(bary) == 0L) {
+    return(matrix(integer(1), 0L, 4L))
+  }
+  simplex[bary$index, , drop = FALSE]
 }
 
 
@@ -429,3 +536,45 @@ fm_bary_loc.fm_mesh_1d <- function(mesh, bary = NULL, ..., format = NULL) {
   }
   loc
 }
+
+#' @describeIn fm_bary_loc Extract points on a 2D lattice. Implemented
+#' formats are `"matrix"` (default) and `"sf"`.
+#' @export
+#'
+#' @examples
+#' m <- fm_lattice_2d(x = 1:3, y = 1:4)
+#' head(fm_bary_loc(m))
+#' (bary <- fm_bary(m, cbind(1.5, 3.2)))
+#' fm_bary_loc(m, bary, format = "matrix")
+#' fm_bary_loc(m, bary, format = "sf")
+fm_bary_loc.fm_lattice_2d <- function(mesh, bary = NULL, ..., format = NULL) {
+  format <- match.arg(format, c("matrix", "sf"))
+  if (is.null(bary)) {
+    loc <- mesh$loc
+  } else if (NROW(bary) == 0L) {
+    loc <- matrix(0.0, 0L, ncol(mesh$loc))
+  } else {
+    loc <- matrix(NA_real_, NROW(bary), ncol(mesh$loc))
+    ok <- !is.na(bary$index)
+    simplex <- fm_bary_simplex(mesh, bary = bary[ok, ])
+    loc[ok, ] <- (
+      mesh$loc[simplex[, 1L], , drop = FALSE] * bary$where[ok, 1] +
+        mesh$loc[simplex[, 2L], , drop = FALSE] * bary$where[ok, 2] +
+        mesh$loc[simplex[, 3L], , drop = FALSE] * bary$where[ok, 3] +
+        mesh$loc[simplex[, 4L], , drop = FALSE] * bary$where[ok, 4]
+    )
+    # if (fm_manifold(mesh, "S2")) {
+    #   loc[ok, ] <- loc[ok, ] / rowSums(loc[ok, ]^2)^0.5 *
+    #     mean(rowSums(mesh$loc^2)^0.5)
+    # }
+  }
+  if (format == "sf") {
+    loc <- sf::st_as_sf(
+      as.data.frame(loc),
+      coords = seq_len(ncol(loc)),
+      crs = fm_crs(loc)
+    )
+  }
+  loc
+}
+

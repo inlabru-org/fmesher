@@ -4,6 +4,7 @@
 \alias{fm_bary_loc}
 \alias{fm_bary_loc.fm_mesh_2d}
 \alias{fm_bary_loc.fm_mesh_1d}
+\alias{fm_bary_loc.fm_lattice_2d}
 \title{Extract Euclidean Sgeometry from Barycentric coordinates}
 \usage{
 fm_bary_loc(mesh, bary = NULL, ..., format = NULL)
@@ -11,6 +12,8 @@ fm_bary_loc(mesh, bary = NULL, ..., format = NULL)
 \method{fm_bary_loc}{fm_mesh_2d}(mesh, bary = NULL, ..., format = NULL)
 
 \method{fm_bary_loc}{fm_mesh_1d}(mesh, bary = NULL, ..., format = NULL)
+
+\method{fm_bary_loc}{fm_lattice_2d}(mesh, bary = NULL, ..., format = NULL)
 }
 \arguments{
 \item{mesh}{A mesh object, e.g. \link{fm_mesh_2d} or \link{fm_mesh_1d}.}
@@ -38,6 +41,9 @@ formats are \code{"matrix"} (default) and \code{"sf"}.
 \item \code{fm_bary_loc(fm_mesh_1d)}: Extract points on a 1D mesh. Implemented
 formats are \code{"numeric"} (default).
 
+\item \code{fm_bary_loc(fm_lattice_2d)}: Extract points on a 2D lattice. Implemented
+formats are \code{"matrix"} (default) and \code{"sf"}.
+
 }}
 \examples{
 head(fm_bary_loc(fmexample$mesh))
@@ -57,6 +63,11 @@ fm_basis(mesh1, bary1)
 (bary1 <- fm_bary(mesh1, bary1, method = "linear"))
 fm_bary_loc(mesh1, bary1)
 fm_basis(mesh1, bary1)
+m <- fm_lattice_2d(x = 1:3, y = 1:4)
+head(fm_bary_loc(m))
+(bary <- fm_bary(m, cbind(1.5, 3.2)))
+fm_bary_loc(m, bary, format = "matrix")
+fm_bary_loc(m, bary, format = "sf")
 }
 \seealso{
 \code{\link[=fm_bary]{fm_bary()}}, \code{\link[=fm_bary_simplex]{fm_bary_simplex()}}

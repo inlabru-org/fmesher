@@ -175,7 +175,8 @@ fm_lattice_2d <- function(...) {
 #' \item{loc}{matrix of `(x, y)` values or `(x, y, z)` values. May be altered by
 #' [fm_transform()]}
 #' \item{segm}{`fm_segm` object}
-#' \item{crs}{`fm_crs` object or `NULL`}
+#' \item{crs}{`fm_crs` object for `loc`, or `NULL`}
+#' \item{crs0}{`fm_crs` object for `(x,y)`, or `NULL`}
 #' }
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
 #' @seealso [fm_mesh_2d()]
@@ -308,8 +309,22 @@ fm_lattice_2d.default <- function(
     crs = crs
   )
 
-  lattice <- list(dims = dims, x = x, y = y, loc = loc, segm = segm, crs = crs)
-  class(lattice) <- c("fm_lattice_2d", "inla.mesh.lattice")
+  if (is.null(crs0)) {
+    crs0 <- crs
+  }
+
+  lattice <- structure(
+    list(
+      dims = dims,
+      x = x,
+      y = y,
+      loc = loc,
+      segm = segm,
+      crs = crs,
+      crs0 = crs0
+    ),
+    class = c("fm_lattice_2d", "inla.mesh.lattice")
+  )
   return(lattice)
 }
 
