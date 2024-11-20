@@ -324,10 +324,10 @@ test_that("integration two paths", {
   graph0$build_mesh(h = 0.005)
   # expect no error with NA
   expect_error(
-    fm_int(graph, samplers = test_sampler),
+    fm_int(graph0, samplers = test_sampler),
     NA
   )
-  ips <- fm_int(graph, samplers = test_sampler)
+  ips <- fm_int(graph0, samplers = test_sampler)
   expect_equal(
     c(
       unique(ips$x[["index"]])
