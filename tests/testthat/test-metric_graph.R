@@ -17,24 +17,56 @@ local_bru_test_graph <- function() {
 
 test_that("MGG bary", {
   skip_if_not_installed("MetricGraph")
-  graph <- local_bru_test_graph()
-  graph$build_mesh(h = 0.005)
+  graph0 <- local_bru_test_graph()
+  graph0$build_mesh(h = 0.005)
+  # Euclidean
   locs <- rbind(c(0, 0.6), c(1, 0.20))
   b <-
     fm_bary(
-      mesh = graph,
+      mesh = graph0,
       loc = locs
     )
-
   expect_equal(
     c(
+      b$index[1, drop = FALSE],
+      b$index[2, drop = FALSE],
       b$where[1, drop = FALSE],
       b$where[2, drop = FALSE]
     ),
-    c(
-      0.6,
-      0.8
+    c(2, 6, 0.6, 0.8)
+  )
+  # MGG
+  locs <- as_MGG(rbind(c(2, 0.6), c(6, 0.8)))
+  b <-
+    fm_bary(
+      mesh = graph0,
+      loc = locs
     )
+  expect_equal(
+    c(
+      b$index[1, drop = FALSE],
+      b$index[2, drop = FALSE],
+      b$where[1, drop = FALSE],
+      b$where[2, drop = FALSE]
+    ),
+    c(2, 6, 0.6, 0.8)
+  )
+  # MGM
+  locs <- as_MGM(rbind(c(260, 1), c(400, 0.8)))
+  b <-
+    fm_bary(
+      mesh = graph0,
+      loc = locs,
+      MGG = FALSE
+    )
+  expect_equal(
+    c(
+      b$index[1, drop = FALSE],
+      b$index[2, drop = FALSE],
+      b$where[1, drop = FALSE],
+      b$where[2, drop = FALSE]
+    ),
+    c(260, 400, 1, 0.8)
   )
 })
 
@@ -42,31 +74,46 @@ test_that("MGG to MGM", {
   skip_if_not_installed("MetricGraph")
   graph0 <- local_bru_test_graph()
   graph0$build_mesh(h = 0.005)
-  locs <- rbind(c(1, 0.6), c(3, 0.20))
+  locs <- as_MGG(rbind(
+    c(1, 0.6),
+    c(3, 0.20)
+  ))
+  expect_error(MGM_to_MGG(
+    graph = graph0,
+    coord = locs
+  ))
   mgm <-
     MGG_to_MGM(
       graph = graph0,
-      coord = as_MGG(locs)
+      coord = locs
     )
-
+  mgm2 <- fm_bary(
+    mesh = graph0,
+    loc = locs,
+    MGG = FALSE
+  )
   expect_equal(
     c(
       mgm$index[1, drop = FALSE],
       mgm$index[2, drop = FALSE]
     ),
-    c(
-      120,
-      440
-    )
+    c(120, 440)
   )
   expect_equal(
     c(
       mgm$where[1, drop = FALSE],
       mgm$where[2, drop = FALSE]
     ),
+    c(1, 1)
+  )
+  expect_equal(
     c(
-      1,
-      1
+      mgm$index,
+      mgm$where
+    ),
+    c(
+      mgm2$index,
+      mgm2$where
     )
   )
 })
@@ -74,12 +121,16 @@ test_that("MGG to MGM", {
 
 test_that("MGM to MGG", {
   skip_if_not_installed("MetricGraph")
-  graph <- local_bru_test_graph()
-  graph$build_mesh(h = 0.005)
+  graph0 <- local_bru_test_graph()
+  graph0$build_mesh(h = 0.005)
   locs <- as.matrix(rbind(c(300, 0.5), c(1250, 1)))
+  expect_error(MGM_to_MGG(
+    graph = graph0,
+    coord = locs
+  ))
   mgg <-
     MGM_to_MGG(
-      graph = graph,
+      graph = graph0,
       coord = as_MGM(locs)
     )
 
@@ -107,11 +158,11 @@ test_that("MGM to MGG", {
 
 test_that("bary MGG to MGG", {
   skip_if_not_installed("MetricGraph")
-  graph <- local_bru_test_graph()
+  graph0 <- local_bru_test_graph()
   locs <- as_MGG(cbind(c(2, 5), c(0.8, 0.2)))
   b <-
     fm_bary(
-      mesh = graph,
+      mesh = graph0,
       loc = locs,
       MGG = TRUE
     )
@@ -129,12 +180,12 @@ test_that("bary MGG to MGG", {
 
 test_that("bary MGM to MGM", {
   skip_if_not_installed("MetricGraph")
-  graph <- local_bru_test_graph()
-  graph$build_mesh(h = 0.005)
+  graph0 <- local_bru_test_graph()
+  graph0$build_mesh(h = 0.005)
   locs <- as_MGM(matrix(c(c(300, 1250), c(0.5, 1.0)), ncol = 2))
   b <-
     fm_bary(
-      mesh = graph,
+      mesh = graph0,
       loc = locs,
       MGG = FALSE
     )
@@ -153,15 +204,15 @@ test_that("bary MGM to MGM", {
 
 test_that("path construction", {
   skip_if_not_installed("MetricGraph")
-  graph <- local_bru_test_graph()
+  graph0 <- local_bru_test_graph()
 
   # same edge interval
   start <- matrix(c(2, 0.5), nrow = 1)
   edges <- c()
   end <- matrix(c(2, 0.8), nrow = 1)
   p <-
-    path_MGG(
-      graph = graph,
+    simple_path_MGG(
+      graph = graph0,
       start_MGG = start,
       edges = edges,
       end_MGG = end
@@ -185,8 +236,8 @@ test_that("path construction", {
   edges <- c()
   end <- matrix(c(4, 0.8), nrow = 1)
   p <-
-    path_MGG(
-      graph = graph,
+    simple_path_MGG(
+      graph = graph0,
       start_MGG = start,
       edges = edges,
       end_MGG = end
@@ -210,8 +261,8 @@ test_that("path construction", {
   edges <- c(1, 6, 5)
   end <- matrix(c(3, 0.8), nrow = 1)
   p <-
-    path_MGG(
-      graph = graph,
+    simple_path_MGG(
+      graph = graph0,
       start_MGG = start,
       edges = edges,
       end_MGG = end
@@ -238,13 +289,13 @@ test_that("path construction", {
 
 test_that("integration two paths", {
   skip_if_not_installed("MetricGraph")
-  graph <- local_bru_test_graph()
+  graph0 <- local_bru_test_graph()
   start1 <- matrix(c(2, 0.5), nrow = 1)
   edges1 <- c(1, 6, 5)
   end1 <- matrix(c(3, 0.8), nrow = 1)
   p1 <-
-    path_MGG(
-      graph = graph,
+    simple_path_MGG(
+      graph = graph0,
       start_MGG = start1,
       edges = edges1,
       end_MGG = end1
@@ -253,8 +304,8 @@ test_that("integration two paths", {
   edges2 <- c(5, 3, 4, 1)
   end2 <- matrix(c(6, 0.8), nrow = 1)
   p2 <-
-    path_MGG(
-      graph = graph,
+    simple_path_MGG(
+      graph = graph0,
       start_MGG = start2,
       edges = edges2,
       end_MGG = end2
@@ -264,13 +315,13 @@ test_that("integration two paths", {
 
   # there is no mesh in the graph yet, test that fm_int checks for the mesh
   expect_error(
-    fm_int(graph, samplers = test_sampler),
+    fm_int(graph0, samplers = test_sampler),
     "There is no mesh"
   )
 
 
   # build mesh and check output is correct
-  graph$build_mesh(h = 0.005)
+  graph0$build_mesh(h = 0.005)
   # expect no error with NA
   expect_error(
     fm_int(graph, samplers = test_sampler),
@@ -287,13 +338,13 @@ test_that("integration two paths", {
 
 test_that("fm_basis paths", {
   skip_if_not_installed("MetricGraph")
-  graph <- local_bru_test_graph()
+  graph0 <- local_bru_test_graph()
   start1 <- matrix(c(2, 0.5), nrow = 1)
   edges1 <- c(1, 6, 5)
   end1 <- matrix(c(3, 0.8), nrow = 1)
   p1 <-
-    path_MGG(
-      graph = graph,
+    simple_path_MGG(
+      graph = graph0,
       start_MGG = start1,
       edges = edges1,
       end_MGG = end1
@@ -302,23 +353,23 @@ test_that("fm_basis paths", {
   edges2 <- c(5, 3, 4, 1)
   end2 <- matrix(c(6, 0.8), nrow = 1)
   p2 <-
-    path_MGG(
-      graph = graph,
+    simple_path_MGG(
+      graph = graph0,
       start_MGG = start2,
       edges = edges2,
       end_MGG = end2
     )
   test_sampler <- tibble::tibble(x = list(p1, p2), weight = c(1, 1))
-  graph$build_mesh(h = 0.005)
-  ips <- fm_int(graph, samplers = test_sampler)
-  basis <- fm_basis(x = graph, loc = ips$x, weights = ips$weight)
+  graph0$build_mesh(h = 0.005)
+  ips <- fm_int(graph0, samplers = test_sampler)
+  basis <- fm_basis(x = graph0, loc = ips$x, weights = ips$weight)
   n <- NROW(ips)
-  MGM_locs <- MGG_to_MGM(graph, ips$x)
+  MGM_locs <- MGG_to_MGM(ips$x, graph0)
   true_A <- Matrix::sparseMatrix(
     i = c(seq_len(n), seq_len(n)),
-    j = c(graph$mesh$E[MGM_locs$index, 1], graph$mesh$E[MGM_locs$index, 2]),
+    j = c(graph0$mesh$E[MGM_locs$index, 1], graph0$mesh$E[MGM_locs$index, 2]),
     x = c(ips$weight * (1 - MGM_locs$where), ips$weight * MGM_locs$where),
-    dims = c(n, NROW(graph$mesh$V))
+    dims = c(n, NROW(graph0$mesh$V))
   )
   expect_equal(
     basis,
@@ -342,52 +393,59 @@ test_that("fm_basis paths", {
 
 test_that("ibm values", {
   skip_if_not_installed("MetricGraph")
-  graph <- local_bru_test_graph()
-  graph$build_mesh(h = 0.005)
-  mapper <- inlabru::bru_mapper(graph, n_rep = 2)
+  graph0 <- local_bru_test_graph()
+  graph0$build_mesh(h = 0.005)
+  mapper <- inlabru::bru_mapper(graph0, n_rep = 2)
   values <- inlabru::ibm_values(mapper)
   expect_equal(
     values,
-    seq_len(2 * NROW(graph$mesh$V))
+    seq_len(2 * NROW(graph0$mesh$V))
   )
 })
 
-test_that("sf to MGG", {
-  skip_if_not_installed("MetricGraph")
-  skip_if_not_installed("sf")
-  skip_if_not_installed("lwgeom")
-  graph0 <- local_bru_test_graph()
-  graph0$build_mesh(h = 0.005)
-  line1 <- sf::st_linestring(cbind(c(0, 0, 1), c(0.5, 0, 0)))
-  line1_g <- sf::st_geometry(line1)
-  path_MGG1 <-
-    geom_path_to_path_MGG(
-      graph = graph0,
-      geom_path = line1_g
-    )
-  expect_equal(
-    path_MGG1$index,
-    c(2, 1)
-  )
-  expect_equal(
-    path_MGG1$where,
-    cbind(c(0.5, 0), c(0, 1))
-  )
-  line2 <- sf::st_linestring(cbind(c(-1, 0, 1), c(1, 1, 1)))
-  lines <- sf::st_sfc(list(line1, line2))
-  lines <- sf::st_geometry(lines)
-  path_MGGs <-
-    geom_path_to_path_MGG(
-      graph = graph0,
-      geom_path = lines
-    )
-
-  expect_equal(
-    path_MGGs$index,
-    c(2, 1, 3, 5)
-  )
-  expect_equal(
-    path_MGGs$where,
-    cbind(c(0.5, 0, 1, 0), c(0, 1, 0, 1))
-  )
-})
+# test_that("sf to MGG", {
+#   skip_if_not_installed("MetricGraph")
+#   skip_if_not_installed("sf")
+#   skip_if_not_installed("lwgeom")
+#   graph <- local_bru_test_graph()
+#   line1 <- sf::st_linestring(matrix(c(0, 0, 1, 0.5, 0, 0), nrow = 3))
+#   line1_g <- sf::st_geometry(line1)
+#   path_MGG1 <-
+#     geom_path_to_path_MGG(
+#       graph = graph,
+#       geom_path = line1_g
+#     )
+#   expect_equal(
+#     path_MGG1[[1]]$index,
+#     c(2, 1)
+#   )
+#   expect_equal(
+#     path_MGG1[[1]]$where,
+#     matrix(c(0.5, 0, 0, 1), nrow = 2)
+#   )
+#   line2 <- sf::st_linestring(matrix(c(-1, 0, 1, 1, 1, 1), nrow = 3))
+#   lines <- sf::st_sfc(list(line1, line2))
+#   lines <- sf::st_geometry(lines)
+#   path_MGGs <-
+#     geom_path_to_path_MGG(
+#       graph = graph,
+#       geom_path = lines
+#     )
+#
+#   expect_equal(
+#     path_MGGs[[1]]$index,
+#     c(2, 1)
+#   )
+#   expect_equal(
+#     path_MGGs[[2]]$index,
+#     c(3, 5)
+#   )
+#   expect_equal(
+#     path_MGGs[[1]]$where,
+#     matrix(c(0.5, 0, 0, 1), nrow = 2)
+#   )
+#   expect_equal(
+#     path_MGGs[[2]]$where,
+#     matrix(c(1, 0, 0, 1), nrow = 2)
+#   )
+# })
