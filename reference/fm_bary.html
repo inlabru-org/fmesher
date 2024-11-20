@@ -56,13 +56,13 @@ coordinates</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fm_bary</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'fm_bary'</span></span>
-<span><span class="fu">fm_bary</span><span class="op">(</span><span class="va">bary</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">fm_bary</span><span class="op">(</span><span class="va">bary</span>, <span class="va">...</span>, extra_class <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'list'</span></span>
-<span><span class="fu">fm_bary</span><span class="op">(</span><span class="va">bary</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">fm_bary</span><span class="op">(</span><span class="va">bary</span>, <span class="va">...</span>, extra_class <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'tbl_df'</span></span>
-<span><span class="fu">fm_bary</span><span class="op">(</span><span class="va">bary</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">fm_bary</span><span class="op">(</span><span class="va">bary</span>, <span class="va">...</span>, extra_class <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'fm_mesh_1d'</span></span>
 <span><span class="fu">fm_bary</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">loc</span>, method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"linear"</span>, <span class="st">"nearest"</span><span class="op">)</span>, restricted <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
@@ -82,6 +82,11 @@ coordinates</p>
 <dt id="arg-bary">bary<a class="anchor" aria-label="anchor" href="#arg-bary"></a></dt>
 <dd><p>An <code>fm_bary</code> object, or an object that can be converted to
 <code>fm_bary</code>.</p></dd>
+
+
+<dt id="arg-extra-class">extra_class<a class="anchor" aria-label="anchor" href="#arg-extra-class"></a></dt>
+<dd><p>character; If non-<code>NULL</code> and not already in the class
+vector of <code>bary</code>, add it to the front of the class vector.</p></dd>
 
 
 <dt id="arg-mesh">mesh<a class="anchor" aria-label="anchor" href="#arg-mesh"></a></dt>
