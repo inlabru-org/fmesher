@@ -15,7 +15,8 @@ geom_path_to_path_MGG(geom_path, graph)
 A \code{path_MGG} object
 }
 \description{
-Create a list of \code{path_MGG} objects from \code{sf::st_geometry} (\code{LINESTRING})
+Create a tibble of \code{MGG_interval} objects from \code{sf::st_geometry}
+(\code{LINESTRING})
 }
 \examples{
 if (requireNamespace("MetricGraph") && requireNamespace("lwgeom") &&

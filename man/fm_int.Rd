@@ -150,7 +150,7 @@ if (requireNamespace("MetricGraph")) {
   edges <- list(edge1, edge2, edge3, edge4)
   graph <- MetricGraph::metric_graph$new(edges = edges)
   graph$build_mesh(h = 0.01)
-  p1 <- path_MGG(
+  p1 <- simple_path_MGG(
     graph = graph,
     start_MGG = cbind(1, 0.2),
     edges = c(2),

@@ -28,8 +28,8 @@ if (requireNamespace("MetricGraph")) {
   edges <- list(edge1, edge2, edge3, edge4)
   graph <- MetricGraph::metric_graph$new(edges = edges)
   m <- Euclidean_to_MGG(
-    graph,
-    cbind(0, 1)
+    cbind(0, 1),
+    graph
   )
   # c(2,1)
   m

@@ -15,7 +15,7 @@ bru_get_mapper.rspde_metric_graph <- function(model, ...) {
   if ((model[["f"]]$n) %% (fm_dof(model[["mesh"]])) != 0) {
     stop(paste0("Incompatible degrees of freedom. SPDE: ", model[["f"]]$n, " and mesh: ", fm_dof(model["mesh"])))
   }
-  bru_mapper(model[["mesh"]], n_rep = (model[["f"]]$n) / (fm_dof(model[["mesh"]])))
+  inlabru::bru_mapper(model[["mesh"]], n_rep = (model[["f"]]$n) / (fm_dof(model[["mesh"]])))
 }
 
 
@@ -179,7 +179,7 @@ fm_dof.metric_graph <- function(x) {
 #'   edges <- list(edge1, edge2, edge3, edge4)
 #'   graph <- MetricGraph::metric_graph$new(edges = edges)
 #'   graph$build_mesh(h = 0.01)
-#'   p1 <- path_MGG(
+#'   p1 <- simple_path_MGG(
 #'     graph = graph,
 #'     start_MGG = cbind(1, 0.2),
 #'     edges = c(2),
@@ -313,8 +313,8 @@ fm_int.metric_graph <- function(domain,
 #'   edges <- list(edge1, edge2, edge3, edge4)
 #'   graph <- MetricGraph::metric_graph$new(edges = edges)
 #'   m <- Euclidean_to_MGG(
-#'     graph,
-#'     cbind(0, 1)
+#'     cbind(0, 1),
+#'     graph
 #'   )
 #'   # c(2,1)
 #'   m
@@ -415,7 +415,7 @@ MGG_to_MGM <- function(coord, graph) {
     #   stop(paste0("Error: When trying to convert (", coord[i,1], ",",coord[i,2],") we got NCOL(mesh_MGG)=", NCOL(mesh_MGG), "."))
     # }
     if (length(c(index_MGM, where_MGM)) != 2) {
-      stop(paste0("Error: we found ", sum(id), " mesh locations and we got index_MGM=", index_MGM, " and where_MGM=", where_MGM, "."))
+      stop(paste0("Error: we found ", sum(ids), " mesh locations and we got index_MGM=", index_MGM, " and where_MGM=", where_MGM, "."))
     }
     new_coord[i, ] <- tibble::tibble(index = index_MGM, where = where_MGM)
   }
@@ -837,7 +837,8 @@ simple_path_MGG <- function(graph,
 
 #' @title Make an interval on graph object from sf object (NOT FINISHED)
 #' @description
-#' Create a list of `path_MGG` objects from `sf::st_geometry` (`LINESTRING`)
+#' Create a tibble of `MGG_interval` objects from `sf::st_geometry`
+#' (`LINESTRING`)
 #'
 #' @param graph metric_graph that the interval should be mapped to.
 #' @param geom_path `sf::st_geometry` (`LINESTRING`) on a graph
