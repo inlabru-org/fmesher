@@ -42,7 +42,7 @@ Imports:
     Rcpp
 Suggests:
     ggplot2,
-    inlabru,
+    inlabru (>= 2.12.0),
     knitr,
     lwgeom,
     MetricGraph,

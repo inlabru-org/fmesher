@@ -108,7 +108,9 @@ reference:
   desc: "Deprecated methods"
   contents:
   - matches("fm_spTransform")
-#- title: "Other functions"
-#  desc: "Other functions"
-#  contents:
-#  - matches("")
+- title: "Metric graphs"
+  desc: "Metric graph specific methods"
+  contents:
+  - matches("MGG")
+  - matches("MGM")
+  - matches("metric_graph")
