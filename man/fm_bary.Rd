@@ -7,6 +7,7 @@
 \alias{fm_bary.tbl_df}
 \alias{fm_bary.fm_mesh_1d}
 \alias{fm_bary.fm_mesh_2d}
+\alias{fm_bary.fm_lattice_2d}
 \title{Compute barycentric coordinates}
 \usage{
 fm_bary(...)
@@ -20,6 +21,8 @@ fm_bary(...)
 \method{fm_bary}{fm_mesh_1d}(mesh, loc, method = c("linear", "nearest"), restricted = FALSE, ...)
 
 \method{fm_bary}{fm_mesh_2d}(mesh, loc, crs = NULL, ..., max_batch_size = NULL)
+
+\method{fm_bary}{fm_lattice_2d}(mesh, loc, crs = NULL, ...)
 }
 \arguments{
 \item{\dots}{Arguments forwarded to sub-methods.}
@@ -88,10 +91,16 @@ knot, and \code{where} is a single-column all-ones matrix.
 triangle indices) and \code{where} (3-column matrix of barycentric coordinates).
 Points that were not found give \code{NA} entries in \code{index} and \code{where}.
 
+\item \code{fm_bary(fm_lattice_2d)}: An \code{fm_bary} object with columns \code{index} (vector of
+lattice cell indices) and \code{where} (4-column matrix of barycentric
+coordinates). Points that are outside the lattice are given \code{NA} entries in
+\code{index} and \code{where}.
+
 }}
 \examples{
 bary <- fm_bary(fm_mesh_1d(1:4), seq(0, 5, by = 0.5))
 bary
+str(fm_bary(fmexample$mesh, fmexample$loc_sf))
 str(fm_bary(fmexample$mesh, fmexample$loc_sf))
 }
 \seealso{

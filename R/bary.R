@@ -278,8 +278,7 @@ fm_bary.fm_mesh_2d <- function(mesh,
 fm_bary.fm_lattice_2d <- function(mesh,
                                   loc,
                                   crs = NULL,
-                                  ...,
-                                  max_batch_size = NULL) {
+                                  ...) {
   if (inherits(loc, "fm_bary")) {
     if ((nrow(loc) > 0) && (
       min(loc[["index"]]) < 1L ||

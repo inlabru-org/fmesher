@@ -166,7 +166,8 @@ fm_lattice_2d <- function(...) {
 #' @param dims the size of the grid, length 2 vector
 #' @param units One of `c("default", "longlat", "longsinlat", "mollweide")`
 #' or NULL (equivalent to `"default"`).
-#' @param crs An optional `fm_crs`, `sf::st_crs`, or `sp::CRS` object
+#' @param crs An optional `fm_crs`, `sf::st_crs`, or `sp::CRS` object,
+#'   denoting the CRS info for the x-y grid.
 #' @returns An `fm_lattice_2d` object with elements
 #' \describe{
 #' \item{dims}{integer vector}
@@ -309,9 +310,7 @@ fm_lattice_2d.default <- function(
     crs = crs
   )
 
-  if (is.null(crs0)) {
-    crs0 <- crs
-  }
+  crs0 <- crs
 
   lattice <- structure(
     list(
