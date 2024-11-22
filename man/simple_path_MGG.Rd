@@ -19,8 +19,8 @@ simple_path_MGG(graph, start_MGG, edges, end_MGG)
 A \code{graph_interval} object
 }
 \description{
-Create a \code{graph_interval} object from known start (MGG), end (MGG) and visiting
-edges (MGG).
+Create a \code{graph_interval} object from known start (MGG), end (MGG) and
+visiting edges (MGG).
 }
 \examples{
 if (requireNamespace("MetricGraph")) {

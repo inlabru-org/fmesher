@@ -16,8 +16,8 @@ provided if loc should be converted)}
 A (\code{mesh}, \code{fm_bary}) object
 }
 \description{
-Create a (\code{graph}, \code{fm_bary}) object from \code{matrix}, \code{data.frame}, \code{list}, \code{tibble}
-etc.
+Create a (\code{graph}, \code{fm_bary}) object from \code{matrix}, \code{data.frame}, \code{list},
+\code{tibble} etc.
 }
 \examples{
 if (requireNamespace("MetricGraph")) {

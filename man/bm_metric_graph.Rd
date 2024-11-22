@@ -18,7 +18,7 @@
 \arguments{
 \item{mesh}{a metric_graph object}
 
-\item{n_rep}{number of components in linear predictor (if 0 we use fm_dof(m))}
+\item{n_rep}{number of components in linear predictor}
 
 \item{\dots}{arguments passed to sub-methods}
 

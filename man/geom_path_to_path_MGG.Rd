@@ -2,7 +2,7 @@
 % Please edit documentation in R/metric_graph.R
 \name{geom_path_to_path_MGG}
 \alias{geom_path_to_path_MGG}
-\title{Make an interval on graph object from sf object (NOT FINISHED)}
+\title{Make an interval on graph object from sf object}
 \usage{
 geom_path_to_path_MGG(geom_path, graph)
 }
@@ -12,12 +12,12 @@ geom_path_to_path_MGG(geom_path, graph)
 \item{graph}{metric_graph that the interval should be mapped to.}
 }
 \value{
-A list containing a set of \code{graph_interval} objects and id referring
-to what \code{LINESTRING} it refers to.
+A tibble containing a set of \code{graph_interval} objects and id
+referring to what \code{LINESTRING} it was constructed from.
 }
 \description{
 Create a tibble of \code{graph_interval} objects from \code{sf::st_geometry}
-(\code{LINESTRING})
+(\code{LINESTRING}) and a column with "id".
 }
 \examples{
 if (requireNamespace("MetricGraph") &&

@@ -13,15 +13,17 @@
 #' @rdname bru_get_mapper_rspde_metric_graph
 bru_get_mapper.rspde_metric_graph <- function(model, ...) {
   if ((model[["f"]]$n) %% (fm_dof(model[["mesh"]])) != 0) {
-    stop(paste0("Incompatible degrees of freedom. SPDE: ", model[["f"]]$n, " and mesh: ", fm_dof(model["mesh"])))
+    stop(paste0("Incompatible degrees of freedom. SPDE: ",
+                model[["f"]]$n, " and mesh: ", fm_dof(model["mesh"])))
   }
-  inlabru::bru_mapper(model[["mesh"]], n_rep = (model[["f"]]$n) / (fm_dof(model[["mesh"]])))
+  inlabru::bru_mapper(model[["mesh"]],
+                      n_rep = (model[["f"]]$n) / (fm_dof(model[["mesh"]])))
 }
 
 
 #' @title bru_mapper for the metric_graph class
 #' @param mesh a metric_graph object
-#' @param n_rep number of components in linear predictor (if 0 we use fm_dof(m))
+#' @param n_rep number of components in linear predictor
 #' @param \dots arguments passed to sub-methods
 #' @rdname bm_metric_graph
 bru_mapper.metric_graph <- function(mesh, n_rep = 1, ...) {
@@ -222,8 +224,10 @@ fm_int.metric_graph <- function(domain,
       if (!inherits(interedge, "graph_interval")) {
         interedge <- graph_interval(
           graph = domain,
-          start_MGG = as_MGG(list(interedge$start$index, interedge$start$where[1, 2])),
-          end_MGG = as_MGG(list(interedge$end$index, interedge$end$where[1, 2]))
+          start_MGG = as_MGG(list(interedge$start$index,
+                                  interedge$start$where[1, 2])),
+          end_MGG = as_MGG(list(interedge$end$index,
+                                interedge$end$where[1, 2]))
         )
       }
       the.block <- .block[j]
@@ -379,7 +383,8 @@ MGG_to_MGM <- function(coord, graph) {
     # MGG coordinates for those vertices
     edge_MGG <- mesh_MGG[ids, ]
     if (sum(ids) == 0) {
-      # we have no mesh locations here, so we need to determine the vertices on either side
+      # we have no mesh locations here, so we need to determine the vertices on
+      # either side
       vertices_MGG <- graph$E[coord$index[i], ]
 
       index_MGM <- which.max((graph$mesh$E[, 1] == vertices_MGG[1]) &
@@ -397,13 +402,13 @@ MGG_to_MGM <- function(coord, graph) {
         index_MGM <- which.max((graph$mesh$E[, 1] == index_on_edge) &
           (graph$mesh$E[, 2] == graph_vertex))
         mesh_h_e <- mesh_edge_len[index_MGM]
-        where_MGM <- as.numeric((as.numeric(coord$where[i, 2]) - edge_MGG$where[, 2]) / mesh_h_e) # normalized
+        where_MGM <- as.numeric((as.numeric(coord$where[i, 2]) - edge_MGG$where[, 2]) / mesh_h_e)
       } else {
         # find the edge index that connects (start_vertex, mesh_vertex)
         index_MGM <- which.max((graph$mesh$E[, 1] == graph_vertex) &
           (graph$mesh$E[, 2] == index_on_edge))
         mesh_h_e <- mesh_edge_len[index_MGM]
-        where_MGM <- 1 - (as.numeric((edge_MGG$where[, 2] - as.numeric(coord$where[i, 2])) / mesh_h_e)) # normalized
+        where_MGM <- 1 - (as.numeric((edge_MGG$where[, 2] - as.numeric(coord$where[i, 2])) / mesh_h_e))
       }
     } else {
       # order the mesh_MGG locations:
@@ -590,8 +595,8 @@ as_MGM <- function(loc, graph = NULL) {
 
 #' @title Make a (`graph`, `fm_bary`) object
 #' @description
-#' Create a (`graph`, `fm_bary`) object from `matrix`, `data.frame`, `list`, `tibble`
-#' etc.
+#' Create a (`graph`, `fm_bary`) object from `matrix`, `data.frame`, `list`,
+#' `tibble` etc.
 #'
 #' @param loc MGG coordinates
 #' @param graph metric_graph that the location should be mapped to (must be
@@ -713,8 +718,8 @@ graph_interval <- function(start_MGG,
 
 #' @title Make an interval on graph object
 #' @description
-#' Create a `graph_interval` object from known start (MGG), end (MGG) and visiting
-#' edges (MGG).
+#' Create a `graph_interval` object from known start (MGG), end (MGG) and
+#' visiting edges (MGG).
 #'
 #' @param graph metric_graph that the interval should be mapped to.
 #' @param start_MGG MGG coordinates for start
@@ -801,8 +806,10 @@ simple_path_MGG <- function(graph,
     # check direction
     start_vertex <- c(0:1)[(v2 %in% v1[end_vertex + 1])]
     inter_edge_intervals[length(edges) + 2, ] <- tibble::tibble(
-      start = as_MGG(cbind(as.integer(end_MGG$index), as.numeric(start_vertex))),
-      end = as_MGG(cbind(as.integer(end_MGG$index), as.numeric(end_MGG$where[, 2L])))
+      start = as_MGG(cbind(as.integer(end_MGG$index),
+                           as.numeric(start_vertex))),
+      end = as_MGG(cbind(as.integer(end_MGG$index),
+                         as.numeric(end_MGG$where[, 2L])))
     )
   } else { # there are no whole edges visited (edges=c())
     if (as.integer(start_MGG$index) == as.integer(end_MGG$index)) { # same edge
@@ -817,8 +824,10 @@ simple_path_MGG <- function(graph,
         ))
       )
       inter_edge_intervals[1, ] <- tibble::tibble(
-        start = as_MGG(cbind(as.integer(start_MGG$index), as.numeric(start_MGG$where[, 2]))),
-        end = as_MGG(cbind(as.integer(start_MGG$index), as.numeric(end_MGG$where[, 2])))
+        start = as_MGG(cbind(as.integer(start_MGG$index),
+                             as.numeric(start_MGG$where[, 2]))),
+        end = as_MGG(cbind(as.integer(start_MGG$index),
+                           as.numeric(end_MGG$where[, 2])))
       )
     } else { # neighboring edges
       v1 <- graph$E[as.integer(start_MGG$index), ]
@@ -844,15 +853,19 @@ simple_path_MGG <- function(graph,
         ))
       )
       inter_edge_intervals[1, ] <- tibble::tibble(
-        start = as_MGG(cbind(as.integer(start_MGG$index), as.numeric(start_MGG$where[, 2]))),
-        end = as_MGG(cbind(as.integer(start_MGG$index), as.numeric(end_vertex)))
+        start = as_MGG(cbind(as.integer(start_MGG$index),
+                             as.numeric(start_MGG$where[, 2]))),
+        end = as_MGG(cbind(as.integer(start_MGG$index),
+                           as.numeric(end_vertex)))
       )
       v2 <- graph$E[as.integer(end_MGG$index), ]
       # check direction
       start_vertex <- c(0:1)[(v2 %in% v1[end_vertex + 1L])]
       inter_edge_intervals[2, ] <- tibble::tibble(
-        start = as_MGG(cbind(as.integer(end_MGG$index), as.numeric(start_vertex))),
-        end = as_MGG(cbind(as.integer(end_MGG$index), as.numeric(end_MGG$where[, 2])))
+        start = as_MGG(cbind(as.integer(end_MGG$index),
+                             as.numeric(start_vertex))),
+        end = as_MGG(cbind(as.integer(end_MGG$index),
+                           as.numeric(end_MGG$where[, 2])))
       )
     }
   }
@@ -864,16 +877,16 @@ simple_path_MGG <- function(graph,
   return(path)
 }
 
-#' @title Make an interval on graph object from sf object (NOT FINISHED)
+#' @title Make an interval on graph object from sf object
 #' @description
 #' Create a tibble of `graph_interval` objects from `sf::st_geometry`
-#' (`LINESTRING`)
+#' (`LINESTRING`) and a column with "id".
 #'
 #' @param graph metric_graph that the interval should be mapped to.
 #' @param geom_path `sf::st_geometry` (`LINESTRING`) on a graph
 #' @author Karina Lilleborge \email{karina.lilleborge@@gmail.com}
-#' @returns A list containing a set of `graph_interval` objects and id referring
-#'   to what `LINESTRING` it refers to.
+#' @returns A tibble containing a set of `graph_interval` objects and id
+#'   referring to what `LINESTRING` it was constructed from.
 #' @export
 #' @family object creation and conversion
 #' @examples
