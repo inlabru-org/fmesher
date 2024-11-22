@@ -7,13 +7,13 @@
 \alias{ibm_jacobian.bm_metric_graph}
 \title{bru_mapper for the metric_graph class}
 \usage{
-bru_mapper.metric_graph(mesh, n_rep = 1, ...)
+\method{bru_mapper}{metric_graph}(mesh, n_rep = 1, ...)
 
-ibm_n.bm_metric_graph(mapper, ...)
+\method{ibm_n}{bm_metric_graph}(mapper, ...)
 
-ibm_values.bm_metric_graph(mapper, ...)
+\method{ibm_values}{bm_metric_graph}(mapper, ...)
 
-ibm_jacobian.bm_metric_graph(mapper, input, ...)
+\method{ibm_jacobian}{bm_metric_graph}(mapper, input, ...)
 }
 \arguments{
 \item{mesh}{a metric_graph object}
@@ -29,14 +29,14 @@ ibm_jacobian.bm_metric_graph(mapper, input, ...)
 \description{
 bru_mapper for the metric_graph class
 }
-\section{Functions}{
+\section{Methods (by generic)}{
 \itemize{
-\item \code{ibm_n.bm_metric_graph()}: Returns the degrees of freedom (number of
+\item \code{ibm_n(bm_metric_graph)}: Returns the degrees of freedom (number of
 vertices in the mesh)
 
-\item \code{ibm_values.bm_metric_graph()}: Returns a vector with indices for the
+\item \code{ibm_values(bm_metric_graph)}: Returns a vector with indices for the
 degrees of freedom
 
-\item \code{ibm_jacobian.bm_metric_graph()}: Returns the mapping matrix between
+\item \code{ibm_jacobian(bm_metric_graph)}: Returns the mapping matrix between
 
 }}

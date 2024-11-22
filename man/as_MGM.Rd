@@ -2,7 +2,7 @@
 % Please edit documentation in R/metric_graph.R
 \name{as_MGM}
 \alias{as_MGM}
-\title{Make a \code{fm_bary_MGM} object}
+\title{Make a (\code{mesh}, \code{fm_bary}) object}
 \usage{
 as_MGM(loc, graph = NULL)
 }
@@ -13,11 +13,11 @@ as_MGM(loc, graph = NULL)
 provided if loc should be converted)}
 }
 \value{
-An \code{fm_bary_MGG} object from \code{matrix}, \code{data.frame}, \code{list}, \code{tibble}
-etc.
+An (\code{graph}, \code{fm_bary}) object from \code{matrix}, \code{data.frame}, \code{list},
+\code{tibble} etc.
 }
 \description{
-Create a \code{fm_bary_MGM} object
+Create a (\code{mesh}, \code{fm_bary}) object
 }
 \examples{
 if (requireNamespace("MetricGraph")) {
@@ -33,14 +33,13 @@ if (requireNamespace("MetricGraph")) {
     cbind(1, 1),
     graph
   )
-  class(m) # "fm_bary_MGM", "fm_bary", "tbl_df", "tbl", "data.frame"
+  class(m) # "mesh", "fm_bary", "tbl_df", "tbl", "data.frame"
 }
 
 }
 \seealso{
 Other object creation and conversion: 
-\code{\link{Euclidean_to_MGG}()},
-\code{\link{MGG_interval}()},
+\code{\link{Euclidean_to_graph}()},
 \code{\link{MGG_to_MGM}()},
 \code{\link{MGM_to_MGG}()},
 \code{\link{as_MGG}()},
@@ -58,6 +57,7 @@ Other object creation and conversion:
 \code{\link{fm_simplify}()},
 \code{\link{fm_tensor}()},
 \code{\link{geom_path_to_path_MGG}()},
+\code{\link{graph_interval}()},
 \code{\link{simple_path_MGG}()}
 }
 \author{

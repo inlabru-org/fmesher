@@ -132,8 +132,7 @@ fm_as_segm_list(list(
 \code{\link[=[.fm_segm_list]{[.fm_segm_list()}}
 
 Other object creation and conversion: 
-\code{\link{Euclidean_to_MGG}()},
-\code{\link{MGG_interval}()},
+\code{\link{Euclidean_to_graph}()},
 \code{\link{MGG_to_MGM}()},
 \code{\link{MGM_to_MGG}()},
 \code{\link{as_MGG}()},
@@ -151,6 +150,7 @@ Other object creation and conversion:
 \code{\link{fm_simplify}()},
 \code{\link{fm_tensor}()},
 \code{\link{geom_path_to_path_MGG}()},
+\code{\link{graph_interval}()},
 \code{\link{simple_path_MGG}()}
 }
 \concept{object creation and conversion}

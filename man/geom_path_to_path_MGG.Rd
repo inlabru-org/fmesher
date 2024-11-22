@@ -12,10 +12,10 @@ geom_path_to_path_MGG(geom_path, graph)
 \item{graph}{metric_graph that the interval should be mapped to.}
 }
 \value{
-A \code{path_MGG} object
+A \code{graph_interval} object
 }
 \description{
-Create a tibble of \code{MGG_interval} objects from \code{sf::st_geometry}
+Create a tibble of \code{graph_interval} objects from \code{sf::st_geometry}
 (\code{LINESTRING})
 }
 \examples{
@@ -43,8 +43,7 @@ if (requireNamespace("MetricGraph") && requireNamespace("lwgeom") &&
 }
 \seealso{
 Other object creation and conversion: 
-\code{\link{Euclidean_to_MGG}()},
-\code{\link{MGG_interval}()},
+\code{\link{Euclidean_to_graph}()},
 \code{\link{MGG_to_MGM}()},
 \code{\link{MGM_to_MGG}()},
 \code{\link{as_MGG}()},
@@ -62,6 +61,7 @@ Other object creation and conversion:
 \code{\link{fm_segm}()},
 \code{\link{fm_simplify}()},
 \code{\link{fm_tensor}()},
+\code{\link{graph_interval}()},
 \code{\link{simple_path_MGG}()}
 }
 \author{

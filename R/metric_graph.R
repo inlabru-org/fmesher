@@ -95,7 +95,7 @@ fm_basis.metric_graph <- function(x,
   info$A <- Matrix::sparseMatrix(
     i = c(seq_len(n), seq_len(n)),
     j = c(x$mesh$E[barys$index, 1], x$mesh$E[barys$index, 2]),
-    x = c(weights * (1 - barys$where), weights * barys$where),
+    x = c(weights * barys$where[, 1], weights * barys$where[, 2]),
     dims = c(n, fm_dof(x))
   )
   info[["ok"]] <- rep(TRUE, n)
@@ -125,13 +125,13 @@ fm_bary.metric_graph <- function(mesh,
       stop("There is no mesh")
     }
   }
-  if (inherits(loc, "fm_bary_MGG")) {
+  if (inherits(loc, c("graph", "fm_bary"))) {
     if (MGG) {
       bary_coord <- loc
     } else {
       bary_coord <- MGG_to_MGM(loc, mesh)
     }
-  } else if (inherits(loc, "fm_bary_MGM")) {
+  } else if (inherits(loc, c("mesh", "fm_bary"))) {
     if (MGG) {
       bary_coord <- MGM_to_MGG(loc, mesh)
     } else {
@@ -218,28 +218,36 @@ fm_int.metric_graph <- function(domain,
     theweight <- samplers[["weight"]][[j]]
     ips_edge <- list()
     for (k in seq_len(nrow(subsampler))) {
-      interedge <- subsampler[k, , drop = TRUE] # class=MGG_interval
-      if (!inherits(interedge, "MGG_interval")) {
-        interedge <- MGG_interval(
+      interedge <- subsampler[k, , drop = TRUE]
+      if (!inherits(interedge, "graph_interval")) {
+        interedge <- graph_interval(
           graph = domain,
-          start_MGG = as_MGG(list(interedge$index, interedge$where[1, 1])),
-          end_MGG = as_MGG(list(interedge$index, interedge$where[1, 2]))
+          start_MGG = as_MGG(list(interedge$start$index, interedge$start$where[1, 2])),
+          end_MGG = as_MGG(list(interedge$end$index, interedge$end$where[1, 2]))
         )
       }
       the.block <- .block[j]
       # Simpson's rule integration
       # mesh vertices on edge of interest (+ end points)
-      loc_trap <- sort(unique(c(0, mesh_MGG$where[mesh_MGG$index == interedge$index], 1)))
+      # make sure we have only inter edges:
+      if(interedge$start$index != interedge$end$index){
+        stop("samplers contain intervals which are not interedges.")
+      }
+      loc_trap <- sort(unique(c(
+        0,
+        mesh_MGG$where[mesh_MGG$index == interedge$start$index, 2],
+        1
+        )))
       loc_mid <- (loc_trap[-1] + loc_trap[-length(loc_trap)]) / 2
       # Detect mid-points inside the interval
-      if (interedge$where[1, 1] > interedge$where[1, 2]) {
-        inside <- (loc_mid <= interedge$where[1, 1]) & (loc_mid >= interedge$where[1, 2])
+      if (interedge$start$where[1, 2] > interedge$end$where[1, 2]) {
+        inside <- (loc_mid <= interedge$start$where[1, 2]) & (loc_mid >= interedge$end$where[1, 2])
       } else {
-        inside <- (loc_mid >= interedge$where[1, 1]) & (loc_mid <= interedge$where[1, 2])
+        inside <- (loc_mid >= interedge$start$where[1, 2]) & (loc_mid <= interedge$end$where[1, 2])
       }
       # convert to MGM (call outside of for-loop and only get the desired rows in this step)
       loc_mid_MGM <- MGG_to_MGM(
-        coord = as_MGG(cbind(interedge$index, loc_mid)),
+        coord = as_MGG(cbind(interedge$start$index, loc_mid)),
         graph = domain
       )
       # get the edge lengths for each mesh
@@ -263,7 +271,7 @@ fm_int.metric_graph <- function(domain,
       } else{
         ips_edge[[k]] <- tibble::tibble(
           x = as_MGG(loc = cbind(
-            rep(interedge$index, m_ips),
+            rep(interedge$start$index, m_ips),
             loc_simpson[(weight_simpson > 0)]
           )),
           weight = weight_simpson[(weight_simpson > 0)] * theweight,
@@ -292,15 +300,15 @@ fm_int.metric_graph <- function(domain,
 
 
 # MetricGraph specific functions----
-#' @title Make a fm_bary_MGG object from Euclidean coordinates
+#' @title Make a ("graph", "fm_bary") object from Euclidean coordinates
 #' @description
-#' Create a `fm_bary_MGG` object from Euclidean coordinates.
+#' Create a (`graph`, `fm_bary`) object from Euclidean coordinates.
 #'
 #' @param loc Euclidean coords (if not on graph, they are mapped to the closest
-#' @param graph metric_graph that the location should be mapped to.
 #'   point on graph)
+#' @param graph metric_graph that the location should be mapped to.
 #' @author Karina Lilleborge \email{karina.lilleborge@@gmail.com}
-#' @returns An `fm_bary_MGM` object
+#' @returns A (`mesh`, `fm_bary`) object
 #' @export
 #' @family object creation and conversion
 #' @examples
@@ -312,7 +320,7 @@ fm_int.metric_graph <- function(domain,
 #'   edge4 <- cbind(sin(theta), 1 + cos(theta))
 #'   edges <- list(edge1, edge2, edge3, edge4)
 #'   graph <- MetricGraph::metric_graph$new(edges = edges)
-#'   m <- Euclidean_to_MGG(
+#'   m <- Euclidean_to_graph(
 #'     cbind(0, 1),
 #'     graph
 #'   )
@@ -320,20 +328,20 @@ fm_int.metric_graph <- function(domain,
 #'   m
 #' }
 #'
-Euclidean_to_MGG <- function(loc, graph) {
+Euclidean_to_graph <- function(loc, graph) {
   res <- graph$coordinates(XY = loc)
   graph_coords <- as_MGG(loc = res)
   return(graph_coords)
 }
 
-#' @title Make a fm_bary_MGM object from MGG coordinates
+#' @title Make a (`mesh`, `fm_bary`) object from MGG coordinates
 #' @description
-#' Create a `fm_bary_MGM` object from MGG coordinates.
+#' Create a (`mesh`, `fm_bary`) object from MGG coordinates.
 #'
 #' @param graph metric_graph that the location should be mapped to.
 #' @param coord MGG coordinates
 #' @author Karina Lilleborge \email{karina.lilleborge@@gmail.com}
-#' @returns An `fm_bary_MGM` object
+#' @returns A (`mesh`, `fm_bary`) object
 #' @export
 #' @family object creation and conversion
 #' @examples
@@ -355,13 +363,12 @@ Euclidean_to_MGG <- function(loc, graph) {
 #'
 MGG_to_MGM <- function(coord, graph) {
   if (is.null(graph$mesh)) {
-    # error
     stop("There is no mesh")
   }
-  stopifnot(inherits(coord, "fm_bary_MGG"))
+  stopifnot(inherits(coord, c("graph", "fm_bary")))
   mesh_MGG <- as_MGG(graph$mesh$VtE)
-  # make the mesh mgg to fm_bary_MGG
   mesh_edge_len <- graph$mesh$h_e
+  #storage for new coordinates
   new_coord <- as_MGM(tibble::tibble(
     index = integer(NROW(coord)),
     where = numeric(NROW(coord))
@@ -377,12 +384,12 @@ MGG_to_MGM <- function(coord, graph) {
 
       index_MGM <- which.max((graph$mesh$E[, 1] == vertices_MGG[1]) &
         (graph$mesh$E[, 2] == vertices_MGG[2]))
-      where_MGM <- coord$where[i]
+      where_MGM <- coord$where[i, 2]
     } else if (sum(ids) == 1) {
       # there is only one mesh vertex on the edge
       index_on_edge <- which(ids)
       # coord[i, ] is before or past the mesh node
-      further <- ((as.numeric(coord$where[i]) - edge_MGG$where) >= 0)
+      further <- ((as.numeric(coord$where[i, 2]) - edge_MGG$where[2]) >= 0)
       # find the vertex on the other side of coord[i, ]
       graph_vertex <- graph$E[edge_MGG$index, further * 1 + 1]
       if (further) {
@@ -390,46 +397,49 @@ MGG_to_MGM <- function(coord, graph) {
         index_MGM <- which.max((graph$mesh$E[, 1] == index_on_edge) &
           (graph$mesh$E[, 2] == graph_vertex))
         mesh_h_e <- mesh_edge_len[index_MGM]
-        where_MGM <- as.numeric((as.numeric(coord$where[i]) - edge_MGG$where) / mesh_h_e) # normalized
+        where_MGM <- as.numeric((as.numeric(coord$where[i, 2]) - edge_MGG$where[, 2]) / mesh_h_e) # normalized
       } else {
         # find the edge index that connects (start_vertex, mesh_vertex)
         index_MGM <- which.max((graph$mesh$E[, 1] == graph_vertex) &
           (graph$mesh$E[, 2] == index_on_edge))
         mesh_h_e <- mesh_edge_len[index_MGM]
-        where_MGM <- 1 - (as.numeric((edge_MGG$where - as.numeric(coord$where[i])) / mesh_h_e)) # normalized
+        where_MGM <- 1 - (as.numeric((edge_MGG$where[, 2] - as.numeric(coord$where[i, 2])) / mesh_h_e)) # normalized
       }
     } else {
       # order the mesh_MGG locations:
-      ordering <- order(edge_MGG$where)
+      ordering <- order(edge_MGG$where[, 2])
       edge_MGG_o <- edge_MGG[ordering, ]
       # find the mesh point index where coord[i,] is next to
-      index_on_edge <- which.max((edge_MGG_o$where - as.numeric(coord$where[i])) >= 0)
+      index_on_edge <- which.max((edge_MGG_o$where[, 2] - as.numeric(coord$where[i, 2])) >= 0)
       # coord[i, ] is between these two mesh locs
       mesh_indices <- which(ids)[(ordering[c(index_on_edge - 1, index_on_edge)])]
       index_MGM <- which.max((graph$mesh$E[, 1] == mesh_indices[1]) &
         (graph$mesh$E[, 2] == mesh_indices[2]))
       mesh_h_e <- mesh_edge_len[index_MGM]
-      where_MGM <- 1 - as.numeric((edge_MGG_o[index_on_edge, 2] - as.numeric(coord$where[i])) / mesh_h_e) # normalized
+      where_MGM <- 1 - as.numeric((edge_MGG_o$where[index_on_edge, 2] - as.numeric(coord$where[i, 2])) / mesh_h_e) # normalized
     }
-    # if(NCOL(mesh_MGG) != 2){
-    #   stop(paste0("Error: When trying to convert (", coord[i,1], ",",coord[i,2],") we got NCOL(mesh_MGG)=", NCOL(mesh_MGG), "."))
-    # }
     if (length(c(index_MGM, where_MGM)) != 2) {
-      stop(paste0("Error: we found ", sum(ids), " mesh locations and we got index_MGM=", index_MGM, " and where_MGM=", where_MGM, "."))
+      stop(paste0("We found ", sum(ids),
+                  " mesh locations and we got length(index_MGM)=",
+                  length(index_MGM), " and length(where_MGM)=",
+                  length(where_MGM), ". Coordinate: (",
+                  coord$index, ",", coord$where[,2],")"))
     }
-    new_coord[i, ] <- tibble::tibble(index = index_MGM, where = where_MGM)
+    new_coord[i, ] <- tibble::tibble(index = index_MGM,
+                                     where = cbind(1-where_MGM, where_MGM))
   }
-  as_MGM(new_coord)
+  new_coord
 }
 
-#' @title Convert fm_bary_MGM coordinates to a fm_bary_MGG coordinates
+#' @title Convert (`mesh`, `fm_bary`) coordinates to a (`graph`, `fm_bary`)
+#'   coordinates
 #' @description
-#' Create a `fm_bary_MGG` object from MGM coordinates.
+#' Create a (`graph`, `fm_bary`) object from MGM coordinates.
 #'
 #' @param graph metric_graph that the location should be mapped to.
 #' @param coord MGM coordinates
 #' @author Karina Lilleborge \email{karina.lilleborge@@gmail.com}
-#' @returns An `fm_bary_MGG` object
+#' @returns An (`graph`, `fm_bary`) object
 #' @export
 #' @family object creation and conversion
 #' @examples
@@ -450,7 +460,7 @@ MGG_to_MGM <- function(coord, graph) {
 #' }
 #'
 MGM_to_MGG <- function(coord, graph) {
-  stopifnot(inherits(coord, "fm_bary_MGM"))
+  stopifnot(inherits(coord, c("mesh", "fm_bary")))
   mesh_loc <- graph$mesh$VtE
   eps <- min(graph$mesh$h_e)
   new_coord <- as_MGG(tibble::tibble(
@@ -469,7 +479,7 @@ MGM_to_MGG <- function(coord, graph) {
       new_coord[i, ] <- as_MGG(
         tibble::tibble(
           index = graph_edge_l[1],
-          where = (1 - coord$where[i]) * graph_edge_l[2] + coord$where[i] * graph_edge_r[2]
+          where = (1 - coord$where[i, 2]) * graph_edge_l[2] + coord$where[i, 2] * graph_edge_r[2]
         )
       )
     } else {
@@ -480,14 +490,14 @@ MGM_to_MGG <- function(coord, graph) {
         new_coord[i, ] <- as_MGG(
           tibble::tibble(
             index = graph_edge_l[1],
-            where = (1 - coord$where[i]) * graph_edge_l[2] + coord$where[i] * c(0, 1)[on_vertex_r]
+            where = (1 - coord$where[i, 2]) * graph_edge_l[2] + coord$where[i, 2] * c(0, 1)[on_vertex_r]
           )
         )
       } else {
         new_coord[i, ] <- as_MGG(
           tibble::tibble(
             index = graph_edge_r[1],
-            where = (1 - coord$where[i]) * c(0, 1)[on_vertex_l] + coord$where[i] * graph_edge_r[2]
+            where = (1 - coord$where[i, 2]) * c(0, 1)[on_vertex_l] + coord$where[i, 2] * graph_edge_r[2]
           )
         )
       }
@@ -497,16 +507,16 @@ MGM_to_MGG <- function(coord, graph) {
 }
 
 
-#' @title Make a `fm_bary_MGM` object
+#' @title Make a (`mesh`, `fm_bary`) object
 #' @description
-#' Create a `fm_bary_MGM` object
+#' Create a (`mesh`, `fm_bary`) object
 #'
 #' @param loc MGM coordinates
 #' @param graph metric_graph that the location should be mapped to (must be
 #'   provided if loc should be converted)
 #' @author Karina Lilleborge \email{karina.lilleborge@@gmail.com}
-#' @returns An `fm_bary_MGG` object from `matrix`, `data.frame`, `list`, `tibble`
-#' etc.
+#' @returns An (`graph`, `fm_bary`) object from `matrix`, `data.frame`, `list`,
+#'   `tibble` etc.
 #' @export
 #' @family object creation and conversion
 #' @examples
@@ -523,14 +533,14 @@ MGM_to_MGG <- function(coord, graph) {
 #'     cbind(1, 1),
 #'     graph
 #'   )
-#'   class(m) # "fm_bary_MGM", "fm_bary", "tbl_df", "tbl", "data.frame"
+#'   class(m) # "mesh", "fm_bary", "tbl_df", "tbl", "data.frame"
 #' }
 #'
 as_MGM <- function(loc, graph = NULL) {
-  if (inherits(loc, "fm_bary_MGM")) {
+  if (inherits(loc, c("mesh", "fm_bary"))) {
     return(loc)
   }
-  if (inherits(loc, "fm_bary_MGG")) {
+  if (inherits(loc, c("graph", "fm_bary"))) {
     if (is.null(graph)) {
       stop("Graph must be provided to convert from MGG to MGM.")
     }
@@ -539,35 +549,45 @@ as_MGM <- function(loc, graph = NULL) {
   if (is.matrix(loc)) {
     res <- tibble::tibble(
       index = as.integer(loc[, 1]),
-      where = as.numeric(loc[, 2])
+      where = cbind(1-as.numeric(loc[, 2]),
+                    as.numeric(loc[, 2]))
     )
   } else if (!tibble::is_tibble(loc)) {
     res <- tibble::tibble(
       index = as.integer(loc[[1]]),
-      where = as.numeric(loc[[2]])
+      where = cbind(1-as.numeric(loc[[2]]),
+                    as.numeric(loc[[2]]))
     )
   } else {
     stopifnot(tibble::is_tibble(loc))
-    res <- loc
+    if(is.matrix(loc$where)){
+      res <- loc
+    } else{
+      res <- tibble::tibble(
+        index = as.integer(loc$index),
+        where = cbind(1-as.numeric(loc$where),
+                      as.numeric(loc$where))
+      )
+    }
   }
   coord <-
     structure(
       res,
-      class = c("fm_bary_MGM", "fm_bary", "tbl_df", "tbl", "data.frame")
+      class = c("mesh", "fm_bary", "tbl_df", "tbl", "data.frame")
     )
 }
 
 
-#' @title Make a `fm_bary_MGG` object
+#' @title Make a (`graph`, `fm_bary`) object
 #' @description
-#' Create a `fm_bary_MGG` object from `matrix`, `data.frame`, `list`, `tibble`
+#' Create a (`graph`, `fm_bary`) object from `matrix`, `data.frame`, `list`, `tibble`
 #' etc.
 #'
 #' @param loc MGG coordinates
 #' @param graph metric_graph that the location should be mapped to (must be
 #'   provided if loc should be converted)
 #' @author Karina Lilleborge \email{karina.lilleborge@@gmail.com}
-#' @returns An `fm_bary_MGM` object
+#' @returns A (`mesh`, `fm_bary`) object
 #' @export
 #' @family object creation and conversion
 #' @examples
@@ -580,14 +600,14 @@ as_MGM <- function(loc, graph = NULL) {
 #'   edges <- list(edge1, edge2, edge3, edge4)
 #'   graph <- MetricGraph::metric_graph$new(edges = edges)
 #'   m <- as_MGG(cbind(1, 0.5))
-#'   class(m) # "fm_bary_MGG", "fm_bary", "tbl_df", "tbl", "data.frame"
+#'   class(m) # "graph", "fm_bary", "tbl_df", "tbl", "data.frame"
 #' }
 #'
 as_MGG <- function(loc, graph = NULL) {
-  if (inherits(loc, "fm_bary_MGG")) {
+  if (inherits(loc, c("graph", "fm_bary"))) {
     return(loc)
   }
-  if (inherits(loc, "fm_bary_MGM")) {
+  if (inherits(loc, c("mesh", "fm_bary"))) {
     if (is.null(graph)) {
       stop("Graph must be provded to convert from MGM to MGG.")
     }
@@ -596,35 +616,46 @@ as_MGG <- function(loc, graph = NULL) {
   if (is.matrix(loc)) {
     res <- tibble::tibble(
       index = as.integer(loc[, 1]),
-      where = as.numeric(loc[, 2])
+      where = cbind(1-as.numeric(loc[, 2]),
+                    as.numeric(loc[, 2]))
     )
   } else if (!tibble::is_tibble(loc)) {
     res <- tibble::tibble(
       index = as.integer(loc[[1]]),
-      where = as.numeric(loc[[2]])
+      where = cbind(1-as.numeric(loc[[2]]),
+                    as.numeric(loc[[2]]))
     )
   } else {
     stopifnot(tibble::is_tibble(loc))
-    res <- loc
+    if(is.matrix(loc$where)){
+      res <- loc
+    } else{
+      res <- tibble::tibble(
+        index = as.integer(loc$index),
+        where = cbind(1-as.numeric(loc$where),
+                      as.numeric(loc$where))
+      )
+    }
+
   }
   coord <-
     structure(
       res,
-      class = c("fm_bary_MGG", "fm_bary", "tbl_df", "tbl", "data.frame")
+      class = c("graph", "fm_bary", "tbl_df", "tbl", "data.frame")
     )
 }
 
 
 #' @title Make an inter edge interval on graph object
 #' @description
-#' Create an `MGG_interval` object.
+#' Create an `graph_interval` object.
 #'
 #' @param start_MGG Start location for inter edge interval.
 #' @param end_MGG End location for inter edge interval.
 #' @param graph `metric_graph` that the interval should be mapped to. Must be
 #'   provided if input should be converted
 #' @author Karina Lilleborge \email{karina.lilleborge@@gmail.com}
-#' @returns An `MGG_interval` object
+#' @returns An `graph_interval` object
 #' @export
 #' @family object creation and conversion
 #' @examples
@@ -636,7 +667,7 @@ as_MGG <- function(loc, graph = NULL) {
 #'   edge4 <- cbind(sin(theta), 1 + cos(theta))
 #'   edges <- list(edge1, edge2, edge3, edge4)
 #'   graph <- MetricGraph::metric_graph$new(edges = edges)
-#'   int <- MGG_interval(
+#'   int <- graph_interval(
 #'     cbind(1, 0.8),
 #'     cbind(1, 0.5),
 #'     graph
@@ -644,13 +675,13 @@ as_MGG <- function(loc, graph = NULL) {
 #'   int
 #' }
 #'
-MGG_interval <- function(start_MGG,
+graph_interval <- function(start_MGG,
                          end_MGG,
                          graph = NULL) {
-  if (!inherits(start_MGG, "fm_bary_MGG")) {
+  if (!inherits(start_MGG, c("graph", "fm_bary"))) {
     start_MGG <- as_MGG(start_MGG, graph = graph)
   }
-  if (!inherits(end_MGG, "fm_bary_MGG")) {
+  if (!inherits(end_MGG, c("graph", "fm_bary"))) {
     end_MGG <- as_MGG(end_MGG, graph = graph)
   }
   if (!(sum(start_MGG$index == end_MGG$index) == NROW(start_MGG))) {
@@ -658,16 +689,16 @@ MGG_interval <- function(start_MGG,
   }
   inter_edge_interval <- structure(
     tibble::tibble(
-      index = as.integer(start_MGG$index),
-      where = cbind(start_MGG$where, end_MGG$where)
+      start = start_MGG,
+      end = end_MGG
     ),
-    class = c("MGG_interval", "tbl_df", "tbl", "data.frame")
+    class = c("graph_interval", "tbl_df", "tbl", "data.frame")
   )
 }
 
 #' @title Make an interval on graph object
 #' @description
-#' Create a `path_MGG` object from known start (MGG), end (MGG) and visiting
+#' Create a `graph_interval` object from known start (MGG), end (MGG) and visiting
 #' edges (MGG).
 #'
 #' @param graph metric_graph that the interval should be mapped to.
@@ -675,7 +706,7 @@ MGG_interval <- function(start_MGG,
 #' @param edges Ordered list of edge indices related to MGG
 #' @param end_MGG MGG coordinates for end
 #' @author Karina Lilleborge \email{karina.lilleborge@@gmail.com}
-#' @returns A `path_MGG` object
+#' @returns A `graph_interval` object
 #' @export
 #' @family object creation and conversion
 #' @examples
@@ -693,10 +724,6 @@ MGG_interval <- function(start_MGG,
 #'     edges = c(2),
 #'     end_MGG = cbind(3, 0.6)
 #'   )
-#'   # a tibble with three interedge intervals
-#'   # 1  0.5  0
-#'   # 2  0    1
-#'   # 3  0    0.6
 #'   path
 #' }
 #'
@@ -720,10 +747,10 @@ simple_path_MGG <- function(graph,
       end_vertex <- 1
     }
     # make storage for the inter edge intervals for each of the edge
-    # index, start and end (MGG_interval)
+    # (start, end)
     n <- length(edges) + 2
     inter_edge_intervals <-
-      MGG_interval(
+      graph_interval(
         as_MGG(tibble::tibble(
           index = integer(n),
           where = numeric(n)
@@ -734,12 +761,12 @@ simple_path_MGG <- function(graph,
         ))
       )
     inter_edge_intervals[1, ] <- tibble::tibble(
-      as.integer(start_MGG$index),
-      cbind(
-        as.numeric(start_MGG$where),
-        as.numeric(end_vertex)
+      start = start_MGG,
+      end = as_MGG(
+        cbind(as.numeric(start_MGG$index),
+              as.numeric(end_vertex))
       )
-    )
+      )
     # start and end must be determined
     # check direction for edges
     for (i in seq_len(length(edges))) {
@@ -747,28 +774,22 @@ simple_path_MGG <- function(graph,
       if (end_vertex == 0) start_vertex <- 1
       if (end_vertex == 1) start_vertex <- 0
       inter_edge_intervals[i + 1, ] <- tibble::tibble(
-        as.integer(edges[i]),
-        cbind(
-          as.numeric(start_vertex),
-          as.numeric(end_vertex)
+        start = as_MGG(cbind(as.integer(edges[i]), as.numeric(start_vertex))),
+        end = as_MGG(cbind(as.integer(edges[i]), as.numeric(end_vertex)))
         )
-      )
       v1 <- graph$E[as.integer(edges[i]), ]
       v2 <- graph$E[as.integer(edges[i + 1]), ]
     }
-    v2 <- graph$E[as.integer(end_MGG[1L, 1L]), ]
+    v2 <- graph$E[as.integer(end_MGG$index), ]
     # check direction
     start_vertex <- c(0:1)[(v2 %in% v1[end_vertex + 1])]
     inter_edge_intervals[length(edges) + 2, ] <- tibble::tibble(
-      as.integer(end_MGG[1L, 1L]),
-      cbind(
-        as.numeric(start_vertex),
-        as.numeric(end_MGG[1L, 2L])
+      start = as_MGG(cbind(as.integer(end_MGG$index), as.numeric(start_vertex))),
+      end = as_MGG(cbind(as.integer(end_MGG$index), as.numeric(end_MGG$where[, 2L])))
       )
-    )
   } else { # there are no whole edges visited (edges=c())
     if (as.integer(start_MGG$index) == as.integer(end_MGG$index)) { # same edge
-      inter_edge_intervals <- MGG_interval(
+      inter_edge_intervals <- graph_interval(
         start_MGG = as_MGG(tibble::tibble(
           index = integer(1),
           where = numeric(1)
@@ -779,12 +800,9 @@ simple_path_MGG <- function(graph,
         ))
       )
       inter_edge_intervals[1, ] <- tibble::tibble(
-        as.integer(start_MGG$index),
-        cbind(
-          as.numeric(start_MGG$where),
-          as.numeric(end_MGG$where)
+        start = as_MGG(cbind(as.integer(start_MGG$index), as.numeric(start_MGG$where[, 2]))),
+        end = as_MGG(cbind(as.integer(start_MGG$index), as.numeric(end_MGG$where[, 2])))
         )
-      )
     } else { # neighboring edges
       v1 <- graph$E[as.integer(start_MGG$index), ]
       v2 <- graph$E[as.integer(end_MGG$index), ]
@@ -797,8 +815,8 @@ simple_path_MGG <- function(graph,
         end_vertex <- 1
       }
       # make storage for the inter edge intervals for each of the edge
-      # index, start and end (MGG_interval)
-      inter_edge_intervals <- MGG_interval(
+      # index, start and end (graph_interval)
+      inter_edge_intervals <- graph_interval(
         start_MGG = as_MGG(tibble::tibble(
           index = integer(2),
           where = numeric(2)
@@ -809,41 +827,35 @@ simple_path_MGG <- function(graph,
         ))
       )
       inter_edge_intervals[1, ] <- tibble::tibble(
-        as.integer(start_MGG$index),
-        cbind(
-          as.numeric(start_MGG$where),
-          as.numeric(end_vertex)
+        start = as_MGG(cbind(as.integer(start_MGG$index), as.numeric(start_MGG$where[, 2]))),
+        end = as_MGG(cbind(as.integer(start_MGG$index), as.numeric(end_vertex)))
         )
-      )
       v2 <- graph$E[as.integer(end_MGG$index), ]
       # check direction
       start_vertex <- c(0:1)[(v2 %in% v1[end_vertex + 1L])]
       inter_edge_intervals[2, ] <- tibble::tibble(
-        as.integer(end_MGG$index),
-        cbind(
-          as.numeric(start_vertex),
-          as.numeric(end_MGG$where)
+        start = as_MGG(cbind(as.integer(end_MGG$index),as.numeric(start_vertex))),
+        end = as_MGG(cbind(as.integer(end_MGG$index),as.numeric(end_MGG$where[, 2])))
         )
-      )
     }
   }
   # construct object
   path <- structure(
     inter_edge_intervals,
-    class = c("path_MGG", "tbl_df", "tbl", "data.frame")
+    class = c("graph_interval", "tbl_df", "tbl", "data.frame")
   )
   return(path)
 }
 
 #' @title Make an interval on graph object from sf object (NOT FINISHED)
 #' @description
-#' Create a tibble of `MGG_interval` objects from `sf::st_geometry`
+#' Create a tibble of `graph_interval` objects from `sf::st_geometry`
 #' (`LINESTRING`)
 #'
 #' @param graph metric_graph that the interval should be mapped to.
 #' @param geom_path `sf::st_geometry` (`LINESTRING`) on a graph
 #' @author Karina Lilleborge \email{karina.lilleborge@@gmail.com}
-#' @returns A `path_MGG` object
+#' @returns A `graph_interval` object
 #' @export
 #' @family object creation and conversion
 #' @examples
@@ -869,7 +881,7 @@ simple_path_MGG <- function(graph,
 #' }
 #'
 geom_path_to_path_MGG <- function(geom_path, graph) {
-  # new function name for this (as.MGG_interval(input) check what input is)
+  # new function name for this (as.graph_interval(input) check what input is)
   if (!inherits(geom_path, "sfc_LINESTRING")) {
     stop("Method not implemented. Input must be sfc_LINESTRING")
   }
@@ -888,7 +900,7 @@ geom_path_to_path_MGG <- function(geom_path, graph) {
     # a line should give us one path
     line <- internal_XY[internal_XY[, "L1"] == k, ]
     line_MGG <- graph$coordinates(XY = line[, c("X", "Y")])
-    # convert to fm_bary_MGG (!)
+    # convert to ("graph", "fm_bary")
     line_MGG <- as_MGG(line_MGG)
     # index for number of segments added
     j <- 0
@@ -904,9 +916,10 @@ geom_path_to_path_MGG <- function(geom_path, graph) {
         # before adding, check previous point
         if (j > 0) {
           if (end_seg$index[j] == line_MGG$index[i] &&
-            abs(end_seg$where[j] - line_MGG$where[i]) < eps) {
+            abs(end_seg$where[j, 2] - line_MGG$where[i, 2]) < eps) {
             # We just extend the segment
-            end_seg$where[j] <- line_MGG$where[i + 1]
+            end_seg$where[j, 2] <- line_MGG$where[i + 1, 2]
+            end_seg$where[j, 1] <- 1 - end_seg$where[j, 2]
           } else {
             j <- j + 1
             start_seg[j, ] <- line_MGG[i, ]
@@ -919,8 +932,8 @@ geom_path_to_path_MGG <- function(geom_path, graph) {
         }
       } else {
         # need to find out if the points are giving a valid path
-        start_on_vertex <- (abs(line_MGG$where[i] - c(0, 1)) < eps)
-        end_on_vertex <- (abs(line_MGG$where[i + 1] - c(0, 1)) < eps)
+        start_on_vertex <- (abs(line_MGG$where[i, 2] - c(0, 1)) < eps)
+        end_on_vertex <- (abs(line_MGG$where[i + 1, 2] - c(0, 1)) < eps)
         if (any(start_on_vertex)) {
           # we know that the start is a vertex -> find which index
           start_vertex <- graph$E[line_MGG$index[i], start_on_vertex]
@@ -1014,7 +1027,8 @@ geom_path_to_path_MGG <- function(geom_path, graph) {
             start_seg[j, ] <- as_MGG(cbind(line_MGG$index[i + 1], c(0, 1)[v2 %in% v1[2]]))
             end_seg[j, ] <- line_MGG[i + 1, ]
           } else {
-            stop(paste0("Unclear geom_path: Subsequent points on different edges on path ", l + 1, " for points indexed by ", i, " and ", i + 1, "."))
+            stop(paste0("Unclear geom_path: Subsequent points on different edges on path ",
+                        l + 1, " for points indexed by ", i, " and ", i + 1, "."))
           }
         }
       }
@@ -1026,7 +1040,7 @@ geom_path_to_path_MGG <- function(geom_path, graph) {
 
     # storage for the start_seq & end_seq as a well-defined path
     # they should all be on the same edge:
-    path_MGG <- MGG_interval(
+    path_MGG <- graph_interval(
       start_MGG = start_seg,
       end_MGG = end_seg,
       graph = graph
@@ -1039,6 +1053,7 @@ geom_path_to_path_MGG <- function(geom_path, graph) {
   }
   paths <- do.call(dplyr::bind_rows, paths)
   ids <- unlist(ids)
-  paths <- cbind(paths, ids)
+  paths <- tibble::tibble(paths=paths, ids=ids)
+
   return(paths)
 }

@@ -16,10 +16,10 @@ simple_path_MGG(graph, start_MGG, edges, end_MGG)
 \item{end_MGG}{MGG coordinates for end}
 }
 \value{
-A \code{path_MGG} object
+A \code{graph_interval} object
 }
 \description{
-Create a \code{path_MGG} object from known start (MGG), end (MGG) and visiting
+Create a \code{graph_interval} object from known start (MGG), end (MGG) and visiting
 edges (MGG).
 }
 \examples{
@@ -37,18 +37,13 @@ if (requireNamespace("MetricGraph")) {
     edges = c(2),
     end_MGG = cbind(3, 0.6)
   )
-  # a tibble with three interedge intervals
-  # 1  0.5  0
-  # 2  0    1
-  # 3  0    0.6
   path
 }
 
 }
 \seealso{
 Other object creation and conversion: 
-\code{\link{Euclidean_to_MGG}()},
-\code{\link{MGG_interval}()},
+\code{\link{Euclidean_to_graph}()},
 \code{\link{MGG_to_MGM}()},
 \code{\link{MGM_to_MGG}()},
 \code{\link{as_MGG}()},
@@ -66,7 +61,8 @@ Other object creation and conversion:
 \code{\link{fm_segm}()},
 \code{\link{fm_simplify}()},
 \code{\link{fm_tensor}()},
-\code{\link{geom_path_to_path_MGG}()}
+\code{\link{geom_path_to_path_MGG}()},
+\code{\link{graph_interval}()}
 }
 \author{
 Karina Lilleborge \email{karina.lilleborge@gmail.com}

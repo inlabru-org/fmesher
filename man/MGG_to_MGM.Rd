@@ -2,7 +2,7 @@
 % Please edit documentation in R/metric_graph.R
 \name{MGG_to_MGM}
 \alias{MGG_to_MGM}
-\title{Make a fm_bary_MGM object from MGG coordinates}
+\title{Make a (\code{mesh}, \code{fm_bary}) object from MGG coordinates}
 \usage{
 MGG_to_MGM(coord, graph)
 }
@@ -12,10 +12,10 @@ MGG_to_MGM(coord, graph)
 \item{graph}{metric_graph that the location should be mapped to.}
 }
 \value{
-An \code{fm_bary_MGM} object
+A (\code{mesh}, \code{fm_bary}) object
 }
 \description{
-Create a \code{fm_bary_MGM} object from MGG coordinates.
+Create a (\code{mesh}, \code{fm_bary}) object from MGG coordinates.
 }
 \examples{
 if (requireNamespace("MetricGraph")) {
@@ -37,8 +37,7 @@ if (requireNamespace("MetricGraph")) {
 }
 \seealso{
 Other object creation and conversion: 
-\code{\link{Euclidean_to_MGG}()},
-\code{\link{MGG_interval}()},
+\code{\link{Euclidean_to_graph}()},
 \code{\link{MGM_to_MGG}()},
 \code{\link{as_MGG}()},
 \code{\link{as_MGM}()},
@@ -56,6 +55,7 @@ Other object creation and conversion:
 \code{\link{fm_simplify}()},
 \code{\link{fm_tensor}()},
 \code{\link{geom_path_to_path_MGG}()},
+\code{\link{graph_interval}()},
 \code{\link{simple_path_MGG}()}
 }
 \author{

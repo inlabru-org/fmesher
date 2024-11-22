@@ -30,8 +30,8 @@ test_that("MGG bary", {
     c(
       b$index[1, drop = FALSE],
       b$index[2, drop = FALSE],
-      b$where[1, drop = FALSE],
-      b$where[2, drop = FALSE]
+      b$where[1, 2, drop = FALSE],
+      b$where[2, 2, drop = FALSE]
     ),
     c(2, 6, 0.6, 0.8)
   )
@@ -46,8 +46,8 @@ test_that("MGG bary", {
     c(
       b$index[1, drop = FALSE],
       b$index[2, drop = FALSE],
-      b$where[1, drop = FALSE],
-      b$where[2, drop = FALSE]
+      b$where[1, 2, drop = FALSE],
+      b$where[2, 2, drop = FALSE]
     ),
     c(2, 6, 0.6, 0.8)
   )
@@ -63,8 +63,8 @@ test_that("MGG bary", {
     c(
       b$index[1, drop = FALSE],
       b$index[2, drop = FALSE],
-      b$where[1, drop = FALSE],
-      b$where[2, drop = FALSE]
+      b$where[1, 2, drop = FALSE],
+      b$where[2, 2, drop = FALSE]
     ),
     c(260, 400, 1, 0.8)
   )
@@ -101,8 +101,8 @@ test_that("MGG to MGM", {
   )
   expect_equal(
     c(
-      mgm$where[1, drop = FALSE],
-      mgm$where[2, drop = FALSE]
+      mgm$where[1, 2, drop = FALSE],
+      mgm$where[2, 2, drop = FALSE]
     ),
     c(1, 1)
   )
@@ -146,8 +146,8 @@ test_that("MGM to MGG", {
   )
   expect_equal(
     c(
-      mgg$where[1, drop = FALSE],
-      mgg$where[2, drop = FALSE]
+      mgg$where[1, 2, drop = FALSE],
+      mgg$where[2, 2, drop = FALSE]
     ),
     c(
       0.4975,
@@ -168,8 +168,8 @@ test_that("bary MGG to MGG", {
     )
   expect_equal(
     c(
-      b$where[1, drop = FALSE],
-      b$where[2, drop = FALSE]
+      b$where[1, 2, drop = FALSE],
+      b$where[2, 2, drop = FALSE]
     ),
     c(
       0.8,
@@ -220,9 +220,9 @@ test_that("path construction", {
 
   expect_equal(
     c(
-      p$index,
-      p$where[, 1, drop = FALSE],
-      p$where[, 2, drop = FALSE]
+      p$start$index,
+      p$start$where[, 2, drop = FALSE],
+      p$end$where[, 2, drop = FALSE]
     ),
     c(
       2,
@@ -245,9 +245,9 @@ test_that("path construction", {
 
   expect_equal(
     c(
-      p$index,
-      p$where[, 1, drop = FALSE],
-      p$where[, 2, drop = FALSE]
+      p$start$index,
+      p$start$where[, 2, drop = FALSE],
+      p$end$where[, 2, drop = FALSE]
     ),
     c(
       2, 4,
@@ -270,9 +270,9 @@ test_that("path construction", {
 
   expect_equal(
     c(
-      p$index,
-      p$where[, 1, drop = FALSE],
-      p$where[, 2, drop = FALSE]
+      p$start$index,
+      p$start$where[, 2, drop = FALSE],
+      p$end$where[, 2, drop = FALSE]
     ),
     c(
       2, 1, 6, 5, 3,
@@ -368,7 +368,7 @@ test_that("fm_basis paths", {
   true_A <- Matrix::sparseMatrix(
     i = c(seq_len(n), seq_len(n)),
     j = c(graph0$mesh$E[MGM_locs$index, 1], graph0$mesh$E[MGM_locs$index, 2]),
-    x = c(ips$weight * (1 - MGM_locs$where), ips$weight * MGM_locs$where),
+    x = c(ips$weight * MGM_locs$where[, 1], ips$weight * MGM_locs$where[, 2]),
     dims = c(n, NROW(graph0$mesh$V))
   )
   expect_equal(
@@ -417,11 +417,11 @@ test_that("sf to MGG", {
       geom_path = line1_g
     )
   expect_equal(
-    path_MGG1$index,
+    path_MGG1$paths$start$index,
     c(2, 1)
   )
   expect_equal(
-    path_MGG1$where,
+    cbind(path_MGG1$paths$start$where[, 2],path_MGG1$paths$end$where[, 2]),
     cbind(c(0.5, 0), c(0, 1))
   )
   line2 <- sf::st_linestring(cbind(c(-1, 0, 1), c(1, 1, 1)))
@@ -434,11 +434,11 @@ test_that("sf to MGG", {
     )
 
   expect_equal(
-    path_MGGs$index,
+    path_MGGs$paths$start$index,
     c(2, 1, 3, 5)
   )
   expect_equal(
-    path_MGGs$where,
+    cbind(path_MGGs$paths$start$where[, 2],path_MGGs$paths$end$where[, 2]),
     cbind(c(0.5, 0, 1, 0), c(0, 1, 0, 1))
   )
 })
