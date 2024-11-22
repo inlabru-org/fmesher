@@ -12,14 +12,15 @@ geom_path_to_path_MGG(geom_path, graph)
 \item{graph}{metric_graph that the interval should be mapped to.}
 }
 \value{
-A \code{graph_interval} object
+A list containing a set of \code{graph_interval} objects and id referring
+to what \code{LINESTRING} it refers to.
 }
 \description{
 Create a tibble of \code{graph_interval} objects from \code{sf::st_geometry}
 (\code{LINESTRING})
 }
 \examples{
-if (requireNamespace("MetricGraph") && requireNamespace("lwgeom") &&
+if (requireNamespace("MetricGraph") &&
   requireNamespace("sf")) {
   edge1 <- rbind(c(0, 0), c(1, 0))
   edge2 <- rbind(c(0, 0), c(0, 1))

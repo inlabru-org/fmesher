@@ -421,7 +421,7 @@ test_that("sf to MGG", {
     c(2, 1)
   )
   expect_equal(
-    cbind(path_MGG1$paths$start$where[, 2],path_MGG1$paths$end$where[, 2]),
+    cbind(path_MGG1$paths$start$where[, 2], path_MGG1$paths$end$where[, 2]),
     cbind(c(0.5, 0), c(0, 1))
   )
   line2 <- sf::st_linestring(cbind(c(-1, 0, 1), c(1, 1, 1)))
@@ -438,7 +438,7 @@ test_that("sf to MGG", {
     c(2, 1, 3, 5)
   )
   expect_equal(
-    cbind(path_MGGs$paths$start$where[, 2],path_MGGs$paths$end$where[, 2]),
+    cbind(path_MGGs$paths$start$where[, 2], path_MGGs$paths$end$where[, 2]),
     cbind(c(0.5, 0, 1, 0), c(0, 1, 0, 1))
   )
 })
