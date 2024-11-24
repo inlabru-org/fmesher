@@ -131,7 +131,7 @@ fm_bary.fm_mesh_1d <- function(mesh,
     loc <- loc - mesh$loc[1]
   }
 
-  idx <- findInterval(loc, knots)
+  idx <- findInterval(loc, knots, all.inside = TRUE)
   ok <- !is.na(idx)
 
   u <- numeric(length(loc))
