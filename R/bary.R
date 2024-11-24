@@ -78,28 +78,6 @@ fm_bary.tbl_df <- function(bary, ..., extra_class = NULL) {
 }
 
 
-## Binary split method, returning the index of the left knot for the
-## interval containing each location. Points to the left are assigned index 1,
-## and points to the right are assigned index length(knots)-1.
-do.the.split <- function(knots, loc) {
-  n <- length(knots)
-  if (n <= 2L) {
-    result <- rep(1L, length(loc))
-    result[is.na(loc)] <- NA_integer_
-    return(result)
-  }
-  ok <- !is.na(loc)
-  split <- 1L + (n - 1L) %/% 2L ## Split point
-  upper <- (loc[ok] >= knots[split])
-  idx <- rep(0, length(loc))
-  idx[ok][!upper] <- do.the.split(knots[1:split], loc[ok][!upper])
-  idx[ok][upper] <- split - 1L + do.the.split(knots[split:n], loc[ok][upper])
-  idx[!ok] <- NA_integer_
-  return(idx)
-}
-
-
-
 #' @describeIn fm_bary Return an `fm_bary` object with elements `index`
 #'   (edge index vector pointing to the first knot of each edge) and
 #'   `where` (barycentric coordinates,
@@ -153,7 +131,7 @@ fm_bary.fm_mesh_1d <- function(mesh,
     loc <- loc - mesh$loc[1]
   }
 
-  idx <- do.the.split(knots, loc)
+  idx <- findInterval(loc, knots)
   ok <- !is.na(idx)
 
   u <- numeric(length(loc))
