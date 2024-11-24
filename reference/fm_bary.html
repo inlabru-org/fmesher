@@ -68,7 +68,10 @@ coordinates</p>
 <span><span class="fu">fm_bary</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">loc</span>, method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"linear"</span>, <span class="st">"nearest"</span><span class="op">)</span>, restricted <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'fm_mesh_2d'</span></span>
-<span><span class="fu">fm_bary</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">loc</span>, crs <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span>, max_batch_size <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">fm_bary</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">loc</span>, crs <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span>, max_batch_size <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'fm_lattice_2d'</span></span>
+<span><span class="fu">fm_bary</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">loc</span>, crs <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -127,8 +130,8 @@ give an approximately optimal runtime.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A <code>fm_bary</code> object, a <code>tibble</code> with columns <code>index</code>; either</p><ul><li><p>vector of triangle indices (triangle meshes),</p></li>
-<li><p>matrix of interval knot indices (1D meshes), or</p></li>
-<li><p>matrix of lower left box indices (2D lattices),</p></li>
+<li><p>vector of knot indices (1D meshes, either for edges or individual knots), or</p></li>
+<li><p>vector of lower left box indices (2D lattices),</p></li>
 </ul><p>and <code>where</code>, a matrix of barycentric coordinates.</p>
     </div>
     <div class="section level2">
@@ -148,6 +151,10 @@ knot, and <code>where</code> is a single-column all-ones matrix.</p></li>
 <li><p><code>fm_bary(fm_mesh_2d)</code>: An <code>fm_bary</code> object with columns <code>index</code> (vector of
 triangle indices) and <code>where</code> (3-column matrix of barycentric coordinates).
 Points that were not found give <code>NA</code> entries in <code>index</code> and <code>where</code>.</p></li>
+<li><p><code>fm_bary(fm_lattice_2d)</code>: An <code>fm_bary</code> object with columns <code>index</code> (vector of
+lattice cell indices) and <code>where</code> (4-column matrix of barycentric
+coordinates). Points that are outside the lattice are given <code>NA</code> entries in
+<code>index</code> and <code>where</code>.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -172,6 +179,10 @@ Points that were not found give <code>NA</code> entries in <code>index</code> an
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     3       0     1  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>     3      -<span style="color: #BB0000;">0.5</span>   1.5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span>     3      -<span style="color: #BB0000;">1</span>     2  </span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu">fm_bary</span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span>, <span class="va">fmexample</span><span class="op">$</span><span class="va">loc_sf</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fm_bary [10 × 2] (S3: fm_bary/tbl_df/tbl/data.frame)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ index: int [1:10] 358 301 413 337 369 221 363 329 329 142</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ where: num [1:10, 1:3] 0.0699 0.1367 0.4852 0.0831 0.6245 ...</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu">fm_bary</span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span>, <span class="va">fmexample</span><span class="op">$</span><span class="va">loc_sf</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> fm_bary [10 × 2] (S3: fm_bary/tbl_df/tbl/data.frame)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ index: int [1:10] 358 301 413 337 369 221 363 329 329 142</span>

@@ -40,7 +40,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Query if points are inside a mesh</h1>
-      <small class="dont-index">Source: <a href="https://github.com/inlabru-org/fmesher/blob/devel/R/evaluator.R" class="external-link"><code>R/evaluator.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/inlabru-org/fmesher/blob/devel/R/basis.R" class="external-link"><code>R/basis.R</code></a></small>
       <div class="d-none name"><code>fm_is_within.Rd</code></div>
     </div>
 
@@ -50,10 +50,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fm_is_within</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">...</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Default S3 method</span></span>
-<span><span class="fu">fm_is_within</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fm_is_within</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -61,16 +58,16 @@
 
 
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>A set of points of a class supported by <code>fm_evaluator(y, loc = x)</code></p></dd>
+<dd><p>A set of points/locations of a class supported by <code>fm_basis(y, loc = x, ..., full = TRUE)</code></p></dd>
 
 
 <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
 <dd><p>An <a href="fm_mesh_2d.html">fm_mesh_2d</a> or other class supported by
-<code>fm_evaluator(y, loc = x)</code></p></dd>
+<code>fm_basis(y, loc = x, ..., full = TRUE)</code></p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Currently unused</p></dd>
+<dd><p>Passed on to <code><a href="fm_basis.html">fm_basis()</a></code></p></dd>
 
 </dl></div>
     <div class="section level2">

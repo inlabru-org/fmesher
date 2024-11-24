@@ -105,7 +105,8 @@ or NULL (equivalent to <code>"default"</code>).</p></dd>
 
 
 <dt id="arg-crs">crs<a class="anchor" aria-label="anchor" href="#arg-crs"></a></dt>
-<dd><p>An optional <code>fm_crs</code>, <code><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">sf::st_crs</a></code>, or <code><a href="https://edzer.github.io/sp/reference/CRS-class.html" class="external-link">sp::CRS</a></code> object</p></dd>
+<dd><p>An optional <code>fm_crs</code>, <code><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">sf::st_crs</a></code>, or <code><a href="https://edzer.github.io/sp/reference/CRS-class.html" class="external-link">sp::CRS</a></code> object,
+denoting the CRS info for the x-y grid.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -127,7 +128,10 @@ or NULL (equivalent to <code>"default"</code>).</p></dd>
 <dd><p><code>fm_segm</code> object</p></dd>
 
 <dt>crs</dt>
-<dd><p><code>fm_crs</code> object or <code>NULL</code></p></dd>
+<dd><p><code>fm_crs</code> object for <code>loc</code>, or <code>NULL</code></p></dd>
+
+<dt>crs0</dt>
+<dd><p><code>fm_crs</code> object for <code>(x,y)</code>, or <code>NULL</code></p></dd>
 
 
 </dl></div>
