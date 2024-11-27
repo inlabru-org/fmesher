@@ -122,22 +122,28 @@ fm_bary.metric_graph <- function(mesh,
                                  loc,
                                  MGG = TRUE,
                                  ...) {
-  if (is.null(mesh$mesh)) {
-    if (!MGG) {
-      stop("There is no mesh")
+  if (!MGG) {
+    if (is.null(mesh$mesh)) {
+      stop("There is no mesh.")
     }
   }
-  if (inherits(loc, "graph") && inherits(loc, "fm_bary")) {
+  if (inherits(loc, "fm_bary") && inherits(loc, "graph")) {
     if (MGG) {
       bary_coord <- loc
     } else {
       bary_coord <- MGG_to_MGM(loc, mesh)
     }
-  } else if (inherits(loc, "mesh") && inherits(loc, "fm_bary")) {
+  } else if (inherits(loc, "fm_bary") && inherits(loc, "mesh")) {
     if (MGG) {
       bary_coord <- MGM_to_MGG(loc, mesh)
     } else {
       bary_coord <- loc
+    }
+  } else if(inherits(loc, "sfg")){
+    #check the crs of point and convert to the same crs as graph (or coordinates handles this)
+    bary_coord <- Euclidean_to_graph(sf::st_coordinates(loc), mesh)
+    if(!MGG){
+      bary_coord <- MGG_to_MGM(bary_coord, mesh)
     }
   } else {
     cat("loc is interpreted as Euclidean coordinates")

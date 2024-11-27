@@ -68,6 +68,24 @@ test_that("MGG bary", {
     ),
     c(260, 400, 1, 0.8)
   )
+
+  # Euclidean coordinates
+  locs <- sf::st_multipoint(rbind(c(0, 1), c(1, 0.8)))
+  b <-
+    fm_bary(
+      mesh = graph0,
+      loc = locs,
+      MGG = TRUE
+    )
+  expect_equal(
+    c(
+      b$index[1, drop = FALSE],
+      b$index[2, drop = FALSE],
+      b$where[1, 2, drop = FALSE],
+      b$where[2, 2, drop = FALSE]
+    ),
+    c(2, 6, 1, 0.2)
+  )
 })
 
 test_that("MGG to MGM", {
