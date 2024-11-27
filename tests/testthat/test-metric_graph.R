@@ -308,8 +308,10 @@ test_that("integration one path", {
   skip_if_not_installed("MetricGraph")
   edge1 <- rbind(c(0, 0), c(1, 0))
   edge2 <- rbind(c(0, 0), c(0, 1))
-  graph0 <- MetricGraph::metric_graph$new(edges = list(edge1,
-                                                       edge2))
+  graph0 <- MetricGraph::metric_graph$new(edges = list(
+    edge1,
+    edge2
+  ))
   start1 <- cbind(1, 0.5)
   end1 <- cbind(1, 0.8)
   p1 <-
@@ -347,7 +349,6 @@ test_that("integration one path", {
     ),
     0.3
   )
-
 })
 
 test_that("integration two paths", {

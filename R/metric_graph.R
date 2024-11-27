@@ -13,11 +13,14 @@
 #' @rdname bru_get_mapper_rspde_metric_graph
 bru_get_mapper.rspde_metric_graph <- function(model, ...) {
   if ((model[["f"]]$n) %% (fm_dof(model[["mesh"]])) != 0) {
-    stop(paste0("Incompatible degrees of freedom. SPDE: ",
-                model[["f"]]$n, " and mesh: ", fm_dof(model["mesh"])))
+    stop(paste0(
+      "Incompatible degrees of freedom. SPDE: ",
+      model[["f"]]$n, " and mesh: ", fm_dof(model["mesh"])
+    ))
   }
   inlabru::bru_mapper(model[["mesh"]],
-                      n_rep = (model[["f"]]$n) / (fm_dof(model[["mesh"]])))
+    n_rep = (model[["f"]]$n) / (fm_dof(model[["mesh"]]))
+  )
 }
 
 
@@ -139,10 +142,11 @@ fm_bary.metric_graph <- function(mesh,
     } else {
       bary_coord <- loc
     }
-  } else if(inherits(loc, "sfg")){
-    #check the crs of point and convert to the same crs as graph (or coordinates handles this)
+  } else if (inherits(loc, "sfg") || inherits(loc, "sf")) {
+    # check the crs of point and convert to the same crs as graph (or
+    # coordinates handles this)
     bary_coord <- Euclidean_to_graph(sf::st_coordinates(loc), mesh)
-    if(!MGG){
+    if (!MGG) {
       bary_coord <- MGG_to_MGM(bary_coord, mesh)
     }
   } else {
@@ -230,10 +234,14 @@ fm_int.metric_graph <- function(domain,
       if (!inherits(interedge, "graph_interval")) {
         interedge <- graph_interval(
           graph = domain,
-          start_MGG = as_MGG(list(interedge$start$index,
-                                  interedge$start$where[1, 2])),
-          end_MGG = as_MGG(list(interedge$end$index,
-                                interedge$end$where[1, 2]))
+          start_MGG = as_MGG(list(
+            interedge$start$index,
+            interedge$start$where[1, 2]
+          )),
+          end_MGG = as_MGG(list(
+            interedge$end$index,
+            interedge$end$where[1, 2]
+          ))
         )
       }
       the.block <- .block[j]
@@ -814,10 +822,14 @@ simple_path_MGG <- function(graph,
     # check direction
     start_vertex <- c(0:1)[(v2 %in% v1[end_vertex + 1])]
     inter_edge_intervals[length(edges) + 2, ] <- tibble::tibble(
-      start = as_MGG(cbind(as.integer(end_MGG$index),
-                           as.numeric(start_vertex))),
-      end = as_MGG(cbind(as.integer(end_MGG$index),
-                         as.numeric(end_MGG$where[, 2L])))
+      start = as_MGG(cbind(
+        as.integer(end_MGG$index),
+        as.numeric(start_vertex)
+      )),
+      end = as_MGG(cbind(
+        as.integer(end_MGG$index),
+        as.numeric(end_MGG$where[, 2L])
+      ))
     )
   } else { # there are no whole edges visited (edges=c())
     if (as.integer(start_MGG$index) == as.integer(end_MGG$index)) { # same edge
@@ -832,10 +844,14 @@ simple_path_MGG <- function(graph,
         ))
       )
       inter_edge_intervals[1, ] <- tibble::tibble(
-        start = as_MGG(cbind(as.integer(start_MGG$index),
-                             as.numeric(start_MGG$where[, 2]))),
-        end = as_MGG(cbind(as.integer(start_MGG$index),
-                           as.numeric(end_MGG$where[, 2])))
+        start = as_MGG(cbind(
+          as.integer(start_MGG$index),
+          as.numeric(start_MGG$where[, 2])
+        )),
+        end = as_MGG(cbind(
+          as.integer(start_MGG$index),
+          as.numeric(end_MGG$where[, 2])
+        ))
       )
     } else { # neighboring edges
       v1 <- graph$E[as.integer(start_MGG$index), ]
@@ -861,19 +877,27 @@ simple_path_MGG <- function(graph,
         ))
       )
       inter_edge_intervals[1, ] <- tibble::tibble(
-        start = as_MGG(cbind(as.integer(start_MGG$index),
-                             as.numeric(start_MGG$where[, 2]))),
-        end = as_MGG(cbind(as.integer(start_MGG$index),
-                           as.numeric(end_vertex)))
+        start = as_MGG(cbind(
+          as.integer(start_MGG$index),
+          as.numeric(start_MGG$where[, 2])
+        )),
+        end = as_MGG(cbind(
+          as.integer(start_MGG$index),
+          as.numeric(end_vertex)
+        ))
       )
       v2 <- graph$E[as.integer(end_MGG$index), ]
       # check direction
       start_vertex <- c(0:1)[(v2 %in% v1[end_vertex + 1L])]
       inter_edge_intervals[2, ] <- tibble::tibble(
-        start = as_MGG(cbind(as.integer(end_MGG$index),
-                             as.numeric(start_vertex))),
-        end = as_MGG(cbind(as.integer(end_MGG$index),
-                           as.numeric(end_MGG$where[, 2])))
+        start = as_MGG(cbind(
+          as.integer(end_MGG$index),
+          as.numeric(start_vertex)
+        )),
+        end = as_MGG(cbind(
+          as.integer(end_MGG$index),
+          as.numeric(end_MGG$where[, 2])
+        ))
       )
     }
   }
