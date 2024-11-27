@@ -295,9 +295,9 @@ fm_bary.fm_lattice_2d <- function(mesh,
   x_idx <- findInterval(loc[, 1L], mesh$x, rightmost.closed = TRUE)
   y_idx <- findInterval(loc[, 2L], mesh$y, rightmost.closed = TRUE)
   ok <- which(x_idx > 0 &
-                   y_idx > 0 &
-                   x_idx < length(mesh$x) &
-                   y_idx < length(mesh$y))
+    y_idx > 0 &
+    x_idx < length(mesh$x) &
+    y_idx < length(mesh$y))
   x_loc <- (loc[ok, 1] - mesh$x[x_idx[ok]]) / diff(mesh$x)[x_idx[ok]]
   y_loc <- (loc[ok, 2] - mesh$y[y_idx[ok]]) / diff(mesh$y)[y_idx[ok]]
   simplex_idx <- x_idx + (y_idx - 1L) * (length(mesh$x) - 1L)
@@ -390,28 +390,37 @@ fm_bary_simplex.fm_mesh_1d <- function(mesh, bary = NULL, ...) {
 #' fm_bary_simplex(m, bary)
 fm_bary_simplex.fm_lattice_2d <- function(mesh, bary = NULL, ...) {
   simplex <- matrix(0L,
-                    nrow = (length(mesh$x) - 1L) * (length(mesh$y) - 1L),
-                    ncol = 4L)
+    nrow = (length(mesh$x) - 1L) * (length(mesh$y) - 1L),
+    ncol = 4L
+  )
   simplex[, 1L] <-
     rep(seq_len(length(mesh$x) - 1L),
-        times = length(mesh$y) - 1L) +
+      times = length(mesh$y) - 1L
+    ) +
     rep((seq_len(length(mesh$y) - 1L) - 1L) * length(mesh$x),
-        each = length(mesh$x) - 1L)
+      each = length(mesh$x) - 1L
+    )
   simplex[, 2L] <-
     rep(seq_len(length(mesh$x) - 1L) + 1L,
-        times = length(mesh$y) - 1L) +
+      times = length(mesh$y) - 1L
+    ) +
     rep((seq_len(length(mesh$y) - 1L) - 1L) * length(mesh$x),
-        each = length(mesh$x) - 1L)
+      each = length(mesh$x) - 1L
+    )
   simplex[, 3L] <-
     rep(seq_len(length(mesh$x) - 1L) + 1L,
-        times = length(mesh$y) - 1L) +
+      times = length(mesh$y) - 1L
+    ) +
     rep((seq_len(length(mesh$y) - 1L) - 1L + 1L) * length(mesh$x),
-        each = length(mesh$x) - 1L)
+      each = length(mesh$x) - 1L
+    )
   simplex[, 4L] <-
     rep(seq_len(length(mesh$x) - 1L),
-        times = length(mesh$y) - 1L) +
+      times = length(mesh$y) - 1L
+    ) +
     rep((seq_len(length(mesh$y) - 1L) - 1L + 1L) * length(mesh$x),
-        each = length(mesh$x) - 1L)
+      each = length(mesh$x) - 1L
+    )
   if (is.null(bary)) {
     return(simplex)
   }
@@ -562,4 +571,3 @@ fm_bary_loc.fm_lattice_2d <- function(mesh, bary = NULL, ..., format = NULL) {
   }
   loc
 }
-
