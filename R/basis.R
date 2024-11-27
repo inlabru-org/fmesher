@@ -236,7 +236,7 @@ fm_basis.list <- function(x, weights = NULL, ..., full = FALSE) {
   if (is.null(x[["ok"]])) {
     x[["ok"]] <- rep(TRUE, NROW(x[["A"]]))
   } else if (!is.logical(x[["ok"]]) ||
-             (length(x[["ok"]]) != NROW(x[["A"]]))) {
+    (length(x[["ok"]]) != NROW(x[["A"]]))) {
     stop(
       "Invalid 'ok' element in 'x'; should be a logical vector of length ",
       NROW(x[["A"]])
@@ -279,10 +279,10 @@ internal_spline_mesh_1d <- function(interval,
     )
   if (degree <= 1) {
     n <- (switch(boundary,
-                 neumann = m,
-                 dirichlet = m + 2,
-                 free = m,
-                 cyclic = m + 1
+      neumann = m,
+      dirichlet = m + 2,
+      free = m,
+      cyclic = m + 1
     ))
     if (n < 2) {
       n <- 2
@@ -292,10 +292,10 @@ internal_spline_mesh_1d <- function(interval,
   } else {
     stopifnot(degree == 2)
     n <- (switch(boundary,
-                 neumann = m + 1,
-                 dirichlet = m + 1,
-                 free = m - 1,
-                 cyclic = m
+      neumann = m + 1,
+      dirichlet = m + 1,
+      free = m - 1,
+      cyclic = m
     ))
     if (boundary == "free") {
       if (m <= 1) {
@@ -314,9 +314,9 @@ internal_spline_mesh_1d <- function(interval,
     }
   }
   return(fm_mesh_1d(seq(interval[1], interval[2], length.out = n),
-                    degree = degree,
-                    boundary = boundary,
-                    free.clamped = free.clamped
+    degree = degree,
+    boundary = boundary,
+    free.clamped = free.clamped
   ))
 }
 
@@ -477,10 +477,10 @@ fm_raw_basis <- function(mesh,
       for (l in seq(0, n)) {
         basis[, 1 + l * (l + 1)] <-
           sqrt(2 * l + 1) *
-          gsl::legendre_Pl(l = l, x = loc[, 3])
+            gsl::legendre_Pl(l = l, x = loc[, 3])
         for (m in seq_len(l)) {
           scaling <- sqrt(2 * (2 * l + 1) * exp(lgamma(l - m + 1) -
-                                                  lgamma(l + m + 1)))
+            lgamma(l + m + 1)))
           poly <- gsl::legendre_Plm(l = l, m = m, x = loc[, 3])
           basis[, 1 + l * (l + 1) - m] <-
             scaling * sin(-m * angle) * poly
@@ -623,14 +623,14 @@ fm_basis_mesh_1d <- function(mesh,
     ))
 
     if (!(method %in% "default") &&
-        (mesh$degree != c(nearest = 0, linear = 1, quadratic = 2)[method])) {
+      (mesh$degree != c(nearest = 0, linear = 1, quadratic = 2)[method])) {
       deg <- c(nearest = 0, linear = 1, quadratic = 2)[method]
       info <- fm_basis_mesh_1d(
         fm_mesh_1d(mesh$loc,
-                   interval = mesh$interval,
-                   boundary = mesh$boundary,
-                   free.clamped = mesh$free.clamped,
-                   degree = deg
+          interval = mesh$interval,
+          boundary = mesh$boundary,
+          free.clamped = mesh$free.clamped,
+          degree = deg
         ),
         loc = loc,
         weights = weights,
@@ -798,7 +798,7 @@ fm_basis_mesh_1d <- function(mesh,
         (knots[c(seq_len(length(knots) - 1L) + 1L, 1)] - knots) %%
         diff(mesh$interval)
       d2 <- (knots[c(seq_len(length(knots) - 2L) + 2L, seq_len(2))] -
-               knots) %% diff(mesh$interval)
+        knots) %% diff(mesh$interval)
       d2[d2 == 0] <- diff(mesh$interval)
       d <- d[c(length(d), seq_len(length(d) - 1L))]
       d2 <- d2[c(length(d2), seq_len(length(d2) - 1L))]
@@ -813,7 +813,7 @@ fm_basis_mesh_1d <- function(mesh,
       i.l <- which(bary_ok)
       j.l <- simplex[, 1] + 2L
       x.l <- (info$where[, 2] * d[simplex[, 2]] / d2[simplex[, 2]] *
-                info$where[, 2])
+        info$where[, 2])
       if (derivatives) {
         x.d1.l <- (2 / d2[simplex[, 2]] * info$where[, 2])
         x.d2.l <- (2 / d2[simplex[, 2]] / d[simplex[, 2]])
@@ -822,7 +822,7 @@ fm_basis_mesh_1d <- function(mesh,
       i.r <- seq_along(simplex[, 1])
       j.r <- simplex[, 1]
       x.r <- (info$where[, 1] * d[simplex[, 2]] / d2[simplex[, 1]] *
-                info$where[, 1])
+        info$where[, 1])
       if (derivatives) {
         x.d1.r <- -(2 / d2[simplex[, 2]] * info$where[, 1])
         x.d2.r <- (2 / d2[simplex[, 1]] / d[simplex[, 2]])
@@ -831,9 +831,9 @@ fm_basis_mesh_1d <- function(mesh,
       i.m <- seq_along(simplex[, 1])
       j.m <- simplex[, 1] + 1L
       x.m <- (1 - (info$where[, 1] * d[simplex[, 2]] / d2[simplex[, 1]] *
-                     info$where[, 1] +
-                     info$where[, 2] * d[simplex[, 2]] / d2[simplex[, 2]] *
-                     info$where[, 2]))
+        info$where[, 1] +
+        info$where[, 2] * d[simplex[, 2]] / d2[simplex[, 2]] *
+          info$where[, 2]))
       if (derivatives) {
         x.d1.m <- (2 / d2[simplex[, 1]] * info$where[, 1]) -
           (2 / d2[simplex[, 2]] * info$where[, 2])
@@ -867,7 +867,7 @@ fm_basis_mesh_1d <- function(mesh,
       i.m <- which(bary_ok)[ok]
       j.m <- index[, 1]
       x.m <- (1 - (bary[, 1] * d[index[, 2]] / d2[index[, 1]] * bary[, 1] +
-                     bary[, 2] * d[index[, 2]] / d2[index[, 2]] * bary[, 2]
+        bary[, 2] * d[index[, 2]] / d2[index[, 2]] * bary[, 2]
       ))
       if (derivatives) {
         x.d1.m <- (2 / d2[index[, 1]] * bary[, 1]) -
@@ -946,7 +946,7 @@ fm_basis_mesh_1d <- function(mesh,
         ok <- j_ > 1L
         j_[ok] <- j_[ok] - 1L
       } else if ((mesh$boundary[1] == "free") &&
-                 (mesh$free.clamped[1])) {
+        (mesh$free.clamped[1])) {
         # new1 <- 2 * basis1
         # new2 <- basis2 - basis1
         ok1 <- j_ == 1L
@@ -980,7 +980,7 @@ fm_basis_mesh_1d <- function(mesh,
         ok <- j_ > mesh$m
         j_[ok] <- mesh$m
       } else if ((mesh$boundary[2] == "free") &&
-                 (mesh$free.clamped[2])) {
+        (mesh$free.clamped[2])) {
         # new_m <- m + {m-1};     m = 1, m - 1 = 2
         # new_{m-1} <- {m-1} - m; m = 1, m - 1 = 2
         # new1 <- 2 * basis1
@@ -1469,7 +1469,7 @@ fm_block_prep <- function(block = NULL,
       }
     } else if (!is.null(weights)) {
       warning("Both weights and log_weights supplied. Using log_weights.",
-              immediate. = TRUE
+        immediate. = TRUE
       )
       weights <- NULL
     }
@@ -1480,7 +1480,7 @@ fm_block_prep <- function(block = NULL,
       # log_weights is non-NULL
       if (!is.null(log_weights)) {
         warning("Both weights and log_weights supplied. Using log_weights.",
-                immediate. = TRUE
+          immediate. = TRUE
         )
         weights <- NULL
       }
