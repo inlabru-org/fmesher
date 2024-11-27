@@ -628,6 +628,8 @@ as_MGG <- function(loc, graph = NULL) {
     }
     return(MGM_to_MGG(coord = loc, graph = graph))
   }
+  # TO DO: add check here for sf (and then convert to correct crs)
+
   if (is.matrix(loc)) {
     res <- tibble::tibble(
       index = as.integer(loc[, 1]),
@@ -1059,7 +1061,8 @@ geom_path_to_path_MGG <- function(geom_path, graph) {
             end_seg[j, ] <- line_MGG[i + 1, ]
           } else {
             stop(paste0(
-              "Unclear geom_path: Subsequent points on different edges on path ",
+              "Unclear geom_path: Subsequent points on not ",
+              "directly connected edges on path ",
               l + 1, " for points indexed by ", i, " and ", i + 1, "."
             ))
           }

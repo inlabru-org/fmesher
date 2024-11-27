@@ -123,7 +123,7 @@ test_that("MGM to MGG", {
   skip_if_not_installed("MetricGraph")
   graph0 <- local_bru_test_graph()
   graph0$build_mesh(h = 0.005)
-  locs <- as.matrix(rbind(c(300, 0.5), c(1250, 1)))
+  locs <- rbind(c(300, 0.5), c(1250, 1))
   expect_error(MGM_to_MGG(
     graph = graph0,
     coord = locs
@@ -182,7 +182,7 @@ test_that("bary MGM to MGM", {
   skip_if_not_installed("MetricGraph")
   graph0 <- local_bru_test_graph()
   graph0$build_mesh(h = 0.005)
-  locs <- as_MGM(matrix(c(c(300, 1250), c(0.5, 1.0)), ncol = 2))
+  locs <- as_MGM(cbind(c(300, 1250), c(0.5, 1.0)))
   b <-
     fm_bary(
       mesh = graph0,
@@ -207,9 +207,9 @@ test_that("path construction", {
   graph0 <- local_bru_test_graph()
 
   # same edge interval
-  start <- matrix(c(2, 0.5), nrow = 1)
+  start <- cbind(2, 0.5)
   edges <- c()
-  end <- matrix(c(2, 0.8), nrow = 1)
+  end <- cbind(2, 0.8)
   p <-
     simple_path_MGG(
       graph = graph0,
@@ -232,9 +232,9 @@ test_that("path construction", {
   )
 
   # neighboring edges
-  start <- matrix(c(2, 0.5), nrow = 1)
+  start <- cbind(2, 0.5)
   edges <- c()
-  end <- matrix(c(4, 0.8), nrow = 1)
+  end <- cbind(4, 0.8)
   p <-
     simple_path_MGG(
       graph = graph0,
@@ -257,9 +257,9 @@ test_that("path construction", {
   )
 
   # with edges
-  start <- matrix(c(2, 0.5), nrow = 1)
+  start <- cbind(2, 0.5)
   edges <- c(1, 6, 5)
-  end <- matrix(c(3, 0.8), nrow = 1)
+  end <- cbind(3, 0.8)
   p <-
     simple_path_MGG(
       graph = graph0,
@@ -286,13 +286,58 @@ test_that("path construction", {
 # making single path, multiple paths etc
 
 # fm_int test
+test_that("integration one path", {
+  skip_if_not_installed("MetricGraph")
+  edge1 <- rbind(c(0, 0), c(1, 0))
+  edge2 <- rbind(c(0, 0), c(0, 1))
+  graph0 <- MetricGraph::metric_graph$new(edges = list(edge1,
+                                                       edge2))
+  start1 <- cbind(1, 0.5)
+  end1 <- cbind(1, 0.8)
+  p1 <-
+    simple_path_MGG(
+      graph = graph0,
+      start_MGG = start1,
+      edges = c(),
+      end_MGG = end1
+    )
+  test_sampler <- tibble::tibble(x = list(p1), weight = 1)
+
+  # there is no mesh in the graph yet, test that fm_int checks for the mesh
+  expect_error(
+    fm_int(graph0, samplers = test_sampler),
+    "There is no mesh"
+  )
+
+  # build mesh and check output is correct
+  graph0$build_mesh(h = 0.005)
+  # expect no error with NA
+  expect_error(
+    fm_int(graph0, samplers = test_sampler),
+    NA
+  )
+  ips <- fm_int(graph0, samplers = test_sampler)
+  expect_equal(
+    c(
+      unique(ips$x[["index"]])
+    ),
+    1
+  )
+  expect_equal(
+    c(
+      sum(ips$weight)
+    ),
+    0.3
+  )
+
+})
 
 test_that("integration two paths", {
   skip_if_not_installed("MetricGraph")
   graph0 <- local_bru_test_graph()
-  start1 <- matrix(c(2, 0.5), nrow = 1)
+  start1 <- cbind(2, 0.5)
   edges1 <- c(1, 6, 5)
-  end1 <- matrix(c(3, 0.8), nrow = 1)
+  end1 <- cbind(3, 0.8)
   p1 <-
     simple_path_MGG(
       graph = graph0,
@@ -300,9 +345,9 @@ test_that("integration two paths", {
       edges = edges1,
       end_MGG = end1
     )
-  start2 <- matrix(c(7, 0.2), nrow = 1)
+  start2 <- cbind(7, 0.2)
   edges2 <- c(5, 3, 4, 1)
-  end2 <- matrix(c(6, 0.8), nrow = 1)
+  end2 <- cbind(6, 0.8)
   p2 <-
     simple_path_MGG(
       graph = graph0,
@@ -339,9 +384,9 @@ test_that("integration two paths", {
 test_that("fm_basis paths", {
   skip_if_not_installed("MetricGraph")
   graph0 <- local_bru_test_graph()
-  start1 <- matrix(c(2, 0.5), nrow = 1)
+  start1 <- cbind(2, 0.5)
   edges1 <- c(1, 6, 5)
-  end1 <- matrix(c(3, 0.8), nrow = 1)
+  end1 <- cbind(3, 0.8)
   p1 <-
     simple_path_MGG(
       graph = graph0,
@@ -349,9 +394,9 @@ test_that("fm_basis paths", {
       edges = edges1,
       end_MGG = end1
     )
-  start2 <- matrix(c(7, 0.2), nrow = 1)
+  start2 <- cbind(7, 0.2)
   edges2 <- c(5, 3, 4, 1)
-  end2 <- matrix(c(6, 0.8), nrow = 1)
+  end2 <- cbind(6, 0.8)
   p2 <-
     simple_path_MGG(
       graph = graph0,
