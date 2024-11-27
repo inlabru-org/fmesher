@@ -35,6 +35,14 @@ test_that("Continuous integration", {
   ips <- ips[order(ips$x), ]
   expect_identical(ips, ips_)
 
+  ips_bary_ <- ips_
+  ips_bary_$x <- fm_bary(domain, ips_$x)
+
+  ips_bary <- fm_int(domain, samplers = samplers, format = "bary")
+  ips_bary_ <- ips_bary_[order(ips_bary_$x$index, ips_bary_$x$where[, 2]), ]
+  ips_bary <- ips_bary[order(ips_bary$x$index, ips_bary$x$where[, 2]), ]
+  expect_identical(ips_bary, ips_bary_)
+
   # Check blockwise integration
   samplers <- rbind(c(3, 5), c(2, 4.5))
   ips <- fm_int(domain, samplers = samplers)

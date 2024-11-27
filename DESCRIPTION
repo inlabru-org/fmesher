@@ -73,6 +73,7 @@ Collate:
     'RcppExports.R'
     'deprecated.R'
     'bary.R'
+    'basis.R'
     'bbox.R'
     'print.R'
     'crs.R'

@@ -640,3 +640,9 @@ fm_dof.fm_mesh_2d <- function(x) {
 fm_dof.fm_tensor <- function(x) {
   prod(vapply(x$fun_spaces, fm_dof, 0L))
 }
+
+#' @rdname fm_dof
+#' @export
+fm_dof.fm_lattice_2d <- function(x) {
+  length(x$x) * length(x$y)
+}

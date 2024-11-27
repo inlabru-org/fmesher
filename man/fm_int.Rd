@@ -27,7 +27,14 @@ fm_int(domain, samplers = NULL, ...)
 
 \method{fm_int}{fm_lattice_2d}(domain, samplers = NULL, name = "x", ...)
 
-\method{fm_int}{fm_mesh_1d}(domain, samplers = NULL, name = "x", int.args = NULL, ...)
+\method{fm_int}{fm_mesh_1d}(
+  domain,
+  samplers = NULL,
+  name = "x",
+  int.args = NULL,
+  format = NULL,
+  ...
+)
 
 \method{fm_int}{fm_mesh_2d}(
   domain,
@@ -66,8 +73,9 @@ Points per knot segment: \code{nsub1}
 }}
 
 \item{format}{character; determines the output format, as either "sf"
-(default when the sampler is \code{NULL}) or "sp". When \code{NULL}, determined by
-the sampler type.}
+(default for \code{fm_mesh_2d} when the sampler is \code{NULL}),
+"numeric" (default for \code{fm_mesh_1d}), "bary", or "sp".
+When \code{NULL}, determined by the domain and sampler types.}
 }
 \value{
 A \code{tibble}, \code{sf}, or \code{SpatialPointsDataFrame} of 1D

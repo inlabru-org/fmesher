@@ -7,6 +7,7 @@
 \alias{fm_bary.tbl_df}
 \alias{fm_bary.fm_mesh_1d}
 \alias{fm_bary.fm_mesh_2d}
+\alias{fm_bary.fm_lattice_2d}
 \alias{fm_bary.metric_graph}
 \title{Compute barycentric coordinates}
 \usage{
@@ -21,6 +22,8 @@ fm_bary(...)
 \method{fm_bary}{fm_mesh_1d}(mesh, loc, method = c("linear", "nearest"), restricted = FALSE, ...)
 
 \method{fm_bary}{fm_mesh_2d}(mesh, loc, crs = NULL, ..., max_batch_size = NULL)
+
+\method{fm_bary}{fm_lattice_2d}(mesh, loc, crs = NULL, ...)
 
 \method{fm_bary}{metric_graph}(mesh, loc, MGG = TRUE, ...)
 }
@@ -65,8 +68,8 @@ give an approximately optimal runtime.}
 A \code{fm_bary} object, a \code{tibble} with columns \code{index}; either
 \itemize{
 \item{vector of triangle indices (triangle meshes),}
-\item{matrix of interval knot indices (1D meshes), or}
-\item{matrix of lower left box indices (2D lattices),}
+\item{vector of knot indices (1D meshes, either for edges or individual knots), or}
+\item{vector of lower left box indices (2D lattices),}
 }
 and \code{where}, a matrix of barycentric coordinates.
 }
@@ -96,6 +99,11 @@ knot, and \code{where} is a single-column all-ones matrix.
 triangle indices) and \code{where} (3-column matrix of barycentric coordinates).
 Points that were not found give \code{NA} entries in \code{index} and \code{where}.
 
+\item \code{fm_bary(fm_lattice_2d)}: An \code{fm_bary} object with columns \code{index} (vector of
+lattice cell indices) and \code{where} (4-column matrix of barycentric
+coordinates). Points that are outside the lattice are given \code{NA} entries in
+\code{index} and \code{where}.
+
 \item \code{fm_bary(metric_graph)}: Return a tibble with elements
 \code{fm_bary}
 
@@ -103,6 +111,7 @@ Points that were not found give \code{NA} entries in \code{index} and \code{wher
 \examples{
 bary <- fm_bary(fm_mesh_1d(1:4), seq(0, 5, by = 0.5))
 bary
+str(fm_bary(fmexample$mesh, fmexample$loc_sf))
 str(fm_bary(fmexample$mesh, fmexample$loc_sf))
 }
 \seealso{
