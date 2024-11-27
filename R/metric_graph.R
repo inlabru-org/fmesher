@@ -123,22 +123,29 @@ fm_bary.metric_graph <- function(mesh,
                                  loc,
                                  MGG = TRUE,
                                  ...) {
-  if (is.null(mesh$mesh)) {
-    if (!MGG) {
-      stop("There is no mesh")
+  if (!MGG) {
+    if (is.null(mesh$mesh)) {
+      stop("There is no mesh.")
     }
   }
-  if (inherits(loc, "graph") && inherits(loc, "fm_bary")) {
+  if (inherits(loc, "fm_bary") && inherits(loc, "graph")) {
     if (MGG) {
       bary_coord <- loc
     } else {
       bary_coord <- MGG_to_MGM(loc, mesh)
     }
-  } else if (inherits(loc, "mesh") && inherits(loc, "fm_bary")) {
+  } else if (inherits(loc, "fm_bary") && inherits(loc, "mesh")) {
     if (MGG) {
       bary_coord <- MGM_to_MGG(loc, mesh)
     } else {
       bary_coord <- loc
+    }
+  } else if (inherits(loc, "sfg") || inherits(loc, "sf")) {
+    # check the crs of point and convert to the same crs as graph (or
+    # coordinates handles this)
+    bary_coord <- Euclidean_to_graph(sf::st_coordinates(loc), mesh)
+    if (!MGG) {
+      bary_coord <- MGG_to_MGM(bary_coord, mesh)
     }
   } else {
     cat("loc is interpreted as Euclidean coordinates")
@@ -225,10 +232,14 @@ fm_int.metric_graph <- function(domain,
       if (!inherits(interedge, "graph_interval")) {
         interedge <- graph_interval(
           graph = domain,
-          start_MGG = as_MGG(list(interedge$start$index,
-                                  interedge$start$where[1, 2])),
-          end_MGG = as_MGG(list(interedge$end$index,
-                                interedge$end$where[1, 2]))
+          start_MGG = as_MGG(list(
+            interedge$start$index,
+            interedge$start$where[1, 2]
+          )),
+          end_MGG = as_MGG(list(
+            interedge$end$index,
+            interedge$end$where[1, 2]
+          ))
         )
       }
       the.block <- .block[j]
@@ -629,6 +640,8 @@ as_MGG <- function(loc, graph = NULL) {
     }
     return(MGM_to_MGG(coord = loc, graph = graph))
   }
+  # TO DO: add check here for sf (and then convert to correct crs)
+
   if (is.matrix(loc)) {
     res <- tibble::tibble(
       index = as.integer(loc[, 1]),
@@ -807,10 +820,14 @@ simple_path_MGG <- function(graph,
     # check direction
     start_vertex <- c(0:1)[(v2 %in% v1[end_vertex + 1])]
     inter_edge_intervals[length(edges) + 2, ] <- tibble::tibble(
-      start = as_MGG(cbind(as.integer(end_MGG$index),
-                           as.numeric(start_vertex))),
-      end = as_MGG(cbind(as.integer(end_MGG$index),
-                         as.numeric(end_MGG$where[, 2L])))
+      start = as_MGG(cbind(
+        as.integer(end_MGG$index),
+        as.numeric(start_vertex)
+      )),
+      end = as_MGG(cbind(
+        as.integer(end_MGG$index),
+        as.numeric(end_MGG$where[, 2L])
+      ))
     )
   } else { # there are no whole edges visited (edges=c())
     if (as.integer(start_MGG$index) == as.integer(end_MGG$index)) { # same edge
@@ -825,10 +842,14 @@ simple_path_MGG <- function(graph,
         ))
       )
       inter_edge_intervals[1, ] <- tibble::tibble(
-        start = as_MGG(cbind(as.integer(start_MGG$index),
-                             as.numeric(start_MGG$where[, 2]))),
-        end = as_MGG(cbind(as.integer(start_MGG$index),
-                           as.numeric(end_MGG$where[, 2])))
+        start = as_MGG(cbind(
+          as.integer(start_MGG$index),
+          as.numeric(start_MGG$where[, 2])
+        )),
+        end = as_MGG(cbind(
+          as.integer(start_MGG$index),
+          as.numeric(end_MGG$where[, 2])
+        ))
       )
     } else { # neighboring edges
       v1 <- graph$E[as.integer(start_MGG$index), ]
@@ -854,19 +875,27 @@ simple_path_MGG <- function(graph,
         ))
       )
       inter_edge_intervals[1, ] <- tibble::tibble(
-        start = as_MGG(cbind(as.integer(start_MGG$index),
-                             as.numeric(start_MGG$where[, 2]))),
-        end = as_MGG(cbind(as.integer(start_MGG$index),
-                           as.numeric(end_vertex)))
+        start = as_MGG(cbind(
+          as.integer(start_MGG$index),
+          as.numeric(start_MGG$where[, 2])
+        )),
+        end = as_MGG(cbind(
+          as.integer(start_MGG$index),
+          as.numeric(end_vertex)
+        ))
       )
       v2 <- graph$E[as.integer(end_MGG$index), ]
       # check direction
       start_vertex <- c(0:1)[(v2 %in% v1[end_vertex + 1L])]
       inter_edge_intervals[2, ] <- tibble::tibble(
-        start = as_MGG(cbind(as.integer(end_MGG$index),
-                             as.numeric(start_vertex))),
-        end = as_MGG(cbind(as.integer(end_MGG$index),
-                           as.numeric(end_MGG$where[, 2])))
+        start = as_MGG(cbind(
+          as.integer(end_MGG$index),
+          as.numeric(start_vertex)
+        )),
+        end = as_MGG(cbind(
+          as.integer(end_MGG$index),
+          as.numeric(end_MGG$where[, 2])
+        ))
       )
     }
   }
@@ -1060,7 +1089,8 @@ geom_path_to_path_MGG <- function(geom_path, graph) {
             end_seg[j, ] <- line_MGG[i + 1, ]
           } else {
             stop(paste0(
-              "Unclear geom_path: Subsequent points on different edges on path ",
+              "Unclear geom_path: Subsequent points on not ",
+              "directly connected edges on path ",
               l + 1, " for points indexed by ", i, " and ", i + 1, "."
             ))
           }
