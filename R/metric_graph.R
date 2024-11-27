@@ -5,7 +5,7 @@
 #' @rawNamespace S3method(inlabru::ibm_n, bm_metric_graph)
 #' @rawNamespace S3method(inlabru::ibm_values, bm_metric_graph)
 #' @rawNamespace S3method(inlabru::ibm_jacobian, bm_metric_graph)
-#' @rawNamespace S3method(inlabru::bru_mapper, metric_graph)
+# @rawNamespace S3method(inlabru::bru_mapper, metric_graph)
 
 #' @title Wrapper that calls bru_mapper with correct input
 #' @param model Model class (contains a metric graph object)
@@ -16,7 +16,7 @@ bru_get_mapper.rspde_metric_graph <- function(model, ...) {
     stop(paste0("Incompatible degrees of freedom. SPDE: ",
                 model[["f"]]$n, " and mesh: ", fm_dof(model["mesh"])))
   }
-  inlabru::bru_mapper(model[["mesh"]],
+  bru_mapper_metric_graph(model[["mesh"]],
                       n_rep = (model[["f"]]$n) / (fm_dof(model[["mesh"]])))
 }
 
@@ -26,7 +26,8 @@ bru_get_mapper.rspde_metric_graph <- function(model, ...) {
 #' @param n_rep number of components in linear predictor
 #' @param \dots arguments passed to sub-methods
 #' @rdname bm_metric_graph
-bru_mapper.metric_graph <- function(mesh, n_rep = 1, ...) {
+#' @export
+bru_mapper_metric_graph <- function(mesh, n_rep = 1, ...) {
   mapper <- inlabru::bru_mapper_fmesher(mesh)
   if (n_rep > 1) {
     mapper <- inlabru::bru_mapper_repeat(mapper, n_rep = n_rep)
