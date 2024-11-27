@@ -15,7 +15,8 @@
 #' @returns A `fm_bary` object, a `tibble` with columns `index`; either
 #' \itemize{
 #' \item{vector of triangle indices (triangle meshes),}
-#' \item{vector of knot indices (1D meshes, either for edges or individual knots), or}
+#' \item{vector of knot indices (1D meshes, either for edges or individual
+#' knots), or}
 #' \item{vector of lower left box indices (2D lattices),}
 #' }
 #' and `where`, a matrix of barycentric coordinates.
