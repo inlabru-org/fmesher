@@ -233,7 +233,7 @@ fm_int.metric_graph <- function(domain,
     for (k in seq_len(nrow(subsampler))) {
       interedge <- subsampler[k, , drop = TRUE]
       if (!inherits(interedge, "graph_interval")) {
-        interedge <- graph_interval(
+        interedge <- as_graph_interval(
           graph = domain,
           start_MGG = as_MGG(list(
             interedge$start$index,
@@ -712,7 +712,7 @@ as_MGG <- function(loc, graph = NULL) {
 #'   int
 #' }
 #'
-graph_interval <- function(start_MGG,
+as_graph_interval <- function(start_MGG,
                            end_MGG,
                            graph = NULL) {
   if (!(inherits(start_MGG, "graph") && inherits(start_MGG, "fm_bary"))) {
@@ -787,7 +787,7 @@ simple_path_MGG <- function(graph,
     # (start, end)
     n <- length(edges) + 2
     inter_edge_intervals <-
-      graph_interval(
+      as_graph_interval(
         as_MGG(tibble::tibble(
           index = integer(n),
           where = numeric(n)
@@ -834,7 +834,7 @@ simple_path_MGG <- function(graph,
     )
   } else { # there are no whole edges visited (edges=c())
     if (as.integer(start_MGG$index) == as.integer(end_MGG$index)) { # same edge
-      inter_edge_intervals <- graph_interval(
+      inter_edge_intervals <- as_graph_interval(
         start_MGG = as_MGG(tibble::tibble(
           index = integer(1),
           where = numeric(1)
@@ -867,7 +867,7 @@ simple_path_MGG <- function(graph,
       }
       # make storage for the inter edge intervals for each of the edge
       # index, start and end (graph_interval)
-      inter_edge_intervals <- graph_interval(
+      inter_edge_intervals <- as_graph_interval(
         start_MGG = as_MGG(tibble::tibble(
           index = integer(2),
           where = numeric(2)
@@ -945,11 +945,11 @@ simple_path_MGG <- function(graph,
 #' }
 #'
 geom_path_to_path_MGG <- function(geom_path, graph) {
-  # new function name for this (as.graph_interval(input) check what input is)
+  # new function name for this (as_graph_interval(input) check what input is)
   if (!inherits(geom_path, "sfc_LINESTRING")) {
     stop("Method not implemented. Input must be sfc_LINESTRING")
   }
-  # convert to correct crs: Handled by MetricGraph$coordinates.
+  # TO DO: convert to correct crs: Handled by MetricGraph$coordinates.
   # create eps
   if (is.null(graph$mesh)) {
     stop("The graph has no mesh!")
@@ -963,9 +963,10 @@ geom_path_to_path_MGG <- function(geom_path, graph) {
   for (k in unique(internal_XY[, "L1"])) {
     # a line should give us one path
     line <- internal_XY[internal_XY[, "L1"] == k, ]
-    line_MGG <- graph$coordinates(XY = line[, c("X", "Y")])
+    line_MGG <- fm_bary(graph, as.matrix(line[, c("X", "Y")]), MGG = TRUE)
+    #line_MGG <- graph$coordinates(XY = line[, c("X", "Y")])
     # convert to ("graph", "fm_bary")
-    line_MGG <- as_MGG(line_MGG)
+    #line_MGG <- as_MGG(line_MGG)
     # index for number of segments added
     j <- 0
     # storing the segments (start and end separately)
@@ -1107,7 +1108,7 @@ geom_path_to_path_MGG <- function(geom_path, graph) {
 
     # storage for the start_seq & end_seq as a well-defined path
     # they should all be on the same edge:
-    path_MGG <- graph_interval(
+    path_MGG <- as_graph_interval(
       start_MGG = start_seg,
       end_MGG = end_seg,
       graph = graph
