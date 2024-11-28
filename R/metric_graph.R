@@ -142,7 +142,8 @@ fm_bary.metric_graph <- function(mesh,
     } else {
       bary_coord <- loc
     }
-  } else if (inherits(loc, "sfg") || inherits(loc, "sf")) {
+  } else if (inherits(loc, "sfg") || inherits(loc, "sf") ||
+    inherits(loc, "sfc")) {
     # check the crs of point and convert to the same crs as graph (or
     # coordinates handles this)
     bary_coord <- Euclidean_to_graph(sf::st_coordinates(loc), mesh)
@@ -1119,7 +1120,7 @@ geom_path_to_path_MGG <- function(geom_path, graph) {
   }
   paths <- do.call(dplyr::bind_rows, paths)
   ids <- unlist(ids)
-  paths <- tibble::tibble(paths = paths, ids = ids)
+  paths <- tibble::tibble(paths = paths, ID = ids)
 
   return(paths)
 }
