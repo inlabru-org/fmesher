@@ -149,7 +149,7 @@ fm_bary.metric_graph <- function(mesh,
     # check the crs of point and convert to the same crs as graph (or
     # coordinates handles this)
     res <- Euclidean_to_graph(sf::st_coordinates(loc), mesh)
-    bary_coord <- res$bary[res$ok, ]
+    bary_coord <- res #res$bary[res$ok, ]
     if (!MGG) {
       bary_coord <- MGG_to_MGM(bary_coord, mesh)
     }
@@ -158,9 +158,9 @@ fm_bary.metric_graph <- function(mesh,
     cat("loc is interpreted as Euclidean coordinates")
     res <- Euclidean_to_graph(loc, mesh)
     if (MGG) {
-      bary_coord <- res$bary
+      bary_coord <- res#res$bary
     } else {
-      bary_coord <- MGG_to_MGM(res$bary, mesh)
+      bary_coord <-  MGG_to_MGM(res, mesh)#MGG_to_MGM(res$bary, mesh)
     }
   }
   return(bary_coord)
@@ -354,12 +354,13 @@ fm_int.metric_graph <- function(domain,
 Euclidean_to_graph <- function(loc, graph) {
   res <- graph$coordinates(XY = loc)
   # check distance from original points:
-  tolerance <- min(graph$edge_lengths) / 2
-  tmp_loc <- graph$coordinates(PtE = res, normalized = TRUE)
-  norm_XY <- sf::st_distace(loc, tmp_loc)
-  ok_ <- (norm_XY < tolerance)
-  graph_coords <- as_MGG(loc = res)
-  return(list(bary = graph_coords, ok = ok_))
+  #tolerance <- min(graph$edge_lengths) / 2
+  #tmp_loc <- graph$coordinates(PtE = res, normalized = TRUE)
+  #norm_XY <- sf::st_distance(loc, sf::st_point(tmp_loc, crs= sf::st_crs(loc)))
+  #ok_ <- (norm_XY < tolerance)
+  #graph_coords <- as_MGG(loc = res)
+  #return(list(bary = graph_coords, ok = ok_))
+  return(as_MGG(loc = res))
 }
 
 #' @title Make a (`mesh`, `fm_bary`) object from MGG coordinates
