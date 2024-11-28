@@ -63,23 +63,15 @@ fm_call_stack <- function(start = 0L, end = 0L, with_numbers = TRUE, ...) {
         lapply(
           stack,
           function(x) {
-            paste0(
-              vapply(
-                x,
-                function(x) {
-                  if (nchar(x) > 80) {
-                    paste0(
-                      substr(x, 1, 74),
-                      " [...]"
-                    )
-                  } else {
-                    x
-                  }
-                },
-                ""
-              ),
-              collapse = paste0("\n   ")
-            )
+            x <- paste0(trimws(x), collapse = " ")
+            if (nchar(x) > 80) {
+              paste0(
+                strtrim(x, 74),
+                " [...]"
+              )
+            } else {
+              x
+            }
           }
         )
       )

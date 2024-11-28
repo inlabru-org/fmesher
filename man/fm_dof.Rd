@@ -5,6 +5,7 @@
 \alias{fm_dof.fm_mesh_1d}
 \alias{fm_dof.fm_mesh_2d}
 \alias{fm_dof.fm_tensor}
+\alias{fm_dof.fm_lattice_2d}
 \alias{fm_dof.metric_graph}
 \title{Function spece degrees of freedom}
 \usage{
@@ -15,6 +16,8 @@ fm_dof(x)
 \method{fm_dof}{fm_mesh_2d}(x)
 
 \method{fm_dof}{fm_tensor}(x)
+
+\method{fm_dof}{fm_lattice_2d}(x)
 
 \method{fm_dof}{metric_graph}(x)
 }
