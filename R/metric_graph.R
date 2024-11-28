@@ -130,27 +130,31 @@ fm_bary.metric_graph <- function(mesh,
       stop("There is no mesh.")
     }
   }
-  if (inherits(loc, "fm_bary") && inherits(loc, "graph")) {
-    if (MGG) {
-      bary_coord <- loc
-    } else {
-      bary_coord <- MGG_to_MGM(loc, mesh)
-    }
-  } else if (inherits(loc, "fm_bary") && inherits(loc, "mesh")) {
-    if (MGG) {
-      bary_coord <- MGM_to_MGG(loc, mesh)
-    } else {
-      bary_coord <- loc
+  if(inherits(loc, "fm_bary")){
+    if (inherits(loc, "graph")) { #TO DO: name this class
+      if (MGG) {
+        bary_coord <- loc
+      } else {
+        bary_coord <- MGG_to_MGM(loc, mesh)
+      }
+    } else if (inherits(loc, "mesh")) {
+      if (MGG) {
+        bary_coord <- MGM_to_MGG(loc, mesh)
+      } else {
+        bary_coord <- loc
+      }
     }
   } else if (inherits(loc, "sfg") || inherits(loc, "sf") ||
     inherits(loc, "sfc")) {
     # check the crs of point and convert to the same crs as graph (or
     # coordinates handles this)
-    bary_coord <- Euclidean_to_graph(sf::st_coordinates(loc), mesh)
+    res <- Euclidean_to_graph(sf::st_coordinates(loc), mesh)
+    bary_coord <- res$bary[res$ok,]
     if (!MGG) {
       bary_coord <- MGG_to_MGM(bary_coord, mesh)
     }
   } else {
+    #Or should it only call as_MGG/as_MGM depending on "MGG"?
     cat("loc is interpreted as Euclidean coordinates")
     res <- Euclidean_to_graph(loc, mesh)
     if (MGG) {
@@ -349,8 +353,13 @@ fm_int.metric_graph <- function(domain,
 #'
 Euclidean_to_graph <- function(loc, graph) {
   res <- graph$coordinates(XY = loc)
+  #check distance from original points:
+  tolerance <- min(graph$edge_lengths) / 2
+  tmp_loc <- graph$coordinates(PtE = res, normalized = TRUE)
+  norm_XY <- sf::st_distace(loc, tmp_loc)
+  ok_ <- (norm_XY < tolerance)
   graph_coords <- as_MGG(loc = res)
-  return(graph_coords)
+  return(list(bary = graph_coords, ok = ok_))
 }
 
 #' @title Make a (`mesh`, `fm_bary`) object from MGG coordinates
