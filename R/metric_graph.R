@@ -130,8 +130,8 @@ fm_bary.metric_graph <- function(mesh,
       stop("There is no mesh.")
     }
   }
-  if(inherits(loc, "fm_bary")){
-    if (inherits(loc, "graph")) { #TO DO: name this class
+  if (inherits(loc, "fm_bary")) {
+    if (inherits(loc, "graph")) { # TO DO: name this class
       if (MGG) {
         bary_coord <- loc
       } else {
@@ -149,12 +149,12 @@ fm_bary.metric_graph <- function(mesh,
     # check the crs of point and convert to the same crs as graph (or
     # coordinates handles this)
     res <- Euclidean_to_graph(sf::st_coordinates(loc), mesh)
-    bary_coord <- res$bary[res$ok,]
+    bary_coord <- res$bary[res$ok, ]
     if (!MGG) {
       bary_coord <- MGG_to_MGM(bary_coord, mesh)
     }
   } else {
-    #Or should it only call as_MGG/as_MGM depending on "MGG"?
+    # Or should it only call as_MGG/as_MGM depending on "MGG"?
     cat("loc is interpreted as Euclidean coordinates")
     res <- Euclidean_to_graph(loc, mesh)
     if (MGG) {
@@ -353,7 +353,7 @@ fm_int.metric_graph <- function(domain,
 #'
 Euclidean_to_graph <- function(loc, graph) {
   res <- graph$coordinates(XY = loc)
-  #check distance from original points:
+  # check distance from original points:
   tolerance <- min(graph$edge_lengths) / 2
   tmp_loc <- graph$coordinates(PtE = res, normalized = TRUE)
   norm_XY <- sf::st_distace(loc, tmp_loc)
@@ -722,8 +722,8 @@ as_MGG <- function(loc, graph = NULL) {
 #' }
 #'
 as_graph_interval <- function(start_MGG,
-                           end_MGG,
-                           graph = NULL) {
+                              end_MGG,
+                              graph = NULL) {
   if (!(inherits(start_MGG, "graph") && inherits(start_MGG, "fm_bary"))) {
     start_MGG <- as_MGG(start_MGG, graph = graph)
   }
@@ -973,9 +973,9 @@ geom_path_to_path_MGG <- function(geom_path, graph) {
     # a line should give us one path
     line <- internal_XY[internal_XY[, "L1"] == k, ]
     line_MGG <- fm_bary(graph, as.matrix(line[, c("X", "Y")]), MGG = TRUE)
-    #line_MGG <- graph$coordinates(XY = line[, c("X", "Y")])
+    # line_MGG <- graph$coordinates(XY = line[, c("X", "Y")])
     # convert to ("graph", "fm_bary")
-    #line_MGG <- as_MGG(line_MGG)
+    # line_MGG <- as_MGG(line_MGG)
     # index for number of segments added
     j <- 0
     # storing the segments (start and end separately)
