@@ -158,9 +158,9 @@ fm_bary.metric_graph <- function(mesh,
     cat("loc is interpreted as Euclidean coordinates")
     res <- Euclidean_to_graph(loc, mesh)
     if (MGG) {
-      bary_coord <- res
+      bary_coord <- res$bary
     } else {
-      bary_coord <- MGG_to_MGM(res, mesh)
+      bary_coord <- MGG_to_MGM(res$bary, mesh)
     }
   }
   return(bary_coord)
