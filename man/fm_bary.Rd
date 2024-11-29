@@ -60,7 +60,8 @@ give an approximately optimal runtime.}
 A \code{fm_bary} object, a \code{tibble} with columns \code{index}; either
 \itemize{
 \item{vector of triangle indices (triangle meshes),}
-\item{vector of knot indices (1D meshes, either for edges or individual knots), or}
+\item{vector of knot indices (1D meshes, either for edges or individual
+knots), or}
 \item{vector of lower left box indices (2D lattices),}
 }
 and \code{where}, a matrix of barycentric coordinates.
