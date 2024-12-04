@@ -53,6 +53,7 @@ Other object creation and conversion:
 \code{\link{MGM_to_MGG}()},
 \code{\link{as_MGG}()},
 \code{\link{as_MGM}()},
+\code{\link{as_graph_interval}()},
 \code{\link{fm_as_fm}()},
 \code{\link{fm_as_lattice_2d}()},
 \code{\link{fm_as_mesh_1d}()},
@@ -66,7 +67,6 @@ Other object creation and conversion:
 \code{\link{fm_simplify}()},
 \code{\link{fm_tensor}()},
 \code{\link{geom_path_to_path_MGG}()},
-\code{\link{graph_interval}()},
 \code{\link{simple_path_MGG}()}
 }
 \author{
