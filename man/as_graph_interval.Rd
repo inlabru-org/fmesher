@@ -21,7 +21,7 @@ An \code{graph_interval} object
 Create an \code{graph_interval} object.
 }
 \examples{
-if (requireNamespace("MetricGraph")) {
+if (requireNamespace("MetricGraph", quietly = TRUE)) {
   edge1 <- rbind(c(0, 0), c(1, 0))
   edge2 <- rbind(c(0, 0), c(0, 1))
   edge3 <- rbind(c(0, 1), c(-1, 1))
@@ -29,7 +29,7 @@ if (requireNamespace("MetricGraph")) {
   edge4 <- cbind(sin(theta), 1 + cos(theta))
   edges <- list(edge1, edge2, edge3, edge4)
   graph <- MetricGraph::metric_graph$new(edges = edges)
-  int <- graph_interval(
+  int <- as_graph_interval(
     cbind(1, 0.8),
     cbind(1, 0.5),
     graph
