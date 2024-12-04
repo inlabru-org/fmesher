@@ -184,6 +184,33 @@ public:
                                   TriangleLocator &locator);
 };
 
+#ifdef TETRA
+class TetraLocator {
+
+public:
+  typedef BBoxLocator<double> bbox_locator_type;
+
+private:
+  const Mesh3 *mesh_;     /*! The mesh to be searched */
+  std::vector<int> dim_; /*! The order of the search dimensions, at most 3 */
+  bbox_type bbox_;       /*! Bounding boxes */
+  bbox_locator_type bbox_locator_; /*! The bbox searcher object */
+
+public:
+  TetraLocator(const Mesh3 *mesh, const std::vector<int> &dimensions,
+               bool use_interval_tree = true);
+
+  ~TetraLocator();
+
+  int locate(const Point &s) const;
+
+  std::ostream &print(std::ostream &output);
+
+  friend std::ostream &operator<<(std::ostream &output,
+                                  TetraLocator &locator);
+};
+#endif // TETRA
+
 } /* namespace fmesh */
 
 #include "locator_t.h"
