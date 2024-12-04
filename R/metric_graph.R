@@ -155,7 +155,7 @@ fm_bary.metric_graph <- function(mesh,
     }
   } else {
     # Or should it only call as_MGG/as_MGM depending on "MGG"?
-    cat("loc is interpreted as Euclidean coordinates")
+    #cat("loc is interpreted as Euclidean coordinates")
     res <- Euclidean_to_graph(loc, mesh)
     if (MGG) {
       bary_coord <- res # res$bary
@@ -1050,7 +1050,8 @@ geom_path_to_path_MGG <- function(geom_path, graph) {
             # candidates for the start
             edge_nodes <- graph$E[edge_index, ]
             if (!any(edge_nodes == start_vertex)) {
-              stop("Unclear geom_path: Not directly connected points.")
+              stop(paste0("Unclear geom_path: Not directly connected points for line",
+                          k," and points ", i," and ", i+1, "."))
             }
             # we have a valid start
             if (edge_nodes[1L] == start_vertex) {
@@ -1070,7 +1071,8 @@ geom_path_to_path_MGG <- function(geom_path, graph) {
           edge_index <- line_MGG$index[i]
           edge_nodes <- graph$E[edge_index, ]
           if (!any(edge_nodes == end_vertex)) {
-            stop("Unclear geom_path: Not directly connected points.")
+            stop(paste0("Unclear geom_path: Not directly connected points for line",
+                 k," and points ", i," and ", i+1, "."))
           }
           if (edge_nodes[1L] == end_vertex) {
             j <- j + 1
