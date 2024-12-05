@@ -374,7 +374,7 @@ Euclidean_to_graph <- function(loc, graph) {
 #' @export
 #' @family object creation and conversion
 #' @examples
-#' if (requireNamespace("MetricGraph")) {
+#' if (requireNamespace("MetricGraph", quietly = TRUE)) {
 #'   edge1 <- rbind(c(0, 0), c(1, 0))
 #'   edge2 <- rbind(c(0, 0), c(0, 1))
 #'   edge3 <- rbind(c(0, 1), c(-1, 1))
@@ -477,7 +477,7 @@ MGG_to_MGM <- function(coord, graph) {
 #' @export
 #' @family object creation and conversion
 #' @examples
-#' if (requireNamespace("MetricGraph")) {
+#' if (requireNamespace("MetricGraph", quietly = TRUE)) {
 #'   edge1 <- rbind(c(0, 0), c(1, 0))
 #'   edge2 <- rbind(c(0, 0), c(0, 1))
 #'   edge3 <- rbind(c(0, 1), c(-1, 1))
@@ -554,7 +554,7 @@ MGM_to_MGG <- function(coord, graph) {
 #' @export
 #' @family object creation and conversion
 #' @examples
-#' if (requireNamespace("MetricGraph")) {
+#' if (requireNamespace("MetricGraph", quietly = TRUE)) {
 #'   edge1 <- rbind(c(0, 0), c(1, 0))
 #'   edge2 <- rbind(c(0, 0), c(0, 1))
 #'   edge3 <- rbind(c(0, 1), c(-1, 1))
@@ -631,7 +631,7 @@ as_MGM <- function(loc, graph = NULL) {
 #' @export
 #' @family object creation and conversion
 #' @examples
-#' if (requireNamespace("MetricGraph")) {
+#' if (requireNamespace("MetricGraph", quietly = TRUE)) {
 #'   edge1 <- rbind(c(0, 0), c(1, 0))
 #'   edge2 <- rbind(c(0, 0), c(0, 1))
 #'   edge3 <- rbind(c(0, 1), c(-1, 1))
