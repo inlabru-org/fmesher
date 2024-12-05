@@ -18,7 +18,7 @@ A (\code{mesh}, \code{fm_bary}) object
 Create a (\code{mesh}, \code{fm_bary}) object from MGG coordinates.
 }
 \examples{
-if (requireNamespace("MetricGraph")) {
+if (requireNamespace("MetricGraph", quietly = TRUE)) {
   edge1 <- rbind(c(0, 0), c(1, 0))
   edge2 <- rbind(c(0, 0), c(0, 1))
   edge3 <- rbind(c(0, 1), c(-1, 1))

@@ -20,7 +20,7 @@ An (\code{graph}, \code{fm_bary}) object from \code{matrix}, \code{data.frame}, 
 Create a (\code{mesh}, \code{fm_bary}) object
 }
 \examples{
-if (requireNamespace("MetricGraph")) {
+if (requireNamespace("MetricGraph", quietly = TRUE)) {
   edge1 <- rbind(c(0, 0), c(1, 0))
   edge2 <- rbind(c(0, 0), c(0, 1))
   edge3 <- rbind(c(0, 1), c(-1, 1))
