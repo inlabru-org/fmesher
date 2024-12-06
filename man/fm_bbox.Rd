@@ -10,6 +10,7 @@
 \alias{fm_bbox.fm_bbox}
 \alias{fm_bbox.fm_mesh_1d}
 \alias{fm_bbox.fm_mesh_2d}
+\alias{fm_bbox.fm_mesh_3d}
 \alias{fm_bbox.fm_segm}
 \alias{fm_bbox.fm_lattice_2d}
 \alias{fm_bbox.fm_tensor}
@@ -40,6 +41,8 @@ fm_bbox(...)
 \method{fm_bbox}{fm_mesh_1d}(x, ...)
 
 \method{fm_bbox}{fm_mesh_2d}(x, ...)
+
+\method{fm_bbox}{fm_mesh_3d}(x, ...)
 
 \method{fm_bbox}{fm_segm}(x, ...)
 

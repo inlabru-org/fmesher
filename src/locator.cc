@@ -86,10 +86,9 @@ std::ostream &operator<<(std::ostream &output, TriangleLocator &locator) {
   return locator.print(output);
 }
 
-#ifdef TETRA
 TetraLocator::TetraLocator(const Mesh3 *mesh,
-                                   const std::vector<int> &dimensions,
-                                   bool use_interval_tree)
+                           const std::vector<int> &dimensions,
+                           bool use_interval_tree)
   : mesh_(mesh), dim_(dimensions), bbox_(),
     bbox_locator_(dimensions.size(), use_interval_tree) {
   bbox_.resize(dim_.size());
@@ -120,31 +119,30 @@ TetraLocator::TetraLocator(const Mesh3 *mesh,
 TetraLocator::~TetraLocator() { /* Nothing to do. */
 }
 
-int TetraLocator::locate(const Point &s) const {
+int TetraLocator::locate(const Point &s, Double4 &b) const {
   FMLOG("Looking for s=" << s << std::endl);
   std::vector<double> loc(dim_.size());
   for (size_t di = 0; di < dim_.size(); ++di) {
     loc[di] = s[dim_[di]];
   }
-  Dart d;
+  // int search_steps = 0;
   for (bbox_locator_type::search_iterator si = bbox_locator_.search_begin(loc);
        !si.is_null(); ++si) {
-    FMLOG("Starting at " << *si << std::endl);
-    d = mesh_->locate_point(Dart3(*mesh_, (*si)), s);
-    FMLOG("Resulting dart " << d << std::endl);
+    // search_steps++;
+    Dart3 d(*mesh_, *si);
+    FMLOG("Trying tetra " << *si << ", " << d << std::endl);
     if (!d.isnull()) {
-      Point b;
-      mesh_->barycentric(Dart(*mesh_, d.t()), s, b);
+      mesh_->barycentric(d, s, b);
       FMLOG("Barycentric coordinates " << b << std::endl);
       if ((b[0] >= -10.0 * MESH_EPSILON) && (b[1] >= -10.0 * MESH_EPSILON) &&
-          (b[2] >= -10.0 * MESH_EPSILON))
+          (b[2] >= -10.0 * MESH_EPSILON) && (b[3] >= -10.0 * MESH_EPSILON)) {
+        FMLOG("Found the containing tetra." << std::endl);
+        // FMLOG("Search steps: " << search_steps << std::endl);
         return (d.t());
-      else {
-        FMLOG("Mesh3::locate_point reported incorrect finding." << std::endl);
       }
     }
   }
-  FMLOG("Point not found, s=" << s << std::endl);
+  FMLOG_("Point not found, s=" << s << std::endl);
   return -1;
 }
 
@@ -155,7 +153,6 @@ std::ostream &TetraLocator::print(std::ostream &output) {
 std::ostream &operator<<(std::ostream &output, TetraLocator &locator) {
   return locator.print(output);
 }
-#endif // TETRA
 
 
 

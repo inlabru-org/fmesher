@@ -247,11 +247,14 @@ public:
 
   bool operator<(const selfT &vec) const {
     for (size_t i = 0; i < DIM; i++) {
-      if (!(s[i] < vec.s[i])) {
+      if (s[i] < vec.s[i]) {
+        return true;
+      }
+      if (s[i] > vec.s[i]) {
         return false;
       }
     }
-    return true;
+    return false;
   };
 };
 
@@ -999,6 +1002,14 @@ std::ostream &operator<<(std::ostream &output, const Matrix<T> &M) {
       output << M.data_[r * M.cols() + c] << " ";
     }
     output << std::endl;
+  }
+  return output;
+}
+
+template <class T, int DIM>
+std::ostream &operator<<(std::ostream &output, const Vector<T, DIM> &M) {
+  for (size_t r = 0; r < DIM; r++) {
+    output << M[r] << " ";
   }
   return output;
 }

@@ -231,6 +231,47 @@ print.fm_mesh_2d <- function(x, ..., digits = NULL, verbose = FALSE) {
 
 
 #' @param verbose logical
+#' @param digits a positive integer indicating how many significant digits are
+#'   to be used for numeric and complex x. The default, NULL, uses
+#'   `getOption("digits")`.
+#'
+#' @export
+#' @rdname fmesher-print
+print.fm_mesh_3d <- function(x, ..., digits = NULL, verbose = FALSE) {
+  ret <- list(verbose = verbose)
+  if (verbose) {
+    ret <- c(ret, list())
+  }
+  ret <-
+    c(
+      ret,
+      list(
+        manifold = fm_manifold(x),
+        nV = nrow(x$loc),
+        nT = nrow(x$graph$tv)
+      )
+    )
+
+  cat("fm_mesh_3d object:\n", sep = "")
+  cat("  Manifold:\t", ret$manifold, "\n", sep = "")
+  nV <- ret$nV
+  nE <- as.integer(sum(x$graph$vv) / 2L)
+  nF <- NA
+  nC <- ret$nT
+  cat("  V / E / T / Tet:\t", as.character(ret$nV), " / ", sep = "")
+  cat(as.character(nE), " / ", sep = "")
+  cat("?", " / ", sep = "")
+  cat(as.character(ret$nT), "\n", sep = "")
+  cat("  Euler char.:\t", as.character(nC - nF + nE - nV), sep = "")
+  cat("\n  ", sep = "")
+  print(fm_bbox(x), digits = digits)
+  cat("  Basis d.o.f.:\t", fm_dof(x), "\n", sep = "")
+  invisible(x)
+}
+
+
+
+#' @param verbose logical
 #'
 #' @export
 #' @rdname fmesher-print

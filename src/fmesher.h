@@ -17,6 +17,7 @@
 #include "ioutils.h"
 #include "locator.h"
 #include "mesh.h"
+#include "mesh3.h"
 #include "meshc.h"
 
 #endif

@@ -52,11 +52,11 @@ private:
   Mtype type_;
   bool use_VT_;
   bool use_TTi_;
-  Matrix4int TetVtx_;  /* TetVtx[t]  : {v1,v2,v3,v3} */
-  Matrix4int TetTet_;  /* TT[t]  : {t1,t2,t3,t4} */
+  Matrix4int TetVtx_;  /* TetVtx[t]  : {v0,v1,v2,v3} */
+  Matrix4int TetTet_;  /* TT[t]  : {t0,t1,t2,t3} */
   VTMapT VtxTet_mapping_;  /* VtxTet[v] : map from t to the vi (0,1,2,3) value for v */
   /* TetVtx[ VtxTet[v][i].t, VtxTet[v][i].vi ] == v */
-  Matrix4int TetTeti_; /* TetTeti[t] : {vi1,vi2,vi3,vi3},
+  Matrix4int TetTeti_; /* TetTeti[t] : {vi0,vi1,vi2,vi3},
                      t == TetTet[ TetTet[t][i] ][ TetTeti[t][i] ] */
   Matrix3double S_;
   Mesh M_local_;
@@ -365,7 +365,7 @@ public:
     else
       return M_->TetVtx_[tet_][tri_.vo()];
   };
-  /* Adjacent tetra; alpha3().t() */
+  /* Adjacent tetra; opposite3().t() */
   int tadj() const {
     if (!M_)
       return -1;

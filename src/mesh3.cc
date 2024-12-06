@@ -105,53 +105,81 @@ Mesh3 &Mesh3::check_capacity(size_t nVc, size_t nTc) {
 Mesh3 &Mesh3::rebuildTT() {
   typedef Int3 Tri_Type;
   typedef std::map<Tri_Type, int> TriTet_Type;
-  int t, vi;
+  int t, vi, loop;
   Tri_Type T0, T1, T2;
   TriTet_Type::const_iterator Ti;
   TriTet_Type TriTet;
+  TetTet_.rows(nT());
   /* Pass 1: */
   for (t = 0; t < (int)nT(); t++) {
     const Int4 &TVt = TetVtx_[t];
-    for (vi = 0; vi < 4; vi++) {
-      T0 = Int3(TVt[(vi + 1) % 4], TVt[(vi + 2) % 4], TVt[(vi + 3) % 4]);
-      T1 = Int3(TVt[(vi + 3) % 4], TVt[(vi + 2) % 4], TVt[(vi + 1) % 4]);
-      Ti = TriTet.find(T1);
-      if (Ti == TriTet.end()) {
-        T1 = Int3(TVt[(vi + 2) % 4], TVt[(vi + 1) % 4], TVt[(vi + 3) % 4]);
+    Dart3 d(*this, t);
+    for (loop = 0; loop < 4; ++loop) {
+      FMLOG("Looking for tetra opposite to " << d << std::endl);
+      const Int3 &local_TV = M_local_.TV(d.tri().t());
+      T0 = Int3(TVt[ local_TV[0] ],
+                TVt[ local_TV[1] ],
+                   TVt[local_TV[2]]);
+      for (vi = 0; vi < 3; ++vi) {
+        T1 = Int3(TVt[ local_TV[(vi + 2) % 3] ],
+                  TVt[ local_TV[(vi + 1) % 3] ],
+                     TVt[local_TV[(vi + 0) % 3]]);
         Ti = TriTet.find(T1);
-        if (Ti == TriTet.end()) {
-          T1 = Int3(TVt[(vi + 1) % 4], TVt[(vi + 3) % 4], TVt[(vi + 2) % 4]);
-          Ti = TriTet.find(T1);
+        if (Ti != TriTet.end()) {
+          break;
         }
       }
-      if (Ti != TriTet.end()) { /* Found neighbour */
-        TetTet_(t)[vi] = Ti->second;
+      if (Ti != TriTet.end()) {
+        /* Found neighbour */
+        FMLOG("rebuildTT: Pass 1, Found neighbour" << std::endl);
+        FMLOG("Looked for reverse of T0 = "<< T0[0] << "," << T0[1] << "," << T0[2] << std::endl);
+        FMLOG("Found T1 = "<< T1[0] << "," << T1[1] << "," << T1[2] << std::endl);
+        FMLOG("Found tetra = " << Ti->second << std::endl);
+        FMLOG("Found mapping from = "
+                << Ti->first[0] << ","
+                << Ti->first[1] << ","
+                << Ti->first[2] << ","
+                << std::endl);
+        TetTet_(t)[d.tri().t()] = Ti->second;
       } else { /* Either on boundary, or not added yet. */
-        TetTet_(t)[vi] = -1;
+        FMLOG("rebuildTT: Pass 1, On boundary, or not found yet" << std::endl);
+        TetTet_(t)[d.tri().t()] = -1;
       }
       TriTet.insert(TriTet_Type::value_type(T0, t));
+      FMLOG("Storing T0 = "<< T0[0] << "," << T0[1] << "," << T0[2] << std::endl);
+      d.orbit3();
     }
   }
 
   /* Pass 2: */
   for (t = 0; t < (int)nT(); t++) {
     const Int4 &TVt = TetVtx_[t];
-    for (vi = 0; vi < 4; vi++) {
-      if (TetTet_[t][vi] >= 0)
+    Dart3 d(*this, t);
+    for (loop = 0; loop < 4; ++loop) {
+      if (TetTet_[t][loop] >= 0)
         continue;
-      T1 = Int3(TVt[(vi + 3) % 4], TVt[(vi + 2) % 4], TVt[(vi + 1) % 4]);
-      Ti = TriTet.find(T1);
-      if (Ti == TriTet.end()) {
-        T1 = Int3(TVt[(vi + 2) % 4], TVt[(vi + 1) % 4], TVt[(vi + 3) % 4]);
+      const Int3 &local_TV = M_local_.TV(d.tri().t());
+      T0 = Int3(TVt[ local_TV[0] ],
+                TVt[ local_TV[1] ],
+                   TVt[local_TV[2]]);
+      const Int4 &TVt = TetVtx_[t];
+      for (vi = 0; vi < 3; ++vi) {
+        T1 = Int3(
+          TVt[local_TV[(vi + 2) % 3]],
+             TVt[local_TV[(vi + 1) % 3]],
+                TVt[local_TV[(vi + 0) % 3]]
+        );
         Ti = TriTet.find(T1);
-        if (Ti == TriTet.end()) {
-          T1 = Int3(TVt[(vi + 1) % 4], TVt[(vi + 3) % 4], TVt[(vi + 2) % 4]);
-          Ti = TriTet.find(T1);
+        if (Ti != TriTet.end()) {
+          break;
         }
       }
-      if (Ti != TriTet.end()) { /* Found neighbour */
-        TetTet_(t)[vi] = Ti->second;
+      if (Ti != TriTet.end()) {
+        /* Found neighbour */
+        FMLOG("rebuildTT: Pass 2, Found neighbour" << std::endl);
+        TetTet_(t)[d.tri().t()] = Ti->second;
       }
+      d.orbit3();
     }
   }
 
@@ -455,7 +483,7 @@ void Mesh3::tetraBoundingBox(const Point &s0,
  L &= 2R \cdot \operatorname{atan2}(\|s_1-s_0\|,\|s_0+s_1\|)
  \f}
  */
-double Mesh::edgeLength(const Point &s0, const Point &s1) const {
+double Mesh3::edgeLength(const Point &s0, const Point &s1) const {
   Point e;
   Vec::diff(e, s1, s0);
   double len = Vec::length(e);
@@ -480,20 +508,12 @@ double Mesh3::tetraVolume(const Point &s0,
                           const Point &s1,
                           const Point &s2,
                           const Point &s3) const {
-  Point e0, e1, e2, e3;
-  Vec::diff(e0, s3, s2);
+  Point e0, e1, e2;
+  Vec::diff(e0, s0, s3);
   Vec::diff(e1, s1, s3);
-  Vec::diff(e2, s2, s1);
-  Vec::diff(e3, s0, s1);
+  Vec::diff(e2, s2, s3);
 
-  /* Calculate the inwards unscaled normal(s), calculate projection. */
-  Point n0, n1, n2;
-  Vec::cross(n0, e1, e2);
-  Vec::cross(n1, e2, e0);
-  Vec::cross(n2, e0, e1);
-  Vec::accum(n0, n1);
-  Vec::accum(n0, n2);
-  double volume = Vec::scalar(n0, e3) / (3.0 * 6.0);
+  double volume = Vec::volume(e0, e1, e2) / 6.0;
 
   return volume;
 }

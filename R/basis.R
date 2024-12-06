@@ -110,6 +110,29 @@ fm_basis.fm_mesh_2d <- function(x, loc, weights = NULL, derivatives = NULL, ...,
   fm_basis(result, full = full)
 }
 
+#' @describeIn fm_basis `fm_mesh_3d` basis functions.
+#' @export
+fm_basis.fm_mesh_3d <- function(x, loc, weights = NULL, ...,
+                                full = FALSE) {
+  bary <- fm_bary(x, loc, ...)
+  n_loc <- NROW(bary)
+  ok <- !is.na(bary$index)
+  simplex <- fm_bary_simplex(x, bary[ok, , drop = FALSE])
+  if (is.null(weights)) {
+    weights <- rep(1.0, n_loc)
+  } else if (length(weights) == 1) {
+    weights <- rep(weights, n_loc)
+  }
+  A <- Matrix::sparseMatrix(
+    i = rep(which(ok), 4),
+    j = as.vector(simplex),
+    x = as.numeric(as.vector(bary$where[ok, ]) * weights[rep(which(ok), 4)]),
+    dims = c(n_loc, fm_dof(x))
+  )
+
+  fm_basis(list(A = A, ok = ok, bary = bary), full = full)
+}
+
 #' @describeIn fm_basis `fm_lattice_2d` bilinear basis functions.
 #' @export
 fm_basis.fm_lattice_2d <- function(x, loc, weights = NULL, ...,

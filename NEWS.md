@@ -18,6 +18,8 @@
   and `fm_mesh_2d` objects (version `0.2.0.9006`)
 * Make `fm_try_callstack()` more robust against large callstack sizes; solves
   "C stack" crash issue for `inla()` error reporting (version `0.2.0.9007`)
+* Add `fm_mesh_3d()` for 3D meshes (version `0.2.0.9008`) 
+* Fix `fm_bbox.fm_mesh_2d()` bug for `"S2"` and `"M2"` manifold meshes (version `0.2.0.9008`) 
 
 # fmesher 0.2.0
 

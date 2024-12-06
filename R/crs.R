@@ -849,6 +849,18 @@ fm_crs.fm_mesh_2d <- function(x, oblique = NULL, ...) {
 
 #' @rdname fm_crs
 #' @export
+fm_crs.fm_mesh_1d <- function(x, oblique = NULL, ...) {
+  fm_crs()
+}
+
+#' @rdname fm_crs
+#' @export
+fm_crs.fm_mesh_3d <- function(x, oblique = NULL, ...) {
+  fm_crs()
+}
+
+#' @rdname fm_crs
+#' @export
 fm_crs.fm_lattice_2d <- function(x, oblique = NULL, ...) {
   fm_crs(x[["crs"]], oblique = oblique, ...)
 }

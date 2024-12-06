@@ -243,6 +243,84 @@ fm_bary.fm_mesh_2d <- function(mesh,
   )
 }
 
+#' @describeIn fm_bary An `fm_bary` object with columns `index` (vector of
+#'   triangle indices) and `where` (4-column matrix of barycentric coordinates).
+#'   Points that were not found give `NA` entries in `index` and `where`.
+#' @param max_batch_size integer; maximum number of points to process in a
+#'   single batch. This speeds up calculations by avoiding repeated large
+#'   internal memory allocations and data copies. The default, `NULL`, uses
+#'   `max_batch_size = 2e5L`, chosen based on empirical time measurements to
+#'   give an approximately optimal runtime.
+#'
+#' @export
+#' @examples
+#' m <- fm_mesh_3d(
+#'   rbind(
+#'     c(1, 0, 0),
+#'     c(0, 1, 0),
+#'     c(0, 0, 1),
+#'     c(0, 0, 0)
+#'   ),
+#'   matrix(c(1, 2, 3, 4), 1, 4)
+#' )
+#' b <- fm_bary(m, matrix(c(1, 1, 1) / 4, 1, 3))
+fm_bary.fm_mesh_3d <- function(mesh,
+                               loc,
+                               ...,
+                               max_batch_size = NULL) {
+  if (inherits(loc, "fm_bary")) {
+    return(loc)
+  }
+
+  if (is.null(max_batch_size)) {
+    max_batch_size <- 2e5L
+  }
+
+  pre_ok_idx <-
+    which(rowSums(matrix(
+      is.na(as.vector(loc)),
+      nrow = nrow(loc),
+      ncol = ncol(loc)
+    )) == 0)
+  if (length(pre_ok_idx) <= max_batch_size) {
+    result <- fmesher_bary3d(
+      mesh_loc = mesh$loc,
+      mesh_tv = mesh$graph$tv - 1L,
+      loc = loc[pre_ok_idx, , drop = FALSE],
+      options = list()
+    )
+    tet <- rep(NA_integer_, nrow(loc))
+    where <- matrix(NA_real_, nrow(loc), 4)
+    ok <- result$index >= 0
+    tet[pre_ok_idx[ok]] <- result$index[ok] + 1L
+    where[pre_ok_idx[ok], ] <- result$where[ok, ]
+  } else {
+    tet <- rep(NA_integer_, nrow(loc))
+    where <- matrix(NA_real_, nrow(loc), 4)
+    n_batches <- ceiling(length(pre_ok_idx) / max_batch_size)
+    batch_idx <- round(seq(0, length(pre_ok_idx), length.out = n_batches + 1))
+    subindex <- split(pre_ok_idx, rep(seq_len(n_batches), diff(batch_idx)))
+    for (k in seq_along(subindex)) {
+      result <- fmesher_bary3d(
+        mesh_loc = mesh$loc,
+        mesh_tv = mesh$graph$tv - 1L,
+        loc = loc[subindex[[k]], , drop = FALSE],
+        options = list()
+      )
+      ok <- result$index >= 0
+      tet[subindex[[k]][ok]] <- result$index[ok] + 1L
+      where[subindex[[k]][ok], ] <- result$where[ok, ]
+    }
+  }
+
+  fm_bary(
+    tibble::tibble(
+      index = tet,
+      where = where
+    )
+  )
+}
+
 
 
 #' @describeIn fm_bary An `fm_bary` object with columns `index` (vector of
@@ -349,6 +427,22 @@ fm_bary_simplex.fm_mesh_2d <- function(mesh, bary = NULL, ...) {
   }
   if (NROW(bary) == 0L) {
     return(matrix(integer(1), 0L, 3L))
+  }
+  mesh$graph$tv[bary$index, , drop = FALSE]
+}
+
+#' @describeIn fm_bary_simplex Extract the tetrahedron vertex indices for a 3D mesh
+#' @export
+#'
+# @examples
+# bary <- fm_bary(fmexample$mesh, fmexample$loc_sf)
+# fm_bary_simplex(fmexample$mesh, bary)
+fm_bary_simplex.fm_mesh_3d <- function(mesh, bary = NULL, ...) {
+  if (is.null(bary)) {
+    return(mesh$graph$tv)
+  }
+  if (NROW(bary) == 0L) {
+    return(matrix(integer(1), 0L, 4L))
   }
   mesh$graph$tv[bary$index, , drop = FALSE]
 }
@@ -487,6 +581,34 @@ fm_bary_loc.fm_mesh_2d <- function(mesh, bary = NULL, ..., format = NULL) {
       as.data.frame(loc),
       coords = seq_len(ncol(loc)),
       crs = fm_crs(loc)
+    )
+  }
+  loc
+}
+
+#' @describeIn fm_bary_loc Extract points on a tetrahedron mesh. Implemented
+#' format is `"matrix"` (default).
+#' @export
+#'
+# @examples
+# head(fm_bary_loc(fmexample$mesh))
+# bary <- fm_bary(fmexample$mesh, fmexample$loc_sf)
+# fm_bary_loc(fmexample$mesh, bary)
+fm_bary_loc.fm_mesh_3d <- function(mesh, bary = NULL, ..., format = NULL) {
+  format <- match.arg(format, c("matrix"))
+  if (is.null(bary)) {
+    loc <- mesh$loc
+  } else if (NROW(bary) == 0L) {
+    loc <- matrix(0.0, 0L, ncol(mesh$loc))
+  } else {
+    loc <- matrix(NA_real_, NROW(bary), ncol(mesh$loc))
+    ok <- !is.na(bary$index)
+    simplex <- fm_bary_simplex(mesh, bary = bary[ok, ])
+    loc[ok, ] <- (
+      mesh$loc[simplex[, 1L], , drop = FALSE] * bary$where[ok, 1] +
+        mesh$loc[simplex[, 2L], , drop = FALSE] * bary$where[ok, 2] +
+        mesh$loc[simplex[, 3L], , drop = FALSE] * bary$where[ok, 3] +
+        mesh$loc[simplex[, 4L], , drop = FALSE] * bary$where[ok, 4]
     )
   }
   loc

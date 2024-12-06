@@ -22,6 +22,7 @@
 
 #include "fmesher_debuglog.h"
 #include "mesh.h"
+#include "mesh3.h"
 #include "trees.h"
 #include "vector.h"
 
@@ -184,7 +185,6 @@ public:
                                   TriangleLocator &locator);
 };
 
-#ifdef TETRA
 class TetraLocator {
 
 public:
@@ -202,14 +202,13 @@ public:
 
   ~TetraLocator();
 
-  int locate(const Point &s) const;
+  int locate(const Point &s, Double4 &b) const;
 
   std::ostream &print(std::ostream &output);
 
   friend std::ostream &operator<<(std::ostream &output,
                                   TetraLocator &locator);
 };
-#endif // TETRA
 
 } /* namespace fmesh */
 
