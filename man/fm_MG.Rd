@@ -66,6 +66,24 @@ coordinates or Euclidean coordinates (passed to \code{\link[=fm_bary]{fm_bary()}
 least a projection matrix \code{A} and logical vector \code{ok} indicating which
 evaluations are valid. If \code{FALSE}, return only the projection matrix \code{A}.
 Default is \code{FALSE}.}
+
+\item{mesh}{Any supported mesh object, such as \code{fm_mesh_1d} or \code{fm_mesh_2d}
+object}
+
+\item{bary}{An \code{fm_bary} object, or an object that can be converted to
+\code{fm_bary}.}
+
+\item{domain}{Functional space specification; single domain or a named list
+of domains}
+
+\item{samplers}{For single domain \code{fm_int} methods, an object specifying one
+or more subsets of the domain, and optional weighting in a \code{weight}
+variable. For \code{fm_int.list}, a list of sampling definitions, where data
+frame elements may contain information for multiple domains, in which case
+each row represent a separate tensor product integration subspace.}
+
+\item{name}{For single-domain methods, the variable name to use for the
+integration points. Default 'x'}
 }
 \value{
 A \code{fm_basis} object; a list of evaluator information objects,

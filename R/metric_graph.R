@@ -143,7 +143,7 @@ fm_basis.metric_graph <- function(x,
 
 
 #' @describeIn fm_MG Compute an `fm_bary_MGG` or `fm_bary_MGM` object
-#'
+#' @inheritParams fm_bary
 #' @param MGG indicator for the barycentric coordinates related to the graph
 #'   (MGG) or mesh (MGM), or NULL. Passed on to [fm_as_MG()]
 #' @export
@@ -286,6 +286,7 @@ fm_dof.fm_MGM <- function(x) {
 #'     samplers
 #'   )
 #' }
+#' @inheritParams fm_int
 fm_int.metric_graph <- function(domain,
                                 samplers = NULL,
                                 name = "x",
@@ -463,6 +464,7 @@ fm_int.fm_MGG <- function(domain,
 #'   m
 #' }
 #'
+#' @keywords internal
 Euclidean_to_graph <- function(loc, graph) {
   res <- graph$coordinates(XY = loc)
   # check distance from original points:
@@ -502,6 +504,7 @@ Euclidean_to_graph <- function(loc, graph) {
 #'   mgm
 #' }
 #'
+#' @keywords internal
 MGG_to_MGM <- function(coord, graph) {
   if (is.null(graph$mesh)) {
     stop("There is no mesh")
@@ -605,6 +608,7 @@ MGG_to_MGM <- function(coord, graph) {
 #'   mgg
 #' }
 #'
+#' @keywords internal
 MGM_to_MGG <- function(coord, graph) {
   stopifnot(inherits(coord, "fm_bary_MGM"))
   mesh_loc <- graph$mesh$VtE
@@ -682,6 +686,7 @@ MGM_to_MGG <- function(coord, graph) {
 #'   class(m) # "fm_bary_MGM", "fm_bary", "tbl_df", "tbl", "data.frame"
 #' }
 #'
+#' @keywords internal
 as_MGM <- function(loc, graph = NULL) {
   if (inherits(loc, "fm_bary_MGM")) {
     return(loc)
@@ -755,6 +760,7 @@ as_MGM <- function(loc, graph = NULL) {
 #'   class(m) # "fm_bary_MGG", "fm_bary", "tbl_df", "tbl", "data.frame"
 #' }
 #'
+#' @keywords internal
 as_MGG <- function(loc, graph = NULL) {
   if (inherits(loc, "fm_bary_MGG")) {
     return(loc)
@@ -834,6 +840,7 @@ as_MGG <- function(loc, graph = NULL) {
 #'   int
 #' }
 #'
+#' @keywords internal
 as_graph_interval <- function(start_MGG,
                               end_MGG,
                               graph = NULL) {
@@ -886,6 +893,7 @@ as_graph_interval <- function(start_MGG,
 #'   path
 #' }
 #'
+#' @keywords internal
 simple_path_MGG <- function(graph,
                             start_MGG,
                             edges,
@@ -1066,6 +1074,7 @@ simple_path_MGG <- function(graph,
 #'   path
 #' }
 #'
+#' @keywords internal
 geom_path_to_path_MGG <- function(geom_path, graph) {
   # new function name for this (as_graph_interval(input) check what input is)
   if (!inherits(geom_path, "sfc_LINESTRING")) {
