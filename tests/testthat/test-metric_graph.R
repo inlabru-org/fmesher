@@ -421,7 +421,9 @@ test_that("fm_basis paths", {
   test_sampler <- tibble::tibble(x = list(p1, p2), weight = c(1, 1))
   graph0$build_mesh(h = 0.005)
   ips <- fm_int(fm_as_MG(graph0, MGG = FALSE), samplers = test_sampler)
-  basis <- fm_basis(x = fm_as_MG(graph0, MGG = FALSE), loc = ips$x, weights = ips$weight)
+  basis <- fm_basis(x = fm_as_MG(graph0, MGG = FALSE),
+                    loc = ips$x,
+                    weights = ips$weight)
   n <- NROW(ips)
   MGM_locs <- as_MGM(ips$x, graph = graph0)
   true_A <- Matrix::sparseMatrix(

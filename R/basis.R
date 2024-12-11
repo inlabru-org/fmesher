@@ -1115,18 +1115,22 @@ internal_bspline <- function(x, knots, degree = 1, deriv = 0) {
       if (any(left)) {
         basis$i <- c(basis$i, basis_prev$i[left])
         basis$j <- c(basis$j, basis_prev$j[left])
-        basis$values <- c(basis$values,
-                          basis_prev$values[left] *
-                            (x[basis_prev$i[left]] - knots[l]) /
-                            (knots[l + deg] - knots[l]))
+        basis$values <- c(
+          basis$values,
+          basis_prev$values[left] *
+            (x[basis_prev$i[left]] - knots[l]) /
+            (knots[l + deg] - knots[l])
+        )
       }
       if (any(right)) {
         basis$i <- c(basis$i, basis_prev$i[right])
         basis$j <- c(basis$j, basis_prev$j[right] - 1L)
-        basis$values <- c(basis$values,
-                          basis_prev$values[right] *
-                            (knots[l + deg + 1L] - x[basis_prev$i[right]]) /
-                            (knots[l + deg + 1L] - knots[l + 1L]))
+        basis$values <- c(
+          basis$values,
+          basis_prev$values[right] *
+            (knots[l + deg + 1L] - x[basis_prev$i[right]]) /
+            (knots[l + deg + 1L] - knots[l + 1L])
+        )
       }
     }
     #    message("knots: ", knots)
@@ -1147,7 +1151,10 @@ internal_bspline2 <- function(x, knots, degree = 1, deriv = 0) {
   }
 
   if (deriv > 0) {
-    basis_lower <- internal_bspline2(x, knots, degree = degree - 1, deriv = deriv - 1)
+    basis_lower <- internal_bspline2(x,
+                                     knots,
+                                     degree = degree - 1,
+                                     deriv = deriv - 1)
     m <- length(knots) + degree - 1L
     m_lower <- m - 1L
     A <- Matrix::sparseMatrix(

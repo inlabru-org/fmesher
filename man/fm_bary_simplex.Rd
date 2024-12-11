@@ -37,7 +37,8 @@ and \link{fm_bary} coordinates.
 \itemize{
 \item \code{fm_bary_simplex(fm_mesh_2d)}: Extract the triangle vertex indices for a 2D mesh
 
-\item \code{fm_bary_simplex(fm_mesh_3d)}: Extract the tetrahedron vertex indices for a 3D mesh
+\item \code{fm_bary_simplex(fm_mesh_3d)}: Extract the tetrahedron vertex indices for a 3D
+mesh
 
 \item \code{fm_bary_simplex(fm_mesh_1d)}: Extract the edge vertex indices for a 1D mesh
 

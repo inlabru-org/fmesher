@@ -130,7 +130,8 @@ intervals (ordered), and optionally a \code{weight} column.
 
 \item \code{fm_int(fm_MGM)}: Integrate on an \code{fm_MGM} object
 
-\item \code{fm_int(fm_MGG)}: Integration on \code{metric_graph}; requires a mesh in the graph.
+\item \code{fm_int(fm_MGG)}: Integration on \code{metric_graph}; requires a mesh in the
+graph.
 
 }}
 \examples{
