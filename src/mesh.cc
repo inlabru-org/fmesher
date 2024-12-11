@@ -2884,7 +2884,7 @@ std::ostream &operator<<(std::ostream &output, const Dart &d) {
   output << "D=(" << std::right << std::setw(1) << d.t_ << std::right
          << std::setw(2) << d.edir_ << std::right << std::setw(2) << d.vi_
          << ")";
-  if ((!d.isnull()) && (d.t_ < (int)d.M()->nT())) {
+  if (d.M() && (!d.isnull()) && (d.t_ < (int)d.M()->nT())) {
     output << " EV=(" << d.M()->TV(d.t_)[d.vi_] << ","
            << d.M()->TV(d.t_)[(d.vi_ + (3 + d.edir_)) % 3] << ")";
     output << " TV=(" << d.M()->TV(d.t_)[0] << "," << d.M()->TV(d.t_)[1] << ","

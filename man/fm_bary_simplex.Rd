@@ -3,6 +3,7 @@
 \name{fm_bary_simplex}
 \alias{fm_bary_simplex}
 \alias{fm_bary_simplex.fm_mesh_2d}
+\alias{fm_bary_simplex.fm_mesh_3d}
 \alias{fm_bary_simplex.fm_mesh_1d}
 \alias{fm_bary_simplex.fm_lattice_2d}
 \title{Extract Simplex information for Barycentric coordinates}
@@ -10,6 +11,8 @@
 fm_bary_simplex(mesh, bary = NULL, ...)
 
 \method{fm_bary_simplex}{fm_mesh_2d}(mesh, bary = NULL, ...)
+
+\method{fm_bary_simplex}{fm_mesh_3d}(mesh, bary = NULL, ...)
 
 \method{fm_bary_simplex}{fm_mesh_1d}(mesh, bary = NULL, ...)
 
@@ -33,6 +36,8 @@ and \link{fm_bary} coordinates.
 \section{Methods (by class)}{
 \itemize{
 \item \code{fm_bary_simplex(fm_mesh_2d)}: Extract the triangle vertex indices for a 2D mesh
+
+\item \code{fm_bary_simplex(fm_mesh_3d)}: Extract the tetrahedron vertex indices for a 3D mesh
 
 \item \code{fm_bary_simplex(fm_mesh_1d)}: Extract the edge vertex indices for a 1D mesh
 

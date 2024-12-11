@@ -5,6 +5,7 @@
 \alias{print.fm_segm}
 \alias{print.fm_segm_list}
 \alias{print.fm_mesh_2d}
+\alias{print.fm_mesh_3d}
 \alias{print.fm_mesh_1d}
 \alias{print.fm_bbox}
 \alias{print.fm_tensor}
@@ -17,6 +18,8 @@
 \method{print}{fm_segm_list}(x, ..., digits = NULL, verbose = FALSE, newline = TRUE)
 
 \method{print}{fm_mesh_2d}(x, ..., digits = NULL, verbose = FALSE)
+
+\method{print}{fm_mesh_3d}(x, ..., digits = NULL, verbose = FALSE)
 
 \method{print}{fm_mesh_1d}(x, ..., digits = NULL, verbose = FALSE)
 

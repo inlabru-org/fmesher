@@ -105,7 +105,31 @@ fm_bbox.fm_mesh_1d <- function(x, ...) {
 #' @rdname fm_bbox
 #' @export
 fm_bbox.fm_mesh_2d <- function(x, ...) {
-  fm_bbox(x[["loc"]][, seq_len(fm_manifold_dim(x)), drop = FALSE])
+  if (fm_manifold(x, "R2")) {
+    d <- 2L
+  } else {
+    d <- min(NCOL(x[["loc"]]), 3L)
+  }
+  box <- fm_bbox(x[["loc"]][, seq_len(d), drop = FALSE])
+  ranges <- vapply(
+    seq_len(length(box)),
+    function(k) {
+      diff(box[[k]])
+    },
+    numeric(1)
+  )
+  if (all(ranges <= 0)) {
+    return(box)
+  }
+  d <- max(1L, max(which(ranges > 0)))
+  box <- box[seq_len(d)]
+  box
+}
+
+#' @rdname fm_bbox
+#' @export
+fm_bbox.fm_mesh_3d <- function(x, ...) {
+  fm_bbox(x[["loc"]])
 }
 
 #' @rdname fm_bbox
