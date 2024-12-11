@@ -283,7 +283,8 @@ public:
   void triangleBoundingBox(const Point &s0, const Point &s1, const Point &s2,
                            Point &mini, Point &maxi) const;
   double triangleArea(const Point &s0, const Point &s1, const Point &s2) const;
-  double triangleCircumcircleRadius(const Point &s0, const Point &s1,
+  double triangleCircumcircleRadius(const Point &s0,
+                                    const Point &s1,
                                     const Point &s2) const;
   double edgeIntersection(const Point &s00, const Point &s01, const Point &s10,
                           const Point &s11, Point &c) const;
@@ -404,7 +405,7 @@ private:
 public:
   Dart(void) : M_(NULL), vi_(0), edir_(1), t_(0){};
   Dart(const Mesh &M, int t = 0, int edir = 1, size_t vi = 0)
-      : M_(&M), vi_(vi), edir_(edir), t_(t){};
+    : M_(&M), vi_(vi), edir_(edir), t_(t){};
   Dart(const Dart &d) : M_(d.M_), vi_(d.vi_), edir_(d.edir_), t_(d.t_){};
   Dart &operator=(const Dart &d) {
     M_ = d.M_;

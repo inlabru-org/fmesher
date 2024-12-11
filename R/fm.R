@@ -18,10 +18,11 @@
 #' fm_as_fm(NULL)
 #'
 fm_as_fm <- function(x, ...) {
+  if (missing(x)) {
+    return(fm_as_fm(NULL))
+  }
   UseMethod("fm_as_fm")
 }
-
-
 
 #' @rdname fm_as_fm
 #' @usage
@@ -41,6 +42,12 @@ fm_as_fm.fm_mesh_1d <- function(x, ...) {
 #' @export
 fm_as_fm.fm_mesh_2d <- function(x, ...) {
   #  class(x) <- c("fm_mesh_2d", setdiff(class(x), "fm_mesh_2d"))
+  x
+}
+#' @rdname fm_as_fm
+#' @export
+fm_as_fm.fm_mesh_3d <- function(x, ...) {
+  #  class(x) <- c("fm_mesh_3d", setdiff(class(x), "fm_mesh_3d"))
   x
 }
 #' @rdname fm_as_fm

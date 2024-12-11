@@ -4,6 +4,7 @@
 \alias{fm_dof}
 \alias{fm_dof.fm_mesh_1d}
 \alias{fm_dof.fm_mesh_2d}
+\alias{fm_dof.fm_mesh_3d}
 \alias{fm_dof.fm_tensor}
 \alias{fm_dof.fm_lattice_2d}
 \title{Function spece degrees of freedom}
@@ -13,6 +14,8 @@ fm_dof(x)
 \method{fm_dof}{fm_mesh_1d}(x)
 
 \method{fm_dof}{fm_mesh_2d}(x)
+
+\method{fm_dof}{fm_mesh_3d}(x)
 
 \method{fm_dof}{fm_tensor}(x)
 

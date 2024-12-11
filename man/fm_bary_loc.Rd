@@ -3,6 +3,7 @@
 \name{fm_bary_loc}
 \alias{fm_bary_loc}
 \alias{fm_bary_loc.fm_mesh_2d}
+\alias{fm_bary_loc.fm_mesh_3d}
 \alias{fm_bary_loc.fm_mesh_1d}
 \alias{fm_bary_loc.fm_lattice_2d}
 \title{Extract Euclidean Sgeometry from Barycentric coordinates}
@@ -10,6 +11,8 @@
 fm_bary_loc(mesh, bary = NULL, ..., format = NULL)
 
 \method{fm_bary_loc}{fm_mesh_2d}(mesh, bary = NULL, ..., format = NULL)
+
+\method{fm_bary_loc}{fm_mesh_3d}(mesh, bary = NULL, ..., format = NULL)
 
 \method{fm_bary_loc}{fm_mesh_1d}(mesh, bary = NULL, ..., format = NULL)
 
@@ -37,6 +40,9 @@ object. This acts as the inverse of \code{fm_bary()}.
 \itemize{
 \item \code{fm_bary_loc(fm_mesh_2d)}: Extract points on a triangle mesh. Implemented
 formats are \code{"matrix"} (default) and \code{"sf"}.
+
+\item \code{fm_bary_loc(fm_mesh_3d)}: Extract points on a tetrahedron mesh. Implemented
+format is \code{"matrix"} (default).
 
 \item \code{fm_bary_loc(fm_mesh_1d)}: Extract points on a 1D mesh. Implemented
 formats are \code{"numeric"} (default).

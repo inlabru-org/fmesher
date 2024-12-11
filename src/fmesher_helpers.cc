@@ -47,6 +47,7 @@ using fmesh::Point;
 using fmesh::PointRaw;
 using fmesh::SparseMatrix;
 using fmesh::TriangleLocator;
+using fmesh::TetraLocator;
 using fmesh::Vector3;
 using fmesh::vertexListT;
 
@@ -75,6 +76,30 @@ void map_points_to_mesh(const Mesh &M, const Matrix<double> &points,
       point2bary(i, 2) = b[2];
     } else { /* Point not found. */
       point2T(i, 0) = -1;
+    }
+  }
+}
+
+void map_points_to_mesh3d(const Mesh3 &M, const Matrix<double> &points,
+                          Matrix<int> &point2T, Matrix<double> &point2bary) {
+  Point s;
+  int the_dimensions[] = {0, 1, 2};
+  std::vector<int> dimensions(
+      the_dimensions, the_dimensions + sizeof(the_dimensions) / sizeof(int));
+  TetraLocator locator(&M, dimensions, true);
+
+  for (size_t i = 0; i < points.rows(); i++) {
+    s[0] = points[i][0];
+    s[1] = points[i][1];
+    s[2] = points[i][2];
+    Double4 b;
+    point2T(i, 0) = locator.locate(s, b);
+    if (point2T(i, 0) >= 0) {
+      /* Point located. */
+      point2bary(i, 0) = b[0];
+      point2bary(i, 1) = b[1];
+      point2bary(i, 2) = b[2];
+      point2bary(i, 3) = b[3];
     }
   }
 }

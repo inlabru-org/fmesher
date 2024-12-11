@@ -1,7 +1,7 @@
 Package: fmesher
 Type: Package
 Title: Triangle Meshes and Related Geometry Tools
-Version: 0.2.0.9007
+Version: 0.2.0.9008
 Authors@R: c(
   person("Finn", "Lindgren", email = "finn.lindgren@gmail.com",
          role = c("aut", "cre", "cph"),
@@ -41,6 +41,7 @@ Imports:
     withr,
     Rcpp
 Suggests:
+    geometry,
     ggplot2,
     inlabru (>= 2.12.0),
     knitr,
@@ -95,6 +96,7 @@ Collate:
     'mesh.R'
     'mesh_1d.R'
     'mesh_2d.R'
+    'mesh_3d.R'
     'metric_graph.R'
     'nonconvex_hull.R'
     'onload.R'
