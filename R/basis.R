@@ -1074,6 +1074,148 @@ fm_basis_mesh_1d <- function(mesh,
 
 
 
+# Plain B-spline basis evaluation by Farin eq 10.13-10.14,
+# building the basis function matrices recursively via index vectors
+internal_bspline <- function(x, knots, degree = 1, deriv = 0) {
+  if (min(x) < min(knots)) {
+    stop("Some x out of range (too small)")
+  }
+  if (max(x) > max(knots)) {
+    stop("Some x out of range (too large)")
+  }
+  k <- findInterval(x, knots, all.inside = TRUE)
+  basis <- list(
+    i = seq_along(x),
+    j = k,
+    values = numeric(length(x)) + 1.0
+  )
+  #  message("knots: ", knots)
+  #  message("unique j: ", unique(basis$j))
+  if (degree == 0) {
+    return(basis)
+  }
+  knots <- c(rep(min(knots), degree - 1), knots, rep(max(knots), degree - 1))
+  basis$j <- basis$j + degree
+  #  message("knots: ", knots)
+  #  message("unique j: ", unique(basis$j))
+  l_range <- unique(sort(basis$j)) - 1L
+  for (deg in seq_len(degree)) {
+    basis_prev <- basis
+    basis <- list(
+      i = integer(0),
+      j = integer(0),
+      x = numeric(0),
+      values = numeric(0)
+    )
+    l_range <- unique(sort(c(l_range - 1L, l_range)))
+    for (l in l_range) {
+      # +1L since j is base-1 but l is base-0
+      left <- basis_prev$j == l + 1L
+      right <- basis_prev$j == l + 2L
+      if (any(left)) {
+        basis$i <- c(basis$i, basis_prev$i[left])
+        basis$j <- c(basis$j, basis_prev$j[left])
+        basis$values <- c(basis$values,
+                          basis_prev$values[left] *
+                            (x[basis_prev$i[left]] - knots[l]) /
+                            (knots[l + deg] - knots[l]))
+      }
+      if (any(right)) {
+        basis$i <- c(basis$i, basis_prev$i[right])
+        basis$j <- c(basis$j, basis_prev$j[right] - 1L)
+        basis$values <- c(basis$values,
+                          basis_prev$values[right] *
+                            (knots[l + deg + 1L] - x[basis_prev$i[right]]) /
+                            (knots[l + deg + 1L] - knots[l + 1L]))
+      }
+    }
+    #    message("knots: ", knots)
+    #    message("unique j: ", unique(basis$j))
+  }
+  return(basis)
+}
+
+
+# Plain B-spline basis evaluation by Farin eq 10.13-10.14,
+# building the basis function matrices recursively via index vectors
+internal_bspline2 <- function(x, knots, degree = 1, deriv = 0) {
+  if (min(x) < min(knots)) {
+    stop("Some x out of range (too small)")
+  }
+  if (max(x) > max(knots)) {
+    stop("Some x out of range (too large)")
+  }
+
+  if (deriv > 0) {
+    basis_lower <- internal_bspline2(x, knots, degree = degree - 1, deriv = deriv - 1)
+    m <- length(knots) + degree - 1L
+    m_lower <- m - 1L
+    A <- Matrix::sparseMatrix(
+      i = basis_lower$i,
+      j = basis_lower$j,
+      x = basis_lower$values,
+      dims = c(length(x), m_lower)
+    )
+    basis_diff <- Matrix::sparseMatrix(
+      i = c(seq_len(m_lower), seq_len(m_lower)),
+      j = c(seq_len(m_lower), seq_len(m_lower) - 1L),
+      x = rep(c(1, -1), c(length(knots) - 1, length(knots) - 1)),
+      dims = c(m_lower, m)
+    )
+    A <- A %*% basis_diff
+    return(A)
+  }
+
+  k <- findInterval(x, knots, all.inside = TRUE)
+  basis <- list(
+    i = seq_along(x),
+    j = k,
+    values = numeric(length(x)) + 1.0
+  )
+  if (degree == 0) {
+    return(basis)
+  }
+  knots <- c(rep(min(knots), degree - 1), knots, rep(max(knots), degree - 1))
+  basis$j <- basis$j + degree
+  l_range <- unique(sort(basis$j)) - 1L
+  for (deg in seq_len(degree)) {
+    basis_prev <- basis
+    l_range <- unique(sort(c(l_range - 1L, l_range)))
+    # +1L since j is base-1 but l is base-0
+    left <- basis_prev$j %in% (l_range + 1L)
+    right <- basis_prev$j %in% (l_range + 2L)
+    sz <- c(sum(left), sum(right))
+    basis <- list(
+      i = integer(sum(sz)),
+      j = integer(sum(sz)),
+      values = numeric(sum(sz))
+    )
+    if (sz[1] > 0L) {
+      idx_left <- seq_len(sz[1])
+      i <- basis_prev$i[left]
+      j <- basis_prev$j[left]
+      l <- j - 1L
+      basis$i[idx_left] <- i
+      basis$j[idx_left] <- j
+      basis$values[idx_left] <- basis_prev$values[left] *
+        (x[i] - knots[l]) /
+        (knots[l + deg] - knots[l])
+    }
+    if (sz[2] > 0L) {
+      idx_right <- seq_len(sz[2]) + sz[1]
+      i <- basis_prev$i[right]
+      j <- basis_prev$j[right]
+      l <- j - 2L
+      basis$i[idx_right] <- i
+      basis$j[idx_right] <- j - 1L
+      basis$values[idx_right] <- basis_prev$values[right] *
+        (knots[l + deg + 1L] - x[i]) /
+        (knots[l + deg + 1L] - knots[l + 1L])
+    }
+  }
+  return(basis)
+}
+
 
 
 
