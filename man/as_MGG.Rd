@@ -29,7 +29,7 @@ if (requireNamespace("MetricGraph", quietly = TRUE)) {
   edges <- list(edge1, edge2, edge3, edge4)
   graph <- MetricGraph::metric_graph$new(edges = edges)
   m <- as_MGG(cbind(1, 0.5))
-  class(m) # "graph", "fm_bary", "tbl_df", "tbl", "data.frame"
+  class(m) # "fm_bary_MGG", "fm_bary", "tbl_df", "tbl", "data.frame"
 }
 
 }

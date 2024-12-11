@@ -4,7 +4,7 @@
 \alias{bru_get_mapper.rspde_metric_graph}
 \title{Wrapper that calls bru_mapper with correct input}
 \usage{
-\method{bru_get_mapper}{rspde_metric_graph}(model, ...)
+bru_get_mapper.rspde_metric_graph(model, ...)
 }
 \arguments{
 \item{model}{Model class (contains a metric graph object)}

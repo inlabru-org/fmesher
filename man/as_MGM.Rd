@@ -33,7 +33,7 @@ if (requireNamespace("MetricGraph", quietly = TRUE)) {
     cbind(1, 1),
     graph
   )
-  class(m) # "mesh", "fm_bary", "tbl_df", "tbl", "data.frame"
+  class(m) # "fm_bary_MGM", "fm_bary", "tbl_df", "tbl", "data.frame"
 }
 
 }

@@ -23,7 +23,7 @@ test_that("MGG bary", {
   locs <- rbind(c(0, 0.6), c(1, 0.20))
   b <-
     fm_bary(
-      mesh = graph0,
+      mesh = fm_as_MG(graph0, MGG = TRUE),
       loc = locs
     )
   expect_equal(
@@ -39,7 +39,7 @@ test_that("MGG bary", {
   locs <- as_MGG(rbind(c(2, 0.6), c(6, 0.8)))
   b <-
     fm_bary(
-      mesh = graph0,
+      mesh = fm_as_MG(graph0, MGG = TRUE),
       loc = locs
     )
   expect_equal(
@@ -55,9 +55,8 @@ test_that("MGG bary", {
   locs <- as_MGM(rbind(c(260, 1), c(400, 0.8)))
   b <-
     fm_bary(
-      mesh = graph0,
-      loc = locs,
-      MGG = FALSE
+      mesh = fm_as_MG(graph0, MGG = FALSE),
+      loc = locs
     )
   expect_equal(
     c(
@@ -73,9 +72,8 @@ test_that("MGG bary", {
   locs <- sf::st_multipoint(rbind(c(0, 1), c(1, 0.8)))
   b <-
     fm_bary(
-      mesh = graph0,
-      loc = locs,
-      MGG = TRUE
+      mesh = fm_as_MG(graph0, MGG = TRUE),
+      loc = locs
     )
   expect_equal(
     c(
@@ -106,9 +104,8 @@ test_that("MGG to MGM", {
       coord = locs
     )
   mgm2 <- fm_bary(
-    mesh = graph0,
-    loc = locs,
-    MGG = FALSE
+    mesh = fm_as_MG(graph0, MGG = FALSE),
+    loc = locs
   )
   expect_equal(
     c(
@@ -180,9 +177,8 @@ test_that("bary MGG to MGG", {
   locs <- as_MGG(cbind(c(2, 5), c(0.8, 0.2)))
   b <-
     fm_bary(
-      mesh = graph0,
-      loc = locs,
-      MGG = TRUE
+      mesh = fm_as_MG(graph0, MGG = TRUE),
+      loc = locs
     )
   expect_equal(
     c(
@@ -203,9 +199,8 @@ test_that("bary MGM to MGM", {
   locs <- as_MGM(cbind(c(300, 1250), c(0.5, 1.0)))
   b <-
     fm_bary(
-      mesh = graph0,
-      loc = locs,
-      MGG = FALSE
+      mesh = fm_as_MG(graph0, MGG = FALSE),
+      loc = locs
     )
   expect_equal(
     c(
@@ -425,10 +420,10 @@ test_that("fm_basis paths", {
     )
   test_sampler <- tibble::tibble(x = list(p1, p2), weight = c(1, 1))
   graph0$build_mesh(h = 0.005)
-  ips <- fm_int(graph0, samplers = test_sampler)
-  basis <- fm_basis(x = graph0, loc = ips$x, weights = ips$weight)
+  ips <- fm_int(fm_as_MG(graph0, MGG = FALSE), samplers = test_sampler)
+  basis <- fm_basis(x = fm_as_MG(graph0, MGG = FALSE), loc = ips$x, weights = ips$weight)
   n <- NROW(ips)
-  MGM_locs <- MGG_to_MGM(ips$x, graph0)
+  MGM_locs <- as_MGM(ips$x, graph = graph0)
   true_A <- Matrix::sparseMatrix(
     i = c(seq_len(n), seq_len(n)),
     j = c(graph0$mesh$E[MGM_locs$index, 1], graph0$mesh$E[MGM_locs$index, 2]),
@@ -459,7 +454,7 @@ test_that("ibm values", {
   skip_if_not_installed("MetricGraph")
   graph0 <- local_bru_test_graph()
   graph0$build_mesh(h = 0.005)
-  mapper <- inlabru::bru_mapper(graph0, n_rep = 2)
+  mapper <- bru_mapper_metric_graph(graph0, n_rep = 2)
   values <- inlabru::ibm_values(mapper)
   expect_equal(
     values,

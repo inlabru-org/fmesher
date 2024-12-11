@@ -66,16 +66,43 @@ ibm_jacobian.bm_metric_graph <- function(mapper, input, ...) {
 
 # fmesher functions ----
 
-#' @title Internal helper functions for metric graph evaluation
-#'
-#' @description Methods called internally by [fm_basis()] methods.
+#' @title fmesher interface methods for `metric_graph` objects
+#' @description Interface for `metric_graph` objects
+#' @name fm_MG
+NULL
+
+#' @describeIn fm_MG Associate a `metric_graph` object with class `fm_MGG` or
+#' `fm_MGM`.
+#' @export
+fm_as_MG <- function(x, MGG = NULL) {
+  stopifnot(inherits(x, "metric_graph"))
+  if (is.null(MGG)) {
+    if (inherits(x, c("fm_MGG", "fm_MGM"))) {
+      return(x)
+    }
+    MGG <- is.null(x[["mesh"]])
+  }
+  if ((MGG && inherits(x, "fm_MGG")) ||
+      (!MGG && inherits(x, "fm_MGM"))) {
+    return(x)
+  }
+  cl <- setdiff(class(x), c("fm_MGG", "fm_MGM"))
+  if (isTRUE(MGG)) {
+    class(x) <- c("fm_MGG", cl)
+  } else {
+    stopifnot(!is.null(x[["mesh"]]))
+    class(x) <- c("fm_MGM", cl)
+  }
+  x
+}
+
+#' @describeIn fm_MG Construct an interpolation/basis matrix
 #' @param x metric_graph object
 #' @param loc Observation locations, can be either MGG coordinates, MGM
-#'   coordinates or Euclidean coordinates (passed to fm_bary())
+#'   coordinates or Euclidean coordinates (passed to [fm_bary()])
 #' @param weights Optional weight vector, one weight for each location
 #' @inheritParams fm_basis
 #' @export
-#' @keywords internal
 #' @returns A `fm_basis` object; a list of evaluator information objects,
 #' at least a matrix `A` and logical vector `ok`.
 fm_basis.metric_graph <- function(x,
@@ -83,25 +110,27 @@ fm_basis.metric_graph <- function(x,
                                   weights = NULL,
                                   ...,
                                   full = FALSE) {
+  # Ensure we have fm_MGG or fm_MGM. The code after works for both.
+  x <- fm_as_MG(x)
   if (is.null(weights)) {
     weights <- rep(1.0, NROW(loc))
   } else if (length(weights) == 1L) {
     weights <- rep(weights, NROW(loc))
   }
 
-  # derivatives <- !is.null(derivatives) && derivatives
   info <- list()
   # use metric graph function to get basis functions
-  # obtain bary wrt to MGM
-  barys <- fm_bary(x, loc, MGG = FALSE)
+  # obtain bary wrt to MGG or MGG, as appropriate
+  barys <- fm_bary(x, loc)
+  simplex <- fm_bary_simplex(x, barys)
   n <- NROW(barys)
   info$A <- Matrix::sparseMatrix(
     i = c(seq_len(n), seq_len(n)),
-    j = c(x$mesh$E[barys$index, 1], x$mesh$E[barys$index, 2]),
+    j = as.vector(simplex),
     x = c(weights * barys$where[, 1], weights * barys$where[, 2]),
     dims = c(n, fm_dof(x))
   )
-  info[["ok"]] <- rep(TRUE, n)
+  info[["ok"]] <- !is.na(barys$index)
 
   fm_basis(
     structure(
@@ -113,77 +142,128 @@ fm_basis.metric_graph <- function(x,
 }
 
 
-#' @describeIn fm_bary Return a tibble with elements
-#' `fm_bary`
+#' @describeIn fm_MG Compute an `fm_bary_MGG` or `fm_bary_MGM` object
 #'
 #' @param MGG indicator for the barycentric coordinates related to the graph
-#'   (MGG) or mesh (MGM). Default is MGG coords
+#'   (MGG) or mesh (MGM), or NULL. Passed on to [fm_as_MG()]
 #' @export
 fm_bary.metric_graph <- function(mesh,
                                  loc,
-                                 MGG = TRUE,
                                  ...) {
-  if (!MGG) {
-    if (is.null(mesh$mesh)) {
-      stop("There is no mesh.")
-    }
-  }
+  return(fm_bary(fm_as_MG(mesh), loc, ...))
+}
+
+#' @describeIn fm_MG Compute and `fm_bary_MGG` object
+#' @export
+fm_bary.fm_MGG <- function(mesh,
+                           loc,
+                           ...) {
+  mesh <- fm_as_MG(mesh, MGG = TRUE)
   if (inherits(loc, "fm_bary")) {
-    if (inherits(loc, "graph")) { # TO DO: name this class
-      if (MGG) {
-        bary_coord <- loc
-      } else {
-        bary_coord <- MGG_to_MGM(loc, mesh)
-      }
-    } else if (inherits(loc, "mesh")) {
-      if (MGG) {
-        bary_coord <- MGM_to_MGG(loc, mesh)
-      } else {
-        bary_coord <- loc
-      }
-    }
+    bary <- as_MGG(loc, graph = mesh)
   } else if (inherits(loc, "sfg") || inherits(loc, "sf") ||
-    inherits(loc, "sfc")) {
+             inherits(loc, "sfc")) {
+    # check the crs of point and convert to the same crs as graph (or
+    # coordinates handles this)
+    bary <- Euclidean_to_graph(sf::st_coordinates(loc), mesh)
+  } else {
+    # Or should it only call as_MGG/as_MGM depending on "MGG"?
+    #cat("loc is interpreted as Euclidean coordinates")
+    bary <- Euclidean_to_graph(loc, mesh)
+  }
+  return(bary)
+}
+
+#' @describeIn fm_MG Compute and `fm_bary_MGM` object
+#' @export
+fm_bary.fm_MGM <- function(mesh,
+                           loc,
+                           MGG = TRUE,
+                           ...) {
+  mesh <- fm_as_MG(mesh, MGG = FALSE)
+  if (inherits(loc, "fm_bary")) {
+    bary_coord <- as_MGM(loc, graph = mesh)
+  } else if (inherits(loc, "sfg") || inherits(loc, "sf") ||
+             inherits(loc, "sfc")) {
     # check the crs of point and convert to the same crs as graph (or
     # coordinates handles this)
     res <- Euclidean_to_graph(sf::st_coordinates(loc), mesh)
     bary_coord <- res # res$bary[res$ok, ]
-    if (!MGG) {
-      bary_coord <- MGG_to_MGM(bary_coord, mesh)
-    }
+    bary_coord <- MGG_to_MGM(bary_coord, mesh)
   } else {
     # Or should it only call as_MGG/as_MGM depending on "MGG"?
     #cat("loc is interpreted as Euclidean coordinates")
     res <- Euclidean_to_graph(loc, mesh)
-    if (MGG) {
-      bary_coord <- res # res$bary
-    } else {
-      bary_coord <- MGG_to_MGM(res, mesh) # MGG_to_MGM(res$bary, mesh)
-    }
+    bary_coord <- MGG_to_MGM(res, mesh) # MGG_to_MGM(res$bary, mesh)
   }
   return(bary_coord)
 }
 
+#' @describeIn fm_MG Returns a `metric_graph` graph or mesh edge index matrix
+#' @export
+fm_bary_simplex.metric_graph <- function(mesh, bary = NULL, ...) {
+  mesh <- fm_as_MG(mesh)
+  simplex <- fm_bary_simplex(mesh)
+  return(simplex)
+}
 
-#' @rdname fm_manifold
+#' @describeIn fm_MG Returns a `metric_graph` graph edge index matrix
+#' @export
+fm_bary_simplex.fm_MGG <- function(mesh, bary = NULL, ...) {
+  simplex <- mesh[["E"]]
+  if (!is.null(bary)) {
+    bary <- as_MGG(bary, graph = mesh)
+    simplex <- simplex[bary$index, , drop = FALSE]
+  }
+  return(simplex)
+}
+
+#' @describeIn fm_MG Returns a `metric_graph` mesh edge index matrix
+#' @export
+fm_bary_simplex.fm_MGM <- function(mesh, bary = NULL, ...) {
+  simplex <- mesh[["mesh"]][["E"]]
+  if (!is.null(bary)) {
+    bary <- as_MGM(bary, graph = mesh)
+    simplex <- simplex[bary$index, , drop = FALSE]
+  }
+  return(simplex)
+}
+
+
+
+#' @describeIn fm_MG Return manifold type, always "G1" for `metric_graph`
 #' @export
 fm_manifold_get.metric_graph <- function() {
   return("G1")
 }
 
 
-#' @rdname fm_dof
+#' @describeIn fm_MG Returns the degrees of freedom (number of vertices in the
+#' graph or mesh, depending on the object). `fm_as_MG(x)` is used to ensure
+#' `fm_MGG` or `fm_MGM` class.
 #' @export
 fm_dof.metric_graph <- function(x) {
+  fm_dof(fm_as_MG(x))
+}
+
+#' @describeIn fm_MG `fm_MGG` method for `fm_dof()`
+#' @export
+fm_dof.fm_MGG <- function(x) {
+  NROW(x[["VtE"]])
+}
+
+#' @describeIn fm_MG `fm_MGM` method for `fm_dof()`
+#' @export
+fm_dof.fm_MGM <- function(x) {
   NROW(x[["mesh"]][["VtE"]])
 }
 
 
 #' @export
-#' @describeIn fm_int `metric_graph` integration. Supported samplers: * `NULL`
-#'   for integration over the entire domain; * A tibble with a named column
-#'   containing a matrix with single edge intervals (ordered), and optionally a
-#'   `weight` column.
+#' @describeIn fm_MG `metric_graph` integration. Supported samplers:
+#'   * `NULL` for integration over the entire domain;
+#'   * A tibble with a named column containing a matrix with single edge
+#'     intervals (ordered), and optionally a `weight` column.
 #' @examples
 #' if (requireNamespace("MetricGraph")) {
 #'   edge1 <- rbind(c(0, 0), c(1, 0))
@@ -210,8 +290,39 @@ fm_int.metric_graph <- function(domain,
                                 samplers = NULL,
                                 name = "x",
                                 ...) {
+  fm_int(
+    domain = fm_as_MG(domain),
+    samplers = samplers,
+    name = name,
+    ...
+  )
+}
+
+
+#' @describeIn fm_MG Integrate on an `fm_MGM` object
+#' @export
+fm_int.fm_MGM <- function(domain,
+                          samplers = NULL,
+                          name = "x",
+                          ...) {
+  ips <- fm_int(
+    domain = fm_as_MG(domain, MGG = TRUE),
+    samplers = samplers,
+    name = name,
+    ...
+  )
+  ips[[name]] <- as_MGM(ips[[name]], graph = domain)
+  return(ips)
+}
+
+#' @describeIn fm_MG Integration on `metric_graph`; requires a mesh in the graph.
+#' @export
+fm_int.fm_MGG <- function(domain,
+                          samplers = NULL,
+                          name = "x",
+                          ...) {
   ips <- list()
-  if (is.null(domain$mesh)) {
+  if (is.null(domain[["mesh"]])) {
     stop("There is no mesh")
   }
 
@@ -308,7 +419,10 @@ fm_int.metric_graph <- function(domain,
   ips <- do.call(dplyr::bind_rows, ips)
   if (NROW(ips) == 0) {
     ips <- tibble::tibble(
-      x = numeric(0),
+      x = as_MGG(tibble::tibble(
+        index = integer(0),
+        where = numeric(0)
+      )),
       weight = numeric(0),
       .block = integer(0)
     )
@@ -321,15 +435,15 @@ fm_int.metric_graph <- function(domain,
 
 
 # MetricGraph specific functions----
-#' @title Make a ("graph", "fm_bary") object from Euclidean coordinates
+#' @title Make a ("fm_bary_MGG", "fm_bary") object from Euclidean coordinates
 #' @description
-#' Create a (`graph`, `fm_bary`) object from Euclidean coordinates.
+#' Create a (`fm_bary_MGG`, `fm_bary`) object from Euclidean coordinates.
 #'
 #' @param loc Euclidean coords (if not on graph, they are mapped to the closest
 #'   point on graph)
 #' @param graph metric_graph that the location should be mapped to.
 #' @author Karina Lilleborge \email{karina.lilleborge@@gmail.com}
-#' @returns A (`mesh`, `fm_bary`) object
+#' @returns A (`fm_bary_MGM`, `fm_bary`) object
 #' @export
 #' @family object creation and conversion
 #' @examples
@@ -392,7 +506,7 @@ MGG_to_MGM <- function(coord, graph) {
   if (is.null(graph$mesh)) {
     stop("There is no mesh")
   }
-  stopifnot(inherits(coord, "graph") && inherits(coord, "fm_bary"))
+  stopifnot(inherits(coord, "fm_bary_MGG"))
   mesh_MGG <- as_MGG(graph$mesh$VtE)
   mesh_edge_len <- graph$mesh$h_e
   # storage for new coordinates
@@ -492,7 +606,7 @@ MGG_to_MGM <- function(coord, graph) {
 #' }
 #'
 MGM_to_MGG <- function(coord, graph) {
-  stopifnot(inherits(coord, "mesh") && inherits(coord, "fm_bary"))
+  stopifnot(inherits(coord, "fm_bary_MGM"))
   mesh_loc <- graph$mesh$VtE
   eps <- min(graph$mesh$h_e)
   new_coord <- as_MGG(tibble::tibble(
@@ -565,14 +679,14 @@ MGM_to_MGG <- function(coord, graph) {
 #'     cbind(1, 1),
 #'     graph
 #'   )
-#'   class(m) # "mesh", "fm_bary", "tbl_df", "tbl", "data.frame"
+#'   class(m) # "fm_bary_MGM", "fm_bary", "tbl_df", "tbl", "data.frame"
 #' }
 #'
 as_MGM <- function(loc, graph = NULL) {
-  if (inherits(loc, "mesh") && inherits(loc, "fm_bary")) {
+  if (inherits(loc, "fm_bary_MGM")) {
     return(loc)
   }
-  if (inherits(loc, "graph") && inherits(loc, "fm_bary")) {
+  if (inherits(loc, "fm_bary_MGG")) {
     if (is.null(graph)) {
       stop("Graph must be provided to convert from MGG to MGM.")
     }
@@ -611,7 +725,7 @@ as_MGM <- function(loc, graph = NULL) {
   coord <-
     structure(
       res,
-      class = c("mesh", "fm_bary", "tbl_df", "tbl", "data.frame")
+      class = c("fm_bary_MGM", "fm_bary", "tbl_df", "tbl", "data.frame")
     )
 }
 
@@ -638,14 +752,14 @@ as_MGM <- function(loc, graph = NULL) {
 #'   edges <- list(edge1, edge2, edge3, edge4)
 #'   graph <- MetricGraph::metric_graph$new(edges = edges)
 #'   m <- as_MGG(cbind(1, 0.5))
-#'   class(m) # "graph", "fm_bary", "tbl_df", "tbl", "data.frame"
+#'   class(m) # "fm_bary_MGG", "fm_bary", "tbl_df", "tbl", "data.frame"
 #' }
 #'
 as_MGG <- function(loc, graph = NULL) {
-  if (inherits(loc, "graph") && inherits(loc, "fm_bary")) {
+  if (inherits(loc, "fm_bary_MGG")) {
     return(loc)
   }
-  if (inherits(loc, "mesh") && inherits(loc, "fm_bary")) {
+  if (inherits(loc, "fm_bary_MGM")) {
     if (is.null(graph)) {
       stop("Graph must be provded to convert from MGM to MGG.")
     }
@@ -686,7 +800,7 @@ as_MGG <- function(loc, graph = NULL) {
   coord <-
     structure(
       res,
-      class = c("graph", "fm_bary", "tbl_df", "tbl", "data.frame")
+      class = c("fm_bary_MGG", "fm_bary", "tbl_df", "tbl", "data.frame")
     )
 }
 
@@ -723,13 +837,13 @@ as_MGG <- function(loc, graph = NULL) {
 as_graph_interval <- function(start_MGG,
                               end_MGG,
                               graph = NULL) {
-  if (!(inherits(start_MGG, "graph") && inherits(start_MGG, "fm_bary"))) {
+  if (!(inherits(start_MGG, "fm_bary_MGG"))) {
     start_MGG <- as_MGG(start_MGG, graph = graph)
   }
-  if (!(inherits(end_MGG, "graph") && inherits(end_MGG, "fm_bary"))) {
+  if (!(inherits(end_MGG, "fm_bary_MGG"))) {
     end_MGG <- as_MGG(end_MGG, graph = graph)
   }
-  if (!(sum(start_MGG$index == end_MGG$index) == NROW(start_MGG))) {
+  if (any(start_MGG$index != end_MGG$index)) {
     stop("Not all start- and end points are inter edge intervals")
   }
   inter_edge_interval <- structure(
@@ -971,9 +1085,10 @@ geom_path_to_path_MGG <- function(geom_path, graph) {
   for (k in unique(internal_XY[, "L1"])) {
     # a line should give us one path
     line <- internal_XY[internal_XY[, "L1"] == k, ]
-    line_MGG <- fm_bary(graph, as.matrix(line[, c("X", "Y")]), MGG = TRUE)
+    line_MGG <- fm_bary(fm_as_MG(graph, MGG = TRUE),
+                        as.matrix(line[, c("X", "Y")]))
     # line_MGG <- graph$coordinates(XY = line[, c("X", "Y")])
-    # convert to ("graph", "fm_bary")
+    # convert to ("fm_bary_MGG", "fm_bary")
     # line_MGG <- as_MGG(line_MGG)
     # index for number of segments added
     j <- 0

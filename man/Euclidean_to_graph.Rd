@@ -2,7 +2,7 @@
 % Please edit documentation in R/metric_graph.R
 \name{Euclidean_to_graph}
 \alias{Euclidean_to_graph}
-\title{Make a ("graph", "fm_bary") object from Euclidean coordinates}
+\title{Make a ("fm_bary_MGG", "fm_bary") object from Euclidean coordinates}
 \usage{
 Euclidean_to_graph(loc, graph)
 }
@@ -13,10 +13,10 @@ point on graph)}
 \item{graph}{metric_graph that the location should be mapped to.}
 }
 \value{
-A (\code{mesh}, \code{fm_bary}) object
+A (\code{fm_bary_MGM}, \code{fm_bary}) object
 }
 \description{
-Create a (\code{graph}, \code{fm_bary}) object from Euclidean coordinates.
+Create a (\code{fm_bary_MGG}, \code{fm_bary}) object from Euclidean coordinates.
 }
 \examples{
 if (requireNamespace("MetricGraph")) {
