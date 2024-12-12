@@ -2,7 +2,7 @@
 % Please edit documentation in R/metric_graph.R
 \name{Euclidean_to_graph}
 \alias{Euclidean_to_graph}
-\title{Make a ("fm_bary_MGG", "fm_bary") object from Euclidean coordinates}
+\title{Make a ("fm_MGG_bary", "fm_bary") object from Euclidean coordinates}
 \usage{
 Euclidean_to_graph(loc, graph)
 }
@@ -13,10 +13,10 @@ point on graph)}
 \item{graph}{metric_graph that the location should be mapped to.}
 }
 \value{
-A (\code{fm_bary_MGM}, \code{fm_bary}) object
+A (\code{fm_MGM_bary}, \code{fm_bary}) object
 }
 \description{
-Create a (\code{fm_bary_MGG}, \code{fm_bary}) object from Euclidean coordinates.
+Create a (\code{fm_MGG_bary}, \code{fm_bary}) object from Euclidean coordinates.
 }
 \examples{
 if (requireNamespace("MetricGraph")) {
@@ -40,9 +40,9 @@ if (requireNamespace("MetricGraph")) {
 Other object creation and conversion: 
 \code{\link{MGG_to_MGM}()},
 \code{\link{MGM_to_MGG}()},
-\code{\link{as_MGG}()},
-\code{\link{as_MGM}()},
-\code{\link{as_graph_interval}()},
+\code{\link{fm_as_MGG_bary}()},
+\code{\link{fm_as_MGG_interval}()},
+\code{\link{fm_as_MGM_bary}()},
 \code{\link{fm_as_fm}()},
 \code{\link{fm_as_lattice_2d}()},
 \code{\link{fm_as_mesh_1d}()},

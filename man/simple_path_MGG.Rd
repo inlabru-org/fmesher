@@ -4,22 +4,22 @@
 \alias{simple_path_MGG}
 \title{Make an interval on graph object}
 \usage{
-simple_path_MGG(graph, start_MGG, edges, end_MGG)
+simple_path_MGG(graph, start, edges, end)
 }
 \arguments{
 \item{graph}{metric_graph that the interval should be mapped to.}
 
-\item{start_MGG}{MGG coordinates for start}
+\item{start}{\code{fm_MGG_bary} or \code{\link[=fm_as_MGG_bary]{fm_as_MGG_bary()}} compatible coordinates for start}
 
 \item{edges}{Ordered list of edge indices related to MGG}
 
-\item{end_MGG}{MGG coordinates for end}
+\item{end}{\code{fm_MGG_bary} or \code{\link[=fm_as_MGG_bary]{fm_as_MGG_bary()}} compatible coordinates for end}
 }
 \value{
-A \code{graph_interval} object
+A \code{fm_MGG_interval} object
 }
 \description{
-Create a \code{graph_interval} object from known start (MGG), end (MGG) and
+Create a \code{fm_MGG_interval} object from known start (MGG), end (MGG) and
 visiting edges (MGG).
 }
 \examples{
@@ -33,9 +33,9 @@ if (requireNamespace("MetricGraph")) {
   graph <- MetricGraph::metric_graph$new(edges = edges)
   path <- simple_path_MGG(
     graph,
-    start_MGG = cbind(1, 0.5),
+    start = cbind(1, 0.5),
     edges = c(2),
-    end_MGG = cbind(3, 0.6)
+    end = cbind(3, 0.6)
   )
   path
 }
@@ -46,9 +46,9 @@ Other object creation and conversion:
 \code{\link{Euclidean_to_graph}()},
 \code{\link{MGG_to_MGM}()},
 \code{\link{MGM_to_MGG}()},
-\code{\link{as_MGG}()},
-\code{\link{as_MGM}()},
-\code{\link{as_graph_interval}()},
+\code{\link{fm_as_MGG_bary}()},
+\code{\link{fm_as_MGG_interval}()},
+\code{\link{fm_as_MGM_bary}()},
 \code{\link{fm_as_fm}()},
 \code{\link{fm_as_lattice_2d}()},
 \code{\link{fm_as_mesh_1d}()},

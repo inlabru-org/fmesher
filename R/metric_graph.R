@@ -123,7 +123,7 @@ fm_basis.metric_graph <- function(x,
 
   info <- list()
   # use metric graph function to get basis functions
-  # obtain bary wrt to MGG or MGG, as appropriate
+  # obtain bary wrt to MGG or MGM, as appropriate
   barys <- fm_bary(x, loc)
   simplex <- fm_bary_simplex(x, barys)
   n <- NROW(barys)
@@ -145,7 +145,7 @@ fm_basis.metric_graph <- function(x,
 }
 
 
-#' @describeIn fm_MG Compute an `fm_bary_MGG` or `fm_bary_MGM` object
+#' @describeIn fm_MG Compute an `fm_MGG_bary` or `fm_MGM_bary` object
 #' @inheritParams fm_bary
 #' @param MGG indicator for the barycentric coordinates related to the graph
 #'   (MGG) or mesh (MGM), or NULL. Passed on to [fm_as_MG()]
@@ -156,28 +156,28 @@ fm_bary.metric_graph <- function(mesh,
   return(fm_bary(fm_as_MG(mesh), loc, ...))
 }
 
-#' @describeIn fm_MG Compute and `fm_bary_MGG` object
+#' @describeIn fm_MG Compute an `fm_MGG_bary` object
 #' @export
 fm_bary.fm_MGG <- function(mesh,
                            loc,
                            ...) {
   mesh <- fm_as_MG(mesh, MGG = TRUE)
   if (inherits(loc, "fm_bary")) {
-    bary <- as_MGG(loc, graph = mesh)
+    bary <- fm_as_MGG_bary(loc, graph = mesh)
   } else if (inherits(loc, "sfg") || inherits(loc, "sf") ||
     inherits(loc, "sfc")) {
     # check the crs of point and convert to the same crs as graph (or
     # coordinates handles this)
     bary <- Euclidean_to_graph(sf::st_coordinates(loc), mesh)
   } else {
-    # Or should it only call as_MGG/as_MGM depending on "MGG"?
+    # Or should it only call fm_as_MGG_bary/fm_as_MGM_bary depending on "MGG"?
     # cat("loc is interpreted as Euclidean coordinates")
     bary <- Euclidean_to_graph(loc, mesh)
   }
   return(bary)
 }
 
-#' @describeIn fm_MG Compute and `fm_bary_MGM` object
+#' @describeIn fm_MG Compute an `fm_MGM_bary` object
 #' @export
 fm_bary.fm_MGM <- function(mesh,
                            loc,
@@ -185,7 +185,7 @@ fm_bary.fm_MGM <- function(mesh,
                            ...) {
   mesh <- fm_as_MG(mesh, MGG = FALSE)
   if (inherits(loc, "fm_bary")) {
-    bary_coord <- as_MGM(loc, graph = mesh)
+    bary_coord <- fm_as_MGM_bary(loc, graph = mesh)
   } else if (inherits(loc, "sfg") || inherits(loc, "sf") ||
     inherits(loc, "sfc")) {
     # check the crs of point and convert to the same crs as graph (or
@@ -194,7 +194,7 @@ fm_bary.fm_MGM <- function(mesh,
     bary_coord <- res # res$bary[res$ok, ]
     bary_coord <- MGG_to_MGM(bary_coord, mesh)
   } else {
-    # Or should it only call as_MGG/as_MGM depending on "MGG"?
+    # Or should it only call fm_as_MGG_bary/fm_as_MGM_bary depending on "MGG"?
     # cat("loc is interpreted as Euclidean coordinates")
     res <- Euclidean_to_graph(loc, mesh)
     bary_coord <- MGG_to_MGM(res, mesh) # MGG_to_MGM(res$bary, mesh)
@@ -215,7 +215,7 @@ fm_bary_simplex.metric_graph <- function(mesh, bary = NULL, ...) {
 fm_bary_simplex.fm_MGG <- function(mesh, bary = NULL, ...) {
   simplex <- mesh[["E"]]
   if (!is.null(bary)) {
-    bary <- as_MGG(bary, graph = mesh)
+    bary <- fm_as_MGG_bary(bary, graph = mesh)
     simplex <- simplex[bary$index, , drop = FALSE]
   }
   return(simplex)
@@ -226,7 +226,7 @@ fm_bary_simplex.fm_MGG <- function(mesh, bary = NULL, ...) {
 fm_bary_simplex.fm_MGM <- function(mesh, bary = NULL, ...) {
   simplex <- mesh[["mesh"]][["E"]]
   if (!is.null(bary)) {
-    bary <- as_MGM(bary, graph = mesh)
+    bary <- fm_as_MGM_bary(bary, graph = mesh)
     simplex <- simplex[bary$index, , drop = FALSE]
   }
   return(simplex)
@@ -279,9 +279,9 @@ fm_dof.fm_MGM <- function(x) {
 #'   graph$build_mesh(h = 0.01)
 #'   p1 <- simple_path_MGG(
 #'     graph = graph,
-#'     start_MGG = cbind(1, 0.2),
+#'     start = cbind(1, 0.2),
 #'     edges = c(2),
-#'     end_MGG = cbind(3, 0.8)
+#'     end = cbind(3, 0.8)
 #'   )
 #'   samplers <- tibble::tibble(x = list(p1), weight = c(1))
 #'   ips <- fm_int(
@@ -315,7 +315,7 @@ fm_int.fm_MGM <- function(domain,
     name = name,
     ...
   )
-  ips[[name]] <- as_MGM(ips[[name]], graph = domain)
+  ips[[name]] <- fm_as_MGM_bary(ips[[name]], graph = domain)
   return(ips)
 }
 
@@ -331,7 +331,7 @@ fm_int.fm_MGG <- function(domain,
     stop("There is no mesh")
   }
 
-  mesh_MGG <- as_MGG(domain$mesh$VtE) # All mesh locations in MGG format
+  mesh_MGG <- fm_as_MGG_bary(domain$mesh$VtE) # All mesh locations in MGG format
   # if(is.null(samplers)){
   #   samplers <- tibble::tibble(
   #     x = cbind(domain[,1], domain[,2]),
@@ -350,14 +350,14 @@ fm_int.fm_MGG <- function(domain,
     ips_edge <- list()
     for (k in seq_len(nrow(subsampler))) {
       interedge <- subsampler[k, , drop = TRUE]
-      if (!inherits(interedge, "graph_interval")) {
-        interedge <- as_graph_interval(
+      if (!inherits(interedge, "fm_MGG_interval")) {
+        interedge <- fm_as_MGG_interval(
           graph = domain,
-          start_MGG = as_MGG(list(
+          start = fm_as_MGG_bary(list(
             interedge$start$index,
             interedge$start$where[1, 2]
           )),
-          end_MGG = as_MGG(list(
+          end = fm_as_MGG_bary(list(
             interedge$end$index,
             interedge$end$where[1, 2]
           ))
@@ -387,7 +387,7 @@ fm_int.fm_MGG <- function(domain,
       # convert to MGM (call outside of for-loop and only get the desired rows
       # in this step)
       loc_mid_MGM <- MGG_to_MGM(
-        coord = as_MGG(cbind(interedge$start$index, loc_mid)),
+        coord = fm_as_MGG_bary(cbind(interedge$start$index, loc_mid)),
         graph = domain
       )
       # get the edge lengths for each mesh
@@ -401,7 +401,7 @@ fm_int.fm_MGG <- function(domain,
       m_ips <- sum(weight_simpson > 0)
       if (m_ips == 0) {
         ips_edge[[k]] <- tibble::tibble(
-          x = as_MGG(tibble::tibble(
+          x = fm_as_MGG_bary(tibble::tibble(
             index = integer(0),
             where = numeric(0)
           )),
@@ -410,7 +410,7 @@ fm_int.fm_MGG <- function(domain,
         )
       } else {
         ips_edge[[k]] <- tibble::tibble(
-          x = as_MGG(loc = cbind(
+          x = fm_as_MGG_bary(loc = cbind(
             rep(interedge$start$index, m_ips),
             loc_simpson[(weight_simpson > 0)]
           )),
@@ -427,7 +427,7 @@ fm_int.fm_MGG <- function(domain,
   ips <- do.call(dplyr::bind_rows, ips)
   if (NROW(ips) == 0) {
     ips <- tibble::tibble(
-      x = as_MGG(tibble::tibble(
+      x = fm_as_MGG_bary(tibble::tibble(
         index = integer(0),
         where = numeric(0)
       )),
@@ -443,15 +443,15 @@ fm_int.fm_MGG <- function(domain,
 
 
 # MetricGraph specific functions----
-#' @title Make a ("fm_bary_MGG", "fm_bary") object from Euclidean coordinates
+#' @title Make a ("fm_MGG_bary", "fm_bary") object from Euclidean coordinates
 #' @description
-#' Create a (`fm_bary_MGG`, `fm_bary`) object from Euclidean coordinates.
+#' Create a (`fm_MGG_bary`, `fm_bary`) object from Euclidean coordinates.
 #'
 #' @param loc Euclidean coords (if not on graph, they are mapped to the closest
 #'   point on graph)
 #' @param graph metric_graph that the location should be mapped to.
 #' @author Karina Lilleborge \email{karina.lilleborge@@gmail.com}
-#' @returns A (`fm_bary_MGM`, `fm_bary`) object
+#' @returns A (`fm_MGM_bary`, `fm_bary`) object
 #' @export
 #' @family object creation and conversion
 #' @examples
@@ -479,9 +479,9 @@ Euclidean_to_graph <- function(loc, graph) {
   # tmp_loc <- graph$coordinates(PtE = res, normalized = TRUE)
   # norm_XY <- sf::st_distance(loc, sf::st_point(tmp_loc, crs= sf::st_crs(loc)))
   # ok_ <- (norm_XY < tolerance)
-  # graph_coords <- as_MGG(loc = res)
+  # graph_coords <- fm_as_MGG_bary(loc = res)
   # return(list(bary = graph_coords, ok = ok_))
-  return(as_MGG(loc = res))
+  return(fm_as_MGG_bary(loc = res))
 }
 
 #' @title Make a (`mesh`, `fm_bary`) object from MGG coordinates
@@ -505,7 +505,7 @@ Euclidean_to_graph <- function(loc, graph) {
 #'   graph <- MetricGraph::metric_graph$new(edges = edges)
 #'   graph$build_mesh(h = 0.005)
 #'   mgm <- MGG_to_MGM(
-#'     as_MGG(cbind(1, 0.5)),
+#'     fm_as_MGG_bary(cbind(1, 0.5)),
 #'     graph
 #'   )
 #'   mgm
@@ -513,14 +513,15 @@ Euclidean_to_graph <- function(loc, graph) {
 #'
 #' @keywords internal
 MGG_to_MGM <- function(coord, graph) {
-  if (is.null(graph$mesh)) {
+  stopifnot(inherits(coord, "fm_MGG_bary"))
+  if (is.null(graph[["mesh"]])) {
     stop("There is no mesh")
   }
-  stopifnot(inherits(coord, "fm_bary_MGG"))
-  mesh_MGG <- as_MGG(graph$mesh$VtE)
+  stopifnot(inherits(coord, "fm_MGG_bary"))
+  mesh_MGG <- fm_as_MGG_bary(graph$mesh$VtE)
   mesh_edge_len <- graph$mesh$h_e
   # storage for new coordinates
-  new_coord <- as_MGM(tibble::tibble(
+  new_coord <- fm_as_MGM_bary(tibble::tibble(
     index = integer(NROW(coord)),
     where = numeric(NROW(coord))
   ))
@@ -616,7 +617,7 @@ MGG_to_MGM <- function(coord, graph) {
 #'   graph <- MetricGraph::metric_graph$new(edges = edges)
 #'   graph$build_mesh(h = 0.01)
 #'   mgg <- MGM_to_MGG(
-#'     as_MGM(cbind(5, 1)),
+#'     fm_as_MGM_bary(cbind(5, 1)),
 #'     graph
 #'   )
 #'   mgg
@@ -624,10 +625,13 @@ MGG_to_MGM <- function(coord, graph) {
 #'
 #' @keywords internal
 MGM_to_MGG <- function(coord, graph) {
-  stopifnot(inherits(coord, "fm_bary_MGM"))
-  mesh_loc <- graph$mesh$VtE
+  stopifnot(inherits(coord, "fm_MGM_bary"))
+  if (is.null(graph[["mesh"]])) {
+    stop("There is no mesh")
+  }
+  mesh_MGG <- fm_as_MGG_bary(graph$mesh$VtE)
   eps <- min(graph$mesh$h_e)
-  new_coord <- as_MGG(tibble::tibble(
+  new_coord <- fm_as_MGG_bary(tibble::tibble(
     index = integer(NROW(coord)),
     where = numeric(NROW(coord))
   ))
@@ -635,42 +639,42 @@ MGM_to_MGG <- function(coord, graph) {
     # mesh vertex indices for neighboring loc
     mesh_vertices <- graph$mesh$E[coord$index[i], ]
     # which graph coordinates for the neighboring vertices
-    graph_edge_r <- mesh_loc[mesh_vertices[2], ]
-    graph_edge_l <- mesh_loc[mesh_vertices[1], ]
+    graph_edge_r <- mesh_MGG[mesh_vertices[2], ]
+    graph_edge_l <- mesh_MGG[mesh_vertices[1], ]
     # as long as they are on the same edge
-    if (graph_edge_l[1] == graph_edge_r[1]) {
+    if (graph_edge_l$index == graph_edge_r$index) {
       # neighbouring mesh nodes are on the same edge
-      new_coord[i, ] <- as_MGG(
+      new_coord[i, ] <- fm_as_MGG_bary(
         tibble::tibble(
-          index = graph_edge_l[1],
-          where = (1 - coord$where[i, 2]) * graph_edge_l[2] +
-            coord$where[i, 2] * graph_edge_r[2]
+          index = graph_edge_l$index,
+          where = (1 - coord$where[i, 2]) * graph_edge_l$where[1, 2] +
+            coord$where[i, 2] * graph_edge_r$where[1, 2]
         )
       )
     } else {
       # neighbouring mesh nodes are not on same edge (one is a vertex)
-      on_vertex_r <- (graph_edge_r[2] - c(0, 1) < eps)
-      on_vertex_l <- (graph_edge_l[2] - c(0, 1) < eps)
+      on_vertex_r <- (graph_edge_r$where[1, 2] - c(0, 1) < eps)
+      on_vertex_l <- (graph_edge_l$where[1, 2] - c(0, 1) < eps)
       if (any(on_vertex_r)) {
-        new_coord[i, ] <- as_MGG(
+        new_coord[i, ] <- fm_as_MGG_bary(
           tibble::tibble(
-            index = graph_edge_l[1],
-            where = (1 - coord$where[i, 2]) * graph_edge_l[2] +
+            index = graph_edge_l$index,
+            where = (1 - coord$where[i, 2]) * graph_edge_l$where[1, 2] +
               coord$where[i, 2] * c(0, 1)[on_vertex_r]
           )
         )
       } else {
-        new_coord[i, ] <- as_MGG(
+        new_coord[i, ] <- fm_as_MGG_bary(
           tibble::tibble(
-            index = graph_edge_r[1],
+            index = graph_edge_r$index,
             where = (1 - coord$where[i, 2]) * c(0, 1)[on_vertex_l] +
-              coord$where[i, 2] * graph_edge_r[2]
+              coord$where[i, 2] * graph_edge_r$where[1, 2]
           )
         )
       }
     }
   }
-  as_MGG(new_coord)
+  fm_as_MGG_bary(new_coord)
 }
 
 
@@ -696,19 +700,19 @@ MGM_to_MGG <- function(coord, graph) {
 #'   edges <- list(edge1, edge2, edge3, edge4)
 #'   graph <- MetricGraph::metric_graph$new(edges = edges)
 #'   graph$build_mesh(h = 0.01)
-#'   m <- as_MGM(
+#'   m <- fm_as_MGM_bary(
 #'     cbind(1, 1),
 #'     graph
 #'   )
-#'   class(m) # "fm_bary_MGM", "fm_bary", "tbl_df", "tbl", "data.frame"
+#'   class(m) # "fm_MGM_bary", "fm_bary", "tbl_df", "tbl", "data.frame"
 #' }
 #'
 #' @keywords internal
-as_MGM <- function(loc, graph = NULL) {
-  if (inherits(loc, "fm_bary_MGM")) {
+fm_as_MGM_bary <- function(loc, graph = NULL) {
+  if (inherits(loc, "fm_MGM_bary")) {
     return(loc)
   }
-  if (inherits(loc, "fm_bary_MGG")) {
+  if (inherits(loc, "fm_MGG_bary")) {
     if (is.null(graph)) {
       stop("Graph must be provided to convert from MGG to MGM.")
     }
@@ -747,7 +751,7 @@ as_MGM <- function(loc, graph = NULL) {
   coord <-
     structure(
       res,
-      class = c("fm_bary_MGM", "fm_bary", "tbl_df", "tbl", "data.frame")
+      class = c("fm_MGM_bary", "fm_bary", "tbl_df", "tbl", "data.frame")
     )
 }
 
@@ -773,16 +777,16 @@ as_MGM <- function(loc, graph = NULL) {
 #'   edge4 <- cbind(sin(theta), 1 + cos(theta))
 #'   edges <- list(edge1, edge2, edge3, edge4)
 #'   graph <- MetricGraph::metric_graph$new(edges = edges)
-#'   m <- as_MGG(cbind(1, 0.5))
-#'   class(m) # "fm_bary_MGG", "fm_bary", "tbl_df", "tbl", "data.frame"
+#'   m <- fm_as_MGG_bary(cbind(1, 0.5))
+#'   class(m) # "fm_MGG_bary", "fm_bary", "tbl_df", "tbl", "data.frame"
 #' }
 #'
 #' @keywords internal
-as_MGG <- function(loc, graph = NULL) {
-  if (inherits(loc, "fm_bary_MGG")) {
+fm_as_MGG_bary <- function(loc, graph = NULL) {
+  if (inherits(loc, "fm_MGG_bary")) {
     return(loc)
   }
-  if (inherits(loc, "fm_bary_MGM")) {
+  if (inherits(loc, "fm_MGM_bary")) {
     if (is.null(graph)) {
       stop("Graph must be provded to convert from MGM to MGG.")
     }
@@ -823,21 +827,21 @@ as_MGG <- function(loc, graph = NULL) {
   coord <-
     structure(
       res,
-      class = c("fm_bary_MGG", "fm_bary", "tbl_df", "tbl", "data.frame")
+      class = c("fm_MGG_bary", "fm_bary", "tbl_df", "tbl", "data.frame")
     )
 }
 
 
 #' @title Make an inter edge interval on graph object
 #' @description
-#' Create an `graph_interval` object.
+#' Create an `fm_MGG_interval` object.
 #'
-#' @param start_MGG Start location for inter edge interval.
-#' @param end_MGG End location for inter edge interval.
+#' @param start Start location for inter-graph-edge interval.
+#' @param end End location for inter-graph-edge interval.
 #' @param graph `metric_graph` that the interval should be mapped to. Must be
 #'   provided if input should be converted
 #' @author Karina Lilleborge \email{karina.lilleborge@@gmail.com}
-#' @returns An `graph_interval` object
+#' @returns An `fm_MGG_interval` object
 #' @export
 #' @family object creation and conversion
 #' @examples
@@ -849,7 +853,7 @@ as_MGG <- function(loc, graph = NULL) {
 #'   edge4 <- cbind(sin(theta), 1 + cos(theta))
 #'   edges <- list(edge1, edge2, edge3, edge4)
 #'   graph <- MetricGraph::metric_graph$new(edges = edges)
-#'   int <- as_graph_interval(
+#'   int <- fm_as_MGG_interval(
 #'     cbind(1, 0.8),
 #'     cbind(1, 0.5),
 #'     graph
@@ -858,38 +862,32 @@ as_MGG <- function(loc, graph = NULL) {
 #' }
 #'
 #' @keywords internal
-as_graph_interval <- function(start_MGG,
-                              end_MGG,
-                              graph = NULL) {
-  if (!(inherits(start_MGG, "fm_bary_MGG"))) {
-    start_MGG <- as_MGG(start_MGG, graph = graph)
-  }
-  if (!(inherits(end_MGG, "fm_bary_MGG"))) {
-    end_MGG <- as_MGG(end_MGG, graph = graph)
-  }
-  if (any(start_MGG$index != end_MGG$index)) {
+fm_as_MGG_interval <- function(start, end, graph = NULL) {
+  start <- fm_as_MGG_bary(start, graph = graph)
+  end <- fm_as_MGG_bary(end, graph = graph)
+  if (any(start$index != end$index)) {
     stop("Not all start- and end points are inter edge intervals")
   }
   inter_edge_interval <- structure(
     tibble::tibble(
-      start = start_MGG,
-      end = end_MGG
+      start = start,
+      end = end
     ),
-    class = c("graph_interval", "tbl_df", "tbl", "data.frame")
+    class = c("fm_MGG_interval", "tbl_df", "tbl", "data.frame")
   )
 }
 
 #' @title Make an interval on graph object
 #' @description
-#' Create a `graph_interval` object from known start (MGG), end (MGG) and
+#' Create a `fm_MGG_interval` object from known start (MGG), end (MGG) and
 #' visiting edges (MGG).
 #'
 #' @param graph metric_graph that the interval should be mapped to.
-#' @param start_MGG MGG coordinates for start
+#' @param start `fm_MGG_bary` or [fm_as_MGG_bary()] compatible coordinates for start
 #' @param edges Ordered list of edge indices related to MGG
-#' @param end_MGG MGG coordinates for end
+#' @param end `fm_MGG_bary` or [fm_as_MGG_bary()] compatible coordinates for end
 #' @author Karina Lilleborge \email{karina.lilleborge@@gmail.com}
-#' @returns A `graph_interval` object
+#' @returns A `fm_MGG_interval` object
 #' @export
 #' @family object creation and conversion
 #' @examples
@@ -903,21 +901,21 @@ as_graph_interval <- function(start_MGG,
 #'   graph <- MetricGraph::metric_graph$new(edges = edges)
 #'   path <- simple_path_MGG(
 #'     graph,
-#'     start_MGG = cbind(1, 0.5),
+#'     start = cbind(1, 0.5),
 #'     edges = c(2),
-#'     end_MGG = cbind(3, 0.6)
+#'     end = cbind(3, 0.6)
 #'   )
 #'   path
 #' }
 #'
 #' @keywords internal
 simple_path_MGG <- function(graph,
-                            start_MGG,
+                            start,
                             edges,
-                            end_MGG) {
+                            end) {
   # check if the graph does have circles
-  start_MGG <- as_MGG(start_MGG)
-  end_MGG <- as_MGG(end_MGG)
+  start_MGG <- fm_as_MGG_bary(start, graph = graph)
+  end_MGG <- fm_as_MGG_bary(end, graph = graph)
   if (length(edges) > 0) {
     # check direction from start to edges[1]
     v1 <- graph$E[as.integer(start_MGG$index), ]
@@ -934,19 +932,19 @@ simple_path_MGG <- function(graph,
     # (start, end)
     n <- length(edges) + 2
     inter_edge_intervals <-
-      as_graph_interval(
-        as_MGG(tibble::tibble(
+      fm_as_MGG_interval(
+        fm_as_MGG_bary(tibble::tibble(
           index = integer(n),
           where = numeric(n)
         )),
-        as_MGG(tibble::tibble(
+        fm_as_MGG_bary(tibble::tibble(
           index = integer(n),
           where = numeric(n)
         ))
       )
     inter_edge_intervals[1, ] <- tibble::tibble(
       start = start_MGG,
-      end = as_MGG(
+      end = fm_as_MGG_bary(
         cbind(
           as.numeric(start_MGG$index),
           as.numeric(end_vertex)
@@ -960,8 +958,8 @@ simple_path_MGG <- function(graph,
       if (end_vertex == 0) start_vertex <- 1
       if (end_vertex == 1) start_vertex <- 0
       inter_edge_intervals[i + 1, ] <- tibble::tibble(
-        start = as_MGG(cbind(as.integer(edges[i]), as.numeric(start_vertex))),
-        end = as_MGG(cbind(as.integer(edges[i]), as.numeric(end_vertex)))
+        start = fm_as_MGG_bary(cbind(as.integer(edges[i]), as.numeric(start_vertex))),
+        end = fm_as_MGG_bary(cbind(as.integer(edges[i]), as.numeric(end_vertex)))
       )
       v1 <- graph$E[as.integer(edges[i]), ]
       v2 <- graph$E[as.integer(edges[i + 1]), ]
@@ -970,33 +968,33 @@ simple_path_MGG <- function(graph,
     # check direction
     start_vertex <- c(0:1)[(v2 %in% v1[end_vertex + 1])]
     inter_edge_intervals[length(edges) + 2, ] <- tibble::tibble(
-      start = as_MGG(cbind(
+      start = fm_as_MGG_bary(cbind(
         as.integer(end_MGG$index),
         as.numeric(start_vertex)
       )),
-      end = as_MGG(cbind(
+      end = fm_as_MGG_bary(cbind(
         as.integer(end_MGG$index),
         as.numeric(end_MGG$where[, 2L])
       ))
     )
   } else { # there are no whole edges visited (edges=c())
     if (as.integer(start_MGG$index) == as.integer(end_MGG$index)) { # same edge
-      inter_edge_intervals <- as_graph_interval(
-        start_MGG = as_MGG(tibble::tibble(
+      inter_edge_intervals <- fm_as_MGG_interval(
+        start = fm_as_MGG_bary(tibble::tibble(
           index = integer(1),
           where = numeric(1)
         )),
-        end_MGG = as_MGG(tibble::tibble(
+        end = fm_as_MGG_bary(tibble::tibble(
           index = integer(1),
           where = numeric(1)
         ))
       )
       inter_edge_intervals[1, ] <- tibble::tibble(
-        start = as_MGG(cbind(
+        start = fm_as_MGG_bary(cbind(
           as.integer(start_MGG$index),
           as.numeric(start_MGG$where[, 2])
         )),
-        end = as_MGG(cbind(
+        end = fm_as_MGG_bary(cbind(
           as.integer(start_MGG$index),
           as.numeric(end_MGG$where[, 2])
         ))
@@ -1013,23 +1011,23 @@ simple_path_MGG <- function(graph,
         end_vertex <- 1
       }
       # make storage for the inter edge intervals for each of the edge
-      # index, start and end (graph_interval)
-      inter_edge_intervals <- as_graph_interval(
-        start_MGG = as_MGG(tibble::tibble(
+      # index, start and end (fm_MGG_interval)
+      inter_edge_intervals <- fm_as_MGG_interval(
+        start = fm_as_MGG_bary(tibble::tibble(
           index = integer(2),
           where = numeric(2)
         )),
-        end_MGG = as_MGG(tibble::tibble(
+        end = fm_as_MGG_bary(tibble::tibble(
           index = integer(2),
           where = numeric(2)
         ))
       )
       inter_edge_intervals[1, ] <- tibble::tibble(
-        start = as_MGG(cbind(
+        start = fm_as_MGG_bary(cbind(
           as.integer(start_MGG$index),
           as.numeric(start_MGG$where[, 2])
         )),
-        end = as_MGG(cbind(
+        end = fm_as_MGG_bary(cbind(
           as.integer(start_MGG$index),
           as.numeric(end_vertex)
         ))
@@ -1038,11 +1036,11 @@ simple_path_MGG <- function(graph,
       # check direction
       start_vertex <- c(0:1)[(v2 %in% v1[end_vertex + 1L])]
       inter_edge_intervals[2, ] <- tibble::tibble(
-        start = as_MGG(cbind(
+        start = fm_as_MGG_bary(cbind(
           as.integer(end_MGG$index),
           as.numeric(start_vertex)
         )),
-        end = as_MGG(cbind(
+        end = fm_as_MGG_bary(cbind(
           as.integer(end_MGG$index),
           as.numeric(end_MGG$where[, 2])
         ))
@@ -1052,20 +1050,20 @@ simple_path_MGG <- function(graph,
   # construct object
   path <- structure(
     inter_edge_intervals,
-    class = c("graph_interval", "tbl_df", "tbl", "data.frame")
+    class = c("fm_MGG_interval", "tbl_df", "tbl", "data.frame")
   )
   return(path)
 }
 
 #' @title Make an interval on graph object from sf object
 #' @description
-#' Create a tibble of `graph_interval` objects from `sf::st_geometry`
+#' Create a tibble of `fm_MGG_interval` objects from `sf::st_geometry`
 #' (`LINESTRING`) and a column with "id".
 #'
 #' @param graph metric_graph that the interval should be mapped to.
 #' @param geom_path `sf::st_geometry` (`LINESTRING`) on a graph
 #' @author Karina Lilleborge \email{karina.lilleborge@@gmail.com}
-#' @returns A tibble containing a set of `graph_interval` objects and id
+#' @returns A tibble containing a set of `fm_MGG_interval` objects and id
 #'   referring to what `LINESTRING` it was constructed from.
 #' @export
 #' @family object creation and conversion
@@ -1093,7 +1091,7 @@ simple_path_MGG <- function(graph,
 #'
 #' @keywords internal
 geom_path_to_path_MGG <- function(geom_path, graph) {
-  # new function name for this (as_graph_interval(input) check what input is)
+  # new function name for this (fm_as_MGG_interval)
   if (!inherits(geom_path, "sfc_LINESTRING")) {
     stop("Method not implemented. Input must be sfc_LINESTRING")
   }
@@ -1116,12 +1114,12 @@ geom_path_to_path_MGG <- function(geom_path, graph) {
       as.matrix(line[, c("X", "Y")])
     )
     # line_MGG <- graph$coordinates(XY = line[, c("X", "Y")])
-    # convert to ("fm_bary_MGG", "fm_bary")
-    # line_MGG <- as_MGG(line_MGG)
+    # convert to ("fm_MGG_bary", "fm_bary")
+    # line_MGG <- fm_as_MGG_bary(line_MGG)
     # index for number of segments added
     j <- 0
     # storing the segments (start and end separately)
-    start_seg <- as_MGG(cbind(
+    start_seg <- fm_as_MGG_bary(cbind(
       rep(NA, 2 * (NROW(line_MGG) - 1)),
       rep(NA, 2 * (NROW(line_MGG) - 1))
     ))
@@ -1176,13 +1174,13 @@ geom_path_to_path_MGG <- function(geom_path, graph) {
               if (isTRUE(edges_start[edge_index, 1])) {
                 # the start vertex is the start of the edge v = (edge_index, 0)
                 j <- j + 1
-                start_seg[j, ] <- as_MGG(cbind(edge_index, 0))
-                end_seg[j, ] <- as_MGG(cbind(edge_index, 1))
+                start_seg[j, ] <- fm_as_MGG_bary(cbind(edge_index, 0))
+                end_seg[j, ] <- fm_as_MGG_bary(cbind(edge_index, 1))
               } else {
                 # the start is the end of the edge v = (edge_index, 1)
                 j <- j + 1
-                start_seg[j, ] <- as_MGG(cbind(edge_index, 1))
-                end_seg[j, ] <- as_MGG(cbind(edge_index, 0))
+                start_seg[j, ] <- fm_as_MGG_bary(cbind(edge_index, 1))
+                end_seg[j, ] <- fm_as_MGG_bary(cbind(edge_index, 0))
               }
             }
           } else {
@@ -1200,11 +1198,11 @@ geom_path_to_path_MGG <- function(geom_path, graph) {
             # we have a valid start
             if (edge_nodes[1L] == start_vertex) {
               j <- j + 1
-              start_seg[j, ] <- as_MGG(cbind(edge_index, 0))
+              start_seg[j, ] <- fm_as_MGG_bary(cbind(edge_index, 0))
               end_seg[j, ] <- line_MGG[i + 1, ]
             } else {
               j <- j + 1
-              start_seg[j, ] <- as_MGG(cbind(edge_index, 1))
+              start_seg[j, ] <- fm_as_MGG_bary(cbind(edge_index, 1))
               end_seg[j, ] <- line_MGG[i + 1, ]
             }
           }
@@ -1223,11 +1221,11 @@ geom_path_to_path_MGG <- function(geom_path, graph) {
           if (edge_nodes[1L] == end_vertex) {
             j <- j + 1
             start_seg[j, ] <- line_MGG[i, ]
-            end_seg[j, ] <- as_MGG(cbind(edge_index, 0))
+            end_seg[j, ] <- fm_as_MGG_bary(cbind(edge_index, 0))
           } else {
             j <- j + 1
             start_seg[j, ] <- line_MGG[i, ]
-            end_seg[j, ] <- as_MGG(cbind(edge_index, 1))
+            end_seg[j, ] <- fm_as_MGG_bary(cbind(edge_index, 1))
           }
         } else { # !any(start_on_vertex) & !any(end_on_vertex)
           # are the points on connected edges?
@@ -1236,19 +1234,19 @@ geom_path_to_path_MGG <- function(geom_path, graph) {
           if (sum(v1[1] %in% v2) == 1) {
             j <- j + 1
             start_seg[j, ] <- line_MGG[i, ]
-            end_seg[j, ] <- as_MGG(cbind(line_MGG$index[i], 0))
+            end_seg[j, ] <- fm_as_MGG_bary(cbind(line_MGG$index[i], 0))
             # and next interedge
             j <- j + 1
-            start_seg[j, ] <- as_MGG(cbind(line_MGG$index[i + 1],
+            start_seg[j, ] <- fm_as_MGG_bary(cbind(line_MGG$index[i + 1],
                                            c(0, 1)[v2 %in% v1[1]]))
             end_seg[j, ] <- line_MGG[i + 1, ]
           } else if (sum(v1[2] %in% v2) == 1) {
             j <- j + 1
             start_seg[j, ] <- line_MGG[i, ]
-            end_seg[j, ] <- as_MGG(cbind(line_MGG$index[i], 1))
+            end_seg[j, ] <- fm_as_MGG_bary(cbind(line_MGG$index[i], 1))
             # and next interedge
             j <- j + 1
-            start_seg[j, ] <- as_MGG(cbind(line_MGG$index[i + 1],
+            start_seg[j, ] <- fm_as_MGG_bary(cbind(line_MGG$index[i + 1],
                                            c(0, 1)[v2 %in% v1[2]]))
             end_seg[j, ] <- line_MGG[i + 1, ]
           } else {
@@ -1268,9 +1266,9 @@ geom_path_to_path_MGG <- function(geom_path, graph) {
 
     # storage for the start_seq & end_seq as a well-defined path
     # they should all be on the same edge:
-    path_MGG <- as_graph_interval(
-      start_MGG = start_seg,
-      end_MGG = end_seg,
+    path_MGG <- fm_as_MGG_interval(
+      start = start_seg,
+      end = end_seg,
       graph = graph
     )
 

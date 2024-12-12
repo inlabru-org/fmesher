@@ -36,7 +36,7 @@ test_that("MGG bary", {
     c(2, 6, 0.6, 0.8)
   )
   # MGG
-  locs <- as_MGG(rbind(c(2, 0.6), c(6, 0.8)))
+  locs <- fm_as_MGG_bary(rbind(c(2, 0.6), c(6, 0.8)))
   b <-
     fm_bary(
       mesh = fm_as_MG(graph0, MGG = TRUE),
@@ -52,7 +52,7 @@ test_that("MGG bary", {
     c(2, 6, 0.6, 0.8)
   )
   # MGM
-  locs <- as_MGM(rbind(c(260, 1), c(400, 0.8)))
+  locs <- fm_as_MGM_bary(rbind(c(260, 1), c(400, 0.8)))
   b <-
     fm_bary(
       mesh = fm_as_MG(graph0, MGG = FALSE),
@@ -90,7 +90,7 @@ test_that("MGG to MGM", {
   skip_if_not_installed("MetricGraph")
   graph0 <- local_bru_test_graph()
   graph0$build_mesh(h = 0.005)
-  locs <- as_MGG(rbind(
+  locs <- fm_as_MGG_bary(rbind(
     c(1, 0.6),
     c(3, 0.20)
   ))
@@ -146,7 +146,7 @@ test_that("MGM to MGG", {
   mgg <-
     MGM_to_MGG(
       graph = graph0,
-      coord = as_MGM(locs)
+      coord = fm_as_MGM_bary(locs)
     )
 
   expect_equal(
@@ -174,7 +174,7 @@ test_that("MGM to MGG", {
 test_that("bary MGG to MGG", {
   skip_if_not_installed("MetricGraph")
   graph0 <- local_bru_test_graph()
-  locs <- as_MGG(cbind(c(2, 5), c(0.8, 0.2)))
+  locs <- fm_as_MGG_bary(cbind(c(2, 5), c(0.8, 0.2)))
   b <-
     fm_bary(
       mesh = fm_as_MG(graph0, MGG = TRUE),
@@ -196,7 +196,7 @@ test_that("bary MGM to MGM", {
   skip_if_not_installed("MetricGraph")
   graph0 <- local_bru_test_graph()
   graph0$build_mesh(h = 0.005)
-  locs <- as_MGM(cbind(c(300, 1250), c(0.5, 1.0)))
+  locs <- fm_as_MGM_bary(cbind(c(300, 1250), c(0.5, 1.0)))
   b <-
     fm_bary(
       mesh = fm_as_MG(graph0, MGG = FALSE),
@@ -226,9 +226,9 @@ test_that("path construction", {
   p <-
     simple_path_MGG(
       graph = graph0,
-      start_MGG = start,
+      start = start,
       edges = edges,
-      end_MGG = end
+      end = end
     )
 
   expect_equal(
@@ -251,9 +251,9 @@ test_that("path construction", {
   p <-
     simple_path_MGG(
       graph = graph0,
-      start_MGG = start,
+      start = start,
       edges = edges,
-      end_MGG = end
+      end = end
     )
 
   expect_equal(
@@ -276,9 +276,9 @@ test_that("path construction", {
   p <-
     simple_path_MGG(
       graph = graph0,
-      start_MGG = start,
+      start = start,
       edges = edges,
-      end_MGG = end
+      end = end
     )
 
   expect_equal(
@@ -312,9 +312,9 @@ test_that("integration one path", {
   p1 <-
     simple_path_MGG(
       graph = graph0,
-      start_MGG = start1,
+      start = start1,
       edges = c(),
-      end_MGG = end1
+      end = end1
     )
   test_sampler <- tibble::tibble(x = list(p1), weight = 1)
 
@@ -355,9 +355,9 @@ test_that("integration two paths", {
   p1 <-
     simple_path_MGG(
       graph = graph0,
-      start_MGG = start1,
+      start = start1,
       edges = edges1,
-      end_MGG = end1
+      end = end1
     )
   start2 <- cbind(7, 0.2)
   edges2 <- c(5, 3, 4, 1)
@@ -365,9 +365,9 @@ test_that("integration two paths", {
   p2 <-
     simple_path_MGG(
       graph = graph0,
-      start_MGG = start2,
+      start = start2,
       edges = edges2,
-      end_MGG = end2
+      end = end2
     )
 
   test_sampler <- tibble::tibble(x = list(p1, p2), weight = c(2, 1))
@@ -404,9 +404,9 @@ test_that("fm_basis paths", {
   p1 <-
     simple_path_MGG(
       graph = graph0,
-      start_MGG = start1,
+      start = start1,
       edges = edges1,
-      end_MGG = end1
+      end = end1
     )
   start2 <- cbind(7, 0.2)
   edges2 <- c(5, 3, 4, 1)
@@ -414,9 +414,9 @@ test_that("fm_basis paths", {
   p2 <-
     simple_path_MGG(
       graph = graph0,
-      start_MGG = start2,
+      start = start2,
       edges = edges2,
-      end_MGG = end2
+      end = end2
     )
   test_sampler <- tibble::tibble(x = list(p1, p2), weight = c(1, 1))
   graph0$build_mesh(h = 0.005)
@@ -425,7 +425,7 @@ test_that("fm_basis paths", {
                     loc = ips$x,
                     weights = ips$weight)
   n <- NROW(ips)
-  MGM_locs <- as_MGM(ips$x, graph = graph0)
+  MGM_locs <- fm_as_MGM_bary(ips$x, graph = graph0)
   true_A <- Matrix::sparseMatrix(
     i = c(seq_len(n), seq_len(n)),
     j = c(graph0$mesh$E[MGM_locs$index, 1], graph0$mesh$E[MGM_locs$index, 2]),

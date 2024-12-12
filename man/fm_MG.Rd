@@ -99,11 +99,11 @@ Interface for \code{metric_graph} objects
 
 \item \code{fm_basis(metric_graph)}: Construct an interpolation/basis matrix
 
-\item \code{fm_bary(metric_graph)}: Compute an \code{fm_bary_MGG} or \code{fm_bary_MGM} object
+\item \code{fm_bary(metric_graph)}: Compute an \code{fm_MGG_bary} or \code{fm_MGM_bary} object
 
-\item \code{fm_bary(fm_MGG)}: Compute and \code{fm_bary_MGG} object
+\item \code{fm_bary(fm_MGG)}: Compute an \code{fm_MGG_bary} object
 
-\item \code{fm_bary(fm_MGM)}: Compute and \code{fm_bary_MGM} object
+\item \code{fm_bary(fm_MGM)}: Compute an \code{fm_MGM_bary} object
 
 \item \code{fm_bary_simplex(metric_graph)}: Returns a \code{metric_graph} graph or mesh edge index matrix
 
@@ -146,9 +146,9 @@ if (requireNamespace("MetricGraph")) {
   graph$build_mesh(h = 0.01)
   p1 <- simple_path_MGG(
     graph = graph,
-    start_MGG = cbind(1, 0.2),
+    start = cbind(1, 0.2),
     edges = c(2),
-    end_MGG = cbind(3, 0.8)
+    end = cbind(3, 0.8)
   )
   samplers <- tibble::tibble(x = list(p1), weight = c(1))
   ips <- fm_int(

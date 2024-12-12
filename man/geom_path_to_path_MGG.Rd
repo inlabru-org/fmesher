@@ -12,11 +12,11 @@ geom_path_to_path_MGG(geom_path, graph)
 \item{graph}{metric_graph that the interval should be mapped to.}
 }
 \value{
-A tibble containing a set of \code{graph_interval} objects and id
+A tibble containing a set of \code{fm_MGG_interval} objects and id
 referring to what \code{LINESTRING} it was constructed from.
 }
 \description{
-Create a tibble of \code{graph_interval} objects from \code{sf::st_geometry}
+Create a tibble of \code{fm_MGG_interval} objects from \code{sf::st_geometry}
 (\code{LINESTRING}) and a column with "id".
 }
 \examples{
@@ -47,9 +47,9 @@ Other object creation and conversion:
 \code{\link{Euclidean_to_graph}()},
 \code{\link{MGG_to_MGM}()},
 \code{\link{MGM_to_MGG}()},
-\code{\link{as_MGG}()},
-\code{\link{as_MGM}()},
-\code{\link{as_graph_interval}()},
+\code{\link{fm_as_MGG_bary}()},
+\code{\link{fm_as_MGG_interval}()},
+\code{\link{fm_as_MGM_bary}()},
 \code{\link{fm_as_fm}()},
 \code{\link{fm_as_lattice_2d}()},
 \code{\link{fm_as_mesh_1d}()},

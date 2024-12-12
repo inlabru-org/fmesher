@@ -28,7 +28,7 @@ if (requireNamespace("MetricGraph", quietly = TRUE)) {
   graph <- MetricGraph::metric_graph$new(edges = edges)
   graph$build_mesh(h = 0.005)
   mgm <- MGG_to_MGM(
-    as_MGG(cbind(1, 0.5)),
+    fm_as_MGG_bary(cbind(1, 0.5)),
     graph
   )
   mgm
@@ -39,9 +39,9 @@ if (requireNamespace("MetricGraph", quietly = TRUE)) {
 Other object creation and conversion: 
 \code{\link{Euclidean_to_graph}()},
 \code{\link{MGM_to_MGG}()},
-\code{\link{as_MGG}()},
-\code{\link{as_MGM}()},
-\code{\link{as_graph_interval}()},
+\code{\link{fm_as_MGG_bary}()},
+\code{\link{fm_as_MGG_interval}()},
+\code{\link{fm_as_MGM_bary}()},
 \code{\link{fm_as_fm}()},
 \code{\link{fm_as_lattice_2d}()},
 \code{\link{fm_as_mesh_1d}()},
