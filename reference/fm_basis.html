@@ -9,7 +9,7 @@ mesh, and locations."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9007</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9008</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,6 +63,9 @@ mesh, and locations.</p>
 <span></span>
 <span><span class="co"># S3 method for class 'fm_mesh_2d'</span></span>
 <span><span class="fu">fm_basis</span><span class="op">(</span><span class="va">x</span>, <span class="va">loc</span>, weights <span class="op">=</span> <span class="cn">NULL</span>, derivatives <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span>, full <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'fm_mesh_3d'</span></span>
+<span><span class="fu">fm_basis</span><span class="op">(</span><span class="va">x</span>, <span class="va">loc</span>, weights <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span>, full <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'fm_lattice_2d'</span></span>
 <span><span class="fu">fm_basis</span><span class="op">(</span><span class="va">x</span>, <span class="va">loc</span>, weights <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span>, full <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
@@ -144,6 +147,7 @@ additional derivative weight matrices, <code>d1A</code> and <code>d2A</code>, <c
 <li><p><code>fm_basis(fm_mesh_2d)</code>: If <code>derivatives=TRUE</code>, additional derivative weight
 matrices are included in the <code>full=TRUE</code> output: Derivative weight matrices
 <code>dx</code>, <code>dy</code>, <code>dz</code>; <code>du/dx(loc_i)=sum_j dx_ij w_i</code>, etc.</p></li>
+<li><p><code>fm_basis(fm_mesh_3d)</code>: <code>fm_mesh_3d</code> basis functions.</p></li>
 <li><p><code>fm_basis(fm_lattice_2d)</code>: <code>fm_lattice_2d</code> bilinear basis functions.</p></li>
 <li><p><code>fm_basis(fm_tensor)</code>: Evaluates a basis matrix for a <code>fm_tensor</code> function
 space.</p></li>

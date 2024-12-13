@@ -9,7 +9,7 @@ object. This acts as the inverse of fm_bary()."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9007</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9008</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,6 +58,9 @@ object. This acts as the inverse of <code><a href="fm_bary.html">fm_bary()</a></
 <span><span class="co"># S3 method for class 'fm_mesh_2d'</span></span>
 <span><span class="fu">fm_bary_loc</span><span class="op">(</span><span class="va">mesh</span>, bary <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span>, format <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># S3 method for class 'fm_mesh_3d'</span></span>
+<span><span class="fu">fm_bary_loc</span><span class="op">(</span><span class="va">mesh</span>, bary <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span>, format <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
 <span><span class="co"># S3 method for class 'fm_mesh_1d'</span></span>
 <span><span class="fu">fm_bary_loc</span><span class="op">(</span><span class="va">mesh</span>, bary <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span>, format <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
@@ -96,6 +99,8 @@ is determined by the default for the mesh object.</p></dd>
 
 <ul><li><p><code>fm_bary_loc(fm_mesh_2d)</code>: Extract points on a triangle mesh. Implemented
 formats are <code>"matrix"</code> (default) and <code>"sf"</code>.</p></li>
+<li><p><code>fm_bary_loc(fm_mesh_3d)</code>: Extract points on a tetrahedron mesh. Implemented
+format is <code>"matrix"</code> (default).</p></li>
 <li><p><code>fm_bary_loc(fm_mesh_1d)</code>: Extract points on a 1D mesh. Implemented
 formats are <code>"numeric"</code> (default).</p></li>
 <li><p><code>fm_bary_loc(fm_lattice_2d)</code>: Extract points on a 2D lattice. Implemented
