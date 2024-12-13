@@ -551,15 +551,15 @@ MGG_to_MGM <- function(coord, graph) {
           (graph$mesh$E[, 2] == graph_vertex))
         mesh_h_e <- mesh_edge_len[index_MGM]
         where_MGM <- as.numeric((as.numeric(coord$where[i, 2]) -
-                                   edge_MGG$where[, 2]) / mesh_h_e)
+          edge_MGG$where[, 2]) / mesh_h_e)
       } else {
         # find the edge index that connects (start_vertex, mesh_vertex)
         index_MGM <- which.max((graph$mesh$E[, 1] == graph_vertex) &
           (graph$mesh$E[, 2] == index_on_edge))
         mesh_h_e <- mesh_edge_len[index_MGM]
         where_MGM <- 1 - (as.numeric((edge_MGG$where[, 2] -
-                                        as.numeric(coord$where[i, 2])) /
-                                       mesh_h_e))
+          as.numeric(coord$where[i, 2])) /
+          mesh_h_e))
       }
     } else {
       # order the mesh_MGG locations:
@@ -567,7 +567,7 @@ MGG_to_MGM <- function(coord, graph) {
       edge_MGG_o <- edge_MGG[ordering, ]
       # find the mesh point index where coord[i,] is next to
       index_on_edge <- which.max((edge_MGG_o$where[, 2] -
-                                    as.numeric(coord$where[i, 2])) >= 0)
+        as.numeric(coord$where[i, 2])) >= 0)
       # coord[i, ] is between these two mesh locs
       mesh_indices <-
         which(ids)[(ordering[c(index_on_edge - 1, index_on_edge)])]
@@ -575,8 +575,8 @@ MGG_to_MGM <- function(coord, graph) {
         (graph$mesh$E[, 2] == mesh_indices[2]))
       mesh_h_e <- mesh_edge_len[index_MGM]
       where_MGM <- 1 - as.numeric((edge_MGG_o$where[index_on_edge, 2] -
-                                     as.numeric(coord$where[i, 2])) /
-                                    mesh_h_e) # normalized
+        as.numeric(coord$where[i, 2])) /
+        mesh_h_e) # normalized
     }
     if (length(c(index_MGM, where_MGM)) != 2) {
       stop(paste0(
@@ -883,7 +883,8 @@ fm_as_MGG_interval <- function(start, end, graph = NULL) {
 #' visiting edges (MGG).
 #'
 #' @param graph metric_graph that the interval should be mapped to.
-#' @param start `fm_MGG_bary` or [fm_as_MGG_bary()] compatible coordinates for start
+#' @param start `fm_MGG_bary` or [fm_as_MGG_bary()] compatible coordinates for
+#'   start
 #' @param edges Ordered list of edge indices related to MGG
 #' @param end `fm_MGG_bary` or [fm_as_MGG_bary()] compatible coordinates for end
 #' @author Karina Lilleborge \email{karina.lilleborge@@gmail.com}
@@ -958,8 +959,14 @@ simple_path_MGG <- function(graph,
       if (end_vertex == 0) start_vertex <- 1
       if (end_vertex == 1) start_vertex <- 0
       inter_edge_intervals[i + 1, ] <- tibble::tibble(
-        start = fm_as_MGG_bary(cbind(as.integer(edges[i]), as.numeric(start_vertex))),
-        end = fm_as_MGG_bary(cbind(as.integer(edges[i]), as.numeric(end_vertex)))
+        start = fm_as_MGG_bary(cbind(
+          as.integer(edges[i]),
+          as.numeric(start_vertex)
+        )),
+        end = fm_as_MGG_bary(cbind(
+          as.integer(edges[i]),
+          as.numeric(end_vertex)
+        ))
       )
       v1 <- graph$E[as.integer(edges[i]), ]
       v2 <- graph$E[as.integer(edges[i + 1]), ]
@@ -1166,8 +1173,10 @@ geom_path_to_path_MGG <- function(geom_path, graph) {
                 stop("Ambiguous geom_path: Multiple edge candidates.")
               }
               if (sum(edges) == 0) {
-                stop(paste0("Unclear geom_path: ",
-                            "Not directly connected subsequent end points."))
+                stop(paste0(
+                  "Unclear geom_path: ",
+                  "Not directly connected subsequent end points."
+                ))
               }
               # there is only one edge match
               edge_index <- which(edges)
@@ -1237,8 +1246,10 @@ geom_path_to_path_MGG <- function(geom_path, graph) {
             end_seg[j, ] <- fm_as_MGG_bary(cbind(line_MGG$index[i], 0))
             # and next interedge
             j <- j + 1
-            start_seg[j, ] <- fm_as_MGG_bary(cbind(line_MGG$index[i + 1],
-                                           c(0, 1)[v2 %in% v1[1]]))
+            start_seg[j, ] <- fm_as_MGG_bary(cbind(
+              line_MGG$index[i + 1],
+              c(0, 1)[v2 %in% v1[1]]
+            ))
             end_seg[j, ] <- line_MGG[i + 1, ]
           } else if (sum(v1[2] %in% v2) == 1) {
             j <- j + 1
@@ -1246,8 +1257,10 @@ geom_path_to_path_MGG <- function(geom_path, graph) {
             end_seg[j, ] <- fm_as_MGG_bary(cbind(line_MGG$index[i], 1))
             # and next interedge
             j <- j + 1
-            start_seg[j, ] <- fm_as_MGG_bary(cbind(line_MGG$index[i + 1],
-                                           c(0, 1)[v2 %in% v1[2]]))
+            start_seg[j, ] <- fm_as_MGG_bary(cbind(
+              line_MGG$index[i + 1],
+              c(0, 1)[v2 %in% v1[2]]
+            ))
             end_seg[j, ] <- line_MGG[i + 1, ]
           } else {
             stop(paste0(
