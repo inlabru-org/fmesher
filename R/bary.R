@@ -431,7 +431,8 @@ fm_bary_simplex.fm_mesh_2d <- function(mesh, bary = NULL, ...) {
   mesh$graph$tv[bary$index, , drop = FALSE]
 }
 
-#' @describeIn fm_bary_simplex Extract the tetrahedron vertex indices for a 3D mesh
+#' @describeIn fm_bary_simplex Extract the tetrahedron vertex indices for a 3D
+#'   mesh
 #' @export
 #'
 # @examples

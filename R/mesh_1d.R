@@ -176,13 +176,13 @@ fm_mesh_1d <- function(loc,
       mid <- mid[-length(mid)]
     }
   } else if (degree == 3) {
-      mid <- loc
-      if (boundary[1] == "dirichlet") {
-        mid <- mid[-1]
-      }
-      if (boundary[2] == "dirichlet") {
-        mid <- mid[-length(mid)]
-      }
+    mid <- loc
+    if (boundary[1] == "dirichlet") {
+      mid <- mid[-1]
+    }
+    if (boundary[2] == "dirichlet") {
+      mid <- mid[-length(mid)]
+    }
   } else { ## degree==2
     if (cyclic) {
       mid <- (loc + c(loc[-1], interval[2])) / 2
