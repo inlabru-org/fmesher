@@ -9,7 +9,8 @@ simple_path_MGG(graph, start, edges, end)
 \arguments{
 \item{graph}{metric_graph that the interval should be mapped to.}
 
-\item{start}{\code{fm_MGG_bary} or \code{\link[=fm_as_MGG_bary]{fm_as_MGG_bary()}} compatible coordinates for start}
+\item{start}{\code{fm_MGG_bary} or \code{\link[=fm_as_MGG_bary]{fm_as_MGG_bary()}} compatible coordinates for
+start}
 
 \item{edges}{Ordered list of edge indices related to MGG}
 
