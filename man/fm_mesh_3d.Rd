@@ -34,9 +34,8 @@ Requires the \code{geometry} package.
 (m <- fm_mesh_3d(
   matrix(c(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0), 4, 3, byrow = TRUE),
   matrix(c(1, 2, 3, 4), 1, 4, byrow = TRUE)
-)
-)
-
+))
+\dontshow{if (requireNamespace("geometry", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 (m <- fm_delaunay_3d(matrix(rnorm(30), 10, 3)))
-
+\dontshow{\}) # examplesIf}
 }

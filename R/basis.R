@@ -1151,10 +1151,8 @@ internal_bspline2 <- function(x, knots, degree = 1, deriv = 0) {
   }
 
   if (deriv > 0) {
-    basis_lower <- internal_bspline2(x,
-                                     knots,
-                                     degree = degree - 1,
-                                     deriv = deriv - 1)
+    basis_lower <-
+      internal_bspline2(x, knots, degree = degree - 1, deriv = deriv - 1)
     m <- length(knots) + degree - 1L
     m_lower <- m - 1L
     A <- Matrix::sparseMatrix(
