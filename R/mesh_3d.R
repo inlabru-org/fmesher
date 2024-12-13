@@ -13,9 +13,7 @@
 #' (m <- fm_mesh_3d(
 #'   matrix(c(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0), 4, 3, byrow = TRUE),
 #'   matrix(c(1, 2, 3, 4), 1, 4, byrow = TRUE)
-#' )
-#' )
-#'
+#' ))
 #' @export
 fm_mesh_3d <- function(loc = NULL,
                        tv = NULL,
@@ -115,9 +113,8 @@ fm_mesh_3d <- function(loc = NULL,
 #' @describeIn fm_mesh_3d Construct a plain Delaunay triangulation in 3D.
 #' Requires the `geometry` package.
 #' @export
-#' @examples
+#' @examplesIf requireNamespace("geometry", quietly = TRUE)
 #' (m <- fm_delaunay_3d(matrix(rnorm(30), 10, 3)))
-#'
 fm_delaunay_3d <- function(loc, ...) {
   stopifnot(requireNamespace("geometry"))
   tv <- geometry::delaunayn(loc)
