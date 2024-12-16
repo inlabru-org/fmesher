@@ -125,3 +125,34 @@ fm_delaunay_3d <- function(loc, ...) {
   )
   return(mesh)
 }
+
+
+
+#' @title Convert objects to `fm_mesh_3d`
+#' @describeIn fm_as_mesh_3d Convert an object to `fm_mesh_3d`.
+#' @param x Object to be converted.
+#' @param ... Arguments passed on to submethods
+#' @returns An `fm_mesh_3d` or `fm_mesh_3d_list` object
+#' @export
+#' @family object creation and conversion
+#' @export
+# @examples
+# fm_as_mesh_3d_list(list(fm_mesh_3d(cbind(2, 1))))
+fm_as_mesh_3d <- function(x, ...) {
+  if (is.null(x)) {
+    return(NULL)
+  }
+  UseMethod("fm_as_mesh_3d")
+}
+#' @describeIn fm_as_mesh_3d Convert each element of a list
+#' @export
+fm_as_mesh_3d_list <- function(x, ...) {
+  fm_as_list(x, ..., .class_stub = "mesh_2d")
+}
+#' @rdname fm_as_mesh_3d
+#' @param x Object to be converted
+#' @export
+fm_as_mesh_3d.fm_mesh_3d <- function(x, ...) {
+  #  class(x) <- c("fm_mesh_3d", setdiff(class(x), "fm_mesh_3d"))
+  x
+}
