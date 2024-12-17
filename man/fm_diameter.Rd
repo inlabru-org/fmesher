@@ -7,9 +7,10 @@
 \alias{fm_diameter.sfg}
 \alias{fm_diameter.sfc}
 \alias{fm_diameter.fm_lattice_2d}
-\alias{fm_diameter.fm_segm}
-\alias{fm_diameter.fm_mesh_2d}
 \alias{fm_diameter.fm_mesh_1d}
+\alias{fm_diameter.fm_mesh_2d}
+\alias{fm_diameter.fm_segm}
+\alias{fm_diameter.fm_mesh_3d}
 \title{Diameter bound for a geometric object}
 \usage{
 fm_diameter(x, ...)
@@ -24,11 +25,13 @@ fm_diameter(x, ...)
 
 \method{fm_diameter}{fm_lattice_2d}(x, ...)
 
-\method{fm_diameter}{fm_segm}(x, ...)
+\method{fm_diameter}{fm_mesh_1d}(x, ...)
 
 \method{fm_diameter}{fm_mesh_2d}(x, ...)
 
-\method{fm_diameter}{fm_mesh_1d}(x, ...)
+\method{fm_diameter}{fm_segm}(x, ...)
+
+\method{fm_diameter}{fm_mesh_3d}(x, ...)
 }
 \arguments{
 \item{x}{A point set as an \eqn{n\times d}{n x d} matrix, or an
