@@ -21,20 +21,24 @@ fmexample <- list(
 
 # usethis::use_data(fmexample, overwrite = TRUE)
 
-mesh_loc <- rbind(c(0, 0, 0),
-                  c(0, 1, 0),
-                  c(0, 1, 1),
-                  c(0, 0, 1),
-                  c(1, 0, 1),
-                  c(1, 0, 0),
-                  c(1, 1, 0),
-                  c(1, 1, 1))
-mesh_tv <- rbind(c(1, 2, 8, 3),
-                 c(1, 3, 8, 4),
-                 c(1, 4, 8, 5),
-                 c(1, 5, 8, 6),
-                 c(1, 6, 8, 7),
-                 c(1, 7, 8, 2))
+mesh_loc <- rbind(
+  c(0, 0, 0),
+  c(0, 1, 0),
+  c(0, 1, 1),
+  c(0, 0, 1),
+  c(1, 0, 1),
+  c(1, 0, 0),
+  c(1, 1, 0),
+  c(1, 1, 1)
+)
+mesh_tv <- rbind(
+  c(1, 2, 8, 3),
+  c(1, 3, 8, 4),
+  c(1, 4, 8, 5),
+  c(1, 5, 8, 6),
+  c(1, 6, 8, 7),
+  c(1, 7, 8, 2)
+)
 mesh <- fm_mesh_3d(loc = mesh_loc, tv = mesh_tv)
 
 set.seed(1234L)
