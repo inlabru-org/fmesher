@@ -191,3 +191,20 @@ as.triangles3d.fm_mesh_3d <- function(obj, subset = NULL, ...) {
   loc <- obj$loc[t(tv), ]
   loc
 }
+
+#' @describeIn fm_as_mesh_2d Construct a 2D mesh of the boundary of a 3D mesh
+#' @export
+fm_as_mesh_2d.fm_mesh_3d <- function(x, ...) {
+  tv <- rbind(
+    x$graph$tv[, x$graph$mesh_local$graph$tv[1, ], drop = FALSE],
+    x$graph$tv[, x$graph$mesh_local$graph$tv[2, ], drop = FALSE],
+    x$graph$tv[, x$graph$mesh_local$graph$tv[3, ], drop = FALSE],
+    x$graph$tv[, x$graph$mesh_local$graph$tv[4, ], drop = FALSE]
+  )
+  keep <- is.na(x$graph$tt)
+  tv <- tv[as.vector(keep), , drop = FALSE]
+  fm_rcdt_2d(
+    loc = x$loc,
+    tv = tv
+  )
+}
