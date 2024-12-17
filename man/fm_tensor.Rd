@@ -51,6 +51,7 @@ Other object creation and conversion:
 \code{\link{fm_as_lattice_2d}()},
 \code{\link{fm_as_mesh_1d}()},
 \code{\link{fm_as_mesh_2d}()},
+\code{\link{fm_as_mesh_3d}()},
 \code{\link{fm_as_segm}()},
 \code{\link{fm_as_sfc}()},
 \code{\link{fm_as_tensor}()},
