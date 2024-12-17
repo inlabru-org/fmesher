@@ -256,13 +256,15 @@ print.fm_mesh_3d <- function(x, ..., digits = NULL, verbose = FALSE) {
   cat("  Manifold:\t", ret$manifold, "\n", sep = "")
   nV <- ret$nV
   nE <- as.integer(sum(x$graph$vv) / 2L)
-  nF <- NA
+  nF <- nrow(x$graph$tv) * 4L - sum(!is.na(x$graph$tt)) / 2L
   nC <- ret$nT
-  cat("  V / E / T / Tet:\t", as.character(ret$nV), " / ", sep = "")
-  cat(as.character(nE), " / ", sep = "")
-  cat("?", " / ", sep = "")
-  cat(as.character(ret$nT), "\n", sep = "")
-  cat("  Euler char.:\t", as.character(nC - nF + nE - nV), sep = "")
+  cat(
+    "  V / E / T / Tet:\t",
+    paste0(c(nV, nE, nF, nC), collapse = " / ", sep = ""),
+    "\n",
+    sep = ""
+  )
+  cat("  Euler char.:\t", as.character(nV - nE + nF - nC), sep = "")
   cat("\n  ", sep = "")
   print(fm_bbox(x), digits = digits)
   cat("  Basis d.o.f.:\t", fm_dof(x), "\n", sep = "")
