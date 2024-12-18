@@ -111,6 +111,7 @@ Mesh3 &Mesh3::rebuildTT() {
   TriTet_Type TriTet;
   TetTet_.rows(nT());
   /* Pass 1: */
+  FMLOG("Pass 1" << std::endl);
   for (t = 0; t < (int)nT(); t++) {
     const Int4 &TVt = TetVtx_[t];
     Dart3 d(*this, t);
@@ -152,16 +153,20 @@ Mesh3 &Mesh3::rebuildTT() {
   }
 
   /* Pass 2: */
+  FMLOG("Pass 2" << std::endl);
   for (t = 0; t < (int)nT(); t++) {
     const Int4 &TVt = TetVtx_[t];
     Dart3 d(*this, t);
     for (loop = 0; loop < 4; ++loop) {
-      if (TetTet_[t][loop] >= 0)
+      FMLOG("Looking for tetra opposite to " << d << std::endl);
+      if (TetTet_[t][d.tri().t()] >= 0) {
+        d.orbit3();
         continue;
+      }
       const Int3 &local_TV = M_local_.TV(d.tri().t());
       T0 = Int3(TVt[ local_TV[0] ],
                 TVt[ local_TV[1] ],
-                   TVt[local_TV[2]]);
+                TVt[ local_TV[2] ]);
       const Int4 &TVt = TetVtx_[t];
       for (vi = 0; vi < 3; ++vi) {
         T1 = Int3(
@@ -177,6 +182,14 @@ Mesh3 &Mesh3::rebuildTT() {
       if (Ti != TriTet.end()) {
         /* Found neighbour */
         FMLOG("rebuildTT: Pass 2, Found neighbour" << std::endl);
+        FMLOG("Looked for reverse of T0 = "<< T0[0] << "," << T0[1] << "," << T0[2] << std::endl);
+        FMLOG("Found T1 = "<< T1[0] << "," << T1[1] << "," << T1[2] << std::endl);
+        FMLOG("Found tetra = " << Ti->second << std::endl);
+        FMLOG("Found mapping from = "
+                << Ti->first[0] << ","
+                << Ti->first[1] << ","
+                << Ti->first[2] << ","
+                << std::endl);
         TetTet_(t)[d.tri().t()] = Ti->second;
       }
       d.orbit3();
@@ -354,7 +367,7 @@ void Mesh3::check_VT_mapping_consistency() const {
 }
 
 Mesh3 &Mesh3::rebuildTTi() {
-  int t, vi, v, t2, vi2;
+  int t, vi, t2, vi2;
   if (!use_TTi_) {
     TetTeti_.clear();
     return *this;
@@ -365,14 +378,18 @@ Mesh3 &Mesh3::rebuildTTi() {
   TetTeti_.capacity(TetVtx_.capacity());
   for (t = 0; t < (int)nT(); t++) {
     for (vi = 0; vi < 4; vi++) {
-      v = TetVtx_[t][vi];
       t2 = TetTet_[t][vi];
       if (t2 >= 0) {
-        for (vi2 = 0; (vi2 < 4) && (TetVtx_[t2][vi2] != v); vi2++) {
+        FMLOG("Connecting tetra " << t << " index " << vi << " and tetra " << t2 << std::endl);
+        FMLOG(Dart3(*this, t) << std::endl);
+        FMLOG(Dart3(*this, t2) << std::endl);
+        for (vi2 = 0; (vi2 < 4) && (TetTet_[t2][vi2] != t); vi2++) {
         }
+        FMLOG("Found index " << vi2 << std::endl);
         if (vi2 < 4) {
           TetTeti_(t)[vi] = vi2;
         } else {
+          TetTeti_(t)[vi] = -1;
           /* Error! This should never happen! */
           FMLOG("ERROR\n");
         }

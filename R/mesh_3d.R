@@ -156,3 +156,55 @@ fm_as_mesh_3d.fm_mesh_3d <- function(x, ...) {
   #  class(x) <- c("fm_mesh_3d", setdiff(class(x), "fm_mesh_3d"))
   x
 }
+
+
+#' @title Convert a 3D mesh to a 3D rgl triangulation
+#' @rawNamespace S3method(rgl::as.triangles3d, fm_mesh_3d)
+#' @description Extracts a matrix of coordinates of triangles, suitable for
+#'   passing to `rgl::triangles3d()`.
+#' @param obj An `fm_mesh_3d` object
+#' @param subset Character string specifying which triangles to extract. Either
+#'   "all" (default) or "boundary".
+#' @param \dots Currently unused
+#' @returns A 3-column matrix of coordinates of triangles, suitable for
+#'   passing to `rgl::triangles3d()`.
+#' @examplesIf interactive()
+#' if (requireNamespace("geometry", quietly = TRUE) &&
+#'   requireNamespace("rgl", quietly = TRUE)) {
+#'   (m <- fm_delaunay_3d(matrix(rnorm(30), 10, 3)))
+#'   rgl::open3d()
+#'   rgl::triangles3d(as.triangles3d(m, "boundary"), col = "blue")
+#' }
+#'
+as.triangles3d.fm_mesh_3d <- function(obj, subset = NULL, ...) {
+  subset <- match.arg(subset, c("all", "boundary"))
+  tv <- rbind(
+    obj$graph$tv[, obj$graph$mesh_local$graph$tv[1, ], drop = FALSE],
+    obj$graph$tv[, obj$graph$mesh_local$graph$tv[2, ], drop = FALSE],
+    obj$graph$tv[, obj$graph$mesh_local$graph$tv[3, ], drop = FALSE],
+    obj$graph$tv[, obj$graph$mesh_local$graph$tv[4, ], drop = FALSE]
+  )
+  if (identical(subset, "boundary")) {
+    keep <- is.na(obj$graph$tt)
+    tv <- tv[as.vector(keep), , drop = FALSE]
+  }
+  loc <- obj$loc[t(tv), ]
+  loc
+}
+
+#' @describeIn fm_as_mesh_2d Construct a 2D mesh of the boundary of a 3D mesh
+#' @export
+fm_as_mesh_2d.fm_mesh_3d <- function(x, ...) {
+  tv <- rbind(
+    x$graph$tv[, x$graph$mesh_local$graph$tv[1, ], drop = FALSE],
+    x$graph$tv[, x$graph$mesh_local$graph$tv[2, ], drop = FALSE],
+    x$graph$tv[, x$graph$mesh_local$graph$tv[3, ], drop = FALSE],
+    x$graph$tv[, x$graph$mesh_local$graph$tv[4, ], drop = FALSE]
+  )
+  keep <- is.na(x$graph$tt)
+  tv <- tv[as.vector(keep), , drop = FALSE]
+  fm_rcdt_2d(
+    loc = x$loc,
+    tv = tv
+  )
+}
