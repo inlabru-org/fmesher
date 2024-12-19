@@ -257,10 +257,9 @@ private:
 public:
   UserInterruptChecker(int freq) : frequency(freq), counter(0) {};
   void check() {
-    if (counter % frequency == 0) {
+    if (++counter == frequency) {
       Rcpp::checkUserInterrupt();
     }
-    counter++;
   };
 };
 
