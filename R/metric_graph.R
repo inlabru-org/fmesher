@@ -76,6 +76,8 @@ NULL
 
 #' @describeIn fm_MG Associate a `metric_graph` object with class `fm_MGG` or
 #' `fm_MGM`.
+#' @param MGG indicator for `fm_MGG` (TRUE) or `fm_MGM` (FALSE), or NULL
+#' (default) to auto-determine based on the object contents.
 #' @export
 fm_as_MG <- function(x, MGG = NULL) {
   stopifnot(inherits(x, "metric_graph"))
@@ -191,7 +193,6 @@ fm_bary.fm_MGG <- function(mesh,
 #' @export
 fm_bary.fm_MGM <- function(mesh,
                            loc,
-                           MGG = TRUE,
                            ...) {
   mesh <- fm_as_MG(mesh, MGG = FALSE)
   if (inherits(loc, "fm_bary")) {

@@ -27,7 +27,7 @@ fm_as_MG(x, MGG = NULL)
 
 \method{fm_bary}{fm_MGG}(mesh, loc, ...)
 
-\method{fm_bary}{fm_MGM}(mesh, loc, MGG = TRUE, ...)
+\method{fm_bary}{fm_MGM}(mesh, loc, ...)
 
 \method{fm_bary_simplex}{metric_graph}(mesh, bary = NULL, ...)
 
