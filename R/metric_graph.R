@@ -134,9 +134,9 @@ fm_bary.metric_graph <- function(mesh,
       if (MGG) {
         bary_coord <- loc
       } else {
-        #bary_coord <- MGG_to_MGM(loc, mesh)
+        # bary_coord <- MGG_to_MGM(loc, mesh)
         bary_coord <- as_MGM(mesh$.__enclos_env__$private$PtE_to_mesh(
-          cbind(loc$index, loc$where[,2])
+          cbind(loc$index, loc$where[, 2])
         ))
       }
     } else if (inherits(loc, "mesh")) {
@@ -153,22 +153,22 @@ fm_bary.metric_graph <- function(mesh,
     res <- Euclidean_to_graph(sf::st_coordinates(loc), mesh)
     bary_coord <- res # res$bary[res$ok, ]
     if (!MGG) {
-      #bary_coord <- MGG_to_MGM(bary_coord, mesh)
+      # bary_coord <- MGG_to_MGM(bary_coord, mesh)
       bary_coord <- as_MGM(mesh$.__enclos_env__$private$PtE_to_mesh(
-        cbind(bary_coord$index, bary_coord$where[,2])
+        cbind(bary_coord$index, bary_coord$where[, 2])
       ))
     }
   } else {
     # Or should it only call as_MGG/as_MGM depending on "MGG"?
-    #cat("loc is interpreted as Euclidean coordinates")
+    # cat("loc is interpreted as Euclidean coordinates")
     res <- Euclidean_to_graph(loc, mesh)
     if (MGG) {
       bary_coord <- res # res$bary
     } else {
-      #bary_coord <- MGG_to_MGM(res, mesh) # MGG_to_MGM(res$bary, mesh)
+      # bary_coord <- MGG_to_MGM(res, mesh) # MGG_to_MGM(res$bary, mesh)
       bary_coord <- as_MGG(mesh$.__enclos_env__$private$PtE_to_mesh(
-        cbind(res$index, res$where[,2])
-        ))
+        cbind(res$index, res$where[, 2])
+      ))
     }
   }
   return(bary_coord)
@@ -283,7 +283,7 @@ fm_int.metric_graph <- function(domain,
       # )
       loc_mid_MGM <- domain$.__enclos_env__$private$PtE_to_mesh(
         cbind(interedge$start$index, loc_mid)
-        )
+      )
       loc_mid_MGM <- as_MGM(loc_mid_MGM)
       # get the edge lengths for each mesh
       weight_mid <- domain$mesh$h_e[loc_mid_MGM$index]
@@ -458,9 +458,10 @@ MGG_to_MGM <- function(coord, graph) {
       # edge_MGG_o <- edge_MGG_o[!dplyr::duplicated(edge_MGG_o$where[,2]), ]
       # find the mesh point index where coord[i,] is next to
       index_on_edge <- which.max((edge_MGG_o$where[, 2] - as.numeric(coord$where[i, 2])) >= 0)
-      if(index_on_edge)
-      # coord[i, ] is between these two mesh locs
-      mesh_indices <- which(ids)[(ordering[c(index_on_edge - 1, index_on_edge)])]
+      if (index_on_edge) {
+        # coord[i, ] is between these two mesh locs
+        mesh_indices <- which(ids)[(ordering[c(index_on_edge - 1, index_on_edge)])]
+      }
       index_MGM <- which.max((graph$mesh$E[, 1] == mesh_indices[1]) &
         (graph$mesh$E[, 2] == mesh_indices[2]))
       mesh_h_e <- mesh_edge_len[index_MGM]
@@ -596,12 +597,12 @@ as_MGM <- function(loc, graph = NULL) {
     if (is.null(graph)) {
       stop("Graph must be provided to convert from MGG to MGM.")
     }
-    res <- (graph$.__enclos_env__$private$PtE_to_mesh(cbind(loc$index, loc$where[,2]))) #MGG_to_MGM(coord = loc, graph = graph)
+    res <- (graph$.__enclos_env__$private$PtE_to_mesh(cbind(loc$index, loc$where[, 2]))) # MGG_to_MGM(coord = loc, graph = graph)
     res <- tibble::tibble(
-      index = res[,1],
+      index = res[, 1],
       where = cbind(
-        1 - as.numeric(res[,2]),
-        as.numeric(res[,2])
+        1 - as.numeric(res[, 2]),
+        as.numeric(res[, 2])
       )
     )
   }
@@ -1075,8 +1076,10 @@ geom_path_to_path_MGG <- function(geom_path, graph) {
             # candidates for the start
             edge_nodes <- graph$E[edge_index, ]
             if (!any(edge_nodes == start_vertex)) {
-              stop(paste0("Unclear geom_path: Not directly connected points for line",
-                          k," and points ", i," and ", i+1, "."))
+              stop(paste0(
+                "Unclear geom_path: Not directly connected points for line",
+                k, " and points ", i, " and ", i + 1, "."
+              ))
             }
             # we have a valid start
             if (edge_nodes[1L] == start_vertex) {
@@ -1096,8 +1099,10 @@ geom_path_to_path_MGG <- function(geom_path, graph) {
           edge_index <- line_MGG$index[i]
           edge_nodes <- graph$E[edge_index, ]
           if (!any(edge_nodes == end_vertex)) {
-            stop(paste0("Unclear geom_path: Not directly connected points for line",
-                 k," and points ", i," and ", i+1, "."))
+            stop(paste0(
+              "Unclear geom_path: Not directly connected points for line",
+              k, " and points ", i, " and ", i + 1, "."
+            ))
           }
           if (edge_nodes[1L] == end_vertex) {
             j <- j + 1
