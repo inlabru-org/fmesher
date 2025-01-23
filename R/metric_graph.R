@@ -23,7 +23,6 @@ bru_get_mapper.rspde_metric_graph <- function(model, ...) {
   )
 }
 
-
 #' @title bru_mapper for the metric_graph class
 #' @param mesh a metric_graph object
 #' @param n_rep number of components in linear predictor
@@ -135,7 +134,10 @@ fm_bary.metric_graph <- function(mesh,
       if (MGG) {
         bary_coord <- loc
       } else {
-        bary_coord <- MGG_to_MGM(loc, mesh)
+        #bary_coord <- MGG_to_MGM(loc, mesh)
+        bary_coord <- as_MGM(mesh$.__enclos_env__$private$PtE_to_mesh(
+          cbind(loc$index, loc$where[,2])
+        ))
       }
     } else if (inherits(loc, "mesh")) {
       if (MGG) {
@@ -151,7 +153,10 @@ fm_bary.metric_graph <- function(mesh,
     res <- Euclidean_to_graph(sf::st_coordinates(loc), mesh)
     bary_coord <- res # res$bary[res$ok, ]
     if (!MGG) {
-      bary_coord <- MGG_to_MGM(bary_coord, mesh)
+      #bary_coord <- MGG_to_MGM(bary_coord, mesh)
+      bary_coord <- as_MGM(mesh$.__enclos_env__$private$PtE_to_mesh(
+        cbind(bary_coord$index, bary_coord$where[,2])
+      ))
     }
   } else {
     # Or should it only call as_MGG/as_MGM depending on "MGG"?
@@ -160,7 +165,10 @@ fm_bary.metric_graph <- function(mesh,
     if (MGG) {
       bary_coord <- res # res$bary
     } else {
-      bary_coord <- MGG_to_MGM(res, mesh) # MGG_to_MGM(res$bary, mesh)
+      #bary_coord <- MGG_to_MGM(res, mesh) # MGG_to_MGM(res$bary, mesh)
+      bary_coord <- as_MGG(mesh$.__enclos_env__$private$PtE_to_mesh(
+        cbind(res$index, res$where[,2])
+        ))
     }
   }
   return(bary_coord)
@@ -269,10 +277,14 @@ fm_int.metric_graph <- function(domain,
         inside <- (loc_mid >= interedge$start$where[1, 2]) & (loc_mid <= interedge$end$where[1, 2])
       }
       # convert to MGM (call outside of for-loop and only get the desired rows in this step)
-      loc_mid_MGM <- MGG_to_MGM(
-        coord = as_MGG(cbind(interedge$start$index, loc_mid)),
-        graph = domain
-      )
+      # loc_mid_MGM <- MGG_to_MGM(
+      #   coord = as_MGG(cbind(interedge$start$index, loc_mid)),
+      #   graph = domain
+      # )
+      loc_mid_MGM <- domain$.__enclos_env__$private$PtE_to_mesh(
+        cbind(interedge$start$index, loc_mid)
+        )
+      loc_mid_MGM <- as_MGM(loc_mid_MGM)
       # get the edge lengths for each mesh
       weight_mid <- domain$mesh$h_e[loc_mid_MGM$index]
       weight_mid[!inside] <- 0.0
@@ -438,9 +450,15 @@ MGG_to_MGM <- function(coord, graph) {
     } else {
       # order the mesh_MGG locations:
       ordering <- order(edge_MGG$where[, 2])
-      edge_MGG_o <- edge_MGG[ordering, ]
+      edge_MGG_o <- edge_MGG[ordering, ] # unique(c(0, edge_MGG[ordering, ], 1)) # EDIT 21.01 from: edge_MGG[ordering, ]
+      # edge_MGG_o <- rbind(tibble::tibble(index=coord$index[i], where=cbind(1,0)),
+      #                     edge_MGG[ordering, ],
+      #                     tibble::tibble(index=coord$index[i], where=cbind(0,1))) #these are ordered #edge_MGG[ordering, ]
+      # #remove duplicates:
+      # edge_MGG_o <- edge_MGG_o[!dplyr::duplicated(edge_MGG_o$where[,2]), ]
       # find the mesh point index where coord[i,] is next to
       index_on_edge <- which.max((edge_MGG_o$where[, 2] - as.numeric(coord$where[i, 2])) >= 0)
+      if(index_on_edge)
       # coord[i, ] is between these two mesh locs
       mesh_indices <- which(ids)[(ordering[c(index_on_edge - 1, index_on_edge)])]
       index_MGM <- which.max((graph$mesh$E[, 1] == mesh_indices[1]) &
@@ -578,7 +596,14 @@ as_MGM <- function(loc, graph = NULL) {
     if (is.null(graph)) {
       stop("Graph must be provided to convert from MGG to MGM.")
     }
-    return(MGG_to_MGM(coord = loc, graph = graph))
+    res <- (graph$.__enclos_env__$private$PtE_to_mesh(cbind(loc$index, loc$where[,2]))) #MGG_to_MGM(coord = loc, graph = graph)
+    res <- tibble::tibble(
+      index = res[,1],
+      where = cbind(
+        1 - as.numeric(res[,2]),
+        as.numeric(res[,2])
+      )
+    )
   }
   if (is.matrix(loc)) {
     res <- tibble::tibble(
