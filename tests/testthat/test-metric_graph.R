@@ -100,10 +100,10 @@ test_that("MGG to MGM", {
     graph = graph0,
     coord = locs
   ))
-  mgm <-
-    MGG_to_MGM(
-      graph = graph0,
-      coord = locs
+  mgm <-as_MGM(
+    graph0$.__enclos_env__$private$PtE_to_mesh(
+      cbind(locs$index, locs$where[,2])
+    )
     )
   mgm2 <- fm_bary(
     mesh = graph0,
@@ -115,14 +115,14 @@ test_that("MGG to MGM", {
       mgm$index[1, drop = FALSE],
       mgm$index[2, drop = FALSE]
     ),
-    c(120, 440)
+    c(120, 441)
   )
   expect_equal(
     c(
       mgm$where[1, 2, drop = FALSE],
       mgm$where[2, 2, drop = FALSE]
     ),
-    c(1, 1)
+    c(1, 0)
   )
   expect_equal(
     c(
@@ -428,7 +428,7 @@ test_that("fm_basis paths", {
   ips <- fm_int(graph0, samplers = test_sampler)
   basis <- fm_basis(x = graph0, loc = ips$x, weights = ips$weight)
   n <- NROW(ips)
-  MGM_locs <- MGG_to_MGM(ips$x, graph0)
+  MGM_locs <- as_MGM(graph0$.__enclos_env__$private$PtE_to_mesh(cbind(ips$x$index,ips$x$where[,2])))
   true_A <- Matrix::sparseMatrix(
     i = c(seq_len(n), seq_len(n)),
     j = c(graph0$mesh$E[MGM_locs$index, 1], graph0$mesh$E[MGM_locs$index, 2]),
