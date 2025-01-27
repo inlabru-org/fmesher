@@ -10,7 +10,18 @@ fm_qinv(A)
 \item{A}{A symmetric positive definite matrix}
 }
 \description{
-Compute sparse partial matrix inverse. Requires special build of the
-\code{fmesher} package.
+Compute sparse partial matrix inverse. Slow R implementation of the Takahashi
+recursion method, unless a special build of the \code{fmesher} package is used.
+}
+\examples{
+A <- Matrix::Matrix(
+  c(2, -1, 0, 0, -1, 2, -1, 0, 0, -1, 2, -1, 0, 0, -1, 2),
+  4,
+  4
+)
+(S <- fm_qinv(A))
+(S2 <- solve(A))
+c(sum((S - Matrix::t(S))^2), sum((S2 - Matrix::t(S2))^2))
+sum((S - S2)[S != 0]^2)
 }
 \keyword{internal}

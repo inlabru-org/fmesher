@@ -216,6 +216,12 @@ df <- tribble(
     " `inla.qinv()`, but currently (version 0.1.1) only",
     " by a 'brute force' method."
   ),
+  "inla.qinv", "fm_qinv()",
+  paste0(
+    "Produce sparse inverses like",
+    " `inla.qinv()`, but currently (version 0.2.0.9010)",
+    " by an R implementation."
+  ),
   " ", "fm_sample()", "Basic sampling method, like `inla.qsample()`"
 )
 df <- convert_fun_links(df)

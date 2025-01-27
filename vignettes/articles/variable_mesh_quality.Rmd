@@ -38,8 +38,6 @@ As long as any triangle does not fulfil the criteria, a new mesh point is added 
 A basic mesh with regular interior triangles can be created as follows:
 
 ```{r label1, echo=TRUE, message=FALSE}
-# See INLA installation instructions on https://www.r-inla.org/download-install
-library(INLA) # Only needed for inla.mesh.assessment()
 library(inlabru)
 library(ggplot2)
 library(fmesher)
@@ -137,10 +135,10 @@ ggplot() +
   coord_equal()
 ```
 
-The `inla.mesh.assessment` function may also provide some insights:
+The `fm_assess` function may also provide some insights:
 
 ```{r echo=TRUE, message=FALSE, size="small"}
-out <- inla.mesh.assessment(mesh5,
+out <- fm_assess(mesh5,
   spatial.range = 5,
   alpha = 2,
   dims = c(200, 200)
@@ -150,8 +148,7 @@ print(names(out))
 
 ```{r echo=TRUE, message=FALSE, size="small"}
 ggplot() +
-  gg(out, aes(color = edge.len)) +
-  coord_equal()
+  gg(out, aes(color = edge.len))
 ```
 
 A "good" mesh should have `sd.dev` close to 1; this indicates that the nominal variance specified by the continuous domain model and the variance of the discretise model are similar.
@@ -159,7 +156,6 @@ A "good" mesh should have `sd.dev` close to 1; this indicates that the nominal v
 ```{r echo=TRUE, message=FALSE, size="small"}
 ggplot() +
   gg(out, aes(color = sd.dev)) +
-  coord_equal() +
   scale_color_gradient(limits = range(out$sd.dev, na.rm = TRUE))
 ```
 
@@ -179,13 +175,12 @@ mesh6 <- fm_rcdt_2d_inla(
     segm = qual_bnd(bnd$loc)
   )
 )
-out6 <- inla.mesh.assessment(mesh6,
+out6 <- fm_assess(mesh6,
   spatial.range = 5,
   alpha = 2,
   dims = c(200, 200)
 )
 ggplot() +
   gg(out6, aes(color = sd.dev)) +
-  coord_equal() +
   scale_color_gradient(limits = range(out$sd.dev, na.rm = TRUE))
 ```
