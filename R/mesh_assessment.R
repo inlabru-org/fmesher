@@ -8,7 +8,8 @@
 #' sessions.
 #'
 #' @param mesh An [fm_mesh_2d] object
-#' @param spatial.range numeric; the spatial range parameter to use for the assessment
+#' @param spatial.range numeric; the spatial range parameter to use for the
+#'   assessment
 #' @param alpha numeric; A valid [fm_matern_precision()] `alpha` parameter
 #' @param dims 2-numeric; the grid size
 #' @returns An `sf` object with gridded mesh assessment information
@@ -52,15 +53,19 @@ fm_assess <- function(mesh, spatial.range, alpha = 2,
     fm_evaluator(mesh, dims = dims)
   }
   mesh.spde <- function(mesh, alpha) {
-      list(
-          mesh = mesh,
-          alpha = alpha,
-          prior.range = c(1, 0.5),
-          prior.sigma = c(1, 0.5)
-      )
+    list(
+      mesh = mesh,
+      alpha = alpha,
+      prior.range = c(1, 0.5),
+      prior.sigma = c(1, 0.5)
+    )
   }
   mesh.Q <- function(spde, spatial.range) {
-    fm_matern_precision(spde$mesh, alpha = spde$alpha, rho = spatial.range, sigma = 1)
+    fm_matern_precision(spde$mesh,
+      alpha = spde$alpha,
+      rho = spatial.range,
+      sigma = 1
+    )
   }
   mesh.S <- function(Q) {
     fm_qinv(Q)

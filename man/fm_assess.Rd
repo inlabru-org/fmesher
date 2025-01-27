@@ -9,7 +9,8 @@ fm_assess(mesh, spatial.range, alpha = 2, dims = c(500, 500))
 \arguments{
 \item{mesh}{An \link{fm_mesh_2d} object}
 
-\item{spatial.range}{numeric; the spatial range parameter to use for the assessment}
+\item{spatial.range}{numeric; the spatial range parameter to use for the
+assessment}
 
 \item{alpha}{numeric; A valid \code{\link[=fm_matern_precision]{fm_matern_precision()}} \code{alpha} parameter}
 
