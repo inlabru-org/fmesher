@@ -21,6 +21,8 @@ navbar:
         href: articles/devel_flow.html
       - text: Conversion from legacy INLA package methods
         href: articles/inla_conversion.html
+      - text: Spatially varying mesh quality
+        href: articles/variable_mesh_quality.html
 
 
 reference:
