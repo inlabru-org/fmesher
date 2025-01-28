@@ -39,25 +39,24 @@ fmesher_qinv_R <- function(A) {
 
   S <- A
   for (i in rev(seq_len(n))) {
-    if (i < n) {
-      jj <- which(LP$L1[(i + 1L):n, i] != 0)
-      if (length(jj)) {
-        jj <- jj + i
-      }
+    if (i == n) {
+      S[i, i] <- 1 / LP$D[i, i]
     } else {
-      jj <- integer(0)
-    }
-    for (j in c(rev(jj), i)) {
-      if (i == j) {
-        S[i, i] <- 1 / LP$D[i, i]
-        if (i < n) {
-          S[i, i] <- S[i, i] - sum(LP$L1[jj, i] * S[jj, i])
-        }
+      jj <- sort(unique(
+        c(
+          which(LP$L1[(i + 1L):n, i] != 0),
+          which(S[i, (i + 1L):n] != 0)
+        ))
+      )
+      if (length(jj) > 0) {
+        jj <- jj + i
+        Lvals <- LP$L1[jj, i]
+        result <- -as.vector(Lvals %*% S[jj, jj])
+        S[i, jj] <- result
+        S[jj, i] <- result
+        S[i, i] <- 1 / LP$D[i, i] - as.vector(Lvals %*% S[jj, i])
       } else {
-        if (i < n) {
-          S[i, j] <- -sum(LP$L1[jj, i] * S[jj, j])
-          S[j, i] <- S[i, j]
-        }
+        S[i, i] <- 1 / LP$D[i, i]
       }
     }
   }
