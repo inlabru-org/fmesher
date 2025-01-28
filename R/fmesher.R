@@ -1,11 +1,13 @@
 #' Sparse partial inverse
 #'
-#' Compute sparse partial matrix inverse. Slow R implementation of the Takahashi
-#' recursion method, unless a special build of the `fmesher` package is used.
+#' Compute sparse partial matrix inverse. As of `0.2.0.9010`, an R
+#' implementation of the Takahashi recursion method, unless a special build of
+#' the `fmesher` package is used.
 #'
-#' @param A A symmetric positive definite matrix
+#' @param A A sparse symmetric positive definite matrix
+#' @returns A sparse symmetric matrix, with the elements of the inverse of `A`
+#' for the non-zero pattern of `A` plus potential Cholesky in-fill locations.
 #'
-#' @keywords internal
 #' @export
 #' @examples
 #' A <- Matrix::Matrix(
@@ -13,9 +15,13 @@
 #'   4,
 #'   4
 #' )
+#' # Partial inverse:
 #' (S <- fm_qinv(A))
+#' # Full inverse (not guaranteed to be symmetric):
 #' (S2 <- solve(A))
+#' # Matrix symmetry:
 #' c(sum((S - Matrix::t(S))^2), sum((S2 - Matrix::t(S2))^2))
+#' # Accuracy (not that S2 is non-symmetric, and S may be more accurate):
 #' sum((S - S2)[S != 0]^2)
 fm_qinv <- function(A) {
   A_C <- fm_as_dgCMatrix(A)
