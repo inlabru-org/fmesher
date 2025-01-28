@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9009</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9010</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -26,6 +26,7 @@
     <li><a class="dropdown-item" href="../articles/fmesher_library.html">The fmesher C++ library</a></li>
     <li><a class="dropdown-item" href="../articles/devel_flow.html">Devel: Internal algorithm flowcharts</a></li>
     <li><a class="dropdown-item" href="../articles/inla_conversion.html">Conversion from legacy INLA package methods</a></li>
+    <li><a class="dropdown-item" href="../articles/variable_mesh_quality.html">Spatially varying mesh quality</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -56,6 +57,8 @@
 <li>Add <code><a href="../reference/fm_mesh_3d.html">fm_mesh_3d()</a></code> for 3D meshes (version <code>0.2.0.9008</code>)</li>
 <li>Fix <code><a href="../reference/fm_bbox.html">fm_bbox.fm_mesh_2d()</a></code> bug for <code>"S2"</code> and <code>"M2"</code> manifold meshes (version <code>0.2.0.9008</code>)</li>
 <li>Fix bug in <code><a href="../reference/fm_rcdt_2d.html">fm_rcdt_2d_inla()</a></code> that lead to ignoring the <code>quality.spec</code> argument (version <code>0.2.0.9009</code>)</li>
+<li>Add <code><a href="../reference/fm_assess.html">fm_assess()</a></code> method, replicating the old <code>INLA::inla.mesh.assessment()</code> method (version <code>0.2.0.9010</code>)</li>
+<li>Add R implementation of <code><a href="../reference/fm_qinv.html">fm_qinv()</a></code> for computing sparse matrix partial inverses (version <code>0.2.0.9010</code>)</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.0" id="fmesher-020">fmesher 0.2.0<a class="anchor" aria-label="anchor" href="#fmesher-020"></a></h2><p class="text-muted">CRAN release: 2024-11-06</p>
