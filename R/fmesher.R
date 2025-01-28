@@ -52,8 +52,8 @@ fmesher_qinv_R <- function(A) {
         c(
           which(LP$L1[(i + 1L):n, i] != 0),
           which(S[i, (i + 1L):n] != 0)
-        ))
-      )
+        )
+      ))
       if (length(jj) > 0) {
         jj <- jj + i
         Lvals <- LP$L1[jj, i]
