@@ -65,6 +65,7 @@ reference:
   - starts_with("fm_fem")
   - starts_with("fm_gmrf")
   - starts_with("fm_assess")
+  - starts_with("fm_qinv")
 - title: "Matrix helper functions"
   desc: "Functions for handling matrix constructions"
   contents:

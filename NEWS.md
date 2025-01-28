@@ -22,6 +22,10 @@
 * Fix `fm_bbox.fm_mesh_2d()` bug for `"S2"` and `"M2"` manifold meshes (version `0.2.0.9008`)
 * Fix bug in `fm_rcdt_2d_inla()` that lead to ignoring the `quality.spec` argument
   (version `0.2.0.9009`)
+* Add `fm_assess()` method, replicating the old `INLA::inla.mesh.assessment()`
+  method (version `0.2.0.9010`)
+* Add R implementation of `fm_qinv()` for computing sparse matrix partial
+  inverses (version `0.2.0.9010`)
 
 # fmesher 0.2.0
 
