@@ -142,7 +142,7 @@ int TetraLocator::locate(const Point &s, Double4 &b) const {
       }
     }
   }
-  FMLOG_("Point not found, s=" << s << std::endl);
+  FMLOG("Point not found, s=" << s << std::endl);
   return -1;
 }
 

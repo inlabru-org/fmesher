@@ -26,7 +26,7 @@
 #'
 #' @export
 fm_assess <- function(mesh, spatial.range, alpha = 2,
-                      dims = c(500, 500)) {
+                      dims = NULL) {
   mesh.edgelengths <- function(mesh, proj) {
     i <- c()
     val <- c()
@@ -73,7 +73,7 @@ fm_assess <- function(mesh, spatial.range, alpha = 2,
   mesh.sd <- function(proj, S) {
     v <- Matrix::rowSums(proj$proj$A * (proj$proj$A %*% S))
     v[!proj$proj$ok] <- NA
-    matrix(v^0.5, length(proj$x), length(proj$y))
+    array(v^0.5, dim = proj$lattice$dims)
   }
   mesh.sd.deviation.approx <- function(proj, S, sd0) {
     val <- proj$proj$A %*% (
@@ -81,18 +81,22 @@ fm_assess <- function(mesh, spatial.range, alpha = 2,
         as.vector(sd0)[proj$proj$ok]) /
         Matrix::colSums(proj$proj$A[proj$proj$ok, , drop = FALSE]))
     val[!proj$proj$ok] <- NA
-    matrix(
+    array(
       1 + (as.vector(sd0) - val),
-      length(proj$x), length(proj$y)
+      dim = proj$lattice$dims
     )
   }
   mesh.sd.bound <- function(proj, S) {
     fm_evaluate(proj, field = Matrix::diag(S)^0.5)
   }
 
-
   if (!fm_manifold(mesh, "R2")) {
     warning("fm_assess has only been tested on flat 2D manifolds.")
+  }
+
+  d <- fm_manifold_dim(mesh)
+  if (is.null(dims)) {
+    dims <- rep(ceiling(1e5^(1 / d)), d)
   }
 
   spde <- mesh.spde(mesh = mesh, alpha = alpha)
@@ -104,14 +108,24 @@ fm_assess <- function(mesh, spatial.range, alpha = 2,
   edgelengths <- mesh.edgelengths(mesh, proj)
   sd.bound <- mesh.sd.bound(proj, S)
 
-  out <- data.frame(
-    x = proj$lattice$loc[, 1],
-    y = proj$lattice$loc[, 2],
-    sd = as.vector(sd0),
-    sd.dev = as.vector(sd.deviation),
-    sd.bound = as.vector(sd.bound),
-    edge.len = edgelengths
-  )
-  out <- sf::st_as_sf(out, coords = c("x", "y"), crs = fm_crs(mesh))
+  if (inherits(mesh, "fm_mesh_2d")) {
+    out <- tibble::tibble(
+      x = proj$lattice$loc[, 1],
+      y = proj$lattice$loc[, 2],
+      sd = as.vector(sd0),
+      sd.dev = as.vector(sd.deviation),
+      sd.bound = as.vector(sd.bound),
+      edge.len = edgelengths
+    )
+    out <- sf::st_as_sf(out, coords = c("x", "y"), crs = fm_crs(mesh))
+  } else {
+    out <- tibble::tibble(
+      loc = proj$lattice$loc,
+      sd = as.vector(sd0),
+      sd.dev = as.vector(sd.deviation),
+      sd.bound = as.vector(sd.bound),
+      edge.len = edgelengths
+    )
+  }
   out
 }

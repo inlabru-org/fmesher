@@ -8,6 +8,7 @@
 \alias{fm_as_fm.fm_mesh_3d}
 \alias{fm_as_fm.fm_tensor}
 \alias{fm_as_fm.fm_segm}
+\alias{fm_as_fm.fm_lattice_Nd}
 \alias{fm_as_fm.fm_lattice_2d}
 \alias{fm_as_fm.fm_bbox}
 \alias{fm_as_fm.crs}
@@ -34,6 +35,8 @@ fm_as_fm(x, ...)
 \method{fm_as_fm}{fm_tensor}(x, ...)
 
 \method{fm_as_fm}{fm_segm}(x, ...)
+
+\method{fm_as_fm}{fm_lattice_Nd}(x, ...)
 
 \method{fm_as_fm}{fm_lattice_2d}(x, ...)
 
@@ -75,6 +78,7 @@ fm_as_fm(NULL)
 \seealso{
 Other object creation and conversion: 
 \code{\link{fm_as_lattice_2d}()},
+\code{\link{fm_as_lattice_Nd}()},
 \code{\link{fm_as_mesh_1d}()},
 \code{\link{fm_as_mesh_2d}()},
 \code{\link{fm_as_mesh_3d}()},
@@ -82,6 +86,7 @@ Other object creation and conversion:
 \code{\link{fm_as_sfc}()},
 \code{\link{fm_as_tensor}()},
 \code{\link{fm_lattice_2d}()},
+\code{\link{fm_lattice_Nd}()},
 \code{\link{fm_mesh_1d}()},
 \code{\link{fm_mesh_2d}()},
 \code{\link{fm_segm}()},

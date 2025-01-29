@@ -132,6 +132,40 @@ print.fm_segm_list <- function(x,
 }
 
 
+#' @export
+#' @rdname fmesher-print
+print.fm_list <- function(x,
+                          ...,
+                          digits = NULL,
+                          verbose = FALSE,
+                          newline = TRUE) {
+  if (verbose) {
+    cat("list of ", length(x), " fmesher objects:\n", sep = "")
+    lapply(x, function(xx) {
+      print(
+        xx,
+        digits = digits,
+        verbose = TRUE,
+        newline = TRUE
+      )
+    })
+  } else {
+    for (k in seq_along(x)) {
+      print(
+        x[[k]],
+        digits = digits,
+        verbose = FALSE,
+        newline = newline
+      )
+      if (!newline && (k < length(x))) {
+        cat(", ", sep = "")
+      }
+    }
+  }
+  return(invisible(x))
+}
+
+
 #' @param verbose logical
 #' @param digits a positive integer indicating how many significant digits are
 #'   to be used for numeric and complex x. The default, NULL, uses

@@ -1,7 +1,7 @@
 Package: fmesher
 Type: Package
 Title: Triangle Meshes and Related Geometry Tools
-Version: 0.2.0.9010
+Version: 0.2.0.9011
 Authors@R: c(
   person("Finn", "Lindgren", email = "finn.lindgren@gmail.com",
          role = c("aut", "cre", "cph"),
@@ -85,6 +85,7 @@ Collate:
     'ggplot.R'
     'integration.R'
     'lattice_2d.R'
+    'lattice_Nd.R'
     'list.R'
     'local.R'
     'manifold.R'

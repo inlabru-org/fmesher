@@ -146,6 +146,11 @@ fm_bbox.fm_segm <- function(x, ...) {
 fm_bbox.fm_lattice_2d <- function(x, ...) {
   fm_bbox(x[["loc"]])
 }
+#' @rdname fm_bbox
+#' @export
+fm_bbox.fm_lattice_Nd <- function(x, ...) {
+  fm_bbox(x[["loc"]])
+}
 
 #' @rdname fm_bbox
 #' @export

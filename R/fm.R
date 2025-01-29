@@ -64,6 +64,12 @@ fm_as_fm.fm_segm <- function(x, ...) {
 }
 #' @rdname fm_as_fm
 #' @export
+fm_as_fm.fm_lattice_Nd <- function(x, ...) {
+  #  class(x) <- c("fm_lattice_Nd", setdiff(class(x), "fm_lattice_Nd"))
+  x
+}
+#' @rdname fm_as_fm
+#' @export
 fm_as_fm.fm_lattice_2d <- function(x, ...) {
   #  class(x) <- c("fm_lattice_2d", setdiff(class(x), "fm_lattice_2d"))
   x

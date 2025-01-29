@@ -27,13 +27,13 @@ navbar:
 
 reference:
 - title: "Mesh construction"
-  desc: "Functions for contructing meshes and function spaces."
+  desc: "Functions for constructing meshes and function spaces."
   contents:
   - starts_with("fm_mesh")
   - starts_with("fm_rcdt")
   - starts_with("fm_delaunay")
   - starts_with("fm_subdivide")
-  - starts_with("fm_lattice")
+  - starts_with("fm_lattice_")
   - starts_with("fm_segm")
   - starts_with("fm_nonconvex")
   - starts_with("fm_extensions")

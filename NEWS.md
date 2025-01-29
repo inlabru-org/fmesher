@@ -26,6 +26,8 @@
   method (version `0.2.0.9010`)
 * Add R implementation of `fm_qinv()` for computing sparse matrix partial
   inverses (version `0.2.0.9010`)
+* Extended support for `fm_mesh_3d` and new `fm_lattice_Nd` class
+  (version `0.2.0.9011`)
 
 # fmesher 0.2.0
 

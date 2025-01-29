@@ -4,7 +4,7 @@
 \alias{fm_assess}
 \title{Interactive mesh building and diagnostics}
 \usage{
-fm_assess(mesh, spatial.range, alpha = 2, dims = c(500, 500))
+fm_assess(mesh, spatial.range, alpha = 2, dims = NULL)
 }
 \arguments{
 \item{mesh}{An \link{fm_mesh_2d} object}

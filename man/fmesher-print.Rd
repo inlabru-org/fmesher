@@ -4,6 +4,7 @@
 \alias{fmesher-print}
 \alias{print.fm_segm}
 \alias{print.fm_segm_list}
+\alias{print.fm_list}
 \alias{print.fm_mesh_2d}
 \alias{print.fm_mesh_3d}
 \alias{print.fm_mesh_1d}
@@ -16,6 +17,8 @@
 \method{print}{fm_segm}(x, ..., digits = NULL, verbose = TRUE, newline = TRUE)
 
 \method{print}{fm_segm_list}(x, ..., digits = NULL, verbose = FALSE, newline = TRUE)
+
+\method{print}{fm_list}(x, ..., digits = NULL, verbose = FALSE, newline = TRUE)
 
 \method{print}{fm_mesh_2d}(x, ..., digits = NULL, verbose = FALSE)
 
