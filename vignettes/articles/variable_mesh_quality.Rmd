@@ -184,10 +184,22 @@ out6 <- fm_assess(mesh6,
   alpha = 2,
   dims = c(200, 200)
 )
+```
+
+```{r echo=TRUE, message=FALSE, size="small"}
 ggplot() +
   geom_tile(data = out6,
             aes(geometry = geometry, fill = sd.dev),
             stat = "sf_coordinates") +
   coord_sf(default = TRUE) +
   scale_fill_gradient(limits = range(out6$sd.dev, na.rm = TRUE))
+```
+The `sd.dev` range has clearly decreased, and there is no longer a band of
+high values near the upper right corner.
+
+The number of additional vertices needed to accomplish this is small, as seen
+from the mesh object summaries:
+```{r echo=TRUE, message=FALSE, size="small"}
+mesh5
+mesh6
 ```
