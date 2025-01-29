@@ -18,6 +18,7 @@
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_CRSargs.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_as_fm.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_as_lattice_2d.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_as_lattice_Nd.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_as_mesh_1d.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_as_mesh_2d.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_as_mesh_3d.html</loc></url>
@@ -54,6 +55,7 @@
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_int_multi_sampler.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_is_within.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_lattice_2d.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_lattice_Nd.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_list.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_manifold.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_mesh_1d.html</loc></url>

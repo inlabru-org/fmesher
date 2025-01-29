@@ -9,7 +9,7 @@ coordinates"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9010</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9011</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,7 +75,10 @@ coordinates</p>
 <span><span class="fu">fm_bary</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">loc</span>, <span class="va">...</span>, max_batch_size <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'fm_lattice_2d'</span></span>
-<span><span class="fu">fm_bary</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">loc</span>, crs <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">fm_bary</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">loc</span>, crs <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'fm_lattice_Nd'</span></span>
+<span><span class="fu">fm_bary</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">loc</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -161,6 +164,10 @@ triangle indices) and <code>where</code> (4-column matrix of barycentric coordin
 Points that were not found give <code>NA</code> entries in <code>index</code> and <code>where</code>.</p></li>
 <li><p><code>fm_bary(fm_lattice_2d)</code>: An <code>fm_bary</code> object with columns <code>index</code> (vector of
 lattice cell indices) and <code>where</code> (4-column matrix of barycentric
+coordinates). Points that are outside the lattice are given <code>NA</code> entries in
+<code>index</code> and <code>where</code>.</p></li>
+<li><p><code>fm_bary(fm_lattice_Nd)</code>: An <code>fm_bary</code> object with columns <code>index</code> (vector of
+lattice cell indices) and <code>where</code> <code>2^d</code>-column matrix of barycentric
 coordinates). Points that are outside the lattice are given <code>NA</code> entries in
 <code>index</code> and <code>where</code>.</p></li>
 </ul></div>

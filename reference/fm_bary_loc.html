@@ -9,7 +9,7 @@ object. This acts as the inverse of fm_bary()."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9010</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9011</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,6 +66,9 @@ object. This acts as the inverse of <code><a href="fm_bary.html">fm_bary()</a></
 <span><span class="fu">fm_bary_loc</span><span class="op">(</span><span class="va">mesh</span>, bary <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span>, format <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'fm_lattice_2d'</span></span>
+<span><span class="fu">fm_bary_loc</span><span class="op">(</span><span class="va">mesh</span>, bary <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span>, format <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'fm_lattice_Nd'</span></span>
 <span><span class="fu">fm_bary_loc</span><span class="op">(</span><span class="va">mesh</span>, bary <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span>, format <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -106,6 +109,7 @@ format is <code>"matrix"</code> (default).</p></li>
 formats are <code>"numeric"</code> (default).</p></li>
 <li><p><code>fm_bary_loc(fm_lattice_2d)</code>: Extract points on a 2D lattice. Implemented
 formats are <code>"matrix"</code> (default) and <code>"sf"</code>.</p></li>
+<li><p><code>fm_bary_loc(fm_lattice_Nd)</code>: Extract points on a ND lattice.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -290,6 +294,23 @@ formats are <code>"matrix"</code> (default) and <code>"sf"</code>.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> CRS:           NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          geometry</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1 POINT (1.5 3.2)</span>
+<span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="fm_lattice_Nd.html">fm_lattice_Nd</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, y <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, z <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">fm_bary_loc</span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      x y z</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 1 1 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 2 1 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 3 1 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 1 2 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] 2 2 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6,] 3 2 1</span>
+<span class="r-in"><span><span class="op">(</span><span class="va">bary</span> <span class="op">&lt;-</span> <span class="fu"><a href="fm_bary.html">fm_bary</a></span><span class="op">(</span><span class="va">m</span>, <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fl">1.5</span>, <span class="fl">3.2</span>, <span class="fl">1.5</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 2</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   index where[,1]  [,2]   [,3]   [,4]  [,5]  [,6]   [,7]   [,8]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">*</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     5       0.2   0.2 0.050<span style="text-decoration: underline;">0</span> 0.050<span style="text-decoration: underline;">0</span>   0.2   0.2 0.050<span style="text-decoration: underline;">0</span> 0.050<span style="text-decoration: underline;">0</span></span>
+<span class="r-in"><span><span class="fu">fm_bary_loc</span><span class="op">(</span><span class="va">m</span>, <span class="va">bary</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2] [,3]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]  1.5  3.2  1.5</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -9,7 +9,7 @@ defined on a mesh or function space."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9010</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9011</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,12 +70,24 @@ defined on a mesh or function space.</p>
 <span><span class="co"># Default S3 method</span></span>
 <span><span class="fu">fm_evaluator</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># S3 method for class 'fm_mesh_3d'</span></span>
+<span><span class="fu">fm_evaluator</span><span class="op">(</span><span class="va">mesh</span>, loc <span class="op">=</span> <span class="cn">NULL</span>, lattice <span class="op">=</span> <span class="cn">NULL</span>, dims <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
 <span><span class="co"># S3 method for class 'fm_mesh_2d'</span></span>
 <span><span class="fu">fm_evaluator</span><span class="op">(</span><span class="va">mesh</span>, loc <span class="op">=</span> <span class="cn">NULL</span>, lattice <span class="op">=</span> <span class="cn">NULL</span>, crs <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'fm_mesh_1d'</span></span>
 <span><span class="fu">fm_evaluator</span><span class="op">(</span><span class="va">mesh</span>, loc <span class="op">=</span> <span class="cn">NULL</span>, xlim <span class="op">=</span> <span class="va">mesh</span><span class="op">$</span><span class="va">interval</span>, dims <span class="op">=</span> <span class="fl">100</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
+<span><span class="fu">fm_evaluator_lattice</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Default S3 method</span></span>
+<span><span class="fu">fm_evaluator_lattice</span><span class="op">(</span><span class="va">mesh</span>, dims <span class="op">=</span> <span class="fl">100</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'fm_bbox'</span></span>
+<span><span class="fu">fm_evaluator_lattice</span><span class="op">(</span><span class="va">mesh</span>, dims <span class="op">=</span> <span class="fl">100</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'fm_mesh_2d'</span></span>
 <span><span class="fu">fm_evaluator_lattice</span><span class="op">(</span></span>
 <span>  <span class="va">mesh</span>,</span>
 <span>  xlim <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -122,6 +134,10 @@ the function to be evaluated at the projection locations</p></dd>
 <dd><p>An <code><a href="fm_lattice_2d.html">fm_lattice_2d()</a></code> object.</p></dd>
 
 
+<dt id="arg-dims">dims<a class="anchor" aria-label="anchor" href="#arg-dims"></a></dt>
+<dd><p>Lattice dimensions.</p></dd>
+
+
 <dt id="arg-crs">crs<a class="anchor" aria-label="anchor" href="#arg-crs"></a></dt>
 <dd><p>An optional CRS or inla.CRS object associated with <code>loc</code>
 and/or <code>lattice</code>.</p></dd>
@@ -130,10 +146,6 @@ and/or <code>lattice</code>.</p></dd>
 <dt id="arg-xlim">xlim<a class="anchor" aria-label="anchor" href="#arg-xlim"></a></dt>
 <dd><p>X-axis limits for a lattice. For R2 meshes, defaults to covering
 the domain.</p></dd>
-
-
-<dt id="arg-dims">dims<a class="anchor" aria-label="anchor" href="#arg-dims"></a></dt>
-<dd><p>Lattice dimensions.</p></dd>
 
 
 <dt id="arg-ylim">ylim<a class="anchor" aria-label="anchor" href="#arg-ylim"></a></dt>
@@ -171,9 +183,14 @@ input, <code>proj</code> also contains a <code>bary</code> <a href="fm_bary.html
 barycentric coordinates within the triangle each input location falls in.</p></li>
 <li><p><code>fm_evaluator(default)</code>: The default method calls <code>fm_basis</code> and creates
 a basic <code>fm_evaluator</code> object</p></li>
+<li><p><code>fm_evaluator(fm_mesh_3d)</code>: The <code>...</code> arguments are passed on to
+<code>fm_evaluator_lattice()</code> if no <code>loc</code> or <code>lattice</code> is provided.</p></li>
 <li><p><code>fm_evaluator(fm_mesh_2d)</code>: The <code>...</code> arguments are passed on to
 <code>fm_evaluator_lattice()</code> if no <code>loc</code> or <code>lattice</code> is provided.</p></li>
-<li><p><code>fm_evaluator_lattice()</code>: Creates an <code><a href="fm_lattice_2d.html">fm_lattice_2d()</a></code> object, by default covering the input mesh.</p></li>
+<li><p><code>fm_evaluator_lattice()</code>: Create a lattice object by default covering the input mesh.</p></li>
+<li><p><code>fm_evaluator_lattice(default)</code>: Creates an <code><a href="fm_lattice_2d.html">fm_lattice_2d()</a></code> object, by default covering the input mesh.</p></li>
+<li><p><code>fm_evaluator_lattice(fm_bbox)</code>: Creates an <code><a href="fm_lattice_Nd.html">fm_lattice_Nd()</a></code> object, by default covering the input mesh.</p></li>
+<li><p><code>fm_evaluator_lattice(fm_mesh_2d)</code>: Creates an <code><a href="fm_lattice_2d.html">fm_lattice_2d()</a></code> object, by default covering the input mesh.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
