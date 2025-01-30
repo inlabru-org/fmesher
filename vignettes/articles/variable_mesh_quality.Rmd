@@ -146,9 +146,11 @@ print(names(out))
 
 ```{r echo=TRUE, message=FALSE, size="small"}
 ggplot() +
-  geom_tile(data = out,
-            aes(geometry = geometry, fill = edge.len),
-            stat = "sf_coordinates") +
+  geom_tile(
+    data = out,
+    aes(geometry = geometry, fill = edge.len),
+    stat = "sf_coordinates"
+  ) +
   coord_sf(default = TRUE)
 ```
 
@@ -156,9 +158,11 @@ A "good" mesh should have `sd.dev` close to 1; this indicates that the nominal v
 
 ```{r echo=TRUE, message=FALSE, size="small"}
 ggplot() +
-  geom_tile(data = out,
-            aes(geometry = geometry, fill = sd.dev),
-            stat = "sf_coordinates") +
+  geom_tile(
+    data = out,
+    aes(geometry = geometry, fill = sd.dev),
+    stat = "sf_coordinates"
+  ) +
   coord_sf(default = TRUE) +
   scale_fill_gradient(limits = range(out$sd.dev, na.rm = TRUE))
 ```
@@ -188,9 +192,11 @@ out6 <- fm_assess(mesh6,
 
 ```{r echo=TRUE, message=FALSE, size="small"}
 ggplot() +
-  geom_tile(data = out6,
-            aes(geometry = geometry, fill = sd.dev),
-            stat = "sf_coordinates") +
+  geom_tile(
+    data = out6,
+    aes(geometry = geometry, fill = sd.dev),
+    stat = "sf_coordinates"
+  ) +
   coord_sf(default = TRUE) +
   scale_fill_gradient(limits = range(out6$sd.dev, na.rm = TRUE))
 ```

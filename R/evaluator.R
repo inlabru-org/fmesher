@@ -171,8 +171,8 @@ fm_evaluator.fm_mesh_3d <- function(mesh,
   if (missing(loc) || is.null(loc)) {
     if (missing(lattice) || is.null(lattice)) {
       lattice <- fm_evaluator_lattice(mesh,
-                                      dims = dims,
-                                      ...
+        dims = dims,
+        ...
       )
     }
     proj <- fm_basis(mesh, lattice$loc, full = TRUE)
@@ -213,8 +213,8 @@ fm_evaluator.fm_mesh_2d <- function(mesh,
   if (missing(loc) || is.null(loc)) {
     if (missing(lattice) || is.null(lattice)) {
       lattice <- fm_evaluator_lattice(mesh,
-                                      crs = crs,
-                                      ...
+        crs = crs,
+        ...
       )
     }
     dims <- lattice$dims
@@ -226,8 +226,8 @@ fm_evaluator.fm_mesh_2d <- function(mesh,
       proj <- fm_basis_mesh_2d(mesh, lattice$loc)
     } else {
       proj <- fm_basis_mesh_2d(mesh,
-                               loc = lattice$loc,
-                               crs = lattice$crs
+        loc = lattice$loc,
+        crs = lattice$crs
       )
     }
     projector <-
@@ -341,7 +341,7 @@ fm_evaluator_lattice.fm_mesh_2d <- function(mesh,
                                             crs = NULL,
                                             ...) {
   if (fm_manifold(mesh, "R2") &&
-      (is.null(mesh$crs) || is.null(crs))) {
+    (is.null(mesh$crs) || is.null(crs))) {
     units <- "default"
     lim <- list(
       xlim = if (is.null(xlim)) range(mesh$loc[, 1]) else xlim,

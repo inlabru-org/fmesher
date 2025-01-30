@@ -10,6 +10,8 @@
 \alias{print.fm_mesh_1d}
 \alias{print.fm_bbox}
 \alias{print.fm_tensor}
+\alias{print.fm_lattice_2d}
+\alias{print.fm_lattice_Nd}
 \alias{print.fm_crs}
 \alias{print.fm_CRS}
 \title{Print objects}
@@ -29,6 +31,10 @@
 \method{print}{fm_bbox}(x, ..., digits = NULL, verbose = TRUE, newline = TRUE)
 
 \method{print}{fm_tensor}(x, ..., digits = NULL, verbose = FALSE)
+
+\method{print}{fm_lattice_2d}(x, ..., digits = NULL, verbose = FALSE)
+
+\method{print}{fm_lattice_Nd}(x, ..., digits = NULL, verbose = FALSE)
 
 \method{print}{fm_crs}(x, ...)
 

@@ -2,25 +2,26 @@
 
 # fm_lattice_Nd ####
 
-#' @title Make a lattice object
+#' @title Lattice grids for N dimensions
+#'
+#' @description
+#' Construct an N-dimensional lattice grid
+#'
 #' @export
 #' @param ... Passed on to submethods
 #' @family object creation and conversion
-fm_lattice_Nd <- function(...) {
-  UseMethod("fm_lattice_Nd")
+#' @rdname fm_lattice_Nd
+fm_lattice_Nd <- function(x = NULL, ...) {
+  # Need to specify the dispatch object explicitly to handle the NULL case:
+  UseMethod("fm_lattice_Nd", x)
 }
 
-#' Lattice grids for fm_mesh_Nd
-#'
-#' Construct an N-dimensional lattice grid
-#'
-#' @param x `list`, `data.frame`, `matrix`, `fm_bbox` or `NULL`. If a list of vectors,
-#'  `as.matrix(expand.grid(x))` is
-#'   used to create
-#'   a full grid coordinates. `data.frame` and `matrix` input is assumed to
-#'   follow the same ordering convention as the output of `expand.grid()`.
-#'    of length N of vectors or grid matrices of coordinate values.
-#'   List vector values are sorted before use.
+#' @param x `list`, `data.frame`, `matrix`, `fm_bbox` or `NULL`. If a list of
+#'   vectors, `as.matrix(expand.grid(x))` is used to create a full grid
+#'   coordinates. `data.frame` and `matrix` input is assumed to follow the same
+#'   ordering convention as the output of `expand.grid()`. of length N of
+#'   vectors or grid matrices of coordinate values. List vector values are
+#'   sorted before use.
 #' @param dims numeric; the size of the grid of dimension `length(dims)`
 #' @param values list of grid axis values
 #' @returns An `fm_lattice_Nd` object with elements
@@ -32,21 +33,24 @@ fm_lattice_Nd <- function(...) {
 #' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
 #' @seealso [fm_mesh_3d()]
 #' @examples
-#' lattice <- fm_lattice_Nd(
-#'   list(seq(0, 1, length.out = 3),
-#'        seq(0, 1, length.out = 4),
-#'        seq(0, 1, length.out = 2))
-#' )
+#' (lattice <- fm_lattice_Nd(
+#'   list(
+#'     seq(0, 1, length.out = 3),
+#'     seq(0, 1, length.out = 4),
+#'     seq(0, 1, length.out = 2)
+#'   )
+#' ))
 #'
-#' (mesh <- fm_delaunay_3d(lattice$loc))
+#' if (requireNamespace("geometry", quietly = TRUE)) {
+#'   (mesh <- fm_delaunay_3d(lattice$loc))
+#' }
 #' @rdname fm_lattice_Nd
 #' @export
 fm_lattice_Nd.matrix <- function(
-    x,
+    x = NULL,
     dims = NULL,
     values = NULL,
-    ...
-) {
+    ...) {
   if (is.null(dims)) {
     stop("The 'dims' argument must be specified.")
   }
@@ -62,14 +66,16 @@ fm_lattice_Nd.matrix <- function(
     if (!identical(dims, the_dims)) {
       warning(paste0(
         "The number of unique values in each dimension doesn't ",
-        "match the 'dims' argument."))
+        "match the 'dims' argument."
+      ))
     }
   } else {
     the_dims <- lengths(values)
     if (!identical(dims, the_dims)) {
       stop(paste0(
         "The number of values in each dimension doesn't ",
-        "match the 'dims' argument."))
+        "match the 'dims' argument."
+      ))
     }
   }
   fm_lattice_Nd_create(loc = x, dims = dims, values = values)
@@ -79,26 +85,26 @@ fm_lattice_Nd.matrix <- function(
 #' @rdname fm_lattice_Nd
 #' @export
 fm_lattice_Nd.data.frame <- function(
-    x,
-    ...
-) {
+    x = NULL,
+    ...) {
   fm_lattice_Nd(as.matrix(x), ...)
 }
 
 #' @rdname fm_lattice_Nd
 #' @export
 fm_lattice_Nd.list <- function(
-    x,
+    x = NULL,
     dims = NULL,
-    ...
-) {
+    ...) {
   mat <- vapply(x, function(xx) is.array(xx), logical(1))
   if (all(mat)) {
     if (is.null(dims)) {
       dims <- dim(x[[1]])
     }
     if (!all(vapply(x, function(xx) identical(dim(xx), dims), logical(1)))) {
-      stop("The x elements must have identical array dimensions and match dims.")
+      stop(
+        "The x elements must have identical array dimensions and match dims."
+      )
     }
     loc <- do.call(rbind, lapply(x, as.vector))
     values <- lapply(seq_len(ncol(loc)), function(k) sort(unique(loc[, k])))
@@ -130,10 +136,9 @@ fm_lattice_Nd.list <- function(
 #' @rdname fm_lattice_Nd
 #' @export
 fm_lattice_Nd.fm_bbox <- function(
-    x,
+    x = NULL,
     dims = NULL,
-    ...
-) {
+    ...) {
   if (is.null(dims)) {
     dims <- rep(2L, length(x))
   }
@@ -143,6 +148,22 @@ fm_lattice_Nd.fm_bbox <- function(
   loc <- as.matrix(expand.grid(values, stringsAsFactors = FALSE))
 
   fm_lattice_Nd_create(loc = loc, dims = dims, values = values)
+}
+
+#' @describeIn fm_lattice_Nd Ignores the `NULL` `x` and creates a lattice
+#' based on `values` (if non-NULL) and `dims` unit hypercube
+#' lattice grid with `dims` dimensions.
+#' @export
+fm_lattice_Nd.NULL <- function(x = NULL, ..., dims = NULL) {
+  if (is.null(dims)) {
+    dims <- c(2L, 2L)
+  }
+  fm_lattice_Nd(lapply(
+    dims,
+    function(k) {
+      seq(0.0, 1.0, length.out = k)
+    }
+  ))
 }
 
 fm_lattice_Nd_create <- function(loc, dims, values) {
@@ -167,8 +188,10 @@ fm_lattice_Nd_create <- function(loc, dims, values) {
 #' @family object creation and conversion
 #' @export
 #' @examples
-#' (fm_as_lattice_Nd_list(list(fm_lattice_Nd(list(1:3, 1:2)),
-#'                             fm_lattice_Nd(list(1:4)))))
+#' (fm_as_lattice_Nd_list(list(
+#'   fm_lattice_Nd(list(1:3, 1:2)),
+#'   fm_lattice_Nd(list(1:4))
+#' )))
 #'
 fm_as_lattice_Nd <- function(...) {
   UseMethod("fm_as_lattice_Nd")

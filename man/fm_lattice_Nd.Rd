@@ -6,28 +6,30 @@
 \alias{fm_lattice_Nd.data.frame}
 \alias{fm_lattice_Nd.list}
 \alias{fm_lattice_Nd.fm_bbox}
-\title{Make a lattice object}
+\alias{fm_lattice_Nd.NULL}
+\title{Lattice grids for N dimensions}
 \usage{
-fm_lattice_Nd(...)
+fm_lattice_Nd(x = NULL, ...)
 
-\method{fm_lattice_Nd}{matrix}(x, dims = NULL, values = NULL, ...)
+\method{fm_lattice_Nd}{matrix}(x = NULL, dims = NULL, values = NULL, ...)
 
-\method{fm_lattice_Nd}{data.frame}(x, ...)
+\method{fm_lattice_Nd}{data.frame}(x = NULL, ...)
 
-\method{fm_lattice_Nd}{list}(x, dims = NULL, ...)
+\method{fm_lattice_Nd}{list}(x = NULL, dims = NULL, ...)
 
-\method{fm_lattice_Nd}{fm_bbox}(x, dims = NULL, ...)
+\method{fm_lattice_Nd}{fm_bbox}(x = NULL, dims = NULL, ...)
+
+\method{fm_lattice_Nd}{`NULL`}(x = NULL, ..., dims = NULL)
 }
 \arguments{
-\item{...}{Passed on to submethods}
+\item{x}{\code{list}, \code{data.frame}, \code{matrix}, \code{fm_bbox} or \code{NULL}. If a list of
+vectors, \code{as.matrix(expand.grid(x))} is used to create a full grid
+coordinates. \code{data.frame} and \code{matrix} input is assumed to follow the same
+ordering convention as the output of \code{expand.grid()}. of length N of
+vectors or grid matrices of coordinate values. List vector values are
+sorted before use.}
 
-\item{x}{\code{list}, \code{data.frame}, \code{matrix}, \code{fm_bbox} or \code{NULL}. If a list of vectors,
-\code{as.matrix(expand.grid(x))} is
-used to create
-a full grid coordinates. \code{data.frame} and \code{matrix} input is assumed to
-follow the same ordering convention as the output of \code{expand.grid()}.
-of length N of vectors or grid matrices of coordinate values.
-List vector values are sorted before use.}
+\item{...}{Passed on to submethods}
 
 \item{dims}{numeric; the size of the grid of dimension \code{length(dims)}}
 
@@ -44,14 +46,25 @@ An \code{fm_lattice_Nd} object with elements
 \description{
 Construct an N-dimensional lattice grid
 }
-\examples{
-lattice <- fm_lattice_Nd(
-  list(seq(0, 1, length.out = 3),
-       seq(0, 1, length.out = 4),
-       seq(0, 1, length.out = 2))
-)
+\section{Methods (by class)}{
+\itemize{
+\item \code{fm_lattice_Nd(`NULL`)}: Ignores the \code{NULL} \code{x} and creates a lattice
+based on \code{values} (if non-NULL) and \code{dims} unit hypercube
+lattice grid with \code{dims} dimensions.
 
-(mesh <- fm_delaunay_3d(lattice$loc))
+}}
+\examples{
+(lattice <- fm_lattice_Nd(
+  list(
+    seq(0, 1, length.out = 3),
+    seq(0, 1, length.out = 4),
+    seq(0, 1, length.out = 2)
+  )
+))
+
+if (requireNamespace("geometry", quietly = TRUE)) {
+  (mesh <- fm_delaunay_3d(lattice$loc))
+}
 }
 \seealso{
 \code{\link[=fm_mesh_3d]{fm_mesh_3d()}}

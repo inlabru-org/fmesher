@@ -31,8 +31,10 @@ Convert objects to \code{fm_lattice_Nd}
 
 }}
 \examples{
-(fm_as_lattice_Nd_list(list(fm_lattice_Nd(list(1:3, 1:2)),
-                            fm_lattice_Nd(list(1:4)))))
+(fm_as_lattice_Nd_list(list(
+  fm_lattice_Nd(list(1:3, 1:2)),
+  fm_lattice_Nd(list(1:4))
+)))
 
 }
 \seealso{

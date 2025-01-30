@@ -173,7 +173,7 @@ fm_basis.fm_lattice_Nd <- function(x, loc, weights = NULL, ...,
     i = rep(which(ok), ncol(bary$where)),
     j = as.vector(simplex),
     x = as.numeric(as.vector(bary$where[ok, ]) *
-                     weights[rep(which(ok), ncol(bary$where))]),
+      weights[rep(which(ok), ncol(bary$where))]),
     dims = c(n_loc, fm_dof(x))
   )
 
