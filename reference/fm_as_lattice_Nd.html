@@ -103,53 +103,20 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="op">(</span><span class="fu">fm_as_lattice_Nd_list</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="fm_lattice_Nd.html">fm_lattice_Nd</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                            <span class="fu"><a href="fm_lattice_Nd.html">fm_lattice_Nd</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $loc</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      Var1 Var2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    1    1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]    2    1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,]    3    1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,]    1    2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5,]    2    2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [6,]    3    2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $dims</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $values</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $values[[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1 2 3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $values[[2]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $manifold</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "R2"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "fm_lattice_Nd"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $loc</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      Var1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]    2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,]    3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,]    4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $dims</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $values</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $values[[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1 2 3 4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $manifold</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "R1"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "fm_lattice_Nd"</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="op">(</span><span class="fu">fm_as_lattice_Nd_list</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="fm_lattice_Nd.html">fm_lattice_Nd</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="fu"><a href="fm_lattice_Nd.html">fm_lattice_Nd</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fm_lattice_Nd object:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Manifold:	R2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Dimensions:	3 x 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Bounding box: (1,3) x (1,2)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Basis d.o.f.:	6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fm_lattice_Nd object:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Manifold:	R1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Dimensions:	4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Bounding box: (1,4)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Basis d.o.f.:	4</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
