@@ -26,10 +26,7 @@
 #'   multidimensional integration points and their weights
 #'
 #' @examples
-#' \donttest{
-#' # fm_int needs INLA
-#' if (TRUE &&
-#'   require("ggplot2")) {
+#' if (require("ggplot2")) {
 #'   # Create integration points in dimension 'myDim' and 'myDiscreteDim'
 #'   ips1 <- fm_int(fm_mesh_1d(1:20),
 #'     rbind(c(0, 3), c(3, 8)),
@@ -44,7 +41,6 @@
 #'   ggplot(ips) +
 #'     geom_point(aes(myDim, myDiscreteDim, size = weight)) +
 #'     scale_size_area()
-#' }
 #' }
 #'
 #' @importFrom stats na.omit
@@ -203,7 +199,7 @@ fm_cprod <- function(..., na.rm = NULL, .blockwise = FALSE) {
 #' # Create integration points for the two intervals [0,3] and [5,10]
 #' ips <- fm_int(
 #'   fm_mesh_1d(0:10),
-#'   matrix(c(0, 3, 5, 10), nrow = 2, byrow = TRUE)
+#'   rbind(c(0, 3), c(5, 10))
 #' )
 #' plot(ips$x, ips$weight)
 #'
@@ -440,6 +436,12 @@ fm_int.list <- function(domain, samplers = NULL, ...) {
 
 #' @export
 #' @describeIn fm_int Discrete double or integer space integration
+#' @examples
+#' # Individual sampling points:
+#' (ips <- fm_int(0:10, c(0, 3, 5, 6, 10)))
+#' # Sampling blocks:
+#' (ips <- fm_int(0:10, list(c(0, 3), c(5, 6, 10))))
+#'
 fm_int.numeric <- function(domain, samplers = NULL, name = "x", ...) {
   if (is.null(samplers)) {
     ips <- tibble::tibble(
@@ -578,6 +580,7 @@ fm_int.fm_lattice_2d <- function(domain, samplers = NULL, name = "x", ...) {
 #' * A tibble with a named column containing a matrix, and optionally a
 #'  `weight` column.
 #' @examples
+#' # Continuous integration on intervals
 #' ips <- fm_int(
 #'   fm_mesh_1d(0:10, boundary = "cyclic"),
 #'   rbind(c(0, 3), c(5, 10))
