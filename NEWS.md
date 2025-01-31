@@ -28,6 +28,8 @@
   inverses (version `0.2.0.9010`)
 * Extended support for `fm_mesh_3d` and new `fm_lattice_Nd` class
   (version `0.2.0.9011`)
+* Add `list()` input support for `fm_int.numeric`, to allow multiple integration
+  blocks for discrete domains (version `0.2.0.9012`)
 
 # fmesher 0.2.0
 

@@ -463,10 +463,23 @@ fm_int.numeric <- function(domain, samplers = NULL, name = "x", ...) {
     samplers[[".block"]] <- seq_len(NROW(samplers))
   }
 
-  storage.mode(samplers[[name]]) <- storage.mode(domain)
+  if (is.list(samplers[[name]])) {
+    ips <- list()
+    for (k in seq_along(samplers[[name]])) {
+      storage.mode(samplers[[name]][[k]]) <- storage.mode(domain)
+      ok <- samplers[[name]][[k]] %in% domain
+      if (any(ok)) {
+        ips[[k]] <- samplers[rep(k, sum(ok)), , drop = FALSE]
+        ips[[k]][[name]] <- samplers[[name]][[k]][ok]
+      }
+    }
+    ips <- dplyr::bind_rows(ips)
+  } else {
+    storage.mode(samplers[[name]]) <- storage.mode(domain)
+    ok <- samplers[[name]] %in% domain
+    ips <- samplers[ok, , drop = FALSE]
+  }
 
-  ok <- samplers[[name]] %in% domain
-  ips <- samplers[ok, , drop = FALSE]
   ips
 }
 
