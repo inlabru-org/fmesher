@@ -207,8 +207,8 @@ fm_as_bbox <- function(x, ...) {
 #'   coercible with `fm_as_bbox(list(...))`.
 #' @param .join logical; if `TRUE`, concatenate the bounding boxes into a single
 #'   multi-dimensional bounding box. Default is `FALSE`.
-#' @returns For [c.fm_bbox()], a `fm_bbox_list` object if `join = FALSE` (the
-#'   default) or an `fm_bbox` object if `join = TRUE`.
+#' @returns For [c.fm_bbox()], a `fm_bbox_list` object if `.join = FALSE` (the
+#'   default) or an `fm_bbox` object if `.join = TRUE`.
 #' @examples
 #' m <- c(A = fm_bbox(cbind(1, 2)), B = fm_bbox(cbind(3, 4)))
 #' str(m)
@@ -221,6 +221,25 @@ fm_as_bbox <- function(x, ...) {
     y <- lapply(y, function(xx) unclass(xx))
     y <- do.call("c", y)
     y <- fm_bbox(y)
+  }
+  y
+}
+
+#' @describeIn fm_bbox Convert a list to a `fm_bbox_list` object, with
+#' each element converted to an `fm_bbox` object.
+#' @export
+#' @examples
+#' m <- fm_as_bbox_list(list(
+#'   A = fm_bbox(cbind(1, 2)),
+#'   B = fm_bbox(cbind(3, 4))
+#' ))
+#' str(fm_as_bbox_list(m))
+fm_as_bbox_list <- function(x, ...) {
+  if (is.list(x) && !inherits(x, c("fm_bbox", "fm_bbox_list"))) {
+    y <- lapply(x, function(xx) fm_as_bbox(xx))
+    y <- do.call("c", y)
+  } else {
+    y <- fm_as_list(x, ..., .class_stub = "bbox")
   }
   y
 }
