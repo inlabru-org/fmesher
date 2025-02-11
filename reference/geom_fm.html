@@ -21,7 +21,7 @@ may therefore change in the future.'></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9012</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9013</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -96,6 +96,8 @@ may therefore change in the future.</p>
 <span>  mapping <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  data <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span>,</span>
+<span>  mappings <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  defs <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  xlim <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  basis <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  knots <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -120,16 +122,12 @@ may therefore change in the future.</p>
 <dd><p>Arguments passed on to the geom method.</p></dd>
 
 
-<dt id="arg-mappings">mappings<a class="anchor" aria-label="anchor" href="#arg-mappings"></a></dt>
-<dd><p>optional list of <code>aes</code> mappings for the non-triangle parts of
+<dt id="arg-mappings-defs">mappings, defs<a class="anchor" aria-label="anchor" href="#arg-mappings-defs"></a></dt>
+<dd><p>optional lists of <code>aes</code> mappings and non-<code>aes</code> settings.
+For <code>fm_mesh_2d</code>, the non-triangle parts of
 the mesh, named "int" for interior constraint edges, "bnd" for boundary
-edges, and "loc" for the vertices.</p></dd>
-
-
-<dt id="arg-defs">defs<a class="anchor" aria-label="anchor" href="#arg-defs"></a></dt>
-<dd><p>optional list of non-<code>aes</code> settings for the non-triangle parts of
-the mesh, named "int" for interior constraint edges, "bnd" for boundary
-edges, and "loc" for the vertices.</p></dd>
+edges, and "loc" for the vertices. For <code>fm_mesh_1d</code>, the elements are
+"knots" and "fun".</p></dd>
 
 
 <dt id="arg-crs">crs<a class="anchor" aria-label="anchor" href="#arg-crs"></a></dt>
