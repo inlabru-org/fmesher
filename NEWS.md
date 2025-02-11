@@ -30,6 +30,9 @@
   (version `0.2.0.9011`)
 * Add `list()` input support for `fm_int.numeric`, to allow multiple integration
   blocks for discrete domains (version `0.2.0.9012`)
+* Add `mappings` and `defs` support to the `geom_fm.fm_mesh_1d()` method,
+  allowing separate control of the `ggplot2` aesthetics for basis functions,
+  knots, and function evaluations. (version `0.2.0.9013`)
 
 # fmesher 0.2.0
 
