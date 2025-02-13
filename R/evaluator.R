@@ -84,28 +84,17 @@ fm_evaluate.fm_evaluator <-
       field <- as.matrix(field)
     }
 
-    if (is.null(dim(field))) {
-      if (is.null(projector$lattice)) {
-        data <- as.vector(projector$proj$A %*% as.vector(field))
-        data[!projector$proj$ok] <- NA
-        return(data)
-      } else {
-        data <- as.vector(projector$proj$A %*% as.vector(field))
-        data[!projector$proj$ok] <- NA
-        return(array(
-          data,
-          dim = projector$lattice$dims
-        ))
-      }
-    } else if (inherits(field, "sparseMatrix")) {
-      data <- projector$proj$A %*% field
-      data[!projector$proj$ok, ] <- NA
-      return(data)
-    } else {
-      data <- as.matrix(projector$proj$A %*% field)
-      data[!projector$proj$ok, ] <- NA
-      return(data)
+    data <- fm_evaluate(fm_basis(projector, full = TRUE), field = field)
+
+    if (is.null(dim(field)) &&
+        !is.null(projector$lattice)) {
+      return(array(
+        data,
+        dim = projector$lattice$dims
+      ))
     }
+
+    return(data)
   }
 
 #' @export
