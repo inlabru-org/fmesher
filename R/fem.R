@@ -248,7 +248,7 @@ fm_fem.fm_tensor <- function(mesh, order = 2, ...) {
     for (k in seq_len(length(x) - 1)) {
       result <- kronecker(x[[k + 1]], result)
     }
-    return(result)
+    result
   }
 
   cc <- kron_multi(cc_list)

@@ -39,7 +39,7 @@ print.fm_segm <- function(x,
     } else {
       grps <- NULL
     }
-    return(list(n = n, grps = grps))
+    list(n = n, grps = grps)
   }
 
   ret <- my.segm(x)

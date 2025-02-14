@@ -360,11 +360,11 @@ internal_spline_mesh_1d <- function(interval,
       }
     }
   }
-  return(fm_mesh_1d(seq(interval[1], interval[2], length.out = n),
+  fm_mesh_1d(seq(interval[1], interval[2], length.out = n),
     degree = degree,
     boundary = boundary,
     free.clamped = free.clamped
-  ))
+  )
 }
 
 
@@ -623,7 +623,7 @@ fm_basis_mesh_2d <- function(mesh,
       x = as.vector(z) * weights[rep(ii, 3)]
     ))
 
-    return(list(dx = dx, dy = dy, dz = dz))
+    list(dx = dx, dy = dy, dz = dz)
   }
 
   info <- list(bary = loc, A = A, ok = ok)
