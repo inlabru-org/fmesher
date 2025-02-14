@@ -108,5 +108,5 @@ fm_split_lines.fm_mesh_2d <- function(mesh, segm, ...) {
   )
   segm.split$origin <- origin[keep]
 
-  return(segm.split)
+  segm.split
 }

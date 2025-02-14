@@ -7,10 +7,29 @@
 fm_qinv(A)
 }
 \arguments{
-\item{A}{A symmetric positive definite matrix}
+\item{A}{A sparse symmetric positive definite matrix}
+}
+\value{
+A sparse symmetric matrix, with the elements of the inverse of \code{A}
+for the non-zero pattern of \code{A} plus potential Cholesky in-fill locations.
 }
 \description{
-Compute sparse partial matrix inverse. Requires special build of the
-\code{fmesher} package.
+Compute sparse partial matrix inverse. As of \verb{0.2.0.9010}, an R
+implementation of the Takahashi recursion method, unless a special build of
+the \code{fmesher} package is used.
 }
-\keyword{internal}
+\examples{
+A <- Matrix::Matrix(
+  c(2, -1, 0, 0, -1, 2, -1, 0, 0, -1, 2, -1, 0, 0, -1, 2),
+  4,
+  4
+)
+# Partial inverse:
+(S <- fm_qinv(A))
+# Full inverse (not guaranteed to be symmetric):
+(S2 <- solve(A))
+# Matrix symmetry:
+c(sum((S - Matrix::t(S))^2), sum((S2 - Matrix::t(S2))^2))
+# Accuracy (not that S2 is non-symmetric, and S may be more accurate):
+sum((S - S2)[S != 0]^2)
+}

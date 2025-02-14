@@ -19,7 +19,20 @@
 * Make `fm_try_callstack()` more robust against large callstack sizes; solves
   "C stack" crash issue for `inla()` error reporting (version `0.2.0.9007`)
 * Add `fm_mesh_3d()` for 3D meshes (version `0.2.0.9008`) 
-* Fix `fm_bbox.fm_mesh_2d()` bug for `"S2"` and `"M2"` manifold meshes (version `0.2.0.9008`) 
+* Fix `fm_bbox.fm_mesh_2d()` bug for `"S2"` and `"M2"` manifold meshes (version `0.2.0.9008`)
+* Fix bug in `fm_rcdt_2d_inla()` that lead to ignoring the `quality.spec` argument
+  (version `0.2.0.9009`)
+* Add `fm_assess()` method, replicating the old `INLA::inla.mesh.assessment()`
+  method (version `0.2.0.9010`)
+* Add R implementation of `fm_qinv()` for computing sparse matrix partial
+  inverses (version `0.2.0.9010`)
+* Extended support for `fm_mesh_3d` and new `fm_lattice_Nd` class
+  (version `0.2.0.9011`)
+* Add `list()` input support for `fm_int.numeric`, to allow multiple integration
+  blocks for discrete domains (version `0.2.0.9012`)
+* Add `mappings` and `defs` support to the `geom_fm.fm_mesh_1d()` method,
+  allowing separate control of the `ggplot2` aesthetics for basis functions,
+  knots, and function evaluations. (version `0.2.0.9013`)
 
 # fmesher 0.2.0
 

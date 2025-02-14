@@ -2193,7 +2193,7 @@ fm_detect_manifold.CRS <- function(x) {
 #' @rdname fm_detect_manifold
 #' @export
 fm_detect_manifold.numeric <- function(x) {
-  return("R1")
+  "R1"
 }
 
 #' @rdname fm_detect_manifold
@@ -2205,16 +2205,20 @@ fm_detect_manifold.matrix <- function(x) {
   if (ncol(x) == 2) {
     return("R2")
   }
-  tol <- 1e-10
-  if (all(abs(x[, 3]) < tol)) {
-    return("R2")
+  if (ncol(x) == 3) {
+    tol <- 1e-10
+    if (all(abs(x[, 3]) < tol)) {
+      return("R2")
+    }
+    radii <- rowSums(x^2)^0.5
+    radius <- mean(radii)
+    if (all(abs(radii - radius) < radius * tol)) {
+      return("S2")
+    }
+    return("R3")
   }
-  radii <- rowSums(x^2)^0.5
-  radius <- mean(radii)
-  if (all(abs(radii - radius) < radius * tol)) {
-    return("S2")
-  }
-  return("M2")
+
+  paste0("R", ncol(x))
 }
 
 #' @rdname fm_detect_manifold
@@ -2235,7 +2239,8 @@ fm_detect_manifold.fm_mesh_2d <- function(x) {
   if (all(abs(radii - radius) < radius * tol)) {
     return("S2")
   }
-  return("M2")
+
+  "M2"
 }
 
 

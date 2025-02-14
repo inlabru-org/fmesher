@@ -156,6 +156,30 @@ fm_basis.fm_lattice_2d <- function(x, loc, weights = NULL, ...,
   fm_basis(list(A = A, ok = ok), full = full)
 }
 
+#' @describeIn fm_basis `fm_lattice_Nd` multilinear basis functions.
+#' @export
+fm_basis.fm_lattice_Nd <- function(x, loc, weights = NULL, ...,
+                                   full = FALSE) {
+  bary <- fm_bary(x, loc, ...)
+  n_loc <- NROW(bary)
+  ok <- !is.na(bary$index)
+  simplex <- fm_bary_simplex(x, bary[ok, , drop = FALSE])
+  if (is.null(weights)) {
+    weights <- rep(1.0, n_loc)
+  } else if (length(weights) == 1) {
+    weights <- rep(weights, n_loc)
+  }
+  A <- Matrix::sparseMatrix(
+    i = rep(which(ok), ncol(bary$where)),
+    j = as.vector(simplex),
+    x = as.numeric(as.vector(bary$where[ok, ]) *
+      weights[rep(which(ok), ncol(bary$where))]),
+    dims = c(n_loc, fm_dof(x))
+  )
+
+  fm_basis(list(A = A, ok = ok), full = full)
+}
+
 #' @export
 #' @describeIn fm_basis Evaluates a basis matrix for a `fm_tensor` function
 #'   space.
@@ -336,11 +360,11 @@ internal_spline_mesh_1d <- function(interval,
       }
     }
   }
-  return(fm_mesh_1d(seq(interval[1], interval[2], length.out = n),
+  fm_mesh_1d(seq(interval[1], interval[2], length.out = n),
     degree = degree,
     boundary = boundary,
     free.clamped = free.clamped
-  ))
+  )
 }
 
 
@@ -599,7 +623,7 @@ fm_basis_mesh_2d <- function(mesh,
       x = as.vector(z) * weights[rep(ii, 3)]
     ))
 
-    return(list(dx = dx, dy = dy, dz = dz))
+    list(dx = dx, dy = dy, dz = dz)
   }
 
   info <- list(bary = loc, A = A, ok = ok)

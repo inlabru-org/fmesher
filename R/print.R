@@ -4,6 +4,12 @@
 #'
 #' @param x an object used to select a method.
 #' @param \dots further arguments passed to or from other methods.
+#' @param verbose logical
+#' @param digits a positive integer indicating how many significant digits are
+#'   to be used for numeric and complex x. The default, NULL, uses
+#'   `getOption("digits")`.
+#' @param newline logical; if `TRUE` (default), end the printing with `\n`
+#'
 #' @returns The input object `x`
 #' @name fmesher-print
 #' @examples
@@ -17,7 +23,6 @@
 NULL
 
 #' @export
-#' @param newline logical; if `TRUE` (default), end the printing with `\n`
 #' @rdname fmesher-print
 print.fm_segm <- function(x,
                           ...,
@@ -34,7 +39,7 @@ print.fm_segm <- function(x,
     } else {
       grps <- NULL
     }
-    return(list(n = n, grps = grps))
+    list(n = n, grps = grps)
   }
 
   ret <- my.segm(x)
@@ -98,7 +103,6 @@ print.fm_segm <- function(x,
 
 
 #' @export
-#' @param newline logical; if `TRUE` (default), end the printing with `\n`
 #' @rdname fmesher-print
 print.fm_segm_list <- function(x,
                                ...,
@@ -107,6 +111,40 @@ print.fm_segm_list <- function(x,
                                newline = TRUE) {
   if (verbose) {
     cat("list of ", length(x), " fm_segm objects:\n", sep = "")
+    lapply(x, function(xx) {
+      print(
+        xx,
+        digits = digits,
+        verbose = TRUE,
+        newline = TRUE
+      )
+    })
+  } else {
+    for (k in seq_along(x)) {
+      print(
+        x[[k]],
+        digits = digits,
+        verbose = FALSE,
+        newline = newline
+      )
+      if (!newline && (k < length(x))) {
+        cat(", ", sep = "")
+      }
+    }
+  }
+  return(invisible(x))
+}
+
+
+#' @export
+#' @rdname fmesher-print
+print.fm_list <- function(x,
+                          ...,
+                          digits = NULL,
+                          verbose = FALSE,
+                          newline = TRUE) {
+  if (verbose) {
+    cat("list of ", length(x), " fmesher objects:\n", sep = "")
     lapply(x, function(xx) {
       print(
         xx,
@@ -230,11 +268,6 @@ print.fm_mesh_2d <- function(x, ..., digits = NULL, verbose = FALSE) {
 
 
 
-#' @param verbose logical
-#' @param digits a positive integer indicating how many significant digits are
-#'   to be used for numeric and complex x. The default, NULL, uses
-#'   `getOption("digits")`.
-#'
 #' @export
 #' @rdname fmesher-print
 print.fm_mesh_3d <- function(x, ..., digits = NULL, verbose = FALSE) {
@@ -333,11 +366,6 @@ print.fm_bbox <- function(x,
 }
 
 
-#' @param verbose logical
-#' @param digits a positive integer indicating how many significant digits are
-#'   to be used for numeric and complex x. The default, NULL, uses
-#'   `getOption("digits")`.
-#'
 #' @export
 #' @rdname fmesher-print
 print.fm_tensor <- function(x, ..., digits = NULL, verbose = FALSE) {
@@ -366,6 +394,53 @@ print.fm_tensor <- function(x, ..., digits = NULL, verbose = FALSE) {
     "\n",
     sep = ""
   )
+  invisible(x)
+}
+
+
+#' @export
+#' @rdname fmesher-print
+print.fm_lattice_2d <- function(x, ..., digits = NULL, verbose = FALSE) {
+  ret <- list(verbose = verbose)
+  ret <-
+    c(
+      ret,
+      list(
+        manifold = fm_manifold(x),
+        dim = x$dims,
+        bbox = fm_bbox(x)
+      )
+    )
+
+  cat("fm_lattice_2d object:\n", sep = "")
+  cat("  Manifold:\t", ret$manifold, "\n", sep = "")
+  cat("  Dimensions:\t", paste0(ret$dim, collapse = " x "), "\n", sep = "")
+  cat("  ", sep = "")
+  print(fm_bbox(x), digits = digits)
+  cat("  Basis d.o.f.:\t", fm_dof(x), "\n", sep = "")
+  invisible(x)
+}
+
+#' @export
+#' @rdname fmesher-print
+print.fm_lattice_Nd <- function(x, ..., digits = NULL, verbose = FALSE) {
+  ret <- list(verbose = verbose)
+  ret <-
+    c(
+      ret,
+      list(
+        manifold = fm_manifold(x),
+        dim = x$dims,
+        bbox = fm_bbox(x)
+      )
+    )
+
+  cat("fm_lattice_Nd object:\n", sep = "")
+  cat("  Manifold:\t", ret$manifold, "\n", sep = "")
+  cat("  Dimensions:\t", paste0(ret$dim, collapse = " x "), "\n", sep = "")
+  cat("  ", sep = "")
+  print(fm_bbox(x), digits = digits)
+  cat("  Basis d.o.f.:\t", fm_dof(x), "\n", sep = "")
   invisible(x)
 }
 

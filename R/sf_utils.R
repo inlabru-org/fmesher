@@ -24,7 +24,7 @@ st_signed_area <- function(sfg) {
   i <- seq_len(nrow(coords) - 1)
   edges <- cbind(coords[i, , drop = FALSE], coords[i + 1, , drop = FALSE])
   area <- sum((edges[, 3] - edges[, 1]) * (edges[, 2] + edges[, 4]) / 2)
-  return(area)
+  area
 }
 
 

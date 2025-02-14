@@ -118,12 +118,11 @@ fm_mesh_3d <- function(loc = NULL,
 fm_delaunay_3d <- function(loc, ...) {
   stopifnot(requireNamespace("geometry"))
   tv <- geometry::delaunayn(loc)
-  mesh <- fm_mesh_3d(
+  fm_mesh_3d(
     loc = loc,
     tv = tv,
     ...
   )
-  return(mesh)
 }
 
 

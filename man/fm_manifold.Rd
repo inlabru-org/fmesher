@@ -5,6 +5,8 @@
 \alias{fm_manifold_get}
 \alias{fm_manifold_get.default}
 \alias{fm_manifold_get.character}
+\alias{fm_manifold_get.fm_lattice_2d}
+\alias{fm_manifold_get.fm_lattice_Nd}
 \alias{fm_manifold_type}
 \alias{fm_manifold_dim}
 \title{Query the mesh manifold type}
@@ -16,6 +18,10 @@ fm_manifold_get(x)
 \method{fm_manifold_get}{default}(x)
 
 \method{fm_manifold_get}{character}(x)
+
+\method{fm_manifold_get}{fm_lattice_2d}(x)
+
+\method{fm_manifold_get}{fm_lattice_Nd}(x)
 
 fm_manifold_type(x)
 

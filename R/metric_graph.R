@@ -44,7 +44,7 @@ bru_mapper_metric_graph <- function(mesh, n_rep = 1, ...) {
 ibm_n.bm_metric_graph <- function(mapper, ...) {
   mesh <- mapper[["mesh"]]
   n_rep <- mapper[["n_rep"]]
-  return(n_rep * fmesher::fm_dof(mesh))
+  n_rep * fmesher::fm_dof(mesh)
 }
 #' @describeIn bm_metric_graph Returns a vector with indices for the
 #'   degrees of freedom
@@ -64,7 +64,7 @@ ibm_jacobian.bm_metric_graph <- function(mapper, input, ...) {
   # pte_tmp_list <- lapply(seq_len(nrow(pte_tmp)), function(i){pte_tmp[i,]})
   # idx_tmp <- match(input_list, pte_tmp_list)
   A_tmp <- fm_basis(mesh, input) # idx_tmp
-  return(fm_row_kron(Matrix::Matrix(1, NROW(A_tmp), n_rep), A_tmp))
+  fm_row_kron(Matrix::Matrix(1, NROW(A_tmp), n_rep), A_tmp)
 }
 
 # fmesher functions ----
@@ -165,7 +165,7 @@ fm_basis.metric_graph <- function(x,
 fm_bary.metric_graph <- function(mesh,
                                  loc,
                                  ...) {
-  return(fm_bary(fm_as_MG(mesh), loc, ...))
+  fm_bary(fm_as_MG(mesh), loc, ...)
 }
 
 #' @describeIn fm_MG Compute an `fm_MGG_bary` object
@@ -186,7 +186,7 @@ fm_bary.fm_MGG <- function(mesh,
     # cat("loc is interpreted as Euclidean coordinates")
     bary <- Euclidean_to_graph(loc, mesh)
   }
-  return(bary)
+  bary
 }
 
 #' @describeIn fm_MG Compute an `fm_MGM_bary` object
@@ -210,7 +210,7 @@ fm_bary.fm_MGM <- function(mesh,
     res <- Euclidean_to_graph(loc, mesh)
     bary_coord <- MGG_to_MGM(res, mesh) # MGG_to_MGM(res$bary, mesh)
   }
-  return(bary_coord)
+  bary_coord
 }
 
 #' @describeIn fm_MG Returns a `metric_graph` graph or mesh edge index matrix
@@ -248,7 +248,7 @@ fm_bary_simplex.fm_MGM <- function(mesh, bary = NULL, ...) {
 #' @describeIn fm_MG Return manifold type, always "G1" for `metric_graph`
 #' @export
 fm_manifold_get.metric_graph <- function() {
-  return("G1")
+  "G1"
 }
 
 
@@ -492,7 +492,7 @@ Euclidean_to_graph <- function(loc, graph) {
   # ok_ <- (norm_XY < tolerance)
   # graph_coords <- fm_as_MGG_bary(loc = res)
   # return(list(bary = graph_coords, ok = ok_))
-  return(fm_as_MGG_bary(loc = res))
+  fm_as_MGG_bary(loc = res)
 }
 
 #' @title Make a (`mesh`, `fm_bary`) object from MGG coordinates
@@ -1070,7 +1070,7 @@ simple_path_MGG <- function(graph,
     inter_edge_intervals,
     class = c("fm_MGG_interval", "tbl_df", "tbl", "data.frame")
   )
-  return(path)
+  path
 }
 
 #' @title Make an interval on graph object from sf object
@@ -1305,5 +1305,5 @@ geom_path_to_path_MGG <- function(geom_path, graph) {
   ids <- unlist(ids)
   paths <- tibble::tibble(paths = paths, ID = ids)
 
-  return(paths)
+  paths
 }

@@ -9,6 +9,7 @@
 \alias{fm_bary.fm_mesh_2d}
 \alias{fm_bary.fm_mesh_3d}
 \alias{fm_bary.fm_lattice_2d}
+\alias{fm_bary.fm_lattice_Nd}
 \title{Compute barycentric coordinates}
 \usage{
 fm_bary(...)
@@ -26,6 +27,8 @@ fm_bary(...)
 \method{fm_bary}{fm_mesh_3d}(mesh, loc, ..., max_batch_size = NULL)
 
 \method{fm_bary}{fm_lattice_2d}(mesh, loc, crs = NULL, ...)
+
+\method{fm_bary}{fm_lattice_Nd}(mesh, loc, ...)
 }
 \arguments{
 \item{\dots}{Arguments forwarded to sub-methods.}
@@ -103,6 +106,11 @@ Points that were not found give \code{NA} entries in \code{index} and \code{wher
 
 \item \code{fm_bary(fm_lattice_2d)}: An \code{fm_bary} object with columns \code{index} (vector of
 lattice cell indices) and \code{where} (4-column matrix of barycentric
+coordinates). Points that are outside the lattice are given \code{NA} entries in
+\code{index} and \code{where}.
+
+\item \code{fm_bary(fm_lattice_Nd)}: An \code{fm_bary} object with columns \code{index} (vector of
+lattice cell indices) and \code{where} \code{2^d}-column matrix of barycentric
 coordinates). Points that are outside the lattice are given \code{NA} entries in
 \code{index} and \code{where}.
 

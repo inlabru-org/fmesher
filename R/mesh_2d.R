@@ -482,7 +482,7 @@ fm_rcdt_2d_inla <- function(loc = NULL,
     extend = extend,
     refine = refine,
     cutoff = cutoff,
-    qulity.spec = quality.spec,
+    quality.spec = quality.spec,
     ...,
     .n = list(
       segm = segm.n,

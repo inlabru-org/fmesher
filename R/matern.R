@@ -10,7 +10,8 @@ NULL
 #' Whittle-Matérn SPDE models.  The boundary behaviour is determined by the
 #' provided mesh function space.
 #'
-#' @param x A mesh object, e.g. from `fm_mesh_1d()` or `fm_mesh_2d()`.
+#' @param x A mesh object, e.g. from `fm_mesh_1d()`, `fm_mesh_2d()`, or
+#' other object with supporting [fm_fem()] and [fm_manifold_dim()] methods.
 #' @param alpha The SPDE operator order. The resulting smoothness index
 #' is `nu = alpha - dim / 2`.
 #' @param rho The Matérn range parameter

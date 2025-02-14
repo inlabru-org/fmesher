@@ -449,7 +449,7 @@ NULL
 #' str(m[2])
 `c.fm_segm` <- function(...) {
   y <- lapply(list(...), fm_as_segm_list)
-  return(do.call("c", y))
+  do.call("c", y)
 }
 
 #' @export

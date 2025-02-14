@@ -12,7 +12,7 @@ local_bru_test_graph <- function() {
   edge7 <- rbind(c(1, 1), c(2, 1))
   edges <- list(edge1, edge2, edge3, edge4, edge5, edge6, edge7)
   graph <- MetricGraph::metric_graph$new(edges = edges)
-  return(graph)
+  graph
 }
 
 test_that("MGG bary", {

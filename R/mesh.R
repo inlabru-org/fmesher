@@ -652,3 +652,9 @@ fm_dof.fm_tensor <- function(x) {
 fm_dof.fm_lattice_2d <- function(x) {
   length(x$x) * length(x$y)
 }
+
+#' @rdname fm_dof
+#' @export
+fm_dof.fm_lattice_Nd <- function(x) {
+  prod(x$dims)
+}

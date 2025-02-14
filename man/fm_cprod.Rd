@@ -30,10 +30,7 @@ If the object defining points in a particular dimension has no
 weights attached to it all weights are assumed to be 1.
 }
 \examples{
-\donttest{
-# fm_int needs INLA
-if (TRUE &&
-  require("ggplot2")) {
+if (require("ggplot2")) {
   # Create integration points in dimension 'myDim' and 'myDiscreteDim'
   ips1 <- fm_int(fm_mesh_1d(1:20),
     rbind(c(0, 3), c(3, 8)),
@@ -48,7 +45,6 @@ if (TRUE &&
   ggplot(ips) +
     geom_point(aes(myDim, myDiscreteDim, size = weight)) +
     scale_size_area()
-}
 }
 
 }
