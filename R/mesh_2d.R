@@ -778,12 +778,6 @@ fm_mesh_2d_inla <- function(loc = NULL,
       offset <- c(-0.05, -0.15)
     }
   }
-  if (any(offset < 0) &&
-    (fm_diameter(loc) +
-      fm_diameter(loc.domain) +
-      fm_diameter(interior) == 0.0)) {
-    offset[offset < 0] <- 1
-  }
   if (missing(n) || is.null(n)) {
     n <- c(8)
   }
@@ -840,6 +834,19 @@ fm_mesh_2d_inla <- function(loc = NULL,
   }
   if (length(n) < num.layers) {
     n <- c(n, 16)
+  }
+
+  if (fm_diameter(loc) +
+      fm_diameter(loc.domain) +
+      fm_diameter(interior) == 0.0) {
+    for (k in seq_len(num.layers)) {
+      if (offset[k] < 0) {
+        if ((length(boundary) < k) ||
+            (fm_diameter(boundary[[k]]) == 0.0)) {
+          offset[k] <- 1
+        }
+      }
+    }
   }
 
   ## Unify the dimensionality of the boundary&interior segments input

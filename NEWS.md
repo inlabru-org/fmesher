@@ -32,7 +32,10 @@
   blocks for discrete domains (version `0.2.0.9012`)
 * Add `mappings` and `defs` support to the `geom_fm.fm_mesh_1d()` method,
   allowing separate control of the `ggplot2` aesthetics for basis functions,
-  knots, and function evaluations. (version `0.2.0.9013`)
+  knots, and function evaluations (version `0.2.0.9013`)
+* Fix bug in `fm_mesh_2d_inla()` that improperly ignored negative `offset`
+  values when creating meshes based on only boundary information (version `0.2.0.9014`)
+
 
 # fmesher 0.2.0
 
