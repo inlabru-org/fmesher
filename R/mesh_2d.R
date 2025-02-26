@@ -837,12 +837,12 @@ fm_mesh_2d_inla <- function(loc = NULL,
   }
 
   if (fm_diameter(loc) +
-      fm_diameter(loc.domain) +
-      fm_diameter(interior) == 0.0) {
+    fm_diameter(loc.domain) +
+    fm_diameter(interior) == 0.0) {
     for (k in seq_len(num.layers)) {
       if (offset[k] < 0) {
         if ((length(boundary) < k) ||
-            (fm_diameter(boundary[[k]]) == 0.0)) {
+          (fm_diameter(boundary[[k]]) == 0.0)) {
           offset[k] <- 1
         }
       }

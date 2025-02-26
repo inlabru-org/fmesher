@@ -35,6 +35,7 @@
   knots, and function evaluations (version `0.2.0.9013`)
 * Fix bug in `fm_mesh_2d_inla()` that improperly ignored negative `offset`
   values when creating meshes based on only boundary information (version `0.2.0.9014`)
+* Minor bugfix for `print.fm_segm()` for empty `fm_segm` objects (version `0.2.0.9015`)
 
 
 # fmesher 0.2.0
