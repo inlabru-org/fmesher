@@ -132,10 +132,12 @@ test_that("interior should be single object", {
   )
 
   # List interior supported from 0.2.0.9016
-  expect_error(
-    fm_mesh_2d_inla(boundary = bnd, interior = list(interior), max.edge = c(1, 2)),
-    NA
-  )
+  expect_error(fm_mesh_2d_inla(
+    boundary = bnd,
+    interior = list(interior),
+    max.edge = c(1, 2)
+  ),
+  NA)
   expect_error(
     fm_mesh_2d_inla(
       boundary = list(bnd, fm_nonconvex_hull(bnd)),
@@ -143,18 +145,4 @@ test_that("interior should be single object", {
     ),
     NA
   )
-
-  #  Probable cause and possible solution:
-  ## Doing a debug the final mesh3 looks just like I want.
-  ## The error is caused by the line
-  # l144 rbind(segm.loc, interior[[k]]$loc),
-  # since code assumes that interior is a list of segments just as the boundaries but
-  # l28  boundary <- fm_as_segm_list(boundary)
-  # l29  interior <- fm_as_segm(interior)
-  # suggestion: Replace the for-loop below for interior with a single call
-  #    for (k in seq_along(interior)) {
-  #      if (!is.null(interior[[k]])) {
-  #        segm.loc <- rbind(segm.loc, interior[[k]]$loc)
-  #      }
-  #    }
 })
