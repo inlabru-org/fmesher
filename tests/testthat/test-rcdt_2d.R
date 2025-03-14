@@ -89,3 +89,72 @@ test_that("fm_lattice_2d ordering", {
   expect_equal(latt1$y, latt2$y)
   expect_equal(latt1$loc, latt2$loc)
 })
+
+
+test_that("interior should be single object", {
+  # create boundary polygon
+  bnd <- sf::st_sfc(sf::st_polygon(list(as.matrix(
+    data.frame(x = c(0, 0, 10, 10, 0), y = c(0, 10, 10, 0, 0))
+  ))))
+  # create interior polygon
+  interior <- sf::st_sfc(sf::st_polygon(list(as.matrix(
+    data.frame(x = c(3, 3, 7, 7, 3), y = c(0, 5, 5, 0, 0))
+  ))))
+
+  # simple mesh
+  expect_error(fm_mesh_2d_inla(boundary = bnd, max.edge = 1), NA)
+  # with interior
+  expect_error(fm_mesh_2d_inla(
+    boundary = bnd,
+    interior = interior,
+    max.edge = 1
+  ),
+  NA)
+  # extended boundary
+  expect_error(fm_mesh_2d_inla(boundary = bnd, max.edge = c(1, 2)), NA)
+  # or extended by running non-convex for the boundary
+  expect_error(fm_mesh_2d_inla(
+    boundary = list(bnd, fm_nonconvex_hull(bnd)),
+    max.edge = 1
+  ), NA)
+
+  # combining extended and interior segment should not fail
+  expect_error(
+    fm_mesh_2d_inla(boundary = bnd, interior = interior, max.edge = c(1, 2)),
+    NA
+  )
+  expect_error(
+    fm_mesh_2d_inla(
+      boundary = list(bnd, fm_nonconvex_hull(bnd)),
+      interior = interior, max.edge = 1
+    ),
+    NA
+  )
+
+  # List interior supported from 0.2.0.9016
+  expect_error(
+    fm_mesh_2d_inla(boundary = bnd, interior = list(interior), max.edge = c(1, 2)),
+    NA
+  )
+  expect_error(
+    fm_mesh_2d_inla(
+      boundary = list(bnd, fm_nonconvex_hull(bnd)),
+      interior = list(interior), max.edge = 1
+    ),
+    NA
+  )
+
+  #  Probable cause and possible solution:
+  ## Doing a debug the final mesh3 looks just like I want.
+  ## The error is caused by the line
+  # l144 rbind(segm.loc, interior[[k]]$loc),
+  # since code assumes that interior is a list of segments just as the boundaries but
+  # l28  boundary <- fm_as_segm_list(boundary)
+  # l29  interior <- fm_as_segm(interior)
+  # suggestion: Replace the for-loop below for interior with a single call
+  #    for (k in seq_along(interior)) {
+  #      if (!is.null(interior[[k]])) {
+  #        segm.loc <- rbind(segm.loc, interior[[k]]$loc)
+  #      }
+  #    }
+})
