@@ -690,7 +690,9 @@ fm_mesh_2d <- function(...) {
 #' (default=16)
 #' @param boundary one or more (as list) of [fm_segm()] objects, or objects
 #' supported by [fm_as_segm()]
-#' @param interior one object supported by [fm_as_segm()]
+#' @param interior one object supported by [fm_as_segm()], or (from version
+#' `0.2.0.9016`) a list of such objects.  If a list, the objects are joined
+#' into a single object.
 #' @param max.edge The largest allowed triangle edge length.  One or two
 #' values.
 #' @param min.angle The smallest allowed triangle angle.  One or two values.
@@ -765,7 +767,11 @@ fm_mesh_2d_inla <- function(loc = NULL,
   loc.domain <- fm_unify_coords(loc.domain, crs = crs)
 
   boundary <- fm_as_segm_list(boundary)
-  interior <- fm_as_segm(interior)
+  if (is.list(interior)) {
+    interior <- fm_segm_join(fm_as_segm_list(interior))
+  } else {
+    interior <- fm_as_segm(interior)
+  }
 
   if (length(boundary) == 0) {
     list(NULL)
@@ -777,12 +783,6 @@ fm_mesh_2d_inla <- function(loc = NULL,
     } else {
       offset <- c(-0.05, -0.15)
     }
-  }
-  if (any(offset < 0) &&
-    (fm_diameter(loc) +
-      fm_diameter(loc.domain) +
-      fm_diameter(interior) == 0.0)) {
-    offset[offset < 0] <- 1
   }
   if (missing(n) || is.null(n)) {
     n <- c(8)
@@ -840,6 +840,19 @@ fm_mesh_2d_inla <- function(loc = NULL,
   }
   if (length(n) < num.layers) {
     n <- c(n, 16)
+  }
+
+  if (fm_diameter(loc) +
+    fm_diameter(loc.domain) +
+    fm_diameter(interior) == 0.0) {
+    for (k in seq_len(num.layers)) {
+      if (offset[k] < 0) {
+        if ((length(boundary) < k) ||
+          (fm_diameter(boundary[[k]]) == 0.0)) {
+          offset[k] <- 1
+        }
+      }
+    }
   }
 
   ## Unify the dimensionality of the boundary&interior segments input
@@ -935,10 +948,8 @@ fm_mesh_2d_inla <- function(loc = NULL,
       segm.loc <- rbind(segm.loc, boundary[[k]]$loc)
     }
   }
-  for (k in seq_along(interior)) {
-    if (!is.null(interior[[k]])) {
-      segm.loc <- rbind(segm.loc, interior[[k]]$loc)
-    }
+  if (!is.null(interior)) {
+    segm.loc <- rbind(segm.loc, interior$loc)
   }
   if (nrow(segm.loc) > 0) {
     proj <- fm_evaluator(mesh3, loc = segm.loc)$proj

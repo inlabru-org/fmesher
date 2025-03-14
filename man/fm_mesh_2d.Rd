@@ -45,7 +45,9 @@ relative to the approximate data diameter (default=-0.10???)}
 \item{boundary}{one or more (as list) of \code{\link[=fm_segm]{fm_segm()}} objects, or objects
 supported by \code{\link[=fm_as_segm]{fm_as_segm()}}}
 
-\item{interior}{one object supported by \code{\link[=fm_as_segm]{fm_as_segm()}}}
+\item{interior}{one object supported by \code{\link[=fm_as_segm]{fm_as_segm()}}, or (from version
+\verb{0.2.0.9016}) a list of such objects.  If a list, the objects are joined
+into a single object.}
 
 \item{max.edge}{The largest allowed triangle edge length.  One or two
 values.}

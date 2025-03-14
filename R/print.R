@@ -66,15 +66,30 @@ print.fm_segm <- function(x,
   if (verbose) {
     cat("  ", sep = "")
   }
-  cat(as.character(ret$n),
-    if (all(x$is.bnd)) {
-      " boundary edge"
-    } else {
-      " interior edge"
-    },
-    if (ret$n != 1) "s" else "",
-    sep = ""
-  )
+  if (ret$n > 0) {
+    extra <- ""
+    if (sum(x$is.bnd) > 0) {
+      cat(sum(x$is.bnd),
+        " boundary edge",
+        if (sum(x$is.bnd) != 1) {
+          "s"
+        },
+        sep = ""
+      )
+      extra <- ", "
+    }
+    if (sum(!x$is.bnd) > 0) {
+      cat(extra, sum(!x$is.bnd),
+        " interior edge",
+        if (sum(!x$is.bnd) != 1) {
+          "s"
+        },
+        sep = ""
+      )
+    }
+  } else {
+    cat("0 edges", sep = "")
+  }
   if (!is.null(ret$grps)) {
     n <- length(ret$grps)
     cat(" (", n, " group", if (n != 1) "s" else "", sep = "")
@@ -111,6 +126,9 @@ print.fm_segm_list <- function(x,
                                newline = TRUE) {
   if (verbose) {
     cat("list of ", length(x), " fm_segm objects:\n", sep = "")
+    if (!is.null(names(x)[k])) {
+      cat(names(x)[k], ": ", sep = "")
+    }
     lapply(x, function(xx) {
       print(
         xx,
@@ -121,6 +139,9 @@ print.fm_segm_list <- function(x,
     })
   } else {
     for (k in seq_along(x)) {
+      if (!is.null(names(x)[k])) {
+        cat(names(x)[k], ": ", sep = "")
+      }
       print(
         x[[k]],
         digits = digits,
@@ -196,11 +217,14 @@ print.fm_mesh_2d <- function(x, ..., digits = NULL, verbose = FALSE) {
   ret <- c(ret, list(crs_proj4 = as.character(fm_proj4string(crs))))
 
   if (!is.null(x$segm)) {
-    ret$segm <- fm_as_segm_list(list(x$segm$bnd, x$segm$int))
+    ret$segm <- fm_as_segm_list(list(
+      "Boundary" = x$segm$bnd,
+      "Interior" = x$segm$int
+    ))
   } else {
     ret$segm <- fm_as_segm_list(list(
-      segm.bnd = fm_segm(is.bnd = TRUE),
-      segm.int = fm_segm(is.bnd = FALSE)
+      Boundary = fm_segm(is.bnd = TRUE),
+      Interior = fm_segm(is.bnd = FALSE)
     ))
   }
 
