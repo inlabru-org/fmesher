@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9015</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9016</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,25 +46,37 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="fmesher-development-version">fmesher (development version)<a class="anchor" aria-label="anchor" href="#fmesher-development-version"></a></h2>
+<div class="section level3">
+<h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
 <ul><li>Convert <code><a href="../reference/fm_bary.html">fm_bary()</a></code> output to a dedicated <code>fm_bary</code> class, with elements ‘index’ (index of the containing simplex) and ‘where’ (matrix of barycentric weights). (version <code>0.2.0.9001</code>)</li>
 <li>Add <code><a href="../reference/fm_bary_simplex.html">fm_bary_simplex()</a></code> generic method to extract the simplex vertex indices for an <code>fm_bary</code> object. (version <code>0.2.0.9001</code>)</li>
 <li>Add <code><a href="../reference/fm_bary_loc.html">fm_bary_loc()</a></code> generic method for converting <code>fm_bary</code> information to Euclidean coordinates (version <code>0.2.0.9005</code>)</li>
-<li>Simplify <code>fm_basis</code> object creation, and add <code>custom_classes</code> developers vignette (version <code>0.2.0.9004</code>)</li>
-<li>Remove long deprecated <code>inla.mesh</code> etc legacy methods; need to explicitly convert old objects. Retaining the <code>inla.mesh</code> etc class suffixes for now. (version <code>0.2.0.9001</code>)</li>
-<li>Handle <code>NA</code> location inputs to <code><a href="../reference/fm_basis.html">fm_basis.fm_mesh_1d()</a></code> (version <code>0.2.0.9002</code>)</li>
-<li>Add <code>fm_basis(mesh, loc = fm_bary(mesh, ...))</code> support for <code>fm_mesh_1d</code> and <code>fm_mesh_2d</code> objects (version <code>0.2.0.9006</code>)</li>
-<li>Make <code><a href="../reference/call-stack.html">fm_try_callstack()</a></code> more robust against large callstack sizes; solves “C stack” crash issue for <code>inla()</code> error reporting (version <code>0.2.0.9007</code>)</li>
-<li>Add <code><a href="../reference/fm_mesh_3d.html">fm_mesh_3d()</a></code> for 3D meshes (version <code>0.2.0.9008</code>)</li>
-<li>Fix <code><a href="../reference/fm_bbox.html">fm_bbox.fm_mesh_2d()</a></code> bug for <code>"S2"</code> and <code>"M2"</code> manifold meshes (version <code>0.2.0.9008</code>)</li>
-<li>Fix bug in <code><a href="../reference/fm_rcdt_2d.html">fm_rcdt_2d_inla()</a></code> that lead to ignoring the <code>quality.spec</code> argument (version <code>0.2.0.9009</code>)</li>
+<li>Add support for <code>fm_mesh_3d</code> and new <code>fm_lattice_Nd</code> class (version <code>0.2.0.9008</code> and <code>0.2.0.9011</code>)</li>
 <li>Add <code><a href="../reference/fm_assess.html">fm_assess()</a></code> method, replicating the old <code>INLA::inla.mesh.assessment()</code> method (version <code>0.2.0.9010</code>)</li>
 <li>Add R implementation of <code><a href="../reference/fm_qinv.html">fm_qinv()</a></code> for computing sparse matrix partial inverses (version <code>0.2.0.9010</code>)</li>
-<li>Extended support for <code>fm_mesh_3d</code> and new <code>fm_lattice_Nd</code> class (version <code>0.2.0.9011</code>)</li>
+</ul></div>
+<div class="section level3">
+<h3 id="improved-features-development-version">Improved features<a class="anchor" aria-label="anchor" href="#improved-features-development-version"></a></h3>
+<ul><li>Handle <code>NA</code> location inputs to <code><a href="../reference/fm_basis.html">fm_basis.fm_mesh_1d()</a></code> (version <code>0.2.0.9002</code>)</li>
+<li>Simplify <code>fm_basis</code> object creation, and add <code>custom_classes</code> developers vignette (version <code>0.2.0.9004</code>)</li>
+<li>Add <code>fm_basis(mesh, loc = fm_bary(mesh, ...))</code> support for <code>fm_mesh_1d</code> and <code>fm_mesh_2d</code> objects (version <code>0.2.0.9006</code>)</li>
 <li>Add <code><a href="https://rdrr.io/r/base/list.html" class="external-link">list()</a></code> input support for <code>fm_int.numeric</code>, to allow multiple integration blocks for discrete domains (version <code>0.2.0.9012</code>)</li>
 <li>Add <code>mappings</code> and <code>defs</code> support to the <code><a href="../reference/geom_fm.html">geom_fm.fm_mesh_1d()</a></code> method, allowing separate control of the <code>ggplot2</code> aesthetics for basis functions, knots, and function evaluations (version <code>0.2.0.9013</code>)</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
+<ul><li>Make <code><a href="../reference/call-stack.html">fm_try_callstack()</a></code> more robust against large callstack sizes; solves “C stack” crash issue for <code>inla()</code> error reporting (version <code>0.2.0.9007</code>)</li>
+<li>Fix <code><a href="../reference/fm_bbox.html">fm_bbox.fm_mesh_2d()</a></code> bug for <code>"S2"</code> and <code>"M2"</code> manifold meshes (version <code>0.2.0.9008</code>)</li>
+<li>Fix bug in <code><a href="../reference/fm_rcdt_2d.html">fm_rcdt_2d_inla()</a></code> that lead to ignoring the <code>quality.spec</code> argument (version <code>0.2.0.9009</code>)</li>
 <li>Fix bug in <code><a href="../reference/fm_mesh_2d.html">fm_mesh_2d_inla()</a></code> that improperly ignored negative <code>offset</code> values when creating meshes based on only boundary information (version <code>0.2.0.9014</code>)</li>
 <li>Minor bugfix for <code><a href="../reference/fmesher-print.html">print.fm_segm()</a></code> for empty <code>fm_segm</code> objects (version <code>0.2.0.9015</code>)</li>
+<li>Bugfix for <code>fm_mesh_2d_inla(interior = ...)</code> where part of the code incorrectly assumed <code>interior</code> would be a list. Now converts a list into a single <code>fm_segm</code> object (version <code>0.2.0.9016</code>)</li>
 </ul></div>
+<div class="section level3">
+<h3 id="deprecation-updates-development-version">Deprecation updates<a class="anchor" aria-label="anchor" href="#deprecation-updates-development-version"></a></h3>
+<ul><li>Remove long deprecated <code>inla.mesh</code> etc legacy methods; need to explicitly convert old objects. Retaining the <code>inla.mesh</code> etc class suffixes for now. (version <code>0.2.0.9001</code>)</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.0" id="fmesher-020">fmesher 0.2.0<a class="anchor" aria-label="anchor" href="#fmesher-020"></a></h2><p class="text-muted">CRAN release: 2024-11-06</p>
 <div class="section level3">

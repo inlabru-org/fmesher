@@ -9,7 +9,7 @@ articles:
   fmesher_library: fmesher_library.html
   inla_conversion: inla_conversion.html
   articles/variable_mesh_quality: variable_mesh_quality.html
-last_built: 2025-02-26T08:43Z
+last_built: 2025-03-14T11:18Z
 urls:
   reference: https://inlabru-org.github.io/fmesher/reference
   article: https://inlabru-org.github.io/fmesher/articles
