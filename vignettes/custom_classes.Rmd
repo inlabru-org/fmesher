@@ -43,7 +43,7 @@ Assuming the class is called `custom`, the methods should be named `fm_dof.custo
   matrix *must* be all-zero for invalid `loc`.
 - With the above requirements fulfilled, the default `fm_evaluator()` and
   `fm_evaluate()` methods can be used to evaluate functions at any location,
-  with the need fo the user to define any further methods.
+  without the need for the user to define any further methods.
   
   Special `fm_evaluator.custom()` and `fm_evaluate.custom()` methods may be
   defined if needed, e.g. to support semi-automated output reformatting.
