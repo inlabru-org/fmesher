@@ -7,7 +7,7 @@
 #' @description Compute intersections between line segments and triangle edges,
 #' and filter out segment of length zero.
 #'
-#' @param mesh An `fm_mesh_2d` or `inla.mesh` object
+#' @param mesh An [fm_mesh_2d] object
 #' @param segm An [fm_segm()] object with segments to be split
 #' @param ... Unused.
 #' @returns An [fm_segm()] object with the same crs as the mesh,
@@ -48,7 +48,7 @@ fm_split_lines.fm_mesh_2d <- function(mesh, segm, ...) {
   origin <- seq_len(NROW(segm$idx))
   if (NROW(segm$loc) > 0) {
     # Filter out segments not on the mesh
-    t1 <- fm_bary(mesh, loc = segm$loc, crs = fm_crs(segm))$t
+    t1 <- fm_bary(mesh, loc = segm$loc, crs = fm_crs(segm))$index
     keep <- !(is.na(t1[segm$idx[, 1]]) | is.na(t1[segm$idx[, 2]]))
     # if (any(!keep)) { warning("points outside boundary! filtering...")}
     segm <- fm_segm(
@@ -108,11 +108,5 @@ fm_split_lines.fm_mesh_2d <- function(mesh, segm, ...) {
   )
   segm.split$origin <- origin[keep]
 
-  return(segm.split)
-}
-
-#' @rdname fm_split_lines
-#' @export
-fm_split_lines.inla.mesh <- function(mesh, ...) {
-  fm_split_lines(fm_as_mesh_2d(mesh), ...)
+  segm.split
 }

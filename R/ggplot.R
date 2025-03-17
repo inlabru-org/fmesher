@@ -44,12 +44,11 @@ geom_fm <- function(mapping = NULL, data = NULL, ...) {
 #' ```
 #'
 #' @export
-#' @param mappings optional list of `aes` mappings for the non-triangle parts of
+#' @param mappings,defs optional lists of `aes` mappings and non-`aes` settings.
+#'   For `fm_mesh_2d`, the non-triangle parts of
 #'   the mesh, named "int" for interior constraint edges, "bnd" for boundary
-#'   edges, and "loc" for the vertices.
-#' @param defs optional list of non-`aes` settings for the non-triangle parts of
-#'   the mesh, named "int" for interior constraint edges, "bnd" for boundary
-#'   edges, and "loc" for the vertices.
+#'   edges, and "loc" for the vertices. For `fm_mesh_1d`, the elements are
+#'   "knots" and "fun".
 #' @param mapping_int,mapping_bnd,defs_int,defs_bnd
 #' `r lifecycle::badge("deprecated")` arguments; see `mappings` and `defs`.
 #' @param crs Optional crs to transform the object to before plotting.
@@ -98,7 +97,7 @@ geom_fm.fm_mesh_2d <- function(mapping = NULL,
     mappings <- list()
   }
   if (is.null(defs)) {
-    mappings <- list()
+    defs <- list()
   }
   if (lifecycle::is_present(mapping_int)) {
     lifecycle::deprecate_warn(
@@ -325,11 +324,19 @@ geom_fm.fm_segm <- function(mapping = NULL,
 geom_fm.fm_mesh_1d <- function(mapping = NULL,
                                data = NULL,
                                ...,
+                               mappings = NULL,
+                               defs = NULL,
                                xlim = NULL,
                                basis = TRUE,
                                knots = TRUE,
                                derivatives = FALSE,
                                weights = NULL) {
+  if (is.null(mappings)) {
+    mappings <- list()
+  }
+  if (is.null(defs)) {
+    defs <- list()
+  }
   if (is.null(xlim)) {
     xlim <- data$interval
   }
@@ -384,8 +391,8 @@ geom_fm.fm_mesh_1d <- function(mapping = NULL,
   maps <-
     list(
       basis = mapping,
-      knots = ggplot2::aes(),
-      fun = ggplot2::aes()
+      knots = mappings$knots,
+      fun = mappings$fun
     )
   if (derivatives) {
     maps_def <- list(basis = ggplot2::aes(
@@ -417,11 +424,13 @@ geom_fm.fm_mesh_1d <- function(mapping = NULL,
   defs <-
     list(
       basis = list(...),
-      knots = list()
+      knots = defs$knots,
+      fun = defs$fun
     )
   defs_def <- list(
     basis = list(),
-    knots = list(linewidth = 0.5, alpha = 0.5)
+    knots = list(linewidth = 0.5, alpha = 0.5),
+    fun = list()
     #    basis = list(linewidth = 0.25),
     #    knots = list(linewidth = 0.25)
   )

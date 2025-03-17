@@ -1,3 +1,57 @@
+# fmesher 0.3.0
+
+## New features
+
+* Convert `fm_bary()` output to a dedicated `fm_bary` class, with elements 'index'
+  (index of the containing simplex) and 'where' (matrix of barycentric weights).
+  (version `0.2.0.9001`)
+* Add `fm_bary_simplex()` generic method to extract the simplex vertex indices for an
+  `fm_bary` object.
+  (version `0.2.0.9001`)
+* Add `fm_bary_loc()` generic method for converting `fm_bary` information to
+  Euclidean coordinates (version `0.2.0.9005`)
+* Add support for `fm_mesh_3d` and new `fm_lattice_Nd` class
+  (version `0.2.0.9008` and `0.2.0.9011`)
+* Add `fm_assess()` method, replicating the old `INLA::inla.mesh.assessment()`
+  method (version `0.2.0.9010`)
+* Add R implementation of `fm_qinv()` for computing sparse matrix partial
+  inverses (version `0.2.0.9010`)
+  
+## Improved features
+
+* Handle `NA` location inputs to `fm_basis.fm_mesh_1d()` (version `0.2.0.9002`)
+* Simplify `fm_basis` object creation, and add `custom_classes` developers
+  vignette (version `0.2.0.9004`)
+* Add `fm_basis(mesh, loc = fm_bary(mesh, ...))` support for `fm_mesh_1d`
+  and `fm_mesh_2d` objects (version `0.2.0.9006`)
+* Add `list()` input support for `fm_int.numeric`, to allow multiple integration
+  blocks for discrete domains (version `0.2.0.9012`)
+* Add `mappings` and `defs` support to the `geom_fm.fm_mesh_1d()` method,
+  allowing separate control of the `ggplot2` aesthetics for basis functions,
+  knots, and function evaluations (version `0.2.0.9013`)
+* Add support for `character` block input to `fm_block` methods, to automate
+  multi-domain integration support from `fm_int()` (version `0.2.0.9017`)
+  
+## Bug fixes
+
+* Make `fm_try_callstack()` more robust against large callstack sizes; solves
+  "C stack" crash issue for `inla()` error reporting (version `0.2.0.9007`)
+* Fix `fm_bbox.fm_mesh_2d()` bug for `"S2"` and `"M2"` manifold meshes (version `0.2.0.9008`)
+* Fix bug in `fm_rcdt_2d_inla()` that lead to ignoring the `quality.spec` argument
+  (version `0.2.0.9009`)
+* Fix bug in `fm_mesh_2d_inla()` that improperly ignored negative `offset`
+  values when creating meshes based on only boundary information (version `0.2.0.9014`)
+* Minor bugfix for `print.fm_segm()` for empty `fm_segm` objects (version `0.2.0.9015`)
+* Bugfix for `fm_mesh_2d_inla(interior = ...)` where part of the code incorrectly
+  assumed `interior` would be a list. Now converts a list into a single `fm_segm`
+  object (version `0.2.0.9016`)
+
+## Deprecation updates
+
+* Remove long deprecated `inla.mesh` etc legacy methods; need to explicitly
+  convert old objects. Retaining the `inla.mesh` etc class suffixes for now.
+  (version `0.2.0.9001`)
+
 # fmesher 0.2.0
 
 ## New methods

@@ -5,8 +5,10 @@
 \alias{fm_as_fm.NULL}
 \alias{fm_as_fm.fm_mesh_1d}
 \alias{fm_as_fm.fm_mesh_2d}
+\alias{fm_as_fm.fm_mesh_3d}
 \alias{fm_as_fm.fm_tensor}
 \alias{fm_as_fm.fm_segm}
+\alias{fm_as_fm.fm_lattice_Nd}
 \alias{fm_as_fm.fm_lattice_2d}
 \alias{fm_as_fm.fm_bbox}
 \alias{fm_as_fm.crs}
@@ -28,9 +30,13 @@ fm_as_fm(x, ...)
 
 \method{fm_as_fm}{fm_mesh_2d}(x, ...)
 
+\method{fm_as_fm}{fm_mesh_3d}(x, ...)
+
 \method{fm_as_fm}{fm_tensor}(x, ...)
 
 \method{fm_as_fm}{fm_segm}(x, ...)
+
+\method{fm_as_fm}{fm_lattice_Nd}(x, ...)
 
 \method{fm_as_fm}{fm_lattice_2d}(x, ...)
 
@@ -62,7 +68,7 @@ An object of some \verb{fm_*} class
 }
 \description{
 Used for conversion from general objects
-(usually \code{inla.mesh} and other INLA specific classes)
+(usually \code{inla.mesh} and other legacy INLA specific classes)
 to \code{fmesher} classes.
 }
 \examples{
@@ -72,12 +78,15 @@ fm_as_fm(NULL)
 \seealso{
 Other object creation and conversion: 
 \code{\link{fm_as_lattice_2d}()},
+\code{\link{fm_as_lattice_Nd}()},
 \code{\link{fm_as_mesh_1d}()},
 \code{\link{fm_as_mesh_2d}()},
+\code{\link{fm_as_mesh_3d}()},
 \code{\link{fm_as_segm}()},
 \code{\link{fm_as_sfc}()},
 \code{\link{fm_as_tensor}()},
 \code{\link{fm_lattice_2d}()},
+\code{\link{fm_lattice_Nd}()},
 \code{\link{fm_mesh_1d}()},
 \code{\link{fm_mesh_2d}()},
 \code{\link{fm_segm}()},

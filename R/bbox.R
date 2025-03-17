@@ -105,7 +105,31 @@ fm_bbox.fm_mesh_1d <- function(x, ...) {
 #' @rdname fm_bbox
 #' @export
 fm_bbox.fm_mesh_2d <- function(x, ...) {
-  fm_bbox(x[["loc"]][, seq_len(fm_manifold_dim(x)), drop = FALSE])
+  if (fm_manifold(x, "R2")) {
+    d <- 2L
+  } else {
+    d <- min(NCOL(x[["loc"]]), 3L)
+  }
+  box <- fm_bbox(x[["loc"]][, seq_len(d), drop = FALSE])
+  ranges <- vapply(
+    seq_len(length(box)),
+    function(k) {
+      diff(box[[k]])
+    },
+    numeric(1)
+  )
+  if (all(ranges <= 0)) {
+    return(box)
+  }
+  d <- max(1L, max(which(ranges > 0)))
+  box <- box[seq_len(d)]
+  box
+}
+
+#' @rdname fm_bbox
+#' @export
+fm_bbox.fm_mesh_3d <- function(x, ...) {
+  fm_bbox(x[["loc"]])
 }
 
 #' @rdname fm_bbox
@@ -120,6 +144,11 @@ fm_bbox.fm_segm <- function(x, ...) {
 #' @rdname fm_bbox
 #' @export
 fm_bbox.fm_lattice_2d <- function(x, ...) {
+  fm_bbox(x[["loc"]])
+}
+#' @rdname fm_bbox
+#' @export
+fm_bbox.fm_lattice_Nd <- function(x, ...) {
   fm_bbox(x[["loc"]])
 }
 
@@ -158,18 +187,6 @@ fm_bbox.bbox <- function(x, ...) {
 
 #' @rdname fm_bbox
 #' @export
-fm_bbox.inla.mesh <- function(x, ...) {
-  fm_bbox(fm_as_fm(x))
-}
-
-#' @rdname fm_bbox
-#' @export
-fm_bbox.inla.mesh.segment <- function(x, ...) {
-  fm_bbox(fm_as_fm(x))
-}
-
-#' @rdname fm_bbox
-#' @export
 fm_as_bbox <- function(x, ...) {
   fm_bbox(x, ...)
 }
@@ -190,8 +207,8 @@ fm_as_bbox <- function(x, ...) {
 #'   coercible with `fm_as_bbox(list(...))`.
 #' @param .join logical; if `TRUE`, concatenate the bounding boxes into a single
 #'   multi-dimensional bounding box. Default is `FALSE`.
-#' @returns For [c.fm_bbox()], a `fm_bbox_list` object if `join = FALSE` (the
-#'   default) or an `fm_bbox` object if `join = TRUE`.
+#' @returns For [c.fm_bbox()], a `fm_bbox_list` object if `.join = FALSE` (the
+#'   default) or an `fm_bbox` object if `.join = TRUE`.
 #' @examples
 #' m <- c(A = fm_bbox(cbind(1, 2)), B = fm_bbox(cbind(3, 4)))
 #' str(m)
@@ -204,6 +221,25 @@ fm_as_bbox <- function(x, ...) {
     y <- lapply(y, function(xx) unclass(xx))
     y <- do.call("c", y)
     y <- fm_bbox(y)
+  }
+  y
+}
+
+#' @describeIn fm_bbox Convert a list to a `fm_bbox_list` object, with
+#' each element converted to an `fm_bbox` object.
+#' @export
+#' @examples
+#' m <- fm_as_bbox_list(list(
+#'   A = fm_bbox(cbind(1, 2)),
+#'   B = fm_bbox(cbind(3, 4))
+#' ))
+#' str(fm_as_bbox_list(m))
+fm_as_bbox_list <- function(x, ...) {
+  if (is.list(x) && !inherits(x, c("fm_bbox", "fm_bbox_list"))) {
+    y <- lapply(x, function(xx) fm_as_bbox(xx))
+    y <- do.call("c", y)
+  } else {
+    y <- fm_as_list(x, ..., .class_stub = "bbox")
   }
   y
 }

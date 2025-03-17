@@ -56,6 +56,29 @@ fm_manifold_get.character <- function(x) {
   x
 }
 
+#' @rdname fm_manifold
+#' @export
+fm_manifold_get.fm_lattice_2d <- function(x) {
+  if (is.null(x[["manifold"]])) {
+    if (fm_crs_is_geocent(x[["crs"]])) {
+      return("S2")
+    }
+    return("R2")
+  }
+  x[["manifold"]]
+}
+
+#' @rdname fm_manifold
+#' @export
+fm_manifold_get.fm_lattice_Nd <- function(x) {
+  if (is.null(x[["manifold"]])) {
+    return(paste0("R", length(x[["dims"]])))
+  }
+  x[["manifold"]]
+}
+
+
+
 # Check match for a single type
 fm_manifold_match <- function(x, type) {
   if (is.null(x)) {

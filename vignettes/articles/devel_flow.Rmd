@@ -78,7 +78,7 @@ classDiagram
         }
     class is_2D{
         2D Check
-        (!is.null(samplers) && inherits(samplers, sp ojbect)) || inherits(domain, "inla.mesh")
+        (!is.null(samplers) && inherits(samplers, sp ojbect)) || inherits(domain, "fm_mesh_2d")
         }
     class is_1D{
         1D Check

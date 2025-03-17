@@ -5,7 +5,7 @@
 #' @title Convert objects to fmesher objects
 #' @description
 #' Used for conversion from general objects
-#' (usually `inla.mesh` and other INLA specific classes)
+#' (usually `inla.mesh` and other legacy INLA specific classes)
 #' to `fmesher` classes.
 #'
 #' @param x Object to be converted
@@ -18,10 +18,11 @@
 #' fm_as_fm(NULL)
 #'
 fm_as_fm <- function(x, ...) {
+  if (missing(x)) {
+    return(fm_as_fm(NULL))
+  }
   UseMethod("fm_as_fm")
 }
-
-
 
 #' @rdname fm_as_fm
 #' @usage
@@ -45,6 +46,12 @@ fm_as_fm.fm_mesh_2d <- function(x, ...) {
 }
 #' @rdname fm_as_fm
 #' @export
+fm_as_fm.fm_mesh_3d <- function(x, ...) {
+  #  class(x) <- c("fm_mesh_3d", setdiff(class(x), "fm_mesh_3d"))
+  x
+}
+#' @rdname fm_as_fm
+#' @export
 fm_as_fm.fm_tensor <- function(x, ...) {
   #  class(x) <- c("fm_tensor", setdiff(class(x), "fm_tensor"))
   x
@@ -53,6 +60,12 @@ fm_as_fm.fm_tensor <- function(x, ...) {
 #' @export
 fm_as_fm.fm_segm <- function(x, ...) {
   #  class(x) <- c("fm_segm", setdiff(class(x), "fm_segm"))
+  x
+}
+#' @rdname fm_as_fm
+#' @export
+fm_as_fm.fm_lattice_Nd <- function(x, ...) {
+  #  class(x) <- c("fm_lattice_Nd", setdiff(class(x), "fm_lattice_Nd"))
   x
 }
 #' @rdname fm_as_fm

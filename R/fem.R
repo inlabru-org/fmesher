@@ -223,20 +223,6 @@ fm_fem.fm_mesh_2d <- function(mesh, order = 2,
 }
 
 #' @rdname fm_fem
-#' @export
-#' @method fm_fem inla.mesh.1d
-fm_fem.inla.mesh.1d <- function(mesh, order = 2, ...) {
-  fm_fem(fm_as_fm(mesh), order = order, ...)
-}
-
-#' @rdname fm_fem
-#' @export
-#' @method fm_fem inla.mesh
-fm_fem.inla.mesh <- function(mesh, order = 2, ...) {
-  fm_fem(fm_as_fm(mesh), order = order, ...)
-}
-
-#' @rdname fm_fem
 #' @returns `fm_fem.fm_tensor`: A list with elements `cc`, `g1`, `g2`.
 #' @export
 fm_fem.fm_tensor <- function(mesh, order = 2, ...) {
@@ -262,7 +248,7 @@ fm_fem.fm_tensor <- function(mesh, order = 2, ...) {
     for (k in seq_len(length(x) - 1)) {
       result <- kronecker(x[[k + 1]], result)
     }
-    return(result)
+    result
   }
 
   cc <- kron_multi(cc_list)
@@ -283,4 +269,106 @@ fm_fem.fm_tensor <- function(mesh, order = 2, ...) {
   }
 
   return(list(cc = cc, g1 = g1, g2 = g2))
+}
+
+
+
+
+row_cross_product <- function(e1, e2) {
+  cbind(
+    e1[, 2] * e2[, 3] - e1[, 3] * e2[, 2],
+    e1[, 3] * e2[, 1] - e1[, 1] * e2[, 3],
+    e1[, 1] * e2[, 2] - e1[, 2] * e2[, 1]
+  )
+}
+
+row_volume_product <- function(e1, e2, e3) {
+  rowSums(row_cross_product(e1, e2) * e3)
+}
+
+#' @rdname fm_fem
+#' @returns `fm_fem.fm_mesh_3d`: A list with elements `c0`, `c1`, `g1`, `g2`,
+#'   `va`, `ta`, and more if `order > 2`.
+#'
+#' @export
+fm_fem.fm_mesh_3d <- function(mesh, order = 2, ...) {
+  if (order > 2) {
+    warning("Only fem order <= 2 implemented for fm_mesh_3d")
+  }
+  v1 <- mesh$loc[mesh$graph$tv[, 1], , drop = FALSE]
+  v2 <- mesh$loc[mesh$graph$tv[, 2], , drop = FALSE]
+  v3 <- mesh$loc[mesh$graph$tv[, 3], , drop = FALSE]
+  v4 <- mesh$loc[mesh$graph$tv[, 4], , drop = FALSE]
+  e1 <- v2 - v1
+  e2 <- v3 - v2
+  e3 <- v4 - v3
+  e4 <- v1 - v4
+  vols_t <- abs(row_volume_product(e1, e2, e3)) / 6
+
+  c0 <- Matrix::sparseMatrix(
+    i = as.vector(mesh$graph$tv),
+    j = as.vector(mesh$graph$tv),
+    x = rep(vols_t / 4, times = 4),
+    dims = c(mesh$n, mesh$n)
+  )
+  vols_v <- Matrix::diag(c0)
+
+  # Sign changes for b2 and b4 for consistent in/out vector orientation
+  b1 <- row_cross_product(e2, e3)
+  b2 <- -row_cross_product(e3, e4)
+  b3 <- row_cross_product(e4, e1)
+  b4 <- -row_cross_product(e1, e2)
+
+  g_i <- g_j <- g_x <- numeric(nrow(mesh$graph$tv) * 16)
+  for (tt in seq_len(nrow(mesh$graph$tv))) {
+    GG <- rbind(
+      b1[tt, , drop = FALSE],
+      b2[tt, , drop = FALSE],
+      b3[tt, , drop = FALSE],
+      b4[tt, , drop = FALSE]
+    )
+    ii <- (tt - 1) * 16 + seq_len(16)
+    g_i[ii] <- rep(mesh$graph$tv[tt, ], each = 4)
+    g_j[ii] <- rep(mesh$graph$tv[tt, ], times = 4)
+    g_x[ii] <- as.vector((GG %*% t(GG)) / vols_t[tt] / 36)
+  }
+  g1 <- Matrix::sparseMatrix(
+    i = g_i,
+    j = g_j,
+    x = g_x,
+    dims = c(mesh$n, mesh$n)
+  )
+
+  list(
+    c0 = c0,
+    g1 = g1,
+    g2 = g1 %*% Matrix::Diagonal(mesh$n, 1 / vols_v) %*% g1,
+    va = vols_v,
+    vt = vols_t
+  )
+}
+
+
+# @title fm_sizes
+# @export
+fm_sizes.fm_mesh_3d <- function(mesh, ...) {
+  v1 <- mesh$loc[mesh$graph$tv[, 1], , drop = FALSE]
+  v2 <- mesh$loc[mesh$graph$tv[, 2], , drop = FALSE]
+  v3 <- mesh$loc[mesh$graph$tv[, 3], , drop = FALSE]
+  v4 <- mesh$loc[mesh$graph$tv[, 4], , drop = FALSE]
+  e1 <- v2 - v1
+  e2 <- v3 - v2
+  e3 <- v4 - v3
+  e4 <- v1 - v4
+  vols_t <- abs(row_volume_product(e1, e2, e3)) / 6
+
+  c0 <- Matrix::sparseMatrix(
+    i = as.vector(mesh$graph$tv),
+    j = as.vector(mesh$graph$tv),
+    x = rep(vols_t / 4, times = 4),
+    dims = c(mesh$n, mesh$n)
+  )
+  vols_v <- Matrix::diag(c0)
+
+  list(cell = vols_t, vertex = vols_v)
 }

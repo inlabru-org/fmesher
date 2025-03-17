@@ -585,7 +585,7 @@ fm_crs <- function(x, oblique = NULL, ..., crsonly = deprecated()) {
       )
     }
 
-    lifecycle::deprecate_warn(
+    lifecycle::deprecate_stop(
       "0.0.1",
       "fm_crs(crsonly=' should no longer be used')",
       "fm_crs(oblique)",
@@ -845,6 +845,18 @@ fm_crs.sfg <- function(x, oblique = NULL, ...) {
 #' @export
 fm_crs.fm_mesh_2d <- function(x, oblique = NULL, ...) {
   fm_crs(x[["crs"]], oblique = oblique, ...)
+}
+
+#' @rdname fm_crs
+#' @export
+fm_crs.fm_mesh_1d <- function(x, oblique = NULL, ...) {
+  fm_crs()
+}
+
+#' @rdname fm_crs
+#' @export
+fm_crs.fm_mesh_3d <- function(x, oblique = NULL, ...) {
+  fm_crs()
 }
 
 #' @rdname fm_crs
@@ -2125,7 +2137,7 @@ fm_crs_is_identical <- function(crs0, crs1, crsonly = FALSE) {
 #' by `fm_crs_is_identical()`.
 #' @export
 fm_identical_CRS <- function(crs0, crs1, crsonly = FALSE) {
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     "0.1.0",
     "fm_identical_CRS()",
     "fm_crs_is_identical()"
@@ -2181,7 +2193,7 @@ fm_detect_manifold.CRS <- function(x) {
 #' @rdname fm_detect_manifold
 #' @export
 fm_detect_manifold.numeric <- function(x) {
-  return("R1")
+  "R1"
 }
 
 #' @rdname fm_detect_manifold
@@ -2193,16 +2205,20 @@ fm_detect_manifold.matrix <- function(x) {
   if (ncol(x) == 2) {
     return("R2")
   }
-  tol <- 1e-10
-  if (all(abs(x[, 3]) < tol)) {
-    return("R2")
+  if (ncol(x) == 3) {
+    tol <- 1e-10
+    if (all(abs(x[, 3]) < tol)) {
+      return("R2")
+    }
+    radii <- rowSums(x^2)^0.5
+    radius <- mean(radii)
+    if (all(abs(radii - radius) < radius * tol)) {
+      return("S2")
+    }
+    return("R3")
   }
-  radii <- rowSums(x^2)^0.5
-  radius <- mean(radii)
-  if (all(abs(radii - radius) < radius * tol)) {
-    return("S2")
-  }
-  return("M2")
+
+  paste0("R", ncol(x))
 }
 
 #' @rdname fm_detect_manifold
@@ -2223,7 +2239,8 @@ fm_detect_manifold.fm_mesh_2d <- function(x) {
   if (all(abs(radii - radius) < radius * tol)) {
     return("S2")
   }
-  return("M2")
+
+  "M2"
 }
 
 
@@ -2651,25 +2668,6 @@ fm_crs.inla.CRS <- function(x, oblique = NULL, ...) {
   )
 }
 
-#' @rdname fm_crs
-#' @export
-#' @method fm_crs inla.mesh
-fm_crs.inla.mesh <- function(x, oblique = NULL, ...) {
-  fm_crs(x[["crs"]], oblique = oblique, ...)
-}
-
-#' @rdname fm_crs
-#' @export
-fm_crs.inla.mesh.lattice <- function(x, oblique = NULL, ...) {
-  fm_crs(x[["crs"]], oblique = oblique, ...)
-}
-
-#' @rdname fm_crs
-#' @export
-fm_crs.inla.mesh.segment <- function(x, oblique = NULL, ...) {
-  fm_crs(x[["crs"]], oblique = oblique, ...)
-}
-
 #' @export
 #' @rdname fm_crs-set
 `fm_crs_oblique<-.inla.CRS` <- function(x, value) {
@@ -2689,43 +2687,6 @@ is.na.inla.CRS <- function(x) {
 #' @export
 fm_CRS.inla.CRS <- function(x, oblique = NULL, ...) {
   fm_CRS(fm_crs(x, oblique = oblique, ...))
-}
-
-#' @rdname fm_CRS_sp
-#' @export
-fm_CRS.inla.mesh <- function(x, oblique = NULL, ...) {
-  fm_CRS(x[["crs"]], oblique = oblique, ...)
-}
-
-#' @rdname fm_CRS_sp
-#' @export
-fm_CRS.inla.mesh.lattice <- function(x, oblique = NULL, ...) {
-  fm_CRS(x[["crs"]], oblique = oblique, ...)
-}
-
-#' @rdname fm_CRS_sp
-#' @export
-fm_CRS.inla.mesh.segment <- function(x, oblique = NULL, ...) {
-  fm_CRS(x[["crs"]], oblique = oblique, ...)
-}
-
-#' @export
-#' @rdname fm_transform
-fm_transform.inla.mesh <- function(x,
-                                   crs = fm_crs(x),
-                                   ...) {
-  fm_transform.fm_mesh_2d(fm_as_mesh_2d(x), crs = crs, ...)
-}
-
-#' @export
-#' @rdname fm_transform
-fm_transform.inla.mesh.lattice <- function(x, crs, ...) {
-  fm_transform.fm_lattice_2d(fm_as_lattice_2d(x), crs = crs, ...)
-}
-#' @export
-#' @rdname fm_transform
-fm_transform.inla.mesh.segment <- function(x, crs, ...) {
-  fm_transform.fm_segm(fm_as_segm(x), crs = crs, ...)
 }
 
 
@@ -2787,30 +2748,6 @@ fm_spTransform.SpatialPointsDataFrame <- function(x,
   fm_transform(x, crs = CRSobj, passthrough = passthrough)
 }
 
-#' @export
-#' @rdname fmesher-deprecated
-fm_spTransform.inla.mesh.lattice <- function(x,
-                                             CRSobj,
-                                             passthrough = FALSE,
-                                             ...) {
-  fm_transform(x, crs = CRSobj, passthrough = passthrough)
-}
-
-#' @export
-#' @rdname fmesher-deprecated
-fm_spTransform.inla.mesh.segment <- function(x,
-                                             CRSobj,
-                                             passthrough = FALSE,
-                                             ...) {
-  fm_transform(x, crs = CRSobj, passthrough = passthrough)
-}
-
-#' @export
-#' @rdname fmesher-deprecated
-fm_spTransform.inla.mesh <- function(x, CRSobj, passthrough = FALSE, ...) {
-  fm_transform(x, crs = CRSobj, passthrough = passthrough)
-}
-
 
 
 # Deprecated methods ####
@@ -2830,7 +2767,7 @@ fm_has_PROJ6 <- function() {
 #' `sp::Spatial` and `sp::CRS` objects.
 #' @export
 fm_as_sp_crs <- function(x, ...) {
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     "0.0.1",
     "fm_as_sp_crs()",
     "fm_CRS()"

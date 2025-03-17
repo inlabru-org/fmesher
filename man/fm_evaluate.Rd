@@ -7,11 +7,13 @@
 \alias{fm_evaluate.fm_basis}
 \alias{fm_evaluator}
 \alias{fm_evaluator.default}
+\alias{fm_evaluator.fm_mesh_3d}
 \alias{fm_evaluator.fm_mesh_2d}
 \alias{fm_evaluator.fm_mesh_1d}
 \alias{fm_evaluator_lattice}
-\alias{fm_evaluator.inla.mesh}
-\alias{fm_evaluator.inla.mesh.1d}
+\alias{fm_evaluator_lattice.default}
+\alias{fm_evaluator_lattice.fm_bbox}
+\alias{fm_evaluator_lattice.fm_mesh_2d}
 \title{Methods for projecting to/from mesh objects}
 \usage{
 fm_evaluate(...)
@@ -26,11 +28,19 @@ fm_evaluator(...)
 
 \method{fm_evaluator}{default}(...)
 
+\method{fm_evaluator}{fm_mesh_3d}(mesh, loc = NULL, lattice = NULL, dims = NULL, ...)
+
 \method{fm_evaluator}{fm_mesh_2d}(mesh, loc = NULL, lattice = NULL, crs = NULL, ...)
 
 \method{fm_evaluator}{fm_mesh_1d}(mesh, loc = NULL, xlim = mesh$interval, dims = 100, ...)
 
-fm_evaluator_lattice(
+fm_evaluator_lattice(mesh, ...)
+
+\method{fm_evaluator_lattice}{default}(mesh, dims = 100, ...)
+
+\method{fm_evaluator_lattice}{fm_bbox}(mesh, dims = 100, ...)
+
+\method{fm_evaluator_lattice}{fm_mesh_2d}(
   mesh,
   xlim = NULL,
   ylim = NULL,
@@ -39,15 +49,12 @@ fm_evaluator_lattice(
   crs = NULL,
   ...
 )
-
-\method{fm_evaluator}{inla.mesh}(mesh, ...)
-
-\method{fm_evaluator}{inla.mesh.1d}(mesh, ...)
 }
 \arguments{
 \item{\dots}{Additional arguments passed on to methods.}
 
-\item{mesh}{An \code{inla.mesh} or \code{inla.mesh.1d} object.}
+\item{mesh}{An \link{fm_mesh_1d}, \link{fm_mesh_2d}, or other object supported by a
+sub-method.}
 
 \item{field}{Basis function weights, one per mesh basis function, describing
 the function to be evaluated at the projection locations}
@@ -61,13 +68,13 @@ the function to be evaluated at the projection locations}
 
 \item{lattice}{An \code{\link[=fm_lattice_2d]{fm_lattice_2d()}} object.}
 
+\item{dims}{Lattice dimensions.}
+
 \item{crs}{An optional CRS or inla.CRS object associated with \code{loc}
 and/or \code{lattice}.}
 
 \item{xlim}{X-axis limits for a lattice. For R2 meshes, defaults to covering
 the domain.}
-
-\item{dims}{Lattice dimensions.}
 
 \item{ylim}{Y-axis limits for a lattice. For R2 meshes, defaults to covering
 the domain.}
@@ -99,23 +106,26 @@ shortcut to \code{fm_evaluate(fm_evaluator(mesh, ...), field = field)}.
 The \code{proj} element is a \code{fm_basis} object, containing (at least)
 a mapping matrix \code{A} and a logical vector \code{ok}, that indicates which
 locations were mappable to the input mesh.
-For \code{fm_mesh_2d} and \code{inla.mesh}
-input, \code{proj} also contains a matrix \code{bary} and vector \code{t}, with the
+For \code{fm_mesh_2d}
+input, \code{proj} also contains a \code{bary} \link{fm_bary} object, with the
 barycentric coordinates within the triangle each input location falls in.
 
 \item \code{fm_evaluator(default)}: The default method calls \code{fm_basis} and creates
 a basic \code{fm_evaluator} object
 
+\item \code{fm_evaluator(fm_mesh_3d)}: The \code{...} arguments are passed on to
+\code{fm_evaluator_lattice()} if no \code{loc} or \code{lattice} is provided.
+
 \item \code{fm_evaluator(fm_mesh_2d)}: The \code{...} arguments are passed on to
 \code{fm_evaluator_lattice()} if no \code{loc} or \code{lattice} is provided.
 
-\item \code{fm_evaluator_lattice()}: Creates an \code{\link[=fm_lattice_2d]{fm_lattice_2d()}} object, by default covering the input mesh.
+\item \code{fm_evaluator_lattice()}: Create a lattice object by default covering the input mesh.
 
-\item \code{fm_evaluator(inla.mesh)}: Converts legacy \code{inla.mesh} to \code{fm_mesh_2d} and calls
-the \code{fm_evaluator} method again.
+\item \code{fm_evaluator_lattice(default)}: Creates an \code{\link[=fm_lattice_2d]{fm_lattice_2d()}} object, by default covering the input mesh.
 
-\item \code{fm_evaluator(inla.mesh.1d)}: Converts legacy \code{inla.mesh} to \code{fm_mesh_1d} and calls
-the \code{fm_evaluator} method again.
+\item \code{fm_evaluator_lattice(fm_bbox)}: Creates an \code{\link[=fm_lattice_Nd]{fm_lattice_Nd()}} object, by default covering the input mesh.
+
+\item \code{fm_evaluator_lattice(fm_mesh_2d)}: Creates an \code{\link[=fm_lattice_2d]{fm_lattice_2d()}} object, by default covering the input mesh.
 
 }}
 \examples{

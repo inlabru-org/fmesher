@@ -1,0 +1,211 @@
+---
+title: "Custom mesh classes"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Custom mesh classes}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+set.seed(12345L)
+```
+
+```{r setup}
+library(fmesher)
+```
+
+## Minimal interface
+
+Users and package developers can add `fmesher` support to their own classes.
+A minimal interface needs to define `fm_dof()` and `fm_basis()` methods.
+Assuming the class is called `custom`, the methods should be named `fm_dof.custom()` and `fm_basis.custom()`.
+
+- The `fm_dof.custom(x)` method *must* take an object `x` of class `custom` and
+  return the number of degrees of freedom of the function space.
+- The `fm_basis.custom(x, loc, ..., full = FALSE)` method *must* take an object `x` of
+  class `custom` and return a `sparseMatrix` or `Matrix` matrix with each column
+  containing the basis function evaluated at the locations determined by `loc`.
+
+  The type of `loc` may be any type (or types) that is supported by the custom
+  class.
+  
+  The `...` part can include further named arguments specific to the custom
+  class. These must be optional arguments so that `fm_basis(x, loc)` works.
+  
+  When `full = TRUE`, a full `fm_basis` object *must* be returned, which is a
+  list containing *at least* the basis matrix as `A`, and a logical vector,
+  `ok`, indicating which `loc` values were valid evaluation points. The `A`
+  matrix *must* be all-zero for invalid `loc`.
+- With the above requirements fulfilled, the default `fm_evaluator()` and
+  `fm_evaluate()` methods can be used to evaluate functions at any location,
+  with the need fo the user to define any further methods.
+  
+  Special `fm_evaluator.custom()` and `fm_evaluate.custom()` methods may be
+  defined if needed, e.g. to support semi-automated output reformatting.
+  
+### Example: Harmonic function space of order n
+
+```{r}
+# Custom class for harmonic functions up to order `n`
+create_custom <- function(n) {
+  stopifnot(n >= 0)
+  structure(
+    list(n = n),
+    class = "custom"
+  )
+}
+fm_dof.custom <- function(x) {
+  # Return the number of degrees of freedom
+  1L + 2L * x[["n"]]
+}
+fm_basis.custom <- function(x, loc, ..., full = FALSE) {
+  # Return the evaluated basis functions
+  A <- Matrix::Matrix(0.0, NROW(loc), fm_dof(x))
+  ok <- !is.na(loc)
+  A[ok, 1L] <- 1.0
+  for (k in seq_len(x[["n"]])) {
+    A[ok, 2 * k] <- cos(2 * pi * k * loc[ok])
+    A[ok, 2 * k + 1L] <- sin(2 * pi * k * loc[ok])
+  }
+  result <- structure(
+    list(
+      A = A,
+      ok = ok, # Required prior to version 0.2.0.9003
+      loc = loc
+    ),
+    class = "fm_basis"
+  )
+
+  # Use the fm_basis method to extract the A matrix if full is FALSE:
+  fm_basis(result, full = full)
+}
+```
+
+Note: From version `0.2.0.9004`, the `fm_basis.matrix`, `fm_basis.Matrix`, and
+`fm_basis.list` methods provide an easier way to construct the `fm_basis`
+object, by creating the object and optionally extracting `A` in a single call:
+```{r, eval=FALSE}
+# 'matrix' and 'Matrix' methods:
+fm_basis(
+  A = A,
+  ok = ok, # If missing or NULL, inferred to be all TRUE
+  loc = loc, # Optional additional content
+  full = full
+)
+# 'list' method:
+fm_basis(
+  list(
+    A = A,
+    ok = ok, # If missing or NULL, inferred to be all TRUE
+    loc = loc
+  ),
+  full = full
+)
+```
+
+#### Registering the methods
+
+These S3 methods must be registered with the `S3method()` function in
+scripts, and with special NAMESPACE tags in packages.
+In a script, one should use
+```{r}
+.S3method("fm_dof", "custom", "fm_dof.custom")
+.S3method("fm_basis", "custom", "fm_basis.custom")
+```
+In a package, if R is version 3.6 or newer, one can use roxygen2 tags
+```{r}
+#' @rawNamespace S3method(fmesher::fm_dof, custom)
+#' @rawNamespace S3method(fmesher::fm_basis, custom)
+```
+or before each method, use `@exportS3Method`, like this:
+```{r, eval = FALSE}
+#' @title Degrees of freedom for custom mesh
+#' @description the number of degrees of freedom
+#' # The rest of the documentation goes here
+#' @exportS3method fmesher::fm_dof
+fm_dof.custom <- function(x) {
+  1L + 2L * x[["n"]]
+}
+```
+which semi-automates it.
+
+We can the use the new methods with
+```{r}
+m <- create_custom(2)
+
+# How many latent variables are needed?
+fm_dof(m)
+
+# Evaluate the basis functions at some locations:
+fm_basis(m, seq(0, 1, length.out = 6))
+fm_basis(m, seq(0, 1, length.out = 6), full = TRUE)
+
+# Check if missing values are handled correctly:
+fm_basis(m, c(0.1, NA, 0.2))
+fm_basis(m, c(0.1, NA, 0.2), full = TRUE)
+```
+
+## Expanded implementations
+
+The main additional method that can be defined is the `fm_int()` integration scheme method.
+This must have the call structure `fm_int.custom(domain, samplers = NULL, name = "x", ...)`.
+
+- The `domain` argument is the `custom` class object over which to integrate.
+- The `samplers` argument is any object, typically an `sf` or `tibble` specifying
+  one or more subsets of the domain, e.g. polygons. When `NULL`, the entire domain
+  should be integrated.
+- The `name` argument is a character string specifying the name of the integration
+  point variable.
+- The `...` arguments can be augmented with further optional arguments, e.g. options
+  controlling the integration scheme construction and/or the output format.
+
+`out <- fm_int(domain, samplers, name)` should return a
+`data.frame`, `tibble`, or `sf` object with integration points
+in a column with the name indicated by *<name>*, and additional columns `weight` with
+corresponding integration weights, and a `.block` column.
+
+- The *<name>* column format should be compatible with `fm_basis(domain, out[[name]])`.
+- The `.block` column should be an integer vector indicating which subdomain
+  each integration point belongs to, usable by `fm_block_eval()`:
+```{r,echo=FALSE}
+out <- data.frame(
+  x = c(
+    seq(0, 0.3, by = 0.1),
+    seq(0.3, 0.5, by = 0.1),
+    seq(0.5, 1, by = 0.1)
+  ),
+  weight = rep(
+    c(0.05, 0.1, 0.05, 0.05, 0.1, 0.05, 0.05, 0.1, 0.05),
+    c(1, 2, 1, 1, 1, 1, 1, 4, 1)
+  ),
+  .block = rep(c(1, 2, 3), c(4, 3, 6))
+)
+out
+```
+```{r,eval=TRUE}
+values <- fm_evaluate(
+  m,
+  field = c(1, 1, 0, 0, 0),
+  loc = out[["x"]]
+)
+
+# Blockwise aggregation:
+fm_block_eval(
+  block = out$.block,
+  weights = out$weight,
+  values = values
+)
+
+# Exact integrals:
+c(0.3, 0.2, 0.5) +
+  c(
+    sin(2 * pi * 0.3),
+    sin(2 * pi * 0.5) - sin(2 * pi * 0.3),
+    sin(2 * pi) - sin(2 * pi * 0.5)
+  ) / (2 * pi)
+```

@@ -42,7 +42,8 @@ as \code{x} and \code{y}. If \code{x} is a vector, \code{z} is ignored.}
 \item{units}{One of \code{c("default", "longlat", "longsinlat", "mollweide")}
 or NULL (equivalent to \code{"default"}).}
 
-\item{crs}{An optional \code{fm_crs}, \code{sf::st_crs}, or \code{sp::CRS} object}
+\item{crs}{An optional \code{fm_crs}, \code{sf::st_crs}, or \code{sp::CRS} object,
+denoting the CRS info for the x-y grid.}
 }
 \value{
 An \code{fm_lattice_2d} object with elements
@@ -53,7 +54,8 @@ An \code{fm_lattice_2d} object with elements
 \item{loc}{matrix of \verb{(x, y)} values or \verb{(x, y, z)} values. May be altered by
 \code{\link[=fm_transform]{fm_transform()}}}
 \item{segm}{\code{fm_segm} object}
-\item{crs}{\code{fm_crs} object or \code{NULL}}
+\item{crs}{\code{fm_crs} object for \code{loc}, or \code{NULL}}
+\item{crs0}{\code{fm_crs} object for \verb{(x,y)}, or \code{NULL}}
 }
 }
 \description{
@@ -92,11 +94,14 @@ mesh <- fm_rcdt_2d(lattice = lattice, refine = list(max.edge = 0.08))
 Other object creation and conversion: 
 \code{\link{fm_as_fm}()},
 \code{\link{fm_as_lattice_2d}()},
+\code{\link{fm_as_lattice_Nd}()},
 \code{\link{fm_as_mesh_1d}()},
 \code{\link{fm_as_mesh_2d}()},
+\code{\link{fm_as_mesh_3d}()},
 \code{\link{fm_as_segm}()},
 \code{\link{fm_as_sfc}()},
 \code{\link{fm_as_tensor}()},
+\code{\link{fm_lattice_Nd}()},
 \code{\link{fm_mesh_1d}()},
 \code{\link{fm_mesh_2d}()},
 \code{\link{fm_segm}()},

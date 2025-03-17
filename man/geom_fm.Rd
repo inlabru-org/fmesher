@@ -28,6 +28,8 @@ geom_fm(mapping = NULL, data = NULL, ...)
   mapping = NULL,
   data = NULL,
   ...,
+  mappings = NULL,
+  defs = NULL,
   xlim = NULL,
   basis = TRUE,
   knots = TRUE,
@@ -42,13 +44,11 @@ geom_fm(mapping = NULL, data = NULL, ...)
 
 \item{...}{Arguments passed on to the geom method.}
 
-\item{mappings}{optional list of \code{aes} mappings for the non-triangle parts of
+\item{mappings, defs}{optional lists of \code{aes} mappings and non-\code{aes} settings.
+For \code{fm_mesh_2d}, the non-triangle parts of
 the mesh, named "int" for interior constraint edges, "bnd" for boundary
-edges, and "loc" for the vertices.}
-
-\item{defs}{optional list of non-\code{aes} settings for the non-triangle parts of
-the mesh, named "int" for interior constraint edges, "bnd" for boundary
-edges, and "loc" for the vertices.}
+edges, and "loc" for the vertices. For \code{fm_mesh_1d}, the elements are
+"knots" and "fun".}
 
 \item{crs}{Optional crs to transform the object to before plotting.}
 

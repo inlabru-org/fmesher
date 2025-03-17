@@ -165,34 +165,29 @@ public:
   friend Matrix<T> diag<T>(const SparseMatrix<T> &M1);
 };
 
-template <class T> class Vector3 {
+template <class T, int DIM> class Vector {
 public:
-  typedef Vector3<T> selfT;
-  typedef T Raw[3];
+  typedef Vector<T, DIM> selfT;
+  typedef T Raw[DIM];
 
-private:
-  T s[3];
+protected:
+  T s[DIM];
 
 public:
-  Vector3() {
-    s[0] = T();
-    s[1] = T();
-    s[2] = T();
+  Vector() {
+    for (size_t i = 0; i < DIM; i++) {
+      s[i] = T();
+    }
   };
-  Vector3(const T &val0, const T &val1, const T &val2) {
-    s[0] = val0;
-    s[1] = val1;
-    s[2] = val2;
+  Vector(const T val[DIM]) {
+    for (size_t i = 0; i < DIM; i++) {
+      s[i] = val[i];
+    }
   };
-  Vector3(const T val[3]) {
-    s[0] = val[0];
-    s[1] = val[1];
-    s[2] = val[2];
-  };
-  Vector3(const selfT &vec) {
-    s[0] = vec.s[0];
-    s[1] = vec.s[1];
-    s[2] = vec.s[2];
+  Vector(const selfT &vec) {
+    for (size_t i = 0; i < DIM; i++) {
+      s[i] = vec.s[i];
+    }
   };
 
   selfT &operator=(const selfT vec) { return copy(vec); };
@@ -205,74 +200,120 @@ public:
 
   selfT &copy(const selfT &s0) {
     if (this != &s0) {
-      s[0] = s0.s[0];
-      s[1] = s0.s[1];
-      s[2] = s0.s[2];
+      for (size_t i = 0; i < DIM; i++) {
+        s[i] = s0.s[i];
+      }
     }
     return *this;
   };
   selfT &rescale(T s1) {
-    s[0] *= s1;
-    s[1] *= s1;
-    s[2] *= s1;
+    for (size_t i = 0; i < DIM; i++) {
+      s[i] *= s1;
+    }
     return *this;
   };
   selfT &scale(const selfT &s0, T s1) {
-    s[0] = s0.s[0] * s1;
-    s[1] = s0.s[1] * s1;
-    s[2] = s0.s[2] * s1;
+    for (size_t i = 0; i < DIM; i++) {
+      s[i] = s0.s[i] * s1;
+    }
     return *this;
   };
   selfT &diff(const selfT &s0, const selfT &s1) {
-    s[0] = s0.s[0] - s1.s[0];
-    s[1] = s0.s[1] - s1.s[1];
-    s[2] = s0.s[2] - s1.s[2];
+    for (size_t i = 0; i < DIM; i++) {
+      s[i] = s0.s[i] - s1.s[i];
+    }
     return *this;
   };
   selfT &sum(const selfT &s0, const selfT &s1) {
-    s[0] = s0.s[0] + s1.s[0];
-    s[1] = s0.s[1] + s1.s[1];
-    s[2] = s0.s[2] + s1.s[2];
+    for (size_t i = 0; i < DIM; i++) {
+      s[i] = s0.s[i] + s1.s[i];
+    }
     return *this;
   };
   selfT &accum(const selfT &s0, T s1) {
-    s[0] += s0.s[0] * s1;
-    s[1] += s0.s[1] * s1;
-    s[2] += s0.s[2] * s1;
+    for (size_t i = 0; i < DIM; i++) {
+      s[i] += s0.s[i] * s1;
+    }
     return *this;
   };
   T scalar(const selfT &s1) const {
-    return (s[0] * s1.s[0] + s[1] * s1.s[1] + s[2] * s1.s[2]);
+    T res(0.0);
+    for (size_t i = 0; i < DIM; i++) {
+      res += s[i] * s1.s[i];
+    }
+    return(res);
   };
   double length() const;
+
+  bool operator<(const selfT &vec) const {
+    for (size_t i = 0; i < DIM; i++) {
+      if (s[i] < vec.s[i]) {
+        return true;
+      }
+      if (s[i] > vec.s[i]) {
+        return false;
+      }
+    }
+    return false;
+  };
+};
+
+template <class T> class Vector3 : public Vector<T, 3> {
+public:
+  typedef Vector3<T> selfT;
+  typedef T Raw[3];
+
+public:
+  Vector3() : Vector<T, 3>(){};
+  Vector3(const T &val0, const T &val1, const T &val2) : Vector<T, 3>() {
+    this->s[0] = val0;
+    this->s[1] = val1;
+    this->s[2] = val2;
+  };
+  Vector3(const T val[3]) : Vector<T, 3>(val){};
+  Vector3(const selfT &vec) : Vector<T, 3>(vec){};
+
+  selfT &operator=(const selfT &vec) {
+    copy(vec);
+    return *this;
+  };
+
+  selfT &copy(const selfT &s0) {
+    if (this != &s0) {
+      Vector<T, 3>::copy(s0);
+    }
+    return *this;
+  };
   selfT &cross(const selfT &s0, const selfT &s1) {
     if ((this == &s0) || (this == &s1)) {
       T s_0 = s0.s[1] * s1.s[2] - s0.s[2] * s1.s[1];
       T s_1 = s0.s[2] * s1.s[0] - s0.s[0] * s1.s[2];
       T s_2 = s0.s[0] * s1.s[1] - s0.s[1] * s1.s[0];
-      s[0] = s_0;
-      s[1] = s_1;
-      s[2] = s_2;
+      this->s[0] = s_0;
+      this->s[1] = s_1;
+      this->s[2] = s_2;
     } else {
-      s[0] = s0.s[1] * s1.s[2] - s0.s[2] * s1.s[1];
-      s[1] = s0.s[2] * s1.s[0] - s0.s[0] * s1.s[2];
-      s[2] = s0.s[0] * s1.s[1] - s0.s[1] * s1.s[0];
+      this->s[0] = s0.s[1] * s1.s[2] - s0.s[2] * s1.s[1];
+      this->s[1] = s0.s[2] * s1.s[0] - s0.s[0] * s1.s[2];
+      this->s[2] = s0.s[0] * s1.s[1] - s0.s[1] * s1.s[0];
     }
     return *this;
   };
-  T cross2(const selfT &s1) const { return (s[0] * s1.s[1] - s[1] * s1.s[0]); };
+  T cross2(const selfT &s1) const {
+    return (this->s[0] * s1.s[1] - this->s[1] * s1.s[0]);
+  };
   /*!
-    "Volume product" = scalar(s0,cross(s1,s2))
+   "Volume product" = scalar(s0,cross(s1,s2))
    */
   T volume(const selfT &s1, const selfT &s2) const {
-    return ((s1.s[1] * s2.s[2] - s1.s[2] * s2.s[1]) * s[0] +
-            (s1.s[2] * s2.s[0] - s1.s[0] * s2.s[2]) * s[1] +
-            (s1.s[0] * s2.s[1] - s1.s[1] * s2.s[0]) * s[2]);
+    return ((s1.s[1] * s2.s[2] - s1.s[2] * s2.s[1]) * this->s[0] +
+            (s1.s[2] * s2.s[0] - s1.s[0] * s2.s[2]) * this->s[1] +
+            (s1.s[0] * s2.s[1] - s1.s[1] * s2.s[0]) * this->s[2]);
   };
   double angle(const selfT &s1) const {
     Vector3<T> s0xs1;
     s0xs1.cross(*this, s1);
-    return std::atan2((double)s0xs1.length(), (double)scalar(s1));
+    return std::atan2((double)s0xs1.length(), (double)(this->scalar(s1)));
   };
 
   friend void arbitrary_perpendicular(Vector3<double> &n,
@@ -322,9 +363,9 @@ public:
   Matrix3(const typename Matrix<T>::RcppMatrix &from);
 #endif
   Matrix3(size_t set_rows, const ValueRow *vals)
-      : Matrix<T>(set_rows, 3, (T *)vals){};
+    : Matrix<T>(set_rows, 3, (T *)vals){};
   Matrix3(size_t set_rows, const ValueRaw *vals = NULL)
-      : Matrix<T>(set_rows, 3, (T *)vals){};
+    : Matrix<T>(set_rows, 3, (T *)vals){};
   Matrix3<T> &clear(void) {
     Matrix<T>::clear();
     Matrix<T>::cols(3);
@@ -356,6 +397,55 @@ typedef Matrix1<int> Matrix1int;
 typedef Matrix1<double> Matrix1double;
 typedef Matrix3<int> Matrix3int;
 typedef Matrix3<double> Matrix3double;
+
+template <class T> class Matrix4 : public Matrix<T> {
+public:
+  typedef T ValueRaw[4];
+  typedef Vector<T, 4> ValueRow;
+  Matrix4() : Matrix<T>(4){};
+  Matrix4(const Matrix<T> &M) : Matrix<T>(4) {
+    for (size_t r = 0; r < M.rows(); r++) {
+      for (size_t c = 0; (c < 4) && (c < M.cols()); c++) {
+        operator()(r, c, M[r][c]);
+      }
+    }
+  };
+#ifdef FMESHER_WITH_R
+  Matrix4(const typename Matrix<T>::RcppMatrix &from);
+#endif
+  Matrix4(size_t set_rows, const ValueRow *vals)
+    : Matrix<T>(set_rows, 4, (T *)vals){};
+  Matrix4(size_t set_rows, const ValueRaw *vals = NULL)
+    : Matrix<T>(set_rows, 4, (T *)vals){};
+  Matrix4<T> &clear(void) {
+    Matrix<T>::clear();
+    Matrix<T>::cols(4);
+    return *this;
+  };
+
+  const ValueRow &operator[](const size_t r) const {
+    return *(const ValueRow *)(Matrix<T>::operator[](r));
+  };
+
+  ValueRow &operator()(const size_t r) {
+    return *(ValueRow *)(&Matrix<T>::operator()(r, 0));
+  };
+
+  T &operator()(const size_t r, const size_t c) {
+    return Matrix<T>::operator()(r, c);
+  };
+
+  const T &operator()(const size_t r, const size_t c, const T &val) {
+    return Matrix<T>::operator()(r, c, val);
+  };
+};
+
+typedef Matrix4<int>::ValueRaw Int4Raw;
+typedef Matrix4<int>::ValueRow Int4;
+typedef Matrix4<int> Matrix4int;
+typedef Matrix4<double>::ValueRaw Double4Raw;
+typedef Matrix4<double>::ValueRow Double4;
+typedef Matrix4<double> Matrix4double;
 
 template <class T> class SparseMatrixTriplet {
 public:
@@ -844,6 +934,8 @@ public:
 struct Vec {
   static void copy(Point &s, const Point &s0) { s.copy(s0); };
   static void rescale(Point &s, double s1) { s.rescale(s1); };
+  template <int DIM>
+  static void rescale(Vector<double, DIM> &s, double s1) { s.rescale(s1); };
   static void scale(Point &s, const Point &s0, double s1) { s.scale(s0, s1); };
   static void diff(Point &s, const Point &s0, const Point &s1) {
     s.diff(s0, s1);
@@ -894,8 +986,12 @@ struct Vec {
   };
 };
 
-template <class T> double Vector3<T>::length() const {
-  return (std::sqrt(s[0] * s[0] + s[1] * s[1] + s[2] * s[2]));
+template <class T, int DIM> double Vector<T, DIM>::length() const {
+  double res(0.0);
+  for (size_t i = 0; i < DIM; i++) {
+    res += this->s[i] * this->s[i];
+  }
+  return (std::sqrt(res));
 }
 
 template <class T>
@@ -906,6 +1002,14 @@ std::ostream &operator<<(std::ostream &output, const Matrix<T> &M) {
       output << M.data_[r * M.cols() + c] << " ";
     }
     output << std::endl;
+  }
+  return output;
+}
+
+template <class T, int DIM>
+std::ostream &operator<<(std::ostream &output, const Vector<T, DIM> &M) {
+  for (size_t r = 0; r < DIM; r++) {
+    output << M[r] << " ";
   }
   return output;
 }

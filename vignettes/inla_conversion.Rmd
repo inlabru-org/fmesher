@@ -1,6 +1,7 @@
 ---
 title: "Converting legacy INLA mesh code to fmesher"
 output: rmarkdown::html_vignette
+date: "Updated 14 November 2024"
 vignette: >
   %\VignetteIndexEntry{Converting legacy INLA mesh code to fmesher}
   %\VignetteEngine{knitr::rmarkdown}
@@ -58,19 +59,25 @@ convert_fun_link <- function(x, webref) {
   )
 }
 
-convert_fun_links <- function(df) {
+convert_fun_links <- function(df, packages = colnames(df)) {
   webref <- list(
-    fmesher = "../reference/",
+    fmesher = "https://inlabru-org.github.io/fmesher/reference/",
     inlabru = "https://inlabru-org.github.io/inlabru/reference/"
   )
+  packages <- setdiff(packages, "Comments")
   for (k in seq_len(nrow(df))) {
-    df$INLA[[k]] <- paste0("`", df$INLA[[k]], "`")
-    df$fmesher[[k]] <-
-      vapply(
-        df$fmesher[[k]],
-        function(x) convert_fun_link(x, webref),
-        ""
-      )
+    for (pkg in packages) {
+      if (identical(pkg, "INLA")) {
+        df[["INLA"]][[k]] <- paste0("`", df$INLA[[k]], "`")
+      } else {
+        df[[pkg]][[k]] <-
+          vapply(
+            df[[pkg]][[k]],
+            function(x) convert_fun_link(x, webref),
+            ""
+          )
+      }
+    }
   }
   df
 }
@@ -104,7 +111,13 @@ transition behaviour of the `INLA` package use of `fmesher`.
 Great effort has been taken to preserve backwards compatibility as far as practical,
 with in particular the old `inla.mesh`, `inla.mesh.1d`, and `inla.mesh.segment`
 object classes given fallback methods that carry out methods for the new `fm_mesh_2d`,
-`fm_mesh_1d`, and `fm_segm` classes.  
+`fm_mesh_1d`, and `fm_segm` classes.  Starting in **November 2024** however, some of this direct fallback support is being phased out, so that old stored objects may need to be explicitly converted to `fmesher` objects using for example `fm_as_fm()`.
+New code, in particular in packages that use `fmesher` objects, should use the new
+interface methods, and replace references to `inla.mesh`, `inla.mesh.1d`, and `inla.mesh.segment` with `fm_mesh_2d`, `fm_mesh_1d`, and `fm_segm`, respectively,
+as the old class names will eventually be dropped from the mesh classes.
+This in particular applies to S3 method naming and class checking,
+where `inherits(mesh, "inla.mesh")` must be replaced with
+`inherits(mesh, "fm_mesh_2d")` in order to work in the future.
 
 An important change is that the handling
 of mesh `crs` information is now more flexible, but stricter in the sense that
@@ -161,19 +174,20 @@ knitr::kable(df)
 
 ```{r echo = FALSE}
 df <- tribble(
-  ~INLA, ~fmesher,
-  "inla.mesh.projector()", "fm_evaluator()",
-  "inla.mesh.project()", "fm_evaluate()",
+  ~INLA, ~fmesher, ~inlabru,
+  "inla.mesh.projector()", "fm_evaluator()", character(0),
+  "inla.mesh.project()", "fm_evaluate()", character(0),
   "inla.spde.make.A()", c(
     "fm_basis()",
     "fm_row_kron()",
+    "fm_block()",
+    "fm_block_eval()"
+  ), c(
     "inlabru::bru_mapper_multi()",
     "inlabru::ibm_jacobian()",
-    "fm_block()",
-    "fm_block_eval()",
     "inlabru::bru_mapper_aggregate()"
   ),
-  "inla.mesh.deriv()", "fm_basis()"
+  "inla.mesh.deriv()", "fm_basis()", character(0)
 )
 df <- convert_fun_links(df)
 ```
@@ -186,7 +200,7 @@ knitr::kable(df)
 
 ```{r echo = FALSE}
 df <- tribble(
-  ~INLA, ~fmesher, ~Comment,
+  ~INLA, ~fmesher, ~Comments,
   c("inla.mesh.fem()", "inla.mesh.1d.fem()"), "fm_fem()", " ",
   " ", "fm_matern_precision()", " ",
   " ", "fm_matern_sample()", paste0(
@@ -201,6 +215,12 @@ df <- tribble(
     " Can produce sparse inverses like",
     " `inla.qinv()`, but currently (version 0.1.1) only",
     " by a 'brute force' method."
+  ),
+  "inla.qinv", "fm_qinv()",
+  paste0(
+    "Produce sparse inverses like",
+    " `inla.qinv()`, but currently (version 0.2.0.9010)",
+    " by an R implementation."
   ),
   " ", "fm_sample()", "Basic sampling method, like `inla.qsample()`"
 )
@@ -236,7 +256,7 @@ knitr::kable(df)
 ## CRS information and coordinate transformations
 
 ```{r, echo = FALSE}
-df <- convert_fun_links(
+df <-
   tibble::tribble(
     ~INLA, ~fmesher, ~Comments,
     "inla.spTransform()", "fm_transform()", "",
@@ -253,7 +273,7 @@ df <- convert_fun_links(
       " mesh coordinates."
     )
   )
-)
+df <- convert_fun_links(df)
 ```
 
 ```{r, echo = FALSE}
@@ -264,20 +284,32 @@ knitr::kable(df)
 
 ```{r echo = FALSE}
 df <- tribble(
-  ~INLA, ~fmesher, ~Comment,
-  "No ggplot support", c("geom_fm(data = mesh)", "geom_fm(data = segm)"),
+  ~INLA, ~fmesher, ~inlabru, ~Comments,
+  "No ggplot support",
+  c("geom_fm(data = mesh)", "geom_fm(data = segm)"),
+  "inlabru::gg(mesh)",
   "Use `ggplot() + geom_fm(data = mesh)` and `inlabru::gg()` methods",
-  "plot.inla.mesh(rgl = FALSE)", c("plot.fm_mesh_2d()", "lines.fm_mesh_2d()"),
+  "plot.inla.mesh(rgl = FALSE)",
+  c("plot.fm_mesh_2d()", "lines.fm_mesh_2d()"),
+  character(0),
   "Use `plot()` or `lines()`",
-  "lines.inla.mesh.segment(rgl = FALSE)", c(
+  "lines.inla.mesh.segment(rgl = FALSE)",
+  c(
     "plot.fm_segm()",
     "lines.fm_segm()"
-  ), "Use `plot()` or `lines()`",
-  "plot.inla.mesh(rgl = TRUE)", c("plot_rgl()", "lines_rgl()"), "",
-  "lines.inla.mesh.segment(rgl = TRUE)", c(
+  ),
+  character(0),
+  "Use `plot()` or `lines()`",
+  "plot.inla.mesh(rgl = TRUE)",
+  c("plot_rgl()", "lines_rgl()"),
+  character(0),
+  "",
+  "lines.inla.mesh.segment(rgl = TRUE)",
+  c(
     "plot_rgl()",
     "lines_rgl()"
   ),
+  character(0),
   ""
 )
 df <- convert_fun_links(df)

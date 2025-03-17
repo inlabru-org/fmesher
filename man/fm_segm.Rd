@@ -8,7 +8,6 @@
 \alias{fm_segm_join}
 \alias{fm_segm_split}
 \alias{fm_segm.inla.mesh.segment}
-\alias{fm_segm.inla.mesh}
 \alias{fm_segm.fm_mesh_2d}
 \alias{fm_is_bnd}
 \alias{fm_is_bnd<-}
@@ -27,8 +26,6 @@ fm_segm_join(x, grp = NULL, grp.default = 0L, is.bnd = NULL)
 fm_segm_split(x, grp = NULL, grp.default = 0L)
 
 \method{fm_segm}{inla.mesh.segment}(..., grp.default = 0)
-
-\method{fm_segm}{inla.mesh}(x, ...)
 
 \method{fm_segm}{fm_mesh_2d}(x, boundary = TRUE, grp = NULL, ...)
 
@@ -113,12 +110,15 @@ fm_segm(fmexample$mesh, boundary = FALSE)
 Other object creation and conversion: 
 \code{\link{fm_as_fm}()},
 \code{\link{fm_as_lattice_2d}()},
+\code{\link{fm_as_lattice_Nd}()},
 \code{\link{fm_as_mesh_1d}()},
 \code{\link{fm_as_mesh_2d}()},
+\code{\link{fm_as_mesh_3d}()},
 \code{\link{fm_as_segm}()},
 \code{\link{fm_as_sfc}()},
 \code{\link{fm_as_tensor}()},
 \code{\link{fm_lattice_2d}()},
+\code{\link{fm_lattice_Nd}()},
 \code{\link{fm_mesh_1d}()},
 \code{\link{fm_mesh_2d}()},
 \code{\link{fm_simplify}()},

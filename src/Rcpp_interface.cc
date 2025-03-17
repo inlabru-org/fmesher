@@ -42,12 +42,18 @@ using fmesh::DartList;
 using fmesh::DartPair;
 using fmesh::Int3;
 using fmesh::Int3Raw;
+using fmesh::Int4;
+using fmesh::Int4Raw;
 using fmesh::Matrix;
 using fmesh::Matrix3double;
 using fmesh::Matrix3int;
+using fmesh::Matrix4double;
+using fmesh::Matrix4int;
 using fmesh::Matrix1int;
 using fmesh::MatrixC;
 using fmesh::Mesh;
+using fmesh::Mesh3;
+using fmesh::Dart3;
 using fmesh::MeshC;
 using fmesh::Point;
 using fmesh::PointRaw;
@@ -182,6 +188,47 @@ Mesh Rcpp_import_mesh(Rcpp::NumericMatrix mesh_loc,
 }
 
 
+Mesh3 Rcpp_import_mesh3d(Rcpp::NumericMatrix mesh_loc,
+                         Rcpp::IntegerMatrix mesh_tv,
+                         MatrixC & matrices,
+                         Rcpp::List options) {
+  const bool useVT = true;
+  const bool useTTi = true;
+
+  matrices.attach("mesh_loc",
+                  std::make_unique<Matrix<double>>(Matrix3double(Matrix<double>(mesh_loc))));
+  FMLOG("'mesh_loc' points imported." << std::endl);
+  matrices.attach("mesh_tv", std::make_unique<Matrix<int>>(mesh_tv));
+  FMLOG("'mesh_tv' points imported." << std::endl);
+
+  Matrix<double>& iS0 = matrices.DD("mesh_loc");
+  Matrix<int>& TV0 = matrices.DI("mesh_tv");
+
+  /* Initialise mesh structure */
+  Mesh3 M(Mesh3::Mtype::Plane, 0, useVT, useTTi);
+
+  if (iS0.rows() > 0) {
+    //    Matrix3double S0(iS0); /* Make sure we have a Nx3 matrix. */
+    M.S_append(iS0);
+  }
+
+  Options the_options(options, iS0.rows());
+
+  /* Make sure all tetra have positive volume, i.e. are oriented appropriately,
+   * with the first three vertices forming a right-handed coordinate system as
+   *  seen from the fourth vertex.
+   */
+  for (size_t t = 0; t < TV0.rows(); t++) {
+    if (M.tetraVolume(M.S(TV0[t][0]), M.S(TV0[t][1]), M.S(TV0[t][2]), M.S(TV0[t][3])) < 0.0) {
+      std::swap(TV0(t)[0], TV0(t)[1]);
+    }
+  }
+  M.TV_set(TV0);
+
+  return M;
+}
+
+
 
 
 
@@ -268,231 +315,231 @@ Rcpp::NumericMatrix fmesher_globe_points(Rcpp::IntegerVector globe) {
 //' @export
 // [[Rcpp::export]]
 Rcpp::List fmesher_rcdt(Rcpp::List options,
-                        Rcpp::NumericMatrix loc,
-                        Rcpp::Nullable<Rcpp::IntegerMatrix> tv = R_NilValue,
-                        Rcpp::Nullable<Rcpp::IntegerMatrix> boundary = R_NilValue,
-                        Rcpp::Nullable<Rcpp::IntegerMatrix> interior = R_NilValue,
-                        Rcpp::Nullable<Rcpp::IntegerVector> boundary_grp = R_NilValue,
-                        Rcpp::Nullable<Rcpp::IntegerVector> interior_grp = R_NilValue) {
-  const bool useVT = true;
-  const bool useTTi = true;
+                           Rcpp::NumericMatrix loc,
+                           Rcpp::Nullable<Rcpp::IntegerMatrix> tv = R_NilValue,
+                           Rcpp::Nullable<Rcpp::IntegerMatrix> boundary = R_NilValue,
+                           Rcpp::Nullable<Rcpp::IntegerMatrix> interior = R_NilValue,
+                           Rcpp::Nullable<Rcpp::IntegerVector> boundary_grp = R_NilValue,
+                           Rcpp::Nullable<Rcpp::IntegerVector> interior_grp = R_NilValue) {
+     const bool useVT = true;
+     const bool useTTi = true;
 
-  MatrixC matrices;
+     MatrixC matrices;
 
-  matrices.attach("loc", std::make_unique<Matrix<double>>(loc));
-  FMLOG("'loc' points imported." << std::endl);
+     matrices.attach("loc", std::make_unique<Matrix<double>>(loc));
+     FMLOG("'loc' points imported." << std::endl);
 
-  Matrix<double>& iS0 = matrices.DD("loc");
-  Matrix<int>* TV0 = NULL;
-  if (!tv.isNull()) {
-    matrices.attach("tv0",
-                    std::make_unique<Matrix<int>>(Rcpp::as<Rcpp::IntegerMatrix>(tv)));
-    FMLOG("'tv0' points imported." << std::endl);
-    TV0 = &matrices.DI("tv0");
-  }
+     Matrix<double>& iS0 = matrices.DD("loc");
+     Matrix<int>* TV0 = NULL;
+     if (!tv.isNull()) {
+       matrices.attach("tv0",
+                       std::make_unique<Matrix<int>>(Rcpp::as<Rcpp::IntegerMatrix>(tv)));
+       FMLOG("'tv0' points imported." << std::endl);
+       TV0 = &matrices.DI("tv0");
+     }
 
-  Options rcdt_options(options, iS0.rows());
-  FMLOG("rcdt_options parsed" << std::endl);
+     Options rcdt_options(options, iS0.rows());
+     FMLOG("rcdt_options parsed" << std::endl);
 
-  /* Prepare boundary/interior edges */
-  matrices.attach("boundary", std::make_unique<Matrix<int>>(2));
-  matrices.attach("interior", std::make_unique<Matrix<int>>(2));
-  matrices.attach("boundary_grp", std::make_unique<Matrix<int>>(1));
-  matrices.attach("interior_grp", std::make_unique<Matrix<int>>(1));
-  if (!boundary.isNull()) {
-    matrices.DI("boundary") = Rcpp::as<Rcpp::IntegerMatrix>(boundary);
-  }
-  if (!interior.isNull()) {
-    matrices.DI("interior") = Rcpp::as<Rcpp::IntegerMatrix>(interior);
-  }
-  if (!boundary_grp.isNull()) {
-    matrices.DI("boundary_grp") = Rcpp::as<Rcpp::IntegerVector>(boundary_grp);
-  } else {
-    matrices.DI("boundary_grp")(0, 0) = 1;
-  }
-  if (!interior_grp.isNull()) {
-    matrices.DI("interior_grp") = Rcpp::as<Rcpp::IntegerVector>(interior_grp);
-  } else {
-    matrices.DI("interior_grp")(0, 0) = 1;
-  }
+     /* Prepare boundary/interior edges */
+     matrices.attach("boundary", std::make_unique<Matrix<int>>(2));
+     matrices.attach("interior", std::make_unique<Matrix<int>>(2));
+     matrices.attach("boundary_grp", std::make_unique<Matrix<int>>(1));
+     matrices.attach("interior_grp", std::make_unique<Matrix<int>>(1));
+     if (!boundary.isNull()) {
+       matrices.DI("boundary") = Rcpp::as<Rcpp::IntegerMatrix>(boundary);
+     }
+     if (!interior.isNull()) {
+       matrices.DI("interior") = Rcpp::as<Rcpp::IntegerMatrix>(interior);
+     }
+     if (!boundary_grp.isNull()) {
+       matrices.DI("boundary_grp") = Rcpp::as<Rcpp::IntegerVector>(boundary_grp);
+     } else {
+       matrices.DI("boundary_grp")(0, 0) = 1;
+     }
+     if (!interior_grp.isNull()) {
+       matrices.DI("interior_grp") = Rcpp::as<Rcpp::IntegerVector>(interior_grp);
+     } else {
+       matrices.DI("interior_grp")(0, 0) = 1;
+     }
 
-  constrListT cdt_boundary;
-  constrListT cdt_interior;
-  if (!boundary.isNull()) {
-    prepare_cdt_input(matrices.DI("boundary"),
-                      matrices.DI("boundary_grp"),
-                      cdt_boundary);
-  }
-  if (!interior.isNull()) {
-    prepare_cdt_input(matrices.DI("interior"),
-                      matrices.DI("interior_grp"),
-                      cdt_interior);
-  }
+     constrListT cdt_boundary;
+     constrListT cdt_interior;
+     if (!boundary.isNull()) {
+       prepare_cdt_input(matrices.DI("boundary"),
+                         matrices.DI("boundary_grp"),
+                         cdt_boundary);
+     }
+     if (!interior.isNull()) {
+       prepare_cdt_input(matrices.DI("interior"),
+                         matrices.DI("interior_grp"),
+                         cdt_interior);
+     }
 
-  /* Prepare to filter out points at distance not greater than 'cutoff' */
-  matrices.attach("idx", std::make_unique<Matrix<int>>(iS0.rows(), 1));
-  matrices.output("idx");
-  Matrix<int> &idx = matrices.DI("idx").clear();
+     /* Prepare to filter out points at distance not greater than 'cutoff' */
+     matrices.attach("idx", std::make_unique<Matrix<int>>(iS0.rows(), 1));
+     matrices.output("idx");
+     Matrix<int> &idx = matrices.DI("idx").clear();
 
-  filter_locations(iS0, idx, rcdt_options.cutoff);
+     filter_locations(iS0, idx, rcdt_options.cutoff);
 
-  /* Remap vertex input references */
-  if (TV0) {
-    remap_vertex_indices(idx, *TV0);
-  }
-  remap_vertex_indices(idx, cdt_boundary);
-  remap_vertex_indices(idx, cdt_interior);
+     /* Remap vertex input references */
+     if (TV0) {
+       remap_vertex_indices(idx, *TV0);
+     }
+     remap_vertex_indices(idx, cdt_boundary);
+     remap_vertex_indices(idx, cdt_interior);
 
-  /* Initialise mesh structure */
-  Mesh M(Mesh::Mtype::Plane, 0, useVT, useTTi);
-  if ((iS0.rows() > 0) && (iS0.cols() < 2)) {
-    /* 1D data. Not implemented */
-    FMLOG("1D data not implemented." << std::endl);
-    return Rcpp::List();
-  }
+     /* Initialise mesh structure */
+     Mesh M(Mesh::Mtype::Plane, 0, useVT, useTTi);
+     if ((iS0.rows() > 0) && (iS0.cols() < 2)) {
+       /* 1D data. Not implemented */
+       FMLOG("1D data not implemented." << std::endl);
+       return Rcpp::List();
+     }
 
-  if (iS0.rows() > 0) {
-    FMLOG("Append S0." << std::endl);
-    Matrix3double S0(iS0); /* Make sure we have a Nx3 matrix. */
-    M.S_append(S0);
-  }
+     if (iS0.rows() > 0) {
+       FMLOG("Append S0." << std::endl);
+       Matrix3double S0(iS0); /* Make sure we have a Nx3 matrix. */
+       M.S_append(S0);
+     }
 
-  FMLOG("Auto-detect manifold type." << std::endl);
-  //  double sphere_tolerance = 1e-10;
-  (void)M.auto_type(rcdt_options.sphere_tolerance);
+     FMLOG("Auto-detect manifold type." << std::endl);
+     //  double sphere_tolerance = 1e-10;
+     (void)M.auto_type(rcdt_options.sphere_tolerance);
 
-  if (TV0) {
-    FMLOG("Set TV0." << std::endl);
-    M.TV_set(*TV0);
-  }
+     if (TV0) {
+       FMLOG("Set TV0." << std::endl);
+       M.TV_set(*TV0);
+     }
 
-  FMLOG("Attach 's'." << std::endl);
-  matrices.attach(string("s"), &M.S());
-  FMLOG("Attach 'tv'." << std::endl);
-  matrices.attach("tv", &M.TV());
-  FMLOG("Set output of 's' and 'tv'." << std::endl);
-  matrices.output("s").output("tv");
+     FMLOG("Attach 's'." << std::endl);
+     matrices.attach(string("s"), &M.S());
+     FMLOG("Attach 'tv'." << std::endl);
+     matrices.attach("tv", &M.TV());
+     FMLOG("Set output of 's' and 'tv'." << std::endl);
+     matrices.output("s").output("tv");
 
-  FMLOG("Create MeshC helper." << std::endl);
-  MeshC MC(&M);
-  MC.setOptions(MC.getOptions() | MeshC::Option_offcenter_steiner);
+     FMLOG("Create MeshC helper." << std::endl);
+     MeshC MC(&M);
+     MC.setOptions(MC.getOptions() | MeshC::Option_offcenter_steiner);
 
-  if ((M.type() != Mesh::Mtype::Plane) &&
-      (M.type() != Mesh::Mtype::Sphere)) {
-    if (M.nT() == 0) {
-      FMLOG_(
-        "Points not in the plane or on a sphere, and triangulation empty."
-        << std::endl);
-    }
-    /* Remove everything outside the boundary segments, if any. */
-    FMLOG("Prune exterior." << std::endl);
-    MC.PruneExterior();
-    FMLOG("Invalidate unused vertex indices." << std::endl);
-    invalidate_unused_vertex_indices(M, idx);
-    /* Nothing more to do here.  Cannot refine non R2/S2 meshes. */
-  } else {
-    /* If we don't already have a triangulation, we must create one. */
-    if (M.nT() == 0) {
-      FMLOG("Create covering triangulation." << std::endl);
-      FMLOG("cet_sides = " << rcdt_options.cet_sides << std::endl);
-      FMLOG("cet_margin = " << rcdt_options.cet_margin << std::endl);
-      if (!MC.CET(rcdt_options.cet_sides, rcdt_options.cet_margin)) {
-        FMLOG_("CET creation failed, exiting." << std::endl);
-        return Rcpp::wrap(matrices);
-      }
-    }
+     if ((M.type() != Mesh::Mtype::Plane) &&
+         (M.type() != Mesh::Mtype::Sphere)) {
+       if (M.nT() == 0) {
+         FMLOG_(
+           "Points not in the plane or on a sphere, and triangulation empty."
+           << std::endl);
+       }
+       /* Remove everything outside the boundary segments, if any. */
+       FMLOG("Prune exterior." << std::endl);
+       MC.PruneExterior();
+       FMLOG("Invalidate unused vertex indices." << std::endl);
+       invalidate_unused_vertex_indices(M, idx);
+       /* Nothing more to do here.  Cannot refine non R2/S2 meshes. */
+     } else {
+       /* If we don't already have a triangulation, we must create one. */
+       if (M.nT() == 0) {
+         FMLOG("Create covering triangulation." << std::endl);
+         FMLOG("cet_sides = " << rcdt_options.cet_sides << std::endl);
+         FMLOG("cet_margin = " << rcdt_options.cet_margin << std::endl);
+         if (!MC.CET(rcdt_options.cet_sides, rcdt_options.cet_margin)) {
+           FMLOG_("CET creation failed, exiting." << std::endl);
+           return Rcpp::wrap(matrices);
+         }
+       }
 
-    /* It is more robust to add the constraints before the rest of the
-     nodes are added.  This allows points to fall onto constraint
-     segments, subdividing them as needed. */
-    if (cdt_boundary.size() > 0)
-      MC.CDTBoundary(cdt_boundary);
-    if (cdt_interior.size() > 0)
-      MC.CDTInterior(cdt_interior);
+       /* It is more robust to add the constraints before the rest of the
+        nodes are added.  This allows points to fall onto constraint
+        segments, subdividing them as needed. */
+       if (cdt_boundary.size() > 0)
+         MC.CDTBoundary(cdt_boundary);
+       if (cdt_interior.size() > 0)
+         MC.CDTInterior(cdt_interior);
 
-    /* Add the rest of the nodes. */
-    vertexListT vertices;
-    for (size_t v = 0; v < iS0.rows(); v++)
-      vertices.push_back(v);
+       /* Add the rest of the nodes. */
+       vertexListT vertices;
+       for (size_t v = 0; v < iS0.rows(); v++)
+         vertices.push_back(v);
 
-    MC.DT(vertices);
+       MC.DT(vertices);
 
-    /* Remove everything outside the boundary segments, if any. */
-    FMLOG("Prune exterior." << std::endl);
-    MC.PruneExterior();
-    FMLOG("Invalidate unused vertex indices." << std::endl);
-    invalidate_unused_vertex_indices(M, idx);
+       /* Remove everything outside the boundary segments, if any. */
+       FMLOG("Prune exterior." << std::endl);
+       MC.PruneExterior();
+       FMLOG("Invalidate unused vertex indices." << std::endl);
+       invalidate_unused_vertex_indices(M, idx);
 
-    if ((rcdt_options.rcdt) &&
-        (rcdt_options.rcdt_max_edge > 0)) {
-      /* Calculate the RCDT: */
-      FMLOG("Construct refinement." << std::endl);
-      MC.RCDT(rcdt_options.rcdt_min_angle,
-              rcdt_options.rcdt_max_edge,
-              rcdt_options.quality.raw(),
-              rcdt_options.quality.rows(),
-              rcdt_options.rcdt_max_n0,
-              rcdt_options.rcdt_max_n1);
-      FMLOG(MC << endl);
-    }
-    /* Done constructing the triangulation. */
+       if ((rcdt_options.rcdt) &&
+           (rcdt_options.rcdt_max_edge > 0)) {
+         /* Calculate the RCDT: */
+         FMLOG("Construct refinement." << std::endl);
+         MC.RCDT(rcdt_options.rcdt_min_angle,
+                 rcdt_options.rcdt_max_edge,
+                 rcdt_options.quality.raw(),
+                 rcdt_options.quality.rows(),
+                 rcdt_options.rcdt_max_n0,
+                 rcdt_options.rcdt_max_n1);
+         FMLOG(MC << endl);
+       }
+       /* Done constructing the triangulation. */
 
-    /* Calculate and collect output. */
+       /* Calculate and collect output. */
 
-    matrices.attach("segm.bnd.idx", std::make_unique<Matrix<int>>(2),
-                    fmesh::IOMatrixtype::General);
-    matrices.attach("segm.bnd.grp", std::make_unique<Matrix<int>>(1),
-                    fmesh::IOMatrixtype::General);
-    MC.segments(true,
-                &matrices.DI("segm.bnd.idx"),
-                &matrices.DI("segm.bnd.grp"));
+       matrices.attach("segm.bnd.idx", std::make_unique<Matrix<int>>(2),
+                       fmesh::IOMatrixtype::General);
+       matrices.attach("segm.bnd.grp", std::make_unique<Matrix<int>>(1),
+                       fmesh::IOMatrixtype::General);
+       MC.segments(true,
+                   &matrices.DI("segm.bnd.idx"),
+                   &matrices.DI("segm.bnd.grp"));
 
-    matrices.output("segm.bnd.idx").output("segm.bnd.grp");
+                   matrices.output("segm.bnd.idx").output("segm.bnd.grp");
 
-    matrices.attach("segm.int.idx", std::make_unique<Matrix<int>>(2),
-                    fmesh::IOMatrixtype::General);
-    matrices.attach("segm.int.grp", std::make_unique<Matrix<int>>(1),
-                    fmesh::IOMatrixtype::General);
-    MC.segments(false, &matrices.DI("segm.int.idx"),
-                &matrices.DI("segm.int.grp"));
+                   matrices.attach("segm.int.idx", std::make_unique<Matrix<int>>(2),
+                                   fmesh::IOMatrixtype::General);
+                   matrices.attach("segm.int.grp", std::make_unique<Matrix<int>>(1),
+                                   fmesh::IOMatrixtype::General);
+                   MC.segments(false, &matrices.DI("segm.int.idx"),
+                               &matrices.DI("segm.int.grp"));
 
-    matrices.output("segm.int.idx").output("segm.int.grp");
-  }
+                   matrices.output("segm.int.idx").output("segm.int.grp");
+     }
 
-  matrices.attach("tt", &M.TT());
-  M.useVT(true);
-//  matrices.attach("vt", &M.VT());
-  M.useTTi(true);
-  matrices.attach("tti", &M.TTi());
-  matrices.attach("vv", std::make_unique<SparseMatrix<int>>(M.VV()),
-                  fmesh::IOMatrixtype::Symmetric);
+     matrices.attach("tt", &M.TT());
+     M.useVT(true);
+     //  matrices.attach("vt", &M.VT());
+     M.useTTi(true);
+     matrices.attach("tti", &M.TTi());
+     matrices.attach("vv", std::make_unique<SparseMatrix<int>>(M.VV()),
+                     fmesh::IOMatrixtype::Symmetric);
 
-  matrices.output("tt").output("tti").output("vt").output("vv");
+     matrices.output("tt").output("tti").output("vt").output("vv");
 
-//  FMLOG("Manifold output." << std::endl);
-//  /* Output the manifold type. */
-//  matrices.attach("manifold", std::make_unique<Matrix<int>>(1),
-//                  fmesh::IOMatrixtype::General);
-//  Matrix<int> &manifold = matrices.DI("manifold");
-//  manifold(0, 0) = static_cast<int>(M.type());
-//  matrices.output("manifold");
+     //  FMLOG("Manifold output." << std::endl);
+     //  /* Output the manifold type. */
+     //  matrices.attach("manifold", std::make_unique<Matrix<int>>(1),
+     //                  fmesh::IOMatrixtype::General);
+     //  Matrix<int> &manifold = matrices.DI("manifold");
+     //  manifold(0, 0) = static_cast<int>(M.type());
+     //  matrices.output("manifold");
 
-  Rcpp::List out = Rcpp::wrap(matrices);
+     Rcpp::List out = Rcpp::wrap(matrices);
 
-  switch (M.type()) {
-  case Mesh::Mtype::Manifold:
-    out["manifold"] = "M2";
-    break;
-  case Mesh::Mtype::Plane:
-    out["manifold"] = "R2";
-    break;
-  case Mesh::Mtype::Sphere:
-    out["manifold"] = "S2";
-    break;
-  }
+     switch (M.type()) {
+     case Mesh::Mtype::Manifold:
+       out["manifold"] = "M2";
+       break;
+     case Mesh::Mtype::Plane:
+       out["manifold"] = "R2";
+       break;
+     case Mesh::Mtype::Sphere:
+       out["manifold"] = "S2";
+       break;
+     }
 
-  return out;
-}
+     return out;
+   }
 
 
 
@@ -502,9 +549,9 @@ Rcpp::List fmesher_rcdt(Rcpp::List options,
 //' @description
 //' Locate points and compute triangular barycentric coordinates
 //'
-//' @param loc numeric matrix; coordinates of points to locate in the mesh
 //' @param mesh_loc numeric matrix; mesh vertex coordinates
 //' @param mesh_tv 3-column integer matrix with 0-based vertex indices for each triangle
+//' @param loc numeric matrix; coordinates of points to locate in the mesh
 //' @param options list of triangulation options
 //' @examples
 //' m <- fmesher_rcdt(list(cet_margin = 1), matrix(0, 1, 2))
@@ -512,7 +559,8 @@ Rcpp::List fmesher_rcdt(Rcpp::List options,
 //'                   m$tv,
 //'                   matrix(c(0.5, 0.5), 1, 2),
 //'                   list())
-//' @returns A list with vector `t` and matrix `bary`
+//' @returns A list with vector `index` (triangle index) and matrix `where`
+//' (3-column barycentric matrix)
 //' @export
 // [[Rcpp::export]]
 Rcpp::List fmesher_bary(Rcpp::NumericMatrix mesh_loc,
@@ -537,15 +585,65 @@ Rcpp::List fmesher_bary(Rcpp::NumericMatrix mesh_loc,
 
   size_t points_n = points2mesh.rows();
   Matrix<int> &points2mesh_t =
-    matrices.attach(string("t"), std::make_unique<Matrix<int>>(points_n, 1));
+    matrices.attach(string("index"), std::make_unique<Matrix<int>>(points_n, 1));
   Matrix<double> &points2mesh_b = matrices.attach(
-    string("bary"), std::make_unique<Matrix<double>>(points_n, 3));
-  matrices.matrixtype("t", fmesh::IOMatrixtype::General);
-  matrices.matrixtype("bary", fmesh::IOMatrixtype::General);
-  matrices.output("t").output("bary");
+    string("where"), std::make_unique<Matrix<double>>(points_n, 3));
+  matrices.matrixtype("index", fmesh::IOMatrixtype::General);
+  matrices.matrixtype("where", fmesh::IOMatrixtype::General);
+  matrices.output("index").output("where");
 
   FMLOG("map_points_to_mesh start" << std::endl);
   map_points_to_mesh(M, points2mesh, points2mesh_t, points2mesh_b);
+  FMLOG("map_points_to_mesh done" << std::endl);
+
+  return Rcpp::wrap(matrices);
+}
+
+//' @title Barycentric coordinate computation
+//'
+//' @description
+//' Locate points and compute triangular barycentric coordinates
+//'
+//' @param mesh_loc numeric matrix; mesh vertex coordinates
+//' @param mesh_tv 3-column integer matrix with 0-based vertex indices for each triangle
+//' @param loc numeric matrix; coordinates of points to locate in the mesh
+//' @param options list of triangulation options
+//' @examples
+//' m <- fmesher_mesh3d(list(cet_margin = 1),
+//'                     matrix(rnorm(15), 5, 3),
+//'                     matrix(c(0,1,2,3), 1, 4))
+//' b <- fmesher_bary3d(m$loc,
+//'                     m$tv,
+//'                     matrix(c(0.5, 0.5, 0.5), 1, 3),
+//'                     list())
+//' @returns A list with vector `index` (tetra index) and matrix `where`
+//' (4-column barycentric matrix)
+//' @export
+// [[Rcpp::export]]
+Rcpp::List fmesher_bary3d(Rcpp::NumericMatrix mesh_loc,
+                          Rcpp::IntegerMatrix mesh_tv,
+                          Rcpp::NumericMatrix loc,
+                          Rcpp::List options) {
+  MatrixC matrices;
+  Mesh3 M = Rcpp_import_mesh3d(mesh_loc, mesh_tv, matrices, options);
+
+  FMLOG("barycentric coordinate output." << std::endl);
+
+  matrices.attach("loc",
+                  std::make_unique<Matrix<double>>(Matrix3double(Matrix<double>(loc))));
+  Matrix<double>& points2mesh = matrices.DD("loc");
+
+  size_t points_n = points2mesh.rows();
+  Matrix<int> &points2mesh_t =
+    matrices.attach(string("index"), std::make_unique<Matrix<int>>(points_n, 1));
+  Matrix<double> &points2mesh_b = matrices.attach(
+    string("where"), std::make_unique<Matrix<double>>(points_n, 4));
+  matrices.matrixtype("index", fmesh::IOMatrixtype::General);
+  matrices.matrixtype("where", fmesh::IOMatrixtype::General);
+  matrices.output("index").output("where");
+
+  FMLOG("map_points_to_mesh start" << std::endl);
+  map_points_to_mesh3d(M, points2mesh, points2mesh_t, points2mesh_b);
   FMLOG("map_points_to_mesh done" << std::endl);
 
   return Rcpp::wrap(matrices);
@@ -1201,6 +1299,66 @@ Rcpp::List fmesher_subdivide(
 //        ret["mat2"] = mat2.output("-");
 //        return (ret);
 //      }
+
+
+
+//' @title 3D tetrahedralisation storage
+//'
+//' @description
+//' (...)
+//'
+//' @param options list of triangulation options
+//' @param loc numeric matrix; initial points to include
+//' @param tv 4-column integer matrix with 0-based vertex indices for each triangle
+//' @examples
+//' m <- fmesher_mesh3d(list(),
+//'                     matrix(c(1,0,0,0,1,0,0,0,1,0,0,0), 4, 3, byrow=TRUE),
+//'                     matrix(c(0,1,2,3), 1, 4, byrow=TRUE))
+//' @returns A list of information objects for a generated tetrahedralisation
+//' @export
+// [[Rcpp::export]]
+Rcpp::List fmesher_mesh3d(Rcpp::List options,
+                           Rcpp::NumericMatrix loc,
+                           Rcpp::IntegerMatrix tv) {
+   MatrixC matrices;
+   Mesh3 M = Rcpp_import_mesh3d(loc, tv, matrices, options);
+
+   FMLOG("Attach 'loc'." << std::endl);
+   matrices.attach(string("loc"), &M.S());
+   FMLOG("Attach 'tv'." << std::endl);
+   matrices.attach("tv", &M.TV());
+   FMLOG("Set output of 'loc' and 'tv'." << std::endl);
+   matrices.output("loc").output("tv");
+
+   FMLOG("M = " << M << std::endl);
+   FMLOG("M.TT = " << M.TT() << std::endl);
+   FMLOG("M.TTi = " << M.TTi() << std::endl);
+   FMLOG("M.VV = " << M.VV() << std::endl);
+
+   matrices.attach("tt", &M.TT());
+   M.useVT(true);
+   //  matrices.attach("vt", &M.VT());
+   M.useTTi(true);
+   matrices.attach("tti", &M.TTi());
+   matrices.attach("vv", std::make_unique<SparseMatrix<int>>(M.VV()),
+                   fmesh::IOMatrixtype::Symmetric);
+
+   matrices.output("tt").output("tti").output("vt").output("vv");
+
+   Rcpp::List out = Rcpp::wrap(matrices);
+
+   switch (M.type()) {
+   case Mesh3::Mtype::Manifold:
+     out["manifold"] = "M3";
+     break;
+   case Mesh3::Mtype::Plane:
+     out["manifold"] = "R3";
+     break;
+   }
+
+   return out;
+ }
+
 
 
 

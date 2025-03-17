@@ -65,6 +65,7 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           dependencies: '"hard"'
+          cache: false
           extra-packages: |
              rcmdcheck
              Cairo
@@ -86,4 +87,5 @@ jobs:
           _R_CHECK_CRAN_INCOMING_REMOTE_: false
           _R_CHECK_FORCE_SUGGESTS_: false
         with:
-          args: 'c("--no-manual", "--as-cran")'
+          build_args: 'c("--no-build-vignettes")'
+          args: 'c("--no-manual", "--as-cran", "--ignore-vignettes")'

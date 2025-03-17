@@ -86,7 +86,7 @@ fm_pixels <- function(mesh,
 
   x <- NULL
   if (lifecycle::is_present(nx)) {
-    lifecycle::deprecate_warn(
+    lifecycle::deprecate_stop(
       "0.0.1",
       "fm_pixels(nx)",
       "fm_pixels(dim)"
@@ -99,7 +99,7 @@ fm_pixels <- function(mesh,
   }
   y <- NULL
   if (lifecycle::is_present(ny)) {
-    lifecycle::deprecate_warn(
+    lifecycle::deprecate_stop(
       "0.0.1",
       "fm_pixels(ny)",
       "fm_pixels(dim)"
@@ -490,7 +490,7 @@ fm_vertices <- function(x, format = NULL) {
 #' object.
 #'
 #' @export
-#' @param x An `fm_mesh_2d` or `inla.mesh` object.
+#' @param x An `fm_mesh_2d` object.
 #' @param format character; `"sf"`, `"df"`, `"sp"`
 #' @return
 #' An `sf`, `data.frame`, or `SpatialPointsDataFrame` object, with the vertex
@@ -637,38 +637,24 @@ fm_dof.fm_mesh_2d <- function(x) {
 
 #' @rdname fm_dof
 #' @export
+fm_dof.fm_mesh_3d <- function(x) {
+  as.integer(x[["n"]])
+}
+
+#' @rdname fm_dof
+#' @export
 fm_dof.fm_tensor <- function(x) {
   prod(vapply(x$fun_spaces, fm_dof, 0L))
 }
 
-
-
-
-# Deprecated ####
-
-#' @describeIn fmesher-deprecated Conversion to inla.mesh.segment
-#' `r lifecycle::badge("deprecated")` in favour of [fm_as_segm()].
-#' @returns An `fm_segm` object
+#' @rdname fm_dof
 #' @export
-fm_as_inla_mesh_segment <-
-  function(...) {
-    lifecycle::deprecate_warn(
-      "0.0.1",
-      "fm_as_inla_mesh_segment()",
-      "fm_as_segm()"
-    )
-    fm_as_segm(...)
-  }
+fm_dof.fm_lattice_2d <- function(x) {
+  length(x$x) * length(x$y)
+}
 
-#' @describeIn fmesher-deprecated Conversion to inla.mesh.
-#' `r lifecycle::badge("deprecated")` in favour of [fm_as_mesh_2d()].
-#' @returns An `fm_mesh_2d` object
+#' @rdname fm_dof
 #' @export
-fm_as_inla_mesh <- function(...) {
-  lifecycle::deprecate_warn(
-    "0.0.1",
-    "fm_as_inla_mesh()",
-    "fm_as_mesh_2d()"
-  )
-  fm_as_mesh_2d(...)
+fm_dof.fm_lattice_Nd <- function(x) {
+  prod(x$dims)
 }

@@ -20,9 +20,6 @@
 \alias{fm_CRS.default}
 \alias{is.na.inla.CRS}
 \alias{fm_CRS.inla.CRS}
-\alias{fm_CRS.inla.mesh}
-\alias{fm_CRS.inla.mesh.lattice}
-\alias{fm_CRS.inla.mesh.segment}
 \title{Create a coordinate reference system object}
 \usage{
 fm_CRS(x, oblique = NULL, ...)
@@ -70,12 +67,6 @@ fm_CRS(x, oblique = NULL, ...)
 \method{is.na}{inla.CRS}(x)
 
 \method{fm_CRS}{inla.CRS}(x, oblique = NULL, ...)
-
-\method{fm_CRS}{inla.mesh}(x, oblique = NULL, ...)
-
-\method{fm_CRS}{inla.mesh.lattice}(x, oblique = NULL, ...)
-
-\method{fm_CRS}{inla.mesh.segment}(x, oblique = NULL, ...)
 }
 \arguments{
 \item{x}{Object to convert to CRS or to extract CRS information from.}

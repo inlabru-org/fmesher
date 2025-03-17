@@ -55,9 +55,9 @@ fmesher_rcdt <- function(options, loc, tv = NULL, boundary = NULL, interior = NU
 #' @description
 #' Locate points and compute triangular barycentric coordinates
 #'
-#' @param loc numeric matrix; coordinates of points to locate in the mesh
 #' @param mesh_loc numeric matrix; mesh vertex coordinates
 #' @param mesh_tv 3-column integer matrix with 0-based vertex indices for each triangle
+#' @param loc numeric matrix; coordinates of points to locate in the mesh
 #' @param options list of triangulation options
 #' @examples
 #' m <- fmesher_rcdt(list(cet_margin = 1), matrix(0, 1, 2))
@@ -65,10 +65,35 @@ fmesher_rcdt <- function(options, loc, tv = NULL, boundary = NULL, interior = NU
 #'                   m$tv,
 #'                   matrix(c(0.5, 0.5), 1, 2),
 #'                   list())
-#' @returns A list with vector `t` and matrix `bary`
+#' @returns A list with vector `index` (triangle index) and matrix `where`
+#' (3-column barycentric matrix)
 #' @export
 fmesher_bary <- function(mesh_loc, mesh_tv, loc, options) {
     .Call(`_fmesher_fmesher_bary`, mesh_loc, mesh_tv, loc, options)
+}
+
+#' @title Barycentric coordinate computation
+#'
+#' @description
+#' Locate points and compute triangular barycentric coordinates
+#'
+#' @param mesh_loc numeric matrix; mesh vertex coordinates
+#' @param mesh_tv 3-column integer matrix with 0-based vertex indices for each triangle
+#' @param loc numeric matrix; coordinates of points to locate in the mesh
+#' @param options list of triangulation options
+#' @examples
+#' m <- fmesher_mesh3d(list(cet_margin = 1),
+#'                     matrix(rnorm(15), 5, 3),
+#'                     matrix(c(0,1,2,3), 1, 4))
+#' b <- fmesher_bary3d(m$loc,
+#'                     m$tv,
+#'                     matrix(c(0.5, 0.5, 0.5), 1, 3),
+#'                     list())
+#' @returns A list with vector `index` (tetra index) and matrix `where`
+#' (4-column barycentric matrix)
+#' @export
+fmesher_bary3d <- function(mesh_loc, mesh_tv, loc, options) {
+    .Call(`_fmesher_fmesher_bary3d`, mesh_loc, mesh_tv, loc, options)
 }
 
 #' @title Rotationally invariant spherical B-splines
@@ -171,5 +196,23 @@ fmesher_split_lines <- function(mesh_loc, mesh_tv, loc, idx, options) {
 #' plot(mesh, add = TRUE, edge.color = 1)
 fmesher_subdivide <- function(mesh_loc, mesh_tv, mesh_boundary, mesh_interior, subdivisions, options) {
     .Call(`_fmesher_fmesher_subdivide`, mesh_loc, mesh_tv, mesh_boundary, mesh_interior, subdivisions, options)
+}
+
+#' @title 3D tetrahedralisation storage
+#'
+#' @description
+#' (...)
+#'
+#' @param options list of triangulation options
+#' @param loc numeric matrix; initial points to include
+#' @param tv 4-column integer matrix with 0-based vertex indices for each triangle
+#' @examples
+#' m <- fmesher_mesh3d(list(),
+#'                     matrix(c(1,0,0,0,1,0,0,0,1,0,0,0), 4, 3, byrow=TRUE),
+#'                     matrix(c(0,1,2,3), 1, 4, byrow=TRUE))
+#' @returns A list of information objects for a generated tetrahedralisation
+#' @export
+fmesher_mesh3d <- function(options, loc, tv) {
+    .Call(`_fmesher_fmesher_mesh3d`, options, loc, tv)
 }
 

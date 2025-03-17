@@ -3,7 +3,15 @@
 # fm_list ####
 
 fm_class_stubs <- function() {
-  c("segm", "mesh_1d", "mesh_2d", "lattice_2d", "tensor", "bbox")
+  c(
+    "segm",
+    "mesh_1d",
+    "mesh_2d",
+    "mesh_3d",
+    "lattice_2d",
+    "tensor",
+    "bbox"
+  )
 }
 
 fm_class_stub <- function(x) {

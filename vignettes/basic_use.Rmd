@@ -50,12 +50,13 @@ domain <- cbind(rnorm(4, sd = 3), rnorm(4))
 ```{r lookup2}
 pts <- cbind(rnorm(400, sd = 3), rnorm(400))
 
-# Find what triangle each point is in, and it triangular Barycentric
+# Find what triangle each point is in, and its triangular Barycentric
 # coordinates
 bary <- fm_bary(mesh2, loc = pts)
+head(bary)
 # How many points are outside the mesh?
-sum(is.na(bary$t))
-head(bary$bary)
+sum(is.na(bary$index))
+bary$where[is.na(bary$index), ]
 
 # Evaluate basis functions
 basis <- fm_basis(mesh2, loc = pts) # Raw SparseMatrix
@@ -81,8 +82,8 @@ pts1 <- seq(-2, 12, length.out = 1000)
 bary1 <- fm_bary(mesh1, loc = pts1)
 # Points outside the interval are treated differently depending on the
 # boundary conditions:
-sum(is.na(bary1$t))
-head(bary1$bary)
+sum(is.na(bary1$index))
+head(bary1)
 
 # Evaluate basis functions
 basis1 <- fm_basis(mesh1, loc = pts1) # Raw SparseMatrix

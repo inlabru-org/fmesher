@@ -2,30 +2,48 @@
 % Please edit documentation in R/bary.R
 \name{fm_bary}
 \alias{fm_bary}
+\alias{fm_bary.fm_bary}
+\alias{fm_bary.list}
+\alias{fm_bary.tbl_df}
 \alias{fm_bary.fm_mesh_1d}
 \alias{fm_bary.fm_mesh_2d}
-\alias{fm_bary.inla.mesh}
-\alias{fm_bary.inla.mesh.1d}
+\alias{fm_bary.fm_mesh_3d}
+\alias{fm_bary.fm_lattice_2d}
+\alias{fm_bary.fm_lattice_Nd}
 \title{Compute barycentric coordinates}
 \usage{
-fm_bary(mesh, loc, ...)
+fm_bary(...)
+
+\method{fm_bary}{fm_bary}(bary, ..., extra_class = NULL)
+
+\method{fm_bary}{list}(bary, ..., extra_class = NULL)
+
+\method{fm_bary}{tbl_df}(bary, ..., extra_class = NULL)
 
 \method{fm_bary}{fm_mesh_1d}(mesh, loc, method = c("linear", "nearest"), restricted = FALSE, ...)
 
 \method{fm_bary}{fm_mesh_2d}(mesh, loc, crs = NULL, ..., max_batch_size = NULL)
 
-\method{fm_bary}{inla.mesh}(mesh, ...)
+\method{fm_bary}{fm_mesh_3d}(mesh, loc, ..., max_batch_size = NULL)
 
-\method{fm_bary}{inla.mesh.1d}(mesh, ...)
+\method{fm_bary}{fm_lattice_2d}(mesh, loc, crs = NULL, ...)
+
+\method{fm_bary}{fm_lattice_Nd}(mesh, loc, ...)
 }
 \arguments{
+\item{\dots}{Arguments forwarded to sub-methods.}
+
+\item{bary}{An \code{fm_bary} object, or an object that can be converted to
+\code{fm_bary}.}
+
+\item{extra_class}{character; If non-\code{NULL} and not already in the class
+vector of \code{bary}, add it to the front of the class vector.}
+
 \item{mesh}{\code{fm_mesh_1d} or \code{fm_mesh_2d} object}
 
 \item{loc}{Points for which to identify the containing interval/triangle, and
 corresponding barycentric coordinates. May be a vector (for 1d) or a matrix
 of raw coordinates, \code{sf}, or \code{sp} point information (for 2d).}
-
-\item{\dots}{Arguments forwarded to sub-methods.}
 
 \item{method}{character; method for defining the barycentric coordinates,
 "linear" (default) or "nearest"}
@@ -45,13 +63,14 @@ internal memory allocations and data copies. The default, \code{NULL}, uses
 give an approximately optimal runtime.}
 }
 \value{
-A list with elements \code{t}; either
+A \code{fm_bary} object, a \code{tibble} with columns \code{index}; either
 \itemize{
 \item{vector of triangle indices (triangle meshes),}
-\item{matrix of interval knot indices (1D meshes), or}
-\item{matrix of lower left box indices (2D lattices),}
+\item{vector of knot indices (1D meshes, either for edges or individual
+knots), or}
+\item{vector of lower left box indices (2D lattices),}
 }
-and \code{bary}, a matrix of barycentric coordinates.
+and \code{where}, a matrix of barycentric coordinates.
 }
 \description{
 Identify knot intervals or triangles and compute barycentric
@@ -59,18 +78,57 @@ coordinates
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{fm_bary(fm_mesh_1d)}: Return a list with elements \code{t} (start and endpoint knot
-indices) and \code{bary} (barycentric coordinates), both 2-column matrices.
+\item \code{fm_bary(fm_bary)}: Returns the \code{bary} input unchanged
 
-For \code{method = "nearest"}, \code{t[,1]} contains the index of the nearest mesh
-knot, and each row of \code{bary} contains \code{c(1, 0)}.
+\item \code{fm_bary(list)}: Converts a \code{list} \code{bary} to \code{fm_bary}.
+In the list elements are unnamed, the names \code{index} and \code{where} are assumed.
 
-\item \code{fm_bary(fm_mesh_2d)}: A list with elements \code{t} (vector of triangle indices) and
-\code{bary} (3-column matrix of barycentric coordinates). Points that were not
-found give \code{NA} entries in \code{t} and \code{bary}.
+\item \code{fm_bary(tbl_df)}: Converts a \code{\link[tibble:tibble]{tibble::tibble()}} \code{bary} to \code{fm_bary}
+
+\item \code{fm_bary(fm_mesh_1d)}: Return an \code{fm_bary} object with elements \code{index}
+(edge index vector pointing to the first knot of each edge) and
+\code{where} (barycentric coordinates,
+2-column matrices). Use \code{\link[=fm_bary_simplex]{fm_bary_simplex()}} to obtain the corresponding
+endpoint knot indices.
+
+For \code{method = "nearest"}, \code{index} contains the index of the nearest mesh
+knot, and \code{where} is a single-column all-ones matrix.
+
+\item \code{fm_bary(fm_mesh_2d)}: An \code{fm_bary} object with columns \code{index} (vector of
+triangle indices) and \code{where} (3-column matrix of barycentric coordinates).
+Points that were not found give \code{NA} entries in \code{index} and \code{where}.
+
+\item \code{fm_bary(fm_mesh_3d)}: An \code{fm_bary} object with columns \code{index} (vector of
+triangle indices) and \code{where} (4-column matrix of barycentric coordinates).
+Points that were not found give \code{NA} entries in \code{index} and \code{where}.
+
+\item \code{fm_bary(fm_lattice_2d)}: An \code{fm_bary} object with columns \code{index} (vector of
+lattice cell indices) and \code{where} (4-column matrix of barycentric
+coordinates). Points that are outside the lattice are given \code{NA} entries in
+\code{index} and \code{where}.
+
+\item \code{fm_bary(fm_lattice_Nd)}: An \code{fm_bary} object with columns \code{index} (vector of
+lattice cell indices) and \code{where} \code{2^d}-column matrix of barycentric
+coordinates). Points that are outside the lattice are given \code{NA} entries in
+\code{index} and \code{where}.
 
 }}
 \examples{
+bary <- fm_bary(fm_mesh_1d(1:4), seq(0, 5, by = 0.5))
+bary
 str(fm_bary(fmexample$mesh, fmexample$loc_sf))
-str(fm_bary(fm_mesh_1d(1:4), seq(0, 5, by = 0.5)))
+m <- fm_mesh_3d(
+  rbind(
+    c(1, 0, 0),
+    c(0, 1, 0),
+    c(0, 0, 1),
+    c(0, 0, 0)
+  ),
+  matrix(c(1, 2, 3, 4), 1, 4)
+)
+b <- fm_bary(m, matrix(c(1, 1, 1) / 4, 1, 3))
+str(fm_bary(fmexample$mesh, fmexample$loc_sf))
+}
+\seealso{
+\code{\link[=fm_bary_simplex]{fm_bary_simplex()}}, \code{\link[=fm_bary_loc]{fm_bary_loc()}}
 }

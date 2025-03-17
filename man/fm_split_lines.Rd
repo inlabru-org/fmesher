@@ -3,17 +3,14 @@
 \name{fm_split_lines}
 \alias{fm_split_lines}
 \alias{fm_split_lines.fm_mesh_2d}
-\alias{fm_split_lines.inla.mesh}
 \title{Split lines at triangle edges}
 \usage{
 fm_split_lines(mesh, ...)
 
 \method{fm_split_lines}{fm_mesh_2d}(mesh, segm, ...)
-
-\method{fm_split_lines}{inla.mesh}(mesh, ...)
 }
 \arguments{
-\item{mesh}{An \code{fm_mesh_2d} or \code{inla.mesh} object}
+\item{mesh}{An \link{fm_mesh_2d} object}
 
 \item{...}{Unused.}
 

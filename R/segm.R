@@ -308,12 +308,7 @@ fm_segm.inla.mesh.segment <- function(..., grp.default = 0) {
     )
   )
 }
-#' @rdname fm_segm
-#' @export
-#' @method fm_segm inla.mesh
-fm_segm.inla.mesh <- function(x, ...) {
-  fm_segm.fm_mesh_2d(fm_as_mesh_2d(x), ...)
-}
+
 #' @describeIn fm_segm Extract the boundary or interior segments of a 2d mesh.
 #' If `grp` is non-NULL, extracts only segments matching the matching the set
 #' of groups given by `grp`.
@@ -454,7 +449,7 @@ NULL
 #' str(m[2])
 `c.fm_segm` <- function(...) {
   y <- lapply(list(...), fm_as_segm_list)
-  return(do.call("c", y))
+  do.call("c", y)
 }
 
 #' @export

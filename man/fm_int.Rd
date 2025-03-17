@@ -10,9 +10,6 @@
 \alias{fm_int.fm_lattice_2d}
 \alias{fm_int.fm_mesh_1d}
 \alias{fm_int.fm_mesh_2d}
-\alias{fm_int.inla.mesh.lattice}
-\alias{fm_int.inla.mesh.1d}
-\alias{fm_int.inla.mesh}
 \title{Multi-domain integration}
 \usage{
 fm_int(domain, samplers = NULL, ...)
@@ -29,22 +26,16 @@ fm_int(domain, samplers = NULL, ...)
 
 \method{fm_int}{fm_lattice_2d}(domain, samplers = NULL, name = "x", ...)
 
-\method{fm_int}{fm_mesh_1d}(domain, samplers = NULL, name = "x", int.args = NULL, ...)
-
-\method{fm_int}{fm_mesh_2d}(
+\method{fm_int}{fm_mesh_1d}(
   domain,
   samplers = NULL,
-  name = NULL,
+  name = "x",
   int.args = NULL,
   format = NULL,
   ...
 )
 
-\method{fm_int}{inla.mesh.lattice}(domain, samplers = NULL, name = "x", ...)
-
-\method{fm_int}{inla.mesh.1d}(domain, samplers = NULL, name = "x", int.args = NULL, ...)
-
-\method{fm_int}{inla.mesh}(
+\method{fm_int}{fm_mesh_2d}(
   domain,
   samplers = NULL,
   name = NULL,
@@ -79,11 +70,12 @@ Points per knot segment: \code{nsub1}
 }}
 
 \item{format}{character; determines the output format, as either "sf"
-(default when the sampler is \code{NULL}) or "sp". When \code{NULL}, determined by
-the sampler type.}
+(default for \code{fm_mesh_2d} when the sampler is \code{NULL}),
+"numeric" (default for \code{fm_mesh_1d}), "bary", or "sp".
+When \code{NULL}, determined by the domain and sampler types.}
 }
 \value{
-A \code{data.frame}, \code{tibble}, \code{sf}, or \code{SpatialPointsDataFrame} of 1D
+A \code{tibble}, \code{sf}, or \code{SpatialPointsDataFrame} of 1D
 and 2D integration points, including a \code{weight} column and \code{.block} column.
 }
 \description{
@@ -122,10 +114,9 @@ ips <- fm_int(fm_mesh_1d(0:4), samplers = cbind(2, 3.5))
 plot(ips$x, ips$weight)
 
 # Create integration points for the two intervals [0,3] and [5,10]
-
 ips <- fm_int(
   fm_mesh_1d(0:10),
-  matrix(c(0, 3, 5, 10), nrow = 2, byrow = TRUE)
+  rbind(c(0, 3), c(5, 10))
 )
 plot(ips$x, ips$weight)
 
@@ -144,6 +135,12 @@ if (require("ggplot2", quietly = TRUE)) {
     scale_size_area()
 }
 
+# Individual sampling points:
+(ips <- fm_int(0:10, c(0, 3, 5, 6, 10)))
+# Sampling blocks:
+(ips <- fm_int(0:10, list(c(0, 3), c(5, 6, 10))))
+
+# Continuous integration on intervals
 ips <- fm_int(
   fm_mesh_1d(0:10, boundary = "cyclic"),
   rbind(c(0, 3), c(5, 10))

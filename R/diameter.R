@@ -100,8 +100,8 @@ fm_diameter.fm_lattice_2d <- function(x, ...) {
 
 #' @rdname fm_diameter
 #' @export
-fm_diameter.fm_segm <- function(x, ...) {
-  fm_diameter.matrix(x$loc, manifold = fm_manifold(x), ...)
+fm_diameter.fm_mesh_1d <- function(x, ...) {
+  diff(x[["interval"]])
 }
 
 #' @rdname fm_diameter
@@ -112,34 +112,12 @@ fm_diameter.fm_mesh_2d <- function(x, ...) {
 
 #' @rdname fm_diameter
 #' @export
-fm_diameter.fm_mesh_1d <- function(x, ...) {
-  diff(x[["interval"]])
+fm_diameter.fm_segm <- function(x, ...) {
+  fm_diameter.matrix(x$loc, manifold = fm_manifold(x), ...)
 }
 
 #' @rdname fm_diameter
 #' @export
-#' @method fm_diameter inla.mesh.1d
-fm_diameter.inla.mesh.1d <- function(x, ...) {
-  fm_diameter(fm_as_fm(x), ...)
-}
-
-#' @rdname fm_diameter
-#' @export
-#' @method fm_diameter inla.mesh.segment
-fm_diameter.inla.mesh.segment <- function(x, ...) {
-  fm_diameter(fm_as_fm(x), ...)
-}
-
-#' @rdname fm_diameter
-#' @export
-#' @method fm_diameter inla.mesh.lattice
-fm_diameter.inla.mesh.lattice <- function(x, ...) {
-  fm_diameter(fm_as_fm(x), ...)
-}
-
-#' @rdname fm_diameter
-#' @export
-#' @method fm_diameter inla.mesh
-fm_diameter.inla.mesh <- function(x, ...) {
-  fm_diameter(fm_as_fm(x), ...)
+fm_diameter.fm_mesh_3d <- function(x, ...) {
+  fm_diameter.matrix(x$loc, manifold = fm_manifold(x), ...)
 }

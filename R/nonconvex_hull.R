@@ -98,7 +98,7 @@ fm_segm_contour_helper <- function(x = seq(0, 1, length.out = nrow(z)),
         return(groups[k])
       }
     }
-    return(0)
+    0
   }
 
   ## Join all contour pieces into a single mesh.segment
@@ -170,7 +170,7 @@ fm_segm_contour_helper <- function(x = seq(0, 1, length.out = nrow(z)),
 #' details.
 #' @param \dots Unused.
 #' @inheritParams fm_nonconvex_hull
-#' @returns `fm_nonconvex_hull_inla()` returns an `fm_segm`/`inla.mesh.segment`
+#' @returns `fm_nonconvex_hull_inla()` returns an [fm_segm]
 #' object, for compatibility with `inla.nonconvex.hull()`.
 #' @export
 #' @family nonconvex inla legacy support

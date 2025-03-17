@@ -4,9 +4,8 @@
 \alias{fm_fem}
 \alias{fm_fem.fm_mesh_1d}
 \alias{fm_fem.fm_mesh_2d}
-\alias{fm_fem.inla.mesh.1d}
-\alias{fm_fem.inla.mesh}
 \alias{fm_fem.fm_tensor}
+\alias{fm_fem.fm_mesh_3d}
 \title{Compute finite element matrices}
 \usage{
 fm_fem(mesh, order = 2, ...)
@@ -15,11 +14,9 @@ fm_fem(mesh, order = 2, ...)
 
 \method{fm_fem}{fm_mesh_2d}(mesh, order = 2, aniso = NULL, ...)
 
-\method{fm_fem}{inla.mesh.1d}(mesh, order = 2, ...)
-
-\method{fm_fem}{inla.mesh}(mesh, order = 2, ...)
-
 \method{fm_fem}{fm_tensor}(mesh, order = 2, ...)
+
+\method{fm_fem}{fm_mesh_3d}(mesh, order = 2, ...)
 }
 \arguments{
 \item{mesh}{\code{fm_mesh_1d} or other supported mesh class object}
@@ -43,6 +40,9 @@ When \code{mesh$degree == 2}, also \code{g01}, \code{g02}, and \code{g12}.
 matrices, etc.
 
 \code{fm_fem.fm_tensor}: A list with elements \code{cc}, \code{g1}, \code{g2}.
+
+\code{fm_fem.fm_mesh_3d}: A list with elements \code{c0}, \code{c1}, \code{g1}, \code{g2},
+\code{va}, \code{ta}, and more if \code{order > 2}.
 }
 \description{
 (...)

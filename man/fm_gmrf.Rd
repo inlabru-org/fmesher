@@ -17,7 +17,8 @@ fm_covariance(Q, A1 = NULL, A2 = NULL, partial = FALSE)
 fm_sample(n, Q, mu = 0, constr = NULL)
 }
 \arguments{
-\item{x}{A mesh object, e.g. from \code{fm_mesh_1d()} or \code{fm_mesh_2d()}.}
+\item{x}{A mesh object, e.g. from \code{fm_mesh_1d()}, \code{fm_mesh_2d()}, or
+other object with supporting \code{\link[=fm_fem]{fm_fem()}} and \code{\link[=fm_manifold_dim]{fm_manifold_dim()}} methods.}
 
 \item{alpha}{The SPDE operator order. The resulting smoothness index
 is \code{nu = alpha - dim / 2}.}

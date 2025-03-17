@@ -10,18 +10,19 @@
 \alias{fm_bbox.fm_bbox}
 \alias{fm_bbox.fm_mesh_1d}
 \alias{fm_bbox.fm_mesh_2d}
+\alias{fm_bbox.fm_mesh_3d}
 \alias{fm_bbox.fm_segm}
 \alias{fm_bbox.fm_lattice_2d}
+\alias{fm_bbox.fm_lattice_Nd}
 \alias{fm_bbox.fm_tensor}
 \alias{fm_bbox.sf}
 \alias{fm_bbox.sfg}
 \alias{fm_bbox.sfc}
 \alias{fm_bbox.bbox}
-\alias{fm_bbox.inla.mesh}
-\alias{fm_bbox.inla.mesh.segment}
 \alias{fm_as_bbox}
 \alias{[.fm_bbox}
 \alias{c.fm_bbox}
+\alias{fm_as_bbox_list}
 \title{Bounding box class}
 \usage{
 fm_bbox(...)
@@ -43,9 +44,13 @@ fm_bbox(...)
 
 \method{fm_bbox}{fm_mesh_2d}(x, ...)
 
+\method{fm_bbox}{fm_mesh_3d}(x, ...)
+
 \method{fm_bbox}{fm_segm}(x, ...)
 
 \method{fm_bbox}{fm_lattice_2d}(x, ...)
+
+\method{fm_bbox}{fm_lattice_Nd}(x, ...)
 
 \method{fm_bbox}{fm_tensor}(x, ...)
 
@@ -57,15 +62,13 @@ fm_bbox(...)
 
 \method{fm_bbox}{bbox}(x, ...)
 
-\method{fm_bbox}{inla.mesh}(x, ...)
-
-\method{fm_bbox}{inla.mesh.segment}(x, ...)
-
 fm_as_bbox(x, ...)
 
 \method{[}{fm_bbox}(x, i)
 
 \method{c}{fm_bbox}(..., .join = FALSE)
+
+fm_as_bbox_list(x, ...)
 }
 \arguments{
 \item{...}{Passed on to sub-methods}
@@ -78,8 +81,8 @@ fm_as_bbox(x, ...)
 multi-dimensional bounding box. Default is \code{FALSE}.}
 }
 \value{
-For \code{\link[=c.fm_bbox]{c.fm_bbox()}}, a \code{fm_bbox_list} object if \code{join = FALSE} (the
-default) or an \code{fm_bbox} object if \code{join = TRUE}.
+For \code{\link[=c.fm_bbox]{c.fm_bbox()}}, a \code{fm_bbox_list} object if \code{.join = FALSE} (the
+default) or an \code{fm_bbox} object if \code{.join = TRUE}.
 }
 \description{
 Simple class for handling bounding box information
@@ -99,9 +102,20 @@ precomputed interval information, stored as a list of 2-vector ranges,
 coercible with \code{fm_as_bbox(list(...))}.
 
 }}
+\section{Functions}{
+\itemize{
+\item \code{fm_as_bbox_list()}: Convert a list to a \code{fm_bbox_list} object, with
+each element converted to an \code{fm_bbox} object.
+
+}}
 \examples{
 fm_bbox(matrix(1:6, 3, 2))
 m <- c(A = fm_bbox(cbind(1, 2)), B = fm_bbox(cbind(3, 4)))
 str(m)
 str(m[2])
+m <- fm_as_bbox_list(list(
+  A = fm_bbox(cbind(1, 2)),
+  B = fm_bbox(cbind(3, 4))
+))
+str(fm_as_bbox_list(m))
 }
