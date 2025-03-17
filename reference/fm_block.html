@@ -117,9 +117,10 @@ weighting.</p>
 <dl><dt id="arg-block">block<a class="anchor" aria-label="anchor" href="#arg-block"></a></dt>
 <dd><p>integer vector; block information. If <code>NULL</code>,
 <code>rep(1L, block_len)</code> is used, where <code>block_len</code> is determined by
-<code>length(log_weights)))</code> or <code>length(weights)))</code>.
-A single scalar is also repeated
-to a vector of corresponding length to the weights.</p></dd>
+<code>length(log_weights)))</code> or <code>length(weights)))</code>. A single scalar is also
+repeated to a vector of corresponding length to the weights. 'character'
+input is converted to integer with <code>as.integer(factor(block))</code> (from
+<code>0.2.0.9017</code>).</p></dd>
 
 
 <dt id="arg-weights">weights<a class="anchor" aria-label="anchor" href="#arg-weights"></a></dt>
