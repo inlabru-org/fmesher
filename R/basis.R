@@ -1256,10 +1256,11 @@ internal_bspline2 <- function(x, knots, degree = 1, deriv = 0) {
 #' weighting.
 #'
 #' @param block integer vector; block information. If `NULL`,
-#' `rep(1L, block_len)` is used, where `block_len` is determined by
-#' `length(log_weights)))` or `length(weights)))`.
-#' A single scalar is also repeated
-#' to a vector of corresponding length to the weights.
+#'   `rep(1L, block_len)` is used, where `block_len` is determined by
+#'   `length(log_weights)))` or `length(weights)))`. A single scalar is also
+#'   repeated to a vector of corresponding length to the weights. 'character'
+#'   input is converted to integer with `as.integer(factor(block))` (from
+#'   `0.2.0.9017`).
 #' @param weights Optional weight vector
 #' @param log_weights Optional `log(weights)` vector. Overrides `weights` when
 #' non-NULL.
