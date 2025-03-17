@@ -657,7 +657,7 @@ fm_basis_mesh_1d <- function(mesh,
                              method = deprecated(),
                              ...) {
   if (lifecycle::is_present(method)) {
-    lifecycle::deprecate_warn(
+    lifecycle::deprecate_stop(
       "0.0.9.9020",
       "fm_evaluator_mesh_1d(method)",
       details = c("Create a separate fm_mesh_1d() object instead.")

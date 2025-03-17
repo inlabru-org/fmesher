@@ -157,7 +157,7 @@ fm_cprod <- function(..., na.rm = NULL, .blockwise = FALSE) {
   if (any(ipl_sp)) {
     ips <- sf::as_Spatial(ips)
     if (any(ipl_sf)) {
-      lifecycle::deprecate_warn(
+      lifecycle::deprecate_stop(
         when = "0.0.1",
         what = "fm_cprod('...'='should not mix `sp` and `sf` objects')",
         details =

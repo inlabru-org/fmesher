@@ -86,7 +86,7 @@ fm_pixels <- function(mesh,
 
   x <- NULL
   if (lifecycle::is_present(nx)) {
-    lifecycle::deprecate_warn(
+    lifecycle::deprecate_stop(
       "0.0.1",
       "fm_pixels(nx)",
       "fm_pixels(dim)"
@@ -99,7 +99,7 @@ fm_pixels <- function(mesh,
   }
   y <- NULL
   if (lifecycle::is_present(ny)) {
-    lifecycle::deprecate_warn(
+    lifecycle::deprecate_stop(
       "0.0.1",
       "fm_pixels(ny)",
       "fm_pixels(dim)"

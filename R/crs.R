@@ -585,7 +585,7 @@ fm_crs <- function(x, oblique = NULL, ..., crsonly = deprecated()) {
       )
     }
 
-    lifecycle::deprecate_warn(
+    lifecycle::deprecate_stop(
       "0.0.1",
       "fm_crs(crsonly=' should no longer be used')",
       "fm_crs(oblique)",
@@ -2137,7 +2137,7 @@ fm_crs_is_identical <- function(crs0, crs1, crsonly = FALSE) {
 #' by `fm_crs_is_identical()`.
 #' @export
 fm_identical_CRS <- function(crs0, crs1, crsonly = FALSE) {
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     "0.1.0",
     "fm_identical_CRS()",
     "fm_crs_is_identical()"
@@ -2767,7 +2767,7 @@ fm_has_PROJ6 <- function() {
 #' `sp::Spatial` and `sp::CRS` objects.
 #' @export
 fm_as_sp_crs <- function(x, ...) {
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     "0.0.1",
     "fm_as_sp_crs()",
     "fm_CRS()"
