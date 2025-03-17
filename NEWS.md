@@ -29,6 +29,8 @@
 * Add `mappings` and `defs` support to the `geom_fm.fm_mesh_1d()` method,
   allowing separate control of the `ggplot2` aesthetics for basis functions,
   knots, and function evaluations (version `0.2.0.9013`)
+* Add support for `character` block input to `fm_block` methods, to automate
+  multi-domain integration support from `fm_int()` (version `0.2.0.9017`)
   
 ## Bug fixes
 

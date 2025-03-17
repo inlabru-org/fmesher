@@ -1635,6 +1635,9 @@ fm_block_prep <- function(block = NULL,
   } else if (length(block) == 1L) {
     block <- rep(block, n_values)
   }
+  if (is.character(block)) {
+    block <- as.integer(factor(block))
+  }
   if (min(block) < 1L) {
     warning(paste0(
       "min(block) = ", min(block),
