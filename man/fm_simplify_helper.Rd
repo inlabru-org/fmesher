@@ -49,7 +49,7 @@ Other nonconvex inla legacy support:
 \code{\link{fm_segm_contour_helper}()}
 }
 \author{
-Finn Lindgren \email{finn.lindgren@gmail.com}
+Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}
 }
 \concept{nonconvex inla legacy support}
 \keyword{internal}

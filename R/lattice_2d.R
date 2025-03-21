@@ -21,7 +21,7 @@
 #' \item{ylim }{Y axis limits in the map domain}
 #' No attempt is
 #' made to find minimal limits for partial spherical domains.
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @seealso [fm_evaluator()]
 #' @export
 #' @examples
@@ -179,7 +179,7 @@ fm_lattice_2d <- function(...) {
 #' \item{crs}{`fm_crs` object for `loc`, or `NULL`}
 #' \item{crs0}{`fm_crs` object for `(x,y)`, or `NULL`}
 #' }
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @seealso [fm_mesh_2d()]
 #' @examples
 #' lattice <- fm_lattice_2d(

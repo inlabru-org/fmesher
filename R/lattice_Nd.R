@@ -30,7 +30,7 @@ fm_lattice_Nd <- function(x = NULL, ...) {
 #' \item{values}{the grid coordinate axis values}
 #' \item{loc}{matrix of constructed grid coordinates}
 #' }
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @seealso [fm_mesh_3d()]
 #' @examples
 #' (lattice <- fm_lattice_Nd(

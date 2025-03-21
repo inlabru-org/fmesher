@@ -8,7 +8,7 @@
 # @returns Returns the signed area.  Negative values indicate
 # anti-clockwise winding direction.
 # @author Andrew Seaton \email{Andrew.Seaton.2@@glasgow.ac.uk}
-# @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+# @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 # @keywords internal
 
 st_signed_area <- function(sfg) {

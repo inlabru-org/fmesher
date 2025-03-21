@@ -56,5 +56,5 @@ Find an upper bound to the convex hull of a point set
 fm_diameter(matrix(c(0, 1, 1, 0, 0, 0, 1, 1), 4, 2))
 }
 \author{
-Finn Lindgren \href{mailto:finn.lindgren@gmail.com}{finn.lindgren@gmail.com}
+Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}
 }

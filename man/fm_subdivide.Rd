@@ -34,5 +34,5 @@ plot(fm_subdivide(fmexample$mesh, 3), edge.color = 2)
 plot(fmexample$mesh, add = TRUE, edge.color = 1)
 }
 \author{
-Finn Lindgren \email{finn.lindgren@gmail.com}
+Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}
 }

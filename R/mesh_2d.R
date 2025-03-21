@@ -718,7 +718,7 @@ fm_mesh_2d <- function(...) {
 #' result after each step of the multi-step domain extension algorithm.
 #' @param crs An optional [fm_crs()], `sf::crs` or `sp::CRS` object
 #' @returns An `fm_mesh_2d` object.
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @seealso [fm_rcdt_2d()], [fm_mesh_2d()], [fm_delaunay_2d()],
 #' [fm_nonconvex_hull()], [fm_extensions()], [fm_refine()]
 fm_mesh_2d_inla <- function(loc = NULL,

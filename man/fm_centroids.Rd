@@ -32,5 +32,5 @@ if (require("ggplot2", quietly = TRUE)) {
 \code{\link[=fm_vertices]{fm_vertices()}}
 }
 \author{
-Finn Lindgren \email{finn.lindgren@gmail.com}
+Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}
 }

@@ -87,5 +87,5 @@ if (fm_safe_sp()) {
 \code{\link[=fm_transform]{fm_transform()}}
 }
 \author{
-Finn Lindgren \email{finn.lindgren@gmail.com}
+Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}
 }

@@ -183,5 +183,5 @@ fm_crs_is_null
 \code{\link[=fm_crs<-]{fm_crs<-()}}, \code{\link[=fm_crs_oblique<-]{fm_crs_oblique<-()}}
 }
 \author{
-Finn Lindgren \email{finn.lindgren@gmail.com}
+Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}
 }

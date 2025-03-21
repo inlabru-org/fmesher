@@ -5,7 +5,7 @@
 #'
 #' @param \dots Usually passed on to other methods
 #'
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #'
 #' @name fmesher-deprecated
 NULL

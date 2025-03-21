@@ -397,7 +397,7 @@ internal_spline_mesh_1d <- function(interval,
 #' [fm_mesh_1d()] for more information.
 #' @param ... Unused
 #' @returns A matrix with evaluated basis function
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @seealso [fm_mesh_1d()], [fm_mesh_2d()], [fm_basis()]
 #' @examples
 #'

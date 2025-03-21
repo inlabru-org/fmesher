@@ -1225,7 +1225,7 @@ fm_int_mesh_2d.sfc_MULTILINESTRING <- function(samplers,
 #'   (default `nsub=9`, giving 100 integration points for each triangle)
 #' @returns `tibble` with columns `loc` and `weight` with
 #'   integration points for the mesh
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @keywords internal
 #' @export
 #' @examples

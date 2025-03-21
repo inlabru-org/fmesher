@@ -37,7 +37,7 @@
 #' @param free.clamped If `TRUE`, for `'free'` boundaries, clamp the
 #' basis functions to the interval endpoints.
 #' @param \dots Additional options, currently unused.
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @returns An `fm_mesh_1d` object
 #' @export
 #' @family object creation and conversion

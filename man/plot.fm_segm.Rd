@@ -74,5 +74,5 @@ lines(fm_segm(fmexample$mesh, boundary = FALSE), col = 2)
 \code{\link[=fm_segm]{fm_segm()}}, \link{plot.fm_mesh_2d}
 }
 \author{
-Finn Lindgren \email{finn.lindgren@gmail.com}
+Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}
 }

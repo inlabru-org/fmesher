@@ -251,7 +251,7 @@ fm_crs_set_ellipsoid_radius <- function(crs, radius) {
 #' `fm_wkt_unit_params()`
 #' @returns For `fm_wkt_unit_params`, a
 #' list of named unit definitions
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @examples
 #' \donttest{
 #' c1 <- fm_crs("globe")
@@ -550,7 +550,7 @@ fm_length_unit.character <- function(x) {
 #'
 #' @returns A `crs` object ([sf::st_crs()]) or a `fm_crs` object.
 #' An S3 `fm_crs` object is a list with elements `crs` and `oblique`.
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @seealso [sf::st_crs()], [`fm_crs_wkt`]
 #' @examples
 #' crs1 <- fm_crs("longlat_globe")
@@ -1127,7 +1127,7 @@ fm_crs.matrix <- function(x, oblique = NULL, ...) {
 #' An S3 `inla.CRS` object is a list, usually (but not necessarily)
 #' containing at least one element: \item{crs }{The basic `sp::CRS`
 #' object}
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @seealso [fm_crs()], [sp::CRS()], [`fm_crs_wkt`],
 #' [fm_sp_get_crs()], [fm_crs_is_identical()]
 #' @examples
@@ -1713,7 +1713,7 @@ fm_list_as_CRS <- function(x, ...) {
 #' name/value pairs.
 #'
 #' For `fm_list_as_CRS`, a `CRS` or `inla.CRS` object.
-#' @author Finn Lindgren <finn.lindgren@@gmail.com>
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @seealso [fm_CRS()]
 #' @export
 #' @keywords internal
@@ -2782,7 +2782,7 @@ fm_as_sp_crs <- function(x, ...) {
 #'   `CRS(wkt)` for `sp::Spatial` objects.
 #' @param x A `sp::Spatial` object
 #' @returns A `CRS` object, or NULL if no valid CRS identified
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @details This function is a convenience method to workaround PROJ4/PROJ6
 #'   differences, and the lack of a crs extraction method for Spatial objects.
 #'   For newer code, use [fm_crs()] instead, that returns `crs` objects, and use

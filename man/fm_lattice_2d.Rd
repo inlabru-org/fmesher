@@ -109,6 +109,6 @@ Other object creation and conversion:
 \code{\link{fm_tensor}()}
 }
 \author{
-Finn Lindgren \email{finn.lindgren@gmail.com}
+Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}
 }
 \concept{object creation and conversion}

@@ -14,7 +14,7 @@
 #' with an added field `origin`, that for each new segment gives the
 #' originator index into to original `segm` object for each new line segment.
 #'
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #'
 #' @export
 #' @examples

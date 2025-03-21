@@ -6,7 +6,7 @@
 #'
 #' @export
 #'
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #'
 #' @param mesh An `fm_mesh_2d` object
 #' @param dims A length 2 integer vector giving the dimensions of
@@ -186,7 +186,7 @@ fm_pixels <- function(mesh,
 #' @param refine A list of refinement options passed on to
 #' [fm_rcdt_2d_inla]
 #' @returns A refined `fm_mesh_2d` object
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @export
 #' @examples
 #' fm_dof(fmexample$mesh)
@@ -214,7 +214,7 @@ fm_refine <- function(mesh, refine = list(max.edge = 1)) {
 #' @param mesh an [fm_mesh_2d] object
 #' @param n number of added points along each edge. Default is 1.
 #' @returns A refined [fm_mesh_2d] object
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @export
 #' @examples
 #' mesh <- fm_rcdt_2d_inla(
@@ -319,7 +319,7 @@ join_segm <- function(...) {
 #' @param poly `fm_segm` object with a closed polygon
 #'   to intersect with the mesh
 #' @returns An [fm_mesh_2d] object
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @keywords internal
 #' @export
 #' @examples
@@ -464,7 +464,7 @@ fm_store_points <- function(loc, crs = NULL, info = NULL, format = NULL) {
 #' An `sf`, `data.frame`, or `SpatialPointsDataFrame` object, with the vertex
 #' coordinates, and a `.vertex` column with the vertex indices.
 #'
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @seealso [fm_centroids()]
 #'
 #' @examples
@@ -496,7 +496,7 @@ fm_vertices <- function(x, format = NULL) {
 #' An `sf`, `data.frame`, or `SpatialPointsDataFrame` object, with the vertex
 #' coordinates, and a `.triangle` column with the triangle indices.
 #'
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @seealso [fm_vertices()]
 #'
 #' @examples
