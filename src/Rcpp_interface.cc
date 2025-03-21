@@ -526,6 +526,14 @@ Rcpp::List fmesher_rcdt(Rcpp::List options,
 
      Rcpp::List out = Rcpp::wrap(matrices);
 
+     // Add VT information
+     out["vt"] = Rcpp::wrap(M.VT());
+     // Rcpp::List vt(M.VT().size());
+     // for (size_t i = 0; i < M.VT().size(); i++) {
+     //   vt[i] = Rcpp::transpose(Rcpp::as<Rcpp::IntegerMatrix>(Rcpp::wrap(M.VT()[i])));
+     // }
+     // out["vt"] = vt;
+
      switch (M.type()) {
      case Mesh::Mtype::Manifold:
        out["manifold"] = "M2";

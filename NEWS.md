@@ -1,5 +1,8 @@
 # fmesher (development version)
 
+* Add `fm_hexagon_lattice()` for creating regular hexagonal lattice points
+  to use with `fm_mesh_2d()`, from Man Ho Suen (version `0.3.0.9001`)
+
 # fmesher 0.3.0
 
 ## New features
