@@ -577,7 +577,8 @@ fm_rcdt_2d_inla <- function(loc = NULL,
     if (length(mesh$graph$vt) > 0) {
       for (vv in seq_len(nrow(mesh$loc))) {
         vt <- mesh$graph$vt[[vv]]
-        mesh$graph$vt[[vv]] <- matrix(c(as.integer(names(vt)), vt), length(vt), 2)
+        mesh$graph$vt[[vv]] <-
+          matrix(c(as.integer(names(vt)), vt), length(vt), 2)
       }
     } else {
       # warning("VT information missing from mesh, rebuilding")
