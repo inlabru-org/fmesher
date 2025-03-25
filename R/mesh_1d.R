@@ -187,18 +187,26 @@ fm_mesh_1d <- function(loc,
     if (cyclic) {
       mid <- (loc + c(loc[-1], interval[2])) / 2
     } else {
-      mid <- c(loc[1], (loc[-n] + loc[-1]) / 2, loc[n])
+      mid <- (loc[-n] + loc[-1]) / 2
       mid <-
         switch(boundary[1],
-          neumann = mid[-1],
-          dirichlet = mid[-1],
-          free = mid
+          neumann = mid,
+          dirichlet = mid,
+          free = if (free.clamped[1]) {
+            c(loc[1], mid)
+          } else {
+            c(loc[1] - diff(loc[1:2])/2, mid)
+          }
         )
       mid <-
         switch(boundary[2],
-          neumann = mid[-(m + 1)],
-          dirichlet = mid[-(m + 1)],
-          free = mid
+          neumann = mid,
+          dirichlet = mid,
+          free = if (free.clamped[2]) {
+            c(mid, loc[n])
+          } else {
+            c(mid, loc[n] + diff(loc[(n - 1):n])/2)
+          }
         )
     }
   }

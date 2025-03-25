@@ -2,6 +2,8 @@
 
 * Add `fm_hexagon_lattice()` for creating regular hexagonal lattice points
   to use with `fm_mesh_2d()`, from Man Ho Suen (version `0.3.0.9001`)
+* Construct better representative boundary points for `mid` data of `fm_mesh_1d`
+  for `degree = 2, boundary = "free"` (version `0.3.0.9002`)
 
 # fmesher 0.3.0
 
