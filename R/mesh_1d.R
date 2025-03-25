@@ -217,7 +217,7 @@ fm_mesh_1d <- function(loc,
           free = if (free.clamped[1]) {
             c(loc[1], mid)
           } else {
-            c(loc[1] - diff(loc[1:2])/2, mid)
+            c(loc[1] - diff(loc[1:2]) / 2, mid)
           }
         )
       mid <-
@@ -227,7 +227,7 @@ fm_mesh_1d <- function(loc,
           free = if (free.clamped[2]) {
             c(mid, loc[n])
           } else {
-            c(mid, loc[n] + diff(loc[(n - 1):n])/2)
+            c(mid, loc[n] + diff(loc[(n - 1):n]) / 2)
           }
         )
     }
