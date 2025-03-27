@@ -4,12 +4,16 @@
 \alias{fm_subdivide}
 \title{Split triangles of a mesh into subtriangles}
 \usage{
-fm_subdivide(mesh, n = 1)
+fm_subdivide(mesh, n = 1, delaunay = FALSE)
 }
 \arguments{
 \item{mesh}{an \link{fm_mesh_2d} object}
 
 \item{n}{number of added points along each edge. Default is 1.}
+
+\item{delaunay}{logical; if \code{TRUE}, the subdivided mesh is forced into a
+Delaunay triangle structure. If \code{FALSE} (default), the triangles are
+subdivided uniformly instead.}
 }
 \value{
 A refined \link{fm_mesh_2d} object

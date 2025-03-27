@@ -187,9 +187,10 @@ handle_rcdt_options_inla <- function(
     cutoff = 1e-12,
     extend = NULL,
     refine = NULL,
+    delaunay = TRUE,
     .n,
     .loc) {
-  options <- list(cutoff = cutoff)
+  options <- list(cutoff = cutoff, delaunay = delaunay)
   if (is.null(quality.spec)) {
     quality <- NULL
   } else {
@@ -224,6 +225,9 @@ handle_rcdt_options_inla <- function(
     refine <- list()
   }
   if (inherits(refine, "list")) {
+    # Override possible delaunay=FALSE option
+    options[["delaunay"]] <- TRUE
+
     rcdt_min_angle <- 0
     rcdt_max_edge <- 0
     # Multiply by 2 to cover S2; could remove if supplied manifold info
@@ -322,6 +326,9 @@ handle_rcdt_options_inla <- function(
 #' specification for each location in `loc`, `boundary/interior`
 #' (`segm`), and `lattice`.  Only used if refining the mesh.
 #' @param crs Optional crs object
+#' @param delaunay logical; If `FALSE`, `refine` is `FALSE`, and a ready-made
+#'   mesh is provided, only creates the mesh data structure. Default `TRUE`, for
+#'   ensuring a Delaunay triangulation.
 #' @param ... Currently passed on to `fm_mesh_2d_inla` or converted to
 #' [fmesher_rcdt()] options.
 #' @returns An `fm_mesh_2d` object
@@ -351,6 +358,7 @@ fm_rcdt_2d_inla <- function(loc = NULL,
                             cutoff = 1e-12,
                             quality.spec = NULL,
                             crs = NULL,
+                            delaunay = TRUE,
                             ...) {
   crs.target <- crs
   if (!fm_crs_is_null(crs) &&
@@ -483,6 +491,7 @@ fm_rcdt_2d_inla <- function(loc = NULL,
     refine = refine,
     cutoff = cutoff,
     quality.spec = quality.spec,
+    delaunay = delaunay,
     ...,
     .n = list(
       segm = segm.n,

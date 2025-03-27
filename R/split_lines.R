@@ -77,6 +77,9 @@ fm_split_lines.fm_mesh_2d <- function(mesh, segm, ...) {
     idx = segm$idx - 1L,
     options = list()
   )
+
+  stopifnot(!any(is.na(splt$split.loc)))
+
   indexoutput <- list("split.idx", "split.t", "split.origin")
   for (name in intersect(names(splt), indexoutput)) {
     splt[[name]] <- splt[[name]] + 1L
@@ -106,7 +109,7 @@ fm_split_lines.fm_mesh_2d <- function(mesh, segm, ...) {
     is.bnd = all(segm.split$is.bnd),
     crs = fm_crs(segm)
   )
-  segm.split$origin <- origin[keep]
+  segm.split$origin <- origin[which(keep)]
 
   segm.split
 }

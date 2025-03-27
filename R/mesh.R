@@ -213,6 +213,9 @@ fm_refine <- function(mesh, refine = list(max.edge = 1)) {
 #'
 #' @param mesh an [fm_mesh_2d] object
 #' @param n number of added points along each edge. Default is 1.
+#' @param delaunay logical; if `TRUE`, the subdivided mesh is forced into a
+#'   Delaunay triangle structure. If `FALSE` (default), the triangles are
+#'   subdivided uniformly instead.
 #' @returns A refined [fm_mesh_2d] object
 #' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @export
@@ -229,7 +232,7 @@ fm_refine <- function(mesh, refine = list(max.edge = 1)) {
 #'
 #' plot(fm_subdivide(fmexample$mesh, 3), edge.color = 2)
 #' plot(fmexample$mesh, add = TRUE, edge.color = 1)
-fm_subdivide <- function(mesh, n = 1) {
+fm_subdivide <- function(mesh, n = 1, delaunay = FALSE) {
   if (n < 1) {
     return(mesh)
   }
@@ -254,7 +257,8 @@ fm_subdivide <- function(mesh, n = 1) {
   new_mesh <- fm_rcdt_2d_inla(
     loc = sub$loc,
     tv = sub$tv + 1L,
-    crs = fm_crs(mesh)
+    crs = fm_crs(mesh),
+    delaunay = delaunay
   )
 
   new_mesh

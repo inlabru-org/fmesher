@@ -4,6 +4,8 @@
   to use with `fm_mesh_2d()`, from Man Ho Suen (version `0.3.0.9001`)
 * Construct better representative boundary points for `mid` data of `fm_mesh_1d`
   for `degree = 2, boundary = "free"` (version `0.3.0.9002`)
+* Add argument `delaunay` to allow non-Delaunay mesh construction in
+  `fm_subdivide()` (version `0.3.0.9003`)
 
 # fmesher 0.3.0
 
