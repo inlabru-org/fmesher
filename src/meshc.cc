@@ -385,7 +385,7 @@ void MeshC::make_boundary_segments() {
     Dart d(*M_, t, 1, 0);
     for (int i = 0; i < 3; i++) {
       if (d.onBoundary()) {
-        boundary_.insert(d, 1);
+        boundary_.insert(d, 0);
       }
       d.orbit2();
     }
