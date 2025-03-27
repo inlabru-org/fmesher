@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0.9003</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,6 +65,7 @@
 <span>  cutoff <span class="op">=</span> <span class="fl">1e-12</span>,</span>
 <span>  quality.spec <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  crs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  delaunay <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -157,6 +158,12 @@ specification for each location in <code>loc</code>, <code>boundary/interior</co
 
 <dt id="arg-crs">crs<a class="anchor" aria-label="anchor" href="#arg-crs"></a></dt>
 <dd><p>Optional crs object</p></dd>
+
+
+<dt id="arg-delaunay">delaunay<a class="anchor" aria-label="anchor" href="#arg-delaunay"></a></dt>
+<dd><p>logical; If <code>FALSE</code>, <code>refine</code> is <code>FALSE</code>, and a ready-made
+mesh is provided, only creates the mesh data structure. Default <code>TRUE</code>, for
+ensuring a Delaunay triangulation.</p></dd>
 
 </dl></div>
     <div class="section level2">
