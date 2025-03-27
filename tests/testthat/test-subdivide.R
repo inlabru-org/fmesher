@@ -30,7 +30,7 @@ test_that("fmesher_subdivide works", {
   )
   sub1.loc <- rbind(
     mesh$loc,
-    cbind(rbind(c(0.5, 0), c(0.5-0.1*0.5, 0.5), c(0-0.1*0.5, 0.5)), 0)
+    cbind(rbind(c(0.5, 0), c(0.5 - 0.1 * 0.5, 0.5), c(0 - 0.1 * 0.5, 0.5)), 0)
   )
   sub1 <- fmesher_subdivide(
     mesh$loc,
@@ -62,9 +62,9 @@ test_that("fmesher_subdivide works", {
     mesh$loc,
     cbind(rbind(
       c(1 / 3, 0), c(2 / 3, 0),
-      c(2 / 3 - 0.1*1/3, 1 / 3), c(1 / 3 - 0.1*2/3, 2 / 3),
-      c(0 - 0.1*2/3, 2 / 3), c(0 - 0.1*1/3, 1 / 3),
-      c(1 / 3 - 0.1*1/3, 1 / 3)
+      c(2 / 3 - 0.1 * 1 / 3, 1 / 3), c(1 / 3 - 0.1 * 2 / 3, 2 / 3),
+      c(0 - 0.1 * 2 / 3, 2 / 3), c(0 - 0.1 * 1 / 3, 1 / 3),
+      c(1 / 3 - 0.1 * 1 / 3, 1 / 3)
     ), 0)
   )
   sub2 <- fmesher_subdivide(

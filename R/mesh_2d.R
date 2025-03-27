@@ -1098,8 +1098,9 @@ fm_hexagon_lattice_orig <- function(bnd,
   mesh_df <- data.frame(x = c(x_1, x_2), y = c(y_1, y_2))
   # turn the mesh nodes into lattice sf
   lattice_sf <- sf::st_as_sf(mesh_df,
-                             coords = c("x", "y"),
-                             crs = sf::st_crs(bnd))
+    coords = c("x", "y"),
+    crs = sf::st_crs(bnd)
+  )
   lattice_sfc <- sf::st_as_sfc(lattice_sf)
   pts_inside <- lengths(sf::st_intersects(lattice_sfc, bnd_inner)) != 0
   pts_lattice_sfc <- lattice_sfc[pts_inside]
