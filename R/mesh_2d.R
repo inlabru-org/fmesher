@@ -1062,7 +1062,7 @@ fm_hexagon_lattice_orig <- function(bnd,
   # Turn off S2 to avoid zig zag
   # suppressMessages(sf::sf_use_s2(FALSE))
   #  # st_buffer for edge_len x1
-  bnd_inner <- st_buffer(bnd, dist = -edge_len_n * edge_len)
+  bnd_inner <- sf::st_buffer(bnd, dist = -edge_len_n * edge_len)
   y_diff <- fm_bbox(bnd_inner)[[2]][2] - fm_bbox(bnd_inner)[[2]][1]
   x_diff <- fm_bbox(bnd_inner)[[1]][2] - fm_bbox(bnd_inner)[[1]][1]
   y_bin <- as.integer(y_diff / (sqrt(3) / 2 * edge_len))
@@ -1097,9 +1097,11 @@ fm_hexagon_lattice_orig <- function(bnd,
 
   mesh_df <- data.frame(x = c(x_1, x_2), y = c(y_1, y_2))
   # turn the mesh nodes into lattice sf
-  lattice_sf <- st_as_sf(mesh_df, coords = c("x", "y"), crs = st_crs(bnd))
-  lattice_sfc <- lattice_sf %>% st_as_sfc()
-  pts_inside <- lengths(st_intersects(lattice_sfc, bnd_inner)) != 0
+  lattice_sf <- sf::st_as_sf(mesh_df,
+                             coords = c("x", "y"),
+                             crs = sf::st_crs(bnd))
+  lattice_sfc <- sf::st_as_sfc(lattice_sf)
+  pts_inside <- lengths(sf::st_intersects(lattice_sfc, bnd_inner)) != 0
   pts_lattice_sfc <- lattice_sfc[pts_inside]
   fm_crs(pts_lattice_sfc) <- fm_crs(bnd_inner) <- crs
   return(list(
