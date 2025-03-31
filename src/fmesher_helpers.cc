@@ -379,7 +379,7 @@ void split_line_segments_on_triangles(
     FMLOG("Starting dart " << d << endl);
 
     dart_trace.clear();
-    DartPair endpoints(M.trace_path(s0, s1, d, &dart_trace));
+    DartPair endpoints(M.trace_path_new(s0, s1, d, &dart_trace));
     FMLOG("Trace:" << endl << dart_trace << std::endl)
 
     Point b1;
@@ -404,10 +404,46 @@ void split_line_segments_on_triangles(
       FMLOG("Edge to split on:" << endl
                                 << " " << M.S(dti.v()) << endl
                                 << " " << M.S(dti.vo()) << endl);
-      M.edgeIntersection(s_curr, s1, M.S(dti.v()), M.S(dti.vo()), s_next);
-      FMLOG("Split result = " << s_next << endl);
+
+      double dti_hs_s_curr = dti.inLeftHalfspace(s_curr);
+      double dti_hs_s1 = dti.inLeftHalfspace(s1);
+      FMLOG("s_curr halfspace = " << dti_hs_s_curr << endl);
+      FMLOG("s1 halfspace = " << dti_hs_s1 << endl);
+
       M.barycentric(dti, s_curr, b1);
+      M.barycentric(dti, s1, b2);
+      FMLOG("Bary s_curr = " << b1 << endl);
+      FMLOG("Bary s1 = " << b2 << endl);
+      /* Check for colinear lines */
+      if (((ABS(dti_hs_s_curr) < MESH_EPSILON) && (ABS(dti_hs_s1) < MESH_EPSILON)) ||
+          ((ABS(b1[2]) < MESH_EPSILON) && (ABS(b2[2]) < MESH_EPSILON))) {
+        FMLOG("Colinear lines detected" << endl);
+        /* Current position will be on dti,
+           and doesn't affect the next location.
+           We only need to check if the end point is inside or outside. */
+        if (b2[0] < 0.0) {
+          FMLOG("Next point behind dti.vo " << endl);
+          s_next = M.S(dti.vo());
+        } else if (b2[0] <= MESH_EPSILON) {
+          FMLOG("Next point at dti.vo " << endl);
+          s_next = M.S(dti.vo());
+        } else if (b2[1] < 0.0) {
+          FMLOG("Next point behind dti.v " << endl);
+          s_next = M.S(dti.v());
+        } else if (b2[1] <= MESH_EPSILON) {
+          FMLOG("Next point at dti.v " << endl);
+          s_next = M.S(dti.v());
+        } else {
+          FMLOG("Next point inside the target segment" << endl);
+          s_next = s1;
+        }
+        // Do something
+      } else {
+        M.edgeIntersection(s_curr, s1, M.S(dti.v()), M.S(dti.vo()), s_next);
+      }
+      FMLOG("Split result = " << s_next << endl);
       M.barycentric(dti, s_next, b2);
+      FMLOG("Bary next = " << b2 << endl);
       //
       ++i_idx_curr;
       idx1(i_idx_curr, 0) = i_loc_curr;

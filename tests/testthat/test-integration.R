@@ -358,3 +358,124 @@ test_that("globe polygon integration", {
     9
   )
 })
+
+
+test_that("fm_int for linestring coinciding with mesh edges", {
+  sc <- 1.1
+  bnd <- fm_segm(
+    rbind(
+      c(0, 0 * sc),
+      c(1, 0 * sc),
+      c(1, 1 * sc),
+      c(0, 1 * sc)
+    ),
+    idx = rbind(
+      c(1, 2),
+      c(2, 3),
+      c(3, 4),
+      c(4, 1)
+    ),
+    is.bnd = c(TRUE, TRUE, TRUE, TRUE)
+  )
+  mesh <- fm_rcdt_2d(boundary = bnd)
+  meshes <- list(
+    mesh0 = mesh,
+    mesh1 = fm_subdivide(mesh, n = 1),
+    mesh2 = fm_subdivide(mesh, n = 2),
+    mesh3 = fm_subdivide(mesh, n = 3),
+    mesh5 = fm_subdivide(mesh, n = 5),
+    mesh7 = fm_subdivide(mesh, n = 7),
+    mesh9 = fm_subdivide(mesh, n = 9)
+  )
+
+  int_line <- fm_segm(
+    rbind(
+      c(0.1, 0.1 * sc),
+      c(0.95, 0.95 * sc)
+    ),
+    is.bnd = FALSE
+  )
+
+  #  x <- sf::st_linestring(int_line$loc + c(0.01, -0.01, 0.02, -0.03, 0, 0))
+  x <- sf::st_linestring(int_line$loc)
+  x <- sf::st_as_sf(sf::st_geometry(x))
+
+  int.args <- list(nsub1 = 100)
+  ips <- lapply(meshes, fm_int, samplers = x, int.args = int.args)
+  (w <- vapply(
+    ips,
+    function(x) sum(x$weight),
+    numeric(1)
+  ))
+  expect_equal(as.vector(w),
+    rep((0.95 - 0.1) * sqrt(1 + sc^2), length(w)),
+    tolerance = lowtol
+  )
+
+  # ips <- lapply(ips, function(x) x[x$weight > 1e-14, ])
+  # (w <- vapply(
+  #   ips,
+  #   function(x) sum(x$weight),
+  #   numeric(1)
+  # ))
+  # diff(range(w))
+  #
+  # library(ggplot2)
+  # ggplot(
+  #   do.call(dplyr::bind_rows,
+  #           lapply(c(0, 1, 2, 3, 5, 7, 9, 15),
+  #                  function(n) cbind(ips[[paste0("mesh", n)]], n = n)))) +
+  #   geom_fm(data = meshes[["mesh3"]]) +
+  #   geom_sf(aes(size = weight)) +
+  #   scale_size_area() +
+  #   geom_sf(data = x, alpha = 0.2, col = "red") +
+  #   facet_wrap(~n, nrow = 2)
+})
+
+test_that("fm_int for linestring", {
+  mesh <- fmexample$mesh
+  meshes <- list(
+    mesh0 = mesh,
+    mesh1 = fm_subdivide(mesh, n = 1),
+    mesh2 = fm_subdivide(mesh, n = 2),
+    mesh3 = fm_subdivide(mesh, n = 3),
+    mesh5 = fm_subdivide(mesh, n = 5),
+    mesh7 = fm_subdivide(mesh, n = 7),
+    mesh9 = fm_subdivide(mesh, n = 9)
+  )
+
+  x <- sf::st_linestring(fm_as_segm(fmexample$boundary_sf[[1]])$loc)
+  x <- sf::st_as_sf(sf::st_geometry(x))
+
+  ips <- lapply(meshes, fm_int, samplers = x)
+  (w <- vapply(
+    ips,
+    function(x) sum(x$weight),
+    numeric(1)
+  ))
+  expect_equal(as.vector(w),
+    rep(16.3259194526, length(w)),
+    tolerance = lowtol
+  )
+
+  # ips <- lapply(ips, function(x) x[x$weight > 1e-14, ])
+  # (w <- vapply(
+  #   ips,
+  #   function(x) sum(x$weight),
+  #   numeric(1)
+  # ))
+  # diff(range(w))
+  #
+  # library(ggplot2)
+  # ggplot(
+  #   do.call(dplyr::bind_rows,
+  #           lapply(c(0, 1, 2, 3, 5, 7, 9, 15),
+  #                  function(n) cbind(ips[[paste0("mesh", n)]], n = n)))) +
+  #   geom_fm(data = meshes[["mesh3"]]) +
+  #   geom_sf(aes(size = weight)) +
+  #   geom_sf(data = fmexample$boundary_sf[[1]], alpha = 0.2) +
+  #   scale_size_area() +
+  #   facet_wrap(~n, nrow = 2) +
+  #   xlim(c(-1.8, -1.4)) +
+  #   ylim(c(-1.6, -1.2))
+})

@@ -6,6 +6,8 @@
   for `degree = 2, boundary = "free"` (version `0.3.0.9002`)
 * Add argument `delaunay` to allow non-Delaunay mesh construction in
   `fm_subdivide()` (version `0.3.0.9003`)
+* Better handling of line integration when triangle edges and line transects
+  are co-linear (version `0.3.0.9004`)
 
 # fmesher 0.3.0
 
