@@ -875,6 +875,8 @@ fm_mesh_2d_inla <- function(loc = NULL,
   boundary <- unify_segm_coords(boundary, crs = crs)
   interior <- unify_segm_coords(interior, crs = crs)
 
+  if (is.null(boundary[[1]])) {
+
   ## Triangulate to get inner domain boundary
   ## Constraints included only to get proper domain extent
   ## First, attach the loc points to the domain definition set
@@ -918,6 +920,25 @@ fm_mesh_2d_inla <- function(loc = NULL,
         ),
       crs = crs
     )
+  } else {
+    mesh2 <-
+      fm_rcdt_2d(
+        loc = loc,
+        boundary = boundary[[1]],
+        interior = interior,
+        cutoff = cutoff,
+        extend = FALSE, ## Should have no effect
+        refine =
+          list(
+            min.angle = min.angle[1],
+            max.edge = max.edge[1],
+            max.edge.extra = max.edge[1],
+            max.n.strict = max.n.strict[1],
+            max.n = max.n[1]
+          ),
+        crs = crs
+      )
+  }
 
   boundary2 <- fm_segm(mesh2, boundary = TRUE)
   interior2 <- fm_segm(mesh2, boundary = FALSE)
