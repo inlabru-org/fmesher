@@ -134,11 +134,18 @@ fm_as_MG.metric_graph <- function(x, MGG = NULL) {
   structure(list(graph = x), class = class_names)
 }
 
-#' @describeIn fm_as_fm Associate a `metric_graph` object with class `fm_MGG` or
-#' `fm_MGM`.
+#' @describeIn fm_as_fm Wrap a `metric_graph` object with class `fm_MGG` or
+#' `fm_MGM`, with [fm_as_MG()].
 #' @param MGG indicator for `fm_MGG` (TRUE) or `fm_MGM` (FALSE), or NULL
 #' (default) to auto-determine based on the object contents.
-#' Passed on to [fm_as_MG()]
+#' Passed on to [fm_as_MG()].
+#' @export
+fm_as_fm.fm_MG <- function(x, ..., MGG = NULL) {
+  fm_as_MG(x, MGG = MGG)
+}
+
+#' @describeIn fm_as_fm Wrap a `metric_graph` object with class `fm_MGG` or
+#' `fm_MGM`, with [fm_as_MG()].
 #' @export
 fm_as_fm.metric_graph <- function(x, ..., MGG = NULL) {
   fm_as_MG(x, MGG = MGG)

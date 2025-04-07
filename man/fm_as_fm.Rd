@@ -19,6 +19,7 @@
 \alias{fm_as_fm.inla.mesh}
 \alias{fm_as_fm.inla.mesh.segment}
 \alias{fm_as_fm.inla.mesh.lattice}
+\alias{fm_as_fm.fm_MG}
 \alias{fm_as_fm.metric_graph}
 \title{Convert objects to fmesher objects}
 \usage{
@@ -59,6 +60,8 @@ fm_as_fm(x, ...)
 
 \method{fm_as_fm}{inla.mesh.lattice}(x, ...)
 
+\method{fm_as_fm}{fm_MG}(x, ..., MGG = NULL)
+
 \method{fm_as_fm}{metric_graph}(x, ..., MGG = NULL)
 }
 \arguments{
@@ -68,7 +71,7 @@ fm_as_fm(x, ...)
 
 \item{MGG}{indicator for \code{fm_MGG} (TRUE) or \code{fm_MGM} (FALSE), or NULL
 (default) to auto-determine based on the object contents.
-Passed on to \code{\link[=fm_as_MG]{fm_as_MG()}}}
+Passed on to \code{\link[=fm_as_MG]{fm_as_MG()}}.}
 }
 \value{
 An object of some \verb{fm_*} class
@@ -80,8 +83,11 @@ to \code{fmesher} classes.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{fm_as_fm(metric_graph)}: Associate a \code{metric_graph} object with class \code{fm_MGG} or
-\code{fm_MGM}.
+\item \code{fm_as_fm(fm_MG)}: Wrap a \code{metric_graph} object with class \code{fm_MGG} or
+\code{fm_MGM}, with \code{\link[=fm_as_MG]{fm_as_MG()}}.
+
+\item \code{fm_as_fm(metric_graph)}: Wrap a \code{metric_graph} object with class \code{fm_MGG} or
+\code{fm_MGM}, with \code{\link[=fm_as_MG]{fm_as_MG()}}.
 
 }}
 \examples{
