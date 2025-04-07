@@ -935,7 +935,7 @@ struct Vec {
   static void copy(Point &s, const Point &s0) { s.copy(s0); };
   static void rescale(Point &s, double s1) { s.rescale(s1); };
   template <int DIM>
-  static void rescale(Vector<double, DIM> &s, double s1) { s.rescale(s1); };
+  static void rescale(Vector<double, DIM> &s, double s1) { s.rescale(s1); }
   static void scale(Point &s, const Point &s0, double s1) { s.scale(s0, s1); };
   static void diff(Point &s, const Point &s0, const Point &s1) {
     s.diff(s0, s1);
