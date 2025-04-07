@@ -24,6 +24,6 @@ fm_dof(fm_refine(fmexample$mesh, refine = list(max.edge = 1)))
 
 }
 \author{
-Finn Lindgren \email{finn.lindgren@gmail.com}
+Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}
 }
 \keyword{internal}

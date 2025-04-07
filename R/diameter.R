@@ -16,7 +16,7 @@
 #' @param \dots Additional parameters passed on to the submethods.
 #' @returns A scalar, upper bound for the diameter of the convex hull of the
 #' point set.
-#' @author Finn Lindgren <finn.lindgren@@gmail.com>
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @examples
 #'
 #' fm_diameter(matrix(c(0, 1, 1, 0, 0, 0, 1, 1), 4, 2))

@@ -117,6 +117,6 @@ Other object creation and conversion:
 \code{\link{simple_path_MGG}()}
 }
 \author{
-Finn Lindgren \email{finn.lindgren@gmail.com}
+Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}
 }
 \concept{object creation and conversion}

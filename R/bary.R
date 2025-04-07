@@ -216,8 +216,13 @@ fm_bary.fm_mesh_2d <- function(mesh,
     tri <- rep(NA_integer_, nrow(loc))
     where <- matrix(NA_real_, nrow(loc), 3)
     ok <- result$index >= 0
-    tri[pre_ok_idx[ok]] <- result$index[ok] + 1L
-    where[pre_ok_idx[ok], ] <- result$where[ok, ]
+    if (any(ok)) {
+      tri[pre_ok_idx[ok]] <- result$index[ok] + 1L
+      where_ok <- result$where[ok, , drop = FALSE]
+      where_ok <- matrix(pmax(0.0, where_ok), nrow(where_ok), 3)
+      where_ok <- where_ok / rowSums(where_ok)
+      where[pre_ok_idx[ok], ] <- where_ok
+    }
   } else {
     tri <- rep(NA_integer_, nrow(loc))
     where <- matrix(NA_real_, nrow(loc), 3)
@@ -232,8 +237,13 @@ fm_bary.fm_mesh_2d <- function(mesh,
         options = list()
       )
       ok <- result$index >= 0
-      tri[subindex[[k]][ok]] <- result$index[ok] + 1L
-      where[subindex[[k]][ok], ] <- result$where[ok, ]
+      if (any(ok)) {
+        tri[subindex[[k]][ok]] <- result$index[ok] + 1L
+        where_ok <- result$where[ok, ]
+        where_ok <- matrix(pmax(0.0, where_ok), nrow(where_ok), 3)
+        where_ok <- where_ok / rowSums(where_ok)
+        where[subindex[[k]][ok], ] <- where_ok
+      }
     }
   }
 

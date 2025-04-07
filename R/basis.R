@@ -397,7 +397,7 @@ internal_spline_mesh_1d <- function(interval,
 #' [fm_mesh_1d()] for more information.
 #' @param ... Unused
 #' @returns A matrix with evaluated basis function
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @seealso [fm_mesh_1d()], [fm_mesh_2d()], [fm_basis()]
 #' @examples
 #'
@@ -657,7 +657,7 @@ fm_basis_mesh_1d <- function(mesh,
                              method = deprecated(),
                              ...) {
   if (lifecycle::is_present(method)) {
-    lifecycle::deprecate_warn(
+    lifecycle::deprecate_stop(
       "0.0.9.9020",
       "fm_evaluator_mesh_1d(method)",
       details = c("Create a separate fm_mesh_1d() object instead.")
@@ -1256,10 +1256,11 @@ internal_bspline2 <- function(x, knots, degree = 1, deriv = 0) {
 #' weighting.
 #'
 #' @param block integer vector; block information. If `NULL`,
-#' `rep(1L, block_len)` is used, where `block_len` is determined by
-#' `length(log_weights)))` or `length(weights)))`.
-#' A single scalar is also repeated
-#' to a vector of corresponding length to the weights.
+#'   `rep(1L, block_len)` is used, where `block_len` is determined by
+#'   `length(log_weights)))` or `length(weights)))`. A single scalar is also
+#'   repeated to a vector of corresponding length to the weights. 'character'
+#'   input is converted to integer with `as.integer(factor(block))` (from
+#'   `0.2.0.9017`).
 #' @param weights Optional weight vector
 #' @param log_weights Optional `log(weights)` vector. Overrides `weights` when
 #' non-NULL.
@@ -1634,6 +1635,9 @@ fm_block_prep <- function(block = NULL,
     block <- rep(1L, n_values)
   } else if (length(block) == 1L) {
     block <- rep(block, n_values)
+  }
+  if (is.character(block)) {
+    block <- as.integer(factor(block))
   }
   if (min(block) < 1L) {
     warning(paste0(

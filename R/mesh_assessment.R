@@ -13,7 +13,7 @@
 #' @param alpha numeric; A valid [fm_matern_precision()] `alpha` parameter
 #' @param dims 2-numeric; the grid size
 #' @returns An `sf` object with gridded mesh assessment information
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @seealso [fm_mesh_2d()], [fm_rcdt_2d]
 #' @examples
 #'

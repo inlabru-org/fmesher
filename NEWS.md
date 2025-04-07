@@ -1,5 +1,16 @@
 # fmesher (development version)
 
+* Add `fm_hexagon_lattice()` for creating regular hexagonal lattice points
+  to use with `fm_mesh_2d()`, from Man Ho Suen (version `0.3.0.9001`)
+* Construct better representative boundary points for `mid` data of `fm_mesh_1d`
+  for `degree = 2, boundary = "free"` (version `0.3.0.9002`)
+* Add argument `delaunay` to allow non-Delaunay mesh construction in
+  `fm_subdivide()` (version `0.3.0.9003`)
+* Better handling of line integration when triangle edges and line transects
+  are co-linear (version `0.3.0.9004`)
+
+# fmesher 0.3.0
+
 ## New features
 
 * Convert `fm_bary()` output to a dedicated `fm_bary` class, with elements 'index'
@@ -29,6 +40,8 @@
 * Add `mappings` and `defs` support to the `geom_fm.fm_mesh_1d()` method,
   allowing separate control of the `ggplot2` aesthetics for basis functions,
   knots, and function evaluations (version `0.2.0.9013`)
+* Add support for `character` block input to `fm_block` methods, to automate
+  multi-domain integration support from `fm_int()` (version `0.2.0.9017`)
   
 ## Bug fixes
 

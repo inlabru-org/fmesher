@@ -34,5 +34,5 @@ fm_row_kron(rbind(c(1, 1, 0), c(0, 1, 1)), rbind(c(1, 2), c(3, 4)))
 
 }
 \author{
-Finn Lindgren \email{finn.lindgren@gmail.com}
+Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}
 }

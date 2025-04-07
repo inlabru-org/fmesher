@@ -26,7 +26,7 @@
 #' @param crs An optional CRS or inla.CRS object associated with `loc`
 #' and/or `lattice`.
 #' @param \dots Additional arguments passed on to methods.
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @seealso [fm_mesh_2d()], [fm_mesh_1d()],
 #' [fm_lattice_2d()]
 #' @examples
@@ -394,7 +394,7 @@ fm_evaluator_lattice.fm_mesh_2d <- function(mesh,
 #'   needed.
 #'
 #' @author Haakon Bakka, \email{bakka@@r-inla.org}, and Finn Lindgren
-#'   \email{finn.lindgren@@gmail.com}
+#'   <Finn.Lindgren@@gmail.com>
 #'
 #' @examples
 #' if (TRUE &&

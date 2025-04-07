@@ -75,5 +75,5 @@ if (interactive() && require("rgl")) {
 \code{\link[=fm_mesh_1d]{fm_mesh_1d()}}, \code{\link[=fm_mesh_2d]{fm_mesh_2d()}}, \code{\link[=fm_basis]{fm_basis()}}
 }
 \author{
-Finn Lindgren \email{finn.lindgren@gmail.com}
+Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}
 }

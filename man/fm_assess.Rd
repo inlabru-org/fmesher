@@ -37,5 +37,5 @@ out <- fm_assess(mesh, spatial.range = 3, alpha = 2)
 \code{\link[=fm_mesh_2d]{fm_mesh_2d()}}, \link{fm_rcdt_2d}
 }
 \author{
-Finn Lindgren \email{finn.lindgren@gmail.com}
+Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}
 }

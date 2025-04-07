@@ -34,6 +34,7 @@ reference:
   - starts_with("fm_delaunay")
   - starts_with("fm_subdivide")
   - starts_with("fm_lattice_")
+  - starts_with("fm_hexagon_")
   - starts_with("fm_segm")
   - starts_with("fm_nonconvex")
   - starts_with("fm_extensions")

@@ -37,18 +37,40 @@
 #' @param free.clamped If `TRUE`, for `'free'` boundaries, clamp the
 #' basis functions to the interval endpoints.
 #' @param \dots Additional options, currently unused.
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @returns An `fm_mesh_1d` object
 #' @export
 #' @family object creation and conversion
 #' @examples
 #' if (require("ggplot2")) {
-#'   m <- fm_mesh_1d(c(1, 2, 3, 5, 8, 10),
+#'   m1 <- fm_mesh_1d(c(1, 2, 3, 5, 8, 10),
+#'     boundary = c("neumann", "free")
+#'   )
+#'   weights <- c(2, 3, 6, 3, 4, 7)
+#'   ggplot() +
+#'     geom_fm(data = m1, xlim = c(0.5, 11), weights = weights)
+#'
+#'   m2 <- fm_mesh_1d(c(1, 2, 3, 5, 8, 10),
 #'     boundary = c("neumann", "free"),
 #'     degree = 2
 #'   )
 #'   ggplot() +
-#'     geom_fm(data = m, xlim = c(0.5, 10.5))
+#'     geom_fm(data = m2, xlim = c(0.5, 11), weights = weights)
+#'
+#'   # The knot interpretation is different for degree=2 and degree=1 meshes:
+#'   ggplot() +
+#'     geom_fm(data = m1, xlim = c(0.5, 11), weights = weights) +
+#'     geom_fm(data = m2, xlim = c(0.5, 11), weights = weights)
+#'
+#'   # The `mid` values are the representative basis function midpoints,
+#'   # and can be used to connect degree=2 and degree=1 mesh interpretations:
+#'   m1b <- fm_mesh_1d(m2$mid,
+#'     boundary = c("neumann", "free"),
+#'     degree = 1
+#'   )
+#'   ggplot() +
+#'     geom_fm(data = m2, xlim = c(0.5, 11), weights = weights) +
+#'     geom_fm(data = m1b, xlim = c(0.5, 11), weights = weights)
 #' }
 #'
 fm_mesh_1d <- function(loc,
@@ -187,18 +209,26 @@ fm_mesh_1d <- function(loc,
     if (cyclic) {
       mid <- (loc + c(loc[-1], interval[2])) / 2
     } else {
-      mid <- c(loc[1], (loc[-n] + loc[-1]) / 2, loc[n])
+      mid <- (loc[-n] + loc[-1]) / 2
       mid <-
         switch(boundary[1],
-          neumann = mid[-1],
-          dirichlet = mid[-1],
-          free = mid
+          neumann = mid,
+          dirichlet = mid,
+          free = if (free.clamped[1]) {
+            c(loc[1], mid)
+          } else {
+            c(loc[1] - diff(loc[1:2]) / 2, mid)
+          }
         )
       mid <-
         switch(boundary[2],
-          neumann = mid[-(m + 1)],
-          dirichlet = mid[-(m + 1)],
-          free = mid
+          neumann = mid,
+          dirichlet = mid,
+          free = if (free.clamped[2]) {
+            c(mid, loc[n])
+          } else {
+            c(mid, loc[n] + diff(loc[(n - 1):n]) / 2)
+          }
         )
     }
   }
