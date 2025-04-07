@@ -13,7 +13,7 @@ FC = gfortran
 FCEXTRAFLAGS = -fno-second-underscore
 # FLAGS= -mfpmath=sse -msse2
 FLAGS= -O3 -funroll-loops -pipe -Wall -Wextra \
-  -Wsign-compare -Wundef -Wimplicit-fallthrough -fdiagnostics-color
+  -Wsign-compare -Wundef -Wimplicit-fallthrough -fdiagnostics-color -pedantic
 LD = $(CXX)
 INSTALL = install
 RSYNC = rsync
