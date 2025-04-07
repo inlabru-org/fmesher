@@ -45,6 +45,6 @@ fm_mesh_2d_map(loc, "longlat", inverse = FALSE)
 \code{\link[=fm_evaluator]{fm_evaluator()}}
 }
 \author{
-Finn Lindgren \email{finn.lindgren@gmail.com}
+Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}
 }
 \keyword{internal}

@@ -27,6 +27,7 @@
 #include "ioutils.h"
 #include "locator.h"
 #include "mesh.h"
+#include "mesh3.h"
 #include "meshc.h"
 
 using std::endl;
@@ -43,6 +44,8 @@ using fmesh::DartList;
 using fmesh::DartPair;
 using fmesh::Int3;
 using fmesh::Int3Raw;
+using fmesh::Double4;
+using fmesh::Double4Raw;
 // No need for IOHeader and IOHelper classes when using Rcpp
 #ifndef FMESHER_WITH_R
 using fmesh::IOHelper;
@@ -51,8 +54,11 @@ using fmesh::IOHelperSM;
 #endif
 using fmesh::Matrix;
 using fmesh::Matrix3double;
+using fmesh::Matrix4double;
 using fmesh::MatrixC;
 using fmesh::Mesh;
+using fmesh::Mesh3;
+using fmesh::Dart3;
 using fmesh::MeshC;
 using fmesh::Point;
 using fmesh::PointRaw;
@@ -96,6 +102,8 @@ std::ostream &operator<<(std::ostream &out, const std::vector<T> v) {
 }
 
 void map_points_to_mesh(const Mesh &M, const Matrix<double> &points,
+                        Matrix<int> &point2T, Matrix<double> &point2bary);
+void map_points_to_mesh3d(const Mesh3 &M, const Matrix<double> &points,
                         Matrix<int> &point2T, Matrix<double> &point2bary);
 void map_points_to_mesh_convex(const Mesh &M, const Matrix<double> &points,
                                Matrix<int> &point2T,
@@ -249,10 +257,9 @@ private:
 public:
   UserInterruptChecker(int freq) : frequency(freq), counter(0) {};
   void check() {
-    if (counter % frequency == 0) {
+    if (++counter == frequency) {
       Rcpp::checkUserInterrupt();
     }
-    counter++;
   };
 };
 

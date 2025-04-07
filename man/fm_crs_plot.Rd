@@ -129,5 +129,5 @@ if (require("sf") && require("sp")) {
 \code{\link[=fm_crs]{fm_crs()}}
 }
 \author{
-Finn Lindgren \href{mailto:finn.lindgren@gmail.com}{finn.lindgren@gmail.com}
+Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}
 }

@@ -4,6 +4,12 @@
 #'
 #' @param x an object used to select a method.
 #' @param \dots further arguments passed to or from other methods.
+#' @param verbose logical
+#' @param digits a positive integer indicating how many significant digits are
+#'   to be used for numeric and complex x. The default, NULL, uses
+#'   `getOption("digits")`.
+#' @param newline logical; if `TRUE` (default), end the printing with `\n`
+#'
 #' @returns The input object `x`
 #' @name fmesher-print
 #' @examples
@@ -17,7 +23,6 @@
 NULL
 
 #' @export
-#' @param newline logical; if `TRUE` (default), end the printing with `\n`
 #' @rdname fmesher-print
 print.fm_segm <- function(x,
                           ...,
@@ -34,7 +39,7 @@ print.fm_segm <- function(x,
     } else {
       grps <- NULL
     }
-    return(list(n = n, grps = grps))
+    list(n = n, grps = grps)
   }
 
   ret <- my.segm(x)
@@ -61,15 +66,30 @@ print.fm_segm <- function(x,
   if (verbose) {
     cat("  ", sep = "")
   }
-  cat(as.character(ret$n),
-    if (all(x$is.bnd)) {
-      " boundary edge"
-    } else {
-      " interior edge"
-    },
-    if (ret$n != 1) "s" else "",
-    sep = ""
-  )
+  if (ret$n > 0) {
+    extra <- ""
+    if (sum(x$is.bnd) > 0) {
+      cat(sum(x$is.bnd),
+        " boundary edge",
+        if (sum(x$is.bnd) != 1) {
+          "s"
+        },
+        sep = ""
+      )
+      extra <- ", "
+    }
+    if (sum(!x$is.bnd) > 0) {
+      cat(extra, sum(!x$is.bnd),
+        " interior edge",
+        if (sum(!x$is.bnd) != 1) {
+          "s"
+        },
+        sep = ""
+      )
+    }
+  } else {
+    cat("0 edges", sep = "")
+  }
   if (!is.null(ret$grps)) {
     n <- length(ret$grps)
     cat(" (", n, " group", if (n != 1) "s" else "", sep = "")
@@ -98,7 +118,6 @@ print.fm_segm <- function(x,
 
 
 #' @export
-#' @param newline logical; if `TRUE` (default), end the printing with `\n`
 #' @rdname fmesher-print
 print.fm_segm_list <- function(x,
                                ...,
@@ -107,6 +126,46 @@ print.fm_segm_list <- function(x,
                                newline = TRUE) {
   if (verbose) {
     cat("list of ", length(x), " fm_segm objects:\n", sep = "")
+    if (!is.null(names(x)[k])) {
+      cat(names(x)[k], ": ", sep = "")
+    }
+    lapply(x, function(xx) {
+      print(
+        xx,
+        digits = digits,
+        verbose = TRUE,
+        newline = TRUE
+      )
+    })
+  } else {
+    for (k in seq_along(x)) {
+      if (!is.null(names(x)[k])) {
+        cat(names(x)[k], ": ", sep = "")
+      }
+      print(
+        x[[k]],
+        digits = digits,
+        verbose = FALSE,
+        newline = newline
+      )
+      if (!newline && (k < length(x))) {
+        cat(", ", sep = "")
+      }
+    }
+  }
+  return(invisible(x))
+}
+
+
+#' @export
+#' @rdname fmesher-print
+print.fm_list <- function(x,
+                          ...,
+                          digits = NULL,
+                          verbose = FALSE,
+                          newline = TRUE) {
+  if (verbose) {
+    cat("list of ", length(x), " fmesher objects:\n", sep = "")
     lapply(x, function(xx) {
       print(
         xx,
@@ -158,11 +217,14 @@ print.fm_mesh_2d <- function(x, ..., digits = NULL, verbose = FALSE) {
   ret <- c(ret, list(crs_proj4 = as.character(fm_proj4string(crs))))
 
   if (!is.null(x$segm)) {
-    ret$segm <- fm_as_segm_list(list(x$segm$bnd, x$segm$int))
+    ret$segm <- fm_as_segm_list(list(
+      "Boundary" = x$segm$bnd,
+      "Interior" = x$segm$int
+    ))
   } else {
     ret$segm <- fm_as_segm_list(list(
-      segm.bnd = fm_segm(is.bnd = TRUE),
-      segm.int = fm_segm(is.bnd = FALSE)
+      Boundary = fm_segm(is.bnd = TRUE),
+      Interior = fm_segm(is.bnd = FALSE)
     ))
   }
 
@@ -222,6 +284,44 @@ print.fm_mesh_2d <- function(x, ..., digits = NULL, verbose = FALSE) {
 
   cat("  Constraints:\t")
   print(ret$segm, newline = FALSE, digits = digits, verbose = FALSE)
+  cat("\n  ", sep = "")
+  print(fm_bbox(x), digits = digits)
+  cat("  Basis d.o.f.:\t", fm_dof(x), "\n", sep = "")
+  invisible(x)
+}
+
+
+
+#' @export
+#' @rdname fmesher-print
+print.fm_mesh_3d <- function(x, ..., digits = NULL, verbose = FALSE) {
+  ret <- list(verbose = verbose)
+  if (verbose) {
+    ret <- c(ret, list())
+  }
+  ret <-
+    c(
+      ret,
+      list(
+        manifold = fm_manifold(x),
+        nV = nrow(x$loc),
+        nT = nrow(x$graph$tv)
+      )
+    )
+
+  cat("fm_mesh_3d object:\n", sep = "")
+  cat("  Manifold:\t", ret$manifold, "\n", sep = "")
+  nV <- ret$nV
+  nE <- as.integer(sum(x$graph$vv) / 2L)
+  nF <- nrow(x$graph$tv) * 4L - sum(!is.na(x$graph$tt)) / 2L
+  nC <- ret$nT
+  cat(
+    "  V / E / T / Tet:\t",
+    paste0(c(nV, nE, nF, nC), collapse = " / ", sep = ""),
+    "\n",
+    sep = ""
+  )
+  cat("  Euler char.:\t", as.character(nV - nE + nF - nC), sep = "")
   cat("\n  ", sep = "")
   print(fm_bbox(x), digits = digits)
   cat("  Basis d.o.f.:\t", fm_dof(x), "\n", sep = "")
@@ -290,11 +390,6 @@ print.fm_bbox <- function(x,
 }
 
 
-#' @param verbose logical
-#' @param digits a positive integer indicating how many significant digits are
-#'   to be used for numeric and complex x. The default, NULL, uses
-#'   `getOption("digits")`.
-#'
 #' @export
 #' @rdname fmesher-print
 print.fm_tensor <- function(x, ..., digits = NULL, verbose = FALSE) {
@@ -323,6 +418,53 @@ print.fm_tensor <- function(x, ..., digits = NULL, verbose = FALSE) {
     "\n",
     sep = ""
   )
+  invisible(x)
+}
+
+
+#' @export
+#' @rdname fmesher-print
+print.fm_lattice_2d <- function(x, ..., digits = NULL, verbose = FALSE) {
+  ret <- list(verbose = verbose)
+  ret <-
+    c(
+      ret,
+      list(
+        manifold = fm_manifold(x),
+        dim = x$dims,
+        bbox = fm_bbox(x)
+      )
+    )
+
+  cat("fm_lattice_2d object:\n", sep = "")
+  cat("  Manifold:\t", ret$manifold, "\n", sep = "")
+  cat("  Dimensions:\t", paste0(ret$dim, collapse = " x "), "\n", sep = "")
+  cat("  ", sep = "")
+  print(fm_bbox(x), digits = digits)
+  cat("  Basis d.o.f.:\t", fm_dof(x), "\n", sep = "")
+  invisible(x)
+}
+
+#' @export
+#' @rdname fmesher-print
+print.fm_lattice_Nd <- function(x, ..., digits = NULL, verbose = FALSE) {
+  ret <- list(verbose = verbose)
+  ret <-
+    c(
+      ret,
+      list(
+        manifold = fm_manifold(x),
+        dim = x$dims,
+        bbox = fm_bbox(x)
+      )
+    )
+
+  cat("fm_lattice_Nd object:\n", sep = "")
+  cat("  Manifold:\t", ret$manifold, "\n", sep = "")
+  cat("  Dimensions:\t", paste0(ret$dim, collapse = " x "), "\n", sep = "")
+  cat("  ", sep = "")
+  print(fm_bbox(x), digits = digits)
+  cat("  Basis d.o.f.:\t", fm_dof(x), "\n", sep = "")
   invisible(x)
 }
 

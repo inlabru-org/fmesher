@@ -6,7 +6,7 @@
 #'
 #' @export
 #'
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #'
 #' @param mesh An `fm_mesh_2d` object
 #' @param dims A length 2 integer vector giving the dimensions of
@@ -86,7 +86,7 @@ fm_pixels <- function(mesh,
 
   x <- NULL
   if (lifecycle::is_present(nx)) {
-    lifecycle::deprecate_warn(
+    lifecycle::deprecate_stop(
       "0.0.1",
       "fm_pixels(nx)",
       "fm_pixels(dim)"
@@ -99,7 +99,7 @@ fm_pixels <- function(mesh,
   }
   y <- NULL
   if (lifecycle::is_present(ny)) {
-    lifecycle::deprecate_warn(
+    lifecycle::deprecate_stop(
       "0.0.1",
       "fm_pixels(ny)",
       "fm_pixels(dim)"
@@ -186,7 +186,7 @@ fm_pixels <- function(mesh,
 #' @param refine A list of refinement options passed on to
 #' [fm_rcdt_2d_inla]
 #' @returns A refined `fm_mesh_2d` object
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @export
 #' @examples
 #' fm_dof(fmexample$mesh)
@@ -213,8 +213,11 @@ fm_refine <- function(mesh, refine = list(max.edge = 1)) {
 #'
 #' @param mesh an [fm_mesh_2d] object
 #' @param n number of added points along each edge. Default is 1.
+#' @param delaunay logical; if `TRUE`, the subdivided mesh is forced into a
+#'   Delaunay triangle structure. If `FALSE` (default), the triangles are
+#'   subdivided uniformly instead.
 #' @returns A refined [fm_mesh_2d] object
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @export
 #' @examples
 #' mesh <- fm_rcdt_2d_inla(
@@ -229,7 +232,7 @@ fm_refine <- function(mesh, refine = list(max.edge = 1)) {
 #'
 #' plot(fm_subdivide(fmexample$mesh, 3), edge.color = 2)
 #' plot(fmexample$mesh, add = TRUE, edge.color = 1)
-fm_subdivide <- function(mesh, n = 1) {
+fm_subdivide <- function(mesh, n = 1, delaunay = FALSE) {
   if (n < 1) {
     return(mesh)
   }
@@ -254,7 +257,8 @@ fm_subdivide <- function(mesh, n = 1) {
   new_mesh <- fm_rcdt_2d_inla(
     loc = sub$loc,
     tv = sub$tv + 1L,
-    crs = fm_crs(mesh)
+    crs = fm_crs(mesh),
+    delaunay = delaunay
   )
 
   new_mesh
@@ -319,7 +323,7 @@ join_segm <- function(...) {
 #' @param poly `fm_segm` object with a closed polygon
 #'   to intersect with the mesh
 #' @returns An [fm_mesh_2d] object
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @keywords internal
 #' @export
 #' @examples
@@ -464,7 +468,7 @@ fm_store_points <- function(loc, crs = NULL, info = NULL, format = NULL) {
 #' An `sf`, `data.frame`, or `SpatialPointsDataFrame` object, with the vertex
 #' coordinates, and a `.vertex` column with the vertex indices.
 #'
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @seealso [fm_centroids()]
 #'
 #' @examples
@@ -496,7 +500,7 @@ fm_vertices <- function(x, format = NULL) {
 #' An `sf`, `data.frame`, or `SpatialPointsDataFrame` object, with the vertex
 #' coordinates, and a `.triangle` column with the triangle indices.
 #'
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @seealso [fm_vertices()]
 #'
 #' @examples
@@ -637,6 +641,12 @@ fm_dof.fm_mesh_2d <- function(x) {
 
 #' @rdname fm_dof
 #' @export
+fm_dof.fm_mesh_3d <- function(x) {
+  as.integer(x[["n"]])
+}
+
+#' @rdname fm_dof
+#' @export
 fm_dof.fm_tensor <- function(x) {
   prod(vapply(x$fun_spaces, fm_dof, 0L))
 }
@@ -645,4 +655,10 @@ fm_dof.fm_tensor <- function(x) {
 #' @export
 fm_dof.fm_lattice_2d <- function(x) {
   length(x$x) * length(x$y)
+}
+
+#' @rdname fm_dof
+#' @export
+fm_dof.fm_lattice_Nd <- function(x) {
+  prod(x$dims)
 }

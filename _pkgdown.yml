@@ -21,17 +21,20 @@ navbar:
         href: articles/devel_flow.html
       - text: Conversion from legacy INLA package methods
         href: articles/inla_conversion.html
+      - text: Spatially varying mesh quality
+        href: articles/variable_mesh_quality.html
 
 
 reference:
 - title: "Mesh construction"
-  desc: "Functions for contructing meshes and function spaces."
+  desc: "Functions for constructing meshes and function spaces."
   contents:
   - starts_with("fm_mesh")
   - starts_with("fm_rcdt")
   - starts_with("fm_delaunay")
   - starts_with("fm_subdivide")
-  - starts_with("fm_lattice")
+  - starts_with("fm_lattice_")
+  - starts_with("fm_hexagon_")
   - starts_with("fm_segm")
   - starts_with("fm_nonconvex")
   - starts_with("fm_extensions")
@@ -62,6 +65,8 @@ reference:
   contents:
   - starts_with("fm_fem")
   - starts_with("fm_gmrf")
+  - starts_with("fm_assess")
+  - starts_with("fm_qinv")
 - title: "Matrix helper functions"
   desc: "Functions for handling matrix constructions"
   contents:
@@ -81,10 +86,11 @@ reference:
   - matches("^is.na.fm_CRS$")
   - matches("^is.na.inla.CRS$")
 #  - matches("\$\.fm_crs")
-- title: "Conversion to fmesher classes"
+- title: "Conversion to and from fmesher classes"
   desc: "Functions for converting non-fmesher objects to fmesher objects."
   contents:
   - starts_with("fm_as_")
+  - starts_with("as.triangles3d")
 - title: "Plotting methods"
   desc: "Functions for plotting."
   contents:

@@ -203,5 +203,5 @@ fm_crs_get_lengthunit(c2)
 \code{\link[=fm_crs]{fm_crs()}}
 }
 \author{
-Finn Lindgren \email{finn.lindgren@gmail.com}
+Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}
 }

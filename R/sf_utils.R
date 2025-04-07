@@ -8,7 +8,7 @@
 # @returns Returns the signed area.  Negative values indicate
 # anti-clockwise winding direction.
 # @author Andrew Seaton \email{Andrew.Seaton.2@@glasgow.ac.uk}
-# @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+# @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 # @keywords internal
 
 st_signed_area <- function(sfg) {
@@ -24,7 +24,7 @@ st_signed_area <- function(sfg) {
   i <- seq_len(nrow(coords) - 1)
   edges <- cbind(coords[i, , drop = FALSE], coords[i + 1, , drop = FALSE])
   area <- sum((edges[, 3] - edges[, 1]) * (edges[, 2] + edges[, 4]) / 2)
-  return(area)
+  area
 }
 
 

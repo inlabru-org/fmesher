@@ -155,5 +155,5 @@ if (fm_safe_sp()) {
 \code{\link[=fm_sp_get_crs]{fm_sp_get_crs()}}, \code{\link[=fm_crs_is_identical]{fm_crs_is_identical()}}
 }
 \author{
-Finn Lindgren \email{finn.lindgren@gmail.com}
+Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}
 }

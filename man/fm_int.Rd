@@ -124,7 +124,7 @@ plot(ips$x, ips$weight)
 # Create integration points for the two intervals [0,3] and [5,10]
 ips <- fm_int(
   fm_mesh_1d(0:10),
-  matrix(c(0, 3, 5, 10), nrow = 2, byrow = TRUE)
+  rbind(c(0, 3), c(5, 10))
 )
 plot(ips$x, ips$weight)
 
@@ -143,6 +143,12 @@ if (require("ggplot2", quietly = TRUE)) {
     scale_size_area()
 }
 
+# Individual sampling points:
+(ips <- fm_int(0:10, c(0, 3, 5, 6, 10)))
+# Sampling blocks:
+(ips <- fm_int(0:10, list(c(0, 3), c(5, 6, 10))))
+
+# Continuous integration on intervals
 ips <- fm_int(
   fm_mesh_1d(0:10, boundary = "cyclic"),
   rbind(c(0, 3), c(5, 10))

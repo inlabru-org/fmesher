@@ -90,5 +90,5 @@ if (require("ggplot2", quietly = TRUE) &&
 }
 }
 \author{
-Finn Lindgren \email{finn.lindgren@gmail.com}
+Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}
 }

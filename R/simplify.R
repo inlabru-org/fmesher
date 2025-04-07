@@ -18,7 +18,7 @@
 #'   constraint.
 #' @returns An index vector into `loc` specifying the simplified polygonal
 #' curve.
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @details
 #' Variation of Ramer-Douglas-Peucker.
 #' Uses width epsilon ellipse instead of rectangle,
@@ -98,7 +98,7 @@ fm_simplify_helper <- function(loc, idx, eps = NULL, eps_rel = NULL) {
 #'   constraint.
 #' @param ... Currently unused.
 #' @returns The simplified [fm_segm()] object.
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @details
 #' Variation of Ramer-Douglas-Peucker.
 #' Uses width epsilon ellipse instead of rectangle,

@@ -16,7 +16,7 @@
 #' @param \dots Additional parameters passed on to the submethods.
 #' @returns A scalar, upper bound for the diameter of the convex hull of the
 #' point set.
-#' @author Finn Lindgren <finn.lindgren@@gmail.com>
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @examples
 #'
 #' fm_diameter(matrix(c(0, 1, 1, 0, 0, 0, 1, 1), 4, 2))
@@ -100,8 +100,8 @@ fm_diameter.fm_lattice_2d <- function(x, ...) {
 
 #' @rdname fm_diameter
 #' @export
-fm_diameter.fm_segm <- function(x, ...) {
-  fm_diameter.matrix(x$loc, manifold = fm_manifold(x), ...)
+fm_diameter.fm_mesh_1d <- function(x, ...) {
+  diff(x[["interval"]])
 }
 
 #' @rdname fm_diameter
@@ -112,6 +112,12 @@ fm_diameter.fm_mesh_2d <- function(x, ...) {
 
 #' @rdname fm_diameter
 #' @export
-fm_diameter.fm_mesh_1d <- function(x, ...) {
-  diff(x[["interval"]])
+fm_diameter.fm_segm <- function(x, ...) {
+  fm_diameter.matrix(x$loc, manifold = fm_manifold(x), ...)
+}
+
+#' @rdname fm_diameter
+#' @export
+fm_diameter.fm_mesh_3d <- function(x, ...) {
+  fm_diameter.matrix(x$loc, manifold = fm_manifold(x), ...)
 }

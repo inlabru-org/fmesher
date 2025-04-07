@@ -216,8 +216,13 @@ fm_bary.fm_mesh_2d <- function(mesh,
     tri <- rep(NA_integer_, nrow(loc))
     where <- matrix(NA_real_, nrow(loc), 3)
     ok <- result$index >= 0
-    tri[pre_ok_idx[ok]] <- result$index[ok] + 1L
-    where[pre_ok_idx[ok], ] <- result$where[ok, ]
+    if (any(ok)) {
+      tri[pre_ok_idx[ok]] <- result$index[ok] + 1L
+      where_ok <- result$where[ok, , drop = FALSE]
+      where_ok <- matrix(pmax(0.0, where_ok), nrow(where_ok), 3)
+      where_ok <- where_ok / rowSums(where_ok)
+      where[pre_ok_idx[ok], ] <- where_ok
+    }
   } else {
     tri <- rep(NA_integer_, nrow(loc))
     where <- matrix(NA_real_, nrow(loc), 3)
@@ -232,14 +237,97 @@ fm_bary.fm_mesh_2d <- function(mesh,
         options = list()
       )
       ok <- result$index >= 0
-      tri[subindex[[k]][ok]] <- result$index[ok] + 1L
-      where[subindex[[k]][ok], ] <- result$where[ok, ]
+      if (any(ok)) {
+        tri[subindex[[k]][ok]] <- result$index[ok] + 1L
+        where_ok <- result$where[ok, ]
+        where_ok <- matrix(pmax(0.0, where_ok), nrow(where_ok), 3)
+        where_ok <- where_ok / rowSums(where_ok)
+        where[subindex[[k]][ok], ] <- where_ok
+      }
     }
   }
 
   fm_bary(
     tibble::tibble(
       index = tri,
+      where = where
+    )
+  )
+}
+
+#' @describeIn fm_bary An `fm_bary` object with columns `index` (vector of
+#'   triangle indices) and `where` (4-column matrix of barycentric coordinates).
+#'   Points that were not found give `NA` entries in `index` and `where`.
+#' @param max_batch_size integer; maximum number of points to process in a
+#'   single batch. This speeds up calculations by avoiding repeated large
+#'   internal memory allocations and data copies. The default, `NULL`, uses
+#'   `max_batch_size = 2e5L`, chosen based on empirical time measurements to
+#'   give an approximately optimal runtime.
+#'
+#' @export
+#' @examples
+#' m <- fm_mesh_3d(
+#'   rbind(
+#'     c(1, 0, 0),
+#'     c(0, 1, 0),
+#'     c(0, 0, 1),
+#'     c(0, 0, 0)
+#'   ),
+#'   matrix(c(1, 2, 3, 4), 1, 4)
+#' )
+#' b <- fm_bary(m, matrix(c(1, 1, 1) / 4, 1, 3))
+fm_bary.fm_mesh_3d <- function(mesh,
+                               loc,
+                               ...,
+                               max_batch_size = NULL) {
+  if (inherits(loc, "fm_bary")) {
+    return(loc)
+  }
+
+  if (is.null(max_batch_size)) {
+    max_batch_size <- 2e5L
+  }
+
+  pre_ok_idx <-
+    which(rowSums(matrix(
+      is.na(as.vector(loc)),
+      nrow = nrow(loc),
+      ncol = ncol(loc)
+    )) == 0)
+  if (length(pre_ok_idx) <= max_batch_size) {
+    result <- fmesher_bary3d(
+      mesh_loc = mesh$loc,
+      mesh_tv = mesh$graph$tv - 1L,
+      loc = loc[pre_ok_idx, , drop = FALSE],
+      options = list()
+    )
+    tet <- rep(NA_integer_, nrow(loc))
+    where <- matrix(NA_real_, nrow(loc), 4)
+    ok <- result$index >= 0
+    tet[pre_ok_idx[ok]] <- result$index[ok] + 1L
+    where[pre_ok_idx[ok], ] <- result$where[ok, ]
+  } else {
+    tet <- rep(NA_integer_, nrow(loc))
+    where <- matrix(NA_real_, nrow(loc), 4)
+    n_batches <- ceiling(length(pre_ok_idx) / max_batch_size)
+    batch_idx <- round(seq(0, length(pre_ok_idx), length.out = n_batches + 1))
+    subindex <- split(pre_ok_idx, rep(seq_len(n_batches), diff(batch_idx)))
+    for (k in seq_along(subindex)) {
+      result <- fmesher_bary3d(
+        mesh_loc = mesh$loc,
+        mesh_tv = mesh$graph$tv - 1L,
+        loc = loc[subindex[[k]], , drop = FALSE],
+        options = list()
+      )
+      ok <- result$index >= 0
+      tet[subindex[[k]][ok]] <- result$index[ok] + 1L
+      where[subindex[[k]][ok], ] <- result$where[ok, ]
+    }
+  }
+
+  fm_bary(
+    tibble::tibble(
+      index = tet,
       where = where
     )
   )
@@ -320,6 +408,110 @@ fm_bary.fm_lattice_2d <- function(mesh,
   bary
 }
 
+#' @describeIn fm_bary An `fm_bary` object with columns `index` (vector of
+#'   lattice cell indices) and `where` `2^d`-column matrix of barycentric
+#'   coordinates). Points that are outside the lattice are given `NA` entries in
+#'   `index` and `where`.
+#'
+#' @export
+# @examples
+# str(fm_bary(fmexample$mesh, fmexample$loc_sf))
+fm_bary.fm_lattice_Nd <- function(mesh,
+                                  loc,
+                                  ...) {
+  d <- length(mesh$dims)
+  d_bary <- 2^d
+  if (inherits(loc, "fm_bary")) {
+    if ((nrow(loc) > 0) && (
+      min(loc[["index"]]) < 1L ||
+        max(loc[["index"]]) > prod(mesh$dims - 1L))) {
+      warning("Some 'index' information is outside the lattice.")
+    }
+    if (ncol(loc[["where"]]) != d_bary) {
+      stop("Invalid 'where' matrix; should have ", d_bary, " columns.")
+    }
+    return(loc)
+  }
+
+  pre_ok <-
+    which(rowSums(matrix(
+      is.na(as.vector(loc)),
+      nrow = nrow(loc),
+      ncol = ncol(loc)
+    )) == 0)
+
+  loc <- loc[pre_ok, , drop = FALSE]
+  x_idx <- do.call(
+    cbind,
+    lapply(
+      seq_len(d),
+      function(k) {
+        findInterval(loc[, k],
+          mesh$values[[k]],
+          rightmost.closed = TRUE
+        )
+      }
+    )
+  )
+  ok <- rowSums(do.call(
+    cbind,
+    lapply(
+      seq_len(d),
+      function(k) {
+        x_idx[, k] > 0 &
+          x_idx[, k] < mesh$dims[k]
+      }
+    )
+  )) == d
+  x_loc <- do.call(
+    cbind,
+    lapply(
+      seq_len(d),
+      function(k) {
+        (loc[ok, k] - mesh$values[[k]][x_idx[ok, k]]) /
+          diff(mesh$values[[k]])[x_idx[ok, k]]
+      }
+    )
+  )
+  simplex_idx <- x_idx[ok, 1]
+  for (k in seq_len(d - 1) + 1) {
+    simplex_idx <- simplex_idx + (x_idx[ok, k] - 1L) *
+      prod(mesh$dims[seq_len(k - 1)] - 1L)
+  }
+
+  # Vertex order
+  # 2d lattice convention: 00 10 11 01
+  # Nd lattice convention: 000 100 010 110 001 101 011 111
+  # (this gives the same ordering as a local lattice_Nd)
+  B <- matrix(0.0, nrow(x_loc), d_bary)
+  for (k in seq_len(d_bary)) {
+    idx <- (k - 1) %/% 2^(seq_len(d) - 1) %% 2
+    xx <- 1.0
+    for (j in seq_along(idx)) {
+      if (idx[j] == 1) {
+        xx <- xx * x_loc[, j]
+      } else {
+        xx <- xx * (1 - x_loc[, j])
+      }
+    }
+    B[, k] <- xx
+  }
+
+  index <- rep(NA_integer_, nrow(loc))
+  where <- matrix(NA_real_, nrow(loc), d_bary)
+  index[pre_ok[ok]] <- simplex_idx
+  where[pre_ok[ok], ] <- B
+
+  bary <- fm_bary(
+    tibble::tibble(
+      index = index,
+      where = where
+    )
+  )
+
+  bary
+}
+
 # Simplex extraction ####
 
 #' @title Extract Simplex information for Barycentric coordinates
@@ -351,6 +543,23 @@ fm_bary_simplex.fm_mesh_2d <- function(mesh, bary = NULL, ...) {
   }
   if (NROW(bary) == 0L) {
     return(matrix(integer(1), 0L, 3L))
+  }
+  mesh$graph$tv[bary$index, , drop = FALSE]
+}
+
+#' @describeIn fm_bary_simplex Extract the tetrahedron vertex indices for a 3D
+#'   mesh
+#' @export
+#'
+# @examples
+# bary <- fm_bary(fmexample$mesh, fmexample$loc_sf)
+# fm_bary_simplex(fmexample$mesh, bary)
+fm_bary_simplex.fm_mesh_3d <- function(mesh, bary = NULL, ...) {
+  if (is.null(bary)) {
+    return(mesh$graph$tv)
+  }
+  if (NROW(bary) == 0L) {
+    return(matrix(integer(1), 0L, 4L))
   }
   mesh$graph$tv[bary$index, , drop = FALSE]
 }
@@ -434,6 +643,67 @@ fm_bary_simplex.fm_lattice_2d <- function(mesh, bary = NULL, ...) {
 }
 
 
+#' @describeIn fm_bary_simplex Extract the cell vertex indices for a ND lattice
+#' @export
+#'
+#' @examples
+#' m <- fm_lattice_Nd(list(x = 1:3, y = 1:4, z = 1:2))
+#' (bary <- fm_bary(m, cbind(1.5, 3.2, 1.5)))
+#' (fm_bary_simplex(m, bary))
+#' fm_bary_loc(m, bary)
+fm_bary_simplex.fm_lattice_Nd <- function(mesh, bary = NULL, ...) {
+  d <- length(mesh$dims)
+  d_bary <- 2^d
+  simplex <- matrix(0L,
+    nrow = prod(mesh$dims - 1L),
+    ncol = d_bary
+  )
+
+  simplex <- matrix(0L, prod(mesh$dims - 1L), d_bary)
+
+  # Vertex order
+  # 2d lattice convention: 00 10 11 01
+  # Nd lattice convention: 000 100 010 110 001 101 011 111
+  # (this gives the same ordering as a local lattice_Nd)
+  # Local simplex
+  local_simplex <- matrix(0L, d_bary, d)
+  for (k in seq_len(d_bary)) {
+    local_simplex[k, ] <- (k - 1) %/% 2^(seq_len(d) - 1) %% 2
+  }
+  simplex_root <- matrix(0L, prod(mesh$dims - 1L), ncol = d)
+  for (k in seq_len(d)) {
+    if (k == 1) {
+      simplex_root[, 1] <- rep(seq_len(mesh$dims[1] - 1L),
+        times = prod(mesh$dims[-1] - 1L)
+      )
+    } else {
+      simplex_root[, k] <- rep(
+        rep(seq_len(mesh$dims[k] - 1L),
+          each = prod(mesh$dims[seq_len(k - 1)] - 1L)
+        ),
+        times = prod(mesh$dims[-seq_len(k)] - 1L)
+      )
+    }
+  }
+  for (k in seq_len(d_bary)) {
+    simplex[, k] <- simplex_root[, 1] + local_simplex[k, 1]
+    for (j in seq_len(d - 1) + 1) {
+      simplex[, k] <-
+        simplex[, k] + (simplex_root[, j] + local_simplex[k, j] - 1L) *
+          prod(mesh$dims[seq_len(j - 1)])
+    }
+  }
+
+  if (is.null(bary)) {
+    return(simplex)
+  }
+  if (NROW(bary) == 0L) {
+    return(matrix(integer(1), 0L, d_bary))
+  }
+  simplex[bary$index, , drop = FALSE]
+}
+
+
 # Location extraction ####
 
 #' @title Extract Euclidean Sgeometry from Barycentric coordinates
@@ -489,6 +759,34 @@ fm_bary_loc.fm_mesh_2d <- function(mesh, bary = NULL, ..., format = NULL) {
       as.data.frame(loc),
       coords = seq_len(ncol(loc)),
       crs = fm_crs(loc)
+    )
+  }
+  loc
+}
+
+#' @describeIn fm_bary_loc Extract points on a tetrahedron mesh. Implemented
+#' format is `"matrix"` (default).
+#' @export
+#'
+# @examples
+# head(fm_bary_loc(fmexample$mesh))
+# bary <- fm_bary(fmexample$mesh, fmexample$loc_sf)
+# fm_bary_loc(fmexample$mesh, bary)
+fm_bary_loc.fm_mesh_3d <- function(mesh, bary = NULL, ..., format = NULL) {
+  format <- match.arg(format, c("matrix"))
+  if (is.null(bary)) {
+    loc <- mesh$loc
+  } else if (NROW(bary) == 0L) {
+    loc <- matrix(0.0, 0L, ncol(mesh$loc))
+  } else {
+    loc <- matrix(NA_real_, NROW(bary), ncol(mesh$loc))
+    ok <- !is.na(bary$index)
+    simplex <- fm_bary_simplex(mesh, bary = bary[ok, ])
+    loc[ok, ] <- (
+      mesh$loc[simplex[, 1L], , drop = FALSE] * bary$where[ok, 1] +
+        mesh$loc[simplex[, 2L], , drop = FALSE] * bary$where[ok, 2] +
+        mesh$loc[simplex[, 3L], , drop = FALSE] * bary$where[ok, 3] +
+        mesh$loc[simplex[, 4L], , drop = FALSE] * bary$where[ok, 4]
     )
   }
   loc
@@ -571,6 +869,39 @@ fm_bary_loc.fm_lattice_2d <- function(mesh, bary = NULL, ..., format = NULL) {
       coords = seq_len(ncol(loc)),
       crs = fm_crs(loc)
     )
+  }
+  loc
+}
+
+
+#' @describeIn fm_bary_loc Extract points on a ND lattice.
+#' @export
+#'
+#' @examples
+#' m <- fm_lattice_Nd(list(x = 1:3, y = 1:4, z = 1:2))
+#' head(fm_bary_loc(m))
+#' (bary <- fm_bary(m, cbind(1.5, 3.2, 1.5)))
+#' fm_bary_loc(m, bary)
+fm_bary_loc.fm_lattice_Nd <- function(mesh, bary = NULL, ..., format = NULL) {
+  format <- match.arg(format, c("matrix", "sf"))
+  stopifnot(format == "matrix")
+  if (is.null(bary)) {
+    loc <- mesh$loc
+  } else if (NROW(bary) == 0L) {
+    loc <- matrix(0.0, 0L, ncol(mesh$loc))
+  } else {
+    loc <- matrix(NA_real_, NROW(bary), ncol(mesh$loc))
+    ok <- !is.na(bary$index)
+    simplex <- fm_bary_simplex(mesh, bary = bary[ok, , drop = FALSE])
+    d <- length(mesh$dims)
+    d_bary <- 2^d
+    loc[ok, ] <- mesh$loc[simplex[, 1L], , drop = FALSE] * bary$where[ok, 1]
+    for (k in seq_len(d_bary - 1) + 1) {
+      loc[ok, ] <- (
+        loc[ok, ] +
+          mesh$loc[simplex[, k], , drop = FALSE] * bary$where[ok, k]
+      )
+    }
   }
   loc
 }

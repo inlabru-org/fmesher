@@ -20,6 +20,7 @@ fm_rcdt_2d_inla(
   cutoff = 1e-12,
   quality.spec = NULL,
   crs = NULL,
+  delaunay = TRUE,
   ...
 )
 
@@ -73,6 +74,10 @@ specification for each location in \code{loc}, \code{boundary/interior}
 (\code{segm}), and \code{lattice}.  Only used if refining the mesh.}
 
 \item{crs}{Optional crs object}
+
+\item{delaunay}{logical; If \code{FALSE}, \code{refine} is \code{FALSE}, and a ready-made
+mesh is provided, only creates the mesh data structure. Default \code{TRUE}, for
+ensuring a Delaunay triangulation.}
 }
 \value{
 An \code{fm_mesh_2d} object

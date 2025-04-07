@@ -37,12 +37,34 @@ Create a \code{fm_mesh_1d} object.
 }
 \examples{
 if (require("ggplot2")) {
-  m <- fm_mesh_1d(c(1, 2, 3, 5, 8, 10),
+  m1 <- fm_mesh_1d(c(1, 2, 3, 5, 8, 10),
+    boundary = c("neumann", "free")
+  )
+  weights <- c(2, 3, 6, 3, 4, 7)
+  ggplot() +
+    geom_fm(data = m1, xlim = c(0.5, 11), weights = weights)
+
+  m2 <- fm_mesh_1d(c(1, 2, 3, 5, 8, 10),
     boundary = c("neumann", "free"),
     degree = 2
   )
   ggplot() +
-    geom_fm(data = m, xlim = c(0.5, 10.5))
+    geom_fm(data = m2, xlim = c(0.5, 11), weights = weights)
+
+  # The knot interpretation is different for degree=2 and degree=1 meshes:
+  ggplot() +
+    geom_fm(data = m1, xlim = c(0.5, 11), weights = weights) +
+    geom_fm(data = m2, xlim = c(0.5, 11), weights = weights)
+
+  # The `mid` values are the representative basis function midpoints,
+  # and can be used to connect degree=2 and degree=1 mesh interpretations:
+  m1b <- fm_mesh_1d(m2$mid,
+    boundary = c("neumann", "free"),
+    degree = 1
+  )
+  ggplot() +
+    geom_fm(data = m2, xlim = c(0.5, 11), weights = weights) +
+    geom_fm(data = m1b, xlim = c(0.5, 11), weights = weights)
 }
 
 }
@@ -56,12 +78,15 @@ Other object creation and conversion:
 \code{\link{as_graph_interval}()},
 \code{\link{fm_as_fm}()},
 \code{\link{fm_as_lattice_2d}()},
+\code{\link{fm_as_lattice_Nd}()},
 \code{\link{fm_as_mesh_1d}()},
 \code{\link{fm_as_mesh_2d}()},
+\code{\link{fm_as_mesh_3d}()},
 \code{\link{fm_as_segm}()},
 \code{\link{fm_as_sfc}()},
 \code{\link{fm_as_tensor}()},
 \code{\link{fm_lattice_2d}()},
+\code{\link{fm_lattice_Nd}()},
 \code{\link{fm_mesh_2d}()},
 \code{\link{fm_segm}()},
 \code{\link{fm_simplify}()},
@@ -70,6 +95,6 @@ Other object creation and conversion:
 \code{\link{simple_path_MGG}()}
 }
 \author{
-Finn Lindgren \email{finn.lindgren@gmail.com}
+Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}
 }
 \concept{object creation and conversion}

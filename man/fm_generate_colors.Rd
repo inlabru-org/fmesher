@@ -38,6 +38,6 @@ fm_generate_colors(1:4, color.axis = c(1, 4))
 
 }
 \author{
-Finn Lindgren \email{finn.lindgren@gmail.com}
+Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}
 }
 \keyword{internal}

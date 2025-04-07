@@ -1,8 +1,8 @@
 test_that("fmesher_subdivide works", {
   mesh <- fm_rcdt_2d_inla(
-    rbind(c(0, 0), c(1, 0), c(0, 1)),
+    rbind(c(0, 0), c(1, 0), c(-0.1, 1)),
     rbind(c(0, 1, 2)) + 1L
-  ) # ,
+  )
   #                          refine=list(max.edge = 0.1))
 
   # 2
@@ -30,7 +30,7 @@ test_that("fmesher_subdivide works", {
   )
   sub1.loc <- rbind(
     mesh$loc,
-    cbind(rbind(c(0.5, 0), c(0.5, 0.5), c(0, 0.5)), 0)
+    cbind(rbind(c(0.5, 0), c(0.5 - 0.1 * 0.5, 0.5), c(0 - 0.1 * 0.5, 0.5)), 0)
   )
   sub1 <- fmesher_subdivide(
     mesh$loc,
@@ -62,9 +62,9 @@ test_that("fmesher_subdivide works", {
     mesh$loc,
     cbind(rbind(
       c(1 / 3, 0), c(2 / 3, 0),
-      c(2 / 3, 1 / 3), c(1 / 3, 2 / 3),
-      c(0, 2 / 3), c(0, 1 / 3),
-      c(1 / 3, 1 / 3)
+      c(2 / 3 - 0.1 * 1 / 3, 1 / 3), c(1 / 3 - 0.1 * 2 / 3, 2 / 3),
+      c(0 - 0.1 * 2 / 3, 2 / 3), c(0 - 0.1 * 1 / 3, 1 / 3),
+      c(1 / 3 - 0.1 * 1 / 3, 1 / 3)
     ), 0)
   )
   sub2 <- fmesher_subdivide(
@@ -78,9 +78,9 @@ test_that("fmesher_subdivide works", {
   expect_equal(sub2$loc, sub2.loc)
   expect_equal(sub2$tv, sub2.tv)
 
-  m0 <- fm_rcdt_2d_inla(sub0$loc, sub0$tv + 1L)
-  m1 <- fm_rcdt_2d_inla(sub1$loc, sub1$tv + 1L)
-  m2 <- fm_rcdt_2d_inla(sub2$loc, sub2$tv + 1L)
+  m0 <- fm_rcdt_2d_inla(sub0$loc, sub0$tv + 1L, delaunay = FALSE)
+  m1 <- fm_rcdt_2d_inla(sub1$loc, sub1$tv + 1L, delaunay = FALSE)
+  m2 <- fm_rcdt_2d_inla(sub2$loc, sub2$tv + 1L, delaunay = FALSE)
 
   m0_ <- fm_subdivide(mesh, 0)
   m1_ <- fm_subdivide(mesh, 1)

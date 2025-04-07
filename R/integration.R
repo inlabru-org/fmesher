@@ -26,10 +26,7 @@
 #'   multidimensional integration points and their weights
 #'
 #' @examples
-#' \donttest{
-#' # fm_int needs INLA
-#' if (TRUE &&
-#'   require("ggplot2")) {
+#' if (require("ggplot2")) {
 #'   # Create integration points in dimension 'myDim' and 'myDiscreteDim'
 #'   ips1 <- fm_int(fm_mesh_1d(1:20),
 #'     rbind(c(0, 3), c(3, 8)),
@@ -44,7 +41,6 @@
 #'   ggplot(ips) +
 #'     geom_point(aes(myDim, myDiscreteDim, size = weight)) +
 #'     scale_size_area()
-#' }
 #' }
 #'
 #' @importFrom stats na.omit
@@ -161,7 +157,7 @@ fm_cprod <- function(..., na.rm = NULL, .blockwise = FALSE) {
   if (any(ipl_sp)) {
     ips <- sf::as_Spatial(ips)
     if (any(ipl_sf)) {
-      lifecycle::deprecate_warn(
+      lifecycle::deprecate_stop(
         when = "0.0.1",
         what = "fm_cprod('...'='should not mix `sp` and `sf` objects')",
         details =
@@ -203,7 +199,7 @@ fm_cprod <- function(..., na.rm = NULL, .blockwise = FALSE) {
 #' # Create integration points for the two intervals [0,3] and [5,10]
 #' ips <- fm_int(
 #'   fm_mesh_1d(0:10),
-#'   matrix(c(0, 3, 5, 10), nrow = 2, byrow = TRUE)
+#'   rbind(c(0, 3), c(5, 10))
 #' )
 #' plot(ips$x, ips$weight)
 #'
@@ -440,6 +436,12 @@ fm_int.list <- function(domain, samplers = NULL, ...) {
 
 #' @export
 #' @describeIn fm_int Discrete double or integer space integration
+#' @examples
+#' # Individual sampling points:
+#' (ips <- fm_int(0:10, c(0, 3, 5, 6, 10)))
+#' # Sampling blocks:
+#' (ips <- fm_int(0:10, list(c(0, 3), c(5, 6, 10))))
+#'
 fm_int.numeric <- function(domain, samplers = NULL, name = "x", ...) {
   if (is.null(samplers)) {
     ips <- tibble::tibble(
@@ -463,10 +465,23 @@ fm_int.numeric <- function(domain, samplers = NULL, name = "x", ...) {
     samplers[[".block"]] <- seq_len(NROW(samplers))
   }
 
-  storage.mode(samplers[[name]]) <- storage.mode(domain)
+  if (is.list(samplers[[name]])) {
+    ips <- list()
+    for (k in seq_along(samplers[[name]])) {
+      storage.mode(samplers[[name]][[k]]) <- storage.mode(domain)
+      ok <- samplers[[name]][[k]] %in% domain
+      if (any(ok)) {
+        ips[[k]] <- samplers[rep(k, sum(ok)), , drop = FALSE]
+        ips[[k]][[name]] <- samplers[[name]][[k]][ok]
+      }
+    }
+    ips <- dplyr::bind_rows(ips)
+  } else {
+    storage.mode(samplers[[name]]) <- storage.mode(domain)
+    ok <- samplers[[name]] %in% domain
+    ips <- samplers[ok, , drop = FALSE]
+  }
 
-  ok <- samplers[[name]] %in% domain
-  ips <- samplers[ok, , drop = FALSE]
   ips
 }
 
@@ -565,6 +580,7 @@ fm_int.fm_lattice_2d <- function(domain, samplers = NULL, name = "x", ...) {
 #' * A tibble with a named column containing a matrix, and optionally a
 #'  `weight` column.
 #' @examples
+#' # Continuous integration on intervals
 #' ips <- fm_int(
 #'   fm_mesh_1d(0:10, boundary = "cyclic"),
 #'   rbind(c(0, 3), c(5, 10))
@@ -1209,7 +1225,7 @@ fm_int_mesh_2d.sfc_MULTILINESTRING <- function(samplers,
 #'   (default `nsub=9`, giving 100 integration points for each triangle)
 #' @returns `tibble` with columns `loc` and `weight` with
 #'   integration points for the mesh
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @keywords internal
 #' @export
 #' @examples

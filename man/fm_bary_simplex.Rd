@@ -3,17 +3,23 @@
 \name{fm_bary_simplex}
 \alias{fm_bary_simplex}
 \alias{fm_bary_simplex.fm_mesh_2d}
+\alias{fm_bary_simplex.fm_mesh_3d}
 \alias{fm_bary_simplex.fm_mesh_1d}
 \alias{fm_bary_simplex.fm_lattice_2d}
+\alias{fm_bary_simplex.fm_lattice_Nd}
 \title{Extract Simplex information for Barycentric coordinates}
 \usage{
 fm_bary_simplex(mesh, bary = NULL, ...)
 
 \method{fm_bary_simplex}{fm_mesh_2d}(mesh, bary = NULL, ...)
 
+\method{fm_bary_simplex}{fm_mesh_3d}(mesh, bary = NULL, ...)
+
 \method{fm_bary_simplex}{fm_mesh_1d}(mesh, bary = NULL, ...)
 
 \method{fm_bary_simplex}{fm_lattice_2d}(mesh, bary = NULL, ...)
+
+\method{fm_bary_simplex}{fm_lattice_Nd}(mesh, bary = NULL, ...)
 }
 \arguments{
 \item{mesh}{A mesh object, e.g. \link{fm_mesh_2d} or \link{fm_mesh_1d}.}
@@ -34,9 +40,14 @@ and \link{fm_bary} coordinates.
 \itemize{
 \item \code{fm_bary_simplex(fm_mesh_2d)}: Extract the triangle vertex indices for a 2D mesh
 
+\item \code{fm_bary_simplex(fm_mesh_3d)}: Extract the tetrahedron vertex indices for a 3D
+mesh
+
 \item \code{fm_bary_simplex(fm_mesh_1d)}: Extract the edge vertex indices for a 1D mesh
 
 \item \code{fm_bary_simplex(fm_lattice_2d)}: Extract the cell vertex indices for a 2D lattice
+
+\item \code{fm_bary_simplex(fm_lattice_Nd)}: Extract the cell vertex indices for a ND lattice
 
 }}
 \examples{
@@ -49,6 +60,10 @@ fm_bary_simplex(mesh1, bary1)
 m <- fm_lattice_2d(x = 1:3, y = 1:4)
 bary <- fm_bary(m, cbind(1.5, 3.2))
 fm_bary_simplex(m, bary)
+m <- fm_lattice_Nd(list(x = 1:3, y = 1:4, z = 1:2))
+(bary <- fm_bary(m, cbind(1.5, 3.2, 1.5)))
+(fm_bary_simplex(m, bary))
+fm_bary_loc(m, bary)
 }
 \seealso{
 \code{\link[=fm_bary]{fm_bary()}}, \code{\link[=fm_bary_loc]{fm_bary_loc()}}

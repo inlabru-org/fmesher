@@ -323,7 +323,7 @@ fm_as_dgTMatrix.fmesher_sparse <- function(x, unique = TRUE, ...) {
 #' @param weights Optional scaling weights to be applied row-wise to the
 #' resulting matrix.
 #' @returns A `Matrix::sparseMatrix` object.
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @export
 #' @examples
 #' fm_row_kron(rbind(c(1, 1, 0), c(0, 1, 1)), rbind(c(1, 2), c(3, 4)))

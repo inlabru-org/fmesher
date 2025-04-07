@@ -110,6 +110,29 @@ fm_basis.fm_mesh_2d <- function(x, loc, weights = NULL, derivatives = NULL, ...,
   fm_basis(result, full = full)
 }
 
+#' @describeIn fm_basis `fm_mesh_3d` basis functions.
+#' @export
+fm_basis.fm_mesh_3d <- function(x, loc, weights = NULL, ...,
+                                full = FALSE) {
+  bary <- fm_bary(x, loc, ...)
+  n_loc <- NROW(bary)
+  ok <- !is.na(bary$index)
+  simplex <- fm_bary_simplex(x, bary[ok, , drop = FALSE])
+  if (is.null(weights)) {
+    weights <- rep(1.0, n_loc)
+  } else if (length(weights) == 1) {
+    weights <- rep(weights, n_loc)
+  }
+  A <- Matrix::sparseMatrix(
+    i = rep(which(ok), 4),
+    j = as.vector(simplex),
+    x = as.numeric(as.vector(bary$where[ok, ]) * weights[rep(which(ok), 4)]),
+    dims = c(n_loc, fm_dof(x))
+  )
+
+  fm_basis(list(A = A, ok = ok, bary = bary), full = full)
+}
+
 #' @describeIn fm_basis `fm_lattice_2d` bilinear basis functions.
 #' @export
 fm_basis.fm_lattice_2d <- function(x, loc, weights = NULL, ...,
@@ -127,6 +150,30 @@ fm_basis.fm_lattice_2d <- function(x, loc, weights = NULL, ...,
     i = rep(which(ok), 4),
     j = as.vector(simplex),
     x = as.numeric(as.vector(bary$where[ok, ]) * weights[rep(which(ok), 4)]),
+    dims = c(n_loc, fm_dof(x))
+  )
+
+  fm_basis(list(A = A, ok = ok), full = full)
+}
+
+#' @describeIn fm_basis `fm_lattice_Nd` multilinear basis functions.
+#' @export
+fm_basis.fm_lattice_Nd <- function(x, loc, weights = NULL, ...,
+                                   full = FALSE) {
+  bary <- fm_bary(x, loc, ...)
+  n_loc <- NROW(bary)
+  ok <- !is.na(bary$index)
+  simplex <- fm_bary_simplex(x, bary[ok, , drop = FALSE])
+  if (is.null(weights)) {
+    weights <- rep(1.0, n_loc)
+  } else if (length(weights) == 1) {
+    weights <- rep(weights, n_loc)
+  }
+  A <- Matrix::sparseMatrix(
+    i = rep(which(ok), ncol(bary$where)),
+    j = as.vector(simplex),
+    x = as.numeric(as.vector(bary$where[ok, ]) *
+      weights[rep(which(ok), ncol(bary$where))]),
     dims = c(n_loc, fm_dof(x))
   )
 
@@ -313,11 +360,11 @@ internal_spline_mesh_1d <- function(interval,
       }
     }
   }
-  return(fm_mesh_1d(seq(interval[1], interval[2], length.out = n),
+  fm_mesh_1d(seq(interval[1], interval[2], length.out = n),
     degree = degree,
     boundary = boundary,
     free.clamped = free.clamped
-  ))
+  )
 }
 
 
@@ -350,7 +397,7 @@ internal_spline_mesh_1d <- function(interval,
 #' [fm_mesh_1d()] for more information.
 #' @param ... Unused
 #' @returns A matrix with evaluated basis function
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @seealso [fm_mesh_1d()], [fm_mesh_2d()], [fm_basis()]
 #' @examples
 #'
@@ -576,7 +623,7 @@ fm_basis_mesh_2d <- function(mesh,
       x = as.vector(z) * weights[rep(ii, 3)]
     ))
 
-    return(list(dx = dx, dy = dy, dz = dz))
+    list(dx = dx, dy = dy, dz = dz)
   }
 
   info <- list(bary = loc, A = A, ok = ok)
@@ -610,7 +657,7 @@ fm_basis_mesh_1d <- function(mesh,
                              method = deprecated(),
                              ...) {
   if (lifecycle::is_present(method)) {
-    lifecycle::deprecate_warn(
+    lifecycle::deprecate_stop(
       "0.0.9.9020",
       "fm_evaluator_mesh_1d(method)",
       details = c("Create a separate fm_mesh_1d() object instead.")
@@ -1051,6 +1098,153 @@ fm_basis_mesh_1d <- function(mesh,
 
 
 
+# Plain B-spline basis evaluation by Farin eq 10.13-10.14,
+# building the basis function matrices recursively via index vectors
+internal_bspline <- function(x, knots, degree = 1, deriv = 0) {
+  if (min(x) < min(knots)) {
+    stop("Some x out of range (too small)")
+  }
+  if (max(x) > max(knots)) {
+    stop("Some x out of range (too large)")
+  }
+  k <- findInterval(x, knots, all.inside = TRUE)
+  basis <- list(
+    i = seq_along(x),
+    j = k,
+    values = numeric(length(x)) + 1.0
+  )
+  #  message("knots: ", knots)
+  #  message("unique j: ", unique(basis$j))
+  if (degree == 0) {
+    return(basis)
+  }
+  knots <- c(rep(min(knots), degree - 1), knots, rep(max(knots), degree - 1))
+  basis$j <- basis$j + degree
+  #  message("knots: ", knots)
+  #  message("unique j: ", unique(basis$j))
+  l_range <- unique(sort(basis$j)) - 1L
+  for (deg in seq_len(degree)) {
+    basis_prev <- basis
+    basis <- list(
+      i = integer(0),
+      j = integer(0),
+      x = numeric(0),
+      values = numeric(0)
+    )
+    l_range <- unique(sort(c(l_range - 1L, l_range)))
+    for (l in l_range) {
+      # +1L since j is base-1 but l is base-0
+      left <- basis_prev$j == l + 1L
+      right <- basis_prev$j == l + 2L
+      if (any(left)) {
+        basis$i <- c(basis$i, basis_prev$i[left])
+        basis$j <- c(basis$j, basis_prev$j[left])
+        basis$values <- c(
+          basis$values,
+          basis_prev$values[left] *
+            (x[basis_prev$i[left]] - knots[l]) /
+            (knots[l + deg] - knots[l])
+        )
+      }
+      if (any(right)) {
+        basis$i <- c(basis$i, basis_prev$i[right])
+        basis$j <- c(basis$j, basis_prev$j[right] - 1L)
+        basis$values <- c(
+          basis$values,
+          basis_prev$values[right] *
+            (knots[l + deg + 1L] - x[basis_prev$i[right]]) /
+            (knots[l + deg + 1L] - knots[l + 1L])
+        )
+      }
+    }
+    #    message("knots: ", knots)
+    #    message("unique j: ", unique(basis$j))
+  }
+  return(basis)
+}
+
+
+# Plain B-spline basis evaluation by Farin eq 10.13-10.14,
+# building the basis function matrices recursively via index vectors
+internal_bspline2 <- function(x, knots, degree = 1, deriv = 0) {
+  if (min(x) < min(knots)) {
+    stop("Some x out of range (too small)")
+  }
+  if (max(x) > max(knots)) {
+    stop("Some x out of range (too large)")
+  }
+
+  if (deriv > 0) {
+    basis_lower <-
+      internal_bspline2(x, knots, degree = degree - 1, deriv = deriv - 1)
+    m <- length(knots) + degree - 1L
+    m_lower <- m - 1L
+    A <- Matrix::sparseMatrix(
+      i = basis_lower$i,
+      j = basis_lower$j,
+      x = basis_lower$values,
+      dims = c(length(x), m_lower)
+    )
+    basis_diff <- Matrix::sparseMatrix(
+      i = c(seq_len(m_lower), seq_len(m_lower)),
+      j = c(seq_len(m_lower), seq_len(m_lower) - 1L),
+      x = rep(c(1, -1), c(length(knots) - 1, length(knots) - 1)),
+      dims = c(m_lower, m)
+    )
+    A <- A %*% basis_diff
+    return(A)
+  }
+
+  k <- findInterval(x, knots, all.inside = TRUE)
+  basis <- list(
+    i = seq_along(x),
+    j = k,
+    values = numeric(length(x)) + 1.0
+  )
+  if (degree == 0) {
+    return(basis)
+  }
+  knots <- c(rep(min(knots), degree - 1), knots, rep(max(knots), degree - 1))
+  basis$j <- basis$j + degree
+  l_range <- unique(sort(basis$j)) - 1L
+  for (deg in seq_len(degree)) {
+    basis_prev <- basis
+    l_range <- unique(sort(c(l_range - 1L, l_range)))
+    # +1L since j is base-1 but l is base-0
+    left <- basis_prev$j %in% (l_range + 1L)
+    right <- basis_prev$j %in% (l_range + 2L)
+    sz <- c(sum(left), sum(right))
+    basis <- list(
+      i = integer(sum(sz)),
+      j = integer(sum(sz)),
+      values = numeric(sum(sz))
+    )
+    if (sz[1] > 0L) {
+      idx_left <- seq_len(sz[1])
+      i <- basis_prev$i[left]
+      j <- basis_prev$j[left]
+      l <- j - 1L
+      basis$i[idx_left] <- i
+      basis$j[idx_left] <- j
+      basis$values[idx_left] <- basis_prev$values[left] *
+        (x[i] - knots[l]) /
+        (knots[l + deg] - knots[l])
+    }
+    if (sz[2] > 0L) {
+      idx_right <- seq_len(sz[2]) + sz[1]
+      i <- basis_prev$i[right]
+      j <- basis_prev$j[right]
+      l <- j - 2L
+      basis$i[idx_right] <- i
+      basis$j[idx_right] <- j - 1L
+      basis$values[idx_right] <- basis_prev$values[right] *
+        (knots[l + deg + 1L] - x[i]) /
+        (knots[l + deg + 1L] - knots[l + 1L])
+    }
+  }
+  return(basis)
+}
+
 
 
 
@@ -1062,10 +1256,11 @@ fm_basis_mesh_1d <- function(mesh,
 #' weighting.
 #'
 #' @param block integer vector; block information. If `NULL`,
-#' `rep(1L, block_len)` is used, where `block_len` is determined by
-#' `length(log_weights)))` or `length(weights)))`.
-#' A single scalar is also repeated
-#' to a vector of corresponding length to the weights.
+#'   `rep(1L, block_len)` is used, where `block_len` is determined by
+#'   `length(log_weights)))` or `length(weights)))`. A single scalar is also
+#'   repeated to a vector of corresponding length to the weights. 'character'
+#'   input is converted to integer with `as.integer(factor(block))` (from
+#'   `0.2.0.9017`).
 #' @param weights Optional weight vector
 #' @param log_weights Optional `log(weights)` vector. Overrides `weights` when
 #' non-NULL.
@@ -1440,6 +1635,9 @@ fm_block_prep <- function(block = NULL,
     block <- rep(1L, n_values)
   } else if (length(block) == 1L) {
     block <- rep(block, n_values)
+  }
+  if (is.character(block)) {
+    block <- as.integer(factor(block))
   }
   if (min(block) < 1L) {
     warning(paste0(

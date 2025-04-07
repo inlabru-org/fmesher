@@ -251,7 +251,7 @@ fm_crs_set_ellipsoid_radius <- function(crs, radius) {
 #' `fm_wkt_unit_params()`
 #' @returns For `fm_wkt_unit_params`, a
 #' list of named unit definitions
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @examples
 #' \donttest{
 #' c1 <- fm_crs("globe")
@@ -550,7 +550,7 @@ fm_length_unit.character <- function(x) {
 #'
 #' @returns A `crs` object ([sf::st_crs()]) or a `fm_crs` object.
 #' An S3 `fm_crs` object is a list with elements `crs` and `oblique`.
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @seealso [sf::st_crs()], [`fm_crs_wkt`]
 #' @examples
 #' crs1 <- fm_crs("longlat_globe")
@@ -585,7 +585,7 @@ fm_crs <- function(x, oblique = NULL, ..., crsonly = deprecated()) {
       )
     }
 
-    lifecycle::deprecate_warn(
+    lifecycle::deprecate_stop(
       "0.0.1",
       "fm_crs(crsonly=' should no longer be used')",
       "fm_crs(oblique)",
@@ -845,6 +845,18 @@ fm_crs.sfg <- function(x, oblique = NULL, ...) {
 #' @export
 fm_crs.fm_mesh_2d <- function(x, oblique = NULL, ...) {
   fm_crs(x[["crs"]], oblique = oblique, ...)
+}
+
+#' @rdname fm_crs
+#' @export
+fm_crs.fm_mesh_1d <- function(x, oblique = NULL, ...) {
+  fm_crs()
+}
+
+#' @rdname fm_crs
+#' @export
+fm_crs.fm_mesh_3d <- function(x, oblique = NULL, ...) {
+  fm_crs()
 }
 
 #' @rdname fm_crs
@@ -1115,7 +1127,7 @@ fm_crs.matrix <- function(x, oblique = NULL, ...) {
 #' An S3 `inla.CRS` object is a list, usually (but not necessarily)
 #' containing at least one element: \item{crs }{The basic `sp::CRS`
 #' object}
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @seealso [fm_crs()], [sp::CRS()], [`fm_crs_wkt`],
 #' [fm_sp_get_crs()], [fm_crs_is_identical()]
 #' @examples
@@ -1701,7 +1713,7 @@ fm_list_as_CRS <- function(x, ...) {
 #' name/value pairs.
 #'
 #' For `fm_list_as_CRS`, a `CRS` or `inla.CRS` object.
-#' @author Finn Lindgren <finn.lindgren@@gmail.com>
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @seealso [fm_CRS()]
 #' @export
 #' @keywords internal
@@ -2125,7 +2137,7 @@ fm_crs_is_identical <- function(crs0, crs1, crsonly = FALSE) {
 #' by `fm_crs_is_identical()`.
 #' @export
 fm_identical_CRS <- function(crs0, crs1, crsonly = FALSE) {
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     "0.1.0",
     "fm_identical_CRS()",
     "fm_crs_is_identical()"
@@ -2181,7 +2193,7 @@ fm_detect_manifold.CRS <- function(x) {
 #' @rdname fm_detect_manifold
 #' @export
 fm_detect_manifold.numeric <- function(x) {
-  return("R1")
+  "R1"
 }
 
 #' @rdname fm_detect_manifold
@@ -2193,16 +2205,20 @@ fm_detect_manifold.matrix <- function(x) {
   if (ncol(x) == 2) {
     return("R2")
   }
-  tol <- 1e-10
-  if (all(abs(x[, 3]) < tol)) {
-    return("R2")
+  if (ncol(x) == 3) {
+    tol <- 1e-10
+    if (all(abs(x[, 3]) < tol)) {
+      return("R2")
+    }
+    radii <- rowSums(x^2)^0.5
+    radius <- mean(radii)
+    if (all(abs(radii - radius) < radius * tol)) {
+      return("S2")
+    }
+    return("R3")
   }
-  radii <- rowSums(x^2)^0.5
-  radius <- mean(radii)
-  if (all(abs(radii - radius) < radius * tol)) {
-    return("S2")
-  }
-  return("M2")
+
+  paste0("R", ncol(x))
 }
 
 #' @rdname fm_detect_manifold
@@ -2223,7 +2239,8 @@ fm_detect_manifold.fm_mesh_2d <- function(x) {
   if (all(abs(radii - radius) < radius * tol)) {
     return("S2")
   }
-  return("M2")
+
+  "M2"
 }
 
 
@@ -2750,7 +2767,7 @@ fm_has_PROJ6 <- function() {
 #' `sp::Spatial` and `sp::CRS` objects.
 #' @export
 fm_as_sp_crs <- function(x, ...) {
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     "0.0.1",
     "fm_as_sp_crs()",
     "fm_CRS()"
@@ -2765,7 +2782,7 @@ fm_as_sp_crs <- function(x, ...) {
 #'   `CRS(wkt)` for `sp::Spatial` objects.
 #' @param x A `sp::Spatial` object
 #' @returns A `CRS` object, or NULL if no valid CRS identified
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @details This function is a convenience method to workaround PROJ4/PROJ6
 #'   differences, and the lack of a crs extraction method for Spatial objects.
 #'   For newer code, use [fm_crs()] instead, that returns `crs` objects, and use

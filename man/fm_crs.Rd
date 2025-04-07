@@ -17,6 +17,8 @@
 \alias{fm_crs.sfc}
 \alias{fm_crs.sfg}
 \alias{fm_crs.fm_mesh_2d}
+\alias{fm_crs.fm_mesh_1d}
+\alias{fm_crs.fm_mesh_3d}
 \alias{fm_crs.fm_lattice_2d}
 \alias{fm_crs.fm_segm}
 \alias{fm_crs.fm_list}
@@ -57,6 +59,10 @@ fm_crs_oblique(x)
 \method{fm_crs}{sfg}(x, oblique = NULL, ...)
 
 \method{fm_crs}{fm_mesh_2d}(x, oblique = NULL, ...)
+
+\method{fm_crs}{fm_mesh_1d}(x, oblique = NULL, ...)
+
+\method{fm_crs}{fm_mesh_3d}(x, oblique = NULL, ...)
 
 \method{fm_crs}{fm_lattice_2d}(x, oblique = NULL, ...)
 
@@ -177,5 +183,5 @@ fm_crs_is_null
 \code{\link[=fm_crs<-]{fm_crs<-()}}, \code{\link[=fm_crs_oblique<-]{fm_crs_oblique<-()}}
 }
 \author{
-Finn Lindgren \email{finn.lindgren@gmail.com}
+Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}
 }

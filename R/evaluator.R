@@ -26,7 +26,7 @@
 #' @param crs An optional CRS or inla.CRS object associated with `loc`
 #' and/or `lattice`.
 #' @param \dots Additional arguments passed on to methods.
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @seealso [fm_mesh_2d()], [fm_mesh_1d()],
 #' [fm_lattice_2d()]
 #' @examples
@@ -84,29 +84,17 @@ fm_evaluate.fm_evaluator <-
       field <- as.matrix(field)
     }
 
-    if (is.null(dim(field))) {
-      if (is.null(projector$lattice)) {
-        data <- as.vector(projector$proj$A %*% as.vector(field))
-        data[!projector$proj$ok] <- NA
-        return(data)
-      } else {
-        data <- as.vector(projector$proj$A %*% as.vector(field))
-        data[!projector$proj$ok] <- NA
-        return(matrix(
-          data,
-          projector$lattice$dims[1],
-          projector$lattice$dims[2]
-        ))
-      }
-    } else if (inherits(field, "sparseMatrix")) {
-      data <- projector$proj$A %*% field
-      data[!projector$proj$ok, ] <- NA
-      return(data)
-    } else {
-      data <- as.matrix(projector$proj$A %*% field)
-      data[!projector$proj$ok, ] <- NA
-      return(data)
+    data <- fm_evaluate(fm_basis(projector, full = TRUE), field = field)
+
+    if (is.null(dim(field)) &&
+      !is.null(projector$lattice)) {
+      return(array(
+        data,
+        dim = projector$lattice$dims
+      ))
     }
+
+    data
   }
 
 #' @export
@@ -120,16 +108,15 @@ fm_evaluate.fm_basis <-
     if (is.null(dim(field))) {
       data <- as.vector(basis$A %*% as.vector(field))
       data[!basis$ok] <- NA
-      return(data)
     } else if (inherits(field, "sparseMatrix")) {
       data <- basis$A %*% field
       data[!basis$ok, ] <- NA
-      return(data)
     } else {
       data <- as.matrix(basis$A %*% field)
       data[!basis$ok, ] <- NA
-      return(data)
     }
+
+    data
   }
 
 
@@ -159,6 +146,48 @@ fm_evaluator.default <- function(...) {
   )
 }
 
+
+
+#' @export
+#' @describeIn fm_evaluate The `...` arguments are passed on to
+#'   `fm_evaluator_lattice()` if no `loc` or `lattice` is provided.
+fm_evaluator.fm_mesh_3d <- function(mesh,
+                                    loc = NULL,
+                                    lattice = NULL,
+                                    dims = NULL,
+                                    ...) {
+  if (missing(loc) || is.null(loc)) {
+    if (missing(lattice) || is.null(lattice)) {
+      lattice <- fm_evaluator_lattice(mesh,
+        dims = dims,
+        ...
+      )
+    }
+    proj <- fm_basis(mesh, lattice$loc, full = TRUE)
+    projector <-
+      structure(
+        list(
+          loc = NULL,
+          lattice = lattice,
+          proj = proj
+        ),
+        class = "fm_evaluator"
+      )
+  } else {
+    proj <- fm_basis(mesh, loc, full = TRUE)
+    projector <-
+      structure(
+        list(
+          loc = loc,
+          lattice = NULL,
+          proj = proj
+        ),
+        class = "fm_evaluator"
+      )
+  }
+
+  return(projector)
+}
 
 
 #' @export
@@ -250,16 +279,55 @@ fm_evaluator.fm_mesh_1d <- function(mesh,
 
 
 #' @describeIn fm_evaluate
-#' Creates an [fm_lattice_2d()] object, by default covering the input mesh.
+#' Create a lattice object by default covering the input mesh.
 #' @export
 fm_evaluator_lattice <- function(mesh,
-                                 xlim = NULL,
-                                 ylim = NULL,
-                                 dims = c(100, 100),
-                                 projection = NULL,
-                                 crs = NULL,
                                  ...) {
-  stopifnot(inherits(mesh, "fm_mesh_2d"))
+  UseMethod("fm_evaluator_lattice")
+}
+
+#' @describeIn fm_evaluate
+#' Creates an [fm_lattice_2d()] object, by default covering the input mesh.
+#' @export
+fm_evaluator_lattice.default <- function(mesh,
+                                         dims = 100,
+                                         ...) {
+  bbox <- fm_bbox(mesh)
+  if (length(dims) == 1L) {
+    dims <- rep(dims, length(bbox))
+  }
+  if (length(bbox) != length(dims)) {
+    stop("The length of 'dims' must match the length of 'fm_bbox(mesh)'.")
+  }
+  fm_lattice_Nd(bbox, dims = dims)
+}
+
+#' @describeIn fm_evaluate
+#' Creates an [fm_lattice_Nd()] object, by default covering the input mesh.
+#' @export
+fm_evaluator_lattice.fm_bbox <- function(mesh,
+                                         dims = 100,
+                                         ...) {
+  bbox <- mesh
+  if (length(dims) == 1L) {
+    dims <- rep(dims, length(bbox))
+  }
+  if (length(bbox) != length(dims)) {
+    stop("The length of 'dims' must match the length of 'fm_bbox(mesh)'.")
+  }
+  fm_lattice_Nd(bbox, dims = dims)
+}
+
+#' @describeIn fm_evaluate
+#' Creates an [fm_lattice_2d()] object, by default covering the input mesh.
+#' @export
+fm_evaluator_lattice.fm_mesh_2d <- function(mesh,
+                                            xlim = NULL,
+                                            ylim = NULL,
+                                            dims = c(100, 100),
+                                            projection = NULL,
+                                            crs = NULL,
+                                            ...) {
   if (fm_manifold(mesh, "R2") &&
     (is.null(mesh$crs) || is.null(crs))) {
     units <- "default"
@@ -326,7 +394,7 @@ fm_evaluator_lattice <- function(mesh,
 #'   needed.
 #'
 #' @author Haakon Bakka, \email{bakka@@r-inla.org}, and Finn Lindgren
-#'   \email{finn.lindgren@@gmail.com}
+#'   <Finn.Lindgren@@gmail.com>
 #'
 #' @examples
 #' if (TRUE &&

@@ -5,7 +5,9 @@
 \alias{fm_basis.default}
 \alias{fm_basis.fm_mesh_1d}
 \alias{fm_basis.fm_mesh_2d}
+\alias{fm_basis.fm_mesh_3d}
 \alias{fm_basis.fm_lattice_2d}
+\alias{fm_basis.fm_lattice_Nd}
 \alias{fm_basis.fm_tensor}
 \alias{fm_basis.matrix}
 \alias{fm_basis.Matrix}
@@ -22,7 +24,11 @@ fm_basis(x, ..., full = FALSE)
 
 \method{fm_basis}{fm_mesh_2d}(x, loc, weights = NULL, derivatives = NULL, ..., full = FALSE)
 
+\method{fm_basis}{fm_mesh_3d}(x, loc, weights = NULL, ..., full = FALSE)
+
 \method{fm_basis}{fm_lattice_2d}(x, loc, weights = NULL, ..., full = FALSE)
+
+\method{fm_basis}{fm_lattice_Nd}(x, loc, weights = NULL, ..., full = FALSE)
 
 \method{fm_basis}{fm_tensor}(x, loc, weights = NULL, ..., full = FALSE)
 
@@ -81,7 +87,11 @@ additional derivative weight matrices, \code{d1A} and \code{d2A}, \verb{du/dx(lo
 matrices are included in the \code{full=TRUE} output: Derivative weight matrices
 \code{dx}, \code{dy}, \code{dz}; \verb{du/dx(loc_i)=sum_j dx_ij w_i}, etc.
 
+\item \code{fm_basis(fm_mesh_3d)}: \code{fm_mesh_3d} basis functions.
+
 \item \code{fm_basis(fm_lattice_2d)}: \code{fm_lattice_2d} bilinear basis functions.
+
+\item \code{fm_basis(fm_lattice_Nd)}: \code{fm_lattice_Nd} multilinear basis functions.
 
 \item \code{fm_basis(fm_tensor)}: Evaluates a basis matrix for a \code{fm_tensor} function
 space.

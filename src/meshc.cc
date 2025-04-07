@@ -343,6 +343,7 @@ intDartMapT::iterator find_next_dart_in_set(Dart d, intDartMapT &map_v0_d) {
 
 int extract_segments(const MCQsegm &seg, Matrix<int> *segm,
                      Matrix<int> *segmgrp) {
+  FMLOG("seg.count = " << seg.count() << std::endl);
   if (segm == NULL) {
     return seg.count();
   }
@@ -376,6 +377,20 @@ int MeshC::segments(bool boundary, Matrix<int> *segm,
     return extract_segments(boundary_, segm, segmgrp);
   else
     return extract_segments(interior_, segm, segmgrp);
+}
+
+void MeshC::make_boundary_segments() {
+  FMLOG("boundary.count = " << boundary_.count() << std::endl);
+  for (size_t t = 0; t < M_->nT(); t++) {
+    Dart d(*M_, t, 1, 0);
+    for (int i = 0; i < 3; i++) {
+      if (d.onBoundary()) {
+        boundary_.insert(d, 0);
+      }
+      d.orbit2();
+    }
+  }
+  FMLOG("boundary.count = " << boundary_.count() << std::endl);
 }
 
 /*! Alg 4.3 */
@@ -1446,7 +1461,7 @@ bool MeshC::LOP(MCQswapableD &swapable) {
   FMLOG("LOP swapable: " << swapable.countQ() << "/" << swapable.count()
                          << endl);
   /* Swap edges, until none are swapable. */
-  FMESHER_R_INTERRUPT_CHECKER(100);
+  FMESHER_R_INTERRUPT_CHECKER(10000);
   Dart dh;
   while (!swapable.emptyQ()) {
     dh = swapable.beginQ()->d_; /* d_ may get erased in swapEdge! */
@@ -1689,7 +1704,7 @@ Dart MeshC::CDTInsertSegment(const DartPair &dp, const DartList &trace,
   dh = vd0;
 
   //    CDTMSG("");
-  FMESHER_R_INTERRUPT_CHECKER(100);
+  FMESHER_R_INTERRUPT_CHECKER(10000);
   while (true) {
     bool swapable = true;
     int v10 = vd0.vo(); /* The first opposite vertex. */
@@ -2132,7 +2147,7 @@ bool MeshC::buildRCDT() {
 
   Dart dh;
 
-  FMESHER_R_INTERRUPT_CHECKER(1000);
+  FMESHER_R_INTERRUPT_CHECKER(10000);
 
   while (!(boundary_.emptyQ() && interior_.emptyQ() && skinny_.emptyQ() &&
            big_.emptyQ())) {

@@ -45,7 +45,9 @@ relative to the approximate data diameter (default=-0.10???)}
 \item{boundary}{one or more (as list) of \code{\link[=fm_segm]{fm_segm()}} objects, or objects
 supported by \code{\link[=fm_as_segm]{fm_as_segm()}}}
 
-\item{interior}{one object supported by \code{\link[=fm_as_segm]{fm_as_segm()}}}
+\item{interior}{one object supported by \code{\link[=fm_as_segm]{fm_as_segm()}}, or (from version
+\verb{0.2.0.9016}) a list of such objects.  If a list, the objects are joined
+into a single object.}
 
 \item{max.edge}{The largest allowed triangle edge length.  One or two
 values.}
@@ -113,12 +115,15 @@ Other object creation and conversion:
 \code{\link{as_graph_interval}()},
 \code{\link{fm_as_fm}()},
 \code{\link{fm_as_lattice_2d}()},
+\code{\link{fm_as_lattice_Nd}()},
 \code{\link{fm_as_mesh_1d}()},
 \code{\link{fm_as_mesh_2d}()},
+\code{\link{fm_as_mesh_3d}()},
 \code{\link{fm_as_segm}()},
 \code{\link{fm_as_sfc}()},
 \code{\link{fm_as_tensor}()},
 \code{\link{fm_lattice_2d}()},
+\code{\link{fm_lattice_Nd}()},
 \code{\link{fm_mesh_1d}()},
 \code{\link{fm_segm}()},
 \code{\link{fm_simplify}()},
@@ -127,6 +132,6 @@ Other object creation and conversion:
 \code{\link{simple_path_MGG}()}
 }
 \author{
-Finn Lindgren \email{finn.lindgren@gmail.com}
+Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}
 }
 \concept{object creation and conversion}

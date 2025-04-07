@@ -7,9 +7,13 @@
 \alias{fm_evaluate.fm_basis}
 \alias{fm_evaluator}
 \alias{fm_evaluator.default}
+\alias{fm_evaluator.fm_mesh_3d}
 \alias{fm_evaluator.fm_mesh_2d}
 \alias{fm_evaluator.fm_mesh_1d}
 \alias{fm_evaluator_lattice}
+\alias{fm_evaluator_lattice.default}
+\alias{fm_evaluator_lattice.fm_bbox}
+\alias{fm_evaluator_lattice.fm_mesh_2d}
 \title{Methods for projecting to/from mesh objects}
 \usage{
 fm_evaluate(...)
@@ -24,11 +28,19 @@ fm_evaluator(...)
 
 \method{fm_evaluator}{default}(...)
 
+\method{fm_evaluator}{fm_mesh_3d}(mesh, loc = NULL, lattice = NULL, dims = NULL, ...)
+
 \method{fm_evaluator}{fm_mesh_2d}(mesh, loc = NULL, lattice = NULL, crs = NULL, ...)
 
 \method{fm_evaluator}{fm_mesh_1d}(mesh, loc = NULL, xlim = mesh$interval, dims = 100, ...)
 
-fm_evaluator_lattice(
+fm_evaluator_lattice(mesh, ...)
+
+\method{fm_evaluator_lattice}{default}(mesh, dims = 100, ...)
+
+\method{fm_evaluator_lattice}{fm_bbox}(mesh, dims = 100, ...)
+
+\method{fm_evaluator_lattice}{fm_mesh_2d}(
   mesh,
   xlim = NULL,
   ylim = NULL,
@@ -56,13 +68,13 @@ the function to be evaluated at the projection locations}
 
 \item{lattice}{An \code{\link[=fm_lattice_2d]{fm_lattice_2d()}} object.}
 
+\item{dims}{Lattice dimensions.}
+
 \item{crs}{An optional CRS or inla.CRS object associated with \code{loc}
 and/or \code{lattice}.}
 
 \item{xlim}{X-axis limits for a lattice. For R2 meshes, defaults to covering
 the domain.}
-
-\item{dims}{Lattice dimensions.}
 
 \item{ylim}{Y-axis limits for a lattice. For R2 meshes, defaults to covering
 the domain.}
@@ -101,10 +113,19 @@ barycentric coordinates within the triangle each input location falls in.
 \item \code{fm_evaluator(default)}: The default method calls \code{fm_basis} and creates
 a basic \code{fm_evaluator} object
 
+\item \code{fm_evaluator(fm_mesh_3d)}: The \code{...} arguments are passed on to
+\code{fm_evaluator_lattice()} if no \code{loc} or \code{lattice} is provided.
+
 \item \code{fm_evaluator(fm_mesh_2d)}: The \code{...} arguments are passed on to
 \code{fm_evaluator_lattice()} if no \code{loc} or \code{lattice} is provided.
 
-\item \code{fm_evaluator_lattice()}: Creates an \code{\link[=fm_lattice_2d]{fm_lattice_2d()}} object, by default covering the input mesh.
+\item \code{fm_evaluator_lattice()}: Create a lattice object by default covering the input mesh.
+
+\item \code{fm_evaluator_lattice(default)}: Creates an \code{\link[=fm_lattice_2d]{fm_lattice_2d()}} object, by default covering the input mesh.
+
+\item \code{fm_evaluator_lattice(fm_bbox)}: Creates an \code{\link[=fm_lattice_Nd]{fm_lattice_Nd()}} object, by default covering the input mesh.
+
+\item \code{fm_evaluator_lattice(fm_mesh_2d)}: Creates an \code{\link[=fm_lattice_2d]{fm_lattice_2d()}} object, by default covering the input mesh.
 
 }}
 \examples{
@@ -130,5 +151,5 @@ if (TRUE) {
 \code{\link[=fm_lattice_2d]{fm_lattice_2d()}}
 }
 \author{
-Finn Lindgren \email{finn.lindgren@gmail.com}
+Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}
 }
