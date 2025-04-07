@@ -537,8 +537,8 @@ MGM_to_MGG <- function(coord, graph) {
       )
     } else {
       # neighbouring mesh nodes are not on same edge (one is a vertex)
-      on_vertex_r <- (graph_edge_r[2] - c(0, 1) < eps)
-      on_vertex_l <- (graph_edge_l[2] - c(0, 1) < eps)
+      on_vertex_r <- (abs(graph_edge_r[2] - c(0, 1)) < eps)
+      on_vertex_l <- (abs(graph_edge_l[2] - c(0, 1)) < eps)
       if (any(on_vertex_r)) {
         new_coord[i, ] <- as_MGG(
           tibble::tibble(
