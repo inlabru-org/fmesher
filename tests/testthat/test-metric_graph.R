@@ -331,12 +331,28 @@ test_that("integration one path", {
     fm_int(graph0, samplers = test_sampler),
     NA
   )
-  ips <- fm_int(graph0, samplers = test_sampler)
+  ips <- fm_int(fm_as_MG(graph0, MGG = TRUE), samplers = test_sampler)
+  expect_equal(
+    nrow(ips),
+    121
+  )
   expect_equal(
     c(
       unique(ips$x[["index"]])
     ),
     1
+  )
+  expect_equal(
+    c(
+      sum(ips$weight)
+    ),
+    0.3
+  )
+
+  ips <- fm_int(fm_as_MG(graph0, MGG = FALSE), samplers = test_sampler)
+  expect_equal(
+    nrow(ips),
+    121
   )
   expect_equal(
     c(
@@ -386,12 +402,17 @@ test_that("integration two paths", {
     fm_int(graph0, samplers = test_sampler),
     NA
   )
-  ips <- fm_int(graph0, samplers = test_sampler)
+  ips <- fm_int(fm_as_MG(graph0, MGG = TRUE), samplers = test_sampler)
   expect_equal(
     c(
       unique(ips$x[["index"]])
     ),
     unique(c(2, 1, 6, 5, 3, 7, 5, 3, 4, 1, 6))
+  )
+  ips <- fm_int(fm_as_MG(graph0, MGG = FALSE), samplers = test_sampler)
+  expect_equal(
+    nrow(ips),
+    3721
   )
 })
 
@@ -458,7 +479,7 @@ test_that("ibm values", {
   skip_if_not_installed("MetricGraph")
   graph0 <- local_bru_test_graph()
   graph0$build_mesh(h = 0.005)
-  mapper <- bru_mapper_metric_graph(graph0, n_rep = 2)
+  mapper <- inlabru::bru_mapper(graph0, n_rep = 2)
   values <- inlabru::ibm_values(mapper)
   expect_equal(
     values,
