@@ -11,7 +11,7 @@
 #' @param AA A sparse matrix
 #' @keywords internal
 fmesher_qinv <- function(AA) {
-    .Call('_fmesher_fmesher_qinv', PACKAGE = 'fmesher', AA)
+    .Call(`_fmesher_fmesher_qinv`, AA)
 }
 
 #' @title Globe points
@@ -25,7 +25,7 @@ fmesher_qinv <- function(AA) {
 #' fmesher_globe_points(1)
 #' @export
 fmesher_globe_points <- function(globe) {
-    .Call('_fmesher_fmesher_globe_points', PACKAGE = 'fmesher', globe)
+    .Call(`_fmesher_fmesher_globe_points`, globe)
 }
 
 #' @title Refined Constrained Delaunay Triangulation
@@ -47,7 +47,7 @@ fmesher_globe_points <- function(globe) {
 #' @returns A list of information objects for a generated triangulation
 #' @export
 fmesher_rcdt <- function(options, loc, tv = NULL, boundary = NULL, interior = NULL, boundary_grp = NULL, interior_grp = NULL) {
-    .Call('_fmesher_fmesher_rcdt', PACKAGE = 'fmesher', options, loc, tv, boundary, interior, boundary_grp, interior_grp)
+    .Call(`_fmesher_fmesher_rcdt`, options, loc, tv, boundary, interior, boundary_grp, interior_grp)
 }
 
 #' @title Barycentric coordinate computation
@@ -69,7 +69,7 @@ fmesher_rcdt <- function(options, loc, tv = NULL, boundary = NULL, interior = NU
 #' (3-column barycentric matrix)
 #' @export
 fmesher_bary <- function(mesh_loc, mesh_tv, loc, options) {
-    .Call('_fmesher_fmesher_bary', PACKAGE = 'fmesher', mesh_loc, mesh_tv, loc, options)
+    .Call(`_fmesher_fmesher_bary`, mesh_loc, mesh_tv, loc, options)
 }
 
 #' @title Barycentric coordinate computation
@@ -93,7 +93,7 @@ fmesher_bary <- function(mesh_loc, mesh_tv, loc, options) {
 #' (4-column barycentric matrix)
 #' @export
 fmesher_bary3d <- function(mesh_loc, mesh_tv, loc, options) {
-    .Call('_fmesher_fmesher_bary3d', PACKAGE = 'fmesher', mesh_loc, mesh_tv, loc, options)
+    .Call(`_fmesher_fmesher_bary3d`, mesh_loc, mesh_tv, loc, options)
 }
 
 #' @title Rotationally invariant spherical B-splines
@@ -116,13 +116,13 @@ fmesher_bary3d <- function(mesh_loc, mesh_tv, loc, options) {
 #' @keywords internal
 #' @returns A matrix of evaluated b-spline basis functions
 fmesher_spherical_bsplines1 <- function(loc, n, degree, uniform) {
-    .Call('_fmesher_fmesher_spherical_bsplines1', PACKAGE = 'fmesher', loc, n, degree, uniform)
+    .Call(`_fmesher_fmesher_spherical_bsplines1`, loc, n, degree, uniform)
 }
 
 #' @rdname fmesher_spherical_bsplines
 #' @export
 fmesher_spherical_bsplines <- function(loc, n, degree, uniform) {
-    .Call('_fmesher_fmesher_spherical_bsplines', PACKAGE = 'fmesher', loc, n, degree, uniform)
+    .Call(`_fmesher_fmesher_spherical_bsplines`, loc, n, degree, uniform)
 }
 
 #' @title Finite element matrix computation
@@ -145,7 +145,7 @@ fmesher_spherical_bsplines <- function(loc, n, degree, uniform) {
 #' @returns A list of matrices
 #' @export
 fmesher_fem <- function(mesh_loc, mesh_tv, fem_order_max, aniso, options) {
-    .Call('_fmesher_fmesher_fem', PACKAGE = 'fmesher', mesh_loc, mesh_tv, fem_order_max, aniso, options)
+    .Call(`_fmesher_fmesher_fem`, mesh_loc, mesh_tv, fem_order_max, aniso, options)
 }
 
 #' @title Split lines at triangle edges
@@ -168,7 +168,7 @@ fmesher_fem <- function(mesh_loc, mesh_tv, fem_order_max, aniso, options) {
 #' splitter <- fm_segm(rbind(c(0.8, 0.2), c(0.2, 0.8)))
 #' segm_split <- fm_split_lines(mesh, splitter)
 fmesher_split_lines <- function(mesh_loc, mesh_tv, loc, idx, options) {
-    .Call('_fmesher_fmesher_split_lines', PACKAGE = 'fmesher', mesh_loc, mesh_tv, loc, idx, options)
+    .Call(`_fmesher_fmesher_split_lines`, mesh_loc, mesh_tv, loc, idx, options)
 }
 
 #' @title Subdivide triangles
@@ -195,7 +195,7 @@ fmesher_split_lines <- function(mesh_loc, mesh_tv, loc, idx, options) {
 #' plot(new_mesh, edge.color = 2)
 #' plot(mesh, add = TRUE, edge.color = 1)
 fmesher_subdivide <- function(mesh_loc, mesh_tv, mesh_boundary, mesh_interior, subdivisions, options) {
-    .Call('_fmesher_fmesher_subdivide', PACKAGE = 'fmesher', mesh_loc, mesh_tv, mesh_boundary, mesh_interior, subdivisions, options)
+    .Call(`_fmesher_fmesher_subdivide`, mesh_loc, mesh_tv, mesh_boundary, mesh_interior, subdivisions, options)
 }
 
 #' @title 3D tetrahedralisation storage
@@ -213,6 +213,6 @@ fmesher_subdivide <- function(mesh_loc, mesh_tv, mesh_boundary, mesh_interior, s
 #' @returns A list of information objects for a generated tetrahedralisation
 #' @export
 fmesher_mesh3d <- function(options, loc, tv) {
-    .Call('_fmesher_fmesher_mesh3d', PACKAGE = 'fmesher', options, loc, tv)
+    .Call(`_fmesher_fmesher_mesh3d`, options, loc, tv)
 }
 
