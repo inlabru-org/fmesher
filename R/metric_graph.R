@@ -2,10 +2,11 @@
 
 # required packages/suggest packages
 #' @rawNamespace S3method(inlabru::bru_get_mapper,rspde_metric_graph)
-#' @rawNamespace S3method(inlabru::ibm_n, bm_metric_graph)
-#' @rawNamespace S3method(inlabru::ibm_values, bm_metric_graph)
-#' @rawNamespace S3method(inlabru::ibm_jacobian, bm_metric_graph)
-# @rawNamespace S3method(inlabru::bru_mapper, metric_graph)
+# @rawNamespace S3method(inlabru::ibm_n, bm_metric_graph)
+# @rawNamespace S3method(inlabru::ibm_values, bm_metric_graph)
+# @rawNamespace S3method(inlabru::ibm_jacobian, bm_metric_graph)
+#' @rawNamespace S3method(inlabru::bru_mapper, metric_graph)
+#' @rawNamespace S3method(inlabru::bru_mapper, fm_MG)
 
 #' @title Wrapper that calls bru_mapper with correct input
 #' @param model Model class (contains a metric graph object)
@@ -18,7 +19,8 @@ bru_get_mapper.rspde_metric_graph <- function(model, ...) {
       model[["f"]]$n, " and mesh: ", fm_dof(model["mesh"])
     ))
   }
-  bru_mapper_metric_graph(model[["mesh"]],
+  inlabru::bru_mapper(
+    model[["mesh"]],
     n_rep = (model[["f"]]$n) / (fm_dof(model[["mesh"]]))
   )
 }
@@ -28,9 +30,8 @@ bru_get_mapper.rspde_metric_graph <- function(model, ...) {
 #' @param mesh a `fm_MG` or `metric_graph` object
 #' @param n_rep number of components in linear predictor
 #' @param \dots arguments passed to sub-methods
-#' @returns A `bru_mapper_fmesher` object
+#' @returns A `bru_mapper_fmesher` or `bru_mapper_repeat` object
 #' @rdname bm_metric_graph
-#' @export
 bru_mapper.fm_MG <- function(mesh, n_rep = 1, ...) {
   mapper <- inlabru::bru_mapper_fmesher(mesh)
   if (n_rep > 1) {
@@ -44,9 +45,8 @@ bru_mapper.fm_MG <- function(mesh, n_rep = 1, ...) {
 #' @param n_rep number of components in linear predictor
 #' @param \dots arguments passed to sub-methods
 #' @rdname bm_metric_graph
-#' @export
 bru_mapper.metric_graph <- function(mesh, n_rep = 1, ...) {
-  bru_mapper(fm_as_MG(mesh), n_rep = n_rep, ...)
+  inlabru::bru_mapper(fm_as_MG(mesh), n_rep = n_rep, ...)
 }
 
 #' @describeIn bm_metric_graph Returns the degrees of freedom (number of

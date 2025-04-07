@@ -30,7 +30,7 @@
 \item{input}{Data input for the mapper}
 }
 \value{
-A \code{bru_mapper_fmesher} object
+A \code{bru_mapper_fmesher} or \code{bru_mapper_repeat} object
 }
 \description{
 bru_mapper for the fm_MG and metric_graph classes
