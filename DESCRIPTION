@@ -99,6 +99,7 @@ Collate:
     'mesh_2d.R'
     'mesh_3d.R'
     'mesh_assessment.R'
+    'metric_graph.R'
     'nonconvex_hull.R'
     'onload.R'
     'plot.R'

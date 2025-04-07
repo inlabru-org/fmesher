@@ -10,6 +10,7 @@
 \alias{fm_bary.fm_mesh_3d}
 \alias{fm_bary.fm_lattice_2d}
 \alias{fm_bary.fm_lattice_Nd}
+\alias{fm_bary.metric_graph}
 \title{Compute barycentric coordinates}
 \usage{
 fm_bary(...)
@@ -29,6 +30,8 @@ fm_bary(...)
 \method{fm_bary}{fm_lattice_2d}(mesh, loc, crs = NULL, ...)
 
 \method{fm_bary}{fm_lattice_Nd}(mesh, loc, ...)
+
+\method{fm_bary}{metric_graph}(mesh, loc, MGG = TRUE, ...)
 }
 \arguments{
 \item{\dots}{Arguments forwarded to sub-methods.}
@@ -116,6 +119,9 @@ coordinates). Points that are outside the lattice are given \code{NA} entries in
 lattice cell indices) and \code{where} \code{2^d}-column matrix of barycentric
 coordinates). Points that are outside the lattice are given \code{NA} entries in
 \code{index} and \code{where}.
+
+\item \code{fm_bary(metric_graph)}: Return a tibble with elements
+\code{fm_bary}
 
 }}
 \examples{
