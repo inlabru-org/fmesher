@@ -62,7 +62,10 @@ fm_basis.default <- function(x, ..., full = FALSE) {
   lifecycle::deprecate_stop(
     "0.1.7.9002",
     "fm_basis.default()",
-    details = "Each mesh class needs its own `fm_basis()` method."
+    details = c(
+      "Each mesh class needs its own `fm_basis()` method.",
+      paste0("Class: ", paste0(class(x), collapse = ", "))
+    )
   )
 }
 

@@ -3,6 +3,12 @@
 \name{fm_MG}
 \alias{fm_MG}
 \alias{fm_as_MG}
+\alias{fm_as_MG.fm_MG}
+\alias{fm_as_MG.metric_graph}
+\alias{fm_MG_graph}
+\alias{fm_MG_graph.fm_MG}
+\alias{fm_MG_graph.metric_graph}
+\alias{fm_basis.fm_MG}
 \alias{fm_basis.metric_graph}
 \alias{fm_bary.metric_graph}
 \alias{fm_bary.fm_MGG}
@@ -20,6 +26,18 @@
 \title{fmesher interface methods for \code{metric_graph} objects}
 \usage{
 fm_as_MG(x, MGG = NULL)
+
+\method{fm_as_MG}{fm_MG}(x, MGG = NULL)
+
+\method{fm_as_MG}{metric_graph}(x, MGG = NULL)
+
+fm_MG_graph(x)
+
+\method{fm_MG_graph}{fm_MG}(x)
+
+\method{fm_MG_graph}{metric_graph}(x)
+
+\method{fm_basis}{fm_MG}(x, loc, weights = NULL, ..., full = FALSE)
 
 \method{fm_basis}{metric_graph}(x, loc, weights = NULL, ..., full = FALSE)
 
@@ -50,7 +68,7 @@ fm_as_MG(x, MGG = NULL)
 \method{fm_int}{fm_MGG}(domain, samplers = NULL, name = "x", ...)
 }
 \arguments{
-\item{x}{metric_graph object}
+\item{x}{metric_graph or fm_MG object}
 
 \item{MGG}{indicator for the barycentric coordinates related to the graph
 (MGG) or mesh (MGM), or NULL. Passed on to \code{\link[=fm_as_MG]{fm_as_MG()}}}
@@ -92,12 +110,19 @@ at least a matrix \code{A} and logical vector \code{ok}.
 \description{
 Interface for \code{metric_graph} objects
 }
+\section{Methods (by generic)}{
+\itemize{
+\item \code{fm_basis(fm_MG)}: Construct an interpolation/basis matrix
+
+}}
 \section{Functions}{
 \itemize{
-\item \code{fm_as_MG()}: Associate a \code{metric_graph} object with class \code{fm_MGG} or
-\code{fm_MGM}.
+\item \code{fm_as_MG()}: Wrap a \code{metric_graph} R6 object in an S3 container object
+with class \code{fm_MG} and subclass \code{fm_MGG} or \code{fm_MGM}. The graph is
+accessible via \code{x$graph}.
 
-\item \code{fm_basis(metric_graph)}: Construct an interpolation/basis matrix
+\item \code{fm_MG_graph()}: Extract the graph R6 object from an \code{fm_MG} object.
+If the input is already a \code{metric_graph} it is returned unchanged.
 
 \item \code{fm_bary(metric_graph)}: Compute an \code{fm_MGG_bary} or \code{fm_MGM_bary} object
 
