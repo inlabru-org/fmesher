@@ -134,6 +134,7 @@ fm_as_segm_list(list(
 Other object creation and conversion: 
 \code{\link{MGG_to_MGM}()},
 \code{\link{MGM_to_MGG}()},
+\code{\link{fm_MGG_intervals}()},
 \code{\link{fm_as_MGG_bary}()},
 \code{\link{fm_as_MGG_intervals}()},
 \code{\link{fm_as_MGM_bary}()},

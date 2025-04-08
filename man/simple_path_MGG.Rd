@@ -2,7 +2,7 @@
 % Please edit documentation in R/metric_graph.R
 \name{simple_path_MGG}
 \alias{simple_path_MGG}
-\title{Make an interval on graph object}
+\title{Make an interval on graph object from simple path}
 \usage{
 simple_path_MGG(graph, start, edges, end)
 }
@@ -46,6 +46,7 @@ if (requireNamespace("MetricGraph")) {
 Other object creation and conversion: 
 \code{\link{MGG_to_MGM}()},
 \code{\link{MGM_to_MGG}()},
+\code{\link{fm_MGG_intervals}()},
 \code{\link{fm_as_MGG_bary}()},
 \code{\link{fm_as_MGG_intervals}()},
 \code{\link{fm_as_MGM_bary}()},

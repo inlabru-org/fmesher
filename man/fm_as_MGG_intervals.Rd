@@ -2,16 +2,16 @@
 % Please edit documentation in R/metric_graph.R
 \name{fm_as_MGG_intervals}
 \alias{fm_as_MGG_intervals}
-\title{Make an inter edge interval on graph object}
+\title{Make inter edge intervals on graph object}
 \usage{
 fm_as_MGG_intervals(start, end, graph = NULL)
 }
 \arguments{
-\item{start}{Start location for inter-graph-edge interval.}
+\item{start}{Start locations for inter-graph-edge intervals.}
 
-\item{end}{End location for inter-graph-edge interval.}
+\item{end}{End locations for inter-graph-edge intervals.}
 
-\item{graph}{\code{metric_graph} that the interval should be mapped to. Must be
+\item{graph}{\code{metric_graph} that the intervals should be mapped to. Must be
 provided if input should be converted}
 }
 \value{
@@ -42,6 +42,7 @@ if (requireNamespace("MetricGraph", quietly = TRUE)) {
 Other object creation and conversion: 
 \code{\link{MGG_to_MGM}()},
 \code{\link{MGM_to_MGG}()},
+\code{\link{fm_MGG_intervals}()},
 \code{\link{fm_as_MGG_bary}()},
 \code{\link{fm_as_MGM_bary}()},
 \code{\link{fm_as_fm}()},
