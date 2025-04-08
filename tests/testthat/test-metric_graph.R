@@ -112,14 +112,14 @@ test_that("MGG to MGM", {
       mgm$index[1, drop = FALSE],
       mgm$index[2, drop = FALSE]
     ),
-    c(120, 440)
+    c(120, 441)
   )
   expect_equal(
     c(
       mgm$where[1, 2, drop = FALSE],
       mgm$where[2, 2, drop = FALSE]
     ),
-    c(1, 1)
+    c(1, 0)
   )
   expect_equal(
     c(

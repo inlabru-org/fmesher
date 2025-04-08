@@ -334,7 +334,7 @@ fm_dof.metric_graph <- function(x) {
 #' @describeIn fm_MG `fm_MGG` method for `fm_dof()`
 #' @export
 fm_dof.fm_MGG <- function(x) {
-  NROW(fm_MG_graph(x)[["VtE"]])
+  fm_MG_graph(x)[["nV"]]
 }
 
 #' @describeIn fm_MG `fm_MGM` method for `fm_dof()`
@@ -600,7 +600,19 @@ MGG_to_MGM <- function(coord, graph) {
   if (is.null(fm_MG_graph(graph)[["mesh"]])) {
     stop("There is no mesh")
   }
-  stopifnot(inherits(coord, "fm_MGG_bary"))
+
+  res <- fm_MG_graph(graph)$.__enclos_env__$private$PtE_to_mesh(
+    cbind(coord$index, coord$where[, 2])
+  )
+  res <- fm_as_MGM_bary(tibble::tibble(
+    index = res[, 1],
+    where = cbind(
+      1 - as.numeric(res[, 2]),
+      as.numeric(res[, 2])
+    )
+  ))
+  return(res)
+
   mesh_MGG <- fm_as_MGG_bary(fm_MG_graph(graph)$mesh$VtE)
   mesh_edge_len <- fm_MG_graph(graph)$mesh$h_e
   # storage for new coordinates
