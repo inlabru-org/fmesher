@@ -107,11 +107,10 @@ fm_mesh_2d_inla(boundary = fm_extensions(cbind(2, 1), convex = 1, 2))
 \code{\link[=fm_nonconvex_hull]{fm_nonconvex_hull()}}, \code{\link[=fm_extensions]{fm_extensions()}}, \code{\link[=fm_refine]{fm_refine()}}
 
 Other object creation and conversion: 
-\code{\link{Euclidean_to_graph}()},
 \code{\link{MGG_to_MGM}()},
 \code{\link{MGM_to_MGG}()},
 \code{\link{fm_as_MGG_bary}()},
-\code{\link{fm_as_MGG_interval}()},
+\code{\link{fm_as_MGG_intervals}()},
 \code{\link{fm_as_MGM_bary}()},
 \code{\link{fm_as_fm}()},
 \code{\link{fm_as_lattice_2d}()},

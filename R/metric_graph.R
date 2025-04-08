@@ -251,11 +251,14 @@ fm_bary.fm_MGG <- function(mesh,
     inherits(loc, "sfc")) {
     # check the crs of point and convert to the same crs as graph (or
     # coordinates handles this)
-    bary <- Euclidean_to_graph(sf::st_coordinates(loc), mesh)
+    res <- fm_MG_graph(mesh)$coordinates(XY = sf::st_coordinates(loc))
+    bary <- fm_as_MGG_bary(loc = res)
+
   } else {
     # Or should it only call fm_as_MGG_bary/fm_as_MGM_bary depending on "MGG"?
     # cat("loc is interpreted as Euclidean coordinates")
-    bary <- Euclidean_to_graph(loc, mesh)
+    res <- fm_MG_graph(mesh)$coordinates(XY = sf::st_coordinates(loc))
+    bary <- fm_as_MGG_bary(loc = res)
   }
   bary
 }
@@ -272,14 +275,15 @@ fm_bary.fm_MGM <- function(mesh,
     inherits(loc, "sfc")) {
     # check the crs of point and convert to the same crs as graph (or
     # coordinates handles this)
-    res <- Euclidean_to_graph(sf::st_coordinates(loc), mesh)
-    bary_coord <- res # res$bary[res$ok, ]
-    bary_coord <- MGG_to_MGM(bary_coord, mesh)
+    res <- fm_MG_graph(mesh)$coordinates(XY = sf::st_coordinates(loc))
+    bary <- fm_as_MGG_bary(loc = res)
+    bary_coord <- MGG_to_MGM(bary, mesh)
   } else {
     # Or should it only call fm_as_MGG_bary/fm_as_MGM_bary depending on "MGG"?
     # cat("loc is interpreted as Euclidean coordinates")
-    res <- Euclidean_to_graph(loc, mesh)
-    bary_coord <- MGG_to_MGM(res, mesh) # MGG_to_MGM(res$bary, mesh)
+    res <- fm_MG_graph(mesh)$coordinates(XY = sf::st_coordinates(loc))
+    bary <- fm_as_MGG_bary(loc = res)
+    bary_coord <- MGG_to_MGM(bary, mesh)
   }
   bary_coord
 }
@@ -526,47 +530,6 @@ fm_int.fm_MGG <- function(domain,
 
 
 # MetricGraph specific functions----
-#' @title Make a ("fm_MGG_bary", "fm_bary") object from Euclidean coordinates
-#' @description
-#' Create a (`fm_MGG_bary`, `fm_bary`) object from Euclidean coordinates.
-#'
-#' @param loc Euclidean coords (if not on graph, they are mapped to the closest
-#'   point on graph)
-#' @param graph metric_graph that the location should be mapped to.
-#' @author Karina Lilleborge \email{karina.lilleborge@@gmail.com}
-#' @returns A (`fm_MGM_bary`, `fm_bary`) object
-#' @export
-#' @family object creation and conversion
-#' @examples
-#' if (requireNamespace("MetricGraph")) {
-#'   edge1 <- rbind(c(0, 0), c(1, 0))
-#'   edge2 <- rbind(c(0, 0), c(0, 1))
-#'   edge3 <- rbind(c(0, 1), c(-1, 1))
-#'   theta <- seq(from = pi, to = 3 * pi / 2, length.out = 20)
-#'   edge4 <- cbind(sin(theta), 1 + cos(theta))
-#'   edges <- list(edge1, edge2, edge3, edge4)
-#'   graph <- MetricGraph::metric_graph$new(edges = edges)
-#'   m <- Euclidean_to_graph(
-#'     cbind(0, 1),
-#'     graph
-#'   )
-#'   # c(2,1)
-#'   m
-#' }
-#'
-#' @keywords internal
-Euclidean_to_graph <- function(loc, graph) {
-  res <- fm_MG_graph(graph)$coordinates(XY = loc)
-  # check distance from original points:
-  # tolerance <- min(graph$edge_lengths) / 2
-  # tmp_loc <- graph$coordinates(PtE = res, normalized = TRUE)
-  # norm_XY <- sf::st_distance(loc, sf::st_point(tmp_loc, crs= sf::st_crs(loc)))
-  # ok_ <- (norm_XY < tolerance)
-  # graph_coords <- fm_as_MGG_bary(loc = res)
-  # return(list(bary = graph_coords, ok = ok_))
-  fm_as_MGG_bary(loc = res)
-}
-
 #' @title Make a (`mesh`, `fm_bary`) object from MGG coordinates
 #' @description
 #' Create a (`mesh`, `fm_bary`) object from MGG coordinates.
@@ -966,7 +929,7 @@ fm_as_MGG_bary <- function(loc, graph = NULL) {
 #' }
 #'
 #' @keywords internal
-fm_as_MGG_interval <- function(start, end, graph = NULL) {
+fm_as_MGG_intervals <- function(start, end, graph = NULL) {
   start <- fm_as_MGG_bary(start, graph = graph)
   end <- fm_as_MGG_bary(end, graph = graph)
   if (any(start$index != end$index)) {
@@ -977,7 +940,7 @@ fm_as_MGG_interval <- function(start, end, graph = NULL) {
       start = start,
       end = end
     ),
-    class = c("fm_MGG_interval", "tbl_df", "tbl", "data.frame")
+    class = c("fm_MGG_intervals", "tbl_df", "tbl", "data.frame")
   )
 }
 
@@ -1161,7 +1124,7 @@ simple_path_MGG <- function(graph,
   # construct object
   path <- structure(
     inter_edge_intervals,
-    class = c("fm_MGG_interval", "tbl_df", "tbl", "data.frame")
+    class = c("fm_MGG_intervals", "tbl_df", "tbl", "data.frame")
   )
   path
 }
@@ -1386,7 +1349,7 @@ geom_path_to_path_MGG <- function(geom_path, graph) {
 
     # storage for the start_seq & end_seq as a well-defined path
     # they should all be on the same edge:
-    path_MGG <- fm_as_MGG_interval(
+    path_MGG <- fm_as_MGG_intervals(
       start = start_seg,
       end = end_seg,
       graph = graph

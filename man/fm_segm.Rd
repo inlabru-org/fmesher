@@ -108,11 +108,10 @@ fm_segm(fmexample$mesh, boundary = FALSE)
 }
 \seealso{
 Other object creation and conversion: 
-\code{\link{Euclidean_to_graph}()},
 \code{\link{MGG_to_MGM}()},
 \code{\link{MGM_to_MGG}()},
 \code{\link{fm_as_MGG_bary}()},
-\code{\link{fm_as_MGG_interval}()},
+\code{\link{fm_as_MGG_intervals}()},
 \code{\link{fm_as_MGM_bary}()},
 \code{\link{fm_as_fm}()},
 \code{\link{fm_as_lattice_2d}()},
