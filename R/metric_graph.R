@@ -251,12 +251,15 @@ fm_bary.fm_MGG <- function(mesh,
     inherits(loc, "sfc")) {
     # check the crs of point and convert to the same crs as graph (or
     # coordinates handles this)
+    if(!is.null(fm_MG_graph(mesh)$.__enclose_env__$private$crs)){
+      loc <- st_transform(loc, fm_MG_graph(mesh)$.__enclose_env__$private$crs)
+    }
     res <- fm_MG_graph(mesh)$coordinates(XY = sf::st_coordinates(loc))
     bary <- fm_as_MGG_bary(loc = res)
 
   } else {
-    # Or should it only call fm_as_MGG_bary/fm_as_MGM_bary depending on "MGG"?
-    # cat("loc is interpreted as Euclidean coordinates")
+    warning(paste0("fm_bary: loc was interpreted as a matrix of Euclidean ",
+                   "coordinates in the same reference system as mesh."))
     res <- fm_MG_graph(mesh)$coordinates(XY = sf::st_coordinates(loc))
     bary <- fm_as_MGG_bary(loc = res)
   }
@@ -273,14 +276,15 @@ fm_bary.fm_MGM <- function(mesh,
     bary_coord <- fm_as_MGM_bary(loc, graph = mesh)
   } else if (inherits(loc, "sfg") || inherits(loc, "sf") ||
     inherits(loc, "sfc")) {
-    # check the crs of point and convert to the same crs as graph (or
-    # coordinates handles this)
+    if(!is.null(fm_MG_graph(mesh)$.__enclose_env__$private$crs)){
+      loc <- st_transform(loc, fm_MG_graph(mesh)$.__enclose_env__$private$crs)
+    }
     res <- fm_MG_graph(mesh)$coordinates(XY = sf::st_coordinates(loc))
     bary <- fm_as_MGG_bary(loc = res)
     bary_coord <- MGG_to_MGM(bary, mesh)
   } else {
-    # Or should it only call fm_as_MGG_bary/fm_as_MGM_bary depending on "MGG"?
-    # cat("loc is interpreted as Euclidean coordinates")
+    warning(paste0("fm_bary: loc was interpreted as a matrix of Euclidean ",
+                   "coordinates in the same reference system as mesh."))
     res <- fm_MG_graph(mesh)$coordinates(XY = sf::st_coordinates(loc))
     bary <- fm_as_MGG_bary(loc = res)
     bary_coord <- MGG_to_MGM(bary, mesh)
@@ -899,13 +903,13 @@ fm_as_MGG_bary <- function(loc, graph = NULL) {
 }
 
 
-#' @title Make an inter edge interval on graph object
+#' @title Make inter edge intervals on graph object
 #' @description
 #' Create an `fm_MGG_interval` object.
 #'
-#' @param start Start location for inter-graph-edge interval.
-#' @param end End location for inter-graph-edge interval.
-#' @param graph `metric_graph` that the interval should be mapped to. Must be
+#' @param start Start locations for inter-graph-edge intervals.
+#' @param end End locations for inter-graph-edge intervals.
+#' @param graph `metric_graph` that the intervals should be mapped to. Must be
 #'   provided if input should be converted
 #' @author Karina Lilleborge \email{karina.lilleborge@@gmail.com}
 #' @returns An `fm_MGG_interval` object
@@ -944,7 +948,61 @@ fm_as_MGG_intervals <- function(start, end, graph = NULL) {
   )
 }
 
-#' @title Make an interval on graph object
+
+
+#' @title Make an interval on graph object from path
+#' @description
+#' Create a `fm_MGG_interval` object from specified path (either geometric line
+#' or a simple path)
+#'
+#' @param graph metric_graph that the interval should be mapped to.
+#' @param path `sf::st_geometry` (`LINESTRING`) which is a subset of the graph
+#'   or a list with three elements; start MGG coordinate, an ordered list of
+#'   edges and end MGG coordinate
+#' @author Karina Lilleborge \email{karina.lilleborge@@gmail.com}
+#' @returns A `fm_MGG_interval` object
+#' @export
+#' @family object creation and conversion
+#' @examples
+#' if (requireNamespace("MetricGraph")) {
+#'   edge1 <- rbind(c(0, 0), c(1, 0))
+#'   edge2 <- rbind(c(0, 0), c(0, 1))
+#'   edge3 <- rbind(c(0, 1), c(-1, 1))
+#'   theta <- seq(from = pi, to = 3 * pi / 2, length.out = 20)
+#'   edge4 <- cbind(sin(theta), 1 + cos(theta))
+#'   edges <- list(edge1, edge2, edge3, edge4)
+#'   graph <- MetricGraph::metric_graph$new(edges = edges)
+#'   path <- list(
+#'     c(1, 0.5),
+#'     c(2,3),
+#'     c(4, 0.2)
+#'   )
+#'   intervals <- fm_MGG_intervals(
+#'     graph,
+#'     path
+#'   )
+#'   path
+#' }
+#'
+#' @keywords internal
+fm_MGG_intervals <- function(graph, path){
+  if(is.list(path)){
+    if(length(path)==3){
+      return(simple_path_MGG(graph,
+                             path[[1]],
+                             path[[2]],
+                             path[[3]]))
+    } else{
+      stop("The list provided as path is not of the correct length 3.")
+    }
+  } else if(inherits(path, "sfc_LINESTRING")){
+    return(geom_path_to_path_MGG(path, graph))
+  } else{
+    stop("The path provided is not of any of the supported object types.")
+  }
+}
+
+#' @title Make an interval on graph object from simple path
 #' @description
 #' Create a `fm_MGG_interval` object from known start (MGG), end (MGG) and
 #' visiting edges (MGG).
@@ -1169,11 +1227,10 @@ geom_path_to_path_MGG <- function(geom_path, graph) {
   if (!inherits(geom_path, "sfc_LINESTRING")) {
     stop("Method not implemented. Input must be sfc_LINESTRING")
   }
-  # TO DO: convert to correct crs: Handled by MetricGraph$coordinates.
-  # create eps
   if (is.null(fm_MG_graph(graph)$mesh)) {
     stop("The graph has no mesh!")
   }
+  # create eps (tolerance)
   eps <- 0.01 * min(fm_MG_graph(graph)$mesh$h_e)
   # matrix with colnames X Y and L1:
   internal_XY <- sf::st_coordinates(geom_path)
@@ -1187,9 +1244,6 @@ geom_path_to_path_MGG <- function(geom_path, graph) {
       fm_as_MG(graph, MGG = TRUE),
       as.matrix(line[, c("X", "Y")])
     )
-    # line_MGG <- graph$coordinates(XY = line[, c("X", "Y")])
-    # convert to ("fm_MGG_bary", "fm_bary")
-    # line_MGG <- fm_as_MGG_bary(line_MGG)
     # index for number of segments added
     j <- 0
     # storing the segments (start and end separately)
