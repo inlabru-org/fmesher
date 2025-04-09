@@ -1,25 +1,24 @@
 # inlabru MAPPER ----
 
 # required packages/suggest packages
-#' @rawNamespace S3method(inlabru::bru_get_mapper,rspde_metric_graph)
-# @rawNamespace S3method(inlabru::ibm_n, bm_metric_graph)
-# @rawNamespace S3method(inlabru::ibm_values, bm_metric_graph)
-# @rawNamespace S3method(inlabru::ibm_jacobian, bm_metric_graph)
-#' @rawNamespace S3method(inlabru::bru_mapper, metric_graph)
-#' @rawNamespace S3method(inlabru::bru_mapper, fm_MG)
+# @rawNamespace S3method(inlabru::bru_get_mapper,rspde_metric_graph)
+# @rawNamespace S3method(inlabru::bru_mapper, metric_graph)
+# @rawNamespace S3method(inlabru::bru_mapper, fm_MG)
 
 #' @title Wrapper that calls bru_mapper with correct input
+#' @description Automatically generate a `bru_mapper` for `rspde_metric_graph`
+#'   models.
 #' @param model Model class (contains a metric graph object)
 #' @param \dots arguments passed to sub-methods
 #' @rdname bru_get_mapper_rspde_metric_graph
-bru_get_mapper.rspde_metric_graph <- function(model, ...) {
+bru_get_mapper_rspde_metric_graph <- function(model, ...) {
   if ((model[["f"]]$n) %% (fm_dof(model[["mesh"]])) != 0) {
     stop(paste0(
       "Incompatible degrees of freedom. SPDE: ",
       model[["f"]]$n, " and mesh: ", fm_dof(model["mesh"])
     ))
   }
-  inlabru::bru_mapper(
+  bru_mapper_MG(
     model[["mesh"]],
     n_rep = (model[["f"]]$n) / (fm_dof(model[["mesh"]]))
   )
@@ -27,12 +26,20 @@ bru_get_mapper.rspde_metric_graph <- function(model, ...) {
 
 
 #' @title bru_mapper for the fm_MG and metric_graph classes
-#' @param mesh a `fm_MG` or `metric_graph` object
+#' @description Constructs a basic `bru_mapper` mapper object for metric
+#'   graphs with internal mesh, for simple FEM model mapping.
+#' @param mesh A `metric_graph` or `fm_MG` object.
 #' @param n_rep number of components in linear predictor
 #' @param \dots arguments passed to sub-methods
 #' @returns A `bru_mapper_fmesher` or `bru_mapper_repeat` object
-#' @rdname bm_metric_graph
-bru_mapper.fm_MG <- function(mesh, n_rep = 1, ...) {
+#' @rdname bru_mapper_MG
+bru_mapper_MG <- function(mesh, n_rep = 1, ...) {
+  UseMethod("bru_mapper_MG")
+}
+
+#' @rdname bru_mapper_MG
+#' @export
+bru_mapper_MG.fm_MG <- function(mesh, n_rep = 1, ...) {
   mapper <- inlabru::bru_mapper_fmesher(mesh)
   if (n_rep > 1) {
     mapper <- inlabru::bru_mapper_repeat(mapper, n_rep = n_rep)
@@ -40,43 +47,12 @@ bru_mapper.fm_MG <- function(mesh, n_rep = 1, ...) {
   mapper
 }
 
-#' @title bru_mapper for the metric_graph class
-#' @param mesh a metric_graph object
-#' @param n_rep number of components in linear predictor
-#' @param \dots arguments passed to sub-methods
-#' @rdname bm_metric_graph
-bru_mapper.metric_graph <- function(mesh, n_rep = 1, ...) {
-  inlabru::bru_mapper(fm_as_MG(mesh), n_rep = n_rep, ...)
+#' @rdname bru_mapper_MG
+#' @export
+bru_mapper_MG.metric_graph <- function(mesh, n_rep = 1, ...) {
+  bru_mapper_MG(fm_as_MG(mesh), n_rep = n_rep, ...)
 }
 
-#' @describeIn bm_metric_graph Returns the degrees of freedom (number of
-#'   vertices in the mesh)
-#' @param mapper A `bm_metric_graph` object
-ibm_n.bm_metric_graph <- function(mapper, ...) {
-  mesh <- mapper[["mesh"]]
-  n_rep <- mapper[["n_rep"]]
-  n_rep * fmesher::fm_dof(mesh)
-}
-#' @describeIn bm_metric_graph Returns a vector with indices for the
-#'   degrees of freedom
-ibm_values.bm_metric_graph <- function(mapper, ...) {
-  seq_len(inlabru::ibm_n(mapper))
-}
-#' @describeIn bm_metric_graph Returns the mapping matrix between
-#' @param input Data input for the mapper
-ibm_jacobian.bm_metric_graph <- function(mapper, input, ...) {
-  mesh <- mapper[["mesh"]] # metric graph object
-  n_rep <- mapper[["n_rep"]]
-  if (is.null(input)) {
-    return(Matrix::Matrix(0, 0, inlabru::ibm_n(mapper)))
-  }
-  # pte_tmp <- mesh$mesh$VtE
-  # input_list <- lapply(seq_len(nrow(input)), function(i){input[i,]})
-  # pte_tmp_list <- lapply(seq_len(nrow(pte_tmp)), function(i){pte_tmp[i,]})
-  # idx_tmp <- match(input_list, pte_tmp_list)
-  A_tmp <- fm_basis(mesh, input) # idx_tmp
-  fm_row_kron(Matrix::Matrix(1, NROW(A_tmp), n_rep), A_tmp)
-}
 
 # fmesher functions ----
 
@@ -106,7 +82,7 @@ fm_as_MG.fm_MG <- function(x, MGG = NULL) {
   }
 
   if ((MGG && inherits(x, "fm_MGG")) ||
-      (!MGG && inherits(x, "fm_MGM"))) {
+    (!MGG && inherits(x, "fm_MGM"))) {
     return(x)
   }
   cl <- setdiff(class(x), c("fm_MGG", "fm_MGM"))
@@ -598,7 +574,7 @@ MGG_to_MGM <- function(coord, graph) {
 
       index_MGM <- which.max(
         (fm_MG_graph(graph)$mesh$E[, 1] == vertices_MGG[1]) &
-        (fm_MG_graph(graph)$mesh$E[, 2] == vertices_MGG[2])
+          (fm_MG_graph(graph)$mesh$E[, 2] == vertices_MGG[2])
       )
       where_MGM <- coord$where[i, 2]
     } else if (sum(ids) == 1) {
@@ -612,7 +588,7 @@ MGG_to_MGM <- function(coord, graph) {
         # find the edge index that connects (mesh_vertex, end_vertex)
         index_MGM <- which.max(
           (fm_MG_graph(graph)$mesh$E[, 1] == index_on_edge) &
-          (fm_MG_graph(graph)$mesh$E[, 2] == graph_vertex)
+            (fm_MG_graph(graph)$mesh$E[, 2] == graph_vertex)
         )
         mesh_h_e <- mesh_edge_len[index_MGM]
         where_MGM <- as.numeric(
@@ -622,7 +598,7 @@ MGG_to_MGM <- function(coord, graph) {
         # find the edge index that connects (start_vertex, mesh_vertex)
         index_MGM <- which.max(
           (fm_MG_graph(graph)$mesh$E[, 1] == graph_vertex) &
-          (fm_MG_graph(graph)$mesh$E[, 2] == index_on_edge)
+            (fm_MG_graph(graph)$mesh$E[, 2] == index_on_edge)
         )
         mesh_h_e <- mesh_edge_len[index_MGM]
         where_MGM <- 1 - (as.numeric((edge_MGG$where[, 2] -
@@ -641,7 +617,7 @@ MGG_to_MGM <- function(coord, graph) {
         which(ids)[(ordering[c(index_on_edge - 1, index_on_edge)])]
       index_MGM <- which.max(
         (fm_MG_graph(graph)$mesh$E[, 1] == mesh_indices[1]) &
-        (fm_MG_graph(graph)$mesh$E[, 2] == mesh_indices[2])
+          (fm_MG_graph(graph)$mesh$E[, 2] == mesh_indices[2])
       )
       mesh_h_e <- mesh_edge_len[index_MGM]
       where_MGM <- 1 - as.numeric((edge_MGG_o$where[index_on_edge, 2] -

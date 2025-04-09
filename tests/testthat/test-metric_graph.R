@@ -480,7 +480,7 @@ test_that("ibm values", {
   skip_if_not_installed("MetricGraph")
   graph0 <- local_bru_test_graph()
   graph0$build_mesh(h = 0.005)
-  mapper <- inlabru::bru_mapper(graph0, n_rep = 2)
+  mapper <- bru_mapper_MG(graph0, n_rep = 2)
   values <- inlabru::ibm_values(mapper)
   expect_equal(
     values,
