@@ -876,50 +876,49 @@ fm_mesh_2d_inla <- function(loc = NULL,
   interior <- unify_segm_coords(interior, crs = crs)
 
   if (is.null(boundary[[1]])) {
+    ## Triangulate to get inner domain boundary
+    ## Constraints included only to get proper domain extent
+    ## First, attach the loc points to the domain definition set
+    if (!is.null(loc) && !is.null(loc.domain)) {
+      loc.domain <- rbind(loc.domain, loc)
+    }
+    mesh1 <-
+      fm_rcdt_2d(
+        loc = loc.domain,
+        boundary = boundary[[1]],
+        interior = interior,
+        cutoff = cutoff,
+        extend = list(n = n[1], offset = offset[1]),
+        refine = FALSE,
+        crs = crs
+      )
 
-  ## Triangulate to get inner domain boundary
-  ## Constraints included only to get proper domain extent
-  ## First, attach the loc points to the domain definition set
-  if (!is.null(loc) && !is.null(loc.domain)) {
-    loc.domain <- rbind(loc.domain, loc)
-  }
-  mesh1 <-
-    fm_rcdt_2d(
-      loc = loc.domain,
-      boundary = boundary[[1]],
-      interior = interior,
-      cutoff = cutoff,
-      extend = list(n = n[1], offset = offset[1]),
-      refine = FALSE,
-      crs = crs
-    )
+    ## Save the resulting boundary
+    boundary1 <- fm_segm(mesh1, boundary = TRUE)
+    interior1 <- fm_segm(mesh1, boundary = FALSE)
 
-  ## Save the resulting boundary
-  boundary1 <- fm_segm(mesh1, boundary = TRUE)
-  interior1 <- fm_segm(mesh1, boundary = FALSE)
+    if (plot.intermediate) {
+      plot(mesh1)
+    }
 
-  if (plot.intermediate) {
-    plot(mesh1)
-  }
-
-  ## Triangulate inner domain
-  mesh2 <-
-    fm_rcdt_2d(
-      loc = loc,
-      boundary = boundary1,
-      interior = interior1,
-      cutoff = cutoff,
-      extend = FALSE, ## Should have no effect
-      refine =
-        list(
-          min.angle = min.angle[1],
-          max.edge = max.edge[1],
-          max.edge.extra = max.edge[1],
-          max.n.strict = max.n.strict[1],
-          max.n = max.n[1]
-        ),
-      crs = crs
-    )
+    ## Triangulate inner domain
+    mesh2 <-
+      fm_rcdt_2d(
+        loc = loc,
+        boundary = boundary1,
+        interior = interior1,
+        cutoff = cutoff,
+        extend = FALSE, ## Should have no effect
+        refine =
+          list(
+            min.angle = min.angle[1],
+            max.edge = max.edge[1],
+            max.edge.extra = max.edge[1],
+            max.n.strict = max.n.strict[1],
+            max.n = max.n[1]
+          ),
+        crs = crs
+      )
   } else {
     mesh2 <-
       fm_rcdt_2d(
