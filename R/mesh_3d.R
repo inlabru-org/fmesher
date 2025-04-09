@@ -172,7 +172,7 @@ fm_as_mesh_3d.fm_mesh_3d <- function(x, ...) {
 #'   requireNamespace("rgl", quietly = TRUE)) {
 #'   (m <- fm_delaunay_3d(matrix(rnorm(30), 10, 3)))
 #'   rgl::open3d()
-#'   rgl::triangles3d(as.triangles3d(m, "boundary"), col = "blue")
+#'   rgl::triangles3d(rgl::as.triangles3d(m, "boundary"), col = "blue")
 #' }
 #'
 as.triangles3d.fm_mesh_3d <- function(obj, subset = NULL, ...) {
