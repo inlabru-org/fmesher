@@ -82,7 +82,7 @@ fm_as_MG.fm_MG <- function(x, MGG = NULL) {
   }
 
   if ((MGG && inherits(x, "fm_MGG")) ||
-      (!MGG && inherits(x, "fm_MGM"))) {
+    (!MGG && inherits(x, "fm_MGM"))) {
     return(x)
   }
   cl <- setdiff(class(x), c("fm_MGG", "fm_MGM"))
@@ -608,7 +608,7 @@ MGG_to_MGM <- function(coord, graph) {
 
       index_MGM <- which.max(
         (fm_MG_graph(graph)$mesh$E[, 1] == vertices_MGG[1]) &
-        (fm_MG_graph(graph)$mesh$E[, 2] == vertices_MGG[2])
+          (fm_MG_graph(graph)$mesh$E[, 2] == vertices_MGG[2])
       )
       where_MGM <- coord$where[i, 2]
     } else if (sum(ids) == 1) {
@@ -622,7 +622,7 @@ MGG_to_MGM <- function(coord, graph) {
         # find the edge index that connects (mesh_vertex, end_vertex)
         index_MGM <- which.max(
           (fm_MG_graph(graph)$mesh$E[, 1] == index_on_edge) &
-          (fm_MG_graph(graph)$mesh$E[, 2] == graph_vertex)
+            (fm_MG_graph(graph)$mesh$E[, 2] == graph_vertex)
         )
         mesh_h_e <- mesh_edge_len[index_MGM]
         where_MGM <- as.numeric(
@@ -632,7 +632,7 @@ MGG_to_MGM <- function(coord, graph) {
         # find the edge index that connects (start_vertex, mesh_vertex)
         index_MGM <- which.max(
           (fm_MG_graph(graph)$mesh$E[, 1] == graph_vertex) &
-          (fm_MG_graph(graph)$mesh$E[, 2] == index_on_edge)
+            (fm_MG_graph(graph)$mesh$E[, 2] == index_on_edge)
         )
         mesh_h_e <- mesh_edge_len[index_MGM]
         where_MGM <- 1 - (as.numeric((edge_MGG$where[, 2] -
@@ -651,7 +651,7 @@ MGG_to_MGM <- function(coord, graph) {
         which(ids)[(ordering[c(index_on_edge - 1, index_on_edge)])]
       index_MGM <- which.max(
         (fm_MG_graph(graph)$mesh$E[, 1] == mesh_indices[1]) &
-        (fm_MG_graph(graph)$mesh$E[, 2] == mesh_indices[2])
+          (fm_MG_graph(graph)$mesh$E[, 2] == mesh_indices[2])
       )
       mesh_h_e <- mesh_edge_len[index_MGM]
       where_MGM <- 1 - as.numeric((edge_MGG_o$where[index_on_edge, 2] -
