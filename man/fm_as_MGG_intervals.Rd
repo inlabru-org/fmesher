@@ -29,7 +29,7 @@ if (requireNamespace("MetricGraph", quietly = TRUE)) {
   edge4 <- cbind(sin(theta), 1 + cos(theta))
   edges <- list(edge1, edge2, edge3, edge4)
   graph <- MetricGraph::metric_graph$new(edges = edges)
-  int <- fm_as_MGG_interval(
+  int <- fm_as_MGG_intervals(
     cbind(1, 0.8),
     cbind(1, 0.5),
     graph
@@ -68,4 +68,3 @@ Other object creation and conversion:
 Karina Lilleborge \email{karina.lilleborge@gmail.com}
 }
 \concept{object creation and conversion}
-\keyword{internal}

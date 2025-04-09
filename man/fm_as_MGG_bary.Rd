@@ -63,4 +63,3 @@ Other object creation and conversion:
 Karina Lilleborge \email{karina.lilleborge@gmail.com}
 }
 \concept{object creation and conversion}
-\keyword{internal}

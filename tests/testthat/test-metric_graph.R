@@ -25,7 +25,8 @@ test_that("MGG bary", {
     fm_bary(
       mesh = fm_as_MG(graph0, MGG = TRUE),
       loc = locs
-    )
+      )
+
   expect_equal(
     c(
       b$index[1, drop = FALSE],
@@ -494,7 +495,7 @@ test_that("sf to MGG", {
   graph0 <- local_bru_test_graph()
   graph0$build_mesh(h = 0.005)
   line1 <- sf::st_linestring(cbind(c(0, 0, 1), c(0.5, 0, 0)))
-  line1_g <- sf::st_geometry(line1)
+  line1_g <- sf::st_sfc(list(line1))
   path_MGG1 <-
     geom_path_to_path_MGG(
       graph = graph0,
@@ -510,7 +511,6 @@ test_that("sf to MGG", {
   )
   line2 <- sf::st_linestring(cbind(c(-1, 0, 1), c(1, 1, 1)))
   lines <- sf::st_sfc(list(line1, line2))
-  lines <- sf::st_geometry(lines)
   path_MGGs <-
     geom_path_to_path_MGG(
       graph = graph0,
@@ -524,5 +524,9 @@ test_that("sf to MGG", {
   expect_equal(
     cbind(path_MGGs$paths$start$where[, 2], path_MGGs$paths$end$where[, 2]),
     cbind(c(0.5, 0, 1, 0), c(0, 1, 0, 1))
+  )
+  expect_equal(
+    class(path_MGGs$paths[1,]),
+    c("fm_MGG_intervals", "tbl_df", "tbl", "data.frame")
   )
 })
