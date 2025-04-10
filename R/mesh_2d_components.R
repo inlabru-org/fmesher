@@ -57,8 +57,8 @@ fm_mesh_components <- function(mesh) {
 #'
 #' if (require("ggplot2")) {
 #'   ggplot() +
-#'     geom_fm(data=mesh3_1, fill = "red", alpha = 0.5) +
-#'     geom_fm(data=mesh3_2, fill = "blue", alpha = 0.5)
+#'     geom_fm(data = mesh3_1, fill = "red", alpha = 0.5) +
+#'     geom_fm(data = mesh3_2, fill = "blue", alpha = 0.5)
 #' }
 fm_mesh_components.fm_mesh_2d <- function(mesh) {
   vertex <- integer(mesh$n)
@@ -94,8 +94,10 @@ fm_mesh_components.fm_mesh_2d <- function(mesh) {
     if (any(vertex[vtx] > 0)) {
       warning(paste0(
         "Corner-only connected triangles detected.\n",
-        "  Vertices = ", paste0(vtx[vertex[vtx] > 0], collapse = ", "), "\n",
-        "  Components = ", paste0(vertex[vtx[vertex[vtx] > 0]], collapse = ", "), "\n",
+        "  Vertices = ",
+        paste0(vtx[vertex[vtx] > 0], collapse = ", "), "\n",
+        "  Components = ",
+        paste0(vertex[vtx[vertex[vtx] > 0]], collapse = ", "), "\n",
         "  New component = ", component, "\n",
         "  Vertex component information will be inconsistent.", "\n",
         "  Triangle component information will ignore corner-only connections."
@@ -105,7 +107,12 @@ fm_mesh_components.fm_mesh_2d <- function(mesh) {
   }
 
   if (component == 0) {
-    info <- data.frame(component = integer(0), nV = integer(0), nT = integer(0), area = numeric(0))
+    info <- data.frame(
+      component = integer(0),
+      nV = integer(0),
+      nT = integer(0),
+      area = numeric(0)
+    )
   } else {
     fem <- fm_fem(mesh, order = 1)
     info <- do.call(
@@ -136,8 +143,8 @@ fm_mesh_components.fm_mesh_2d <- function(mesh) {
 #' @examples
 #'
 #' (m <- fm_mesh_3d(
-#' matrix(c(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0), 4, 3, byrow = TRUE),
-#' matrix(c(1, 2, 3, 4), 1, 4, byrow = TRUE)
+#'   matrix(c(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0), 4, 3, byrow = TRUE),
+#'   matrix(c(1, 2, 3, 4), 1, 4, byrow = TRUE)
 #' ))
 #' # Compute connectivity information:
 #' (conn <- fm_mesh_components(m))
@@ -177,18 +184,26 @@ fm_mesh_components.fm_mesh_3d <- function(mesh) {
     if (any(vertex[vtx] > 0)) {
       warning(paste0(
         "Corner- or edge-only connected tetrahedrons detected.\n",
-        "  Vertices = ", paste0(vtx[vertex[vtx] > 0], collapse = ", "), "\n",
-        "  Components = ", paste0(vertex[vtx[vertex[vtx] > 0]], collapse = ", "), "\n",
+        "  Vertices = ",
+        paste0(vtx[vertex[vtx] > 0], collapse = ", "), "\n",
+        "  Components = ",
+        paste0(vertex[vtx[vertex[vtx] > 0]], collapse = ", "), "\n",
         "  New component = ", component, "\n",
         "  Vertex component information will be inconsistent.", "\n",
-        "  Tetrahedron component information will ignore corner-only connections."
+        "  Tetrahedron component information will ignore corner-only ",
+        "connections."
       ))
     }
     vertex[vtx] <- component
   }
 
   if (component == 0) {
-    info <- data.frame(component = integer(0), nV = integer(0), nT = integer(0), area = numeric(0))
+    info <- data.frame(
+      component = integer(0),
+      nV = integer(0),
+      nT = integer(0),
+      area = numeric(0)
+    )
   } else {
     fem <- fm_fem(mesh, order = 1)
     info <- do.call(

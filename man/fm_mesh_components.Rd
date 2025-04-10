@@ -64,13 +64,13 @@ mesh3_2 <- fm_rcdt_2d_inla(
 
 if (require("ggplot2")) {
   ggplot() +
-    geom_fm(data=mesh3_1, fill = "red", alpha = 0.5) +
-    geom_fm(data=mesh3_2, fill = "blue", alpha = 0.5)
+    geom_fm(data = mesh3_1, fill = "red", alpha = 0.5) +
+    geom_fm(data = mesh3_2, fill = "blue", alpha = 0.5)
 }
 
 (m <- fm_mesh_3d(
-matrix(c(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0), 4, 3, byrow = TRUE),
-matrix(c(1, 2, 3, 4), 1, 4, byrow = TRUE)
+  matrix(c(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0), 4, 3, byrow = TRUE),
+  matrix(c(1, 2, 3, 4), 1, 4, byrow = TRUE)
 ))
 # Compute connectivity information:
 (conn <- fm_mesh_components(m))
