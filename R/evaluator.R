@@ -393,7 +393,7 @@ fm_evaluator_lattice.fm_mesh_2d <- function(mesh,
 #'   of the `sf` object. Use `unlist(fm_contains(...))` if the combined union is
 #'   needed.
 #'
-#' @author Haakon Bakka, \email{bakka@@r-inla.org}, and Finn Lindgren
+#' @author Haakon Bakka, <bakka@@r-inla.org>, and Finn Lindgren
 #'   <Finn.Lindgren@@gmail.com>
 #'
 #' @examples

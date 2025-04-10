@@ -71,6 +71,6 @@ if (TRUE &&
 
 }
 \author{
-Haakon Bakka, \email{bakka@r-inla.org}, and Finn Lindgren
+Haakon Bakka, \href{mailto:bakka@r-inla.org}{bakka@r-inla.org}, and Finn Lindgren
 \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}
 }

@@ -79,5 +79,5 @@ if (require("ggplot2")) {
 \code{\link[=fm_mesh_2d]{fm_mesh_2d()}}, \code{\link[=fm_rcdt_2d]{fm_rcdt_2d()}}, \code{\link[=fm_mesh_3d]{fm_mesh_3d()}}
 }
 \author{
-Finn Lindgren \email{finn.lindgren@gmail.com}
+Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}
 }

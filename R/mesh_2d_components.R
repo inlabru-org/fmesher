@@ -16,7 +16,7 @@
 #' initiated.}
 #'
 #' @param mesh An [fm_mesh_2d] or [fm_mesh_3d] object
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @seealso [fm_mesh_2d()], [fm_rcdt_2d()], [fm_mesh_3d()]
 #' @export
 fm_mesh_components <- function(mesh) {
