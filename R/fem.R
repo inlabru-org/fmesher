@@ -344,7 +344,7 @@ fm_fem.fm_mesh_3d <- function(mesh, order = 2, ...) {
     g1 = g1,
     g2 = g1 %*% Matrix::Diagonal(mesh$n, 1 / vols_v) %*% g1,
     va = vols_v,
-    vt = vols_t
+    ta = vols_t
   )
 }
 
