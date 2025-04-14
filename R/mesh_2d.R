@@ -987,7 +987,7 @@ fm_mesh_2d_inla <- function(loc = NULL,
     segm.loc <- rbind(segm.loc, interior$loc)
   }
   if (nrow(segm.loc) > 0) {
-    proj <- fm_evaluator(mesh3, loc = segm.loc)$proj
+    proj <- fm_basis(mesh3, loc = segm.loc, full = TRUE)
     mesh3$idx$segm <- rep(NA, nrow(segm.loc))
     if (any(proj$ok)) {
       t.idx <- proj$bary$index[proj$ok]
