@@ -44,7 +44,7 @@ fm_assess <- function(mesh, spatial.range, alpha = 2,
     avg_len <-
       as.vector(Matrix::sparseMatrix(i = i, j = rep(1, length(i)), x = val)) /
         as.vector(Matrix::sparseMatrix(i = i, j = rep(1, length(i)), x = num))
-    
+
     b <- fm_basis(proj, full = TRUE)
     proj_len <- as.vector(b$A %*% avg_len)
     proj_len[!b$ok] <- NA

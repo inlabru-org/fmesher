@@ -150,14 +150,16 @@ test_that("Polygon integration with holes", {
   plyA <- sf::st_sfc(sf::st_polygon(
     list(
       matrix(c(0, 3, 3, 0, 0, 0, 0, 3, 3, 0) - 1, 5, 2),
-      matrix(c(1, 2, 2, 1, 1, 1, 1, 2, 2, 1) - 1, 5, 2))
+      matrix(c(1, 2, 2, 1, 1, 1, 1, 2, 2, 1) - 1, 5, 2)
+    )
   ))
 
   bndA <- fm_as_segm(plyA)
   m <- fmexample$mesh
   ipA <- fm_int(m,
-                plyA,
-                int.args = list(method = "direct", nsub2 = 1))
+    plyA,
+    int.args = list(method = "direct", nsub2 = 1)
+  )
 
   expect_equal(
     sf::st_area(sf::st_as_sf(plyA)),
