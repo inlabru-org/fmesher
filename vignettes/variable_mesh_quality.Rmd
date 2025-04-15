@@ -15,8 +15,13 @@ header-includes:
 knitr::opts_chunk$set(
   echo = FALSE,
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  dev = "png",
+  dev.args = list(type = "cairo-png"),
+  fig.width = 5,
+  fig.height = 5 * 5 / 7
 )
+options(bitmapType = "cairo")
 ```
 
 Updated version of the 2018 blog post [Spatially varying mesh quality](https://www.maths.ed.ac.uk/~flindgre/posts/2018-07-22-spatially-varying-mesh-quality/).
@@ -151,12 +156,18 @@ ggplot() +
     aes(geometry = geometry, fill = edge.len),
     stat = "sf_coordinates"
   ) +
-  coord_sf(default = TRUE)
+  coord_sf(default = TRUE) +
+  scale_fill_distiller(
+    type = "seq",
+    palette = 1,
+    na.value = "transparent"
+  )
 ```
 
 A "good" mesh should have `sd.dev` close to 1; this indicates that the nominal variance specified by the continuous domain model and the variance of the discretise model are similar.
 
 ```{r echo=TRUE, message=FALSE, size="small"}
+sd.dev.limits <- 1 + c(-1, 1) * max(abs(range(out$sd.dev, na.rm = TRUE)-1))
 ggplot() +
   geom_tile(
     data = out,
@@ -164,7 +175,12 @@ ggplot() +
     stat = "sf_coordinates"
   ) +
   coord_sf(default = TRUE) +
-  scale_fill_gradient(limits = range(out$sd.dev, na.rm = TRUE))
+  scale_fill_distiller(
+    type = "div",
+    palette = "RdBu",
+    na.value = "transparent",
+    limits = sd.dev.limits
+  )
 ```
 
 Here, we see that the standard deviation of the discretised model is smaller in the triangle interiors than at the vertices, but the ratio is close to 1, and more uniform where the triangles are small compared with the spatial correlation length that we set to `5`. The most problematic points seem to be in the rapid transition between large and small triangles. We can improve things by increasing the minimum angle criterion:
@@ -198,10 +214,18 @@ ggplot() +
     stat = "sf_coordinates"
   ) +
   coord_sf(default = TRUE) +
-  scale_fill_gradient(limits = range(out6$sd.dev, na.rm = TRUE))
+  scale_fill_distiller(
+    type = "div",
+    palette = "RdBu",
+    na.value = "transparent",
+    limits = sd.dev.limits
+  )
 ```
-The `sd.dev` range has clearly decreased, and there is no longer a band of
-high values near the upper right corner.
+
+The `sd.dev` range has clearly decreased (deviation from 1 decreased from
+`r signif(max(abs(range(out$sd.dev, na.rm = TRUE)-1)), digits = 3)` to
+`r signif(max(abs(range(out6$sd.dev, na.rm = TRUE)-1)), digits = 3)`), and there
+is no longer a band of high values near the upper right corner.
 
 The number of additional vertices needed to accomplish this is small, as seen
 from the mesh object summaries:
