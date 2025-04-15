@@ -8,8 +8,8 @@ articles:
   articles/devel_flow: devel_flow.html
   fmesher_library: fmesher_library.html
   inla_conversion: inla_conversion.html
-  articles/variable_mesh_quality: variable_mesh_quality.html
-last_built: 2025-04-14T16:30Z
+  variable_mesh_quality: variable_mesh_quality.html
+last_built: 2025-04-15T21:40Z
 urls:
   reference: https://inlabru-org.github.io/fmesher/reference
   article: https://inlabru-org.github.io/fmesher/articles

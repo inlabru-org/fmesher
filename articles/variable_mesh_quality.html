@@ -71,7 +71,7 @@
       <h1>Spatially varying mesh quality</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/inlabru-org/fmesher/blob/devel/vignettes/articles/variable_mesh_quality.Rmd" class="external-link"><code>vignettes/articles/variable_mesh_quality.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/inlabru-org/fmesher/blob/devel/vignettes/variable_mesh_quality.Rmd" class="external-link"><code>vignettes/variable_mesh_quality.Rmd</code></a></small>
       <div class="d-none name"><code>variable_mesh_quality.Rmd</code></div>
     </div>
 
@@ -123,10 +123,8 @@ follows:</p>
 <span>  refine <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>max.edge <span class="op">=</span> <span class="cn">Inf</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="../reference/geom_fm.html">geom_fm</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mesh1</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in fm_as_sfc.fm_segm(data): fm_as_sfc currently only supports</span></span>
-<span><span class="co">#&gt; (multi)linestring output</span></span></code></pre></div>
-<p><img src="variable_mesh_quality_files/figure-html/label1-1.png" width="700"></p>
+<span>  <span class="fu"><a href="../reference/geom_fm.html">geom_fm</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mesh1</span><span class="op">)</span></span></code></pre></div>
+<p><img src="variable_mesh_quality_files/figure-html/label1-1.png" width="480"></p>
 <p>The <code>fm_nonconvex_hull_inla</code> function creates a polygon to
 be used as the boundary of the mesh, extending the domain by a distance
 <code>convex</code> from the given points, while keeping the outside
@@ -146,7 +144,7 @@ we change the <code>max.edge</code> value:</p>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_fm.html">geom_fm</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mesh2</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">coord_sf</a></span><span class="op">(</span>default <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="variable_mesh_quality_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
+<p><img src="variable_mesh_quality_files/figure-html/unnamed-chunk-2-1.png" width="480"></p>
 <p>It is often possible and desirable to increase the minimum allowed
 angle to achieve smooth transitions between small and large triangles
 (values as high as 26 or 27, but almost never as high as 35, may be
@@ -172,7 +170,7 @@ parameter instead of <code>max.edge</code>:</p>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_fm.html">geom_fm</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mesh3</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">coord_sf</a></span><span class="op">(</span>default <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="variable_mesh_quality_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
+<p><img src="variable_mesh_quality_files/figure-html/unnamed-chunk-3-1.png" width="480"></p>
 <p>This gave a smooth transition between large and small triangles!</p>
 <p>We can also use different settings on the boundary,
 e.g. <code>NA_real_</code> or <code>Inf</code> to make it not care about
@@ -192,10 +190,8 @@ edge lengths near the boundary:</p>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_fm.html">geom_fm</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mesh5</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">coord_sf</a></span><span class="op">(</span>default <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in fm_as_sfc.fm_segm(data): fm_as_sfc currently only supports</span></span>
-<span><span class="co">#&gt; (multi)linestring output</span></span></code></pre></div>
-<p><img src="variable_mesh_quality_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">coord_sf</a></span><span class="op">(</span>default <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p><img src="variable_mesh_quality_files/figure-html/unnamed-chunk-4-1.png" width="480"></p>
 <p>We can also make more complicated specifications, but beware of
 asking only for reasonable triangulations; When experimenting, I
 recommend setting the <code>max.n.strict</code> and <code>max.n</code>
@@ -219,10 +215,8 @@ infinitely many triangles!</p>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_fm.html">geom_fm</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mesh5</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">coord_sf</a></span><span class="op">(</span>default <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in fm_as_sfc.fm_segm(data): fm_as_sfc currently only supports</span></span>
-<span><span class="co">#&gt; (multi)linestring output</span></span></code></pre></div>
-<p><img src="variable_mesh_quality_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">coord_sf</a></span><span class="op">(</span>default <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p><img src="variable_mesh_quality_files/figure-html/unnamed-chunk-5-1.png" width="480"></p>
 <p>The <code>fm_assess</code> function may also provide some
 insights:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
@@ -231,8 +225,6 @@ insights:</p>
 <span>  alpha <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>  dims <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">200</span>, <span class="fl">200</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in fm_qinv(Q): Asymmetric matrix A detected, but only lower left</span></span>
-<span><span class="co">#&gt; triangle will be used.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "sd"       "sd.dev"   "sd.bound" "edge.len" "geometry"</span></span></code></pre></div>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
@@ -242,21 +234,32 @@ insights:</p>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>geometry <span class="op">=</span> <span class="va">geometry</span>, fill <span class="op">=</span> <span class="va">edge.len</span><span class="op">)</span>,</span>
 <span>    stat <span class="op">=</span> <span class="st">"sf_coordinates"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">coord_sf</a></span><span class="op">(</span>default <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="variable_mesh_quality_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">coord_sf</a></span><span class="op">(</span>default <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html" class="external-link">scale_fill_distiller</a></span><span class="op">(</span></span>
+<span>    type <span class="op">=</span> <span class="st">"seq"</span>,</span>
+<span>    palette <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>    na.value <span class="op">=</span> <span class="st">"transparent"</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
+<p><img src="variable_mesh_quality_files/figure-html/unnamed-chunk-7-1.png" width="480"></p>
 <p>A “good” mesh should have <code>sd.dev</code> close to 1; this
 indicates that the nominal variance specified by the continuous domain
 model and the variance of the discretise model are similar.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<code class="sourceCode R"><span><span class="va">sd.dev.limits</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="va">out</span><span class="op">$</span><span class="va">sd.dev</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html" class="external-link">geom_tile</a></span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="va">out</span>,</span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>geometry <span class="op">=</span> <span class="va">geometry</span>, fill <span class="op">=</span> <span class="va">sd.dev</span><span class="op">)</span>,</span>
 <span>    stat <span class="op">=</span> <span class="st">"sf_coordinates"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">coord_sf</a></span><span class="op">(</span>default <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html" class="external-link">scale_fill_gradient</a></span><span class="op">(</span>limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="va">out</span><span class="op">$</span><span class="va">sd.dev</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="variable_mesh_quality_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html" class="external-link">scale_fill_distiller</a></span><span class="op">(</span></span>
+<span>    type <span class="op">=</span> <span class="st">"div"</span>,</span>
+<span>    palette <span class="op">=</span> <span class="st">"RdBu"</span>,</span>
+<span>    na.value <span class="op">=</span> <span class="st">"transparent"</span>,</span>
+<span>    limits <span class="op">=</span> <span class="va">sd.dev.limits</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
+<p><img src="variable_mesh_quality_files/figure-html/unnamed-chunk-8-1.png" width="480"></p>
 <p>Here, we see that the standard deviation of the discretised model is
 smaller in the triangle interiors than at the vertices, but the ratio is
 close to 1, and more uniform where the triangles are small compared with
@@ -282,9 +285,7 @@ criterion:</p>
 <span>  spatial.range <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>  alpha <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>  dims <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">200</span>, <span class="fl">200</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in fm_qinv(Q): Asymmetric matrix A detected, but only lower left</span></span>
-<span><span class="co">#&gt; triangle will be used.</span></span></code></pre></div>
+<span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html" class="external-link">geom_tile</a></span><span class="op">(</span></span>
@@ -293,10 +294,16 @@ criterion:</p>
 <span>    stat <span class="op">=</span> <span class="st">"sf_coordinates"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">coord_sf</a></span><span class="op">(</span>default <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html" class="external-link">scale_fill_gradient</a></span><span class="op">(</span>limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="va">out6</span><span class="op">$</span><span class="va">sd.dev</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="variable_mesh_quality_files/figure-html/unnamed-chunk-10-1.png" width="700">
-The <code>sd.dev</code> range has clearly decreased, and there is no
-longer a band of high values near the upper right corner.</p>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html" class="external-link">scale_fill_distiller</a></span><span class="op">(</span></span>
+<span>    type <span class="op">=</span> <span class="st">"div"</span>,</span>
+<span>    palette <span class="op">=</span> <span class="st">"RdBu"</span>,</span>
+<span>    na.value <span class="op">=</span> <span class="st">"transparent"</span>,</span>
+<span>    limits <span class="op">=</span> <span class="va">sd.dev.limits</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
+<p><img src="variable_mesh_quality_files/figure-html/unnamed-chunk-10-1.png" width="480"></p>
+<p>The <code>sd.dev</code> range has clearly decreased (deviation from 1
+decreased from 0.115 to 0.0739), and there is no longer a band of high
+values near the upper right corner.</p>
 <p>The number of additional vertices needed to accomplish this is small,
 as seen from the mesh object summaries:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
