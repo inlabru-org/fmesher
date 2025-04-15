@@ -167,7 +167,7 @@ ggplot() +
 A "good" mesh should have `sd.dev` close to 1; this indicates that the nominal variance specified by the continuous domain model and the variance of the discretise model are similar.
 
 ```{r echo=TRUE, message=FALSE, size="small"}
-sd.dev.limits <- 1 + c(-1, 1) * max(abs(range(out$sd.dev, na.rm = TRUE)-1))
+sd.dev.limits <- 1 + c(-1, 1) * max(abs(range(out$sd.dev, na.rm = TRUE) - 1))
 ggplot() +
   geom_tile(
     data = out,
