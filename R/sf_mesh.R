@@ -98,7 +98,7 @@ fm_as_sfc.fm_mesh_2d <- function(x,
 fm_as_sfc.fm_segm <- function(x, ..., multi = FALSE) {
   stopifnot(inherits(x, "fm_segm"))
 
-  if (all(fm_is_bnd(x))) {
+  if (any(fm_is_bnd(x))) {
     warning("fm_as_sfc currently only supports (multi)linestring output")
   }
 
