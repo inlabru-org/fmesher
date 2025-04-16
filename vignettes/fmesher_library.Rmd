@@ -49,14 +49,13 @@ This is similar to a winged-edge or half-edge structure, but treats triangles as
 primary objects, allowing compact storage as well as efficient graph traversal.
 
 Note:
-A further structure, `VT`, can be enabled, that for each vertex gives the index of
-a single triangle that it is used by.
-A limitation of this data structure is that there is no cheap way to access _all_
-triangles that connect to a given vertex, unless the mesh is a proper edge-connected manifold.  For example, some operation will not handle meshes where the forward and inverse `orbit0` operations cannot reach all the connected triangles.  To handle
-such cases, the data structure may need to be
-extended with a triangle index set for each vertex, in effect replacing the `VT`
-single-index vector with a vector of sets, and replacing some key algorithms that
-currently rely on `orbit0` operations.
+A further structure, `VT`, can be enabled, that for each vertex holds
+the set of triangle indices that it is used by. Before 2025, only a single
+triangle index was stored, so that there was no cheap way to access _all_
+triangles that connect to a given vertex, unless the mesh was a proper
+edge-connected manifold.  For example, some operation would not handle
+meshes where the forward and inverse `orbit0` operations could not reach all
+the connected triangles.
 
 ### Graph traversal algebra
 

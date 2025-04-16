@@ -1,6 +1,7 @@
 url: https://inlabru-org.github.io/fmesher/
 
 template:
+  bootswatch: yeti
   bootstrap: 5
 
 navbar:

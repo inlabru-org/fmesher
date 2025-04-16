@@ -167,7 +167,7 @@ fm_as_mesh_3d.fm_mesh_3d <- function(x, ...) {
 #' @param \dots Currently unused
 #' @returns A 3-column matrix of coordinates of triangles, suitable for
 #'   passing to `rgl::triangles3d()`.
-#' @examplesIf interactive()
+#' @examples
 #' if (requireNamespace("geometry", quietly = TRUE) &&
 #'   requireNamespace("rgl", quietly = TRUE)) {
 #'   (m <- fm_delaunay_3d(matrix(rnorm(30), 10, 3)))
