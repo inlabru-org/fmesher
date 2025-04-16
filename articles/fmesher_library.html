@@ -16,7 +16,7 @@
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
-    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+    <nav class="navbar navbar-expand-lg fixed-top bg-primary" data-bs-theme="dark" aria-label="Site navigation"><div class="container">
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
@@ -112,16 +112,13 @@ to be more efficient.</li>
 triangles as primary objects, allowing compact storage as well as
 efficient graph traversal.</p>
 <p>Note: A further structure, <code>VT</code>, can be enabled, that for
-each vertex gives the index of a single triangle that it is used by. A
-limitation of this data structure is that there is no cheap way to
-access <em>all</em> triangles that connect to a given vertex, unless the
-mesh is a proper edge-connected manifold. For example, some operation
-will not handle meshes where the forward and inverse <code>orbit0</code>
-operations cannot reach all the connected triangles. To handle such
-cases, the data structure may need to be extended with a triangle index
-set for each vertex, in effect replacing the <code>VT</code>
-single-index vector with a vector of sets, and replacing some key
-algorithms that currently rely on <code>orbit0</code> operations.</p>
+each vertex holds the set of triangle indices that it is used by. Before
+2025, only a single triangle index was stored, so that there was no
+cheap way to access <em>all</em> triangles that connect to a given
+vertex, unless the mesh was a proper edge-connected manifold. For
+example, some operation would not handle meshes where the forward and
+inverse <code>orbit0</code> operations could not reach all the connected
+triangles.</p>
 </div>
 <div class="section level3">
 <h3 id="graph-traversal-algebra">Graph traversal algebra<a class="anchor" aria-label="anchor" href="#graph-traversal-algebra"></a>
