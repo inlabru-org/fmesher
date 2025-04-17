@@ -4,22 +4,24 @@
 \alias{fm_hexagon_lattice}
 \title{Create hexagon lattice points}
 \usage{
-fm_hexagon_lattice(bnd, edge_len = NULL, buffer_n = 1)
+fm_hexagon_lattice(bnd, edge_len = NULL, buffer_n = 0.95)
 }
 \arguments{
 \item{bnd}{Boundary object}
 
 \item{edge_len}{Triangle edge length}
 
-\item{buffer_n}{Number of edge length multiples for buffer inside the
-boundary object to the start of the lattice. Default 1.}
+\item{buffer_n}{Number of triangle height multiples for buffer inside the
+boundary object to the start of the lattice. Default 0.95.}
 }
 \value{
 A list with lattice points, edge length, and inner boundary
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} Create hexagon lattice
-points within a boundary
+points within a boundary. The hexagonal lattice is anchored at the
+coordinate system origin, so that grids with different but overlapping
+boundaries will have matching points.
 }
 \examples{
 (m <- fm_mesh_2d(

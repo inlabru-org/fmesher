@@ -1135,11 +1135,13 @@ fm_hexagon_lattice_orig <- function(bnd,
 
 #' @title Create hexagon lattice points
 #' @description `r lifecycle::badge("experimental")` Create hexagon lattice
-#'   points within a boundary
+#'   points within a boundary. The hexagonal lattice is anchored at the
+#'   coordinate system origin, so that grids with different but overlapping
+#'   boundaries will have matching points.
 #' @param bnd Boundary object
 #' @param edge_len Triangle edge length
-#' @param buffer_n Number of edge length multiples for buffer inside the
-#'   boundary object to the start of the lattice. Default 1.
+#' @param buffer_n Number of triangle height multiples for buffer inside the
+#'   boundary object to the start of the lattice. Default 0.95.
 #' @return A list with lattice points, edge length, and inner boundary
 #' @author Man Ho Suen <M.H.Suen@@sms.ed.ac.uk>,
 #'  Finn Lindgren <Finn.Lindgren@@gmail.com>
@@ -1160,7 +1162,7 @@ fm_hexagon_lattice_orig <- function(bnd,
 #' }
 fm_hexagon_lattice <- function(bnd,
                                edge_len = NULL,
-                               buffer_n = 1) {
+                               buffer_n = 0.95) {
   #  stopifnot(x_bin / 2 > edge_len_n)
   crs <- fm_crs(bnd)
   # Avoid longlat S2 issues by removing the CRS information
@@ -1170,48 +1172,46 @@ fm_hexagon_lattice <- function(bnd,
   if (is.null(edge_len)) {
     edge_len <- diff(bbox[[1]]) / 250
   }
-  grid_n <- pmax(0L, c(
-    floor(diff(bbox[[1]]) / edge_len),
-    floor(diff(bbox[[2]]) / (edge_len * sqrt(3) / 2))
-  ) - 2 * buffer_n)
+
+  # Find covering rectangular grid extent
+  h <- edge_len * sqrt(3) / 2
+  grid_start <-
+    c(
+      floor(bbox[[1]][1] / edge_len),
+      floor(bbox[[2]][1] / (2 * h)) * 2L
+    )
+  grid_end <-
+    c(
+      ceiling(bbox[[1]][2] / edge_len),
+      ceiling(bbox[[2]][2] / (2 * h)) * 2L
+    )
+  grid_n <- grid_end - grid_start + 1L
 
   if (any(grid_n == 0L)) {
     # Empty lattice
     return()
   }
 
-  # sf_buffer to work on negative buffer to stay a distance from the boundary
-  # Turn off S2 to avoid zig zag
-  # suppressMessages(sf::sf_use_s2(FALSE))
-  #  # st_buffer for edge_len x1
-  bnd_inner <- sf::st_buffer(bnd, dist = -buffer_n * edge_len)
-  bbox_inner <- fm_bbox(bnd_inner)
-  y_diff <- diff(bbox_inner[[1]])
-  x_diff <- diff(bbox_inner[[2]])
-  # TODO rep n, n-1, length
-  h <- edge_len * sqrt(3) / 2 # height
-  x_adj <- .5 * (x_diff - grid_n[1] * edge_len)
-  y_adj <- .5 * (y_diff - grid_n[2] * h)
   # x
   x_1_ <- seq(
-    bbox_inner[[1]][1] + x_adj,
-    bbox_inner[[1]][2] - x_adj,
-    by = edge_len
+    grid_start[1] * edge_len,
+    grid_end[1] * edge_len,
+    length.out = grid_n[1]
   )
   x_2_ <- seq(
-    bbox_inner[[1]][1] + x_adj + .5 * edge_len,
-    bbox_inner[[1]][2] - x_adj - .5 * edge_len,
-    by = edge_len
+    (grid_start[1] + 0.5) * edge_len,
+    (grid_end[1] - 0.5) * edge_len,
+    length.out = grid_n[1] - 1L
   )
   y_1_ <- seq(
-    bbox_inner[[2]][1] + y_adj,
-    bbox_inner[[2]][2] - y_adj,
-    by = 2 * h
+    grid_start[2] * h,
+    grid_end[2] * h,
+    length.out = (grid_n[2] + 1L) / 2L
   )
   y_2_ <- seq(
-    bbox_inner[[2]][1] + y_adj + h,
-    bbox_inner[[2]][2] - y_adj + h,
-    by = 2 * h
+    (grid_start[2] + 1) * h,
+    (grid_end[2] - 1) * h,
+    length.out = (grid_n[2] + 1L) / 2L - 1L
   )
 
   x_1 <- rep(x_1_, times = length(y_1_))
@@ -1223,7 +1223,14 @@ fm_hexagon_lattice <- function(bnd,
   # turn the mesh nodes into lattice sf
   lattice_sf <- sf::st_as_sf(mesh_df, coords = c("x", "y"), crs = crs)
   lattice_sfc <- sf::st_as_sfc(lattice_sf)
+
+  # sf_buffer to work on negative buffer to stay a distance from the boundary
+  # Turn off S2 to avoid zig zag
+  # suppressMessages(sf::sf_use_s2(FALSE))
+  #  # st_buffer for edge_len x1
+  bnd_inner <- sf::st_buffer(bnd, dist = -buffer_n * h)
   fm_crs(bnd_inner) <- crs
+
   pts_inside <- lengths(sf::st_intersects(lattice_sfc, bnd_inner)) != 0
   pts_lattice_sfc <- lattice_sfc[pts_inside]
   return(list(
