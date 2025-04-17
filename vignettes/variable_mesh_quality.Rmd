@@ -25,13 +25,15 @@ options(bitmapType = "cairo")
 ```
 
 Updated version of the 2018 blog post [Spatially varying mesh quality](https://www.maths.ed.ac.uk/~flindgre/posts/2018-07-22-spatially-varying-mesh-quality/).
-Needs `fmesher` version `0.2.0.9009` or later.
+Needs `fmesher` version `0.3.0.9005` or later.
+
+## Fundamentals of triangle mesh refinement
 
 The [fmesher](http://inlabru-org.github.io/fmesher) package has several features that aren't widely known. The code started as an implementation of the triangulation method detailed in [Hjelle and Dæhlen, "Triangulations and Applications" (2006)](https://www.springer.com/gb/book/9783540332602), which includes methods for spatially varying mesh quality.[^1] Over time, the interface and feature improvements focused on robustness and calculating useful mesh properties, but the more advanced mesh quality features are still there!
 
 [^1]: The algorithm is very similar to the one used by `triangle`, available in R via [Rtriangle](https://CRAN.R-project.org/package=RTriangle). That only handles planar meshes, and has a potentially problematic non-commercial license clause. Since we needed spherical triangulations for global models, we had to write our own implementation.
 
-The algorithm first builds a basic mesh, including any points the user specifies, as well as any boundary curves (if no boundary curve is given, a default boundary will be added), connecting all the points into a [Delauney triangulation](https://en.wikipedia.org/wiki/Delaunay_triangulation).
+The algorithm first builds a basic mesh, including any points the user specifies, as well as any boundary curves (if no boundary curve is given, a default boundary will be added), connecting all the points into a [Delaunay triangulation](https://en.wikipedia.org/wiki/Delaunay_triangulation).
 
 After this initial step, mesh quality is decided by two criteria:
 
@@ -71,6 +73,8 @@ ggplot() +
 ```
 
 It is often possible and desirable to increase the minimum allowed angle to achieve smooth transitions between small and large triangles (values as high as 26 or 27, but almost never as high as 35, may be possible). Here we will instead focus on the edge length criterion, and make that spatially varying.
+
+## Spatially varying edge length
 
 We now define a function that computes our desired maximal edge length as a function of location, and feed the output of that to `fm_rcdt_2d_inla` using the `quality.spec` parameter instead of `max.edge`:
 
@@ -138,7 +142,10 @@ ggplot() +
   coord_sf(default = TRUE)
 ```
 
-The `fm_assess` function may also provide some insights:
+## Assessing the mesh quality
+
+The `fm_assess` function may provide some insights into the effect of variable
+mesh quality settings:
 
 ```{r echo=TRUE, message=FALSE, size="small"}
 out <- fm_assess(mesh5,
@@ -159,6 +166,7 @@ ggplot() +
   coord_sf(default = TRUE) +
   scale_fill_distiller(
     type = "seq",
+    direction = 1,
     palette = 1,
     na.value = "transparent"
   )
@@ -168,6 +176,8 @@ A "good" mesh should have `sd.dev` close to 1; this indicates that the nominal v
 
 ```{r echo=TRUE, message=FALSE, size="small"}
 sd.dev.limits <- 1 + c(-1, 1) * max(abs(range(out$sd.dev, na.rm = TRUE) - 1))
+col.values <- 2 * seq(0, 1, length.out = 100) - 1
+col.values <- (sign(col.values) * abs(col.values)^1.5 + 1) / 2
 ggplot() +
   geom_tile(
     data = out,
@@ -179,7 +189,8 @@ ggplot() +
     type = "div",
     palette = "RdBu",
     na.value = "transparent",
-    limits = sd.dev.limits
+    limits = sd.dev.limits,
+    values = col.values
   )
 ```
 
@@ -218,7 +229,8 @@ ggplot() +
     type = "div",
     palette = "RdBu",
     na.value = "transparent",
-    limits = sd.dev.limits
+    limits = sd.dev.limits,
+    values = col.values
   )
 ```
 
