@@ -1141,7 +1141,7 @@ fm_hexagon_lattice_orig <- function(bnd,
 #' @param bnd Boundary object
 #' @param edge_len Triangle edge length
 #' @param buffer_n Number of triangle height multiples for buffer inside the
-#'   boundary object to the start of the lattice. Default 0.95.
+#'   boundary object to the start of the lattice. Default 0.49.
 #' @return A list with lattice points, edge length, and inner boundary
 #' @author Man Ho Suen <M.H.Suen@@sms.ed.ac.uk>,
 #'  Finn Lindgren <Finn.Lindgren@@gmail.com>
@@ -1162,7 +1162,7 @@ fm_hexagon_lattice_orig <- function(bnd,
 #' }
 fm_hexagon_lattice <- function(bnd,
                                edge_len = NULL,
-                               buffer_n = 0.95) {
+                               buffer_n = 0.49) {
   #  stopifnot(x_bin / 2 > edge_len_n)
   crs <- fm_crs(bnd)
   # Avoid longlat S2 issues by removing the CRS information

@@ -4,7 +4,7 @@
 \alias{fm_hexagon_lattice}
 \title{Create hexagon lattice points}
 \usage{
-fm_hexagon_lattice(bnd, edge_len = NULL, buffer_n = 0.95)
+fm_hexagon_lattice(bnd, edge_len = NULL, buffer_n = 0.49)
 }
 \arguments{
 \item{bnd}{Boundary object}
@@ -12,7 +12,7 @@ fm_hexagon_lattice(bnd, edge_len = NULL, buffer_n = 0.95)
 \item{edge_len}{Triangle edge length}
 
 \item{buffer_n}{Number of triangle height multiples for buffer inside the
-boundary object to the start of the lattice. Default 0.95.}
+boundary object to the start of the lattice. Default 0.49.}
 }
 \value{
 A list with lattice points, edge length, and inner boundary

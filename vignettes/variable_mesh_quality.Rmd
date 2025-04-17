@@ -51,7 +51,9 @@ library(fmesher)
 loc <- as.matrix(expand.grid(1:10, 1:10))
 bnd_sf <- fm_nonconvex_hull(loc, convex = 1, concave = 10)
 bnd <- fm_as_segm(bnd_sf)
-loc <- sf::st_coordinates(fm_hexagon_lattice(bnd_sf, edge_len = 1)$lattice)
+loc <- sf::st_coordinates(
+  fm_hexagon_lattice(bnd_sf, edge_len = 1, buffer_n = 0.95)$lattice
+)
 mesh1 <- fm_rcdt_2d_inla(
   loc = loc,
   boundary = bnd,
