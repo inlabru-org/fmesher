@@ -31,7 +31,7 @@ Needs `fmesher` version `0.3.0.9005` or later.
 
 The [fmesher](http://inlabru-org.github.io/fmesher) package has several features that aren't widely known. The code started as an implementation of the triangulation method detailed in [Hjelle and Dæhlen, "Triangulations and Applications" (2006)](https://www.springer.com/gb/book/9783540332602), which includes methods for spatially varying mesh quality.[^1] Over time, the interface and feature improvements focused on robustness and calculating useful mesh properties, but the more advanced mesh quality features are still there!
 
-[^1]: The algorithm is very similar to the one used by `triangle`, available in R via [Rtriangle](https://CRAN.R-project.org/package=RTriangle). That only handles planar meshes, and has a potentially problematic non-commercial license clause. Since we needed spherical triangulations for global models, we had to write our own implementation.
+[^1]: The algorithm is very similar to the one used by `triangle`, available in R via [Rtriangle](https://CRAN.R-project.org/package=RTriangle). That only handles planar meshes, and had a potentially problematic non-commercial license clause. Since we needed spherical triangulations for global models, we had to write our own implementation.
 
 The algorithm first builds a basic mesh, including any points the user specifies, as well as any boundary curves (if no boundary curve is given, a default boundary will be added), connecting all the points into a [Delaunay triangulation](https://en.wikipedia.org/wiki/Delaunay_triangulation).
 
@@ -49,7 +49,9 @@ library(ggplot2)
 library(fmesher)
 
 loc <- as.matrix(expand.grid(1:10, 1:10))
-bnd <- fm_nonconvex_hull_inla(loc, convex = 1, concave = 10)
+bnd_sf <- fm_nonconvex_hull(loc, convex = 1, concave = 10)
+bnd <- fm_as_segm(bnd_sf)
+loc <- sf::st_coordinates(fm_hexagon_lattice(bnd_sf, edge_len = 1)$lattice)
 mesh1 <- fm_rcdt_2d_inla(
   loc = loc,
   boundary = bnd,
@@ -100,7 +102,7 @@ This gave a smooth transition between large and small triangles!
 
 We can also use different settings on the boundary, e.g. `NA_real_` or `Inf` to make it not care about edge lengths near the boundary:
 
-```{r echo=TRUE, message=FALSE, size="small"}
+```{r echo=TRUE, message=FALSE, size="small",warning=FALSE}
 qual_bnd <- function(loc) {
   rep(Inf, nrow(loc))
 }
@@ -234,7 +236,8 @@ ggplot() +
   )
 ```
 
-The `sd.dev` range has clearly decreased (deviation from 1 decreased from
+The `sd.dev` range has clearly decreased (the maximum absolute deviation from
+`r 1` decreased from
 `r signif(max(abs(range(out$sd.dev, na.rm = TRUE)-1)), digits = 3)` to
 `r signif(max(abs(range(out6$sd.dev, na.rm = TRUE)-1)), digits = 3)`), and there
 is no longer a band of high values near the upper right corner.
