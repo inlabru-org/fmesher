@@ -89,7 +89,7 @@ as an implementation of the triangulation method detailed in <a href="https://ww
 “Triangulations and Applications” (2006)</a>, which includes methods for
 spatially varying mesh quality.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;The algorithm is very similar to the one used by
 &lt;code&gt;triangle&lt;/code&gt;, available in R via &lt;a href="https://CRAN.R-project.org/package=RTriangle" class="external-link"&gt;Rtriangle&lt;/a&gt;. That
-only handles planar meshes, and has a potentially problematic
+only handles planar meshes, and had a potentially problematic
 non-commercial license clause. Since we needed spherical triangulations
 for global models, we had to write our own implementation.&lt;/p&gt;'><sup>1</sup></a> Over time, the interface and feature
 improvements focused on robustness and calculating useful mesh
@@ -119,7 +119,11 @@ follows:</p>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://inlabru-org.github.io/fmesher/">fmesher</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">loc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/coerce.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html" class="external-link">expand.grid</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">bnd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_nonconvex_hull_inla.html">fm_nonconvex_hull_inla</a></span><span class="op">(</span><span class="va">loc</span>, convex <span class="op">=</span> <span class="fl">1</span>, concave <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="va">bnd_sf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_nonconvex_hull.html">fm_nonconvex_hull</a></span><span class="op">(</span><span class="va">loc</span>, convex <span class="op">=</span> <span class="fl">1</span>, concave <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="va">bnd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_as_segm.html">fm_as_segm</a></span><span class="op">(</span><span class="va">bnd_sf</span><span class="op">)</span></span>
+<span><span class="va">loc</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_coordinates.html" class="external-link">st_coordinates</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="../reference/fm_hexagon_lattice.html">fm_hexagon_lattice</a></span><span class="op">(</span><span class="va">bnd_sf</span>, edge_len <span class="op">=</span> <span class="fl">1</span>, buffer_n <span class="op">=</span> <span class="fl">0.95</span><span class="op">)</span><span class="op">$</span><span class="va">lattice</span></span>
+<span><span class="op">)</span></span>
 <span><span class="va">mesh1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_rcdt_2d.html">fm_rcdt_2d_inla</a></span><span class="op">(</span></span>
 <span>  loc <span class="op">=</span> <span class="va">loc</span>,</span>
 <span>  boundary <span class="op">=</span> <span class="va">bnd</span>,</span>
@@ -317,28 +321,28 @@ criterion:</p>
 <span>    values <span class="op">=</span> <span class="va">col.values</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="variable_mesh_quality_files/figure-html/unnamed-chunk-10-1.png" width="480"></p>
-<p>The <code>sd.dev</code> range has clearly decreased (deviation from 1
-decreased from 0.115 to 0.0739), and there is no longer a band of high
-values near the upper right corner.</p>
+<p>The <code>sd.dev</code> range has clearly decreased (the maximum
+absolute deviation from 1 decreased from 0.101 to 0.0809), and there is
+no longer a band of high values near the upper right corner.</p>
 <p>The number of additional vertices needed to accomplish this is small,
 as seen from the mesh object summaries:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mesh5</span></span>
 <span><span class="co">#&gt; fm_mesh_2d object:</span></span>
 <span><span class="co">#&gt;   Manifold:  R2</span></span>
-<span><span class="co">#&gt;   V / E / T: 1916 / 5410 / 3495</span></span>
+<span><span class="co">#&gt;   V / E / T: 2157 / 6151 / 3995</span></span>
 <span><span class="co">#&gt;   Euler char.:   1</span></span>
-<span><span class="co">#&gt;   Constraints:   Boundary: 335 boundary edges (1 group: 1), Interior: 0 edges</span></span>
-<span><span class="co">#&gt;   Bounding box: (7.471455e-04,1.099925e+01) x (7.471455e-04,1.099925e+01)</span></span>
-<span><span class="co">#&gt;   Basis d.o.f.:  1916</span></span>
+<span><span class="co">#&gt;   Constraints:   Boundary: 317 boundary edges (1 group: 1), Interior: 0 edges</span></span>
+<span><span class="co">#&gt;   Bounding box: ( 0.001053993,10.999246962) x ( 0.001053993,10.999246962)</span></span>
+<span><span class="co">#&gt;   Basis d.o.f.:  2157</span></span>
 <span><span class="va">mesh6</span></span>
 <span><span class="co">#&gt; fm_mesh_2d object:</span></span>
 <span><span class="co">#&gt;   Manifold:  R2</span></span>
-<span><span class="co">#&gt;   V / E / T: 1980 / 5606 / 3627</span></span>
+<span><span class="co">#&gt;   V / E / T: 2258 / 6451 / 4194</span></span>
 <span><span class="co">#&gt;   Euler char.:   1</span></span>
-<span><span class="co">#&gt;   Constraints:   Boundary: 331 boundary edges (1 group: 1), Interior: 0 edges</span></span>
-<span><span class="co">#&gt;   Bounding box: (7.471455e-04,1.099925e+01) x (7.471455e-04,1.099925e+01)</span></span>
-<span><span class="co">#&gt;   Basis d.o.f.:  1980</span></span></code></pre></div>
+<span><span class="co">#&gt;   Constraints:   Boundary: 320 boundary edges (1 group: 1), Interior: 0 edges</span></span>
+<span><span class="co">#&gt;   Bounding box: ( 0.001053993,10.999246962) x ( 0.001053993,10.999246962)</span></span>
+<span><span class="co">#&gt;   Basis d.o.f.:  2258</span></span></code></pre></div>
 </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
