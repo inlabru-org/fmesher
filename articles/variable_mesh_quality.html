@@ -79,7 +79,10 @@
     
 <p>Updated version of the 2018 blog post <a href="https://www.maths.ed.ac.uk/~flindgre/posts/2018-07-22-spatially-varying-mesh-quality/" class="external-link">Spatially
 varying mesh quality</a>. Needs <code>fmesher</code> version
-<code>0.2.0.9009</code> or later.</p>
+<code>0.3.0.9005</code> or later.</p>
+<div class="section level2">
+<h2 id="fundamentals-of-triangle-mesh-refinement">Fundamentals of triangle mesh refinement<a class="anchor" aria-label="anchor" href="#fundamentals-of-triangle-mesh-refinement"></a>
+</h2>
 <p>The <a href="http://inlabru-org.github.io/fmesher" class="external-link">fmesher</a>
 package has several features that aren’t widely known. The code started
 as an implementation of the triangulation method detailed in <a href="https://www.springer.com/gb/book/9783540332602" class="external-link">Hjelle and Dæhlen,
@@ -95,7 +98,7 @@ there!</p>
 <p>The algorithm first builds a basic mesh, including any points the
 user specifies, as well as any boundary curves (if no boundary curve is
 given, a default boundary will be added), connecting all the points into
-a <a href="https://en.wikipedia.org/wiki/Delaunay_triangulation" class="external-link">Delauney
+a <a href="https://en.wikipedia.org/wiki/Delaunay_triangulation" class="external-link">Delaunay
 triangulation</a>.</p>
 <p>After this initial step, mesh quality is decided by two criteria:</p>
 <ol style="list-style-type: decimal">
@@ -150,6 +153,10 @@ angle to achieve smooth transitions between small and large triangles
 (values as high as 26 or 27, but almost never as high as 35, may be
 possible). Here we will instead focus on the edge length criterion, and
 make that spatially varying.</p>
+</div>
+<div class="section level2">
+<h2 id="spatially-varying-edge-length">Spatially varying edge length<a class="anchor" aria-label="anchor" href="#spatially-varying-edge-length"></a>
+</h2>
 <p>We now define a function that computes our desired maximal edge
 length as a function of location, and feed the output of that to
 <code>fm_rcdt_2d_inla</code> using the <code>quality.spec</code>
@@ -217,8 +224,12 @@ infinitely many triangles!</p>
 <span>  <span class="fu"><a href="../reference/geom_fm.html">geom_fm</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mesh5</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">coord_sf</a></span><span class="op">(</span>default <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="variable_mesh_quality_files/figure-html/unnamed-chunk-5-1.png" width="480"></p>
-<p>The <code>fm_assess</code> function may also provide some
-insights:</p>
+</div>
+<div class="section level2">
+<h2 id="assessing-the-mesh-quality">Assessing the mesh quality<a class="anchor" aria-label="anchor" href="#assessing-the-mesh-quality"></a>
+</h2>
+<p>The <code>fm_assess</code> function may provide some insights into
+the effect of variable mesh quality settings:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_assess.html">fm_assess</a></span><span class="op">(</span><span class="va">mesh5</span>,</span>
 <span>  spatial.range <span class="op">=</span> <span class="fl">5</span>,</span>
@@ -237,6 +248,7 @@ insights:</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">coord_sf</a></span><span class="op">(</span>default <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html" class="external-link">scale_fill_distiller</a></span><span class="op">(</span></span>
 <span>    type <span class="op">=</span> <span class="st">"seq"</span>,</span>
+<span>    direction <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>    palette <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>    na.value <span class="op">=</span> <span class="st">"transparent"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
@@ -246,6 +258,8 @@ indicates that the nominal variance specified by the continuous domain
 model and the variance of the discretise model are similar.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sd.dev.limits</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="va">out</span><span class="op">$</span><span class="va">sd.dev</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">col.values</span> <span class="op">&lt;-</span> <span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, length.out <span class="op">=</span> <span class="fl">100</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span></span>
+<span><span class="va">col.values</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sign.html" class="external-link">sign</a></span><span class="op">(</span><span class="va">col.values</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">col.values</span><span class="op">)</span><span class="op">^</span><span class="fl">1.5</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html" class="external-link">geom_tile</a></span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="va">out</span>,</span>
@@ -257,7 +271,8 @@ model and the variance of the discretise model are similar.</p>
 <span>    type <span class="op">=</span> <span class="st">"div"</span>,</span>
 <span>    palette <span class="op">=</span> <span class="st">"RdBu"</span>,</span>
 <span>    na.value <span class="op">=</span> <span class="st">"transparent"</span>,</span>
-<span>    limits <span class="op">=</span> <span class="va">sd.dev.limits</span></span>
+<span>    limits <span class="op">=</span> <span class="va">sd.dev.limits</span>,</span>
+<span>    values <span class="op">=</span> <span class="va">col.values</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="variable_mesh_quality_files/figure-html/unnamed-chunk-8-1.png" width="480"></p>
 <p>Here, we see that the standard deviation of the discretised model is
@@ -298,7 +313,8 @@ criterion:</p>
 <span>    type <span class="op">=</span> <span class="st">"div"</span>,</span>
 <span>    palette <span class="op">=</span> <span class="st">"RdBu"</span>,</span>
 <span>    na.value <span class="op">=</span> <span class="st">"transparent"</span>,</span>
-<span>    limits <span class="op">=</span> <span class="va">sd.dev.limits</span></span>
+<span>    limits <span class="op">=</span> <span class="va">sd.dev.limits</span>,</span>
+<span>    values <span class="op">=</span> <span class="va">col.values</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="variable_mesh_quality_files/figure-html/unnamed-chunk-10-1.png" width="480"></p>
 <p>The <code>sd.dev</code> range has clearly decreased (deviation from 1
@@ -323,8 +339,10 @@ as seen from the mesh object summaries:</p>
 <span><span class="co">#&gt;   Constraints:   Boundary: 331 boundary edges (1 group: 1), Interior: 0 edges</span></span>
 <span><span class="co">#&gt;   Bounding box: (7.471455e-04,1.099925e+01) x (7.471455e-04,1.099925e+01)</span></span>
 <span><span class="co">#&gt;   Basis d.o.f.:  1980</span></span></code></pre></div>
+</div>
 
-  </main>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
 
