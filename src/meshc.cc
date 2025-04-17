@@ -729,7 +729,7 @@ Dart MeshC::insertNode(int v, const Dart &ed) {
   td = M_->locate_point(ed0, M_->S(v), v);
   FMLOG("Done looking." << endl);
   if (td.isnull()) { /* ERROR, not found! */
-    FMLOG("Error, node not found");
+    FMLOG("Error, node not found" << endl);
     return Dart();
   };
   if (td.v() == v) { /* Node already inserted! */
