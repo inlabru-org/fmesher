@@ -1138,7 +1138,7 @@ fm_hexagon_lattice_orig <- function(bnd,
 #'   points within a boundary. The hexagonal lattice is anchored at the
 #'   coordinate system origin, so that grids with different but overlapping
 #'   boundaries will have matching points.
-#' @param bnd Boundary object
+#' @param bnd Boundary object (currently must be an `sf` polygon)
 #' @param edge_len Triangle edge length
 #' @param buffer_n Number of triangle height multiples for buffer inside the
 #'   boundary object to the start of the lattice. Default 0.49.
@@ -1153,8 +1153,7 @@ fm_hexagon_lattice_orig <- function(bnd,
 #'     edge_len = 0.1
 #'   )$lattice,
 #'   max.edge = c(0.2, 1),
-#'   boundary = fmexample$boundary_sf,
-#'   min.angle = c(32, 21)
+#'   boundary = fmexample$boundary_sf
 #' ))
 #' if (require("ggplot2", quietly = TRUE)) {
 #'   ggplot() +

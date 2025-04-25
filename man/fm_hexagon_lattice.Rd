@@ -7,7 +7,7 @@
 fm_hexagon_lattice(bnd, edge_len = NULL, buffer_n = 0.49)
 }
 \arguments{
-\item{bnd}{Boundary object}
+\item{bnd}{Boundary object (currently must be an \code{sf} polygon)}
 
 \item{edge_len}{Triangle edge length}
 
@@ -30,8 +30,7 @@ boundaries will have matching points.
     edge_len = 0.1
   )$lattice,
   max.edge = c(0.2, 1),
-  boundary = fmexample$boundary_sf,
-  min.angle = c(32, 21)
+  boundary = fmexample$boundary_sf
 ))
 if (require("ggplot2", quietly = TRUE)) {
   ggplot() +
