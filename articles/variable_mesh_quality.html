@@ -24,7 +24,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0.9005</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0.9006</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -121,9 +121,7 @@ follows:</p>
 <span><span class="va">loc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/coerce.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html" class="external-link">expand.grid</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">bnd_sf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_nonconvex_hull.html">fm_nonconvex_hull</a></span><span class="op">(</span><span class="va">loc</span>, convex <span class="op">=</span> <span class="fl">1</span>, concave <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="va">bnd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_as_segm.html">fm_as_segm</a></span><span class="op">(</span><span class="va">bnd_sf</span><span class="op">)</span></span>
-<span><span class="va">loc</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_coordinates.html" class="external-link">st_coordinates</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="../reference/fm_hexagon_lattice.html">fm_hexagon_lattice</a></span><span class="op">(</span><span class="va">bnd_sf</span>, edge_len <span class="op">=</span> <span class="fl">1</span>, buffer_n <span class="op">=</span> <span class="fl">0.95</span><span class="op">)</span><span class="op">$</span><span class="va">lattice</span></span>
-<span><span class="op">)</span></span>
+<span><span class="va">loc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_hexagon_lattice.html">fm_hexagon_lattice</a></span><span class="op">(</span><span class="va">bnd_sf</span>, edge_len <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">mesh1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_rcdt_2d.html">fm_rcdt_2d_inla</a></span><span class="op">(</span></span>
 <span>  loc <span class="op">=</span> <span class="va">loc</span>,</span>
 <span>  boundary <span class="op">=</span> <span class="va">bnd</span>,</span>
@@ -167,6 +165,9 @@ length as a function of location, and feed the output of that to
 parameter instead of <code>max.edge</code>:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">qual_loc</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">loc</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">inherits</a></span><span class="op">(</span><span class="va">loc</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sf"</span>, <span class="st">"sfc"</span>, <span class="st">"sfg"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">loc</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_coordinates.html" class="external-link">st_coordinates</a></span><span class="op">(</span><span class="va">loc</span><span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="op">(</span><span class="va">loc</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span> <span class="op">*</span> <span class="fl">2</span> <span class="op">+</span> <span class="va">loc</span><span class="op">[</span>, <span class="fl">2</span><span class="op">]</span><span class="op">)</span> <span class="op">/</span> <span class="fl">16</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span><span class="va">mesh3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_rcdt_2d.html">fm_rcdt_2d_inla</a></span><span class="op">(</span></span>
@@ -210,6 +211,9 @@ values in the <code>refine</code> parameter list, that prohibits adding
 infinitely many triangles!</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">qual_bnd</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">loc</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">inherits</a></span><span class="op">(</span><span class="va">loc</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sf"</span>, <span class="st">"sfc"</span>, <span class="st">"sfg"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">loc</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_coordinates.html" class="external-link">st_coordinates</a></span><span class="op">(</span><span class="va">loc</span><span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">1</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">loc</span><span class="op">[</span>, <span class="fl">2</span><span class="op">]</span> <span class="op">/</span> <span class="fl">10</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span><span class="va">mesh5</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_rcdt_2d.html">fm_rcdt_2d_inla</a></span><span class="op">(</span></span>
@@ -322,7 +326,7 @@ criterion:</p>
 <span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="variable_mesh_quality_files/figure-html/unnamed-chunk-10-1.png" width="480"></p>
 <p>The <code>sd.dev</code> range has clearly decreased (the maximum
-absolute deviation from 1 decreased from 0.101 to 0.0809), and there is
+absolute deviation from 1 decreased from 0.0817 to 0.0815), and there is
 no longer a band of high values near the upper right corner.</p>
 <p>The number of additional vertices needed to accomplish this is small,
 as seen from the mesh object summaries:</p>
@@ -330,19 +334,19 @@ as seen from the mesh object summaries:</p>
 <code class="sourceCode R"><span><span class="va">mesh5</span></span>
 <span><span class="co">#&gt; fm_mesh_2d object:</span></span>
 <span><span class="co">#&gt;   Manifold:  R2</span></span>
-<span><span class="co">#&gt;   V / E / T: 2157 / 6151 / 3995</span></span>
+<span><span class="co">#&gt;   V / E / T: 1668 / 4675 / 3008</span></span>
 <span><span class="co">#&gt;   Euler char.:   1</span></span>
-<span><span class="co">#&gt;   Constraints:   Boundary: 317 boundary edges (1 group: 1), Interior: 0 edges</span></span>
+<span><span class="co">#&gt;   Constraints:   Boundary: 326 boundary edges (1 group: 1), Interior: 0 edges</span></span>
 <span><span class="co">#&gt;   Bounding box: ( 0.001053993,10.999246962) x ( 0.001053993,10.999246962)</span></span>
-<span><span class="co">#&gt;   Basis d.o.f.:  2157</span></span>
+<span><span class="co">#&gt;   Basis d.o.f.:  1668</span></span>
 <span><span class="va">mesh6</span></span>
 <span><span class="co">#&gt; fm_mesh_2d object:</span></span>
 <span><span class="co">#&gt;   Manifold:  R2</span></span>
-<span><span class="co">#&gt;   V / E / T: 2258 / 6451 / 4194</span></span>
+<span><span class="co">#&gt;   V / E / T: 2117 / 6021 / 3905</span></span>
 <span><span class="co">#&gt;   Euler char.:   1</span></span>
-<span><span class="co">#&gt;   Constraints:   Boundary: 320 boundary edges (1 group: 1), Interior: 0 edges</span></span>
+<span><span class="co">#&gt;   Constraints:   Boundary: 327 boundary edges (1 group: 1), Interior: 0 edges</span></span>
 <span><span class="co">#&gt;   Bounding box: ( 0.001053993,10.999246962) x ( 0.001053993,10.999246962)</span></span>
-<span><span class="co">#&gt;   Basis d.o.f.:  2258</span></span></code></pre></div>
+<span><span class="co">#&gt;   Basis d.o.f.:  2117</span></span></code></pre></div>
 </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -356,7 +360,7 @@ as seen from the mesh object summaries:</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
 </div>
 
     </footer>
