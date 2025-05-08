@@ -1,6 +1,6 @@
 ## mapping.R
 ##
-##   Copyright (C) 2015, Finn Lindgren
+##   Copyright (C) 2015-2025, Finn Lindgren
 
 
 
