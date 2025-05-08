@@ -44,6 +44,7 @@ Suggests:
     geometry,
     ggplot2,
     knitr,
+    patchwork,
     testthat (>= 3.0.0),
     terra,
     tidyterra,

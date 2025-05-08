@@ -1168,6 +1168,7 @@ fm_hexagon_lattice_orig <- function(bnd,
 #' }
 #' @author Man Ho Suen <M.H.Suen@@sms.ed.ac.uk>,
 #'  Finn Lindgren <Finn.Lindgren@@gmail.com>
+#' @seealso [fm_mesh_2d()]
 #' @export
 #' @examples
 #' (m <- fm_mesh_2d(

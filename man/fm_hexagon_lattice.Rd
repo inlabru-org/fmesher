@@ -48,7 +48,8 @@ filtering}
 }
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} Create hexagon lattice
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} from \verb{0.3.0.9001}.
+Create hexagon lattice
 points within a boundary. The hexagonal lattice is anchored at the
 coordinate system origin, so that grids with different but overlapping
 boundaries will have matching points.
@@ -85,6 +86,9 @@ if (require("ggplot2", quietly = TRUE) &&
     )
   )
 }
+}
+\seealso{
+\code{\link[=fm_mesh_2d]{fm_mesh_2d()}}
 }
 \author{
 Man Ho Suen \href{mailto:M.H.Suen@sms.ed.ac.uk}{M.H.Suen@sms.ed.ac.uk},
