@@ -4,7 +4,13 @@
 \alias{fm_hexagon_lattice}
 \title{Create hexagon lattice points}
 \usage{
-fm_hexagon_lattice(bnd, edge_len = NULL, buffer_n = 0.49)
+fm_hexagon_lattice(
+  bnd,
+  edge_len = NULL,
+  buffer_n = 0.49,
+  align = "origin",
+  meta = FALSE
+)
 }
 \arguments{
 \item{bnd}{Boundary object (currently must be an \code{sf} polygon)}
@@ -13,9 +19,33 @@ fm_hexagon_lattice(bnd, edge_len = NULL, buffer_n = 0.49)
 
 \item{buffer_n}{Number of triangle height multiples for buffer inside the
 boundary object to the start of the lattice. Default 0.49.}
+
+\item{align}{Alignment of the hexagon lattice, either a length-2 numeric,
+or character, a sf/sfc/sfg object containing a single point), or \code{character},
+default \code{"origin"}:
+\describe{
+\item{"origin"}{align the lattice with the coordinate system origin}
+\item{"bbox"}{align the lattice with the midpoint of the bounding box of
+\code{bnd}}
+\item{"centroid"}{align the lattice with the centroid of the boundary,
+\code{sf::st_centroid(bnd)}}
+}}
+
+\item{meta}{logical; if \code{TRUE}, return a list with diagnostic information
+from the lattice construction (including the points themselves in \code{lattice})}
 }
 \value{
-A list with lattice points, edge length, and inner boundary
+An \code{sfc} object with points, if \code{meta} is \code{FALSE} (default), or if
+\code{meta=TRUE}, a list:
+\describe{
+\item{lattice}{\code{sfc} with lattice points}
+\item{edge_len}{\code{numeric} with edge length}
+\item{bnd_inner}{\code{sf} object with the inner boundary used to filter points
+outside of a \code{edge_len * buffer_n} distance from the boundary}
+\item{grid_n}{\code{integer} with the number of points in each direction prior to
+filtering}
+\item{align}{\code{numeric} with the alignment coordinates of the hexagon lattice}
+}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} Create hexagon lattice
@@ -27,14 +57,33 @@ boundaries will have matching points.
 (m <- fm_mesh_2d(
   fm_hexagon_lattice(
     fmexample$boundary_sf[[1]],
-    edge_len = 0.1
-  )$lattice,
-  max.edge = c(0.2, 1),
+    edge_len = 0.1 * 5
+  ),
+  max.edge = c(0.2, 1) * 5,
   boundary = fmexample$boundary_sf
 ))
-if (require("ggplot2", quietly = TRUE)) {
-  ggplot() +
-    geom_fm(data = m)
+
+(m2 <- fm_mesh_2d(
+  fm_hexagon_lattice(
+    fmexample$boundary_sf[[1]],
+    edge_len = 0.1 * 5,
+    align = "centroid"
+  ),
+  max.edge = c(0.2, 1) * 5,
+  boundary = fmexample$boundary_sf
+))
+
+if (require("ggplot2", quietly = TRUE) &&
+  require("patchwork", quietly = TRUE)) {
+  ((ggplot() +
+      geom_fm(data = m) +
+      geom_point(aes(0, 0), col = "red")) |
+    (ggplot() +
+      geom_fm(data = m2) +
+      geom_point(aes(0, 0), col = "red") +
+      geom_sf(data = sf::st_centroid(fmexample$boundary_sf[[1]]))
+    )
+  )
 }
 }
 \author{

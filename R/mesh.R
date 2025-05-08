@@ -567,9 +567,10 @@ fm_onto_mesh <- function(mesh, loc, crs = NULL) {
   if (!fm_crs_is_null(crs) && !fm_crs_is_null(mesh_crs)) {
     if (!fm_crs_is_identical(crs, mesh_crs)) {
       loc <- fm_transform(loc,
-                          crs = mesh_crs,
-                          crs0 = crs,
-                          passthrough = FALSE)
+        crs = mesh_crs,
+        crs0 = crs,
+        passthrough = FALSE
+      )
     }
   } else if (fm_manifold(mesh, "S2")) {
     loc_needs_normalisation <- TRUE

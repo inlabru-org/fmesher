@@ -1134,7 +1134,8 @@ fm_hexagon_lattice_orig <- function(bnd,
 
 
 #' @title Create hexagon lattice points
-#' @description `r lifecycle::badge("experimental")` Create hexagon lattice
+#' @description `r lifecycle::badge("experimental")` from `0.3.0.9001`.
+#'   Create hexagon lattice
 #'   points within a boundary. The hexagonal lattice is anchored at the
 #'   coordinate system origin, so that grids with different but overlapping
 #'   boundaries will have matching points.
@@ -1142,7 +1143,29 @@ fm_hexagon_lattice_orig <- function(bnd,
 #' @param edge_len Triangle edge length
 #' @param buffer_n Number of triangle height multiples for buffer inside the
 #'   boundary object to the start of the lattice. Default 0.49.
-#' @return A list with lattice points, edge length, and inner boundary
+#' @param align Alignment of the hexagon lattice, either a length-2 numeric,
+#' or character, a sf/sfc/sfg object containing a single point), or `character`,
+#' default `"origin"`:
+#' \describe{
+#' \item{"origin"}{align the lattice with the coordinate system origin}
+#' \item{"bbox"}{align the lattice with the midpoint of the bounding box of
+#' `bnd`}
+#' \item{"centroid"}{align the lattice with the centroid of the boundary,
+#' `sf::st_centroid(bnd)`}
+#' }
+#' @param meta logical; if `TRUE`, return a list with diagnostic information
+#' from the lattice construction (including the points themselves in `lattice`)
+#' @return An `sfc` object with points, if `meta` is `FALSE` (default), or if
+#' `meta=TRUE`, a list:
+#' \describe{
+#' \item{lattice}{`sfc` with lattice points}
+#' \item{edge_len}{`numeric` with edge length}
+#' \item{bnd_inner}{`sf` object with the inner boundary used to filter points
+#'   outside of a `edge_len * buffer_n` distance from the boundary}
+#' \item{grid_n}{`integer` with the number of points in each direction prior to
+#' filtering}
+#' \item{align}{`numeric` with the alignment coordinates of the hexagon lattice}
+#' }
 #' @author Man Ho Suen <M.H.Suen@@sms.ed.ac.uk>,
 #'  Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @export
@@ -1150,18 +1173,39 @@ fm_hexagon_lattice_orig <- function(bnd,
 #' (m <- fm_mesh_2d(
 #'   fm_hexagon_lattice(
 #'     fmexample$boundary_sf[[1]],
-#'     edge_len = 0.1
-#'   )$lattice,
-#'   max.edge = c(0.2, 1),
+#'     edge_len = 0.1 * 5
+#'   ),
+#'   max.edge = c(0.2, 1) * 5,
 #'   boundary = fmexample$boundary_sf
 #' ))
-#' if (require("ggplot2", quietly = TRUE)) {
-#'   ggplot() +
-#'     geom_fm(data = m)
+#'
+#' (m2 <- fm_mesh_2d(
+#'   fm_hexagon_lattice(
+#'     fmexample$boundary_sf[[1]],
+#'     edge_len = 0.1 * 5,
+#'     align = "centroid"
+#'   ),
+#'   max.edge = c(0.2, 1) * 5,
+#'   boundary = fmexample$boundary_sf
+#' ))
+#'
+#' if (require("ggplot2", quietly = TRUE) &&
+#'   require("patchwork", quietly = TRUE)) {
+#'   ((ggplot() +
+#'       geom_fm(data = m) +
+#'       geom_point(aes(0, 0), col = "red")) |
+#'     (ggplot() +
+#'       geom_fm(data = m2) +
+#'       geom_point(aes(0, 0), col = "red") +
+#'       geom_sf(data = sf::st_centroid(fmexample$boundary_sf[[1]]))
+#'     )
+#'   )
 #' }
 fm_hexagon_lattice <- function(bnd,
                                edge_len = NULL,
-                               buffer_n = 0.49) {
+                               buffer_n = 0.49,
+                               align = "origin",
+                               meta = FALSE) {
   #  stopifnot(x_bin / 2 > edge_len_n)
   crs <- fm_crs(bnd)
   # Avoid longlat S2 issues by removing the CRS information
@@ -1172,17 +1216,40 @@ fm_hexagon_lattice <- function(bnd,
     edge_len <- diff(bbox[[1]]) / 250
   }
 
+  if (is.character(align)) {
+    align <- match.arg(align, c("origin", "bbox", "centroid"))
+    if (align == "bbox") {
+      # Align the hexagon lattice with the bounding box
+      align <- c(
+        (bbox[[1]][1] + bbox[[1]][2]) / 2,
+        (bbox[[2]][1] + bbox[[2]][2]) / 2
+      )
+    } else if (align == "centroid") {
+      # Align the hexagon lattice with the bounding box
+      align <- sf::st_centroid(bnd)
+    } else {
+      # Align the hexagon lattice with the coordinate system origin
+      align <- c(0, 0)
+    }
+  }
+
+  if (inherits(align, c("sf", "sfc", "sfg"))) {
+    align <- sf::st_coordinates(sf::st_centroid(align))
+  }
+  stopifnot(is.numeric(align))
+  origin <- align
+
   # Find covering rectangular grid extent
   h <- edge_len * sqrt(3) / 2
   grid_start <-
     c(
-      floor(bbox[[1]][1] / edge_len),
-      floor(bbox[[2]][1] / (2 * h)) * 2L
+      floor((bbox[[1]][1] - origin[1]) / edge_len),
+      floor((bbox[[2]][1] - origin[2]) / (2 * h)) * 2L
     )
   grid_end <-
     c(
-      ceiling(bbox[[1]][2] / edge_len),
-      ceiling(bbox[[2]][2] / (2 * h)) * 2L
+      ceiling((bbox[[1]][2] - origin[1]) / edge_len),
+      ceiling((bbox[[2]][2] - origin[2]) / (2 * h)) * 2L
     )
   grid_n <- grid_end - grid_start + 1L
 
@@ -1192,22 +1259,22 @@ fm_hexagon_lattice <- function(bnd,
   }
 
   # x
-  x_1_ <- seq(
+  x_1_ <- origin[1] + seq(
     grid_start[1] * edge_len,
     grid_end[1] * edge_len,
     length.out = grid_n[1]
   )
-  x_2_ <- seq(
+  x_2_ <- origin[1] + seq(
     (grid_start[1] + 0.5) * edge_len,
     (grid_end[1] - 0.5) * edge_len,
     length.out = grid_n[1] - 1L
   )
-  y_1_ <- seq(
+  y_1_ <- origin[2] + seq(
     grid_start[2] * h,
     grid_end[2] * h,
     length.out = (grid_n[2] + 1L) / 2L
   )
-  y_2_ <- seq(
+  y_2_ <- origin[2] + seq(
     (grid_start[2] + 1) * h,
     (grid_end[2] - 1) * h,
     length.out = (grid_n[2] + 1L) / 2L - 1L
@@ -1232,10 +1299,16 @@ fm_hexagon_lattice <- function(bnd,
 
   pts_inside <- lengths(sf::st_intersects(lattice_sfc, bnd_inner)) != 0
   pts_lattice_sfc <- lattice_sfc[pts_inside]
-  return(list(
-    lattice = pts_lattice_sfc,
-    edge_len = edge_len,
-    bnd_inner = bnd_inner,
-    grid_n = grid_n
-  ))
+
+  if (meta) {
+    return(list(
+      lattice = pts_lattice_sfc,
+      edge_len = edge_len,
+      bnd_inner = bnd_inner,
+      grid_n = grid_n,
+      align = origin
+    ))
+  }
+
+  pts_lattice_sfc
 }

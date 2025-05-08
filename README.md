@@ -151,7 +151,7 @@ set of input points. The (experimental, developed by Man Ho Suen)
 lattice pattern, contained in a given `sf` polygon.
 
 ``` r
-hex_points <- fm_hexagon_lattice(bnd = bnd[[1]], edge_len = 0.2)$lattice
+hex_points <- fm_hexagon_lattice(bnd = bnd[[1]], edge_len = 0.2)
 (mesh_hex <- fm_mesh_2d_inla(
   loc = hex_points,
   boundary = bnd,
