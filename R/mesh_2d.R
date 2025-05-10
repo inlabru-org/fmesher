@@ -860,10 +860,13 @@ fm_mesh_2d_inla <- function(loc = NULL,
   if (fm_diameter(loc) +
     fm_diameter(loc.domain) +
     fm_diameter(interior) == 0.0) {
+    bnd_diam <- 0.0
     for (k in seq_len(num.layers)) {
+      if ((length(boundary) >= k) && !is.null(boundary[[k]])) {
+        bnd_diam <- bnd_diam + fm_diameter(boundary[[k]])
+      }
       if (offset[k] < 0) {
-        if ((length(boundary) < k) ||
-          (fm_diameter(boundary[[k]]) == 0.0)) {
+        if (bnd_diam == 0.0) {
           offset[k] <- 1
         }
       }
