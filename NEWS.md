@@ -9,7 +9,7 @@
   `fm_subdivide()` (version `0.3.0.9003`)
 * Better handling of line integration when triangle edges and line transects
   are co-linear (version `0.3.0.9004`)
-* Add `bru_mesh_components()` method for extracting (dis)connected components
+* Add `fm_mesh_components()` method for extracting (dis)connected components
   from 2D and 3D meshes (version `0.3.0.9005`)
 * Improved bug fix in `fm_mesh_2d_inla()` from `0.2.0.9014` to allow negative
   offset in the second layer when the inner layer is specified only through
