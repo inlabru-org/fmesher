@@ -1236,6 +1236,7 @@ fm_hexagon_lattice <- function(bnd,
 
   if (inherits(align, c("sf", "sfc", "sfg"))) {
     align <- sf::st_coordinates(sf::st_centroid(align))
+    align <- align[, intersect(colnames(align), c("X", "Y", "Z")), drop = FALSE]
   }
   stopifnot(is.numeric(align))
   origin <- align

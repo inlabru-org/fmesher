@@ -196,8 +196,10 @@ fm_nonconvex_hull_inla <- function(x,
       passthrough = TRUE
     )
   } else if (inherits(x, c("sf", "sfc"))) {
+    z <- sf::st_coordinates(x)
+    z <- z[, intersect(colnames(z), c("X", "Y")), drop = FALSE]
     x <- fm_transform(
-      sf::st_coordinates(x),
+      z,
       crs0 = fm_crs(x),
       crs = fm_crs(x),
       passthrough = TRUE
@@ -306,8 +308,10 @@ fm_nonconvex_hull_inla_basic <- function(x, convex = -0.15, resolution = 40,
       passthrough = TRUE
     )
   } else if (inherits(x, c("sf", "sfc"))) {
+    z <- sf::st_coordinates(x)
+    z <- z[, intersect(colnames(z), c("X", "Y")), drop = FALSE]
     x <- fm_transform(
-      sf::st_coordinates(x),
+      z,
       crs0 = fm_crs(x),
       crs = fm_crs(x),
       passthrough = TRUE

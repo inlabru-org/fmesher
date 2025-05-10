@@ -89,7 +89,9 @@ fm_diameter.sfg <- function(x, ...) {
 #' @rdname fm_diameter
 #' @export
 fm_diameter.sfc <- function(x, ...) {
-  fm_diameter.matrix(sf::st_coordinates(x))
+  z <- sf::st_coordinates(x)
+  z <- z[, intersect(colnames(z), c("X", "Y", "Z")), drop = FALSE]
+  fm_diameter.matrix(z)
 }
 
 #' @rdname fm_diameter
