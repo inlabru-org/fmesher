@@ -3,6 +3,7 @@ url: https://inlabru-org.github.io/fmesher/
 template:
   bootswatch: cosmo
   bootstrap: 5
+  math-rendering: "mathjax"
 
 navbar:
   components:
