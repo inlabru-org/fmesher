@@ -4,11 +4,11 @@ test_that("GMRF methods, 1d", {
   Q <- fm_matern_precision(mesh, alpha = 2, rho = 1, sigma = 1)
   expect_equal(dim(Q), c(1, 1) * fm_dof(mesh))
 
-  set.seed(12345L)
+  withr::local_seed(12345L)
   samp <- fm_sample(n = 2, Q = Q)
   expect_equal(dim(samp), c(fm_dof(mesh), 2))
 
-  set.seed(12345L)
+  withr::local_seed(12345L)
   samp_constr <- fm_sample(
     n = 2,
     Q = Q,
@@ -27,11 +27,11 @@ test_that("GMRF methods, 2d", {
   Q <- fm_matern_precision(mesh, alpha = 2, rho = 1, sigma = 1)
   expect_equal(dim(Q), c(1, 1) * fm_dof(mesh))
 
-  set.seed(12345L)
+  withr::local_seed(12345L)
   samp <- fm_sample(n = 2, Q = Q)
   expect_equal(dim(samp), c(fm_dof(mesh), 2))
 
-  set.seed(12345L)
+  withr::local_seed(12345L)
   samp_constr <- fm_sample(
     n = 2,
     Q = Q,
