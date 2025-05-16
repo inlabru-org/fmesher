@@ -911,7 +911,11 @@ fm_mesh_2d_inla <- function(loc = NULL,
         boundary = boundary1,
         interior = interior1,
         cutoff = cutoff,
-        extend = FALSE, ## Should have no effect
+        extend = if (fm_manifold(mesh1, "S2")) {
+            list(n = n[1], offset = offset[1])
+          } else {
+            FALSE ## Should have no effect
+          },
         refine =
           list(
             min.angle = min.angle[1],
@@ -929,7 +933,11 @@ fm_mesh_2d_inla <- function(loc = NULL,
         boundary = boundary[[1]],
         interior = interior,
         cutoff = cutoff,
-        extend = FALSE, ## Should have no effect
+        extend = if (fm_manifold(mesh1, "S2")) {
+          list(n = n[1], offset = offset[1])
+        } else {
+          FALSE ## Should have no effect
+        },
         refine =
           list(
             min.angle = min.angle[1],

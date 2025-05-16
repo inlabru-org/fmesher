@@ -14,6 +14,10 @@
 * Improved bug fix in `fm_mesh_2d_inla()` from `0.2.0.9014` to allow negative
   offset in the second layer when the inner layer is specified only through
   a boundary polygon (version `0.3.0.9007`)
+* Bug fix for `fm_mesh_2d_inla()` to ensure S2 manifold meshes covering the
+  entire sphere aren't limited to a subset of the globe (version `0.3.0.9008`)
+* Handle colour palettes with fewer than requested colors in
+  `fm_generate_colors()` (version `0.3.0.9008`)
 
 # fmesher 0.3.0
 

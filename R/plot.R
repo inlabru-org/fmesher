@@ -628,10 +628,11 @@ fm_generate_colors <- function(color,
       alpha[not.ok] <- 0
     }
 
-    ics <- (as.numeric(cut(cs, seq(0, 1, length.out = color.n + 1),
+    color_pal <- color.palette(color.n)
+    ics <- (as.numeric(cut(cs, seq(0, 1, length.out = length(color_pal) + 1),
       include.lowest = TRUE
     )))
-    colors <- color.palette(color.n)[ics]
+    colors <- color_pal[ics]
 
     ## Todo: handle alpha, combining "input alpha" with "not.ok-alpha"
   } else if (is.matrix(color) && (ncol(color) == 3)) {
