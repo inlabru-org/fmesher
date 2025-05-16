@@ -912,10 +912,10 @@ fm_mesh_2d_inla <- function(loc = NULL,
         interior = interior1,
         cutoff = cutoff,
         extend = if (fm_manifold(mesh1, "S2")) {
-            list(n = n[1], offset = offset[1])
-          } else {
-            FALSE ## Should have no effect
-          },
+          list(n = n[1], offset = offset[1])
+        } else {
+          FALSE ## Should have no effect
+        },
         refine =
           list(
             min.angle = min.angle[1],
@@ -1200,8 +1200,8 @@ fm_hexagon_lattice_orig <- function(bnd,
 #' if (require("ggplot2", quietly = TRUE) &&
 #'   require("patchwork", quietly = TRUE)) {
 #'   ((ggplot() +
-#'       geom_fm(data = m) +
-#'       geom_point(aes(0, 0), col = "red")) |
+#'     geom_fm(data = m) +
+#'     geom_point(aes(0, 0), col = "red")) |
 #'     (ggplot() +
 #'       geom_fm(data = m2) +
 #'       geom_point(aes(0, 0), col = "red") +
