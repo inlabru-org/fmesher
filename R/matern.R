@@ -55,9 +55,11 @@ fm_matern_precision <- function(x, alpha, rho, sigma) {
   }
   if (alpha == 2) {
     g2 <- (fem$g2 + Matrix::t(fem$g2)) / 2
-    Q <- (C * kappa^4 + 2 * kappa^2 * fem$g1 + g2) / sigma^2 * scaling
+    Q <- (C * kappa^4 +
+      kappa^2 * (fem$g1 + Matrix::t(fem$g1)) +
+      g2) / sigma^2 * scaling
   } else if (alpha == 1) {
-    Q <- (C * kappa^2 + fem$g1) / sigma^2 * scaling
+    Q <- (C * kappa^2 + (fem$g1 + Matrix::t(fem$g1)) / 2) / sigma^2 * scaling
   } else {
     stop("This version only supports alpha = 1 and 2.")
   }
