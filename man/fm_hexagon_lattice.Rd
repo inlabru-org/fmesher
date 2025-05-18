@@ -15,7 +15,7 @@ fm_hexagon_lattice(
 \arguments{
 \item{bnd}{Boundary object (currently must be an \code{sf} polygon)}
 
-\item{edge_len}{Triangle edge length}
+\item{edge_len}{Triangle edge length. Default \code{diff(fm_bbox(bnd)[[1]]) / 250}.}
 
 \item{buffer_n}{Number of triangle height multiples for buffer inside the
 boundary object to the start of the lattice. Default 0.49.}

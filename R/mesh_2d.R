@@ -1146,7 +1146,8 @@ fm_hexagon_lattice_orig <- function(bnd,
 #'   is anchored at the coordinate system origin, so that grids with different
 #'   but overlapping boundaries will have matching points.
 #' @param bnd Boundary object (currently must be an `sf` polygon)
-#' @param edge_len Triangle edge length
+#' @param edge_len Triangle edge length. Default `diff(fm_bbox(bnd)[[1]]) /
+#'   250`.
 #' @param buffer_n Number of triangle height multiples for buffer inside the
 #'   boundary object to the start of the lattice. Default 0.49.
 #' @param align Alignment of the hexagon lattice, either a length-2 numeric, or
