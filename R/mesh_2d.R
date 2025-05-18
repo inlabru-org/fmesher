@@ -1141,18 +1141,17 @@ fm_hexagon_lattice_orig <- function(bnd,
 
 
 #' @title Create hexagon lattice points
-#' @description `r lifecycle::badge("experimental")` from `0.3.0.9001`.
-#'   Create hexagon lattice
-#'   points within a boundary. The hexagonal lattice is anchored at the
-#'   coordinate system origin, so that grids with different but overlapping
-#'   boundaries will have matching points.
+#' @description `r lifecycle::badge("experimental")` from `0.3.0.9001`. Create
+#'   hexagon lattice points within a boundary. By default, the hexagonal lattice
+#'   is anchored at the coordinate system origin, so that grids with different
+#'   but overlapping boundaries will have matching points.
 #' @param bnd Boundary object (currently must be an `sf` polygon)
 #' @param edge_len Triangle edge length
 #' @param buffer_n Number of triangle height multiples for buffer inside the
 #'   boundary object to the start of the lattice. Default 0.49.
-#' @param align Alignment of the hexagon lattice, either a length-2 numeric,
-#' or character, a sf/sfc/sfg object containing a single point), or `character`,
-#' default `"origin"`:
+#' @param align Alignment of the hexagon lattice, either a length-2 numeric, or
+#'   character, a `sf`/`sfc`/`sfg` object containing a single point), or
+#'   `character`, default `"origin"`:
 #' \describe{
 #' \item{"origin"}{align the lattice with the coordinate system origin}
 #' \item{"bbox"}{align the lattice with the midpoint of the bounding box of

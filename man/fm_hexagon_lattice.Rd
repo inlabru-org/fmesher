@@ -20,9 +20,9 @@ fm_hexagon_lattice(
 \item{buffer_n}{Number of triangle height multiples for buffer inside the
 boundary object to the start of the lattice. Default 0.49.}
 
-\item{align}{Alignment of the hexagon lattice, either a length-2 numeric,
-or character, a sf/sfc/sfg object containing a single point), or \code{character},
-default \code{"origin"}:
+\item{align}{Alignment of the hexagon lattice, either a length-2 numeric, or
+character, a \code{sf}/\code{sfc}/\code{sfg} object containing a single point), or
+\code{character}, default \code{"origin"}:
 \describe{
 \item{"origin"}{align the lattice with the coordinate system origin}
 \item{"bbox"}{align the lattice with the midpoint of the bounding box of
@@ -48,11 +48,10 @@ filtering}
 }
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} from \verb{0.3.0.9001}.
-Create hexagon lattice
-points within a boundary. The hexagonal lattice is anchored at the
-coordinate system origin, so that grids with different but overlapping
-boundaries will have matching points.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} from \verb{0.3.0.9001}. Create
+hexagon lattice points within a boundary. By default, the hexagonal lattice
+is anchored at the coordinate system origin, so that grids with different
+but overlapping boundaries will have matching points.
 }
 \examples{
 (m <- fm_mesh_2d(
@@ -77,8 +76,8 @@ boundaries will have matching points.
 if (require("ggplot2", quietly = TRUE) &&
   require("patchwork", quietly = TRUE)) {
   ((ggplot() +
-      geom_fm(data = m) +
-      geom_point(aes(0, 0), col = "red")) |
+    geom_fm(data = m) +
+    geom_point(aes(0, 0), col = "red")) |
     (ggplot() +
       geom_fm(data = m2) +
       geom_point(aes(0, 0), col = "red") +
