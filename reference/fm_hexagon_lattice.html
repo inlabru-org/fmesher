@@ -5,15 +5,13 @@
       fontURL: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2"
     }
   };
-</script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet"><link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet"><script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Create hexagon lattice points — fm_hexagon_lattice"><meta name="description" content=" from 0.3.0.9001.
-Create hexagon lattice
-points within a boundary. The hexagonal lattice is anchored at the
-coordinate system origin, so that grids with different but overlapping
-boundaries will have matching points."><meta property="og:description" content=" from 0.3.0.9001.
-Create hexagon lattice
-points within a boundary. The hexagonal lattice is anchored at the
-coordinate system origin, so that grids with different but overlapping
-boundaries will have matching points."></head><body>
+</script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet"><link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet"><script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Create hexagon lattice points — fm_hexagon_lattice"><meta name="description" content=" from 0.3.0.9001. Create
+hexagon lattice points within a boundary. By default, the hexagonal lattice
+is anchored at the coordinate system origin, so that grids with different
+but overlapping boundaries will have matching points."><meta property="og:description" content=" from 0.3.0.9001. Create
+hexagon lattice points within a boundary. By default, the hexagonal lattice
+is anchored at the coordinate system origin, so that grids with different
+but overlapping boundaries will have matching points."></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -60,11 +58,10 @@ boundaries will have matching points."></head><body>
     </div>
 
     <div class="ref-description section level2">
-    <p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a> from <code>0.3.0.9001</code>.
-Create hexagon lattice
-points within a boundary. The hexagonal lattice is anchored at the
-coordinate system origin, so that grids with different but overlapping
-boundaries will have matching points.</p>
+    <p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a> from <code>0.3.0.9001</code>. Create
+hexagon lattice points within a boundary. By default, the hexagonal lattice
+is anchored at the coordinate system origin, so that grids with different
+but overlapping boundaries will have matching points.</p>
     </div>
 
     <div class="section level2">
@@ -96,9 +93,9 @@ boundary object to the start of the lattice. Default 0.49.</p></dd>
 
 
 <dt id="arg-align">align<a class="anchor" aria-label="anchor" href="#arg-align"></a></dt>
-<dd><p>Alignment of the hexagon lattice, either a length-2 numeric,
-or character, a sf/sfc/sfg object containing a single point), or <code>character</code>,
-default <code>"origin"</code>:</p><dl><dt>"origin"</dt>
+<dd><p>Alignment of the hexagon lattice, either a length-2 numeric, or
+character, a <code>sf</code>/<code>sfc</code>/<code>sfg</code> object containing a single point), or
+<code>character</code>, default <code>"origin"</code>:</p><dl><dt>"origin"</dt>
 <dd><p>align the lattice with the coordinate system origin</p></dd>
 
 <dt>"bbox"</dt>
@@ -188,8 +185,8 @@ Finn Lindgren <a href="mailto:Finn.Lindgren@gmail.com">Finn.Lindgren@gmail.com</
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="https://ggplot2.tidyverse.org" class="external-link">"ggplot2"</a></span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&amp;&amp;</span></span></span>
 <span class="r-in"><span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="https://patchwork.data-imaginist.com" class="external-link">"patchwork"</a></span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="op">(</span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span></span>
-<span class="r-in"><span>      <span class="fu"><a href="geom_fm.html">geom_fm</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">m</span><span class="op">)</span> <span class="op">+</span></span></span>
-<span class="r-in"><span>      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span><span class="op">)</span> <span class="op">|</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="geom_fm.html">geom_fm</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">m</span><span class="op">)</span> <span class="op">+</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span><span class="op">)</span> <span class="op">|</span></span></span>
 <span class="r-in"><span>    <span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>      <span class="fu"><a href="geom_fm.html">geom_fm</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">m2</span><span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span> <span class="op">+</span></span></span>
