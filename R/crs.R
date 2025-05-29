@@ -2224,7 +2224,7 @@ fm_detect_manifold.matrix <- function(x) {
 #' @rdname fm_detect_manifold
 #' @export
 fm_detect_manifold.fm_mesh_2d <- function(x) {
-  if (ncol(x[["loc"]] <= 2)) {
+  if (ncol(x[["loc"]]) <= 2) {
     return("R2")
   }
   tol <- 1e-10

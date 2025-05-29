@@ -247,7 +247,7 @@ fm_basis.fm_collection <- function(x,
                                    full = FALSE) {
   loc_names <- names(loc)
   if (!is.null(loc_names) &&
-      (!("loc" %in% loc_names) || !("index" %in% loc_names))) {
+    (!("loc" %in% loc_names) || !("index" %in% loc_names))) {
     stop(
       paste0(
         "Location data for fm_collection must have elements `loc` and ",

@@ -20,6 +20,8 @@
   `fm_generate_colors()` (version `0.3.0.9008`)
 * Add `fm_collection()` method for creating a collection of meshes of the same
   type (version `0.3.0.9009`)
+* Fix bug in `fm_detect_manifold()` that caused it to return `"R2"` for
+  `"S2"` and `"M2"` manifolds (version `0.3.0.9010`)
 
 # fmesher 0.3.0
 
