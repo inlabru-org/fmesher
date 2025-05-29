@@ -70,6 +70,7 @@ if (require("ggplot2")) {
 }
 \seealso{
 Other object creation and conversion: 
+\code{\link{fm_as_collection}()},
 \code{\link{fm_as_fm}()},
 \code{\link{fm_as_lattice_2d}()},
 \code{\link{fm_as_lattice_Nd}()},
@@ -79,6 +80,7 @@ Other object creation and conversion:
 \code{\link{fm_as_segm}()},
 \code{\link{fm_as_sfc}()},
 \code{\link{fm_as_tensor}()},
+\code{\link{fm_collection}()},
 \code{\link{fm_lattice_2d}()},
 \code{\link{fm_lattice_Nd}()},
 \code{\link{fm_mesh_2d}()},

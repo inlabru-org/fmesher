@@ -234,7 +234,7 @@ fm_fem.fm_tensor <- function(mesh, order = 2, ...) {
   fem_list <- lapply(mesh$fun_spaces, fm_fem, order = order)
   cc_list <- lapply(seq_along(mesh$fun_spaces), function(i) {
     if (inherits(mesh$fun_spaces[[i]], "fm_mesh_1d") &&
-      mesh$fun_spaces[[i]]$degree == 2) {
+        mesh$fun_spaces[[i]]$degree == 2) {
       return(fem_list[[i]]$c1)
     }
     fem_list[[i]]$c0
@@ -267,6 +267,34 @@ fm_fem.fm_tensor <- function(mesh, order = 2, ...) {
     }
     mat_list[[i]] <- cc_list[[i]]
   }
+
+  return(list(cc = cc, g1 = g1, g2 = g2))
+}
+
+
+
+#' @rdname fm_fem
+#' @returns `fm_fem.fm_collection`: A list with elements `cc`, `g1`, `g2`.
+#' @export
+fm_fem.fm_collection <- function(mesh, order = 2, ...) {
+  if (order > 2) {
+    warning("Only fem order <= 2 implemented for fm_collection")
+    order <- 2
+  }
+
+  fem_list <- lapply(mesh$fun_spaces, fm_fem, order = order)
+  cc_list <- lapply(seq_along(mesh$fun_spaces), function(i) {
+    if (inherits(mesh$fun_spaces[[i]], "fm_mesh_1d") &&
+        mesh$fun_spaces[[i]]$degree == 2) {
+      return(fem_list[[i]]$c1)
+    }
+    fem_list[[i]]$c0
+  })
+
+
+  cc <- Matrix::.bdiag(cc_list)
+  g1 <- Matrix::.bdiag(lapply(fem_list, function(x) x$g1))
+  g2 <- Matrix::.bdiag(lapply(fem_list, function(x) x$g2))
 
   return(list(cc = cc, g1 = g1, g2 = g2))
 }

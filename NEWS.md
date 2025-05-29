@@ -16,8 +16,10 @@
   a boundary polygon (version `0.3.0.9007`)
 * Bug fix for `fm_mesh_2d_inla()` to ensure S2 manifold meshes covering the
   entire sphere aren't limited to a subset of the globe (version `0.3.0.9008`)
-* Handle colour palettes with fewer than requested colors in
+* Handle colour palettes with fewer than requested colours in
   `fm_generate_colors()` (version `0.3.0.9008`)
+* Add `fm_collection()` method for creating a collection of meshes of the same
+  type (version `0.3.0.9009`)
 
 # fmesher 0.3.0
 

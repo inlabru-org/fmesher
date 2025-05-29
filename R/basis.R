@@ -234,6 +234,57 @@ fm_basis.fm_tensor <- function(x,
 }
 
 
+#' @export
+#' @describeIn fm_basis Evaluates a basis matrix for a `fm_collection` function
+#'   space.
+fm_basis.fm_collection <- function(x,
+                               loc,
+                               weights = NULL,
+                               ...,
+                               full = FALSE) {
+  if (!("loc" %in% names(loc)) || !("index" %in% names(loc))) {
+    stop(
+      paste0(
+        "Location data for fm_collection must have elements `loc` and ",
+        "`index`.\n",
+        "Found: ", paste0(names(loc), collapse = ", ")
+      )
+    )
+  }
+
+  if (!tibble::is_tibble(loc)) {
+    loc <- tibble::as_tibble(loc)
+  }
+
+  # Reordering
+  block_order <- order(loc[["index"]])
+
+  idx <- seq_along(x[["fun_spaces"]])
+  proj <- lapply(
+    idx,
+    function(k) {
+      fm_basis(x[["fun_spaces"]][[k]],
+               loc = loc[loc[["index"]] == k, "loc", drop = FALSE],
+               full = TRUE)
+    }
+  )
+
+  # Combine the matrices
+  A <- Matrix::.bdiag(lapply(proj, fm_basis))
+  ok <- do.call(c, lapply(proj, function(xx) xx[["ok"]]))
+
+  # Reorder to original order
+  reorder <- order(block_order)
+  A <- A[reorder, , drop = FALSE]
+  ok <- ok[reorder]
+
+  fm_basis(
+    list(A = A, ok = ok),
+    full = full
+  )
+}
+
+
 #' @describeIn fm_basis Creates a new `fm_basis` object with elements `A` and
 #'   `ok`, from a pre-evaluated basis matrix, including optional additional
 #'   elements in the `...` arguments. If a `ok` is `NULL`, it is inferred as
