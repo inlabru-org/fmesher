@@ -264,7 +264,7 @@ fm_basis.fm_collection <- function(x,
     idx,
     function(k) {
       fm_basis(x[["fun_spaces"]][[k]],
-        loc = loc[loc[["index"]] == k, "loc", drop = FALSE],
+        loc = loc[loc[["index"]] == k, , drop = FALSE][["loc"]],
         full = TRUE
       )
     }
