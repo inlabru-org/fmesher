@@ -10,7 +10,8 @@
 #' @param x list of function space objects, such as [fm_mesh_2d()], all of the
 #' same type.
 #' @param ... Currently unused
-#' @returns A `fm_collection` or `fm_collection_list` object. Elements of `fm_collection`:
+#' @returns A `fm_collection` or `fm_collection_list` object.
+#'   Elements of `fm_collection`:
 #' \describe{
 #' \item{fun_spaces}{`fm_list` of function space objects}
 #' \item{manifold}{character; manifold type summary, obtained from the

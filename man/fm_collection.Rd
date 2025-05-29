@@ -13,7 +13,8 @@ same type.}
 \item{...}{Currently unused}
 }
 \value{
-A \code{fm_collection} or \code{fm_collection_list} object. Elements of \code{fm_collection}:
+A \code{fm_collection} or \code{fm_collection_list} object.
+Elements of \code{fm_collection}:
 \describe{
 \item{fun_spaces}{\code{fm_list} of function space objects}
 \item{manifold}{character; manifold type summary, obtained from the

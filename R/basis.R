@@ -238,10 +238,10 @@ fm_basis.fm_tensor <- function(x,
 #' @describeIn fm_basis Evaluates a basis matrix for a `fm_collection` function
 #'   space.
 fm_basis.fm_collection <- function(x,
-                               loc,
-                               weights = NULL,
-                               ...,
-                               full = FALSE) {
+                                   loc,
+                                   weights = NULL,
+                                   ...,
+                                   full = FALSE) {
   if (!("loc" %in% names(loc)) || !("index" %in% names(loc))) {
     stop(
       paste0(
@@ -264,8 +264,9 @@ fm_basis.fm_collection <- function(x,
     idx,
     function(k) {
       fm_basis(x[["fun_spaces"]][[k]],
-               loc = loc[loc[["index"]] == k, "loc", drop = FALSE],
-               full = TRUE)
+        loc = loc[loc[["index"]] == k, "loc", drop = FALSE],
+        full = TRUE
+      )
     }
   )
 

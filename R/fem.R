@@ -234,7 +234,7 @@ fm_fem.fm_tensor <- function(mesh, order = 2, ...) {
   fem_list <- lapply(mesh$fun_spaces, fm_fem, order = order)
   cc_list <- lapply(seq_along(mesh$fun_spaces), function(i) {
     if (inherits(mesh$fun_spaces[[i]], "fm_mesh_1d") &&
-        mesh$fun_spaces[[i]]$degree == 2) {
+      mesh$fun_spaces[[i]]$degree == 2) {
       return(fem_list[[i]]$c1)
     }
     fem_list[[i]]$c0
@@ -285,7 +285,7 @@ fm_fem.fm_collection <- function(mesh, order = 2, ...) {
   fem_list <- lapply(mesh$fun_spaces, fm_fem, order = order)
   cc_list <- lapply(seq_along(mesh$fun_spaces), function(i) {
     if (inherits(mesh$fun_spaces[[i]], "fm_mesh_1d") &&
-        mesh$fun_spaces[[i]]$degree == 2) {
+      mesh$fun_spaces[[i]]$degree == 2) {
       return(fem_list[[i]]$c1)
     }
     fem_list[[i]]$c0
