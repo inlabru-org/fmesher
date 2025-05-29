@@ -236,13 +236,18 @@ fm_basis.fm_tensor <- function(x,
 
 #' @export
 #' @describeIn fm_basis Evaluates a basis matrix for a `fm_collection` function
-#'   space.
+#'   space. The `loc` argument must be a `list` or `tibble` with elements
+#'   `loc` (the locations) and `index` (the indices into the function space
+#'   collection).
+#' @importFrom rlang .env
 fm_basis.fm_collection <- function(x,
                                    loc,
                                    weights = NULL,
                                    ...,
                                    full = FALSE) {
-  if (!("loc" %in% names(loc)) || !("index" %in% names(loc))) {
+  loc_names <- names(loc)
+  if (!is.null(loc_names) &&
+      (!("loc" %in% loc_names) || !("index" %in% loc_names))) {
     stop(
       paste0(
         "Location data for fm_collection must have elements `loc` and ",
@@ -253,17 +258,28 @@ fm_basis.fm_collection <- function(x,
   }
 
   if (!tibble::is_tibble(loc)) {
-    loc <- tibble::as_tibble(loc)
+    if (is.null(loc_names)) {
+      # The .env construction is needed to avoid `loc` name clash effects
+      loc <- tibble::tibble(
+        loc = .env$loc[[1]],
+        index = .env$loc[[2]]
+      )
+    } else {
+      loc <- tibble::tibble(
+        loc = .env$loc[["loc"]],
+        index = .env$loc[["index"]]
+      )
+    }
   }
 
-  # Reordering
-  block_order <- order(loc[["index"]])
-
   idx <- seq_along(x[["fun_spaces"]])
+  valid <- loc[["index"]] %in% idx
+
   proj <- lapply(
     idx,
     function(k) {
-      fm_basis(x[["fun_spaces"]][[k]],
+      fm_basis(
+        x[["fun_spaces"]][[k]],
         loc = loc[loc[["index"]] == k, , drop = FALSE][["loc"]],
         full = TRUE
       )
@@ -274,10 +290,25 @@ fm_basis.fm_collection <- function(x,
   A <- Matrix::.bdiag(lapply(proj, fm_basis))
   ok <- do.call(c, lapply(proj, function(xx) xx[["ok"]]))
 
-  # Reorder to original order
+  # Reorder to original order and fill in invalid rows
+  block_order <- order(loc[["index"]][valid])
   reorder <- order(block_order)
-  A <- A[reorder, , drop = FALSE]
-  ok <- ok[reorder]
+  A_ <- A[reorder, , drop = FALSE]
+  ok_ <- ok[reorder]
+
+  A <- Matrix::sparseMatrix(
+    i = integer(0),
+    j = integer(0),
+    x = numeric(0),
+    dims = c(nrow(loc), ncol(A_))
+  )
+  A[valid, ] <- A_
+  ok <- logical(nrow(loc))
+  ok[valid] <- ok_
+
+  if (!is.null(weights)) {
+    A <- Matrix::Diagonal(n = nrow(A), x = weights) %*% A
+  }
 
   fm_basis(
     list(A = A, ok = ok),

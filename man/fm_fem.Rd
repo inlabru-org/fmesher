@@ -44,7 +44,10 @@ matrices, etc.
 
 \code{fm_fem.fm_tensor}: A list with elements \code{cc}, \code{g1}, \code{g2}.
 
-\code{fm_fem.fm_collection}: A list with elements \code{cc}, \code{g1}, \code{g2}.
+\code{fm_fem.fm_collection}: A list with elements \code{c0}, \code{c1},
+\code{g1}, \code{g2}, etc, and \code{cc} (\code{c0} for every model except \code{fm_mesh_1d} with
+\code{degree=2}, for which it is \code{c1}). If the base type for the collection
+provides \code{va} and \code{ta} values, those are also returned.
 
 \code{fm_fem.fm_mesh_3d}: A list with elements \code{c0}, \code{c1}, \code{g1}, \code{g2},
 \code{va}, \code{ta}, and more if \code{order > 2}.

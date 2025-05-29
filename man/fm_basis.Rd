@@ -100,7 +100,9 @@ matrices are included in the \code{full=TRUE} output: Derivative weight matrices
 space.
 
 \item \code{fm_basis(fm_collection)}: Evaluates a basis matrix for a \code{fm_collection} function
-space.
+space. The \code{loc} argument must be a \code{list} or \code{tibble} with elements
+\code{loc} (the locations) and \code{index} (the indices into the function space
+collection).
 
 \item \code{fm_basis(matrix)}: Creates a new \code{fm_basis} object with elements \code{A} and
 \code{ok}, from a pre-evaluated basis matrix, including optional additional
