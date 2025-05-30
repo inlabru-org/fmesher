@@ -34,9 +34,10 @@ m <- fm_collection(list(
 m2 <- fm_as_collection(m)
 m3 <- fm_as_collection_list(list(m, m))
 c(fm_dof(m$fun_spaces[[1]]) + fm_dof(m$fun_spaces[[2]]), fm_dof(m))
-str(fm_evaluator(m, loc = tibble::tibble(loc = cbind(0, 0), index = 2)))
-str(fm_basis(m, loc = tibble::tibble(loc = cbind(0, 0), index = 2)))
-str(fm_fem(m))
+fm_basis(m, loc = tibble::tibble(loc = cbind(0, 0), index = 2), full = TRUE)
+fm_evaluator(m, loc = tibble::tibble(loc = cbind(0, 0), index = 2))
+names(fm_fem(m))
+fm_diameter(m)
 }
 \seealso{
 Other object creation and conversion: 
