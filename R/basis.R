@@ -272,6 +272,19 @@ fm_basis.fm_collection <- function(x,
     }
   }
 
+  if (is.numeric(loc[["index"]]) && !is.integer(loc[["index"]])) {
+    loc[["index"]] <- as.integer(loc[["index"]])
+  }
+  if (!is.null(names(x[["fun_spaces"]]))) {
+    if (is.factor(loc[["index"]])) {
+      loc[["index"]] <- as.character(loc[["index"]])
+    }
+    if (is.character(loc[["index"]])) {
+      # Convert character indices to integer
+      loc[["index"]] <- match(loc[["index"]], names(x[["fun_spaces"]]))
+    }
+  }
+
   idx <- seq_along(x[["fun_spaces"]])
   valid <- loc[["index"]] %in% idx
 
