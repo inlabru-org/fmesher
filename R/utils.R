@@ -472,22 +472,8 @@ method_classes <- function(f) {
   )
 }
 
-class_methods <- function(cl, f, include_defaults = FALSE) {
-  names(f) <- f
-  cls <- lapply(f, method_classes)
-  cl_f <- lapply(
-    names(cls),
-    function(f_name) {
-      if (cl %in% cls[[f_name]]) {
-        f_name
-      } else if (include_defaults && ("default" %in% cls[[f_name]])) {
-        paste0(f_name, "(default)")
-      } else {
-        NULL
-      }
-    }
-  )
-  unlist(cl_f)
+class_methods <- function(cl) {
+  .S3methods(class = cl)
 }
 
 package_methods <- function() {
@@ -509,13 +495,10 @@ package_methods <- function() {
 
 
 fm_capabilities <- function(class = NULL,
-                            method = NULL,
-                            include_defaults = FALSE) {
+                            method = NULL) {
   if (!is.null(class)) {
-    methods <- package_methods()
-    return(class_methods(class, methods, include_defaults = include_defaults))
-  }
-  if (!is.null(method)) {
-    return(method_classes(method))
+    class_methods(class)
+  } else if (!is.null(method)) {
+    method_classes(method)
   }
 }
