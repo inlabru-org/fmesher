@@ -473,7 +473,7 @@ method_classes <- function(f) {
 }
 
 class_methods <- function(cl) {
-  .S3methods(class = cl)
+  utils::.S3methods(class = cl)
 }
 
 package_methods <- function() {
