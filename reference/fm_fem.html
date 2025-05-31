@@ -5,7 +5,7 @@
       fontURL: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2"
     }
   };
-</script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet"><link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet"><script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Compute finite element matrices — fm_fem"><meta name="description" content="(...)"><meta property="og:description" content="(...)"></head><body>
+</script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet"><link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet"><script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Compute finite element matrices — fm_fem"><meta name="description" content="Compute finite element mass and structure matrices"><meta property="og:description" content="Compute finite element mass and structure matrices"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0.9008</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0.9010</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,7 +52,7 @@
     </div>
 
     <div class="ref-description section level2">
-    <p>(...)</p>
+    <p>Compute finite element mass and structure matrices</p>
     </div>
 
     <div class="section level2">
@@ -68,6 +68,9 @@
 <span><span class="co"># S3 method for class 'fm_tensor'</span></span>
 <span><span class="fu">fm_fem</span><span class="op">(</span><span class="va">mesh</span>, order <span class="op">=</span> <span class="fl">2</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># S3 method for class 'fm_collect'</span></span>
+<span><span class="fu">fm_fem</span><span class="op">(</span><span class="va">mesh</span>, order <span class="op">=</span> <span class="fl">2</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
 <span><span class="co"># S3 method for class 'fm_mesh_3d'</span></span>
 <span><span class="fu">fm_fem</span><span class="op">(</span><span class="va">mesh</span>, order <span class="op">=</span> <span class="fl">2</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -77,11 +80,12 @@
 
 
 <dl><dt id="arg-mesh">mesh<a class="anchor" aria-label="anchor" href="#arg-mesh"></a></dt>
-<dd><p><code>fm_mesh_1d</code> or other supported mesh class object</p></dd>
+<dd><p><code><a href="fm_mesh_1d.html">fm_mesh_1d()</a></code>, <code><a href="fm_mesh_2d.html">fm_mesh_2d()</a></code>, or other supported mesh class
+object</p></dd>
 
 
 <dt id="arg-order">order<a class="anchor" aria-label="anchor" href="#arg-order"></a></dt>
-<dd><p>integer</p></dd>
+<dd><p>integer; the maximum operator order</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -97,85 +101,27 @@ structure matrices (in addition to the regular) for \(\gamma\) and
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p><code>fm_fem.fm_mesh_1d</code>: A list with elements <code>c0</code>, <code>c1</code>, <code>g1</code>, <code>g2</code>.
+    <p><code>fm_fem.fm_mesh_1d</code>: A list with elements <code>c0</code>, <code>c1</code>, <code>g1</code>, <code>g2</code>,
+etc.
 When <code>mesh$degree == 2</code>, also <code>g01</code>, <code>g02</code>, and <code>g12</code>.</p>
 <p><code>fm_fem.fm_mesh_2d</code>: A list with elements <code>c0</code>, <code>c1</code>, <code>g1</code>, <code>va</code>,
 <code>ta</code>, and more if <code>order &gt; 1</code>. When <code>aniso</code> is non-NULL, also <code>g1aniso</code>
 matrices, etc.</p>
 <p><code>fm_fem.fm_tensor</code>: A list with elements <code>cc</code>, <code>g1</code>, <code>g2</code>.</p>
+<p><code>fm_fem.fm_collect</code>: A list with elements <code>c0</code>, <code>c1</code>,
+<code>g1</code>, <code>g2</code>, etc, and <code>cc</code> (<code>c0</code> for every model except <code>fm_mesh_1d</code> with
+<code>degree=2</code>, for which it is <code>c1</code>). If the base type for the collection
+provides <code>va</code> and <code>ta</code> values, those are also returned.</p>
 <p><code>fm_fem.fm_mesh_3d</code>: A list with elements <code>c0</code>, <code>c1</code>, <code>g1</code>, <code>g2</code>,
 <code>va</code>, <code>ta</code>, and more if <code>order &gt; 2</code>.</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu">fm_fem</span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> List of 9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ b1:Formal class 'dgTMatrix' [package "Matrix"] with 6 slots</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ i       : int [1:137] 0 0 0 0 1 1 1 1 1 2 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ j       : int [1:137] 0 1 25 257 0 1 2 226 257 1 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ Dim     : int [1:2] 279 279</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ Dimnames:List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ x       : num [1:137] 1.4155 0.1341 0.0209 -1.5705 0.4222 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ factors : list()</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ c0:Formal class 'dgTMatrix' [package "Matrix"] with 6 slots</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ i       : int [1:279] 0 1 2 3 4 5 6 7 8 9 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ j       : int [1:279] 0 1 2 3 4 5 6 7 8 9 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ Dim     : int [1:2] 279 279</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ Dimnames:List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ x       : num [1:279] 0.343 0.542 0.427 0.564 0.439 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ factors : list()</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ c1:Formal class 'dgTMatrix' [package "Matrix"] with 6 slots</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ i       : int [1:1889] 0 0 0 0 1 1 1 1 1 2 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ j       : int [1:1889] 0 1 25 257 0 1 2 226 257 1 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ Dim     : int [1:2] 279 279</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ Dimnames:List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ x       : num [1:1889] 0.1713 0.029 0.0566 0.0856 0.029 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ factors : list()</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ g1:Formal class 'dgTMatrix' [package "Matrix"] with 6 slots</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ i       : int [1:1889] 0 0 0 0 1 1 1 1 1 2 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ j       : int [1:1889] 0 1 25 257 0 1 2 226 257 1 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ Dim     : int [1:2] 279 279</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ Dimnames:List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ x       : num [1:1889] 1.989 -0.348 -0.226 -1.415 -0.348 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ factors : list()</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ g2:Formal class 'dgTMatrix' [package "Matrix"] with 6 slots</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ i       : int [1:5195] 0 0 0 0 0 0 0 0 0 0 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ j       : int [1:5195] 0 1 2 24 25 225 226 229 233 245 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ Dim     : int [1:2] 279 279</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ Dimnames:List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ x       : num [1:5195] 13.8435 -2.1903 0.4929 0.0507 -1.4847 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ factors : list()</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ k1:Formal class 'dgTMatrix' [package "Matrix"] with 6 slots</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ i       : int [1:1889] 0 0 0 0 1 1 1 1 1 2 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ j       : int [1:1889] 0 1 25 257 0 1 2 226 257 1 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ Dim     : int [1:2] 279 279</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ Dimnames:List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ x       : num [1:1889] 0.574 -0.482 -0.247 0.155 -0.77 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ factors : list()</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ k2:Formal class 'dgTMatrix' [package "Matrix"] with 6 slots</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ i       : int [1:5195] 0 0 0 0 0 0 0 0 0 0 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ j       : int [1:5195] 0 1 2 24 25 225 226 229 233 245 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ Dim     : int [1:2] 279 279</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ Dimnames:List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ x       : num [1:5195] 1.634 -2.457 0.925 0.146 -0.72 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ factors : list()</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ ta: num [1:527, 1] 0.0641 0.0799 0.0794 0.0734 0.0383 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ va: num [1:279, 1] 0.343 0.542 0.427 0.564 0.439 ...</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu">fm_fem</span><span class="op">(</span><span class="fu"><a href="fm_mesh_1d.html">fm_mesh_1d</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span>, order <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "c0" "c1" "g1" "g2" "g3"</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu">fm_fem</span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span>, order <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "b1" "c0" "c1" "g1" "g2" "g3" "k1" "k2" "k3" "ta" "va"</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
@@ -188,7 +134,7 @@ matrices, etc.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer></div>

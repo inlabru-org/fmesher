@@ -15,7 +15,7 @@ mesh, and locations."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0.9008</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0.9010</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,6 +81,9 @@ mesh, and locations.</p>
 <span><span class="fu">fm_basis</span><span class="op">(</span><span class="va">x</span>, <span class="va">loc</span>, weights <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span>, full <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'fm_tensor'</span></span>
+<span><span class="fu">fm_basis</span><span class="op">(</span><span class="va">x</span>, <span class="va">loc</span>, weights <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span>, full <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'fm_collect'</span></span>
 <span><span class="fu">fm_basis</span><span class="op">(</span><span class="va">x</span>, <span class="va">loc</span>, weights <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span>, full <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'matrix'</span></span>
@@ -162,6 +165,10 @@ matrices are included in the <code>full=TRUE</code> output: Derivative weight ma
 <li><p><code>fm_basis(fm_lattice_Nd)</code>: <code>fm_lattice_Nd</code> multilinear basis functions.</p></li>
 <li><p><code>fm_basis(fm_tensor)</code>: Evaluates a basis matrix for a <code>fm_tensor</code> function
 space.</p></li>
+<li><p><code>fm_basis(fm_collect)</code>: Evaluates a basis matrix for a <code>fm_collect</code> function
+space. The <code>loc</code> argument must be a <code>list</code> or <code>tibble</code> with elements
+<code>loc</code> (the locations) and <code>index</code> (the indices into the function space
+collection).</p></li>
 <li><p><code>fm_basis(matrix)</code>: Creates a new <code>fm_basis</code> object with elements <code>A</code> and
 <code>ok</code>, from a pre-evaluated basis matrix, including optional additional
 elements in the <code>...</code> arguments. If a <code>ok</code> is <code>NULL</code>, it is inferred as
@@ -218,7 +225,7 @@ object. If <code>full = FALSE</code>, returns the <code>A</code> matrix containe
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer></div>
