@@ -4,30 +4,32 @@
 
 #' @title Compute finite element matrices
 #'
-#' @description (...)
+#' @description Compute finite element mass and structure matrices
 #'
-#' @param mesh `fm_mesh_1d` or other supported mesh class object
-#' @param order integer
+#' @param mesh [fm_mesh_1d()], [fm_mesh_2d()], or other supported mesh class
+#' object
+#' @param order integer; the maximum operator order
 #' @param ... Currently unused
 #'
 #' @export
 #' @examples
-#' str(fm_fem(fmexample$mesh))
+#' names(fm_fem(fm_mesh_1d(1:4), order = 3))
+#' names(fm_fem(fmexample$mesh, order = 3))
 #'
 fm_fem <- function(mesh, order = 2, ...) {
   UseMethod("fm_fem")
 }
 
+make_symmetric <- function(x) {
+  (x + Matrix::t(x)) / 2
+}
+
 #' @rdname fm_fem
-#' @returns `fm_fem.fm_mesh_1d`: A list with elements `c0`, `c1`, `g1`, `g2`.
+#' @returns `fm_fem.fm_mesh_1d`: A list with elements `c0`, `c1`, `g1`, `g2`,
+#' etc.
 #' When `mesh$degree == 2`, also `g01`, `g02`, and `g12`.
 #' @export
 fm_fem.fm_mesh_1d <- function(mesh, order = 2, ...) {
-  if (order > 2) {
-    warning("Only fem order <= 2 implemented for fm_mesh_1d")
-    order <- 2
-  }
-
   ## Use the same matrices for degree 0 as for degree 1
   if ((mesh$degree == 0) || (mesh$degree == 1)) {
     if (mesh$cyclic) {
@@ -136,8 +138,17 @@ fm_fem.fm_mesh_1d <- function(mesh, order = 2, ...) {
         x = c(c1.l, c1.r, c1.0),
         dims = c(mesh$m, mesh$m)
       )
-    g2 <- Matrix::t(g1) %*% Matrix::Diagonal(mesh$m, 1 / c0) %*% g1
-    c0 <- Matrix::Diagonal(mesh$m, c0)
+
+    c0_ <- c0
+    c0 <- Matrix::Diagonal(mesh$m, c0_)
+
+    g_list <- list(
+      g1 = g1,
+      g2 = make_symmetric(
+        (Matrix::t(g1) %*% Matrix::Diagonal(mesh$m, 1 / c0_)) %*% g1
+      )
+    )
+
   } else if (mesh$degree == 2) {
     if (mesh$cyclic) {
       knots1 <- mesh$loc
@@ -169,17 +180,10 @@ fm_fem.fm_mesh_1d <- function(mesh, order = 2, ...) {
     g02 <- Matrix::t(info$A) %*% info$d2A
     g12 <- Matrix::t(info$dA) %*% info$d2A
 
-    c0 <- Matrix::Diagonal(nrow(c1), Matrix::rowSums(c1))
+    c0_ <- Matrix::rowSums(c1)
+    c0 <- Matrix::Diagonal(nrow(c1), c0_)
 
-    return(list(
-      c0 = c0,
-      c1 = c1,
-      g1 = g1,
-      g2 = g2,
-      g01 = g01,
-      g02 = g02,
-      g12 = g12
-    ))
+    g_list <- list(g1 = g1, g2 = g2, g01 = g01, g02 = g02, g12 = g12)
   } else {
     stop(paste("Mesh basis degree=", mesh$degree,
       " is not supported by fm_fem.fm_mesh_1d.",
@@ -187,7 +191,15 @@ fm_fem.fm_mesh_1d <- function(mesh, order = 2, ...) {
     ))
   }
 
-  return(list(c0 = c0, c1 = c1, g1 = g1, g2 = g2))
+  if (order > 2) {
+    tmp <- Matrix::t(g_list[["g2"]]) %*% Matrix::Diagonal(mesh$m, 1 / c0_)
+    for (k in seq_len(order - 2) + 2) {
+      g_list[[paste0("g", k)]] <-
+        make_symmetric(tmp %*% g_list[[paste0("g", k - 2)]])
+    }
+  }
+
+  return(c(list(c0 = c0, c1 = c1), g_list))
 }
 
 #' @rdname fm_fem
