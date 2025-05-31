@@ -19,6 +19,7 @@
 * Better handling of line integration when triangle edges and line transects
   are co-linear (version `0.3.0.9004`)
 * Add support for `order > 2` for `fm_fem.fm_mesh_1d()` (version `0.3.0.9011`)
+  and generally for `fm_matern_precision()` (version `0.3.0.9012`)
 
 ## Bug fixes
 

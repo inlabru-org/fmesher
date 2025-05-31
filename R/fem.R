@@ -148,7 +148,6 @@ fm_fem.fm_mesh_1d <- function(mesh, order = 2, ...) {
         (Matrix::t(g1) %*% Matrix::Diagonal(mesh$m, 1 / c0_)) %*% g1
       )
     )
-
   } else if (mesh$degree == 2) {
     if (mesh$cyclic) {
       knots1 <- mesh$loc
