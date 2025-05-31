@@ -20,13 +20,20 @@
 #' @family object creation and conversion
 #' @examples
 #' m <- fm_collect(list(
-#'   fmexample$mesh,
-#'   fmexample$mesh
+#'   A = fmexample$mesh,
+#'   B = fmexample$mesh
 #' ))
-#' m2 <- fm_as_collection(m)
-#' m3 <- fm_as_collection_list(list(m, m))
+#' m2 <- fm_as_collect(m)
+#' m3 <- fm_as_collect_list(list(m, m))
 #' c(fm_dof(m$fun_spaces[[1]]) + fm_dof(m$fun_spaces[[2]]), fm_dof(m))
-#' fm_basis(m, loc = tibble::tibble(loc = cbind(0, 0), index = 2), full = TRUE)
+#' fm_basis(m, loc = tibble::tibble(
+#'   loc = rbind(c(0, 0), c(0.1, 0.1)),
+#'   index = c(2, 1)
+#' ), full = TRUE)
+#' fm_basis(m, loc = tibble::tibble(
+#'   loc = rbind(c(0, 0), c(0.1, 0.1)),
+#'   index = c("B", "A")
+#' ), full = TRUE)
 #' fm_evaluator(m, loc = tibble::tibble(loc = cbind(0, 0), index = 2))
 #' names(fm_fem(m))
 #' fm_diameter(m)
@@ -52,7 +59,7 @@ fm_collect <- function(x, ...) {
 }
 
 #' @title Convert objects to `fm_collect`
-#' @describeIn fm_as_collection Convert an object to `fm_collect`.
+#' @describeIn fm_as_collect Convert an object to `fm_collect`.
 #' @param x Object to be converted.
 #' @param ... Arguments passed on to submethods
 #' @returns An `fm_collect` object
@@ -60,23 +67,23 @@ fm_collect <- function(x, ...) {
 #' @family object creation and conversion
 #' @export
 #' @examples
-#' fm_as_collection_list(list(fm_collect(list())))
+#' fm_as_collect_list(list(fm_collect(list())))
 #'
-fm_as_collection <- function(x, ...) {
+fm_as_collect <- function(x, ...) {
   if (is.null(x)) {
     return(NULL)
   }
-  UseMethod("fm_as_collection")
+  UseMethod("fm_as_collect")
 }
-#' @describeIn fm_as_collection Convert each element of a list
+#' @describeIn fm_as_collect Convert each element of a list
 #' @export
-fm_as_collection_list <- function(x, ...) {
-  fm_as_list(x, ..., .class_stub = "collection")
+fm_as_collect_list <- function(x, ...) {
+  fm_as_list(x, ..., .class_stub = "collect")
 }
-#' @rdname fm_as_collection
+#' @rdname fm_as_collect
 #' @param x Object to be converted
 #' @export
-fm_as_collection.fm_collect <- function(x, ...) {
+fm_as_collect.fm_collect <- function(x, ...) {
   #  class(x) <- c("fm_collect", setdiff(class(x), "fm_collect"))
   x
 }

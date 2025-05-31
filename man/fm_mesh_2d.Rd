@@ -107,7 +107,7 @@ fm_mesh_2d_inla(boundary = fm_extensions(cbind(2, 1), convex = 1, 2))
 \code{\link[=fm_nonconvex_hull]{fm_nonconvex_hull()}}, \code{\link[=fm_extensions]{fm_extensions()}}, \code{\link[=fm_refine]{fm_refine()}}
 
 Other object creation and conversion: 
-\code{\link{fm_as_collection}()},
+\code{\link{fm_as_collect}()},
 \code{\link{fm_as_fm}()},
 \code{\link{fm_as_lattice_2d}()},
 \code{\link{fm_as_lattice_Nd}()},

@@ -92,7 +92,7 @@ mesh <- fm_rcdt_2d(lattice = lattice, refine = list(max.edge = 0.08))
 \code{\link[=fm_mesh_2d]{fm_mesh_2d()}}
 
 Other object creation and conversion: 
-\code{\link{fm_as_collection}()},
+\code{\link{fm_as_collect}()},
 \code{\link{fm_as_fm}()},
 \code{\link{fm_as_lattice_2d}()},
 \code{\link{fm_as_lattice_Nd}()},

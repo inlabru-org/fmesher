@@ -80,7 +80,7 @@ fm_as_fm(NULL)
 }
 \seealso{
 Other object creation and conversion: 
-\code{\link{fm_as_collection}()},
+\code{\link{fm_as_collect}()},
 \code{\link{fm_as_lattice_2d}()},
 \code{\link{fm_as_lattice_Nd}()},
 \code{\link{fm_as_mesh_1d}()},

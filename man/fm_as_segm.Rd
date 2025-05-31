@@ -132,7 +132,7 @@ fm_as_segm_list(list(
 \code{\link[=[.fm_segm_list]{[.fm_segm_list()}}
 
 Other object creation and conversion: 
-\code{\link{fm_as_collection}()},
+\code{\link{fm_as_collect}()},
 \code{\link{fm_as_fm}()},
 \code{\link{fm_as_lattice_2d}()},
 \code{\link{fm_as_lattice_Nd}()},
