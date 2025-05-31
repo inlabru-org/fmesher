@@ -160,7 +160,7 @@ fm_bbox.fm_tensor <- function(x, ...) {
 
 #' @rdname fm_bbox
 #' @export
-fm_bbox.fm_collection <- function(x, ...) {
+fm_bbox.fm_collect <- function(x, ...) {
   do.call(c, c(lapply(x[["fun_spaces"]], fm_bbox), list(.join = FALSE)))
 }
 

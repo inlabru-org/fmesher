@@ -42,7 +42,7 @@ reference:
   - starts_with("fm_extensions")
   - starts_with("fm_simplify")
   - starts_with("fm_tensor")
-  - starts_with("fm_collection")
+  - starts_with("fm_collect")
 - title: "Property methods"
   desc: "Functions for computing or accessing object properties"
   contents:

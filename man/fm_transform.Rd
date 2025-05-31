@@ -10,7 +10,7 @@
 \alias{fm_transform.sfg}
 \alias{fm_transform.Spatial}
 \alias{fm_transform.fm_mesh_2d}
-\alias{fm_transform.fm_collection}
+\alias{fm_transform.fm_collect}
 \alias{fm_transform.fm_lattice_2d}
 \alias{fm_transform.fm_segm}
 \alias{fm_transform.fm_list}
@@ -35,7 +35,7 @@ fm_transform(x, crs, ...)
 
 \method{fm_transform}{fm_mesh_2d}(x, crs = fm_crs(x), ..., passthrough = FALSE, crs0 = fm_crs(x))
 
-\method{fm_transform}{fm_collection}(x, crs = fm_crs(x), ..., passthrough = FALSE, crs0 = NULL)
+\method{fm_transform}{fm_collect}(x, crs = fm_crs(x), ..., passthrough = FALSE, crs0 = NULL)
 
 \method{fm_transform}{fm_lattice_2d}(x, crs = fm_crs(x), ..., passthrough = FALSE, crs0 = fm_crs(x))
 

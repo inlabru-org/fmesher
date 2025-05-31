@@ -235,22 +235,22 @@ fm_basis.fm_tensor <- function(x,
 
 
 #' @export
-#' @describeIn fm_basis Evaluates a basis matrix for a `fm_collection` function
+#' @describeIn fm_basis Evaluates a basis matrix for a `fm_collect` function
 #'   space. The `loc` argument must be a `list` or `tibble` with elements
 #'   `loc` (the locations) and `index` (the indices into the function space
 #'   collection).
 #' @importFrom rlang .env
-fm_basis.fm_collection <- function(x,
-                                   loc,
-                                   weights = NULL,
-                                   ...,
-                                   full = FALSE) {
+fm_basis.fm_collect <- function(x,
+                                loc,
+                                weights = NULL,
+                                ...,
+                                full = FALSE) {
   loc_names <- names(loc)
   if (!is.null(loc_names) &&
     (!("loc" %in% loc_names) || !("index" %in% loc_names))) {
     stop(
       paste0(
-        "Location data for fm_collection must have elements `loc` and ",
+        "Location data for fm_collect must have elements `loc` and ",
         "`index`.\n",
         "Found: ", paste0(names(loc), collapse = ", ")
       )

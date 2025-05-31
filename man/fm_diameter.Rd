@@ -12,7 +12,7 @@
 \alias{fm_diameter.fm_segm}
 \alias{fm_diameter.fm_mesh_3d}
 \alias{fm_diameter.fm_tensor}
-\alias{fm_diameter.fm_collection}
+\alias{fm_diameter.fm_collect}
 \title{Diameter bound for a geometric object}
 \usage{
 fm_diameter(x, ...)
@@ -37,7 +37,7 @@ fm_diameter(x, ...)
 
 \method{fm_diameter}{fm_tensor}(x, ...)
 
-\method{fm_diameter}{fm_collection}(x, ...)
+\method{fm_diameter}{fm_collect}(x, ...)
 }
 \arguments{
 \item{x}{A point set as an \eqn{n\times d}{n x d} matrix, or an
@@ -54,7 +54,7 @@ origin.}
 \value{
 A scalar, upper bound for the diameter of the convex hull of the
 point set. For multi-domain spaces (e.g. \code{\link[=fm_tensor]{fm_tensor()}} and
-\code{\link[=fm_collection]{fm_collection()}}), a vector of upper bounds for each domain is returned.
+\code{\link[=fm_collect]{fm_collect()}}), a vector of upper bounds for each domain is returned.
 }
 \description{
 Find an upper bound to the convex hull of a point set or function space

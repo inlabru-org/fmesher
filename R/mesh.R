@@ -652,7 +652,7 @@ fm_dof.fm_tensor <- function(x) {
 
 #' @rdname fm_dof
 #' @export
-fm_dof.fm_collection <- function(x) {
+fm_dof.fm_collect <- function(x) {
   sum(vapply(x$fun_spaces, fm_dof, 0L))
 }
 

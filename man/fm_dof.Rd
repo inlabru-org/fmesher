@@ -6,7 +6,7 @@
 \alias{fm_dof.fm_mesh_2d}
 \alias{fm_dof.fm_mesh_3d}
 \alias{fm_dof.fm_tensor}
-\alias{fm_dof.fm_collection}
+\alias{fm_dof.fm_collect}
 \alias{fm_dof.fm_lattice_2d}
 \alias{fm_dof.fm_lattice_Nd}
 \title{Function spece degrees of freedom}
@@ -21,7 +21,7 @@ fm_dof(x)
 
 \method{fm_dof}{fm_tensor}(x)
 
-\method{fm_dof}{fm_collection}(x)
+\method{fm_dof}{fm_collect}(x)
 
 \method{fm_dof}{fm_lattice_2d}(x)
 

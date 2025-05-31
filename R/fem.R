@@ -274,12 +274,12 @@ fm_fem.fm_tensor <- function(mesh, order = 2, ...) {
 
 
 #' @rdname fm_fem
-#' @returns `fm_fem.fm_collection`: A list with elements `c0`, `c1`,
+#' @returns `fm_fem.fm_collect`: A list with elements `c0`, `c1`,
 #' `g1`, `g2`, etc, and `cc` (`c0` for every model except `fm_mesh_1d` with
 #' `degree=2`, for which it is `c1`). If the base type for the collection
 #' provides `va` and `ta` values, those are also returned.
 #' @export
-fm_fem.fm_collection <- function(mesh, order = 2, ...) {
+fm_fem.fm_collect <- function(mesh, order = 2, ...) {
   fem_list <- lapply(mesh$fun_spaces, fm_fem, order = order)
   cc_list <- lapply(seq_along(mesh$fun_spaces), function(i) {
     if (inherits(mesh$fun_spaces[[i]], "fm_mesh_1d") &&

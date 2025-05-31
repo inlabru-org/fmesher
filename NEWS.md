@@ -7,7 +7,7 @@
   `0.3.0.9006`)
 * Add `fm_mesh_components()` method for extracting (dis)connected components
   from 2D and 3D meshes (version `0.3.0.9005`)
-* Add `fm_collection()` method for creating a collection of meshes of the same
+* Add `fm_collect()` method for creating a collection of meshes of the same
   type (version `0.3.0.9009`)
 
 ## Improved features

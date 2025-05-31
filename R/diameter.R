@@ -17,7 +17,7 @@
 #' @param \dots Additional parameters passed on to the submethods.
 #' @returns A scalar, upper bound for the diameter of the convex hull of the
 #' point set. For multi-domain spaces (e.g. [fm_tensor()] and
-#' [fm_collection()]), a vector of upper bounds for each domain is returned.
+#' [fm_collect()]), a vector of upper bounds for each domain is returned.
 #' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @examples
 #'
@@ -134,6 +134,6 @@ fm_diameter.fm_tensor <- function(x, ...) {
 
 #' @rdname fm_diameter
 #' @export
-fm_diameter.fm_collection <- function(x, ...) {
+fm_diameter.fm_collect <- function(x, ...) {
   vapply(x[["fun_spaces"]], fm_diameter, ..., 1.0)
 }

@@ -53,7 +53,7 @@ test_that("Basic 1d FEM works", {
 })
 
 
-test_that("Basic fm_collection FEM works", {
+test_that("Basic fm_collect FEM works", {
   mesh1 <- fmexample$mesh
   fm_crs(mesh1) <- fm_crs("longlat_globe")
   # Two transformations that both have kilometres as units:
@@ -63,12 +63,12 @@ test_that("Basic fm_collection FEM works", {
 
   expect_error(
     {
-      fm_collection(list(mesh1, mesh2, mesh3))
+      fm_collect(list(mesh1, mesh2, mesh3))
     },
     "All function spaces in a collection need to be of the same manifold type"
   )
   expect_no_error({
-    mesh <- fm_collection(list(mesh2, mesh3))
+    mesh <- fm_collect(list(mesh2, mesh3))
   })
 
   loc_sf <- fmexample$loc_sf

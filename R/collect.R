@@ -1,6 +1,6 @@
 #' @include deprecated.R
 
-# fm_collection ####
+# fm_collect ####
 
 #' @title Make a collection function space
 #' @description `r lifecycle::badge("experimental")`
@@ -10,8 +10,8 @@
 #' @param x list of function space objects, such as [fm_mesh_2d()], all of the
 #' same type.
 #' @param ... Currently unused
-#' @returns A `fm_collection` or `fm_collection_list` object.
-#'   Elements of `fm_collection`:
+#' @returns A `fm_collect` or `fm_collect_list` object.
+#'   Elements of `fm_collect`:
 #' \describe{
 #' \item{fun_spaces}{`fm_list` of function space objects}
 #' \item{manifold}{character; manifold type summary, obtained from the
@@ -19,7 +19,7 @@
 #' }
 #' @family object creation and conversion
 #' @examples
-#' m <- fm_collection(list(
+#' m <- fm_collect(list(
 #'   fmexample$mesh,
 #'   fmexample$mesh
 #' ))
@@ -30,13 +30,13 @@
 #' fm_evaluator(m, loc = tibble::tibble(loc = cbind(0, 0), index = 2))
 #' names(fm_fem(m))
 #' fm_diameter(m)
-fm_collection <- function(x, ...) {
+fm_collect <- function(x, ...) {
   m <- structure(
     list(
       fun_spaces = fm_as_list(x),
       manifold = ""
     ),
-    class = "fm_collection"
+    class = "fm_collect"
   )
   type <- vapply(m$fun_spaces, fm_manifold, character(1))
   type <- unique(type)
@@ -51,16 +51,16 @@ fm_collection <- function(x, ...) {
   m
 }
 
-#' @title Convert objects to `fm_collection`
-#' @describeIn fm_as_collection Convert an object to `fm_collection`.
+#' @title Convert objects to `fm_collect`
+#' @describeIn fm_as_collection Convert an object to `fm_collect`.
 #' @param x Object to be converted.
 #' @param ... Arguments passed on to submethods
-#' @returns An `fm_collection` object
+#' @returns An `fm_collect` object
 #' @export
 #' @family object creation and conversion
 #' @export
 #' @examples
-#' fm_as_collection_list(list(fm_collection(list())))
+#' fm_as_collection_list(list(fm_collect(list())))
 #'
 fm_as_collection <- function(x, ...) {
   if (is.null(x)) {
@@ -76,7 +76,7 @@ fm_as_collection_list <- function(x, ...) {
 #' @rdname fm_as_collection
 #' @param x Object to be converted
 #' @export
-fm_as_collection.fm_collection <- function(x, ...) {
-  #  class(x) <- c("fm_collection", setdiff(class(x), "fm_collection"))
+fm_as_collection.fm_collect <- function(x, ...) {
+  #  class(x) <- c("fm_collect", setdiff(class(x), "fm_collect"))
   x
 }

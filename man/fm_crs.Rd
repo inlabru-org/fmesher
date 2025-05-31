@@ -20,7 +20,7 @@
 \alias{fm_crs.fm_mesh_1d}
 \alias{fm_crs.fm_mesh_3d}
 \alias{fm_crs.fm_tensor}
-\alias{fm_crs.fm_collection}
+\alias{fm_crs.fm_collect}
 \alias{fm_crs.fm_lattice_2d}
 \alias{fm_crs.fm_segm}
 \alias{fm_crs.fm_list}
@@ -68,7 +68,7 @@ fm_crs_oblique(x)
 
 \method{fm_crs}{fm_tensor}(x, oblique = NULL, ..., .multi = FALSE)
 
-\method{fm_crs}{fm_collection}(x, oblique = NULL, ..., .multi = FALSE)
+\method{fm_crs}{fm_collect}(x, oblique = NULL, ..., .multi = FALSE)
 
 \method{fm_crs}{fm_lattice_2d}(x, oblique = NULL, ...)
 
@@ -155,7 +155,7 @@ projection is only correct for perfect spheres.
 \item \code{fm_crs(fm_tensor)}: By default returns the crs of the first space in the
 tensor product space.
 
-\item \code{fm_crs(fm_collection)}: By default returns the crs of the first space in the
+\item \code{fm_crs(fm_collect)}: By default returns the crs of the first space in the
 collection.
 
 \item \code{fm_crs(fm_list)}: returns a list of 'crs' objects, one for each list element

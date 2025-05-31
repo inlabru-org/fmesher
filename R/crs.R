@@ -875,7 +875,7 @@ fm_crs.fm_tensor <- function(x, oblique = NULL, ..., .multi = FALSE) {
 #' @describeIn fm_crs By default returns the crs of the first space in the
 #'   collection.
 #' @export
-fm_crs.fm_collection <- function(x, oblique = NULL, ..., .multi = FALSE) {
+fm_crs.fm_collect <- function(x, oblique = NULL, ..., .multi = FALSE) {
   if (isTRUE(.multi)) {
     lapply(x[["fun_spaces"]], fm_crs, oblique = oblique, ..., .multi = .multi)
   } else {
@@ -999,7 +999,7 @@ fm_crs.matrix <- function(x, oblique = NULL, ...) {
 
 #' @rdname fm_crs-set
 #' @export
-`fm_crs<-.fm_collection` <- function(x, value) {
+`fm_crs<-.fm_collect` <- function(x, value) {
   crs <- fm_crs(value)
   for (k in seq_along(x[["fun_space"]])) {
     fm_crs(x[["fun_space"]][[k]]) <- crs
@@ -1094,7 +1094,7 @@ fm_crs.matrix <- function(x, oblique = NULL, ...) {
 
 #' @export
 #' @rdname fm_crs-set
-`fm_crs_oblique<-.fm_collection` <- function(x, value) {
+`fm_crs_oblique<-.fm_collect` <- function(x, value) {
   fm_crs(x) <-
     fm_crs(
       x,
@@ -2619,11 +2619,11 @@ fm_transform.fm_mesh_2d <- function(x,
 
 #' @export
 #' @rdname fm_transform
-fm_transform.fm_collection <- function(x,
-                                       crs = fm_crs(x),
-                                       ...,
-                                       passthrough = FALSE,
-                                       crs0 = NULL) {
+fm_transform.fm_collect <- function(x,
+                                    crs = fm_crs(x),
+                                    ...,
+                                    passthrough = FALSE,
+                                    crs0 = NULL) {
   for (k in seq_along(x[["fun_spaces"]])) {
     x[["fun_spaces"]][[k]] <-
       fm_transform(
