@@ -667,10 +667,10 @@ fm_crs_oblique <- function(x) {
 #' @importFrom sf st_crs
 #' @exportS3Method sf::st_crs fm_crs
 #' @describeIn fm_crs `st_crs(x, ...)` is equivalent to
-#' `fm_crs(x, ... oblique = NA)`
+#' `fm_crs(x, oblique = NA, ...)`
 #' when `x` is a `fm_crs` object.
 st_crs.fm_crs <- function(x, ...) {
-  fm_crs(x, ..., oblique = NA)
+  fm_crs(x, oblique = NA, ...)
 }
 
 #' @rawNamespace S3method("$", fm_crs)
@@ -859,6 +859,30 @@ fm_crs.fm_mesh_3d <- function(x, oblique = NULL, ...) {
   fm_crs()
 }
 
+#' @describeIn fm_crs By default returns the crs of the first space in the
+#'   tensor product space.
+#' @param .multi logical; If `TRUE`, return a list of `fm_crs` objects
+#'   for classes that support multiple spaces. Default `FALSE`
+#' @export
+fm_crs.fm_tensor <- function(x, oblique = NULL, ..., .multi = FALSE) {
+  if (isTRUE(.multi)) {
+    lapply(x[["fun_spaces"]], fm_crs, oblique = oblique, ..., .multi = .multi)
+  } else {
+    fm_crs(x[["fun_spaces"]][[1]], oblique = oblique, ...)
+  }
+}
+
+#' @describeIn fm_crs By default returns the crs of the first space in the
+#'   collection.
+#' @export
+fm_crs.fm_collect <- function(x, oblique = NULL, ..., .multi = FALSE) {
+  if (isTRUE(.multi)) {
+    lapply(x[["fun_spaces"]], fm_crs, oblique = oblique, ..., .multi = .multi)
+  } else {
+    fm_crs(x[["fun_spaces"]][[1]], oblique = oblique, ...)
+  }
+}
+
 #' @rdname fm_crs
 #' @export
 fm_crs.fm_lattice_2d <- function(x, oblique = NULL, ...) {
@@ -975,6 +999,16 @@ fm_crs.matrix <- function(x, oblique = NULL, ...) {
 
 #' @rdname fm_crs-set
 #' @export
+`fm_crs<-.fm_collect` <- function(x, value) {
+  crs <- fm_crs(value)
+  for (k in seq_along(x[["fun_space"]])) {
+    fm_crs(x[["fun_space"]][[k]]) <- crs
+  }
+  x
+}
+
+#' @rdname fm_crs-set
+#' @export
 `fm_crs<-.fm_lattice_2d` <- function(x, value) {
   x[["crs"]] <- fm_crs(value)
   x
@@ -1053,6 +1087,17 @@ fm_crs.matrix <- function(x, oblique = NULL, ...) {
 `fm_crs_oblique<-.fm_mesh_2d` <- function(x, value) {
   fm_crs(x) <-
     fm_crs(x,
+      oblique = if (is.null(value)) NA else value
+    )
+  x
+}
+
+#' @export
+#' @rdname fm_crs-set
+`fm_crs_oblique<-.fm_collect` <- function(x, value) {
+  fm_crs(x) <-
+    fm_crs(
+      x,
       oblique = if (is.null(value)) NA else value
     )
   x
@@ -2224,7 +2269,7 @@ fm_detect_manifold.matrix <- function(x) {
 #' @rdname fm_detect_manifold
 #' @export
 fm_detect_manifold.fm_mesh_2d <- function(x) {
-  if (ncol(x[["loc"]] <= 2)) {
+  if (ncol(x[["loc"]]) <= 2) {
     return("R2")
   }
   tol <- 1e-10
@@ -2569,6 +2614,30 @@ fm_transform.fm_mesh_2d <- function(x,
   )
   x$crs <- fm_crs(crs)
   x$manifold <- fm_detect_manifold(x)
+  x
+}
+
+#' @export
+#' @rdname fm_transform
+fm_transform.fm_collect <- function(x,
+                                    crs = fm_crs(x),
+                                    ...,
+                                    passthrough = FALSE,
+                                    crs0 = NULL) {
+  for (k in seq_along(x[["fun_spaces"]])) {
+    x[["fun_spaces"]][[k]] <-
+      fm_transform(
+        x[["fun_spaces"]][[k]],
+        crs = crs,
+        ...,
+        passthrough = passthrough,
+        crs0 = if (is.null(crs0)) {
+          fm_crs(x[["fun_spaces"]][[k]])
+        } else {
+          crs0
+        }
+      )
+  }
   x
 }
 

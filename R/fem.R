@@ -273,6 +273,43 @@ fm_fem.fm_tensor <- function(mesh, order = 2, ...) {
 
 
 
+#' @rdname fm_fem
+#' @returns `fm_fem.fm_collect`: A list with elements `c0`, `c1`,
+#' `g1`, `g2`, etc, and `cc` (`c0` for every model except `fm_mesh_1d` with
+#' `degree=2`, for which it is `c1`). If the base type for the collection
+#' provides `va` and `ta` values, those are also returned.
+#' @export
+fm_fem.fm_collect <- function(mesh, order = 2, ...) {
+  fem_list <- lapply(mesh$fun_spaces, fm_fem, order = order)
+  cc_list <- lapply(seq_along(mesh$fun_spaces), function(i) {
+    if (inherits(mesh$fun_spaces[[i]], "fm_mesh_1d") &&
+      mesh$fun_spaces[[i]]$degree == 2) {
+      return(fem_list[[i]]$c1)
+    }
+    fem_list[[i]]$c0
+  })
+
+  result <- list(
+    cc = Matrix::.bdiag(cc_list),
+    c0 = Matrix::.bdiag(lapply(fem_list, function(x) x$c0)),
+    c1 = Matrix::.bdiag(lapply(fem_list, function(x) x$c1))
+  )
+  if ("va" %in% names(fem_list[[1]])) {
+    result$va <- unlist(lapply(fem_list, function(x) x$va))
+  }
+  if ("ta" %in% names(fem_list[[1]])) {
+    result$ta <- unlist(lapply(fem_list, function(x) x$ta))
+  }
+  for (k in seq_len(order)) {
+    result[[paste0("g", k)]] <-
+      Matrix::.bdiag(lapply(fem_list, function(x) x[[paste0("g", k)]]))
+  }
+
+  result
+}
+
+
+
 
 row_cross_product <- function(e1, e2) {
   cbind(

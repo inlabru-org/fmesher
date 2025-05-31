@@ -8,6 +8,7 @@
 \alias{fm_crs<-.fm_segm}
 \alias{fm_crs<-.fm_list}
 \alias{fm_crs<-.fm_mesh_2d}
+\alias{fm_crs<-.fm_collect}
 \alias{fm_crs<-.fm_lattice_2d}
 \alias{fm_crs<-.sf}
 \alias{fm_crs<-.sfg}
@@ -19,6 +20,7 @@
 \alias{fm_crs_oblique<-.fm_crs}
 \alias{fm_crs_oblique<-.fm_segm}
 \alias{fm_crs_oblique<-.fm_mesh_2d}
+\alias{fm_crs_oblique<-.fm_collect}
 \alias{fm_crs_oblique<-.fm_lattice_2d}
 \alias{fm_crs_oblique<-.inla.CRS}
 \title{Assignment operators for crs information objects}
@@ -38,6 +40,8 @@ fm_crs_oblique(x) <- value
 \method{fm_crs}{fm_list}(x) <- value
 
 \method{fm_crs}{fm_mesh_2d}(x) <- value
+
+\method{fm_crs}{fm_collect}(x) <- value
 
 \method{fm_crs}{fm_lattice_2d}(x) <- value
 
@@ -60,6 +64,8 @@ fm_crs_oblique(x) <- value
 \method{fm_crs_oblique}{fm_segm}(x) <- value
 
 \method{fm_crs_oblique}{fm_mesh_2d}(x) <- value
+
+\method{fm_crs_oblique}{fm_collect}(x) <- value
 
 \method{fm_crs_oblique}{fm_lattice_2d}(x) <- value
 

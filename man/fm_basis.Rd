@@ -9,6 +9,7 @@
 \alias{fm_basis.fm_lattice_2d}
 \alias{fm_basis.fm_lattice_Nd}
 \alias{fm_basis.fm_tensor}
+\alias{fm_basis.fm_collect}
 \alias{fm_basis.matrix}
 \alias{fm_basis.Matrix}
 \alias{fm_basis.list}
@@ -31,6 +32,8 @@ fm_basis(x, ..., full = FALSE)
 \method{fm_basis}{fm_lattice_Nd}(x, loc, weights = NULL, ..., full = FALSE)
 
 \method{fm_basis}{fm_tensor}(x, loc, weights = NULL, ..., full = FALSE)
+
+\method{fm_basis}{fm_collect}(x, loc, weights = NULL, ..., full = FALSE)
 
 \method{fm_basis}{matrix}(x, ok = NULL, weights = NULL, ..., full = FALSE)
 
@@ -95,6 +98,11 @@ matrices are included in the \code{full=TRUE} output: Derivative weight matrices
 
 \item \code{fm_basis(fm_tensor)}: Evaluates a basis matrix for a \code{fm_tensor} function
 space.
+
+\item \code{fm_basis(fm_collect)}: Evaluates a basis matrix for a \code{fm_collect} function
+space. The \code{loc} argument must be a \code{list} or \code{tibble} with elements
+\code{loc} (the locations) and \code{index} (the indices into the function space
+collection).
 
 \item \code{fm_basis(matrix)}: Creates a new \code{fm_basis} object with elements \code{A} and
 \code{ok}, from a pre-evaluated basis matrix, including optional additional

@@ -19,6 +19,8 @@
 \alias{fm_crs.fm_mesh_2d}
 \alias{fm_crs.fm_mesh_1d}
 \alias{fm_crs.fm_mesh_3d}
+\alias{fm_crs.fm_tensor}
+\alias{fm_crs.fm_collect}
 \alias{fm_crs.fm_lattice_2d}
 \alias{fm_crs.fm_segm}
 \alias{fm_crs.fm_list}
@@ -64,6 +66,10 @@ fm_crs_oblique(x)
 
 \method{fm_crs}{fm_mesh_3d}(x, oblique = NULL, ...)
 
+\method{fm_crs}{fm_tensor}(x, oblique = NULL, ..., .multi = FALSE)
+
+\method{fm_crs}{fm_collect}(x, oblique = NULL, ..., .multi = FALSE)
+
 \method{fm_crs}{fm_lattice_2d}(x, oblique = NULL, ...)
 
 \method{fm_crs}{fm_segm}(x, oblique = NULL, ...)
@@ -101,6 +107,9 @@ objects and return a plain \code{crs} object instead. For \code{crsonly = TRUE},
 \code{oblique}.}
 
 \item{name}{element name}
+
+\item{.multi}{logical; If \code{TRUE}, return a list of \code{fm_crs} objects
+for classes that support multiple spaces. Default \code{FALSE}}
 }
 \value{
 Either an \code{sf::crs} object or an \code{fm_crs} object,
@@ -143,13 +152,19 @@ projection is only correct for perfect spheres.
 }
 \section{Methods (by class)}{
 \itemize{
+\item \code{fm_crs(fm_tensor)}: By default returns the crs of the first space in the
+tensor product space.
+
+\item \code{fm_crs(fm_collect)}: By default returns the crs of the first space in the
+collection.
+
 \item \code{fm_crs(fm_list)}: returns a list of 'crs' objects, one for each list element
 
 }}
 \section{Methods (by generic)}{
 \itemize{
 \item \code{st_crs(fm_crs)}: \code{st_crs(x, ...)} is equivalent to
-\verb{fm_crs(x, ... oblique = NA)}
+\code{fm_crs(x, oblique = NA, ...)}
 when \code{x} is a \code{fm_crs} object.
 
 \item \code{$}: For a \code{fm_crs} object \code{x}, \code{x$name} calls the accessor

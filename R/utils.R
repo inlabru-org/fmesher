@@ -462,9 +462,43 @@ fm_row_kron <- function(M1, M2, repl = NULL, n.repl = NULL, weights = NULL # ,
 # @param f character; the name of an S3 generic
 # @keyword internal
 method_classes <- function(f) {
-  gsub(
-    pattern = paste0("^", f, "\\.([^*]*)\\*?"),
-    replacement = "\\1",
-    x = format(utils::.S3methods(f))
+  try(
+    gsub(
+      pattern = paste0("^", f, "\\.([^*]*)\\*?"),
+      replacement = "\\1",
+      x = format(utils::.S3methods(f))
+    ),
+    silent = TRUE
   )
+}
+
+class_methods <- function(cl) {
+  utils::.S3methods(class = cl)
+}
+
+package_methods <- function() {
+  pkg_methods <- names(parent.env(environment()))
+  pkg_methods <- pkg_methods[grepl(
+    pattern = paste0("^[^\\.]*\\.([^*]*)\\*?"),
+    x = pkg_methods
+  )]
+  setdiff(
+    unique(gsub(
+      pattern = paste0("^([^\\.]*)\\.[^*]*\\*?"),
+      replacement = "\\1",
+      x = pkg_methods
+    )),
+    c("", "is", "as", "match")
+  )
+}
+
+
+
+fm_capabilities <- function(class = NULL,
+                            method = NULL) {
+  if (!is.null(class)) {
+    class_methods(class)
+  } else if (!is.null(method)) {
+    method_classes(method)
+  }
 }

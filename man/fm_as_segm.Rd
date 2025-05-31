@@ -132,6 +132,7 @@ fm_as_segm_list(list(
 \code{\link[=[.fm_segm_list]{[.fm_segm_list()}}
 
 Other object creation and conversion: 
+\code{\link{fm_as_collect}()},
 \code{\link{fm_as_fm}()},
 \code{\link{fm_as_lattice_2d}()},
 \code{\link{fm_as_lattice_Nd}()},
@@ -140,6 +141,7 @@ Other object creation and conversion:
 \code{\link{fm_as_mesh_3d}()},
 \code{\link{fm_as_sfc}()},
 \code{\link{fm_as_tensor}()},
+\code{\link{fm_collect}()},
 \code{\link{fm_lattice_2d}()},
 \code{\link{fm_lattice_Nd}()},
 \code{\link{fm_mesh_1d}()},
