@@ -244,8 +244,7 @@ fm_crs_set_ellipsoid_radius <- function(crs, radius) {
 #' @param unit character, name of a unit. Supported names are
 #' "metre", "kilometre", and the aliases "meter", "m", International metre",
 #' "kilometer", and "km", as defined by `fm_wkt_unit_params` or the
-#' `params` argument. (For legacy PROJ4 use, only "m" and "km" are
-#' supported)
+#' `params` argument.
 #' @param params Length unit definitions, in the list format produced by
 #' `fm_wkt_unit_params()`, Default: NULL, which invokes
 #' `fm_wkt_unit_params()`
@@ -253,12 +252,10 @@ fm_crs_set_ellipsoid_radius <- function(crs, radius) {
 #' list of named unit definitions
 #' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @examples
-#' \donttest{
 #' c1 <- fm_crs("globe")
-#' fm_crs_get_lengthunit(c1)
-#' c2 <- fm_crs_set_lengthunit(c1, "m")
-#' fm_crs_get_lengthunit(c2)
-#' }
+#' fm_length_unit(c1)
+#' fm_length_unit(c1) <- "m"
+#' fm_length_unit(c1)
 #' @export
 #' @seealso [fm_crs()]
 #' @aliases fm_crs_wkt
@@ -394,8 +391,7 @@ fm_wkt_set_lengthunit <- function(wkt, unit, params = NULL) {
 
 #' @returns For `fm_crs_get_lengthunit`, a
 #' list of length units used in the wkt string, excluding the ellipsoid radius
-#' unit. (For legacy PROJ4 code, the raw units from the proj4string are
-#' returned, if present.)
+#' unit.
 #' @export
 #' @rdname fm_crs_wkt
 
@@ -489,9 +485,7 @@ fm_length_unit.character <- function(x) {
 #' @rdname fm_crs_wkt
 #' @export
 `fm_length_unit<-.fm_crs` <- function(x, value) {
-  wkt <- fm_wkt(x)
-  fm_length_unit(wkt) <- value
-  x$crs <- fm_crs(wkt)
+  fm_length_unit(x$crs) <- value
   invisible(x)
 }
 

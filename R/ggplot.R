@@ -13,7 +13,7 @@
 #' may therefore change in the future.
 #'
 #' @export
-#' @param mapping an object for which to generate a geom.
+#' @param mapping [ggplot2::aes()] mapping information.
 #' @param data an object for which to generate a geom.
 #' @param ... Arguments passed on to the geom method.
 #' @returns A combination of `ggplot2` geoms.
