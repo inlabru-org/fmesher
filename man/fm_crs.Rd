@@ -30,7 +30,7 @@
 \alias{fm_crs.inla.CRS}
 \title{Obtain coordinate reference system object}
 \usage{
-fm_crs(x, oblique = NULL, ..., crsonly = deprecated())
+fm_crs(x, ..., units = NULL, oblique = NULL, crsonly = deprecated())
 
 fm_crs_oblique(x)
 
@@ -38,56 +38,62 @@ fm_crs_oblique(x)
 
 \method{$}{fm_crs}(x, name)
 
-\method{fm_crs}{default}(x, oblique = NULL, ...)
+\method{fm_crs}{default}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_crs}{crs}(x, oblique = NULL, ...)
+\method{fm_crs}{crs}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_crs}{fm_crs}(x, oblique = NULL, ...)
+\method{fm_crs}{fm_crs}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_crs}{fm_CRS}(x, oblique = NULL, ...)
+\method{fm_crs}{fm_CRS}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_crs}{character}(x, oblique = NULL, ...)
+\method{fm_crs}{character}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_crs}{Spatial}(x, oblique = NULL, ...)
+\method{fm_crs}{Spatial}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_crs}{SpatVector}(x, oblique = NULL, ...)
+\method{fm_crs}{SpatVector}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_crs}{SpatRaster}(x, oblique = NULL, ...)
+\method{fm_crs}{SpatRaster}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_crs}{sf}(x, oblique = NULL, ...)
+\method{fm_crs}{sf}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_crs}{sfc}(x, oblique = NULL, ...)
+\method{fm_crs}{sfc}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_crs}{sfg}(x, oblique = NULL, ...)
+\method{fm_crs}{sfg}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_crs}{fm_mesh_2d}(x, oblique = NULL, ...)
+\method{fm_crs}{fm_mesh_2d}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_crs}{fm_mesh_1d}(x, oblique = NULL, ...)
+\method{fm_crs}{fm_mesh_1d}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_crs}{fm_mesh_3d}(x, oblique = NULL, ...)
+\method{fm_crs}{fm_mesh_3d}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_crs}{fm_tensor}(x, oblique = NULL, ..., .multi = FALSE)
+\method{fm_crs}{fm_tensor}(x, ..., units = NULL, oblique = NULL, .multi = FALSE)
 
-\method{fm_crs}{fm_collect}(x, oblique = NULL, ..., .multi = FALSE)
+\method{fm_crs}{fm_collect}(x, ..., units = NULL, oblique = NULL, .multi = FALSE)
 
-\method{fm_crs}{fm_lattice_2d}(x, oblique = NULL, ...)
+\method{fm_crs}{fm_lattice_2d}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_crs}{fm_segm}(x, oblique = NULL, ...)
+\method{fm_crs}{fm_segm}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_crs}{fm_list}(x, oblique = NULL, ...)
+\method{fm_crs}{fm_list}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_crs}{matrix}(x, oblique = NULL, ...)
+\method{fm_crs}{matrix}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_CRS}{fm_list}(x, oblique = NULL, ...)
+\method{fm_CRS}{fm_list}(x, ..., units = NULL, oblique = NULL)
 
 fm_wkt_predef()
 
-\method{fm_crs}{inla.CRS}(x, oblique = NULL, ...)
+\method{fm_crs}{inla.CRS}(x, ..., units = NULL, oblique = NULL)
 }
 \arguments{
 \item{x}{Object to convert to \code{crs} or  to extract \code{crs} information from.
 If \code{character}, a string suitable for \code{sf::st_crs(x)}, or the name of a
 predefined \code{wkt} string from ``names(fm_wkt_predef())`.}
+
+\item{\dots}{Additional parameters. Not currently in use.}
+
+\item{units}{character; if non-NULL, \verb{fm_length_unit()<-} is called to change
+the length units of the crs object. If \code{NULL} (default), the length units
+are not changed.}
 
 \item{oblique}{Numeric vector of length at most 4 of rotation angles (in
 degrees) for an oblique projection, all values defaulting to zero. The
@@ -98,13 +104,7 @@ from the object, resulting in a return class of \code{sf::st_crs()}. When
 \code{NULL}, pass though any oblique information in the object, returning an
 \code{fm_crs()} object if needed.}
 
-\item{\dots}{Additional parameters. Not currently in use.}
-
-\item{crsonly}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} logical;
-if TRUE, remove \code{oblique} information from \code{fm_crs}
-objects and return a plain \code{crs} object instead. For \code{crsonly = TRUE}, use
-\code{oblique = NA} instead. For \code{crsonly = FALSE}, use default, NULL, or non-NA
-\code{oblique}.}
+\item{crsonly}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} since version \verb{0.0.1}.}
 
 \item{name}{element name}
 

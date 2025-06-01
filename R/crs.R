@@ -444,6 +444,9 @@ fm_length_unit.character <- function(x) {
 #' @export
 
 `fm_length_unit<-` <- function(x, value) {
+  if (is.null(value)) {
+    return(invisible(x))
+  }
   UseMethod("fm_length_unit<-")
 }
 
@@ -461,7 +464,7 @@ fm_length_unit.character <- function(x) {
   fm_length_unit(crs) <- value
   new_crs <- fm_CRS(crs)
 
-  new_crs
+  invisible(new_crs)
 }
 
 #' @rdname fm_crs_wkt
@@ -471,7 +474,7 @@ fm_length_unit.character <- function(x) {
   fm_length_unit(crs) <- value
   new_crs <- fm_CRS(crs)
 
-  new_crs
+  invisible(new_crs)
 }
 
 #' @rdname fm_crs_wkt
@@ -480,7 +483,7 @@ fm_length_unit.character <- function(x) {
   wkt <- fm_wkt(x)
   fm_length_unit(wkt) <- value
   new_crs <- fm_crs(wkt)
-  new_crs
+  invisible(new_crs)
 }
 
 #' @rdname fm_crs_wkt
@@ -489,7 +492,7 @@ fm_length_unit.character <- function(x) {
   wkt <- fm_wkt(x)
   fm_length_unit(wkt) <- value
   x$crs <- fm_crs(wkt)
-  x
+  invisible(x)
 }
 
 
@@ -505,11 +508,9 @@ fm_length_unit.character <- function(x) {
 #' If `character`, a string suitable for `sf::st_crs(x)`, or the name of a
 #' predefined `wkt` string from ``names(fm_wkt_predef())`.
 #' @param \dots Additional arguments passed on the `sf::st_crs()`
-#' @param crsonly `r lifecycle::badge("deprecated")` logical;
-#' if TRUE, remove `oblique` information from `fm_crs`
-#' objects and return a plain `crs` object instead. For `crsonly = TRUE`, use
-#' `oblique = NA` instead. For `crsonly = FALSE`, use default, NULL, or non-NA
-#' `oblique`.
+#' @param units character; if non-NULL, `fm_length_unit()<-` is called to change
+#'   the length units of the crs object. If `NULL` (default), the length units
+#'   are not changed.
 #' @param oblique Numeric vector of length at most 4 of rotation angles (in
 #'   degrees) for an oblique projection, all values defaulting to zero. The
 #'   values indicate (longitude, latitude, orientation, orbit), as explained in
@@ -518,6 +519,7 @@ fm_length_unit.character <- function(x) {
 #'   from the object, resulting in a return class of `sf::st_crs()`. When
 #'   `NULL`, pass though any oblique information in the object, returning an
 #'   `fm_crs()` object if needed.
+#' @param crsonly `r lifecycle::badge("deprecated")` since version `0.0.1`.
 #'
 #' @details The first two
 #' elements of the `oblique` vector are the (longitude, latitude)
@@ -563,39 +565,21 @@ fm_length_unit.character <- function(x) {
 #' @seealso fm_crs_is_null
 #' @rdname fm_crs
 #' @seealso [fm_crs<-()], [fm_crs_oblique<-()]
-fm_crs <- function(x, oblique = NULL, ..., crsonly = deprecated()) {
+fm_crs <- function(x,
+                   ...,
+                   units = NULL,
+                   oblique = NULL,
+                   crsonly = deprecated()) {
   if (lifecycle::is_present(crsonly)) {
-    if (crsonly) {
-      if (is.null(oblique) || all(is.na(oblique))) {
-        msg <- c(
-          "`crsonly = TRUE`, so we will use `oblique = NA`."
-        )
-        oblique <- NA
-        return(fm_crs(x, ..., oblique = NA))
-      } else {
-        msg <- c(
-          "Ignoring `crsonly = TRUE`, as it contradicts with",
-          " the given `oblique`.",
-          "We will use `oblique = oblique`."
-        )
-      }
-    } else {
-      msg <- c(
-        "`crsonly = FALSE`, so we will use `oblique = oblique`."
-      )
-    }
-
     lifecycle::deprecate_stop(
       "0.0.1",
       "fm_crs(crsonly=' should no longer be used')",
       "fm_crs(oblique)",
       c(
         "For `crsonly = TRUE`, use `oblique = NA`.",
-        "For `crsonly = FALSE`, use default, NULL, or non-NA `oblique`.",
-        msg
+        "For `crsonly = FALSE`, use NULL (default), or non-NA `oblique`."
       )
     )
-    return(fm_crs(x, oblique = oblique, ...))
   }
 
   UseMethod("fm_crs")
@@ -699,18 +683,18 @@ print.fm_crs <- function(x, ...) {
 
 #' @export
 #' @rdname fm_crs
-fm_crs.default <- function(x, oblique = NULL, ...) {
+fm_crs.default <- function(x, ..., units = NULL, oblique = NULL) {
   if (missing(x) || is.null(x) || is.na(x)) {
     x <- sf::NA_crs_
   } else if (!inherits(x, "crs")) {
     x <- sf::st_crs(x, ...)
   }
-  fm_crs.crs(x, oblique = oblique, ...)
+  fm_crs.crs(x, ..., units = units, oblique = oblique)
 }
 
 #' @export
 #' @rdname fm_crs
-fm_crs.crs <- function(x, oblique = NULL, ...) {
+fm_crs.crs <- function(x, ..., units = NULL, oblique = NULL) {
   if (!is.null(oblique) && !all(is.na(oblique))) {
     stopifnot(is.vector(oblique))
     if (length(oblique) > 4) {
@@ -731,6 +715,7 @@ fm_crs.crs <- function(x, oblique = NULL, ...) {
       class = "fm_crs"
     )
   }
+  fm_length_unit(x) <- units
   x
 }
 
@@ -739,26 +724,28 @@ fm_crs.crs <- function(x, oblique = NULL, ...) {
 
 #' @export
 #' @rdname fm_crs
-fm_crs.fm_crs <- function(x, oblique = NULL, ...) {
+fm_crs.fm_crs <- function(x, ..., units = NULL, oblique = NULL) {
   if (!is.null(oblique)) {
     fm_crs_oblique(x) <- oblique
   }
+  fm_length_unit(x) <- units
   x
 }
 
 #' @export
 #' @rdname fm_crs
-fm_crs.fm_CRS <- function(x, oblique = NULL, ...) {
+fm_crs.fm_CRS <- function(x, ..., units = NULL, oblique = NULL) {
   fm_crs(
     x[["crs"]],
-    oblique = if (is.null(oblique)) x[["oblique"]] else oblique,
-    ...
+    ...,
+    units = units,
+    oblique = if (is.null(oblique)) x[["oblique"]] else oblique
   )
 }
 
 #' @export
 #' @rdname fm_crs
-fm_crs.character <- function(x, oblique = NULL, ...) {
+fm_crs.character <- function(x, ..., units = NULL, oblique = NULL) {
   predef <- fm_wkt_predef()
   if (x %in% names(predef)) {
     x <- predef[[x]]
@@ -767,6 +754,7 @@ fm_crs.character <- function(x, oblique = NULL, ...) {
     x <- NA_character_
   }
   y <- sf::st_crs(x, ...)
+  fm_length_unit(y) <- units
   # Would like nicer proj4string/input display.
   # Possible approach: sf::st_crs(as(sf::st_crs(x), "CRS"))
   # Borrowing from the sf::CRS_from_crs code:
@@ -783,7 +771,7 @@ fm_crs.character <- function(x, oblique = NULL, ...) {
 
 #' @rdname fm_crs
 #' @export
-fm_crs.Spatial <- function(x, oblique = NULL, ...) {
+fm_crs.Spatial <- function(x, ..., units = NULL, oblique = NULL) {
   if (is.null(x)) {
     crs <- sf::NA_crs_
   } else {
@@ -792,6 +780,7 @@ fm_crs.Spatial <- function(x, oblique = NULL, ...) {
   if (!is.null(oblique)) {
     fm_crs_oblique(crs) <- oblique
   }
+  fm_length_unit(crs) <- units
   crs
 }
 
@@ -799,63 +788,63 @@ fm_crs.Spatial <- function(x, oblique = NULL, ...) {
 
 #' @rdname fm_crs
 #' @export
-fm_crs.SpatVector <- function(x, oblique = NULL, ...) {
+fm_crs.SpatVector <- function(x, ..., units = NULL, oblique = NULL) {
   fm_require_stop("terra")
   tcrs <- terra::crs(x)
   if (is.null(tcrs) || is.na(tcrs) || identical(tcrs, "")) {
     y <- fm_crs(oblique = oblique)
   } else {
-    y <- fm_crs(tcrs, oblique = oblique, ...)
+    y <- fm_crs(tcrs, ..., units = units, oblique = oblique)
   }
   y
 }
 
 #' @rdname fm_crs
 #' @export
-fm_crs.SpatRaster <- function(x, oblique = NULL, ...) {
+fm_crs.SpatRaster <- function(x, ..., units = NULL, oblique = NULL) {
   fm_require_stop("terra")
   tcrs <- terra::crs(x)
   if (is.null(tcrs) || is.na(tcrs) || identical(tcrs, "")) {
     y <- fm_crs(oblique = oblique)
   } else {
-    y <- fm_crs(tcrs, ..., oblique = oblique)
+    y <- fm_crs(tcrs, ..., units = units, oblique = oblique)
   }
   y
 }
 
 #' @rdname fm_crs
 #' @export
-fm_crs.sf <- function(x, oblique = NULL, ...) {
-  fm_crs(sf::st_crs(x, ...), oblique = NULL)
+fm_crs.sf <- function(x, ..., units = NULL, oblique = NULL) {
+  fm_crs(sf::st_crs(x, ...), units = units, oblique = NULL)
 }
 
 #' @rdname fm_crs
 #' @export
-fm_crs.sfc <- function(x, oblique = NULL, ...) {
-  fm_crs(sf::st_crs(x, ...), oblique = NULL)
+fm_crs.sfc <- function(x, ..., units = NULL, oblique = NULL) {
+  fm_crs(sf::st_crs(x, ...), units = units, oblique = NULL)
 }
 
 #' @rdname fm_crs
 #' @export
-fm_crs.sfg <- function(x, oblique = NULL, ...) {
-  fm_crs(sf::st_crs(x, ...), oblique = NULL)
+fm_crs.sfg <- function(x, ..., units = NULL, oblique = NULL) {
+  fm_crs(sf::st_crs(x, ...), units = units, oblique = NULL)
 }
 
 #' @rdname fm_crs
 #' @export
-fm_crs.fm_mesh_2d <- function(x, oblique = NULL, ...) {
-  fm_crs(x[["crs"]], oblique = oblique, ...)
+fm_crs.fm_mesh_2d <- function(x, ..., units = NULL, oblique = NULL) {
+  fm_crs(x[["crs"]], ..., units = units, oblique = oblique)
 }
 
 #' @rdname fm_crs
 #' @export
-fm_crs.fm_mesh_1d <- function(x, oblique = NULL, ...) {
+fm_crs.fm_mesh_1d <- function(x, ..., units = NULL, oblique = NULL) {
   fm_crs()
 }
 
 #' @rdname fm_crs
 #' @export
-fm_crs.fm_mesh_3d <- function(x, oblique = NULL, ...) {
+fm_crs.fm_mesh_3d <- function(x, ..., units = NULL, oblique = NULL) {
   fm_crs()
 }
 
@@ -864,48 +853,70 @@ fm_crs.fm_mesh_3d <- function(x, oblique = NULL, ...) {
 #' @param .multi logical; If `TRUE`, return a list of `fm_crs` objects
 #'   for classes that support multiple spaces. Default `FALSE`
 #' @export
-fm_crs.fm_tensor <- function(x, oblique = NULL, ..., .multi = FALSE) {
+fm_crs.fm_tensor <- function(x,
+                             ...,
+                             units = NULL,
+                             oblique = NULL,
+                             .multi = FALSE) {
   if (isTRUE(.multi)) {
-    lapply(x[["fun_spaces"]], fm_crs, oblique = oblique, ..., .multi = .multi)
+    lapply(
+      x[["fun_spaces"]],
+      fm_crs,
+      ...,
+      units = units,
+      oblique = oblique,
+      .multi = .multi
+    )
   } else {
-    fm_crs(x[["fun_spaces"]][[1]], oblique = oblique, ...)
+    fm_crs(x[["fun_spaces"]][[1]], ..., units = units, oblique = oblique)
   }
 }
 
 #' @describeIn fm_crs By default returns the crs of the first space in the
 #'   collection.
 #' @export
-fm_crs.fm_collect <- function(x, oblique = NULL, ..., .multi = FALSE) {
+fm_crs.fm_collect <- function(x,
+                              ...,
+                              units = NULL,
+                              oblique = NULL,
+                              .multi = FALSE) {
   if (isTRUE(.multi)) {
-    lapply(x[["fun_spaces"]], fm_crs, oblique = oblique, ..., .multi = .multi)
+    lapply(
+      x[["fun_spaces"]],
+      fm_crs,
+      ...,
+      units = units,
+      oblique = oblique,
+      .multi = .multi
+    )
   } else {
-    fm_crs(x[["fun_spaces"]][[1]], oblique = oblique, ...)
+    fm_crs(x[["fun_spaces"]][[1]], ..., units = units, oblique = oblique)
   }
 }
 
 #' @rdname fm_crs
 #' @export
-fm_crs.fm_lattice_2d <- function(x, oblique = NULL, ...) {
-  fm_crs(x[["crs"]], oblique = oblique, ...)
+fm_crs.fm_lattice_2d <- function(x, ..., units = NULL, oblique = NULL) {
+  fm_crs(x[["crs"]], ..., units = units, oblique = oblique)
 }
 
 #' @rdname fm_crs
 #' @export
-fm_crs.fm_segm <- function(x, oblique = NULL, ...) {
-  fm_crs(x[["crs"]], oblique = oblique, ...)
+fm_crs.fm_segm <- function(x, ..., units = NULL, oblique = NULL) {
+  fm_crs(x[["crs"]], ..., units = units, oblique = oblique)
 }
 
 #' @describeIn fm_crs returns a list of 'crs' objects, one for each list element
 #' @export
-fm_crs.fm_list <- function(x, oblique = NULL, ...) {
-  lapply(x, function(xx) fm_crs(xx, oblique = oblique, ...))
+fm_crs.fm_list <- function(x, ..., units = NULL, oblique = NULL) {
+  lapply(x, function(xx) fm_crs(xx, ..., units = units, oblique = oblique))
 }
 
 #' @export
 #' @rdname fm_crs
-fm_crs.matrix <- function(x, oblique = NULL, ...) {
+fm_crs.matrix <- function(x, ..., units = NULL, oblique = NULL) {
   x <- sf::NA_crs_
-  fm_crs.crs(x, oblique = oblique, ...)
+  fm_crs.crs(x, units = units, oblique = oblique)
 }
 
 
@@ -1165,6 +1176,7 @@ fm_crs.matrix <- function(x, oblique = NULL, ...) {
 #' @param SRS_string a WKT2 string defining the coordinate system;
 #' see `sp::CRS`. This takes precedence over `projargs`.
 #' @param \dots Additional parameters, passed on to sub-methods.
+#' @inheritParams fm_crs
 #' @returns Either an `sp::CRS` object or an `inla.CRS` object,
 #' depending on if the coordinate reference system described by the parameters
 #' can be expressed with a pure `sp::CRS` object or not.
@@ -1186,7 +1198,7 @@ fm_crs.matrix <- function(x, oblique = NULL, ...) {
 #' }
 #' @export
 #' @rdname fm_CRS_sp
-fm_CRS <- function(x, oblique = NULL, ...) {
+fm_CRS <- function(x, ..., units = NULL, oblique = NULL) {
   UseMethod("fm_CRS")
 }
 
@@ -1201,111 +1213,119 @@ is.na.fm_CRS <- function(x) {
 #' @export
 #' @param x Object to convert to CRS or to extract CRS information from.
 #' @rdname fm_CRS_sp
-fm_CRS.crs <- function(x, oblique = NULL, ...) {
+fm_CRS.crs <- function(x, ..., units = NULL, oblique = NULL) {
   if (is.na(x)) {
     y <- sp::CRS()
   } else {
     y <- fm_CRS(SRS_string = x$wkt)
   }
-  fm_CRS.CRS(y, oblique = oblique)
+  fm_CRS.CRS(y, units = units, oblique = oblique)
 }
 
 #' @export
 #' @rdname fm_CRS_sp
-fm_CRS.fm_crs <- function(x, oblique = NULL, ...) {
+fm_CRS.fm_crs <- function(x, ..., units = NULL, oblique = NULL) {
   fm_CRS(
     x[["crs"]],
+    ...,
+    units = units,
     oblique = if (is.null(oblique)) x[["oblique"]] else oblique,
-    ...
   )
 }
 
 #' @rdname fm_CRS_sp
 #' @export
-fm_CRS.Spatial <- function(x, oblique = NULL, ...) {
+fm_CRS.Spatial <- function(x, ..., units = NULL, oblique = NULL) {
   suppressWarnings(crs <- sp::CRS(SRS_string = sp::wkt(x)))
   if (!is.null(oblique)) {
     fm_crs_oblique(crs) <- oblique
   }
+  fm_length_unit(crs) <- units
   crs
 }
 
 #' @rdname fm_CRS_sp
 #' @export
-fm_CRS.fm_CRS <- function(x, oblique = NULL, ...) {
+fm_CRS.fm_CRS <- function(x, ..., units = NULL, oblique = NULL) {
   if (!is.null(oblique)) {
     fm_crs_oblique(x) <- oblique
   }
+  fm_length_unit(crs) <- units
   x
 }
 
 #' @rdname fm_CRS_sp
 #' @export
-fm_CRS.SpatVector <- function(x, oblique = NULL, ...) {
-  fm_CRS(fm_crs(x, ...), oblique = oblique)
+fm_CRS.SpatVector <- function(x, ..., units = NULL, oblique = NULL) {
+  fm_CRS(fm_crs(x, ..., units = units), oblique = oblique)
 }
 
 #' @rdname fm_CRS_sp
 #' @export
-fm_CRS.SpatRaster <- function(x, oblique = NULL, ...) {
-  fm_CRS(fm_crs(x, ...), oblique = oblique)
+fm_CRS.SpatRaster <- function(x, ..., units = NULL, oblique = NULL) {
+  fm_CRS(fm_crs(x, ..., units = units), oblique = oblique)
 }
 
 #' @rdname fm_CRS_sp
 #' @export
-fm_CRS.sf <- function(x, oblique = NULL, ...) {
-  fm_CRS(sf::st_crs(x, ...), oblique = oblique)
+fm_CRS.sf <- function(x, ..., units = NULL, oblique = NULL) {
+  fm_CRS(sf::st_crs(x, ...), units = units, oblique = oblique)
 }
 
 #' @rdname fm_CRS_sp
 #' @export
-fm_CRS.sfc <- function(x, oblique = NULL, ...) {
-  fm_CRS(sf::st_crs(x, ...), oblique = oblique)
+fm_CRS.sfc <- function(x, ..., units = NULL, oblique = NULL) {
+  fm_CRS(sf::st_crs(x, ...), units = units, oblique = oblique)
 }
 
 #' @rdname fm_CRS_sp
 #' @export
-fm_CRS.sfg <- function(x, oblique = NULL, ...) {
-  fm_CRS(sf::st_crs(x, ...), oblique = oblique)
+fm_CRS.sfg <- function(x, ..., units = NULL, oblique = NULL) {
+  fm_CRS(sf::st_crs(x, ...), units = units, oblique = oblique)
 }
 
 #' @rdname fm_CRS_sp
 #' @export
-fm_CRS.fm_mesh_2d <- function(x, oblique = NULL, ...) {
-  fm_CRS(x[["crs"]], oblique = oblique, ...)
+fm_CRS.fm_mesh_2d <- function(x, ..., units = NULL, oblique = NULL) {
+  fm_CRS(x[["crs"]], ..., units = units, oblique = oblique)
 }
 
 #' @rdname fm_CRS_sp
 #' @export
-fm_CRS.fm_lattice <- function(x, oblique = NULL, ...) {
-  fm_CRS(x[["crs"]], oblique = oblique, ...)
+fm_CRS.fm_lattice <- function(x, ..., units = NULL, oblique = NULL) {
+  fm_CRS(x[["crs"]], ..., units = units, oblique = oblique)
 }
 
 #' @rdname fm_CRS_sp
 #' @export
-fm_CRS.fm_segm <- function(x, oblique = NULL, ...) {
-  fm_CRS(x[["crs"]], oblique = oblique, ...)
+fm_CRS.fm_segm <- function(x, ..., units = NULL, oblique = NULL) {
+  fm_CRS(x[["crs"]], units = units, oblique = oblique)
+}
+
+#' @rdname fm_CRS_sp
+#' @export
+fm_CRS.fm_collect <- function(x, ..., units = NULL, oblique = NULL) {
+  fm_CRS(fm_crs(x, ..., units = units), oblique = oblique)
 }
 
 #' @describeIn fm_crs returns a list of 'CRS' objects, one for each list element
 #' @export
-fm_CRS.fm_list <- function(x, oblique = NULL, ...) {
-  lapply(x, function(xx) fm_CRS(xx, oblique = oblique, ...))
+fm_CRS.fm_list <- function(x, ..., units = NULL, oblique = NULL) {
+  lapply(x, function(xx) fm_CRS(xx, ..., units = units, oblique = oblique))
 }
 
 #' @export
 #' @rdname fm_CRS_sp
-fm_CRS.matrix <- function(x, oblique = NULL, ...) {
+fm_CRS.matrix <- function(x, ..., units = NULL, oblique = NULL) {
   x <- sp::CRS()
-  fm_CRS.CRS(x, oblique = oblique, ...)
+  fm_CRS.CRS(x, ..., units = units, oblique = oblique)
 }
 
 
 
 #' @export
 #' @rdname fm_CRS_sp
-fm_CRS.CRS <- function(x, oblique = NULL,
-                       ...) {
+fm_CRS.CRS <- function(x, ..., units = NULL, oblique = NULL) {
   if (!is.null(oblique) && !all(is.na(oblique))) {
     stopifnot(is.vector(oblique))
     if (length(oblique) > 4) {
@@ -1326,6 +1346,7 @@ fm_CRS.CRS <- function(x, oblique = NULL,
       class = "fm_CRS"
     )
   }
+  fm_length_unit(x) <- units
   x
 }
 
@@ -1336,7 +1357,8 @@ fm_CRS.default <- function(x, oblique = NULL,
                            doCheckCRSArgs = NULL,
                            args = NULL,
                            SRS_string = NULL,
-                           ...) {
+                           ...,
+                           units = NULL) {
   # Handle renaming of projargs to match fm_CRS generic arguments
   if (missing(x)) {
     x <- projargs
@@ -1395,6 +1417,7 @@ fm_CRS.default <- function(x, oblique = NULL,
   if (!is.null(oblique) && !all(is.na(oblique))) {
     x <- fm_CRS.CRS(x, oblique = oblique)
   }
+  fm_length_unit(x) <- units
   x
 }
 
@@ -2729,7 +2752,7 @@ fm_transform.fm_list <- function(x, crs, ...) {
 
 #' @export
 #' @rdname fm_crs
-fm_crs.inla.CRS <- function(x, oblique = NULL, ...) {
+fm_crs.inla.CRS <- function(x, ..., units = NULL, oblique = NULL) {
   fm_crs(
     x[["crs"]],
     oblique = if (is.null(oblique)) x[["oblique"]] else oblique,
@@ -2754,7 +2777,7 @@ is.na.inla.CRS <- function(x) {
 
 #' @rdname fm_CRS_sp
 #' @export
-fm_CRS.inla.CRS <- function(x, oblique = NULL, ...) {
+fm_CRS.inla.CRS <- function(x, ..., units = NULL, oblique = NULL) {
   fm_CRS(fm_crs(x, oblique = oblique, ...))
 }
 
