@@ -79,7 +79,7 @@ fm_CRS(x, ..., units = NULL, oblique = NULL)
 
 \item{units}{character; if non-NULL, \verb{fm_length_unit()<-} is called to change
 the length units of the crs object. If \code{NULL} (default), the length units
-are not changed.}
+are not changed. (From version \verb{0.3.0.9013})}
 
 \item{oblique}{Vector of length at most 4 of rotation angles (in degrees)
 for an oblique projection, all values defaulting to zero. The values

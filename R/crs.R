@@ -510,7 +510,7 @@ fm_length_unit.character <- function(x) {
 #' @param \dots Additional arguments passed on the `sf::st_crs()`
 #' @param units character; if non-NULL, `fm_length_unit()<-` is called to change
 #'   the length units of the crs object. If `NULL` (default), the length units
-#'   are not changed.
+#'   are not changed. (From version `0.3.0.9013`)
 #' @param oblique Numeric vector of length at most 4 of rotation angles (in
 #'   degrees) for an oblique projection, all values defaulting to zero. The
 #'   values indicate (longitude, latitude, orientation, orbit), as explained in
