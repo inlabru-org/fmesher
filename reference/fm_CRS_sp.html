@@ -15,7 +15,7 @@ reference system"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0.9012</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0.9013</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,52 +60,55 @@ reference system</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, oblique <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, units <span class="op">=</span> <span class="cn">NULL</span>, oblique <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'fm_CRS'</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'crs'</span></span>
-<span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, oblique <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, units <span class="op">=</span> <span class="cn">NULL</span>, oblique <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'fm_crs'</span></span>
-<span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, oblique <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, units <span class="op">=</span> <span class="cn">NULL</span>, oblique <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'Spatial'</span></span>
-<span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, oblique <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, units <span class="op">=</span> <span class="cn">NULL</span>, oblique <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'fm_CRS'</span></span>
-<span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, oblique <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, units <span class="op">=</span> <span class="cn">NULL</span>, oblique <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'SpatVector'</span></span>
-<span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, oblique <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, units <span class="op">=</span> <span class="cn">NULL</span>, oblique <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'SpatRaster'</span></span>
-<span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, oblique <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, units <span class="op">=</span> <span class="cn">NULL</span>, oblique <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'sf'</span></span>
-<span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, oblique <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, units <span class="op">=</span> <span class="cn">NULL</span>, oblique <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'sfc'</span></span>
-<span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, oblique <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, units <span class="op">=</span> <span class="cn">NULL</span>, oblique <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'sfg'</span></span>
-<span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, oblique <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, units <span class="op">=</span> <span class="cn">NULL</span>, oblique <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'fm_mesh_2d'</span></span>
-<span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, oblique <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, units <span class="op">=</span> <span class="cn">NULL</span>, oblique <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'fm_lattice'</span></span>
-<span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, oblique <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, units <span class="op">=</span> <span class="cn">NULL</span>, oblique <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'fm_segm'</span></span>
-<span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, oblique <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, units <span class="op">=</span> <span class="cn">NULL</span>, oblique <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'fm_collect'</span></span>
+<span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, units <span class="op">=</span> <span class="cn">NULL</span>, oblique <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'matrix'</span></span>
-<span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, oblique <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, units <span class="op">=</span> <span class="cn">NULL</span>, oblique <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'CRS'</span></span>
-<span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, oblique <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, units <span class="op">=</span> <span class="cn">NULL</span>, oblique <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Default S3 method</span></span>
 <span><span class="fu">fm_CRS</span><span class="op">(</span></span>
@@ -115,14 +118,15 @@ reference system</p>
 <span>  doCheckCRSArgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  args <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  SRS_string <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  <span class="va">...</span></span>
+<span>  <span class="va">...</span>,</span>
+<span>  units <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'inla.CRS'</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'inla.CRS'</span></span>
-<span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, oblique <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">fm_CRS</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, units <span class="op">=</span> <span class="cn">NULL</span>, oblique <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -133,15 +137,21 @@ reference system</p>
 <dd><p>Object to convert to CRS or to extract CRS information from.</p></dd>
 
 
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>Additional parameters, passed on to sub-methods.</p></dd>
+
+
+<dt id="arg-units">units<a class="anchor" aria-label="anchor" href="#arg-units"></a></dt>
+<dd><p>character; if non-NULL, <code>fm_length_unit()&lt;-</code> is called to change
+the length units of the crs object. If <code>NULL</code> (default), the length units
+are not changed.</p></dd>
+
+
 <dt id="arg-oblique">oblique<a class="anchor" aria-label="anchor" href="#arg-oblique"></a></dt>
 <dd><p>Vector of length at most 4 of rotation angles (in degrees)
 for an oblique projection, all values defaulting to zero. The values
 indicate (longitude, latitude, orientation, orbit), as explained in the
 Details section for <code><a href="fm_crs.html">fm_crs()</a></code>.</p></dd>
-
-
-<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Additional parameters, passed on to sub-methods.</p></dd>
 
 
 <dt id="arg-projargs">projargs<a class="anchor" aria-label="anchor" href="#arg-projargs"></a></dt>
