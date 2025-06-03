@@ -35,8 +35,8 @@ m2 <- fm_as_collect(m)
 m3 <- fm_as_collect_list(list(m, m))
 c(fm_dof(m$fun_spaces[[1]]) + fm_dof(m$fun_spaces[[2]]), fm_dof(m))
 fm_basis(m, loc = tibble::tibble(
-  loc = rbind(c(0, 0), c(0.1, 0.1)),
-  index = c(2, 1)
+  loc = fmexample$loc_sf,
+  index = c(1, 1, 2, 2, 1, 2, 2, 1, 1, 2)
 ), full = TRUE)
 fm_basis(m, loc = tibble::tibble(
   loc = rbind(c(0, 0), c(0.1, 0.1)),
