@@ -1006,8 +1006,8 @@ fm_crs.matrix <- function(x, ..., units = NULL, oblique = NULL) {
 #' @export
 `fm_crs<-.fm_collect` <- function(x, value) {
   crs <- fm_crs(value)
-  for (k in seq_along(x[["fun_space"]])) {
-    fm_crs(x[["fun_space"]][[k]]) <- crs
+  for (k in seq_along(x[["fun_spaces"]])) {
+    fm_crs(x[["fun_spaces"]][[k]]) <- crs
   }
   x
 }
