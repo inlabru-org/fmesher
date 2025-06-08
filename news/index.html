@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0.9013</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0.9014</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,6 +72,7 @@
 <li>Bug fix for <code><a href="../reference/fm_mesh_2d.html">fm_mesh_2d_inla()</a></code> to ensure S2 manifold meshes covering the entire sphere aren’t accidentally limited to a subset of the globe (version <code>0.3.0.9008</code>)</li>
 <li>Handle colour palettes with fewer than requested colours in <code><a href="../reference/fm_generate_colors.html">fm_generate_colors()</a></code> (version <code>0.3.0.9008</code>)</li>
 <li>Fix bug in <code><a href="../reference/fm_detect_manifold.html">fm_detect_manifold()</a></code> that caused it to return <code>"R2"</code> for <code>"S2"</code> and <code>"M2"</code> manifolds (version <code>0.3.0.9010</code>)</li>
+<li>Fix bug in <code><a href="../reference/fm_as_mesh_3d.html">fm_as_mesh_3d_list()</a></code> that caused it to return the mesh surface as an <code>fm_mesh_2d</code> object instead of the full <code>fm_mesh_3d</code> object (version <code>0.3.0.9014</code>)</li>
 </ul></div>
 </div>
     <div class="section level2">
