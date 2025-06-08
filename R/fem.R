@@ -398,13 +398,23 @@ fm_fem.fm_mesh_3d <- function(mesh, order = 2, ...) {
 
 
 #' @title fm_sizes
-#' @noRd
+#' @description `r lifecycle::badge("experimental")`
+#'   Compute effective sizes of faces/cells and vertices in a mesh
+#' @param ... Passed on to submethods
+#' @returns A `list` with elements `face` and `vertex` for 2D meshes, or `cell`
+#'   and `vertex` for 3D meshes. The elements are vectors of effective sizes of
+#'   the faces/cells and vertices, respectively.
+#' @export
+#' @examples
+#' str(fm_sizes(fmexample$mesh))
+#'
 fm_sizes <- function(...) {
-  UseMethod()
+  UseMethod("fm_sizes")
 }
 
 #' @rdname fm_sizes
-#' @noRd
+#' @param mesh object of a supported mesh class
+#' @export
 fm_sizes.fm_mesh_2d <- function(mesh, ...) {
   if (fm_manifold(mesh, "S")) {
     warning("`fm_sizes()` does not handle spherical triangles.")
@@ -431,7 +441,7 @@ fm_sizes.fm_mesh_2d <- function(mesh, ...) {
 }
 
 #' @rdname fm_sizes
-#' @noRd
+#' @export
 fm_sizes.fm_mesh_3d <- function(mesh, ...) {
   v1 <- mesh$loc[mesh$graph$tv[, 1], , drop = FALSE]
   v2 <- mesh$loc[mesh$graph$tv[, 2], , drop = FALSE]
