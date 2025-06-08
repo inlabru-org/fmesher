@@ -35,6 +35,9 @@
   `fm_generate_colors()` (version `0.3.0.9008`)
 * Fix bug in `fm_detect_manifold()` that caused it to return `"R2"` for
   `"S2"` and `"M2"` manifolds (version `0.3.0.9010`)
+* Fix bug in `fm_as_mesh_3d_list()` that caused it to return the mesh surface
+  as an `fm_mesh_2d` object instead of the full `fm_mesh_3d` object
+  (version `0.3.0.9014`)
 
 # fmesher 0.3.0
 

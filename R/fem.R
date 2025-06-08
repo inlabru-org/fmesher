@@ -397,8 +397,41 @@ fm_fem.fm_mesh_3d <- function(mesh, order = 2, ...) {
 }
 
 
-# @title fm_sizes
-# @export
+#' @title fm_sizes
+#' @noRd
+fm_sizes <- function(...) {
+  UseMethod()
+}
+
+#' @rdname fm_sizes
+#' @noRd
+fm_sizes.fm_mesh_2d <- function(mesh, ...) {
+  if (fm_manifold(mesh, "S")) {
+    warning("`fm_sizes()` does not handle spherical triangles.")
+  }
+  v1 <- mesh$loc[mesh$graph$tv[, 1], , drop = FALSE]
+  v2 <- mesh$loc[mesh$graph$tv[, 2], , drop = FALSE]
+  v3 <- mesh$loc[mesh$graph$tv[, 3], , drop = FALSE]
+  e1 <- v2 - v1
+  e2 <- v3 - v2
+  e3 <- v3 - v1
+  areas_t <- rowSums((row_cross_product(e1, e2) +
+                       row_cross_product(e2, e3) +
+                       row_cross_product(e3, e1))^2)^0.5 / 6
+
+  c0 <- Matrix::sparseMatrix(
+    i = as.vector(mesh$graph$tv),
+    j = as.vector(mesh$graph$tv),
+    x = rep(areas_t / 3, times = 3),
+    dims = c(mesh$n, mesh$n)
+  )
+  areas_v <- Matrix::diag(c0)
+
+  list(face = areas_t, vertex = areas_v)
+}
+
+#' @rdname fm_sizes
+#' @noRd
 fm_sizes.fm_mesh_3d <- function(mesh, ...) {
   v1 <- mesh$loc[mesh$graph$tv[, 1], , drop = FALSE]
   v2 <- mesh$loc[mesh$graph$tv[, 2], , drop = FALSE]

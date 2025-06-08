@@ -456,11 +456,12 @@ fm_row_kron <- function(M1, M2, repl = NULL, n.repl = NULL, weights = NULL # ,
 }
 
 
-# @title Find S3 method supported classes
-# @description Calls `utils::.S3Methods` and extracts the class information
-# as a character vector
-# @param f character; the name of an S3 generic
-# @keyword internal
+#' @title Find S3 method supported classes
+#' @description Calls `utils::.S3Methods` and extracts the class information
+#' as a character vector
+#' @param f character; the name of an S3 generic
+#' @keywords internal
+#' @noRd
 method_classes <- function(f) {
   try(
     gsub(
