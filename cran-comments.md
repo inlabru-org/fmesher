@@ -1,27 +1,27 @@
-This is a minor feature update release.
+This is a minor feature update and bugfix release.
 
-## Changes from 0.2.0 to 0.3.0
+## Changes from 0.3.0 to 0.4.0
 
 * Feature additions and updates
 * Bug fixes
 
-## R CMD check results for 0.3.0
+## R CMD check results for 0.4.0
 
 No notes, warnings, or errors
 
-## CRAN results for 0.2.0
+## CRAN results for 0.3.0
 
-Version: 0.2.0
+Version: 0.3.0
 Check: installed package size
 Result: NOTE 
-    installed size is  8.9Mb
+    installed size is  9.8Mb
     sub-directories of 1Mb or more:
-      libs   7.4Mb
-Flavors: r-release-macos-arm64, r-release-macos-x86_64, r-oldrel-macos-arm64, r-oldrel-macos-x86_64
+      libs   8.1Mb
+Flavors: r-oldrel-macos-arm64, r-oldrel-macos-x86_64
 
 # revdepcheck results
 
-We checked 15 reverse dependencies, comparing R CMD check results across CRAN and dev versions of this package.
+We checked all 14 reverse dependencies from CRAN, comparing R CMD check results across CRAN and dev versions of this package.
 
  * We saw 0 new problems
  * We failed to check 0 packages
