@@ -513,7 +513,6 @@ fm_length_unit.character <- function(x) {
 #'   from the object, resulting in a return class of `sf::st_crs()`. When
 #'   `NULL`, pass though any oblique information in the object, returning an
 #'   `fm_crs()` object if needed.
-#' @param crsonly `r lifecycle::badge("deprecated")` since version `0.0.1`.
 #'
 #' @details The first two
 #' elements of the `oblique` vector are the (longitude, latitude)
@@ -562,20 +561,7 @@ fm_length_unit.character <- function(x) {
 fm_crs <- function(x,
                    ...,
                    units = NULL,
-                   oblique = NULL,
-                   crsonly = deprecated()) {
-  if (lifecycle::is_present(crsonly)) {
-    lifecycle::deprecate_stop(
-      "0.0.1",
-      "fm_crs(crsonly=' should no longer be used')",
-      "fm_crs(oblique)",
-      c(
-        "For `crsonly = TRUE`, use `oblique = NA`.",
-        "For `crsonly = FALSE`, use NULL (default), or non-NA `oblique`."
-      )
-    )
-  }
-
+                   oblique = NULL) {
   UseMethod("fm_crs")
 }
 
@@ -1180,7 +1166,7 @@ fm_crs.matrix <- function(x, ..., units = NULL, oblique = NULL) {
 #' object}
 #' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @seealso [fm_crs()], [sp::CRS()], [`fm_crs_wkt`],
-#' [fm_sp_get_crs()], [fm_crs_is_identical()]
+#' [fm_crs_is_identical()]
 #' @examples
 #' if (fm_safe_sp()) {
 #'   crs1 <- fm_CRS("longlat_globe")
@@ -1874,19 +1860,6 @@ fm_proj4string <- function(crs) {
   fm_crs(crs, oblique = NA)$proj4string
 }
 
-#' @export
-#' @describeIn fm_crs_wkt `r lifecycle::badge("deprecated")` Use [fm_wkt()]
-#' instead.
-
-fm_crs_get_wkt <- function(crs) {
-  lifecycle::deprecate_stop(
-    "0.0.1",
-    "fm_crs_get_wkt()",
-    "fm_wkt()"
-  )
-  fm_wkt(crs)
-}
-
 
 fm_rotmat3213 <- function(rot) {
   cs <- cos(rot[1])
@@ -2194,19 +2167,6 @@ fm_crs_is_identical <- function(crs0, crs1, crsonly = FALSE) {
   return(crs_ident &&
     identical(fm_crs_oblique(crs0), fm_crs_oblique(crs1)))
 }
-
-#' @describeIn fm_crs_is_identical `r lifecycle::badge("deprecated")`
-#' by `fm_crs_is_identical()`.
-#' @export
-fm_identical_CRS <- function(crs0, crs1, crsonly = FALSE) {
-  lifecycle::deprecate_stop(
-    "0.1.0",
-    "fm_identical_CRS()",
-    "fm_crs_is_identical()"
-  )
-  fm_crs_is_identical(crs0, crs1, crsonly = crsonly)
-}
-
 
 
 # fm_detect_manifold ####
@@ -2800,7 +2760,7 @@ fm_CRS.inla.CRS <- function(x, ..., units = NULL, oblique = NULL) {
 #' @seealso [fm_transform()]
 #' @export
 fm_spTransform <- function(x, ...) {
-  lifecycle::deprecate_warn("0.0.1", "fm_spTransform()", "fm_transform()")
+  lifecycle::deprecate_stop("0.0.1", "fm_spTransform()", "fm_transform()")
   UseMethod("fm_spTransform")
 }
 
@@ -2832,55 +2792,4 @@ fm_spTransform.SpatialPointsDataFrame <- function(x,
                                                   passthrough = FALSE,
                                                   ...) {
   fm_transform(x, crs = CRSobj, passthrough = passthrough)
-}
-
-
-
-# Deprecated methods ####
-
-#' @describeIn fmesher-deprecated Old checker for PROJ6.
-#' @export
-fm_has_PROJ6 <- function() {
-  lifecycle::deprecate_stop(
-    "0.0.1",
-    "fm_has_PROJ6()",
-    details = "Should no longer be used."
-  )
-}
-
-
-#' @describeIn fmesher-deprecated Wrapper for [fm_CRS()]
-#' `sp::Spatial` and `sp::CRS` objects.
-#' @export
-fm_as_sp_crs <- function(x, ...) {
-  lifecycle::deprecate_stop(
-    "0.0.1",
-    "fm_as_sp_crs()",
-    "fm_CRS()"
-  )
-  fm_CRS(x, ...)
-}
-
-
-
-
-#' @describeIn fmesher-deprecated Wrapper for `CRS(projargs)` (PROJ4) and
-#'   `CRS(wkt)` for `sp::Spatial` objects.
-#' @param x A `sp::Spatial` object
-#' @returns A `CRS` object, or NULL if no valid CRS identified
-#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
-#' @details This function is a convenience method to workaround PROJ4/PROJ6
-#'   differences, and the lack of a crs extraction method for Spatial objects.
-#'   For newer code, use [fm_crs()] instead, that returns `crs` objects, and use
-#'   [fm_CRS()] to extract/construct/convert to old style `sp::CRS` objects.
-#' @examples
-#' if (fm_safe_sp()) {
-#'   s <- sp::SpatialPoints(matrix(1:6, 3, 2), proj4string = fm_CRS("sphere"))
-#'   fm_CRS(s)
-#' }
-#' @export
-
-fm_sp_get_crs <- function(x) {
-  lifecycle::deprecate_stop("0.0.1", "fm_sp_get_crs()", "fm_CRS()")
-  fm_CRS(x)
 }

@@ -426,8 +426,8 @@ fm_sizes.fm_mesh_2d <- function(mesh, ...) {
   e2 <- v3 - v2
   e3 <- v3 - v1
   areas_t <- rowSums((row_cross_product(e1, e2) +
-                       row_cross_product(e2, e3) +
-                       row_cross_product(e3, e1))^2)^0.5 / 6
+    row_cross_product(e2, e3) +
+    row_cross_product(e3, e1))^2)^0.5 / 6
 
   c0 <- Matrix::sparseMatrix(
     i = as.vector(mesh$graph$tv),

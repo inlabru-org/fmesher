@@ -19,10 +19,6 @@
 #' @param format character; "sf", "terra" or "sp"
 #' @param minimal logical; if `TRUE` (default), the default range is determined
 #' by the minimum of the ranges of the mesh and mask, otherwise only the mesh.
-#' @param nx `r lifecycle::badge("deprecated")` Number of pixels in x direction,
-#' or a numeric vector of x-values
-#' @param ny `r lifecycle::badge("deprecated")` Number of pixels in y direction,
-#' or a numeric vector of y-values
 #' @returns `sf`, `SpatRaster`, or `SpatialPixelsDataFrame` covering the mesh or
 #' mask.
 #'
@@ -73,42 +69,13 @@ fm_pixels <- function(mesh,
                       ylim = NULL,
                       mask = TRUE,
                       format = "sf",
-                      minimal = TRUE,
-                      nx = deprecated(),
-                      ny = deprecated()) {
+                      minimal = TRUE) {
   format <- match.arg(format, c("sf", "terra", "sp"))
   if (!fm_manifold(mesh, "R2")) {
     stop("fmesher::fm_pixels() currently works for R2 meshes only.")
   }
   if (is.null(mask)) {
     mask <- FALSE
-  }
-
-  x <- NULL
-  if (lifecycle::is_present(nx)) {
-    lifecycle::deprecate_stop(
-      "0.0.1",
-      "fm_pixels(nx)",
-      "fm_pixels(dim)"
-    )
-    if (length(nx) == 1) {
-      dims[1] <- nx
-    } else {
-      x <- nx
-    }
-  }
-  y <- NULL
-  if (lifecycle::is_present(ny)) {
-    lifecycle::deprecate_stop(
-      "0.0.1",
-      "fm_pixels(ny)",
-      "fm_pixels(dim)"
-    )
-    if (length(ny) == 1) {
-      dims[2] <- ny
-    } else {
-      y <- ny
-    }
   }
 
   if (!is.logical(mask)) {
@@ -119,24 +86,20 @@ fm_pixels <- function(mesh,
     mask_bbox <- sf::st_bbox(mask)
   }
 
-  if (is.null(x)) {
-    if (is.null(xlim)) {
-      xlim <- range(mesh$loc[, 1])
-      if (!is.logical(mask) && minimal) {
-        xlim <- c(max(xlim[1], mask_bbox[1]), min(xlim[2], mask_bbox[3]))
-      }
+  if (is.null(xlim)) {
+    xlim <- range(mesh$loc[, 1])
+    if (!is.logical(mask) && minimal) {
+      xlim <- c(max(xlim[1], mask_bbox[1]), min(xlim[2], mask_bbox[3]))
     }
-    x <- seq(xlim[1], xlim[2], length.out = dims[1])
   }
-  if (is.null(y)) {
-    if (is.null(ylim)) {
-      ylim <- range(mesh$loc[, 2])
-      if (!is.logical(mask) && minimal) {
-        ylim <- c(max(ylim[1], mask_bbox[2]), min(ylim[2], mask_bbox[4]))
-      }
+  x <- seq(xlim[1], xlim[2], length.out = dims[1])
+  if (is.null(ylim)) {
+    ylim <- range(mesh$loc[, 2])
+    if (!is.logical(mask) && minimal) {
+      ylim <- c(max(ylim[1], mask_bbox[2]), min(ylim[2], mask_bbox[4]))
     }
-    y <- seq(ylim[1], ylim[2], length.out = dims[2])
   }
+  y <- seq(ylim[1], ylim[2], length.out = dims[2])
 
   pixels <- expand.grid(x = x, y = y)
   pixels <- sf::st_as_sf(pixels, coords = c("x", "y"), crs = fm_crs(mesh))

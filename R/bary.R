@@ -552,8 +552,10 @@ fm_bary_simplex.fm_mesh_2d <- function(mesh, bary = NULL, ...) {
 #'   matrix(c(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0), 4, 3, byrow = TRUE),
 #'   matrix(c(1, 2, 3, 4), 1, 4, byrow = TRUE)
 #' ))
-#' (bary <- fm_bary(m, rbind(cbind(0.1, 0.2, 0.3),
-#'                           cbind(-0.1, 0.2, 0.3))))
+#' (bary <- fm_bary(m, rbind(
+#'   cbind(0.1, 0.2, 0.3),
+#'   cbind(-0.1, 0.2, 0.3)
+#' )))
 #' fm_bary_simplex(m, bary)
 fm_bary_simplex.fm_mesh_3d <- function(mesh, bary = NULL, ...) {
   if (is.null(bary)) {
@@ -774,8 +776,10 @@ fm_bary_loc.fm_mesh_2d <- function(mesh, bary = NULL, ..., format = NULL) {
 #'   matrix(c(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0), 4, 3, byrow = TRUE),
 #'   matrix(c(1, 2, 3, 4), 1, 4, byrow = TRUE)
 #' ))
-#' (bary <- fm_bary(m, rbind(cbind(0.1, 0.2, 0.3),
-#'                           cbind(-0.1, 0.2, 0.3))))
+#' (bary <- fm_bary(m, rbind(
+#'   cbind(0.1, 0.2, 0.3),
+#'   cbind(-0.1, 0.2, 0.3)
+#' )))
 #' fm_bary_loc(m, bary)
 fm_bary_loc.fm_mesh_3d <- function(mesh, bary = NULL, ..., format = NULL) {
   format <- match.arg(format, c("matrix"))

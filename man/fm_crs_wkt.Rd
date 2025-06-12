@@ -33,7 +33,6 @@
 \alias{fm_length_unit<-.fm_crs}
 \alias{fm_wkt}
 \alias{fm_proj4string}
-\alias{fm_crs_get_wkt}
 \alias{fm_wkt_tree_projection_type}
 \alias{fm_wkt_projection_type}
 \alias{fm_crs_projection_type}
@@ -104,8 +103,6 @@ fm_wkt(crs)
 
 fm_proj4string(crs)
 
-fm_crs_get_wkt(crs)
-
 fm_wkt_tree_projection_type(wt)
 
 fm_wkt_projection_type(wkt)
@@ -173,9 +170,6 @@ Get and set CRS object or WKT string properties.
 
 \item \code{fm_proj4string()}: Returns a proj4 string, for any input supported by
 \code{\link[=fm_crs]{fm_crs()}}.
-
-\item \code{fm_crs_get_wkt()}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{\link[=fm_wkt]{fm_wkt()}}
-instead.
 
 \item \code{fm_wkt_tree_projection_type()}: Returns "longlat", "lambert", "mollweide", "hammer",
 "tmerc", or \code{NULL}

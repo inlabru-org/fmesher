@@ -30,7 +30,7 @@
 \alias{fm_crs.inla.CRS}
 \title{Obtain coordinate reference system object}
 \usage{
-fm_crs(x, ..., units = NULL, oblique = NULL, crsonly = deprecated())
+fm_crs(x, ..., units = NULL, oblique = NULL)
 
 fm_crs_oblique(x)
 
@@ -103,8 +103,6 @@ obliqueness parameters of a \code{fm_crs} object. When \code{NA}, remove oblique
 from the object, resulting in a return class of \code{sf::st_crs()}. When
 \code{NULL}, pass though any oblique information in the object, returning an
 \code{fm_crs()} object if needed.}
-
-\item{crsonly}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} since version \verb{0.0.1}.}
 
 \item{name}{element name}
 
