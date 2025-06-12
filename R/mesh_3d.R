@@ -135,8 +135,12 @@ fm_delaunay_3d <- function(loc, ...) {
 #' @export
 #' @family object creation and conversion
 #' @export
-# @examples
-# fm_as_mesh_3d_list(list(fm_mesh_3d(cbind(2, 1))))
+#' @examples
+#' (m <- fm_mesh_3d(
+#'   matrix(c(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0), 4, 3, byrow = TRUE),
+#'   matrix(c(1, 2, 3, 4), 1, 4, byrow = TRUE)
+#' ))
+#' fm_as_mesh_3d_list(list(m))
 fm_as_mesh_3d <- function(x, ...) {
   if (is.null(x)) {
     return(NULL)
@@ -146,7 +150,7 @@ fm_as_mesh_3d <- function(x, ...) {
 #' @describeIn fm_as_mesh_3d Convert each element of a list
 #' @export
 fm_as_mesh_3d_list <- function(x, ...) {
-  fm_as_list(x, ..., .class_stub = "mesh_2d")
+  fm_as_list(x, ..., .class_stub = "mesh_3d")
 }
 #' @rdname fm_as_mesh_3d
 #' @param x Object to be converted
@@ -167,12 +171,12 @@ fm_as_mesh_3d.fm_mesh_3d <- function(x, ...) {
 #' @param \dots Currently unused
 #' @returns A 3-column matrix of coordinates of triangles, suitable for
 #'   passing to `rgl::triangles3d()`.
-#' @examplesIf interactive()
+#' @examples
 #' if (requireNamespace("geometry", quietly = TRUE) &&
 #'   requireNamespace("rgl", quietly = TRUE)) {
 #'   (m <- fm_delaunay_3d(matrix(rnorm(30), 10, 3)))
 #'   rgl::open3d()
-#'   rgl::triangles3d(as.triangles3d(m, "boundary"), col = "blue")
+#'   rgl::triangles3d(rgl::as.triangles3d(m, "boundary"), col = "blue")
 #' }
 #'
 as.triangles3d.fm_mesh_3d <- function(obj, subset = NULL, ...) {

@@ -13,7 +13,7 @@
 #' @param alpha numeric; A valid [fm_matern_precision()] `alpha` parameter
 #' @param dims 2-numeric; the grid size
 #' @returns An `sf` object with gridded mesh assessment information
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @seealso [fm_mesh_2d()], [fm_rcdt_2d]
 #' @examples
 #'
@@ -45,8 +45,9 @@ fm_assess <- function(mesh, spatial.range, alpha = 2,
       as.vector(Matrix::sparseMatrix(i = i, j = rep(1, length(i)), x = val)) /
         as.vector(Matrix::sparseMatrix(i = i, j = rep(1, length(i)), x = num))
 
-    proj_len <- as.vector(proj$proj$A %*% avg_len)
-    proj_len[!proj$proj$ok] <- NA
+    b <- fm_basis(proj, full = TRUE)
+    proj_len <- as.vector(b$A %*% avg_len)
+    proj_len[!b$ok] <- NA
     proj_len
   }
   mesh.proj <- function(mesh, dims) {
@@ -71,16 +72,18 @@ fm_assess <- function(mesh, spatial.range, alpha = 2,
     fm_qinv(Q)
   }
   mesh.sd <- function(proj, S) {
-    v <- Matrix::rowSums(proj$proj$A * (proj$proj$A %*% S))
-    v[!proj$proj$ok] <- NA
+    b <- fm_basis(proj, full = TRUE)
+    v <- Matrix::rowSums(b$A * (b$A %*% S))
+    v[!b$ok] <- NA
     array(v^0.5, dim = proj$lattice$dims)
   }
   mesh.sd.deviation.approx <- function(proj, S, sd0) {
-    val <- proj$proj$A %*% (
-      as.vector(Matrix::t(proj$proj$A[proj$proj$ok, , drop = FALSE]) %*%
-        as.vector(sd0)[proj$proj$ok]) /
-        Matrix::colSums(proj$proj$A[proj$proj$ok, , drop = FALSE]))
-    val[!proj$proj$ok] <- NA
+    b <- fm_basis(proj, full = TRUE)
+    val <- b$A %*% (
+      as.vector(Matrix::t(b$A[b$ok, , drop = FALSE]) %*%
+        as.vector(sd0)[b$ok]) /
+        Matrix::colSums(b$A[b$ok, , drop = FALSE]))
+    val[!b$ok] <- NA
     array(
       1 + (as.vector(sd0) - val),
       dim = proj$lattice$dims

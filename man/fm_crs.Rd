@@ -19,6 +19,8 @@
 \alias{fm_crs.fm_mesh_2d}
 \alias{fm_crs.fm_mesh_1d}
 \alias{fm_crs.fm_mesh_3d}
+\alias{fm_crs.fm_tensor}
+\alias{fm_crs.fm_collect}
 \alias{fm_crs.fm_lattice_2d}
 \alias{fm_crs.fm_segm}
 \alias{fm_crs.fm_list}
@@ -28,7 +30,7 @@
 \alias{fm_crs.inla.CRS}
 \title{Obtain coordinate reference system object}
 \usage{
-fm_crs(x, oblique = NULL, ..., crsonly = deprecated())
+fm_crs(x, ..., units = NULL, oblique = NULL)
 
 fm_crs_oblique(x)
 
@@ -36,52 +38,62 @@ fm_crs_oblique(x)
 
 \method{$}{fm_crs}(x, name)
 
-\method{fm_crs}{default}(x, oblique = NULL, ...)
+\method{fm_crs}{default}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_crs}{crs}(x, oblique = NULL, ...)
+\method{fm_crs}{crs}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_crs}{fm_crs}(x, oblique = NULL, ...)
+\method{fm_crs}{fm_crs}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_crs}{fm_CRS}(x, oblique = NULL, ...)
+\method{fm_crs}{fm_CRS}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_crs}{character}(x, oblique = NULL, ...)
+\method{fm_crs}{character}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_crs}{Spatial}(x, oblique = NULL, ...)
+\method{fm_crs}{Spatial}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_crs}{SpatVector}(x, oblique = NULL, ...)
+\method{fm_crs}{SpatVector}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_crs}{SpatRaster}(x, oblique = NULL, ...)
+\method{fm_crs}{SpatRaster}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_crs}{sf}(x, oblique = NULL, ...)
+\method{fm_crs}{sf}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_crs}{sfc}(x, oblique = NULL, ...)
+\method{fm_crs}{sfc}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_crs}{sfg}(x, oblique = NULL, ...)
+\method{fm_crs}{sfg}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_crs}{fm_mesh_2d}(x, oblique = NULL, ...)
+\method{fm_crs}{fm_mesh_2d}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_crs}{fm_mesh_1d}(x, oblique = NULL, ...)
+\method{fm_crs}{fm_mesh_1d}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_crs}{fm_mesh_3d}(x, oblique = NULL, ...)
+\method{fm_crs}{fm_mesh_3d}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_crs}{fm_lattice_2d}(x, oblique = NULL, ...)
+\method{fm_crs}{fm_tensor}(x, ..., units = NULL, oblique = NULL, .multi = FALSE)
 
-\method{fm_crs}{fm_segm}(x, oblique = NULL, ...)
+\method{fm_crs}{fm_collect}(x, ..., units = NULL, oblique = NULL, .multi = FALSE)
 
-\method{fm_crs}{fm_list}(x, oblique = NULL, ...)
+\method{fm_crs}{fm_lattice_2d}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_crs}{matrix}(x, oblique = NULL, ...)
+\method{fm_crs}{fm_segm}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_CRS}{fm_list}(x, oblique = NULL, ...)
+\method{fm_crs}{fm_list}(x, ..., units = NULL, oblique = NULL)
+
+\method{fm_crs}{matrix}(x, ..., units = NULL, oblique = NULL)
+
+\method{fm_CRS}{fm_list}(x, ..., units = NULL, oblique = NULL)
 
 fm_wkt_predef()
 
-\method{fm_crs}{inla.CRS}(x, oblique = NULL, ...)
+\method{fm_crs}{inla.CRS}(x, ..., units = NULL, oblique = NULL)
 }
 \arguments{
 \item{x}{Object to convert to \code{crs} or  to extract \code{crs} information from.
 If \code{character}, a string suitable for \code{sf::st_crs(x)}, or the name of a
 predefined \code{wkt} string from ``names(fm_wkt_predef())`.}
+
+\item{\dots}{Additional parameters. Not currently in use.}
+
+\item{units}{character; if non-NULL, \verb{fm_length_unit()<-} is called to change
+the length units of the crs object. If \code{NULL} (default), the length units
+are not changed. (From version \verb{0.3.0.9013})}
 
 \item{oblique}{Numeric vector of length at most 4 of rotation angles (in
 degrees) for an oblique projection, all values defaulting to zero. The
@@ -92,15 +104,10 @@ from the object, resulting in a return class of \code{sf::st_crs()}. When
 \code{NULL}, pass though any oblique information in the object, returning an
 \code{fm_crs()} object if needed.}
 
-\item{\dots}{Additional parameters. Not currently in use.}
-
-\item{crsonly}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} logical;
-if TRUE, remove \code{oblique} information from \code{fm_crs}
-objects and return a plain \code{crs} object instead. For \code{crsonly = TRUE}, use
-\code{oblique = NA} instead. For \code{crsonly = FALSE}, use default, NULL, or non-NA
-\code{oblique}.}
-
 \item{name}{element name}
+
+\item{.multi}{logical; If \code{TRUE}, return a list of \code{fm_crs} objects
+for classes that support multiple spaces. Default \code{FALSE}}
 }
 \value{
 Either an \code{sf::crs} object or an \code{fm_crs} object,
@@ -143,13 +150,19 @@ projection is only correct for perfect spheres.
 }
 \section{Methods (by class)}{
 \itemize{
+\item \code{fm_crs(fm_tensor)}: By default returns the crs of the first space in the
+tensor product space.
+
+\item \code{fm_crs(fm_collect)}: By default returns the crs of the first space in the
+collection.
+
 \item \code{fm_crs(fm_list)}: returns a list of 'crs' objects, one for each list element
 
 }}
 \section{Methods (by generic)}{
 \itemize{
 \item \code{st_crs(fm_crs)}: \code{st_crs(x, ...)} is equivalent to
-\verb{fm_crs(x, ... oblique = NA)}
+\code{fm_crs(x, oblique = NA, ...)}
 when \code{x} is a \code{fm_crs} object.
 
 \item \code{$}: For a \code{fm_crs} object \code{x}, \code{x$name} calls the accessor
@@ -183,5 +196,5 @@ fm_crs_is_null
 \code{\link[=fm_crs<-]{fm_crs<-()}}, \code{\link[=fm_crs_oblique<-]{fm_crs_oblique<-()}}
 }
 \author{
-Finn Lindgren \email{finn.lindgren@gmail.com}
+Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}
 }

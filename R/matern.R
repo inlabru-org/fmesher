@@ -13,7 +13,8 @@ NULL
 #' @param x A mesh object, e.g. from `fm_mesh_1d()`, `fm_mesh_2d()`, or
 #' other object with supporting [fm_fem()] and [fm_manifold_dim()] methods.
 #' @param alpha The SPDE operator order. The resulting smoothness index
-#' is `nu = alpha - dim / 2`.
+#' is `nu = alpha - dim / 2`. Supports integers 1, 2, 3, etc. that give
+#' `nu > 0`.
 #' @param rho The Matérn range parameter
 #' (scale parameter `kappa = sqrt(8 * nu) / rho`)
 #' @param sigma The nominal Matérn std.dev. parameter
@@ -48,17 +49,27 @@ fm_matern_precision <- function(x, alpha, rho, sigma) {
 
   if (inherits(mesh, "fm_mesh_1d") && (mesh$degree == 2)) {
     C <- fem$c1
-  } else if (inherits(mesh, "fm_tensor")) {
+  } else if (inherits(mesh, c("fm_tensor", "fm_collect"))) {
     C <- fem$cc
   } else {
     C <- fem$c0
   }
   if (alpha == 2) {
-    Q <- (C * kappa^4 + 2 * kappa^2 * fem$g1 + fem$g2) / sigma^2 * scaling
+    g2 <- make_symmetric(fem$g2)
+    Q <- (C * kappa^4 +
+      (2 * kappa^2) * make_symmetric(fem$g1) +
+      g2) / sigma^2 * scaling
   } else if (alpha == 1) {
-    Q <- (C * kappa^2 + fem$g1) / sigma^2 * scaling
+    Q <- (C * kappa^2 + make_symmetric(fem$g1)) / sigma^2 * scaling
+  } else if (alpha == ceiling(alpha)) {
+    Q <- C * kappa^(2 * alpha)
+    for (k in seq_len(alpha)) {
+      Q <- Q + (choose(alpha, k) * kappa^(2 * (alpha - k))) *
+        make_symmetric(fem[[paste0("g", k)]])
+    }
+    Q <- Q / sigma^2 * scaling
   } else {
-    stop("This version only supports alpha = 1 and 2.")
+    stop("This version only supports integer alpha.")
   }
 
   Q

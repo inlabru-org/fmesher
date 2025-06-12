@@ -317,12 +317,15 @@ public:
         big_(this), // big_limits_(NULL),
         max_n0_(-1), max_n1_(-1), state_(State_noT), is_pruned_(false),
         options_(Option_null) {
-    if (M_->nT() > 0)
+    if (M_->nT() > 0) {
       state_ = State_CET;
+    }
   };
 
   unsigned int getOptions() const { return options_; };
   unsigned int setOptions(unsigned int options) { return (options_ = options); }
+
+  State getState() const { return state_; };
 
   /*!
     \brief Append a vertex
@@ -372,6 +375,8 @@ public:
    */
   int segments(bool boundary, Matrix<int> *segm = NULL,
                Matrix<int> *segmgrp = NULL) const;
+
+  void make_boundary_segments();
 
   /*!
     \brief Build a convex enclosure triangulation (CET).

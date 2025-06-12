@@ -5,18 +5,20 @@
 #' @title Diameter bound for a geometric object
 #'
 #' @description
-#' Find an upper bound to the convex hull of a point set
+#' Find an upper bound to the convex hull of a point set or function space
 #'
 #' @param x A point set as an \eqn{n\times d}{n x d} matrix, or an
 #' `fm_mesh_2d`/`1d`/`sf` related object.
-#' @param manifold Character string specifying the manifold type. Default is to
-#' treat the point set with Euclidean \eqn{R^d} metrics. Use
-#' `manifold="S2"` for great circle distances on the unit sphere (this is
-#' set automatically for `fm_fmesh_2d` objects).
+#' @param manifold Character string specifying the manifold type. Default for
+#'   `matrix` input is to treat the point set with Euclidean
+#'   \eqn{\mathbb{R}^d}{R^d} metrics.
+#'   Use `manifold="S2"` for great circle distances on a sphere centred at the
+#'   origin.
 #' @param \dots Additional parameters passed on to the submethods.
 #' @returns A scalar, upper bound for the diameter of the convex hull of the
-#' point set.
-#' @author Finn Lindgren <finn.lindgren@@gmail.com>
+#' point set. For multi-domain spaces (e.g. [fm_tensor()] and
+#' [fm_collect()]), a vector of upper bounds for each domain is returned.
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @examples
 #'
 #' fm_diameter(matrix(c(0, 1, 1, 0, 0, 0, 1, 1), 4, 2))
@@ -89,7 +91,9 @@ fm_diameter.sfg <- function(x, ...) {
 #' @rdname fm_diameter
 #' @export
 fm_diameter.sfc <- function(x, ...) {
-  fm_diameter.matrix(sf::st_coordinates(x))
+  z <- sf::st_coordinates(x)
+  z <- z[, intersect(colnames(z), c("X", "Y", "Z")), drop = FALSE]
+  fm_diameter.matrix(z)
 }
 
 #' @rdname fm_diameter
@@ -120,4 +124,16 @@ fm_diameter.fm_segm <- function(x, ...) {
 #' @export
 fm_diameter.fm_mesh_3d <- function(x, ...) {
   fm_diameter.matrix(x$loc, manifold = fm_manifold(x), ...)
+}
+
+#' @rdname fm_diameter
+#' @export
+fm_diameter.fm_tensor <- function(x, ...) {
+  vapply(x[["fun_spaces"]], fm_diameter, ..., 1.0)
+}
+
+#' @rdname fm_diameter
+#' @export
+fm_diameter.fm_collect <- function(x, ...) {
+  vapply(x[["fun_spaces"]], fm_diameter, ..., 1.0)
 }

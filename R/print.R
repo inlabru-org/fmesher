@@ -424,6 +424,34 @@ print.fm_tensor <- function(x, ..., digits = NULL, verbose = FALSE) {
 
 #' @export
 #' @rdname fmesher-print
+print.fm_collect <- function(x, ..., digits = NULL, verbose = FALSE) {
+  ret <- list(verbose = verbose)
+  ret <-
+    c(
+      ret,
+      list(
+        manifold = fm_manifold(x),
+        size = length(x[["fun_spaces"]]),
+        sub_dof = vapply(x[["fun_spaces"]], fm_dof, 0L)
+      )
+    )
+
+
+  cat("fm_collect object:\n", sep = "")
+  cat("  Manifold:\t", ret$manifold, " x ", ret$size, "\n", sep = "")
+  cat("  Bounding boxes:\n", sep = "")
+  print(fm_bbox(x), digits = digits, verbose = FALSE)
+  cat("  Basis d.o.f.:\t", fm_dof(x), " = ",
+    paste0(ret$sub_dof, collapse = " + "),
+    "\n",
+    sep = ""
+  )
+  invisible(x)
+}
+
+
+#' @export
+#' @rdname fmesher-print
 print.fm_lattice_2d <- function(x, ..., digits = NULL, verbose = FALSE) {
   ret <- list(verbose = verbose)
   ret <-

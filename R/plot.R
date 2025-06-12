@@ -22,7 +22,7 @@
 #' Default FALSE.
 #' @param xlab,ylab character; labels for the axes.
 #' @param \dots Additional parameters, passed on to graphics methods.
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @returns None
 #' @seealso [fm_segm()], [plot.fm_mesh_2d]
 #' @export
@@ -148,7 +148,7 @@ lines.fm_segm_list <- function(x, ...) {
 #' @param asp Aspect ratio for new plots. Default 1.
 #' @param \dots Further graphics parameters, interpreted by the respective
 #' plotting systems.
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @seealso [plot.fm_segm()], [plot_rgl.fm_mesh_2d()]
 #' @returns None
 #' @examples
@@ -342,7 +342,7 @@ get_tv_sub <- function(tv, loc, t.sub, visibility = "front") {
 #' @param edge.color Edge color specification.
 #' @param S Deprecated.
 #' @param \dots Additional parameters passed to and from other methods.
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @seealso [plot.fm_mesh_2d()]
 #' @returns An rgl device identifier, invisibly.
 #' @export
@@ -592,7 +592,7 @@ lines_rgl.fm_segm_list <- function(x, ...) {
 #' limits.
 #' @param alpha Transparency/opaqueness values.
 #' @returns A list with character vector `colors` and numeric vector `alpha`
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @export
 #' @examples
 #' fm_generate_colors(1:4, color.axis = c(1, 4))
@@ -628,10 +628,11 @@ fm_generate_colors <- function(color,
       alpha[not.ok] <- 0
     }
 
-    ics <- (as.numeric(cut(cs, seq(0, 1, length.out = color.n + 1),
+    color_pal <- color.palette(color.n)
+    ics <- (as.numeric(cut(cs, seq(0, 1, length.out = length(color_pal) + 1),
       include.lowest = TRUE
     )))
-    colors <- color.palette(color.n)[ics]
+    colors <- color_pal[ics]
 
     ## Todo: handle alpha, combining "input alpha" with "not.ok-alpha"
   } else if (is.matrix(color) && (ncol(color) == 3)) {

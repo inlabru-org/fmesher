@@ -96,5 +96,5 @@ plot(mesh)
 \code{\link[=plot.fm_segm]{plot.fm_segm()}}, \code{\link[=plot_rgl.fm_mesh_2d]{plot_rgl.fm_mesh_2d()}}
 }
 \author{
-Finn Lindgren \email{finn.lindgren@gmail.com}
+Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}
 }

@@ -119,5 +119,5 @@ if (interactive() && require("rgl")) {
 \code{\link[=plot.fm_mesh_2d]{plot.fm_mesh_2d()}}
 }
 \author{
-Finn Lindgren \email{finn.lindgren@gmail.com}
+Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}
 }

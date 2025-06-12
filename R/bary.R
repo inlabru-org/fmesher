@@ -214,8 +214,13 @@ fm_bary.fm_mesh_2d <- function(mesh,
     tri <- rep(NA_integer_, nrow(loc))
     where <- matrix(NA_real_, nrow(loc), 3)
     ok <- result$index >= 0
-    tri[pre_ok_idx[ok]] <- result$index[ok] + 1L
-    where[pre_ok_idx[ok], ] <- result$where[ok, ]
+    if (any(ok)) {
+      tri[pre_ok_idx[ok]] <- result$index[ok] + 1L
+      where_ok <- result$where[ok, , drop = FALSE]
+      where_ok <- matrix(pmax(0.0, where_ok), nrow(where_ok), 3)
+      where_ok <- where_ok / rowSums(where_ok)
+      where[pre_ok_idx[ok], ] <- where_ok
+    }
   } else {
     tri <- rep(NA_integer_, nrow(loc))
     where <- matrix(NA_real_, nrow(loc), 3)
@@ -230,8 +235,13 @@ fm_bary.fm_mesh_2d <- function(mesh,
         options = list()
       )
       ok <- result$index >= 0
-      tri[subindex[[k]][ok]] <- result$index[ok] + 1L
-      where[subindex[[k]][ok], ] <- result$where[ok, ]
+      if (any(ok)) {
+        tri[subindex[[k]][ok]] <- result$index[ok] + 1L
+        where_ok <- result$where[ok, ]
+        where_ok <- matrix(pmax(0.0, where_ok), nrow(where_ok), 3)
+        where_ok <- where_ok / rowSums(where_ok)
+        where[subindex[[k]][ok], ] <- where_ok
+      }
     }
   }
 
@@ -402,8 +412,6 @@ fm_bary.fm_lattice_2d <- function(mesh,
 #'   `index` and `where`.
 #'
 #' @export
-# @examples
-# str(fm_bary(fmexample$mesh, fmexample$loc_sf))
 fm_bary.fm_lattice_Nd <- function(mesh,
                                   loc,
                                   ...) {
@@ -539,9 +547,16 @@ fm_bary_simplex.fm_mesh_2d <- function(mesh, bary = NULL, ...) {
 #'   mesh
 #' @export
 #'
-# @examples
-# bary <- fm_bary(fmexample$mesh, fmexample$loc_sf)
-# fm_bary_simplex(fmexample$mesh, bary)
+#' @examples
+#' (m <- fm_mesh_3d(
+#'   matrix(c(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0), 4, 3, byrow = TRUE),
+#'   matrix(c(1, 2, 3, 4), 1, 4, byrow = TRUE)
+#' ))
+#' (bary <- fm_bary(m, rbind(
+#'   cbind(0.1, 0.2, 0.3),
+#'   cbind(-0.1, 0.2, 0.3)
+#' )))
+#' fm_bary_simplex(m, bary)
 fm_bary_simplex.fm_mesh_3d <- function(mesh, bary = NULL, ...) {
   if (is.null(bary)) {
     return(mesh$graph$tv)
@@ -756,10 +771,16 @@ fm_bary_loc.fm_mesh_2d <- function(mesh, bary = NULL, ..., format = NULL) {
 #' format is `"matrix"` (default).
 #' @export
 #'
-# @examples
-# head(fm_bary_loc(fmexample$mesh))
-# bary <- fm_bary(fmexample$mesh, fmexample$loc_sf)
-# fm_bary_loc(fmexample$mesh, bary)
+#' @examples
+#' (m <- fm_mesh_3d(
+#'   matrix(c(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0), 4, 3, byrow = TRUE),
+#'   matrix(c(1, 2, 3, 4), 1, 4, byrow = TRUE)
+#' ))
+#' (bary <- fm_bary(m, rbind(
+#'   cbind(0.1, 0.2, 0.3),
+#'   cbind(-0.1, 0.2, 0.3)
+#' )))
+#' fm_bary_loc(m, bary)
 fm_bary_loc.fm_mesh_3d <- function(mesh, bary = NULL, ..., format = NULL) {
   format <- match.arg(format, c("matrix"))
   if (is.null(bary)) {

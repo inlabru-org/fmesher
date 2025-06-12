@@ -107,6 +107,7 @@ fm_mesh_2d_inla(boundary = fm_extensions(cbind(2, 1), convex = 1, 2))
 \code{\link[=fm_nonconvex_hull]{fm_nonconvex_hull()}}, \code{\link[=fm_extensions]{fm_extensions()}}, \code{\link[=fm_refine]{fm_refine()}}
 
 Other object creation and conversion: 
+\code{\link{fm_as_collect}()},
 \code{\link{fm_as_fm}()},
 \code{\link{fm_as_lattice_2d}()},
 \code{\link{fm_as_lattice_Nd}()},
@@ -116,6 +117,7 @@ Other object creation and conversion:
 \code{\link{fm_as_segm}()},
 \code{\link{fm_as_sfc}()},
 \code{\link{fm_as_tensor}()},
+\code{\link{fm_collect}()},
 \code{\link{fm_lattice_2d}()},
 \code{\link{fm_lattice_Nd}()},
 \code{\link{fm_mesh_1d}()},
@@ -124,6 +126,6 @@ Other object creation and conversion:
 \code{\link{fm_tensor}()}
 }
 \author{
-Finn Lindgren \email{finn.lindgren@gmail.com}
+Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}
 }
 \concept{object creation and conversion}

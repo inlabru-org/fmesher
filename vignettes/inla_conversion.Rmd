@@ -1,7 +1,7 @@
 ---
 title: "Converting legacy INLA mesh code to fmesher"
 output: rmarkdown::html_vignette
-date: "Updated 14 November 2024"
+date: "Updated 11 April 2025"
 vignette: >
   %\VignetteIndexEntry{Converting legacy INLA mesh code to fmesher}
   %\VignetteEngine{knitr::rmarkdown}
@@ -83,6 +83,19 @@ convert_fun_links <- function(df, packages = colnames(df)) {
 }
 ```
 
+## Deprecation of old methods and class names
+
+Great effort has been taken to preserve backwards compatibility as far as practical,
+with in particular the old `inla.mesh`, `inla.mesh.1d`, and `inla.mesh.segment`
+object classes given fallback methods that carry out methods for the new `fm_mesh_2d`,
+`fm_mesh_1d`, and `fm_segm` classes.  Starting in **November 2024** however, some of this direct fallback support is being phased out, so that old stored objects may need to be explicitly converted to `fmesher` objects using for example `fm_as_fm()`.
+New code, in particular in packages that use `fmesher` objects, should use the new
+interface methods, and replace references to `inla.mesh`, `inla.mesh.1d`, and `inla.mesh.segment` with `fm_mesh_2d`, `fm_mesh_1d`, and `fm_segm`, respectively,
+as the old class names will eventually be dropped from the mesh classes.
+This in particular applies to S3 method naming and class checking,
+where `inherits(mesh, "inla.mesh")` must be replaced with
+`inherits(mesh, "fm_mesh_2d")` in order to work in the future.
+
 ## Deprecation warnings
 
 Three `INLA::inla.getOption()`/`INLA::inla.setOption()` options control the
@@ -105,19 +118,18 @@ transition behaviour of the `INLA` package use of `fmesher`.
   indicating the minimum warning level when `fmesher.evolution.warn` is `TRUE`.
   Set this to "warn" or "stop" to get more immediate feedback when testing
   conversion of old code, e.g. in package testing.
-  
-### Compatibility
 
-Great effort has been taken to preserve backwards compatibility as far as practical,
-with in particular the old `inla.mesh`, `inla.mesh.1d`, and `inla.mesh.segment`
-object classes given fallback methods that carry out methods for the new `fm_mesh_2d`,
-`fm_mesh_1d`, and `fm_segm` classes.  Starting in **November 2024** however, some of this direct fallback support is being phased out, so that old stored objects may need to be explicitly converted to `fmesher` objects using for example `fm_as_fm()`.
-New code, in particular in packages that use `fmesher` objects, should use the new
-interface methods, and replace references to `inla.mesh`, `inla.mesh.1d`, and `inla.mesh.segment` with `fm_mesh_2d`, `fm_mesh_1d`, and `fm_segm`, respectively,
-as the old class names will eventually be dropped from the mesh classes.
-This in particular applies to S3 method naming and class checking,
-where `inherits(mesh, "inla.mesh")` must be replaced with
-`inherits(mesh, "fm_mesh_2d")` in order to work in the future.
+Packages using mesh methods should use these options in package testing, e.g. in
+`tests/testthat/setup.R`:
+```{r,eval=FALSE}
+if (requireNamespace("INLA", quietly = TRUE)) {
+  INLA::inla.setOption(fmesher.evolution = 2L)
+  INLA::inla.setOption(fmesher.evolution.warn = TRUE)
+  INLA::inla.setOption(fmesher.evolution.verbosity = "warn")
+}
+```
+
+### Compatibility
 
 An important change is that the handling
 of mesh `crs` information is now more flexible, but stricter in the sense that
@@ -161,7 +173,9 @@ df <- tribble(
     "fm_nonconvex_hull_inla()",
     "fm_simplify_helper()",
     "fm_segm_contour_helper()"
-  )
+  ),
+  "inla.mesh.components()", "fm_mesh_components()",
+  NA_character_, "fm_subdivide()"
 )
 df <- convert_fun_links(df)
 ```

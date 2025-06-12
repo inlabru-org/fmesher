@@ -33,7 +33,6 @@
 \alias{fm_length_unit<-.fm_crs}
 \alias{fm_wkt}
 \alias{fm_proj4string}
-\alias{fm_crs_get_wkt}
 \alias{fm_wkt_tree_projection_type}
 \alias{fm_wkt_projection_type}
 \alias{fm_crs_projection_type}
@@ -104,8 +103,6 @@ fm_wkt(crs)
 
 fm_proj4string(crs)
 
-fm_crs_get_wkt(crs)
-
 fm_wkt_tree_projection_type(wt)
 
 fm_wkt_projection_type(wkt)
@@ -132,8 +129,7 @@ fm_crs_bounds(crs, warn.unknown = FALSE)
 \item{unit}{character, name of a unit. Supported names are
 "metre", "kilometre", and the aliases "meter", "m", International metre",
 "kilometer", and "km", as defined by \code{fm_wkt_unit_params} or the
-\code{params} argument. (For legacy PROJ4 use, only "m" and "km" are
-supported)}
+\code{params} argument.}
 
 \item{params}{Length unit definitions, in the list format produced by
 \code{fm_wkt_unit_params()}, Default: NULL, which invokes
@@ -158,8 +154,7 @@ Note that the length unit for the ellipsoid radius is unchanged.
 
 For \code{fm_crs_get_lengthunit}, a
 list of length units used in the wkt string, excluding the ellipsoid radius
-unit. (For legacy PROJ4 code, the raw units from the proj4string are
-returned, if present.)
+unit.
 
 For \verb{fm_length_unit<-}, a crs object with
 altered length units.
@@ -176,9 +171,6 @@ Get and set CRS object or WKT string properties.
 \item \code{fm_proj4string()}: Returns a proj4 string, for any input supported by
 \code{\link[=fm_crs]{fm_crs()}}.
 
-\item \code{fm_crs_get_wkt()}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{\link[=fm_wkt]{fm_wkt()}}
-instead.
-
 \item \code{fm_wkt_tree_projection_type()}: Returns "longlat", "lambert", "mollweide", "hammer",
 "tmerc", or \code{NULL}
 
@@ -192,16 +184,14 @@ a list with elements \code{type} ("rectangle" or "ellipse"), \code{xlim}, \code{
 
 }}
 \examples{
-\donttest{
 c1 <- fm_crs("globe")
-fm_crs_get_lengthunit(c1)
-c2 <- fm_crs_set_lengthunit(c1, "m")
-fm_crs_get_lengthunit(c2)
-}
+fm_length_unit(c1)
+fm_length_unit(c1) <- "m"
+fm_length_unit(c1)
 }
 \seealso{
 \code{\link[=fm_crs]{fm_crs()}}
 }
 \author{
-Finn Lindgren \email{finn.lindgren@gmail.com}
+Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}
 }

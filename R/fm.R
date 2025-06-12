@@ -58,6 +58,12 @@ fm_as_fm.fm_tensor <- function(x, ...) {
 }
 #' @rdname fm_as_fm
 #' @export
+fm_as_fm.fm_collect <- function(x, ...) {
+  #  class(x) <- c("fm_collect", setdiff(class(x), "fm_collect"))
+  x
+}
+#' @rdname fm_as_fm
+#' @export
 fm_as_fm.fm_segm <- function(x, ...) {
   #  class(x) <- c("fm_segm", setdiff(class(x), "fm_segm"))
   x

@@ -1,5 +1,5 @@
 /*
- *  Copyright Finn Lindgren (2010-2024)
+ *  Copyright Finn Lindgren (2010-2025)
  *
  *  This Source Code Form is subject to the terms of the Mozilla Public License,
  *  v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -88,6 +88,7 @@ bool Rcpp_is_element(const Rcpp::List& list, std::string name) {
 
 class Options {
 public:
+  bool delaunay;
   double cutoff;
   double sphere_tolerance;
   int cet_sides;
@@ -101,6 +102,7 @@ public:
 
 public:
   Options(Rcpp::List& options, size_t rows) :
+  delaunay(true),
   cutoff(1.0e-12),
   sphere_tolerance(1.0e-7),
   cet_sides(8),
@@ -125,6 +127,8 @@ public:
       rcdt_max_edge = options["rcdt_max_edge"];
     if (Rcpp_is_element<Rcpp::LogicalVector>(options, "rcdt"))
       rcdt = options["rcdt"];
+    if (Rcpp_is_element<Rcpp::LogicalVector>(options, "delaunay"))
+      delaunay = options["delaunay"];
 
     /* Construct quality info */
     if (Rcpp_is_element<Rcpp::NumericVector>(options, "quality")) {
@@ -424,18 +428,32 @@ Rcpp::List fmesher_rcdt(Rcpp::List options,
      MeshC MC(&M);
      MC.setOptions(MC.getOptions() | MeshC::Option_offcenter_steiner);
 
-     if ((M.type() != Mesh::Mtype::Plane) &&
-         (M.type() != Mesh::Mtype::Sphere)) {
-       if (M.nT() == 0) {
-         FMLOG_(
+     FMLOG("rcdt.options.delaunay = " << rcdt_options.delaunay << std::endl);
+     FMLOG("MC state = " << MC.getState() << std::endl);
+     if (!rcdt_options.delaunay ||
+         ((M.type() != Mesh::Mtype::Plane) &&
+         (M.type() != Mesh::Mtype::Sphere))) {
+       FMLOG("MC state = " << MC.getState() << std::endl);
+       if (rcdt_options.delaunay && (M.nT() == 0)) {
+         FMLOG("MC state = " << MC.getState() << std::endl);
+         FMLOG(
            "Points not in the plane or on a sphere, and triangulation empty."
            << std::endl);
        }
-       /* Remove everything outside the boundary segments, if any. */
-       FMLOG("Prune exterior." << std::endl);
-       MC.PruneExterior();
+       FMLOG("MC state = " << MC.getState() << std::endl);
+       if (rcdt_options.delaunay) {
+         /* Remove everything outside the boundary segments, if any. */
+         FMLOG("Prune exterior." << std::endl);
+         MC.PruneExterior();
+         FMLOG("MC state = " << MC.getState() << std::endl);
+       }
        FMLOG("Invalidate unused vertex indices." << std::endl);
        invalidate_unused_vertex_indices(M, idx);
+       FMLOG("MC state = " << MC.getState() << std::endl);
+
+       /* Add the boundary segments, if any. */
+       MC.make_boundary_segments();
+
        /* Nothing more to do here.  Cannot refine non R2/S2 meshes. */
      } else {
        /* If we don't already have a triangulation, we must create one. */
@@ -462,6 +480,7 @@ Rcpp::List fmesher_rcdt(Rcpp::List options,
        for (size_t v = 0; v < iS0.rows(); v++)
          vertices.push_back(v);
 
+       FMLOG("DT(vertices)" << std::endl);
        MC.DT(vertices);
 
        /* Remove everything outside the boundary segments, if any. */
@@ -483,28 +502,35 @@ Rcpp::List fmesher_rcdt(Rcpp::List options,
          FMLOG(MC << endl);
        }
        /* Done constructing the triangulation. */
-
-       /* Calculate and collect output. */
-
-       matrices.attach("segm.bnd.idx", std::make_unique<Matrix<int>>(2),
-                       fmesh::IOMatrixtype::General);
-       matrices.attach("segm.bnd.grp", std::make_unique<Matrix<int>>(1),
-                       fmesh::IOMatrixtype::General);
-       MC.segments(true,
-                   &matrices.DI("segm.bnd.idx"),
-                   &matrices.DI("segm.bnd.grp"));
-
-                   matrices.output("segm.bnd.idx").output("segm.bnd.grp");
-
-                   matrices.attach("segm.int.idx", std::make_unique<Matrix<int>>(2),
-                                   fmesh::IOMatrixtype::General);
-                   matrices.attach("segm.int.grp", std::make_unique<Matrix<int>>(1),
-                                   fmesh::IOMatrixtype::General);
-                   MC.segments(false, &matrices.DI("segm.int.idx"),
-                               &matrices.DI("segm.int.grp"));
-
-                   matrices.output("segm.int.idx").output("segm.int.grp");
      }
+
+     FMLOG("MC state = " << MC.getState() << std::endl);
+
+     /* Calculate and collect output. */
+
+     matrices.attach("segm.bnd.idx", std::make_unique<Matrix<int>>(2),
+                     fmesh::IOMatrixtype::General);
+     matrices.attach("segm.bnd.grp", std::make_unique<Matrix<int>>(1),
+                     fmesh::IOMatrixtype::General);
+     MC.segments(
+       true,
+       &matrices.DI("segm.bnd.idx"),
+       &matrices.DI("segm.bnd.grp")
+     );
+
+     matrices.output("segm.bnd.idx").output("segm.bnd.grp");
+
+     matrices.attach("segm.int.idx", std::make_unique<Matrix<int>>(2),
+                     fmesh::IOMatrixtype::General);
+     matrices.attach("segm.int.grp", std::make_unique<Matrix<int>>(1),
+                     fmesh::IOMatrixtype::General);
+     MC.segments(
+       false,
+       &matrices.DI("segm.int.idx"),
+       &matrices.DI("segm.int.grp")
+     );
+
+     matrices.output("segm.int.idx").output("segm.int.grp");
 
      matrices.attach("tt", &M.TT());
      M.useVT(true);
@@ -525,6 +551,14 @@ Rcpp::List fmesher_rcdt(Rcpp::List options,
      //  matrices.output("manifold");
 
      Rcpp::List out = Rcpp::wrap(matrices);
+
+     // Add VT information
+     out["vt"] = Rcpp::wrap(M.VT());
+     // Rcpp::List vt(M.VT().size());
+     // for (size_t i = 0; i < M.VT().size(); i++) {
+     //   vt[i] = Rcpp::transpose(Rcpp::as<Rcpp::IntegerMatrix>(Rcpp::wrap(M.VT()[i])));
+     // }
+     // out["vt"] = vt;
 
      switch (M.type()) {
      case Mesh::Mtype::Manifold:

@@ -29,6 +29,6 @@ str(fm_int_mesh_2d_core(fmexample$mesh))
 
 }
 \author{
-Finn Lindgren \email{finn.lindgren@gmail.com}
+Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}
 }
 \keyword{internal}

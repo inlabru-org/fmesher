@@ -1,3 +1,44 @@
+# fmesher 0.4.0
+
+## New features
+
+* Add `fm_hexagon_lattice()` for creating regular hexagonal lattice points
+  to use with `fm_mesh_2d()`, from Man Ho Suen (version `0.3.0.9001` and
+  `0.3.0.9006`)
+* Add `fm_mesh_components()` method for extracting (dis)connected components
+  from 2D and 3D meshes (version `0.3.0.9005`)
+* Add `fm_collect()` method for creating a collection of meshes of the same
+  type (version `0.3.0.9009`)
+
+## Improved features
+
+* Construct better representative boundary points for `mid` data of `fm_mesh_1d`
+  for `degree = 2, boundary = "free"` (version `0.3.0.9002`)
+* Add argument `delaunay` to allow non-Delaunay mesh construction in
+  `fm_subdivide()` (version `0.3.0.9003`)
+* Better handling of line integration when triangle edges and line transects
+  are co-linear (version `0.3.0.9004`)
+* Add support for `order > 2` for `fm_fem.fm_mesh_1d()` (version `0.3.0.9011`)
+  and generally for `fm_matern_precision()` (version `0.3.0.9012`)
+* Add argument `units` to `fm_crs()` to allow setting the length unit
+  for the CRS on creation/extraction (version `0.3.0.9013`)
+
+## Bug fixes
+
+* Improved bug fix in `fm_mesh_2d_inla()` from `0.2.0.9014` to allow negative
+  offset in the second layer when the inner layer is specified only through
+  a boundary polygon (version `0.3.0.9007`)
+* Bug fix for `fm_mesh_2d_inla()` to ensure S2 manifold meshes covering the
+  entire sphere aren't accidentally limited to a subset of the globe
+  (version `0.3.0.9008`)
+* Handle colour palettes with fewer than requested colours in
+  `fm_generate_colors()` (version `0.3.0.9008`)
+* Fix bug in `fm_detect_manifold()` that caused it to return `"R2"` for
+  `"S2"` and `"M2"` manifolds (version `0.3.0.9010`)
+* Fix bug in `fm_as_mesh_3d_list()` that caused it to return the mesh surface
+  as an `fm_mesh_2d` object instead of the full `fm_mesh_3d` object
+  (version `0.3.0.9014`)
+
 # fmesher 0.3.0
 
 ## New features

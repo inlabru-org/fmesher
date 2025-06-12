@@ -38,7 +38,7 @@ geom_fm(mapping = NULL, data = NULL, ...)
 )
 }
 \arguments{
-\item{mapping}{an object for which to generate a geom.}
+\item{mapping}{\code{\link[ggplot2:aes]{ggplot2::aes()}} mapping information.}
 
 \item{data}{an object for which to generate a geom.}
 

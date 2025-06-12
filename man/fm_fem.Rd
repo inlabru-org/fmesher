@@ -5,6 +5,7 @@
 \alias{fm_fem.fm_mesh_1d}
 \alias{fm_fem.fm_mesh_2d}
 \alias{fm_fem.fm_tensor}
+\alias{fm_fem.fm_collect}
 \alias{fm_fem.fm_mesh_3d}
 \title{Compute finite element matrices}
 \usage{
@@ -16,12 +17,15 @@ fm_fem(mesh, order = 2, ...)
 
 \method{fm_fem}{fm_tensor}(mesh, order = 2, ...)
 
+\method{fm_fem}{fm_collect}(mesh, order = 2, ...)
+
 \method{fm_fem}{fm_mesh_3d}(mesh, order = 2, ...)
 }
 \arguments{
-\item{mesh}{\code{fm_mesh_1d} or other supported mesh class object}
+\item{mesh}{\code{\link[=fm_mesh_1d]{fm_mesh_1d()}}, \code{\link[=fm_mesh_2d]{fm_mesh_2d()}}, or other supported mesh class
+object}
 
-\item{order}{integer}
+\item{order}{integer; the maximum operator order}
 
 \item{...}{Currently unused}
 
@@ -32,7 +36,8 @@ structure matrices (in addition to the regular) for \eqn{\gamma}{gamma} and
 (2023-08-05) the fields need to be given per vertex.}
 }
 \value{
-\code{fm_fem.fm_mesh_1d}: A list with elements \code{c0}, \code{c1}, \code{g1}, \code{g2}.
+\code{fm_fem.fm_mesh_1d}: A list with elements \code{c0}, \code{c1}, \code{g1}, \code{g2},
+etc.
 When \code{mesh$degree == 2}, also \code{g01}, \code{g02}, and \code{g12}.
 
 \code{fm_fem.fm_mesh_2d}: A list with elements \code{c0}, \code{c1}, \code{g1}, \code{va},
@@ -41,13 +46,19 @@ matrices, etc.
 
 \code{fm_fem.fm_tensor}: A list with elements \code{cc}, \code{g1}, \code{g2}.
 
+\code{fm_fem.fm_collect}: A list with elements \code{c0}, \code{c1},
+\code{g1}, \code{g2}, etc, and \code{cc} (\code{c0} for every model except \code{fm_mesh_1d} with
+\code{degree=2}, for which it is \code{c1}). If the base type for the collection
+provides \code{va} and \code{ta} values, those are also returned.
+
 \code{fm_fem.fm_mesh_3d}: A list with elements \code{c0}, \code{c1}, \code{g1}, \code{g2},
 \code{va}, \code{ta}, and more if \code{order > 2}.
 }
 \description{
-(...)
+Compute finite element mass and structure matrices
 }
 \examples{
-str(fm_fem(fmexample$mesh))
+names(fm_fem(fm_mesh_1d(1:4), order = 3))
+names(fm_fem(fmexample$mesh, order = 3))
 
 }

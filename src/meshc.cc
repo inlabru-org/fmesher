@@ -343,6 +343,7 @@ intDartMapT::iterator find_next_dart_in_set(Dart d, intDartMapT &map_v0_d) {
 
 int extract_segments(const MCQsegm &seg, Matrix<int> *segm,
                      Matrix<int> *segmgrp) {
+  FMLOG("seg.count = " << seg.count() << std::endl);
   if (segm == NULL) {
     return seg.count();
   }
@@ -376,6 +377,20 @@ int MeshC::segments(bool boundary, Matrix<int> *segm,
     return extract_segments(boundary_, segm, segmgrp);
   else
     return extract_segments(interior_, segm, segmgrp);
+}
+
+void MeshC::make_boundary_segments() {
+  FMLOG("boundary.count = " << boundary_.count() << std::endl);
+  for (size_t t = 0; t < M_->nT(); t++) {
+    Dart d(*M_, t, 1, 0);
+    for (int i = 0; i < 3; i++) {
+      if (d.onBoundary()) {
+        boundary_.insert(d, 0);
+      }
+      d.orbit2();
+    }
+  }
+  FMLOG("boundary.count = " << boundary_.count() << std::endl);
 }
 
 /*! Alg 4.3 */
@@ -714,7 +729,7 @@ Dart MeshC::insertNode(int v, const Dart &ed) {
   td = M_->locate_point(ed0, M_->S(v), v);
   FMLOG("Done looking." << endl);
   if (td.isnull()) { /* ERROR, not found! */
-    FMLOG("Error, node not found");
+    FMLOG("Error, node not found" << endl);
     return Dart();
   };
   if (td.v() == v) { /* Node already inserted! */

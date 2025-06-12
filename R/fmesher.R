@@ -26,12 +26,10 @@
 fm_qinv <- function(A) {
   A_C <- fm_as_dgCMatrix(A)
   stopifnot(nrow(A_C) == ncol(A_C))
-  if (!identical(A_C, Matrix::t(A_C))) {
-    warning(
-      "Asymmetric matrix A detected, ",
-      "but only lower left triangle will be used."
-    )
-  }
+  # if (sum(abs(A_C - Matrix::t(A_C))) > 0.0) {
+  #   warning("Asymmetric matrix A detected, ",
+  #           "but only lower left triangle will be used.")
+  # }
   fmesher_qinv_R(A_C)
   # fmesher_qinv(A_C)
 }

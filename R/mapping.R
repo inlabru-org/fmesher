@@ -1,6 +1,6 @@
 ## mapping.R
 ##
-##   Copyright (C) 2015, Finn Lindgren
+##   Copyright (C) 2015-2025, Finn Lindgren
 
 
 
@@ -62,7 +62,7 @@ fm_internal_clip <- function(bounds, coords, eps = 0.05) {
 #' @param \dots Additional arguments passed on to the internal calls to
 #' `plot` and `lines`.
 #' @returns `NULL`, invisibly
-#' @author Finn Lindgren <finn.lindgren@@gmail.com>
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @seealso [fm_crs()]
 #' @examples
 #' \donttest{

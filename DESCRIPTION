@@ -1,7 +1,7 @@
 Package: fmesher
 Type: Package
 Title: Triangle Meshes and Related Geometry Tools
-Version: 0.3.0
+Version: 0.4.0
 Authors@R: c(
   person("Finn", "Lindgren", email = "finn.lindgren@gmail.com",
          role = c("aut", "cre", "cph"),
@@ -17,12 +17,12 @@ Authors@R: c(
          comment = "Fabian Bachl co-developed precursors of fm_pixels and fm_split_lines in inlabru")
   )
 Description: Generate planar and spherical triangle meshes,
-    compute finite element calculations for 1- and 2-dimensional flat and curved
-    manifolds with associated basis function spaces, methods for lines and
-    polygons, and transparent handling of coordinate reference systems and
-    coordinate transformation, including 'sf' and 'sp' geometries. The core
-    'fmesher' library code was originally part of the 'INLA' package, and
-    implements parts of "Triangulations and Applications" by
+    compute finite element calculations for 1-, 2-, and 3-dimensional flat
+    and curved manifolds with associated basis function spaces, methods for
+    lines and polygons, and transparent handling of coordinate reference
+    systems and coordinate transformation, including 'sf' and 'sp' geometries.
+    The core 'fmesher' library code was originally part of the 'INLA' package,
+    and implements parts of "Triangulations and Applications" by
     Hjelle and Daehlen (2006) <doi:10.1007/3-540-33261-8>.
 Depends:
     R (>= 4.0),
@@ -44,6 +44,7 @@ Suggests:
     geometry,
     ggplot2,
     knitr,
+    patchwork,
     testthat (>= 3.0.0),
     terra,
     tidyterra,
@@ -55,7 +56,7 @@ Suggests:
 URL: https://inlabru-org.github.io/fmesher/, https://github.com/inlabru-org/fmesher
 BugReports: https://github.com/inlabru-org/fmesher/issues
 License: MPL-2.0
-Copyright: 2010-2024 Finn Lindgren, except src/predicates.cc by Jonathan Richard Shewchuk, 1996
+Copyright: 2010-2025 Finn Lindgren, except src/predicates.cc by Jonathan Richard Shewchuk, 1996
 NeedsCompilation: yes
 RoxygenNote: 7.3.2
 Encoding: UTF-8
@@ -73,6 +74,7 @@ Collate:
     'bary.R'
     'basis.R'
     'bbox.R'
+    'collect.R'
     'print.R'
     'crs.R'
     'data-fmexample.R'
@@ -96,6 +98,7 @@ Collate:
     'mesh_2d.R'
     'mesh_3d.R'
     'mesh_assessment.R'
+    'mesh_components.R'
     'nonconvex_hull.R'
     'onload.R'
     'plot.R'

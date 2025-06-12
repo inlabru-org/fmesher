@@ -70,6 +70,7 @@ if (requireNamespace("geometry", quietly = TRUE)) {
 \code{\link[=fm_mesh_3d]{fm_mesh_3d()}}
 
 Other object creation and conversion: 
+\code{\link{fm_as_collect}()},
 \code{\link{fm_as_fm}()},
 \code{\link{fm_as_lattice_2d}()},
 \code{\link{fm_as_lattice_Nd}()},
@@ -79,6 +80,7 @@ Other object creation and conversion:
 \code{\link{fm_as_segm}()},
 \code{\link{fm_as_sfc}()},
 \code{\link{fm_as_tensor}()},
+\code{\link{fm_collect}()},
 \code{\link{fm_lattice_2d}()},
 \code{\link{fm_mesh_1d}()},
 \code{\link{fm_mesh_2d}()},
@@ -87,6 +89,6 @@ Other object creation and conversion:
 \code{\link{fm_tensor}()}
 }
 \author{
-Finn Lindgren \email{finn.lindgren@gmail.com}
+Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}
 }
 \concept{object creation and conversion}

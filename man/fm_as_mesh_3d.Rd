@@ -30,8 +30,16 @@ Convert objects to \code{fm_mesh_3d}
 \item \code{fm_as_mesh_3d_list()}: Convert each element of a list
 
 }}
+\examples{
+(m <- fm_mesh_3d(
+  matrix(c(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0), 4, 3, byrow = TRUE),
+  matrix(c(1, 2, 3, 4), 1, 4, byrow = TRUE)
+))
+fm_as_mesh_3d_list(list(m))
+}
 \seealso{
 Other object creation and conversion: 
+\code{\link{fm_as_collect}()},
 \code{\link{fm_as_fm}()},
 \code{\link{fm_as_lattice_2d}()},
 \code{\link{fm_as_lattice_Nd}()},
@@ -40,6 +48,7 @@ Other object creation and conversion:
 \code{\link{fm_as_segm}()},
 \code{\link{fm_as_sfc}()},
 \code{\link{fm_as_tensor}()},
+\code{\link{fm_collect}()},
 \code{\link{fm_lattice_2d}()},
 \code{\link{fm_lattice_Nd}()},
 \code{\link{fm_mesh_1d}()},

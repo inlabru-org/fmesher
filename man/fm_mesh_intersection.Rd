@@ -28,6 +28,6 @@ lines(segm, col = 4)
 plot(m, edge.color = 2, add = TRUE)
 }
 \author{
-Finn Lindgren \email{finn.lindgren@gmail.com}
+Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}
 }
 \keyword{internal}

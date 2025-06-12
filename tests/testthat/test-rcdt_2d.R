@@ -104,12 +104,14 @@ test_that("interior should be single object", {
   # simple mesh
   expect_error(fm_mesh_2d_inla(boundary = bnd, max.edge = 1), NA)
   # with interior
-  expect_error(fm_mesh_2d_inla(
-    boundary = bnd,
-    interior = interior,
-    max.edge = 1
-  ),
-  NA)
+  expect_error(
+    fm_mesh_2d_inla(
+      boundary = bnd,
+      interior = interior,
+      max.edge = 1
+    ),
+    NA
+  )
   # extended boundary
   expect_error(fm_mesh_2d_inla(boundary = bnd, max.edge = c(1, 2)), NA)
   # or extended by running non-convex for the boundary
@@ -132,12 +134,14 @@ test_that("interior should be single object", {
   )
 
   # List interior supported from 0.2.0.9016
-  expect_error(fm_mesh_2d_inla(
-    boundary = bnd,
-    interior = list(interior),
-    max.edge = c(1, 2)
-  ),
-  NA)
+  expect_error(
+    fm_mesh_2d_inla(
+      boundary = bnd,
+      interior = list(interior),
+      max.edge = c(1, 2)
+    ),
+    NA
+  )
   expect_error(
     fm_mesh_2d_inla(
       boundary = list(bnd, fm_nonconvex_hull(bnd)),

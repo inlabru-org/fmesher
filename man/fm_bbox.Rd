@@ -15,6 +15,7 @@
 \alias{fm_bbox.fm_lattice_2d}
 \alias{fm_bbox.fm_lattice_Nd}
 \alias{fm_bbox.fm_tensor}
+\alias{fm_bbox.fm_collect}
 \alias{fm_bbox.sf}
 \alias{fm_bbox.sfg}
 \alias{fm_bbox.sfc}
@@ -53,6 +54,8 @@ fm_bbox(...)
 \method{fm_bbox}{fm_lattice_Nd}(x, ...)
 
 \method{fm_bbox}{fm_tensor}(x, ...)
+
+\method{fm_bbox}{fm_collect}(x, ...)
 
 \method{fm_bbox}{sf}(x, ...)
 

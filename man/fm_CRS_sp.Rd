@@ -15,6 +15,7 @@
 \alias{fm_CRS.fm_mesh_2d}
 \alias{fm_CRS.fm_lattice}
 \alias{fm_CRS.fm_segm}
+\alias{fm_CRS.fm_collect}
 \alias{fm_CRS.matrix}
 \alias{fm_CRS.CRS}
 \alias{fm_CRS.default}
@@ -22,37 +23,39 @@
 \alias{fm_CRS.inla.CRS}
 \title{Create a coordinate reference system object}
 \usage{
-fm_CRS(x, oblique = NULL, ...)
+fm_CRS(x, ..., units = NULL, oblique = NULL)
 
 \method{is.na}{fm_CRS}(x)
 
-\method{fm_CRS}{crs}(x, oblique = NULL, ...)
+\method{fm_CRS}{crs}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_CRS}{fm_crs}(x, oblique = NULL, ...)
+\method{fm_CRS}{fm_crs}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_CRS}{Spatial}(x, oblique = NULL, ...)
+\method{fm_CRS}{Spatial}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_CRS}{fm_CRS}(x, oblique = NULL, ...)
+\method{fm_CRS}{fm_CRS}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_CRS}{SpatVector}(x, oblique = NULL, ...)
+\method{fm_CRS}{SpatVector}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_CRS}{SpatRaster}(x, oblique = NULL, ...)
+\method{fm_CRS}{SpatRaster}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_CRS}{sf}(x, oblique = NULL, ...)
+\method{fm_CRS}{sf}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_CRS}{sfc}(x, oblique = NULL, ...)
+\method{fm_CRS}{sfc}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_CRS}{sfg}(x, oblique = NULL, ...)
+\method{fm_CRS}{sfg}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_CRS}{fm_mesh_2d}(x, oblique = NULL, ...)
+\method{fm_CRS}{fm_mesh_2d}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_CRS}{fm_lattice}(x, oblique = NULL, ...)
+\method{fm_CRS}{fm_lattice}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_CRS}{fm_segm}(x, oblique = NULL, ...)
+\method{fm_CRS}{fm_segm}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_CRS}{matrix}(x, oblique = NULL, ...)
+\method{fm_CRS}{fm_collect}(x, ..., units = NULL, oblique = NULL)
 
-\method{fm_CRS}{CRS}(x, oblique = NULL, ...)
+\method{fm_CRS}{matrix}(x, ..., units = NULL, oblique = NULL)
+
+\method{fm_CRS}{CRS}(x, ..., units = NULL, oblique = NULL)
 
 \method{fm_CRS}{default}(
   x,
@@ -61,22 +64,27 @@ fm_CRS(x, oblique = NULL, ...)
   doCheckCRSArgs = NULL,
   args = NULL,
   SRS_string = NULL,
-  ...
+  ...,
+  units = NULL
 )
 
 \method{is.na}{inla.CRS}(x)
 
-\method{fm_CRS}{inla.CRS}(x, oblique = NULL, ...)
+\method{fm_CRS}{inla.CRS}(x, ..., units = NULL, oblique = NULL)
 }
 \arguments{
 \item{x}{Object to convert to CRS or to extract CRS information from.}
+
+\item{\dots}{Additional parameters, passed on to sub-methods.}
+
+\item{units}{character; if non-NULL, \verb{fm_length_unit()<-} is called to change
+the length units of the crs object. If \code{NULL} (default), the length units
+are not changed. (From version \verb{0.3.0.9013})}
 
 \item{oblique}{Vector of length at most 4 of rotation angles (in degrees)
 for an oblique projection, all values defaulting to zero. The values
 indicate (longitude, latitude, orientation, orbit), as explained in the
 Details section for \code{\link[=fm_crs]{fm_crs()}}.}
-
-\item{\dots}{Additional parameters, passed on to sub-methods.}
 
 \item{projargs}{Either 1) a projection argument string suitable as input to
 \code{sp::CRS}, or 2) an existing \code{CRS} object, or 3) a shortcut
@@ -152,8 +160,8 @@ if (fm_safe_sp()) {
 }
 \seealso{
 \code{\link[=fm_crs]{fm_crs()}}, \code{\link[sp:CRS-class]{sp::CRS()}}, \code{\link{fm_crs_wkt}},
-\code{\link[=fm_sp_get_crs]{fm_sp_get_crs()}}, \code{\link[=fm_crs_is_identical]{fm_crs_is_identical()}}
+\code{\link[=fm_crs_is_identical]{fm_crs_is_identical()}}
 }
 \author{
-Finn Lindgren \email{finn.lindgren@gmail.com}
+Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}
 }

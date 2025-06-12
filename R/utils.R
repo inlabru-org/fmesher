@@ -323,7 +323,7 @@ fm_as_dgTMatrix.fmesher_sparse <- function(x, unique = TRUE, ...) {
 #' @param weights Optional scaling weights to be applied row-wise to the
 #' resulting matrix.
 #' @returns A `Matrix::sparseMatrix` object.
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @export
 #' @examples
 #' fm_row_kron(rbind(c(1, 1, 0), c(0, 1, 1)), rbind(c(1, 2), c(3, 4)))
@@ -456,15 +456,50 @@ fm_row_kron <- function(M1, M2, repl = NULL, n.repl = NULL, weights = NULL # ,
 }
 
 
-# @title Find S3 method supported classes
-# @description Calls `utils::.S3Methods` and extracts the class information
-# as a character vector
-# @param f character; the name of an S3 generic
-# @keyword internal
+#' @title Find S3 method supported classes
+#' @description Calls `utils::.S3Methods` and extracts the class information
+#' as a character vector
+#' @param f character; the name of an S3 generic
+#' @keywords internal
+#' @noRd
 method_classes <- function(f) {
-  gsub(
-    pattern = paste0("^", f, "\\.([^*]*)\\*?"),
-    replacement = "\\1",
-    x = format(utils::.S3methods(f))
+  try(
+    gsub(
+      pattern = paste0("^", f, "\\.([^*]*)\\*?"),
+      replacement = "\\1",
+      x = format(utils::.S3methods(f))
+    ),
+    silent = TRUE
   )
+}
+
+class_methods <- function(cl) {
+  utils::.S3methods(class = cl)
+}
+
+package_methods <- function() {
+  pkg_methods <- names(parent.env(environment()))
+  pkg_methods <- pkg_methods[grepl(
+    pattern = paste0("^[^\\.]*\\.([^*]*)\\*?"),
+    x = pkg_methods
+  )]
+  setdiff(
+    unique(gsub(
+      pattern = paste0("^([^\\.]*)\\.[^*]*\\*?"),
+      replacement = "\\1",
+      x = pkg_methods
+    )),
+    c("", "is", "as", "match")
+  )
+}
+
+
+
+fm_capabilities <- function(class = NULL,
+                            method = NULL) {
+  if (!is.null(class)) {
+    class_methods(class)
+  } else if (!is.null(method)) {
+    method_classes(method)
+  }
 }

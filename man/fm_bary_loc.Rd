@@ -61,6 +61,15 @@ head(fm_bary_loc(fmexample$mesh))
 bary <- fm_bary(fmexample$mesh, fmexample$loc_sf)
 fm_bary_loc(fmexample$mesh, bary, format = "matrix")
 fm_bary_loc(fmexample$mesh, bary, format = "sf")
+(m <- fm_mesh_3d(
+  matrix(c(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0), 4, 3, byrow = TRUE),
+  matrix(c(1, 2, 3, 4), 1, 4, byrow = TRUE)
+))
+(bary <- fm_bary(m, rbind(
+  cbind(0.1, 0.2, 0.3),
+  cbind(-0.1, 0.2, 0.3)
+)))
+fm_bary_loc(m, bary)
 mesh1 <- fm_mesh_1d(1:4)
 fm_bary_loc(mesh1)
 (bary1 <- fm_bary(mesh1, seq(0, 5, by = 0.5)))

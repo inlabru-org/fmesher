@@ -21,7 +21,8 @@ fm_sample(n, Q, mu = 0, constr = NULL)
 other object with supporting \code{\link[=fm_fem]{fm_fem()}} and \code{\link[=fm_manifold_dim]{fm_manifold_dim()}} methods.}
 
 \item{alpha}{The SPDE operator order. The resulting smoothness index
-is \code{nu = alpha - dim / 2}.}
+is \code{nu = alpha - dim / 2}. Supports integers 1, 2, 3, etc. that give
+\code{nu > 0}.}
 
 \item{rho}{The Matérn range parameter
 (scale parameter \code{kappa = sqrt(8 * nu) / rho})}

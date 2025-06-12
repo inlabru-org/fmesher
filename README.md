@@ -20,19 +20,20 @@ Generate planar and spherical triangle meshes, compute finite element
 calculations for 1- and 2-dimensional flat and curved manifolds with
 associated basis function spaces, methods for lines and polygons, and
 transparent handling of coordinate reference systems and coordinate
-transformation, including ‘sf’ and ‘sp’ geometries. The core ‘fmesher’
+transformation, including `sf` and `sp` geometries. The core `fmesher`
 library code was originally part of the [`INLA`](https://www.r-inla.org)
 package, and also distributed in the [EUSTACE Horizon 2020
 project](https://github.com/eustace-data/eustace-ambitious), and
 implements parts of “Triangulations and Applications” by [Hjelle and
 Dæhlen (2006)](https://doi.org/10.1007/3-540-33261-8). The expanded
-crs/CRS support started as an add-on feature of
+`crs`/`CRS` support started as an add-on feature of
 [`inlabru`](https://inlabru-org.github.io/inlabru/).
 
 ## Installation
 
 You can install the current [CRAN
-version](https://cran.r-project.org/package=fmesher) version of fmesher:
+version](https://cran.r-project.org/package=fmesher) version of
+`fmesher`:
 
 ``` r
 install.packages("fmesher")
@@ -113,24 +114,27 @@ install.packages("fmesher")
 
 ### 2D triangular meshes
 
-Includes a port of inla mesh `inla.mesh.create` (as `fm_rcdt_2d_inla()`)
-and `inla.mesh.2d` interfaces.
+Refined constrained Delaunay triangulations can be constructed by
+`fm_rcdt_2d()` and `fm_mesh_2d()`. The `_inla()` versions of these will
+usually return the same meshes as the old `INLA` methods,
+`INLA::inla.mesh.create()` and `INLA::inla.mesh.2d()`.
 
 ``` r
 suppressPackageStartupMessages(library(fmesher))
 suppressPackageStartupMessages(library(ggplot2))
 
+bnd <- fm_extensions(cbind(0, 0), convex = c(1, 1.5))
 (mesh <- fm_mesh_2d_inla(
-  boundary = fm_extensions(cbind(0, 0), convex = c(1, 1.5)),
-  max.edge = c(0.5, 1)
+  boundary = bnd,
+  max.edge = c(0.2, 0.5)
 ))
 #> fm_mesh_2d object:
 #>   Manifold:  R2
-#>   V / E / T: 57 / 152 / 96
+#>   V / E / T: 269 / 772 / 504
 #>   Euler char.:   1
-#>   Constraints:   Boundary: 16 boundary edges (1 group: 1), Interior: 16 interior edges (1 group: 1)
+#>   Constraints:   Boundary: 32 boundary edges (1 group: 1), Interior: 44 interior edges (1 group: 1)
 #>   Bounding box: (-1.499887, 1.499887) x (-1.499887, 1.499887)
-#>   Basis d.o.f.:  57
+#>   Basis d.o.f.:  269
 ```
 
 ``` r
@@ -140,6 +144,35 @@ ggplot() +
 ```
 
 <img src="man/figures/README-example2-plot-1.png" alt="2D triangular mesh" width="100%" />
+
+Mostly regular triangulations can be constructed by supplying a regular
+set of input points. The (experimental, developed by Man Ho Suen)
+`fm_hexagon_lattice()` function generates points in a regular hexagonal
+lattice pattern, contained in a given `sf` polygon.
+
+``` r
+hex_points <- fm_hexagon_lattice(bnd = bnd[[1]], edge_len = 0.2)
+(mesh_hex <- fm_mesh_2d_inla(
+  loc = hex_points,
+  boundary = bnd,
+  max.edge = c(0.3, 0.5)
+))
+#> fm_mesh_2d object:
+#>   Manifold:  R2
+#>   V / E / T: 154 / 427 / 274
+#>   Euler char.:   1
+#>   Constraints:   Boundary: 32 boundary edges (1 group: 1), Interior: 32 interior edges (1 group: 1)
+#>   Bounding box: (-1.499887, 1.499887) x (-1.499887, 1.499887)
+#>   Basis d.o.f.:  154
+```
+
+``` r
+ggplot() +
+  geom_fm(data = mesh_hex) +
+  theme_minimal()
+```
+
+<img src="man/figures/README-example2hex-plot-1.png" alt="Quasi-regular 2D triangular mesh" width="100%" />
 
 ### 1D B-spline function spaces
 
@@ -175,75 +208,14 @@ the Earth and a unit radius sphere uses as a model of the Earth.
 
 ``` r
 # longlat for a spherical version of the Earth
-print(fm_crs("longlat_globe"))
-#> Coordinate Reference System:
-#>   User input: +proj=longlat +ellps=sphere +no_defs 
-#>   wkt:
-#> GEOGCRS["unknown",
-#>     DATUM["Unknown based on Normal Sphere (r=6370997) ellipsoid",
-#>         ELLIPSOID["Normal Sphere (r=6370997)",6370997,0,
-#>             LENGTHUNIT["metre",1,
-#>                 ID["EPSG",9001]]]],
-#>     PRIMEM["Greenwich",0,
-#>         ANGLEUNIT["degree",0.0174532925199433],
-#>         ID["EPSG",8901]],
-#>     CS[ellipsoidal,2],
-#>         AXIS["longitude",east,
-#>             ORDER[1],
-#>             ANGLEUNIT["degree",0.0174532925199433,
-#>                 ID["EPSG",9122]]],
-#>         AXIS["latitude",north,
-#>             ORDER[2],
-#>             ANGLEUNIT["degree",0.0174532925199433,
-#>                 ID["EPSG",9122]]]]
+print(fm_proj4string(fm_crs("longlat_globe")))
+#> [1] "+proj=longlat +ellps=sphere +no_defs"
 
 # longlat for a sphere of radius 1m
-print(fm_crs("longlat_norm"))
-#> Coordinate Reference System:
-#>   User input: +proj=longlat +R=1 +no_defs 
-#>   wkt:
-#> GEOGCRS["unknown",
-#>     DATUM["unknown",
-#>         ELLIPSOID["unknown",1,0,
-#>             LENGTHUNIT["metre",1,
-#>                 ID["EPSG",9001]]]],
-#>     PRIMEM["Reference meridian",0,
-#>         ANGLEUNIT["degree",0.0174532925199433,
-#>             ID["EPSG",9122]]],
-#>     CS[ellipsoidal,2],
-#>         AXIS["longitude",east,
-#>             ORDER[1],
-#>             ANGLEUNIT["degree",0.0174532925199433,
-#>                 ID["EPSG",9122]]],
-#>         AXIS["latitude",north,
-#>             ORDER[2],
-#>             ANGLEUNIT["degree",0.0174532925199433,
-#>                 ID["EPSG",9122]]]]
+print(fm_proj4string(fm_crs("longlat_norm")))
+#> [1] "+proj=longlat +R=1 +no_defs"
 
 # A sphere of radius 1m
-print(fm_crs("sphere"))
-#> Coordinate Reference System:
-#>   User input: +proj=geocent +R=1 +units=m +no_defs 
-#>   wkt:
-#> GEODCRS["unknown",
-#>     DATUM["unknown",
-#>         ELLIPSOID["unknown",1,0,
-#>             LENGTHUNIT["metre",1,
-#>                 ID["EPSG",9001]]]],
-#>     PRIMEM["Reference meridian",0,
-#>         ANGLEUNIT["degree",0.0174532925199433,
-#>             ID["EPSG",9122]]],
-#>     CS[Cartesian,3],
-#>         AXIS["(X)",geocentricX,
-#>             ORDER[1],
-#>             LENGTHUNIT["metre",1,
-#>                 ID["EPSG",9001]]],
-#>         AXIS["(Y)",geocentricY,
-#>             ORDER[2],
-#>             LENGTHUNIT["metre",1,
-#>                 ID["EPSG",9001]]],
-#>         AXIS["(Z)",geocentricZ,
-#>             ORDER[3],
-#>             LENGTHUNIT["metre",1,
-#>                 ID["EPSG",9001]]]]
+print(fm_proj4string(fm_crs("sphere")))
+#> [1] "+proj=geocent +R=1 +units=m +no_defs"
 ```

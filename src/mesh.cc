@@ -23,6 +23,7 @@
 #endif
 
 #include "fmesher_debuglog.h"
+#include "fmesher_helpers.h"
 
 using std::endl;
 
@@ -1981,14 +1982,14 @@ void Mesh::barycentric(const Dart &d, const Point &s, Point &bary) const {
   20. return null // Not found (hit boundary).
   \endverbatim
  */
-Dart Mesh::find_path_direction(const Dart &d0, const Point &s,
-                               const int v) const {
+Dart Mesh::find_path_direction(const Dart &d0, const Point &s1,
+                               const int v1) const {
   Dart d(d0);
   if (d.isnull())
     return Dart();
 
   int v0(d.v());
-  if (d.v() == v) // Have we found a preexisting vertex?
+  if (d.v() == v1) // Have we found a preexisting vertex?
     return d;
   d.orbit0rev();
   while ((d != d0) && (!d.onBoundary())) {
@@ -1996,37 +1997,37 @@ Dart Mesh::find_path_direction(const Dart &d0, const Point &s,
   }
   Dart d00(d);
 
-  FMLOG("Finding direction to point or v starting from d00, S:"
+  FMLOG("Finding direction to point s1 or v1 starting from d00, S:"
         << endl
-        << "\t\t" << s << endl
-        << "\t\t" << v << endl
+        << "\t\t" << s1 << endl
+        << "\t\t" << v1 << endl
         << "\t\t" << d00 << endl
         << "\t\t" << S_[d00.v()] << endl);
 
   d.orbit2();
-  FMLOG("Finding direction to point or v starting from dart:"
+  FMLOG("Finding direction to point s1 or v1 starting from dart:"
         << endl
-        << "\t\t" << s << endl
-        << "\t\t" << v << endl
+        << "\t\t" << s1 << endl
+        << "\t\t" << v1 << endl
         << "\t\t" << d << endl
         << "\t\t" << S_[d.v()] << endl
-        << "\tiLHS\t" << inLeftHalfspace(S_[v0], s, S_[d.v()]) << endl);
-  if (d.v() == v) // Have we found a preexisting vertex?
+        << "\tiLHS\t" << inLeftHalfspace(S_[v0], s1, S_[d.v()]) << endl);
+  if (d.v() == v1) // Have we found a preexisting vertex?
     return d;
-  bool onleft0(inLeftHalfspace(S_[v0], s, S_[d.v()]) >= 0.0);
-  bool onleft2(d.inLeftHalfspace(s) >= -MESH_EPSILON);
+  bool onleft0(inLeftHalfspace(S_[v0], s1, S_[d.v()]) >= -MESH_EPSILON);
+  bool onleft2(d.inLeftHalfspace(s1) >= -MESH_EPSILON);
   FMLOG(d << endl);
   d.orbit2();
   FMLOG("Finding direction to point or v starting from dart:"
         << endl
-        << "\t\t" << s << endl
-        << "\t\t" << v << endl
+        << "\t\t" << s1 << endl
+        << "\t\t" << v1 << endl
         << "\t\t" << d << endl
         << "\t\t" << S_[d.v()] << endl
-        << "\tiLHS\t" << inLeftHalfspace(S_[v0], s, S_[d.v()]) << endl);
-  if (d.v() == v) // Have we found a preexisting vertex?
+        << "\tiLHS\t" << inLeftHalfspace(S_[v0], s1, S_[d.v()]) << endl);
+  if (d.v() == v1) // Have we found a preexisting vertex?
     return d;
-  bool onleft1(inLeftHalfspace(S_[v0], s, S_[d.v()]) >= 0.0);
+  bool onleft1(inLeftHalfspace(S_[v0], s1, S_[d.v()]) >= -MESH_EPSILON);
   FMLOG("Locating direction " << onleft0 << onleft1 << endl);
   while (!(!onleft0 && onleft1) && (!d.onBoundary())) {
     d.orbit0rev();
@@ -2041,10 +2042,10 @@ Dart Mesh::find_path_direction(const Dart &d0, const Point &s,
       }
     }
     onleft0 = onleft1;
-    onleft2 = (onleft2 && (d.inLeftHalfspace(s) >= -MESH_EPSILON));
+    onleft2 = (onleft2 && (d.inLeftHalfspace(s1) >= -MESH_EPSILON));
     d.orbit2();
-    onleft1 = (inLeftHalfspace(S_[v0], s, S_[d.v()]) >= 0.0);
-    if (d.v() == v) // Have we found a preexisting vertex?
+    onleft1 = (inLeftHalfspace(S_[v0], s1, S_[d.v()]) >= -MESH_EPSILON);
+    if (d.v() == v1) // Have we found a preexisting vertex?
       return d;
     FMLOG("Locating direction " << onleft0 << onleft1 << endl);
   }
@@ -2090,7 +2091,10 @@ Dart Mesh::find_path_direction(const Point &s0, const Point &s1,
 
   for (int i0 = 0; i0 < 3; i0++) {
     int i1 = (i0 + 1) % 3;
-    if (inLeftHalfspace(S_[d.v()], S_[d.vo()], s1) < 0.0) {
+    /* Note: Colinearity is tricky */
+    FMLOG("Checking edge " << S_[d.v()] << " to " << S_[d.vo()] << " for " << s1 << endl);
+    FMLOG("inLeftHalfspace = " << inLeftHalfspace(S_[d.v()], S_[d.vo()], s1) << endl);
+    if (inLeftHalfspace(S_[d.v()], S_[d.vo()], s1) < -MESH_EPSILON) {
       if (!onleft[i1]) {
         FMLOG("Checkpoint 1" << endl);
         d.orbit2();
@@ -2173,7 +2177,9 @@ DartPair Mesh::trace_path(const Dart &d0, const Point &s1, const int v1,
     FMLOG("Found " << d << endl);
     return DartPair(dstart, d);
   }
+  FMESHER_R_INTERRUPT_CHECKER(20);
   while (!d.onBoundary()) {
+    FMESHER_R_INTERRUPT_CHECK;
     if (trace) {
       trace->push_back(d);
     }
@@ -2243,11 +2249,19 @@ DartPair Mesh::trace_path(const Point &s0, const Point &s1, const Dart &d0,
     FMLOG("No direction found, so is in starting triangle" << endl);
     return DartPair(dstart, dstart);
   }
-  if (d.inLeftHalfspace(s1) >= -MESH_EPSILON) {
-    FMLOG("Found " << d << endl);
+  Point b_s1;
+  (*this).barycentric(d, s1, b_s1);
+  FMLOG("Barycentric = " << b_s1 << endl);
+  FMLOG("d.inLeftHalfSpace(s1) = " << d.inLeftHalfspace(s1) << endl);
+  if ((b_s1[0] >= -MESH_EPSILON) &&
+      (b_s1[1] >= -MESH_EPSILON) &&
+      (b_s1[2] >= -MESH_EPSILON)) {
+    FMLOG("Found in starting triangle or on its boundary, d = " << d << endl);
     return DartPair(dstart, dstart);
   }
+  FMESHER_R_INTERRUPT_CHECKER(20);
   while (!d.onBoundary()) {
+    FMESHER_R_INTERRUPT_CHECK;
     if (trace) {
       trace->push_back(d);
     }
@@ -2269,6 +2283,315 @@ DartPair Mesh::trace_path(const Point &s0, const Point &s1, const Dart &d0,
   }
   return DartPair(dstart, Dart());
 }
+
+Dart Mesh::find_path_direction_new(const Dart &d0, const Point &s1,
+                               const int v1) const {
+  Dart d(d0);
+  if (d.isnull())
+    return Dart();
+
+  int v0(d.v());
+  if (d.v() == v1) // Have we found a preexisting vertex?
+    return d;
+  d.orbit0rev();
+  while ((d != d0) && (!d.onBoundary())) {
+    d.orbit0rev();
+  }
+  Dart d00(d);
+
+  FMLOG("Finding direction to point or v starting from d00, S:"
+          << endl
+          << "\t\t" << s1 << endl
+          << "\t\t" << v1 << endl
+          << "\t\t" << d00 << endl
+          << "\t\t" << S_[d00.v()] << endl);
+
+  d.orbit2();
+  FMLOG("Finding direction to point or v starting from dart:"
+          << endl
+          << "\t\t" << s1 << endl
+          << "\t\t" << v1 << endl
+          << "\t\t" << d << endl
+          << "\t\t" << S_[d.v()] << endl
+          << "\tiLHS\t" << inLeftHalfspace(S_[v0], s1, S_[d.v()]) << endl);
+  if (d.v() == v1) // Have we found a preexisting vertex?
+    return d;
+  bool onleft0(inLeftHalfspace(S_[v0], s1, S_[d.v()]) >= -MESH_EPSILON);
+  bool onleft2(d.inLeftHalfspace(s1) >= -MESH_EPSILON);
+  FMLOG(d << endl);
+  d.orbit2();
+  FMLOG("Finding direction to point or v starting from dart:"
+          << endl
+          << "\t\t" << s1 << endl
+          << "\t\t" << v1 << endl
+          << "\t\t" << d << endl
+          << "\t\t" << S_[d.v()] << endl
+          << "\tiLHS\t" << inLeftHalfspace(S_[v0], s1, S_[d.v()]) << endl);
+  if (d.v() == v1) // Have we found a preexisting vertex?
+    return d;
+  bool onleft1(inLeftHalfspace(S_[v0], s1, S_[d.v()]) >= -MESH_EPSILON);
+  FMLOG("Locating direction " << onleft0 << onleft1 << endl);
+  while (!(!onleft0 && onleft1) && (!d.onBoundary())) {
+    d.orbit0rev();
+    FMLOG(d << endl);
+    if (d.v() == d00.vo()) {
+      if (onleft2) {
+        FMLOG("Went full circle. Point found." << endl);
+        return d;
+      } else {
+        FMLOG("Went full circle. Point not found." << endl);
+        return Dart();
+      }
+    }
+    onleft0 = onleft1;
+    onleft2 = (onleft2 && (d.inLeftHalfspace(s1) >= -MESH_EPSILON));
+    d.orbit2();
+    onleft1 = (inLeftHalfspace(S_[v0], s1, S_[d.v()]) >= -MESH_EPSILON);
+    if (d.v() == v1) // Have we found a preexisting vertex?
+      return d;
+    FMLOG("Locating direction " << onleft0 << onleft1 << endl);
+  }
+  if (!onleft0 && onleft1) {
+    d.orbit2rev();
+    return d;
+  }
+  return Dart();
+}
+
+/*!
+ Find the edge that a straight path will pass through.
+
+ If the path endpoint is inside the original triangle, a null Dart
+ is returned.
+ */
+Dart Mesh::find_path_direction_new(const Point &s0, const Point &s1,
+                               const Dart &d0) const {
+  if (d0.isnull())
+    return Dart();
+  Dart d(*this, d0.t(), 1, 0);
+
+  /* Check if we're starting on a vertex, and call alternative method */
+  /* onleft[i] = is triangle vertex i to the left of the line? */
+  /* inside[i] = is s1 inside triangle edge i? */
+  bool onleft[3];
+  for (int i = 0; i < 3; i++) {
+    if (edgeLength(S_[d.v()], s0) < MESH_EPSILON) {
+      d = find_path_direction_new(d, s1, -1);
+      if (d.isnull()) {
+        FMLOG("Target point direction not found, or inside current triangle" << endl);
+        return Dart();
+      }
+      /* Check that the line actually crosses the dart. */
+      if (inLeftHalfspace(S_[d.v()], S_[d.vo()], s1) < -MESH_EPSILON) {
+        FMLOG("Target point is outside the direction edge" << endl);
+        FMLOG("D=" << d << endl);
+        return d;
+      }
+      FMLOG("Target point is inside the direction edge" << endl);
+      return Dart();
+    }
+    onleft[i] = (inLeftHalfspace(s0, s1, S_[d.v()]) >= -MESH_EPSILON);
+    FMLOG("D=" << d << endl);
+    FMLOG("onleft[" << i << "] = " << onleft[i] << endl);
+    d.orbit2();
+  }
+
+  for (int i0 = 0; i0 < 3; i0++) {
+    int i1 = (i0 + 1) % 3;
+    /* Note: Colinearity is tricky */
+    FMLOG("Checking edge " << S_[d.v()] << " to " << S_[d.vo()] << " for " << s1 << endl);
+    FMLOG("inLeftHalfspace = " << inLeftHalfspace(S_[d.v()], S_[d.vo()], s1) << endl);
+    if (inLeftHalfspace(S_[d.v()], S_[d.vo()], s1) < -MESH_EPSILON) {
+      if (!onleft[i1]) {
+        FMLOG("Checkpoint 1" << endl);
+        d.orbit2();
+        return d;
+      }
+      if (onleft[i0]) {
+        FMLOG("Checkpoint 2" << endl);
+        d.orbit2rev();
+        return d;
+      }
+      FMLOG("Checkpoint 3" << endl);
+      return d;
+    }
+    d.orbit2();
+  }
+  return Dart();
+}
+
+/*!
+ Trace the geodesic path from a vertex to a point or another vertex.
+
+ Return a pair of darts identifying the starting vertex, together
+ with the point containing triangle, or a dart originating at the
+ endpoint vertex.  If the point/vertex is not found, a null Dart is
+ returned.  Priority is given to finding the vertex; if found, the
+ point is disregarded.  The trace only includes darts strictly
+ intersected, i.e. not the initial and final darts.
+
+ Alg 9.1 is non-robust, and does not take the shortest route.  This
+ algorithm finds and follows the straight-line intersected edges
+ instead, making it suitable for use in CDT segment insertion
+ algorithms.
+
+ \verbatim
+ tracePath:
+ 1. d0 determines the starting vertex, v0 = d0.v
+ 2. d = findPathDirection(d0,s) // d is now opposite v0
+ 3. if inLeftHalfspace(d,s) return d
+ 4. while !d.onBoundary
+ 5.   store d in path-trace
+ 6.   d1 = d.orbit1.orbit2rev
+ 7.   found1 = inLeftHalfspace(d1,s)
+ 8.   leavethrough2 = inLeftHalfspace(S(v0),s,S(d.v))
+ 9.   d2 = d1.orbit2rev
+ 10.   found2 = inLeftHalfspace(d2,s)
+ 11.   if found1 & found2 return d2
+ 12.   if leavethrough2, d=d2, else d=d1
+ 13. store d in path-trace
+ 14. return null
+ \endverbatim
+ */
+DartPair Mesh::trace_path_new(const Dart &d0, const Point &s1, const int v1,
+                          DartList *trace) const {
+  Dart dh;
+  if (d0.isnull())
+    dh = Dart(*this, 0);
+  else
+    dh = Dart(*this, d0.t(), 1, d0.vi());
+  int v0(dh.v());
+  FMLOG("Locating point " << s1 << " v0=" << v0 << " v1=" << v1 << endl);
+
+  if (v1 >= (int)nV()) {
+    /* Vertex index out of range */
+    return DartPair(dh, Dart());
+  }
+
+  Dart d(find_path_direction_new(dh, s1, v1));
+  FMLOG("Path-direction " << d << endl);
+  FMLOG("Starting triangle " << d.t() << " (" << TV_[d.t()][0] << ","
+                             << TV_[d.t()][1] << "," << TV_[d.t()][2] << ")"
+                             << endl);
+  if (d.isnull()) {
+    FMLOG("No direction found, so is in starting triangle" << endl);
+    return DartPair(dh, dh);
+  }
+  Dart dstart = d;
+  while (dstart.v() != d0.v())
+    dstart.orbit2rev();
+  FMLOG("Starting dart " << dstart << endl);
+  if ((d.v() == v1) || (d.inLeftHalfspace(s1) >= -MESH_EPSILON)) {
+    FMLOG("Found " << d << endl);
+    return DartPair(dstart, d);
+  }
+  FMESHER_R_INTERRUPT_CHECKER(20);
+  while (!d.onBoundary()) {
+    FMESHER_R_INTERRUPT_CHECK;
+    if (trace) {
+      trace->push_back(d);
+    }
+    d.orbit1().orbit2rev();
+    FMLOG("In triangle " << d << endl);
+    if (d.v() == v1) {
+      FMLOG("Found vertex at " << d << endl);
+      return DartPair(dstart, d);
+    }
+    bool found = (d.inLeftHalfspace(s1) >= -MESH_EPSILON);
+    bool other = (inLeftHalfspace(S_[v0], s1, S_[d.v()]) > -MESH_EPSILON);
+    d.orbit2rev();
+    if (found && (d.inLeftHalfspace(s1) >= -MESH_EPSILON)) {
+      return DartPair(dstart, d);
+    }
+    if (!other)
+      d.orbit2();
+    FMLOG("Go to next triangle, from " << d << endl);
+  }
+  FMLOG("Endpoint not found " << dstart << " " << d << endl);
+  return DartPair(dstart, Dart());
+}
+
+/*!
+ Trace the geodesic path between two points.
+
+ Return a pair of darts identifying the starting and end triangles.
+ If the end point is not reached due to reaching a mesh boundary
+ the second dart returned will be null, but the path trace up to an
+ including the mesh boundary will be populated.  The trace only
+ includes darts strictly intersected.
+
+ \verbatim
+ tracePath:
+ 2. d = findPathDirection(s0,s1,d0)
+ 3. if d is null (i.e. inLeftHalfspace(d,s1)), return (d0,d0)
+ 4. while !d.onBoundary
+ 5.   store d in path-trace
+ 6.   d1 = d.orbit1.orbit2rev
+ 7.   found1 = inLeftHalfspace(d1,s1)
+ 8.   leavethrough2 = inLeftHalfspace(s0,s1,S(d.v))
+ 9.   d2 = d1.orbit2rev
+ 10.   found2 = inLeftHalfspace(d2,s1)
+ 11.   if found1 & found2 return (d0,d2)
+ 12.   if leavethrough2, d=d2, else d=d1
+ 13. store d in path-trace
+ 14. return (d0,null)
+ \endverbatim
+ */
+DartPair Mesh::trace_path_new(const Point &s0, const Point &s1, const Dart &d0,
+                          DartList *trace) const {
+  Dart dh;
+  if (d0.isnull()) {
+    return DartPair(Dart(), Dart());
+  }
+  dh = Dart(*this, d0.t(), 1, d0.vi());
+  FMLOG("Locating point s1=" << s1 << "from s0=" << s0 << endl);
+  Dart dstart = dh;
+  FMLOG("Starting dart " << dstart << endl);
+
+  Dart d(find_path_direction_new(s0, s1, dstart));
+  FMLOG("Path-direction " << d << endl);
+  FMLOG("Starting triangle " << d.t() << " (" << TV_[d.t()][0] << ","
+                              << TV_[d.t()][1] << "," << TV_[d.t()][2] << ")"
+                              << endl);
+  if (d.isnull()) {
+    FMLOG("No direction found, so is in starting triangle" << endl);
+    return DartPair(dstart, dstart);
+  }
+  Point b_s1;
+  (*this).barycentric(d, s1, b_s1);
+  FMLOG("Barycentric = " << b_s1 << endl);
+  FMLOG("d.inLeftHalfSpace(s1) = " << d.inLeftHalfspace(s1) << endl);
+  if ((b_s1[0] >= -MESH_EPSILON) &&
+      (b_s1[1] >= -MESH_EPSILON) &&
+      (b_s1[2] >= -MESH_EPSILON)) {
+    FMLOG("Found in starting triangle or on its boundary, d = " << d << endl);
+    return DartPair(dstart, dstart);
+  }
+  FMESHER_R_INTERRUPT_CHECKER(20);
+  while (!d.onBoundary()) {
+    FMESHER_R_INTERRUPT_CHECK;
+    if (trace) {
+      trace->push_back(d);
+    }
+    d.orbit1().orbit2rev();
+    FMLOG("In triangle " << d << endl);
+    bool found = (d.inLeftHalfspace(s1) >= -MESH_EPSILON);
+    bool other = (inLeftHalfspace(s0, s1, S_[d.v()]) > 0.0);
+    d.orbit2rev();
+    if (found && (d.inLeftHalfspace(s1) >= -MESH_EPSILON)) {
+      return DartPair(dstart, d);
+    }
+    if (!other)
+      d.orbit2();
+    FMLOG("Go to next triangle, from " << d << endl);
+  }
+  FMLOG("Endpoint not found " << dstart << " " << d << endl);
+  if (trace) {
+    trace->push_back(d);
+  }
+  return DartPair(dstart, Dart());
+}
+
 
 /*!
   Locate a point in the graph.

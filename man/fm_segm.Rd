@@ -108,6 +108,7 @@ fm_segm(fmexample$mesh, boundary = FALSE)
 }
 \seealso{
 Other object creation and conversion: 
+\code{\link{fm_as_collect}()},
 \code{\link{fm_as_fm}()},
 \code{\link{fm_as_lattice_2d}()},
 \code{\link{fm_as_lattice_Nd}()},
@@ -117,6 +118,7 @@ Other object creation and conversion:
 \code{\link{fm_as_segm}()},
 \code{\link{fm_as_sfc}()},
 \code{\link{fm_as_tensor}()},
+\code{\link{fm_collect}()},
 \code{\link{fm_lattice_2d}()},
 \code{\link{fm_lattice_Nd}()},
 \code{\link{fm_mesh_1d}()},

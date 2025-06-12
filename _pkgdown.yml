@@ -1,7 +1,9 @@
 url: https://inlabru-org.github.io/fmesher/
 
 template:
+  bootswatch: cosmo
   bootstrap: 5
+  math-rendering: "mathjax"
 
 navbar:
   components:
@@ -34,11 +36,13 @@ reference:
   - starts_with("fm_delaunay")
   - starts_with("fm_subdivide")
   - starts_with("fm_lattice_")
+  - starts_with("fm_hexagon_")
   - starts_with("fm_segm")
   - starts_with("fm_nonconvex")
   - starts_with("fm_extensions")
   - starts_with("fm_simplify")
   - starts_with("fm_tensor")
+  - starts_with("fm_collect")
 - title: "Property methods"
   desc: "Functions for computing or accessing object properties"
   contents:
@@ -50,6 +54,7 @@ reference:
   - starts_with("fm_evaluator")
   - starts_with("fm_diameter")
   - starts_with("fm_bbox")
+  - starts_with("fm_sizes")
   - starts_with("fm_vertices")
   - starts_with("fm_centroids")
   - starts_with("fm_contains")

@@ -6,7 +6,7 @@
 #'
 #' @export
 #'
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #'
 #' @param mesh An `fm_mesh_2d` object
 #' @param dims A length 2 integer vector giving the dimensions of
@@ -19,10 +19,6 @@
 #' @param format character; "sf", "terra" or "sp"
 #' @param minimal logical; if `TRUE` (default), the default range is determined
 #' by the minimum of the ranges of the mesh and mask, otherwise only the mesh.
-#' @param nx `r lifecycle::badge("deprecated")` Number of pixels in x direction,
-#' or a numeric vector of x-values
-#' @param ny `r lifecycle::badge("deprecated")` Number of pixels in y direction,
-#' or a numeric vector of y-values
 #' @returns `sf`, `SpatRaster`, or `SpatialPixelsDataFrame` covering the mesh or
 #' mask.
 #'
@@ -73,42 +69,13 @@ fm_pixels <- function(mesh,
                       ylim = NULL,
                       mask = TRUE,
                       format = "sf",
-                      minimal = TRUE,
-                      nx = deprecated(),
-                      ny = deprecated()) {
+                      minimal = TRUE) {
   format <- match.arg(format, c("sf", "terra", "sp"))
   if (!fm_manifold(mesh, "R2")) {
     stop("fmesher::fm_pixels() currently works for R2 meshes only.")
   }
   if (is.null(mask)) {
     mask <- FALSE
-  }
-
-  x <- NULL
-  if (lifecycle::is_present(nx)) {
-    lifecycle::deprecate_stop(
-      "0.0.1",
-      "fm_pixels(nx)",
-      "fm_pixels(dim)"
-    )
-    if (length(nx) == 1) {
-      dims[1] <- nx
-    } else {
-      x <- nx
-    }
-  }
-  y <- NULL
-  if (lifecycle::is_present(ny)) {
-    lifecycle::deprecate_stop(
-      "0.0.1",
-      "fm_pixels(ny)",
-      "fm_pixels(dim)"
-    )
-    if (length(ny) == 1) {
-      dims[2] <- ny
-    } else {
-      y <- ny
-    }
   }
 
   if (!is.logical(mask)) {
@@ -119,24 +86,20 @@ fm_pixels <- function(mesh,
     mask_bbox <- sf::st_bbox(mask)
   }
 
-  if (is.null(x)) {
-    if (is.null(xlim)) {
-      xlim <- range(mesh$loc[, 1])
-      if (!is.logical(mask) && minimal) {
-        xlim <- c(max(xlim[1], mask_bbox[1]), min(xlim[2], mask_bbox[3]))
-      }
+  if (is.null(xlim)) {
+    xlim <- range(mesh$loc[, 1])
+    if (!is.logical(mask) && minimal) {
+      xlim <- c(max(xlim[1], mask_bbox[1]), min(xlim[2], mask_bbox[3]))
     }
-    x <- seq(xlim[1], xlim[2], length.out = dims[1])
   }
-  if (is.null(y)) {
-    if (is.null(ylim)) {
-      ylim <- range(mesh$loc[, 2])
-      if (!is.logical(mask) && minimal) {
-        ylim <- c(max(ylim[1], mask_bbox[2]), min(ylim[2], mask_bbox[4]))
-      }
+  x <- seq(xlim[1], xlim[2], length.out = dims[1])
+  if (is.null(ylim)) {
+    ylim <- range(mesh$loc[, 2])
+    if (!is.logical(mask) && minimal) {
+      ylim <- c(max(ylim[1], mask_bbox[2]), min(ylim[2], mask_bbox[4]))
     }
-    y <- seq(ylim[1], ylim[2], length.out = dims[2])
   }
+  y <- seq(ylim[1], ylim[2], length.out = dims[2])
 
   pixels <- expand.grid(x = x, y = y)
   pixels <- sf::st_as_sf(pixels, coords = c("x", "y"), crs = fm_crs(mesh))
@@ -186,7 +149,7 @@ fm_pixels <- function(mesh,
 #' @param refine A list of refinement options passed on to
 #' [fm_rcdt_2d_inla]
 #' @returns A refined `fm_mesh_2d` object
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @export
 #' @examples
 #' fm_dof(fmexample$mesh)
@@ -213,8 +176,11 @@ fm_refine <- function(mesh, refine = list(max.edge = 1)) {
 #'
 #' @param mesh an [fm_mesh_2d] object
 #' @param n number of added points along each edge. Default is 1.
+#' @param delaunay logical; if `TRUE`, the subdivided mesh is forced into a
+#'   Delaunay triangle structure. If `FALSE` (default), the triangles are
+#'   subdivided uniformly instead.
 #' @returns A refined [fm_mesh_2d] object
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @export
 #' @examples
 #' mesh <- fm_rcdt_2d_inla(
@@ -229,7 +195,7 @@ fm_refine <- function(mesh, refine = list(max.edge = 1)) {
 #'
 #' plot(fm_subdivide(fmexample$mesh, 3), edge.color = 2)
 #' plot(fmexample$mesh, add = TRUE, edge.color = 1)
-fm_subdivide <- function(mesh, n = 1) {
+fm_subdivide <- function(mesh, n = 1, delaunay = FALSE) {
   if (n < 1) {
     return(mesh)
   }
@@ -254,7 +220,8 @@ fm_subdivide <- function(mesh, n = 1) {
   new_mesh <- fm_rcdt_2d_inla(
     loc = sub$loc,
     tv = sub$tv + 1L,
-    crs = fm_crs(mesh)
+    crs = fm_crs(mesh),
+    delaunay = delaunay
   )
 
   new_mesh
@@ -319,7 +286,7 @@ join_segm <- function(...) {
 #' @param poly `fm_segm` object with a closed polygon
 #'   to intersect with the mesh
 #' @returns An [fm_mesh_2d] object
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @keywords internal
 #' @export
 #' @examples
@@ -464,7 +431,7 @@ fm_store_points <- function(loc, crs = NULL, info = NULL, format = NULL) {
 #' An `sf`, `data.frame`, or `SpatialPointsDataFrame` object, with the vertex
 #' coordinates, and a `.vertex` column with the vertex indices.
 #'
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @seealso [fm_centroids()]
 #'
 #' @examples
@@ -496,7 +463,7 @@ fm_vertices <- function(x, format = NULL) {
 #' An `sf`, `data.frame`, or `SpatialPointsDataFrame` object, with the vertex
 #' coordinates, and a `.triangle` column with the triangle indices.
 #'
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @seealso [fm_vertices()]
 #'
 #' @examples
@@ -531,29 +498,12 @@ fm_centroids <- function(x, format = NULL) {
 fm_onto_mesh <- function(mesh, loc, crs = NULL) {
   if (!is.matrix(loc) && !fm_crs_is_null(crs)) {
     warning("loc is non-matrix but crs specified; will be ignored")
+    crs <- NULL
   }
-  if (inherits(loc, c(
-    "SpatialPoints", "SpatialPointsDataFrame",
-    "sf", "sfc", "sfg"
-  ))) {
+  if (is.null(crs)) {
     crs <- fm_crs(loc)
   }
   mesh_crs <- fm_crs(mesh)
-
-  loc_needs_normalisation <- FALSE
-  if (!fm_crs_is_null(crs) && !fm_crs_is_null(mesh_crs)) {
-    if (fm_crs_is_geocent(mesh_crs)) {
-      if (!is.matrix(loc)) {
-        if (!fm_crs_is_identical(crs, mesh_crs)) {
-          loc <- fm_transform(loc, crs = mesh_crs, crs0 = crs)
-        }
-      }
-    } else if (!fm_crs_is_identical(crs, mesh_crs)) {
-      loc <- fm_transform(loc, crs = mesh_crs, crs0 = crs, passthrough = TRUE)
-    }
-  } else if (fm_manifold(mesh, "S2")) {
-    loc_needs_normalisation <- TRUE
-  }
 
   if (inherits(loc, c("SpatialPoints", "SpatialPointsDataFrame"))) {
     fm_safe_sp(force = TRUE)
@@ -563,6 +513,8 @@ fm_onto_mesh <- function(mesh, loc, crs = NULL) {
     c_names <- colnames(loc)
     c_names <- intersect(c_names, c("X", "Y", "Z"))
     loc <- loc[, c_names, drop = FALSE]
+  } else if (inherits(loc, c("SpatVector"))) {
+    loc <- terra::crds(loc)
   } else if (!is.matrix(loc)) {
     warning(
       paste0(
@@ -573,6 +525,20 @@ fm_onto_mesh <- function(mesh, loc, crs = NULL) {
       immediate. = TRUE
     )
   }
+
+  loc_needs_normalisation <- FALSE
+  if (!fm_crs_is_null(crs) && !fm_crs_is_null(mesh_crs)) {
+    if (!fm_crs_is_identical(crs, mesh_crs)) {
+      loc <- fm_transform(loc,
+        crs = mesh_crs,
+        crs0 = crs,
+        passthrough = FALSE
+      )
+    }
+  } else if (fm_manifold(mesh, "S2")) {
+    loc_needs_normalisation <- TRUE
+  }
+
   if (loc_needs_normalisation) {
     loc <- loc / rowSums(loc^2)^0.5 * mean(rowSums(mesh$loc^2)^0.5)
   }
@@ -645,6 +611,12 @@ fm_dof.fm_mesh_3d <- function(x) {
 #' @export
 fm_dof.fm_tensor <- function(x) {
   prod(vapply(x$fun_spaces, fm_dof, 0L))
+}
+
+#' @rdname fm_dof
+#' @export
+fm_dof.fm_collect <- function(x) {
+  sum(vapply(x$fun_spaces, fm_dof, 0L))
 }
 
 #' @rdname fm_dof

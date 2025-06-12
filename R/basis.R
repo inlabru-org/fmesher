@@ -234,6 +234,102 @@ fm_basis.fm_tensor <- function(x,
 }
 
 
+#' @export
+#' @describeIn fm_basis Evaluates a basis matrix for a `fm_collect` function
+#'   space. The `loc` argument must be a `list` or `tibble` with elements
+#'   `loc` (the locations) and `index` (the indices into the function space
+#'   collection).
+#' @importFrom rlang .env
+fm_basis.fm_collect <- function(x,
+                                loc,
+                                weights = NULL,
+                                ...,
+                                full = FALSE) {
+  loc_names <- names(loc)
+  if (!is.null(loc_names) &&
+    (!("loc" %in% loc_names) || !("index" %in% loc_names))) {
+    stop(
+      paste0(
+        "Location data for fm_collect must have elements `loc` and ",
+        "`index`.\n",
+        "Found: ", paste0(names(loc), collapse = ", ")
+      )
+    )
+  }
+
+  if (!tibble::is_tibble(loc)) {
+    if (is.null(loc_names)) {
+      # The .env construction is needed to avoid `loc` name clash effects
+      loc <- tibble::tibble(
+        loc = .env$loc[[1]],
+        index = .env$loc[[2]]
+      )
+    } else {
+      loc <- tibble::tibble(
+        loc = .env$loc[["loc"]],
+        index = .env$loc[["index"]]
+      )
+    }
+  }
+
+  if (is.numeric(loc[["index"]]) && !is.integer(loc[["index"]])) {
+    loc[["index"]] <- as.integer(loc[["index"]])
+  }
+  if (!is.null(names(x[["fun_spaces"]]))) {
+    if (is.factor(loc[["index"]])) {
+      loc[["index"]] <- as.character(loc[["index"]])
+    }
+    if (is.character(loc[["index"]])) {
+      # Convert character indices to integer
+      loc[["index"]] <- match(loc[["index"]], names(x[["fun_spaces"]]))
+    }
+  }
+
+  idx <- seq_along(x[["fun_spaces"]])
+  valid <- loc[["index"]] %in% idx
+
+  proj <- lapply(
+    idx,
+    function(k) {
+      fm_basis(
+        x[["fun_spaces"]][[k]],
+        loc = loc[loc[["index"]] == k, , drop = FALSE][["loc"]],
+        full = TRUE
+      )
+    }
+  )
+
+  # Combine the matrices
+  A <- Matrix::.bdiag(lapply(proj, fm_basis))
+  ok <- do.call(c, lapply(proj, function(xx) xx[["ok"]]))
+
+  # Reorder to original order and fill in invalid rows
+  block_order <- order(loc[["index"]][valid])
+  reorder <- order(block_order)
+  A_ <- A[reorder, , drop = FALSE]
+  ok_ <- ok[reorder]
+
+  A <- Matrix::sparseMatrix(
+    i = integer(0),
+    j = integer(0),
+    x = numeric(0),
+    dims = c(nrow(loc), ncol(A_))
+  )
+  A[valid, ] <- A_
+  ok <- logical(nrow(loc))
+  ok[valid] <- ok_
+
+  if (!is.null(weights)) {
+    A <- Matrix::Diagonal(n = nrow(A), x = weights) %*% A
+  }
+
+  fm_basis(
+    list(A = A, ok = ok),
+    full = full
+  )
+}
+
+
 #' @describeIn fm_basis Creates a new `fm_basis` object with elements `A` and
 #'   `ok`, from a pre-evaluated basis matrix, including optional additional
 #'   elements in the `...` arguments. If a `ok` is `NULL`, it is inferred as
@@ -397,7 +493,7 @@ internal_spline_mesh_1d <- function(interval,
 #' [fm_mesh_1d()] for more information.
 #' @param ... Unused
 #' @returns A matrix with evaluated basis function
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @seealso [fm_mesh_1d()], [fm_mesh_2d()], [fm_basis()]
 #' @examples
 #'

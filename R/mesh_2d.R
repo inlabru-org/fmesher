@@ -187,9 +187,10 @@ handle_rcdt_options_inla <- function(
     cutoff = 1e-12,
     extend = NULL,
     refine = NULL,
+    delaunay = TRUE,
     .n,
     .loc) {
-  options <- list(cutoff = cutoff)
+  options <- list(cutoff = cutoff, delaunay = delaunay)
   if (is.null(quality.spec)) {
     quality <- NULL
   } else {
@@ -224,6 +225,9 @@ handle_rcdt_options_inla <- function(
     refine <- list()
   }
   if (inherits(refine, "list")) {
+    # Override possible delaunay=FALSE option
+    options[["delaunay"]] <- TRUE
+
     rcdt_min_angle <- 0
     rcdt_max_edge <- 0
     # Multiply by 2 to cover S2; could remove if supplied manifold info
@@ -322,6 +326,9 @@ handle_rcdt_options_inla <- function(
 #' specification for each location in `loc`, `boundary/interior`
 #' (`segm`), and `lattice`.  Only used if refining the mesh.
 #' @param crs Optional crs object
+#' @param delaunay logical; If `FALSE`, `refine` is `FALSE`, and a ready-made
+#'   mesh is provided, only creates the mesh data structure. Default `TRUE`, for
+#'   ensuring a Delaunay triangulation.
 #' @param ... Currently passed on to `fm_mesh_2d_inla` or converted to
 #' [fmesher_rcdt()] options.
 #' @returns An `fm_mesh_2d` object
@@ -351,6 +358,7 @@ fm_rcdt_2d_inla <- function(loc = NULL,
                             cutoff = 1e-12,
                             quality.spec = NULL,
                             crs = NULL,
+                            delaunay = TRUE,
                             ...) {
   crs.target <- crs
   if (!fm_crs_is_null(crs) &&
@@ -483,6 +491,7 @@ fm_rcdt_2d_inla <- function(loc = NULL,
     refine = refine,
     cutoff = cutoff,
     quality.spec = quality.spec,
+    delaunay = delaunay,
     ...,
     .n = list(
       segm = segm.n,
@@ -574,7 +583,13 @@ fm_rcdt_2d_inla <- function(loc = NULL,
 
   remap_unused <- function(mesh) {
     ## Remap indices to remove unused vertices
-    if (length(mesh$graph$vt) == 0) {
+    if (length(mesh$graph$vt) > 0) {
+      for (vv in seq_len(nrow(mesh$loc))) {
+        vt <- mesh$graph$vt[[vv]]
+        mesh$graph$vt[[vv]] <-
+          matrix(c(as.integer(names(vt)), vt), length(vt), 2)
+      }
+    } else {
       # warning("VT information missing from mesh, rebuilding")
       # Old storage mode: mesh$graph$vt <- rep(NA_integer_, nrow(mesh$loc))
       mesh$graph$vt <- list()
@@ -718,7 +733,7 @@ fm_mesh_2d <- function(...) {
 #' result after each step of the multi-step domain extension algorithm.
 #' @param crs An optional [fm_crs()], `sf::crs` or `sp::CRS` object
 #' @returns An `fm_mesh_2d` object.
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @seealso [fm_rcdt_2d()], [fm_mesh_2d()], [fm_delaunay_2d()],
 #' [fm_nonconvex_hull()], [fm_extensions()], [fm_refine()]
 fm_mesh_2d_inla <- function(loc = NULL,
@@ -845,10 +860,13 @@ fm_mesh_2d_inla <- function(loc = NULL,
   if (fm_diameter(loc) +
     fm_diameter(loc.domain) +
     fm_diameter(interior) == 0.0) {
+    bnd_diam <- 0.0
     for (k in seq_len(num.layers)) {
+      if ((length(boundary) >= k) && !is.null(boundary[[k]])) {
+        bnd_diam <- bnd_diam + fm_diameter(boundary[[k]])
+      }
       if (offset[k] < 0) {
-        if ((length(boundary) < k) ||
-          (fm_diameter(boundary[[k]]) == 0.0)) {
+        if (bnd_diam == 0.0) {
           offset[k] <- 1
         }
       }
@@ -860,49 +878,73 @@ fm_mesh_2d_inla <- function(loc = NULL,
   boundary <- unify_segm_coords(boundary, crs = crs)
   interior <- unify_segm_coords(interior, crs = crs)
 
-  ## Triangulate to get inner domain boundary
-  ## Constraints included only to get proper domain extent
-  ## First, attach the loc points to the domain definition set
-  if (!is.null(loc) && !is.null(loc.domain)) {
-    loc.domain <- rbind(loc.domain, loc)
+  if (is.null(boundary[[1]])) {
+    ## Triangulate to get inner domain boundary
+    ## Constraints included only to get proper domain extent
+    ## First, attach the loc points to the domain definition set
+    if (!is.null(loc) && !is.null(loc.domain)) {
+      loc.domain <- rbind(loc.domain, loc)
+    }
+    mesh1 <-
+      fm_rcdt_2d(
+        loc = loc.domain,
+        boundary = boundary[[1]],
+        interior = interior,
+        cutoff = cutoff,
+        extend = list(n = n[1], offset = offset[1]),
+        refine = FALSE,
+        crs = crs
+      )
+
+    ## Save the resulting boundary
+    boundary1 <- fm_segm(mesh1, boundary = TRUE)
+    interior1 <- fm_segm(mesh1, boundary = FALSE)
+
+    if (plot.intermediate) {
+      plot(mesh1)
+    }
+
+    ## Triangulate inner domain
+    mesh2 <-
+      fm_rcdt_2d(
+        loc = loc,
+        boundary = boundary1,
+        interior = interior1,
+        cutoff = cutoff,
+        extend = if (fm_manifold(mesh1, "S2")) {
+          list(n = n[1], offset = offset[1])
+        } else {
+          FALSE ## Should have no effect
+        },
+        refine =
+          list(
+            min.angle = min.angle[1],
+            max.edge = max.edge[1],
+            max.edge.extra = max.edge[1],
+            max.n.strict = max.n.strict[1],
+            max.n = max.n[1]
+          ),
+        crs = crs
+      )
+  } else {
+    mesh2 <-
+      fm_rcdt_2d(
+        loc = loc,
+        boundary = boundary[[1]],
+        interior = interior,
+        cutoff = cutoff,
+        extend = FALSE, # Should have no effect
+        refine =
+          list(
+            min.angle = min.angle[1],
+            max.edge = max.edge[1],
+            max.edge.extra = max.edge[1],
+            max.n.strict = max.n.strict[1],
+            max.n = max.n[1]
+          ),
+        crs = crs
+      )
   }
-  mesh1 <-
-    fm_rcdt_2d(
-      loc = loc.domain,
-      boundary = boundary[[1]],
-      interior = interior,
-      cutoff = cutoff,
-      extend = list(n = n[1], offset = offset[1]),
-      refine = FALSE,
-      crs = crs
-    )
-
-  ## Save the resulting boundary
-  boundary1 <- fm_segm(mesh1, boundary = TRUE)
-  interior1 <- fm_segm(mesh1, boundary = FALSE)
-
-  if (plot.intermediate) {
-    plot(mesh1)
-  }
-
-  ## Triangulate inner domain
-  mesh2 <-
-    fm_rcdt_2d(
-      loc = loc,
-      boundary = boundary1,
-      interior = interior1,
-      cutoff = cutoff,
-      extend = FALSE, ## Should have no effect
-      refine =
-        list(
-          min.angle = min.angle[1],
-          max.edge = max.edge[1],
-          max.edge.extra = max.edge[1],
-          max.n.strict = max.n.strict[1],
-          max.n = max.n[1]
-        ),
-      crs = crs
-    )
 
   boundary2 <- fm_segm(mesh2, boundary = TRUE)
   interior2 <- fm_segm(mesh2, boundary = FALSE)
@@ -952,7 +994,7 @@ fm_mesh_2d_inla <- function(loc = NULL,
     segm.loc <- rbind(segm.loc, interior$loc)
   }
   if (nrow(segm.loc) > 0) {
-    proj <- fm_evaluator(mesh3, loc = segm.loc)$proj
+    proj <- fm_basis(mesh3, loc = segm.loc, full = TRUE)
     mesh3$idx$segm <- rep(NA, nrow(segm.loc))
     if (any(proj$ok)) {
       t.idx <- proj$bary$index[proj$ok]
@@ -1020,4 +1062,262 @@ fm_as_mesh_2d.inla.mesh <- function(x, ...) {
   }
   class(x) <- c("fm_mesh_2d", class(x))
   x
+}
+
+
+# Hex points ####
+
+#' @title Create hexagon lattice points
+#' @description Create hexagon lattice points within a boundary
+#' @param bnd Boundary object
+#' @param x_bin Number of bins in x axis
+#' @param edge_len_n Number of edge length of mesh from the boundary to create
+#'   hexagon mesh using x_bin
+#' @return A list with lattice points, edge length, and inner boundary
+#' @author Man Ho Suen <M.H.Suen@@sms.ed.ac.uk>
+#' @keywords internal
+fm_hexagon_lattice_orig <- function(bnd,
+                                    x_bin = 250, # 300 then running forever
+                                    edge_len_n = 1) {
+  stopifnot(x_bin / 2 > edge_len_n)
+  crs <- fm_crs(bnd)
+  fm_crs(bnd) <- NA
+  # two separate grid and combine
+  edge_len <- as.numeric((fm_bbox(bnd)[[1]][2] - fm_bbox(bnd)[[1]][1])) /
+    (x_bin + 2 * edge_len_n) # two ends
+  # sf_buffer to work on negative buffer to stay a distance from the boundary
+  # Turn off S2 to avoid zig zag
+  # suppressMessages(sf::sf_use_s2(FALSE))
+  #  # st_buffer for edge_len x1
+  bnd_inner <- sf::st_buffer(bnd, dist = -edge_len_n * edge_len)
+  y_diff <- fm_bbox(bnd_inner)[[2]][2] - fm_bbox(bnd_inner)[[2]][1]
+  x_diff <- fm_bbox(bnd_inner)[[1]][2] - fm_bbox(bnd_inner)[[1]][1]
+  y_bin <- as.integer(y_diff / (sqrt(3) / 2 * edge_len))
+  # TODO rep n, n-1, length
+  h <- (sqrt(3) / 2 * edge_len) # height
+  x_adj <- .5 * (x_diff - x_bin * edge_len)
+  y_adj <- .5 * (y_diff - y_bin * h)
+  # x
+  x_1_ <- seq(
+    fm_bbox(bnd_inner)[[1]][1] + x_adj,
+    fm_bbox(bnd_inner)[[1]][2] - x_adj, edge_len
+  )
+  x_2_ <- seq(
+    (fm_bbox(bnd_inner)[[1]][1] + x_adj + .5 * edge_len),
+    (fm_bbox(bnd_inner)[[1]][2] - x_adj - .5 * edge_len),
+    edge_len
+  )
+  y_1_ <- seq(
+    fm_bbox(bnd_inner)[[2]][1] + y_adj,
+    fm_bbox(bnd_inner)[[2]][2] - y_adj,
+    by = 2 * h
+  )
+  y_2_ <- seq(
+    fm_bbox(bnd_inner)[[2]][1] + y_adj + h,
+    fm_bbox(bnd_inner)[[2]][2] - y_adj + h, 2 * h
+  )
+
+  x_1 <- rep(x_1_, times = length(y_1_))
+  x_2 <- rep(x_2_, times = length(y_2_))
+  y_1 <- rep(y_1_, each = length(x_1_))
+  y_2 <- rep(y_2_, each = length(x_2_))
+
+  mesh_df <- data.frame(x = c(x_1, x_2), y = c(y_1, y_2))
+  # turn the mesh nodes into lattice sf
+  lattice_sf <- sf::st_as_sf(mesh_df,
+    coords = c("x", "y"),
+    crs = sf::st_crs(bnd)
+  )
+  lattice_sfc <- sf::st_as_sfc(lattice_sf)
+  pts_inside <- lengths(sf::st_intersects(lattice_sfc, bnd_inner)) != 0
+  pts_lattice_sfc <- lattice_sfc[pts_inside]
+  fm_crs(pts_lattice_sfc) <- fm_crs(bnd_inner) <- crs
+  return(list(
+    lattice = pts_lattice_sfc,
+    edge_len = edge_len,
+    bnd_inner = bnd_inner
+  ))
+}
+
+
+#' @title Create hexagon lattice points
+#' @description `r lifecycle::badge("experimental")` from `0.3.0.9001`. Create
+#'   hexagon lattice points within a boundary. By default, the hexagonal lattice
+#'   is anchored at the coordinate system origin, so that grids with different
+#'   but overlapping boundaries will have matching points.
+#' @param bnd Boundary object (currently must be an `sf` polygon)
+#' @param edge_len Triangle edge length. Default `diff(fm_bbox(bnd)[[1]]) /
+#'   250`.
+#' @param buffer_n Number of triangle height multiples for buffer inside the
+#'   boundary object to the start of the lattice. Default 0.49.
+#' @param align Alignment of the hexagon lattice, either a length-2 numeric, or
+#'   character, a `sf`/`sfc`/`sfg` object containing a single point), or
+#'   `character`, default `"origin"`:
+#' \describe{
+#' \item{"origin"}{align the lattice with the coordinate system origin}
+#' \item{"bbox"}{align the lattice with the midpoint of the bounding box of
+#' `bnd`}
+#' \item{"centroid"}{align the lattice with the centroid of the boundary,
+#' `sf::st_centroid(bnd)`}
+#' }
+#' @param meta logical; if `TRUE`, return a list with diagnostic information
+#' from the lattice construction (including the points themselves in `lattice`)
+#' @return An `sfc` object with points, if `meta` is `FALSE` (default), or if
+#' `meta=TRUE`, a list:
+#' \describe{
+#' \item{lattice}{`sfc` with lattice points}
+#' \item{edge_len}{`numeric` with edge length}
+#' \item{bnd_inner}{`sf` object with the inner boundary used to filter points
+#'   outside of a `edge_len * buffer_n` distance from the boundary}
+#' \item{grid_n}{`integer` with the number of points in each direction prior to
+#' filtering}
+#' \item{align}{`numeric` with the alignment coordinates of the hexagon lattice}
+#' }
+#' @author Man Ho Suen <M.H.Suen@@sms.ed.ac.uk>,
+#'  Finn Lindgren <Finn.Lindgren@@gmail.com>
+#' @seealso [fm_mesh_2d()]
+#' @export
+#' @examples
+#' (m <- fm_mesh_2d(
+#'   fm_hexagon_lattice(
+#'     fmexample$boundary_sf[[1]],
+#'     edge_len = 0.1 * 5
+#'   ),
+#'   max.edge = c(0.2, 1) * 5,
+#'   boundary = fmexample$boundary_sf
+#' ))
+#'
+#' (m2 <- fm_mesh_2d(
+#'   fm_hexagon_lattice(
+#'     fmexample$boundary_sf[[1]],
+#'     edge_len = 0.1 * 5,
+#'     align = "centroid"
+#'   ),
+#'   max.edge = c(0.2, 1) * 5,
+#'   boundary = fmexample$boundary_sf
+#' ))
+#'
+#' if (require("ggplot2", quietly = TRUE) &&
+#'   require("patchwork", quietly = TRUE)) {
+#'   ((ggplot() +
+#'     geom_fm(data = m) +
+#'     geom_point(aes(0, 0), col = "red")) |
+#'     (ggplot() +
+#'       geom_fm(data = m2) +
+#'       geom_point(aes(0, 0), col = "red") +
+#'       geom_sf(data = sf::st_centroid(fmexample$boundary_sf[[1]]))
+#'     )
+#'   )
+#' }
+fm_hexagon_lattice <- function(bnd,
+                               edge_len = NULL,
+                               buffer_n = 0.49,
+                               align = "origin",
+                               meta = FALSE) {
+  #  stopifnot(x_bin / 2 > edge_len_n)
+  crs <- fm_crs(bnd)
+  # Avoid longlat S2 issues by removing the CRS information
+  fm_crs(bnd) <- NA
+
+  bbox <- fm_bbox(bnd)
+  if (is.null(edge_len)) {
+    edge_len <- diff(bbox[[1]]) / 250
+  }
+
+  if (is.character(align)) {
+    align <- match.arg(align, c("origin", "bbox", "centroid"))
+    if (align == "bbox") {
+      # Align the hexagon lattice with the bounding box
+      align <- c(
+        (bbox[[1]][1] + bbox[[1]][2]) / 2,
+        (bbox[[2]][1] + bbox[[2]][2]) / 2
+      )
+    } else if (align == "centroid") {
+      # Align the hexagon lattice with the bounding box
+      align <- sf::st_centroid(bnd)
+    } else {
+      # Align the hexagon lattice with the coordinate system origin
+      align <- c(0, 0)
+    }
+  }
+
+  if (inherits(align, c("sf", "sfc", "sfg"))) {
+    align <- sf::st_coordinates(sf::st_centroid(align))
+    align <- align[, intersect(colnames(align), c("X", "Y", "Z")), drop = FALSE]
+  }
+  stopifnot(is.numeric(align))
+  origin <- align
+
+  # Find covering rectangular grid extent
+  h <- edge_len * sqrt(3) / 2
+  grid_start <-
+    c(
+      floor((bbox[[1]][1] - origin[1]) / edge_len),
+      floor((bbox[[2]][1] - origin[2]) / (2 * h)) * 2L
+    )
+  grid_end <-
+    c(
+      ceiling((bbox[[1]][2] - origin[1]) / edge_len),
+      ceiling((bbox[[2]][2] - origin[2]) / (2 * h)) * 2L
+    )
+  grid_n <- grid_end - grid_start + 1L
+
+  if (any(grid_n == 0L)) {
+    # Empty lattice
+    return()
+  }
+
+  # x
+  x_1_ <- origin[1] + seq(
+    grid_start[1] * edge_len,
+    grid_end[1] * edge_len,
+    length.out = grid_n[1]
+  )
+  x_2_ <- origin[1] + seq(
+    (grid_start[1] + 0.5) * edge_len,
+    (grid_end[1] - 0.5) * edge_len,
+    length.out = grid_n[1] - 1L
+  )
+  y_1_ <- origin[2] + seq(
+    grid_start[2] * h,
+    grid_end[2] * h,
+    length.out = (grid_n[2] + 1L) / 2L
+  )
+  y_2_ <- origin[2] + seq(
+    (grid_start[2] + 1) * h,
+    (grid_end[2] - 1) * h,
+    length.out = (grid_n[2] + 1L) / 2L - 1L
+  )
+
+  x_1 <- rep(x_1_, times = length(y_1_))
+  x_2 <- rep(x_2_, times = length(y_2_))
+  y_1 <- rep(y_1_, each = length(x_1_))
+  y_2 <- rep(y_2_, each = length(x_2_))
+
+  mesh_df <- data.frame(x = c(x_1, x_2), y = c(y_1, y_2))
+  # turn the mesh nodes into lattice sf
+  lattice_sf <- sf::st_as_sf(mesh_df, coords = c("x", "y"), crs = crs)
+  lattice_sfc <- sf::st_as_sfc(lattice_sf)
+
+  # sf_buffer to work on negative buffer to stay a distance from the boundary
+  # Turn off S2 to avoid zig zag
+  # suppressMessages(sf::sf_use_s2(FALSE))
+  #  # st_buffer for edge_len x1
+  bnd_inner <- sf::st_buffer(bnd, dist = -buffer_n * h)
+  fm_crs(bnd_inner) <- crs
+
+  pts_inside <- lengths(sf::st_intersects(lattice_sfc, bnd_inner)) != 0
+  pts_lattice_sfc <- lattice_sfc[pts_inside]
+
+  if (meta) {
+    return(list(
+      lattice = pts_lattice_sfc,
+      edge_len = edge_len,
+      bnd_inner = bnd_inner,
+      grid_n = grid_n,
+      align = origin
+    ))
+  }
+
+  pts_lattice_sfc
 }

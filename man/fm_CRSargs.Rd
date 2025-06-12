@@ -65,6 +65,6 @@ if (fm_safe_sp()) {
 \code{\link[=fm_CRS]{fm_CRS()}}
 }
 \author{
-Finn Lindgren \href{mailto:finn.lindgren@gmail.com}{finn.lindgren@gmail.com}
+Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}
 }
 \keyword{internal}

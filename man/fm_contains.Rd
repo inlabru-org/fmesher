@@ -37,40 +37,37 @@ Wrapper for the \code{\link[sf:geos_binary_pred]{sf::st_contains()}} (previously
 triangle centroids or vertices inside \code{sf} or \code{sp} polygon objects
 }
 \examples{
-if (TRUE &&
-  fm_safe_sp()) {
-  # Create a polygon and a mesh
-  obj <- sp::SpatialPolygons(
-    list(sp::Polygons(
-      list(sp::Polygon(rbind(
-        c(0, 0),
-        c(50, 0),
-        c(50, 50),
-        c(0, 50)
-      ))),
-      ID = 1
-    )),
-    proj4string = fm_CRS("longlat_globe")
-  )
-  mesh <- fm_rcdt_2d_inla(globe = 2, crs = fm_crs("sphere"))
+# Create a polygon and a mesh
+obj <- sf::st_sfc(
+  sf::st_polygon(
+    list(rbind(
+      c(0, 0),
+      c(50, 0),
+      c(50, 50),
+      c(0, 50),
+      c(0, 0)
+    ))
+  ),
+  crs = fm_crs("longlat_globe")
+)
+mesh <- fm_rcdt_2d_inla(globe = 2, crs = fm_crs("sphere"))
 
-  ## 3 vertices found in the polygon
-  fm_contains(obj, mesh, type = "vertex")
+## 2 vertices found in the polygon
+fm_contains(obj, mesh, type = "vertex")
 
-  ## 3 triangles found in the polygon
-  fm_contains(obj, mesh)
+## 3 triangles found in the polygon
+fm_contains(obj, mesh)
 
-  ## Multiple transformations can lead to slightly different results
-  ## due to edge cases:
-  ## 4 triangles found in the polygon
-  fm_contains(
-    obj,
-    fm_transform(mesh, crs = fm_crs("mollweide_norm"))
-  )
-}
+## Multiple transformations can lead to slightly different results
+## due to edge cases:
+## 4 triangles found in the polygon
+fm_contains(
+  obj,
+  fm_transform(mesh, crs = fm_crs("mollweide_norm"))
+)
 
 }
 \author{
-Haakon Bakka, \email{bakka@r-inla.org}, and Finn Lindgren
-\email{finn.lindgren@gmail.com}
+Haakon Bakka, \href{mailto:bakka@r-inla.org}{bakka@r-inla.org}, and Finn Lindgren
+\href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}
 }

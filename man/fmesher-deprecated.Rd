@@ -6,9 +6,6 @@
 \alias{fm_spTransform.default}
 \alias{fm_spTransform.SpatialPoints}
 \alias{fm_spTransform.SpatialPointsDataFrame}
-\alias{fm_has_PROJ6}
-\alias{fm_as_sp_crs}
-\alias{fm_sp_get_crs}
 \alias{fm_sp2segment}
 \title{Deprecated functions in fmesher}
 \usage{
@@ -20,16 +17,10 @@ fm_spTransform(x, ...)
 
 \method{fm_spTransform}{SpatialPointsDataFrame}(x, CRSobj, passthrough = FALSE, ...)
 
-fm_has_PROJ6()
-
-fm_as_sp_crs(x, ...)
-
-fm_sp_get_crs(x)
-
 fm_sp2segment(...)
 }
 \arguments{
-\item{x}{A \code{sp::Spatial} object}
+\item{x}{The object that should be transformed from it's current CRS to a new CRS}
 
 \item{\dots}{Potential additional arguments}
 
@@ -43,18 +34,9 @@ through without transformation.}
 
 \item{CRSobj}{The target sp::CRS or inla.CRS object}
 }
-\value{
-A \code{CRS} object, or NULL if no valid CRS identified
-}
 \description{
 These functions still attempt to do their job, but will be removed in a
 future version.
-}
-\details{
-This function is a convenience method to workaround PROJ4/PROJ6
-differences, and the lack of a crs extraction method for Spatial objects.
-For newer code, use \code{\link[=fm_crs]{fm_crs()}} instead, that returns \code{crs} objects, and use
-\link[=fm_crs]{fm_CRS()} to extract/construct/convert to old style \code{sp::CRS} objects.
 }
 \section{Functions}{
 \itemize{
@@ -65,27 +47,13 @@ reference systems of \code{sp::CRS} or \code{INLA::inla.CRS} class.
 \item \code{fm_spTransform(default)}: The default method handles low level
 transformation of raw coordinates.
 
-\item \code{fm_has_PROJ6()}: Old checker for PROJ6.
-
-\item \code{fm_as_sp_crs()}: Wrapper for \code{\link[=fm_CRS]{fm_CRS()}}
-\code{sp::Spatial} and \code{sp::CRS} objects.
-
-\item \code{fm_sp_get_crs()}: Wrapper for \code{CRS(projargs)} (PROJ4) and
-\code{CRS(wkt)} for \code{sp::Spatial} objects.
-
 \item \code{fm_sp2segment()}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} in favour
 of \code{\link[=fm_as_segm]{fm_as_segm()}}
 
 }}
-\examples{
-if (fm_safe_sp()) {
-  s <- sp::SpatialPoints(matrix(1:6, 3, 2), proj4string = fm_CRS("sphere"))
-  fm_CRS(s)
-}
-}
 \seealso{
 \code{\link[=fm_transform]{fm_transform()}}
 }
 \author{
-Finn Lindgren \email{finn.lindgren@gmail.com}
+Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}
 }
