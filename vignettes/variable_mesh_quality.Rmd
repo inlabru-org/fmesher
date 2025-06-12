@@ -24,12 +24,12 @@ knitr::opts_chunk$set(
 options(bitmapType = "cairo")
 ```
 
-Updated version of the 2018 blog post [Spatially varying mesh quality](https://www.maths.ed.ac.uk/~flindgre/posts/2018-07-22-spatially-varying-mesh-quality/).
+Updated version of the 2018 blog post [Spatially varying mesh quality](https://webhomes.maths.ed.ac.uk/~flindgre/posts/2018-07-22-spatially-varying-mesh-quality/).
 Needs `fmesher` version `0.3.0.9005` or later.
 
 ## Fundamentals of triangle mesh refinement
 
-The [fmesher](http://inlabru-org.github.io/fmesher) package has several features that aren't widely known. The code started as an implementation of the triangulation method detailed in [Hjelle and Dæhlen, "Triangulations and Applications" (2006)](https://www.springer.com/gb/book/9783540332602), which includes methods for spatially varying mesh quality.[^1] Over time, the interface and feature improvements focused on robustness and calculating useful mesh properties, but the more advanced mesh quality features are still there!
+The [fmesher](https://inlabru-org.github.io/fmesher/) package has several features that aren't widely known. The code started as an implementation of the triangulation method detailed in [Hjelle and Dæhlen, "Triangulations and Applications" (2006)](https://link.springer.com/book/10.1007/3-540-33261-8), which includes methods for spatially varying mesh quality.[^1] Over time, the interface and feature improvements focused on robustness and calculating useful mesh properties, but the more advanced mesh quality features are still there!
 
 [^1]: The algorithm is very similar to the one used by `triangle`, available in R via [Rtriangle](https://CRAN.R-project.org/package=RTriangle). That only handles planar meshes, and had a potentially problematic non-commercial license clause. Since we needed spherical triangulations for global models, we had to write our own implementation.
 
