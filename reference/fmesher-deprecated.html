@@ -71,12 +71,6 @@ future version.</p>
 <span><span class="co"># S3 method for class 'SpatialPointsDataFrame'</span></span>
 <span><span class="fu">fm_spTransform</span><span class="op">(</span><span class="va">x</span>, <span class="va">CRSobj</span>, passthrough <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">fm_has_PROJ6</span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">fm_as_sp_crs</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">fm_sp_get_crs</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span></span>
 <span><span class="fu">fm_sp2segment</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -85,7 +79,7 @@ future version.</p>
 
 
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>A <code><a href="https://edzer.github.io/sp/reference/Spatial-class.html" class="external-link">sp::Spatial</a></code> object</p></dd>
+<dd><p>The object that should be transformed from it's current CRS to a new CRS</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -111,17 +105,6 @@ through without transformation.</p></dd>
 
 </dl></div>
     <div class="section level2">
-    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A <code>CRS</code> object, or NULL if no valid CRS identified</p>
-    </div>
-    <div class="section level2">
-    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>This function is a convenience method to workaround PROJ4/PROJ6
-differences, and the lack of a crs extraction method for Spatial objects.
-For newer code, use <code><a href="fm_crs.html">fm_crs()</a></code> instead, that returns <code>crs</code> objects, and use
-<a href="fm_crs.html">fm_CRS()</a> to extract/construct/convert to old style <code><a href="https://edzer.github.io/sp/reference/CRS-class.html" class="external-link">sp::CRS</a></code> objects.</p>
-    </div>
-    <div class="section level2">
     <h2 id="functions">Functions<a class="anchor" aria-label="anchor" href="#functions"></a></h2>
 
 <ul><li><p><code>fm_spTransform()</code>: <a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> (See <code><a href="fm_transform.html">fm_transform()</a></code> instead)
@@ -129,11 +112,6 @@ Handle transformation of various inla objects according to coordinate
 reference systems of <code><a href="https://edzer.github.io/sp/reference/CRS-class.html" class="external-link">sp::CRS</a></code> or <code>INLA::inla.CRS</code> class.</p></li>
 <li><p><code>fm_spTransform(default)</code>: The default method handles low level
 transformation of raw coordinates.</p></li>
-<li><p><code>fm_has_PROJ6()</code>: Old checker for PROJ6.</p></li>
-<li><p><code>fm_as_sp_crs()</code>: Wrapper for <code><a href="fm_CRS_sp.html">fm_CRS()</a></code>
-<code><a href="https://edzer.github.io/sp/reference/Spatial-class.html" class="external-link">sp::Spatial</a></code> and <code><a href="https://edzer.github.io/sp/reference/CRS-class.html" class="external-link">sp::CRS</a></code> objects.</p></li>
-<li><p><code>fm_sp_get_crs()</code>: Wrapper for <code>CRS(projargs)</code> (PROJ4) and
-<code>CRS(wkt)</code> for <code><a href="https://edzer.github.io/sp/reference/Spatial-class.html" class="external-link">sp::Spatial</a></code> objects.</p></li>
 <li><p><code>fm_sp2segment()</code>: <a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> in favour
 of <code><a href="fm_as_segm.html">fm_as_segm()</a></code></p></li>
 </ul></div>
@@ -146,38 +124,6 @@ of <code><a href="fm_as_segm.html">fm_as_segm()</a></code></p></li>
     <p>Finn Lindgren <a href="mailto:Finn.Lindgren@gmail.com">Finn.Lindgren@gmail.com</a></p>
     </div>
 
-    <div class="section level2">
-    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="fm_safe_sp.html">fm_safe_sp</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>  <span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">sp</span><span class="fu">::</span><span class="fu"><a href="https://edzer.github.io/sp/reference/SpatialPoints.html" class="external-link">SpatialPoints</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, <span class="fl">3</span>, <span class="fl">2</span><span class="op">)</span>, proj4string <span class="op">=</span> <span class="fu"><a href="fm_CRS_sp.html">fm_CRS</a></span><span class="op">(</span><span class="st">"sphere"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="fm_CRS_sp.html">fm_CRS</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Coordinate Reference System:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Deprecated Proj.4 representation: +proj=geocent +R=1 +units=m +no_defs </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> WKT2 2019 representation:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> GEODCRS["unknown",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     DATUM["unknown",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         ELLIPSOID["unknown",1,0,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 ID["EPSG",9001]]]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     PRIMEM["Reference meridian",0,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         ANGLEUNIT["degree",0.0174532925199433,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",9122]]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     CS[Cartesian,3],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         AXIS["(X)",geocentricX,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ORDER[1],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 ID["EPSG",9001]]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         AXIS["(Y)",geocentricY,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ORDER[2],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 ID["EPSG",9001]]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         AXIS["(Z)",geocentricZ,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ORDER[3],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 ID["EPSG",9001]]]] </span>
-</code></pre></div>
-    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

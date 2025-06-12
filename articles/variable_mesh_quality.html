@@ -83,24 +83,24 @@
 
     
     
-<p>Updated version of the 2018 blog post <a href="https://www.maths.ed.ac.uk/~flindgre/posts/2018-07-22-spatially-varying-mesh-quality/" class="external-link">Spatially
+<p>Updated version of the 2018 blog post <a href="https://webhomes.maths.ed.ac.uk/~flindgre/posts/2018-07-22-spatially-varying-mesh-quality/" class="external-link">Spatially
 varying mesh quality</a>. Needs <code>fmesher</code> version
 <code>0.3.0.9005</code> or later.</p>
 <div class="section level2">
 <h2 id="fundamentals-of-triangle-mesh-refinement">Fundamentals of triangle mesh refinement<a class="anchor" aria-label="anchor" href="#fundamentals-of-triangle-mesh-refinement"></a>
 </h2>
-<p>The <a href="http://inlabru-org.github.io/fmesher" class="external-link">fmesher</a>
+<p>The <a href="https://inlabru-org.github.io/fmesher/">fmesher</a>
 package has several features that aren’t widely known. The code started
-as an implementation of the triangulation method detailed in <a href="https://www.springer.com/gb/book/9783540332602" class="external-link">Hjelle and Dæhlen,
-“Triangulations and Applications” (2006)</a>, which includes methods for
-spatially varying mesh quality.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;The algorithm is very similar to the one used by
+as an implementation of the triangulation method detailed in <a href="https://link.springer.com/book/10.1007/3-540-33261-8" class="external-link">Hjelle and
+Dæhlen, “Triangulations and Applications” (2006)</a>, which includes
+methods for spatially varying mesh quality.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;The algorithm is very similar to the one used by
 &lt;code&gt;triangle&lt;/code&gt;, available in R via &lt;a href="https://CRAN.R-project.org/package=RTriangle" class="external-link"&gt;Rtriangle&lt;/a&gt;. That
 only handles planar meshes, and had a potentially problematic
 non-commercial license clause. Since we needed spherical triangulations
-for global models, we had to write our own implementation.&lt;/p&gt;'><sup>1</sup></a> Over time, the interface and feature
-improvements focused on robustness and calculating useful mesh
-properties, but the more advanced mesh quality features are still
-there!</p>
+for global models, we had to write our own implementation.&lt;/p&gt;'><sup>1</sup></a> Over time, the
+interface and feature improvements focused on robustness and calculating
+useful mesh properties, but the more advanced mesh quality features are
+still there!</p>
 <p>The algorithm first builds a basic mesh, including any points the
 user specifies, as well as any boundary curves (if no boundary curve is
 given, a default boundary will be added), connecting all the points into

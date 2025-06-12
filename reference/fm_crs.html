@@ -60,7 +60,7 @@ convert crs information to construct a new <code><a href="https://r-spatial.gith
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fm_crs</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, units <span class="op">=</span> <span class="cn">NULL</span>, oblique <span class="op">=</span> <span class="cn">NULL</span>, crsonly <span class="op">=</span> <span class="fu">deprecated</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fm_crs</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, units <span class="op">=</span> <span class="cn">NULL</span>, oblique <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">fm_crs_oblique</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span></span>
@@ -168,10 +168,6 @@ obliqueness parameters of a <code>fm_crs</code> object. When <code>NA</code>, re
 from the object, resulting in a return class of <code><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">sf::st_crs()</a></code>. When
 <code>NULL</code>, pass though any oblique information in the object, returning an
 <code>fm_crs()</code> object if needed.</p></dd>
-
-
-<dt id="arg-crsonly">crsonly<a class="anchor" aria-label="anchor" href="#arg-crsonly"></a></dt>
-<dd><p><a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> since version <code>0.0.1</code>.</p></dd>
 
 
 <dt id="arg-name">name<a class="anchor" aria-label="anchor" href="#arg-name"></a></dt>
