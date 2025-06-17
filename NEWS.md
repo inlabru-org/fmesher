@@ -1,5 +1,8 @@
 # fmesher (development version)
 
+* Rename `fm_mesh_components()` to `fm_components()` and add support for
+  `fm_segm` objects (version `0.4.0.9001`)
+
 # fmesher 0.4.0
 
 ## New features
