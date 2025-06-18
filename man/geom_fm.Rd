@@ -93,7 +93,7 @@ is non-\code{NULL}, e.g. \code{defs = list(loc = list())}. Default argument sett
 \if{html}{\out{<div class="sourceCode">}}\preformatted{... = linewidth = 0.25, color = "grey" # default for triangle mapping
 defs = list(
   int = list(linewidth = 0.5, color = "blue"),
-  bnd = list(linewidth = 1, color = "black"),
+  bnd = list(linewidth = 1, color = "black", alpha = 0),
   loc = list(size = 1, color = "red")
 )
 }\if{html}{\out{</div>}}

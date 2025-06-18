@@ -15,11 +15,12 @@
 #' each component from the lowest numbered triangle whenever a new component is
 #' initiated.}
 #'
-#' @param mesh An [fm_mesh_2d] or [fm_mesh_3d] object
+#' @param x An object to extract components from
+#' @param ... Additional arguments passed to methods
 #' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
-#' @seealso [fm_mesh_2d()], [fm_rcdt_2d()], [fm_mesh_3d()]
+#' @seealso [fm_mesh_2d()], [fm_rcdt_2d()], [fm_mesh_3d()], [fm_segm()]
 #' @export
-fm_components <- function(...) {
+fm_components <- function(x, ...) {
   UseMethod("fm_components")
 }
 
@@ -71,7 +72,8 @@ fm_mesh_components <- function(...) {
 #'     geom_fm(data = mesh3_1, fill = "red", alpha = 0.5) +
 #'     geom_fm(data = mesh3_2, fill = "blue", alpha = 0.5)
 #' }
-fm_components.fm_mesh_2d <- function(mesh, ...) {
+fm_components.fm_mesh_2d <- function(x, ...) {
+  mesh <- x
   vertex <- integer(mesh$n)
   Nt <- nrow(mesh$graph$tv)
   triangle <- integer(Nt)
@@ -159,7 +161,8 @@ fm_components.fm_mesh_2d <- function(mesh, ...) {
 #' ))
 #' # Compute connectivity information:
 #' (conn <- fm_components(m))
-fm_components.fm_mesh_3d <- function(mesh, ...) {
+fm_components.fm_mesh_3d <- function(x, ...) {
+  mesh <- x
   vertex <- integer(mesh$n)
   Nt <- nrow(mesh$graph$tv)
   tetra <- integer(Nt)
@@ -247,17 +250,20 @@ fm_components.fm_mesh_3d <- function(mesh, ...) {
 #' @export
 #' @examples
 #'
-#' segm <- c(fm_segm(
-#'   matrix(c(0, 0, 1, 0, 1, 1, 0, 1), 4, 2, byrow = TRUE),
-#'   matrix(c(1, 2, 2, 3, 3, 4, 4, 1), 4, 2, byrow = TRUE)
-#' ),
-#' fm_segm(
-#'   matrix(c(0, 0, 1, 0, 1, 1, 0, 1), 4, 2, byrow = TRUE),
-#'   matrix(c(3, 4, 1, 2, 2, 3), 3, 2, byrow = TRUE)
-#' ))
+#' segm <- c(
+#'   fm_segm(
+#'     matrix(c(0, 0, 1, 0, 1, 1, 0, 1), 4, 2, byrow = TRUE),
+#'     matrix(c(1, 2, 2, 3, 3, 4, 4, 1), 4, 2, byrow = TRUE)
+#'   ),
+#'   fm_segm(
+#'     matrix(c(0, 0, 1, 0, 1, 1, 0, 1), 4, 2, byrow = TRUE),
+#'     matrix(c(3, 4, 1, 2, 2, 3), 3, 2, byrow = TRUE)
+#'   )
+#' )
 #' # Compute connectivity information:
 #' (conn <- lapply(segm, fm_components))
-fm_components.fm_segm <- function(segm, ...) {
+fm_components.fm_segm <- function(x, ...) {
+  segm <- x
   bnd_seg <- which(segm$is.bnd)
   int_seg <- which(!segm$is.bnd)
   used_seg <- integer(0)
@@ -332,6 +338,7 @@ fm_components.fm_segm <- function(segm, ...) {
       if (length(next_seg) == 0) {
         if (forward) {
           forward <- FALSE
+          local_forward <- TRUE
           curr_seg <- comp_segments[[active_comp]][1L]
           next
         } else {
@@ -391,11 +398,12 @@ fm_components.fm_segm <- function(segm, ...) {
         grp = segm$grp[comp_segments[[x]]],
         crs = fm_crs(segm)
       )
-    }))
+    })
+  )
 }
 
 #' @rdname fm_components
 #' @export
-fm_components.fm_segm_list <- function(segm, ...) {
-  do.call(c, lapply(segm, fm_components))
+fm_components.fm_segm_list <- function(x, ...) {
+  do.call(c, lapply(x, fm_components))
 }

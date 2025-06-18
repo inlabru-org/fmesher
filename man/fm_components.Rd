@@ -9,20 +9,22 @@
 \alias{fm_components.fm_segm_list}
 \title{Compute connected mesh subsets}
 \usage{
-fm_components(...)
+fm_components(x, ...)
 
 fm_mesh_components(...)
 
-\method{fm_components}{fm_mesh_2d}(mesh, ...)
+\method{fm_components}{fm_mesh_2d}(x, ...)
 
-\method{fm_components}{fm_mesh_3d}(mesh, ...)
+\method{fm_components}{fm_mesh_3d}(x, ...)
 
-\method{fm_components}{fm_segm}(segm, ...)
+\method{fm_components}{fm_segm}(x, ...)
 
-\method{fm_components}{fm_segm_list}(segm, ...)
+\method{fm_components}{fm_segm_list}(x, ...)
 }
 \arguments{
-\item{mesh}{An \link{fm_mesh_2d} or \link{fm_mesh_3d} object}
+\item{x}{An object to extract components from}
+
+\item{...}{Additional arguments passed to methods}
 }
 \value{
 A list with elements \code{vertex} and \code{triangle}/\code{tetra}, vectors of
@@ -89,19 +91,21 @@ if (require("ggplot2")) {
 # Compute connectivity information:
 (conn <- fm_components(m))
 
-segm <- c(fm_segm(
-  matrix(c(0, 0, 1, 0, 1, 1, 0, 1), 4, 2, byrow = TRUE),
-  matrix(c(1, 2, 2, 3, 3, 4, 4, 1), 4, 2, byrow = TRUE)
-),
-fm_segm(
-  matrix(c(0, 0, 1, 0, 1, 1, 0, 1), 4, 2, byrow = TRUE),
-  matrix(c(3, 4, 1, 2, 2, 3), 3, 2, byrow = TRUE)
-))
+segm <- c(
+  fm_segm(
+    matrix(c(0, 0, 1, 0, 1, 1, 0, 1), 4, 2, byrow = TRUE),
+    matrix(c(1, 2, 2, 3, 3, 4, 4, 1), 4, 2, byrow = TRUE)
+  ),
+  fm_segm(
+    matrix(c(0, 0, 1, 0, 1, 1, 0, 1), 4, 2, byrow = TRUE),
+    matrix(c(3, 4, 1, 2, 2, 3), 3, 2, byrow = TRUE)
+  )
+)
 # Compute connectivity information:
 (conn <- lapply(segm, fm_components))
 }
 \seealso{
-\code{\link[=fm_mesh_2d]{fm_mesh_2d()}}, \code{\link[=fm_rcdt_2d]{fm_rcdt_2d()}}, \code{\link[=fm_mesh_3d]{fm_mesh_3d()}}
+\code{\link[=fm_mesh_2d]{fm_mesh_2d()}}, \code{\link[=fm_rcdt_2d]{fm_rcdt_2d()}}, \code{\link[=fm_mesh_3d]{fm_mesh_3d()}}, \code{\link[=fm_segm]{fm_segm()}}
 }
 \author{
 Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}

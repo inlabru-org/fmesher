@@ -38,7 +38,7 @@ geom_fm <- function(mapping = NULL, data = NULL, ...) {
 #' ... = linewidth = 0.25, color = "grey" # default for triangle mapping
 #' defs = list(
 #'   int = list(linewidth = 0.5, color = "blue"),
-#'   bnd = list(linewidth = 1, color = "black"),
+#'   bnd = list(linewidth = 1, color = "black", alpha = 0),
 #'   loc = list(size = 1, color = "red")
 #' )
 #' ```
@@ -192,7 +192,7 @@ geom_fm.fm_mesh_2d <- function(mapping = NULL,
   defs_def <- list(
     mesh = list(linewidth = 0.25, color = "grey"),
     int = list(linewidth = 0.5, color = "blue"),
-    bnd = list(linewidth = 1, color = "black"),
+    bnd = list(linewidth = 1, color = "black", alpha = 0),
     loc = list(size = 1, color = "red")
   )
   def <- lapply(
@@ -249,7 +249,6 @@ geom_fm.fm_segm <- function(mapping = NULL,
     data <- fm_transform(data, crs = crs)
   }
 
-  fm_is_bnd(data) <- FALSE # Avoid warning from fm_as_sfc
   segm_sf <- fm_as_sfc(data)
 
   maps <-

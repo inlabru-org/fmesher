@@ -2,6 +2,9 @@
 
 * Rename `fm_mesh_components()` to `fm_components()` and add support for
   `fm_segm` objects (version `0.4.0.9001`)
+* Add `fm_area()` method for `fm_segm` area calculations (version `0.4.0.9002`)
+* Add support for polygon output in `fm_as_sfc()` for closed boundary `fm_segm`
+  objects (version `0.4.0.9002`)
 
 # fmesher 0.4.0
 
