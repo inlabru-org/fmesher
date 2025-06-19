@@ -912,15 +912,16 @@ fm_basis_mesh_1d <- function(mesh,
   } else if (mesh$degree == 2) {
     if (mesh$cyclic) {
       knots <- mesh$loc - mesh$loc[1]
-      loc <- loc - mesh$loc[1]
       inter <- c(0, diff(mesh$interval))
     } else {
       knots <- mesh$loc - mesh$loc[1]
-      loc <- loc - mesh$loc[1]
       inter <- range(knots)
     }
+    if (!inherits(loc, "fm_bary")) {
+      loc <- loc - mesh$loc[1]
+    }
 
-    # Note: If loc is `fm_bary`, it's still valid for this local fm_mesh_1d.
+    # Note: If loc is `fm_bary`, it's also valid for this local fm_mesh_1d.
     info <-
       fm_bary(
         fm_mesh_1d(
@@ -1034,7 +1035,11 @@ fm_basis_mesh_1d <- function(mesh,
       # Convert boundary basis functions to linear
       # First remove anything from above outside the interval, then add back in
       # the appropriate values
-      ok <- (loc[bary_ok] >= inter[1]) & (loc[bary_ok] <= inter[2])
+      if (inherits(loc, "fm_bary")) {
+        ok <- (loc$where[bary_ok, 1] >= 0) & (loc$where[bary_ok, 2] >= 0)
+      } else {
+        ok <- (loc[bary_ok] >= inter[1]) & (loc[bary_ok] <= inter[2])
+      }
       i_ <- i_[ok]
       j_ <- j_[ok]
       x_ <- x_[ok]
@@ -1044,7 +1049,11 @@ fm_basis_mesh_1d <- function(mesh,
       }
 
       # left
-      ok <- (loc < 0) & (simplex[, 1] == 1L)
+      if (inherits(loc, "fm_bary")) {
+        ok <- (loc$where[bary_ok, 2] < 0) & (simplex[, 1] == 1L)
+      } else {
+        ok <- (loc[bary_ok] < 0) & (simplex[, 1] == 1L)
+      }
       i_l <- c(which(bary_ok)[ok], which(bary_ok)[ok])
       j_l <- c(simplex[ok, 1], simplex[ok, 2])
       x_l <- c(
@@ -1057,7 +1066,11 @@ fm_basis_mesh_1d <- function(mesh,
       }
 
       # right
-      ok <- (loc > inter[2]) & (simplex[, 2] == length(knots))
+      if (inherits(loc, "fm_bary")) {
+        ok <- (loc$where[bary_ok, 1] < 0) & (simplex[, 2] == length(knots))
+      } else {
+        ok <- (loc[bary_ok] > inter[2]) & (simplex[, 2] == length(knots))
+      }
       i_r <- c(which(bary_ok)[ok], which(bary_ok)[ok])
       j_r <- c(simplex[ok, 2], simplex[ok, 1]) + 1L
       x_r <- c(
@@ -1176,7 +1189,7 @@ fm_basis_mesh_1d <- function(mesh,
         i = i_,
         j = j_,
         x = weights[i_] * x_d1,
-        dims = c(length(loc), mesh$m)
+        dims = c(NROW(loc), mesh$m)
       )
       info_$d2A <- Matrix::sparseMatrix(
         i = i_,

@@ -5,6 +5,8 @@
 * Add `fm_area()` method for `fm_segm` area calculations (version `0.4.0.9002`)
 * Add support for polygon output in `fm_as_sfc()` for closed boundary `fm_segm`
   objects (version `0.4.0.9002`)
+* Fix indexing bug in `fm_basis.fm_mesh_1d()` for `degree = 2` and `NA`
+  locations (version `0.4.0.9003`)
 
 # fmesher 0.4.0
 
