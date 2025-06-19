@@ -27,7 +27,8 @@ fm_mesh_components(...)
 \item{...}{Additional arguments passed to methods}
 }
 \value{
-A list with elements \code{vertex} and \code{triangle}/\code{tetra}, vectors of
+For \code{fm_mesh_2d} and \code{fm_mesh_3d}, returns a list with elements
+\code{vertex} and \code{triangle}/\code{tetra}, vectors of
 integer labels for which connected component they belong, and \code{info}, a
 \code{data.frame} with columns
 \item{component}{Connected component integer label.}
@@ -38,10 +39,14 @@ Component labels are not comparable across
 different meshes, but some ordering stability is guaranteed by initiating
 each component from the lowest numbered triangle whenever a new component is
 initiated.}
+
+For \code{fm_segm}, returns a list of segments, each with component
+either a single closed loop of segments, or an open segment chain.
 }
 \description{
 Compute subsets of vertices and triangles/tetrahedrons in an
-\link{fm_mesh_2d} or \link{fm_mesh_3d} object that are connected by edges/triangles.
+\link{fm_mesh_2d} or \link{fm_mesh_3d} object that are connected by edges/triangles,
+and split \link{fm_segm} objects into connected components.
 }
 \section{Functions}{
 \itemize{
@@ -91,18 +96,20 @@ if (require("ggplot2")) {
 # Compute connectivity information:
 (conn <- fm_components(m))
 
-segm <- c(
+(segm <- c(
   fm_segm(
     matrix(c(0, 0, 1, 0, 1, 1, 0, 1), 4, 2, byrow = TRUE),
     matrix(c(1, 2, 2, 3, 3, 4, 4, 1), 4, 2, byrow = TRUE)
   ),
   fm_segm(
     matrix(c(0, 0, 1, 0, 1, 1, 0, 1), 4, 2, byrow = TRUE),
-    matrix(c(3, 4, 1, 2, 2, 3), 3, 2, byrow = TRUE)
+    matrix(c(3, 4, 1, 2, 2, 3), 3, 2, byrow = TRUE),
+    is.bnd = FALSE
   )
-)
+))
 # Compute connectivity information:
 (conn <- lapply(segm, fm_components))
+(conn2 <- fm_components(segm))
 }
 \seealso{
 \code{\link[=fm_mesh_2d]{fm_mesh_2d()}}, \code{\link[=fm_rcdt_2d]{fm_rcdt_2d()}}, \code{\link[=fm_mesh_3d]{fm_mesh_3d()}}, \code{\link[=fm_segm]{fm_segm()}}

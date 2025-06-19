@@ -1,19 +1,8 @@
 #' @title Compute connected mesh subsets
 #'
 #' @description Compute subsets of vertices and triangles/tetrahedrons in an
-#'   [fm_mesh_2d] or [fm_mesh_3d] object that are connected by edges/triangles.
-#'
-#' @return A list with elements `vertex` and `triangle`/`tetra`, vectors of
-#' integer labels for which connected component they belong, and `info`, a
-#' `data.frame` with columns
-#' \item{component}{Connected component integer label.}
-#' \item{nV}{The number of vertices in the component.}
-#' \item{nT}{The number of triangles/tetrahedrons in the component.}
-#' \item{area/volume}{The surface area or volume associated with the component.
-#' Component labels are not comparable across
-#' different meshes, but some ordering stability is guaranteed by initiating
-#' each component from the lowest numbered triangle whenever a new component is
-#' initiated.}
+#'   [fm_mesh_2d] or [fm_mesh_3d] object that are connected by edges/triangles,
+#'   and split [fm_segm] objects into connected components.
 #'
 #' @param x An object to extract components from
 #' @param ... Additional arguments passed to methods
@@ -36,6 +25,18 @@ fm_mesh_components <- function(...) {
 }
 
 #' @rdname fm_components
+#' @return For `fm_mesh_2d` and `fm_mesh_3d`, returns a list with elements
+#' `vertex` and `triangle`/`tetra`, vectors of
+#' integer labels for which connected component they belong, and `info`, a
+#' `data.frame` with columns
+#' \item{component}{Connected component integer label.}
+#' \item{nV}{The number of vertices in the component.}
+#' \item{nT}{The number of triangles/tetrahedrons in the component.}
+#' \item{area/volume}{The surface area or volume associated with the component.
+#' Component labels are not comparable across
+#' different meshes, but some ordering stability is guaranteed by initiating
+#' each component from the lowest numbered triangle whenever a new component is
+#' initiated.}
 #' @export
 #' @examples
 #'
@@ -247,21 +248,25 @@ fm_components.fm_mesh_3d <- function(x, ...) {
 
 
 #' @rdname fm_components
+#' @returns For `fm_segm`, returns a list of segments, each with component
+#'   either a single closed loop of segments, or an open segment chain.
 #' @export
 #' @examples
 #'
-#' segm <- c(
+#' (segm <- c(
 #'   fm_segm(
 #'     matrix(c(0, 0, 1, 0, 1, 1, 0, 1), 4, 2, byrow = TRUE),
 #'     matrix(c(1, 2, 2, 3, 3, 4, 4, 1), 4, 2, byrow = TRUE)
 #'   ),
 #'   fm_segm(
 #'     matrix(c(0, 0, 1, 0, 1, 1, 0, 1), 4, 2, byrow = TRUE),
-#'     matrix(c(3, 4, 1, 2, 2, 3), 3, 2, byrow = TRUE)
+#'     matrix(c(3, 4, 1, 2, 2, 3), 3, 2, byrow = TRUE),
+#'     is.bnd = FALSE
 #'   )
-#' )
+#' ))
 #' # Compute connectivity information:
 #' (conn <- lapply(segm, fm_components))
+#' (conn2 <- fm_components(segm))
 fm_components.fm_segm <- function(x, ...) {
   segm <- x
   bnd_seg <- which(segm$is.bnd)
@@ -277,6 +282,7 @@ fm_components.fm_segm <- function(x, ...) {
     active_comp <- active_comp + 1L
     comp_is_closed_loop <- c(comp_is_closed_loop, FALSE)
     curr_seg <- which.min(comp)
+    curr_next_idx <- 2L
     comp_segments[[active_comp]] <- curr_seg
     comp_is_bnd <- c(comp_is_bnd, segm$is.bnd[curr_seg])
     forward <- TRUE
@@ -298,20 +304,8 @@ fm_components.fm_segm <- function(x, ...) {
           next_seg <- min(next_seg)
         }
       } else {
-        if (local_forward) {
-          if (forward) {
-            v0 <- segm$idx[curr_seg, 2]
-          } else {
-            v0 <- segm$idx[curr_seg, 1]
-          }
-        } else {
-          if (forward) {
-            v0 <- segm$idx[curr_seg, 1]
-          } else {
-            v0 <- segm$idx[curr_seg, 2]
-          }
-        }
-        local_forward <- TRUE
+        v0 <- segm$idx[curr_seg, curr_next_idx]
+        curr_next_idx <- 2L
         next_seg <- intersect(
           setdiff(
             setdiff(which(segm$idx[, 1] == v0), curr_seg),
@@ -320,7 +314,7 @@ fm_components.fm_segm <- function(x, ...) {
           int_seg
         )
         if (length(next_seg) == 0) {
-          local_forward <- FALSE
+          curr_next_idx <- 1L
           next_seg <- intersect(
             setdiff(
               setdiff(which(segm$idx[, 2] == v0), curr_seg),
@@ -338,7 +332,7 @@ fm_components.fm_segm <- function(x, ...) {
       if (length(next_seg) == 0) {
         if (forward) {
           forward <- FALSE
-          local_forward <- TRUE
+          curr_next_idx <- 1L
           curr_seg <- comp_segments[[active_comp]][1L]
           next
         } else {

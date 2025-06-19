@@ -1,7 +1,7 @@
 Package: fmesher
 Type: Package
 Title: Triangle Meshes and Related Geometry Tools
-Version: 0.4.0.9003
+Version: 0.4.0.9004
 Authors@R: c(
   person("Finn", "Lindgren", email = "finn.lindgren@gmail.com",
          role = c("aut", "cre", "cph"),
@@ -33,13 +33,14 @@ Imports:
     grDevices,
     lifecycle,
     Matrix,
+    Rcpp,
     rlang,
     sf,
+    splancs,
     stats,
     tibble,
     utils,
-    withr,
-    Rcpp
+    withr
 Suggests:
     geometry,
     ggplot2,
@@ -51,7 +52,6 @@ Suggests:
     rgl,
     rmarkdown,
     sp (>= 1.6-1),
-    splancs,
     gsl
 URL: https://inlabru-org.github.io/fmesher/, https://github.com/inlabru-org/fmesher
 BugReports: https://github.com/inlabru-org/fmesher/issues

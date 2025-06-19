@@ -7,6 +7,10 @@
   objects (version `0.4.0.9002`)
 * Fix indexing bug in `fm_basis.fm_mesh_1d()` for `degree = 2` and `NA`
   locations (version `0.4.0.9003`)
+* Make `fm_nonconvex_hull()` a unified function for "fm" and "sf" construction
+  methods and output formats, with default method "fm" and output format "sf",
+  making `fm_nonconvex_hull_inla()` deprecated.
+  (version `0.4.0.9004`)
 
 # fmesher 0.4.0
 
