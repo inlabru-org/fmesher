@@ -145,9 +145,9 @@ Default equal to <code>convex</code></p></dd>
 
 
 <dt id="arg-resolution">resolution<a class="anchor" aria-label="anchor" href="#arg-resolution"></a></dt>
-<dd><p>integer; The internal computation resolution.  A warning will be
-issued when this needs to be increased for higher accuracy, with the
-required resolution stated. For <code>method="fm"</code> only.</p></dd>
+<dd><p>integer; The internal computation resolution.  A warning
+will be issued when this needs to be increased for higher accuracy, with
+the required resolution stated. For <code>method="fm"</code> only.</p></dd>
 
 
 <dt id="arg-eps-eps-rel">eps, eps_rel<a class="anchor" aria-label="anchor" href="#arg-eps-eps-rel"></a></dt>
@@ -204,8 +204,8 @@ by closing (dilation + erosion) by <code>concave</code>.</p>
 <p>The <code>...</code> arguments are passed on to <code>fm_nonconvex_hull_fm()</code>
 or <code>fm_nonconvex_hull_sf()</code>, depending on the <code>method</code> argument.</p></li>
 <li><p><code>fm_nonconvex_hull_fm()</code>: <code>fmesher</code> method for <code>fm_nonconvex_hull()</code>,
-which uses the <code><a href="https://rsbivand.github.io/splancs/reference/nndistF.html" class="external-link">splancs::nndistF()</a></code> function to compute
-nearest-neighbour distances.</p></li>
+which uses the <code><a href="https://rsbivand.github.io/splancs/reference/nndistF.html" class="external-link">splancs::nndistF()</a></code> function to compute nearest-neighbour
+distances.</p></li>
 <li><p><code>fm_nonconvex_hull_sf()</code>: Differs from <code>sf::st_buffer(x, convex)</code> followed by
 <code><a href="https://r-spatial.github.io/sf/reference/geos_unary.html" class="external-link">sf::st_concave_hull()</a></code> (available from GEOS 3.11)
 in how the amount of allowed concavity is controlled.</p></li>
