@@ -186,6 +186,33 @@ fm_nonconvex_hull_inla <- function(x,
                                    eps_rel = NULL,
                                    crs = NULL,
                                    ...) {
+  lifecycle::deprecate_soft(
+    "0.4.0.9002",
+    "fm_nonconvex_hull_inla()",
+    'fm_nonconvex_hull(method = "fm")'
+  )
+  fm_nonconvex_hull(
+    x,
+    convex = convex,
+    concave = concave,
+    resolution = 40,
+    eps = eps,
+    eps_rel = eps_rel,
+    crs = crs,
+    ...,
+    format = "fm",
+    method = "fm"
+  )
+}
+
+fm_nonconvex_hull_fm <- function(x,
+                                 convex = -0.15,
+                                 concave = convex,
+                                 resolution = 40,
+                                 eps = NULL,
+                                 eps_rel = NULL,
+                                 crs = NULL,
+                                 ...) {
   stopifnot(!is.null(x))
   if (inherits(x, c("SpatialPoints", "SpatialPointsDataFrame"))) {
     fm_safe_sp(force = TRUE)
@@ -287,7 +314,9 @@ fm_nonconvex_hull_inla <- function(x,
 
   segm.closing$crs <- crs
 
-  fm_as_segm(segm.closing)
+  result <- fm_as_segm(segm.closing)
+  fm_is_bnd(result) <- TRUE
+  result
 }
 
 
@@ -404,7 +433,9 @@ fm_nonconvex_hull_inla_basic <- function(x, convex = -0.15, resolution = 40,
 #' are with respect to disks with the specified radii.
 #'
 #' @param x A spatial object
-#' @param x A spatial object
+#' @param format character specifying the output format; "sf" (default) or "fm"
+#' @param method character specifying the construction method; "sf" (default)
+#'   or "fm"
 #' @param convex numeric vector; How much to extend
 #' @param concave numeric vector; The minimum allowed reentrant curvature.
 #'   Default equal to `convex`
@@ -416,8 +447,8 @@ fm_nonconvex_hull_inla_basic <- function(x, convex = -0.15, resolution = 40,
 #' @param ... Arguments passed on to the [fm_nonconvex_hull()] sub-methods
 #' @details When `convex`, `concave`, or `dTolerance` are negative,
 #' `fm_diameter * abs(...)` is used instead.
-#' @returns `fm_nonconvex_hull()` returns an extended object as an `sfc`
-#' polygon object (regardless of the `x` class).
+#' @returns `fm_nonconvex_hull()` returns an extended object as an `sfc` polygon
+#'   object (if `format = "sf"`) or an [fm_segm] object (if `format = "fm")
 #' @references Gonzalez and Woods (1992), Digital Image Processing
 #' @seealso [fm_nonconvex_hull_inla()]
 #' @export
@@ -427,7 +458,7 @@ fm_nonconvex_hull_inla_basic <- function(x, convex = -0.15, resolution = 40,
 #' out <- fm_nonconvex_hull(inp, convex = 1)
 #' plot(out)
 #' points(inp, pch = 20)
-fm_nonconvex_hull <- function(x, ...) {
+fm_nonconvex_hull <- function(x, ..., format = "sf", method = "sf") {
   UseMethod("fm_nonconvex_hull")
 }
 
@@ -437,12 +468,33 @@ fm_nonconvex_hull <- function(x, ...) {
 #' in how the amount of allowed concavity is controlled.
 #' @export
 fm_nonconvex_hull.sfc <- function(x,
-                                  convex = -0.15,
-                                  concave = convex,
-                                  preserveTopology = TRUE,
-                                  dTolerance = NULL,
-                                  crs = fm_crs(x),
-                                  ...) {
+                                  ...,
+                                  format = "sf",
+                                  method = "sf") {
+  format <- match.arg(format, c("sf", "fm"))
+  method <- match.arg(method, c("sf", "fm"))
+  if (method == "sf") {
+    result <- fm_nonconvex_hull_sf(x, ...)
+    if (format == "fm") {
+      result <- fm_as_segm(result)
+    }
+  } else {
+    result <- fm_nonconvex_hull_fm(x, ...)
+    if (format == "sf") {
+      result <- fm_as_sfc(result)
+    }
+  }
+  result
+}
+
+#' @rdname fm_nonconvex_hull
+fm_nonconvex_hull_sf <- function(x,
+                                 convex = -0.15,
+                                 concave = convex,
+                                 preserveTopology = TRUE,
+                                 dTolerance = NULL,
+                                 crs = fm_crs(x),
+                                 ...) {
   diameter_bound <- fm_diameter(x)
   scale_fun <- function(val) {
     if (val < 0) {
@@ -522,7 +574,9 @@ fm_extensions <- function(x,
                           convex = -0.15,
                           concave = convex,
                           dTolerance = NULL,
-                          ...) {
+                          ...,
+                          format = "sf",
+                          method = "sf") {
   if (any(convex < 0) || any(concave < 0) || any(dTolerance < 0)) {
     diameter_bound <- fm_diameter(x)
   }
@@ -538,6 +592,10 @@ fm_extensions <- function(x,
   }
   convex <- scale_fun(convex)
   concave <- scale_fun(concave)
+  if (method != "sf") {
+    # fm_nonconvex_hull_fm() does not support dTolerance
+    warning("method='fm' is not fully supported by fm_extensions() yet.")
+  }
   if (is.null(dTolerance)) {
     dTolerance <- pmin(convex, concave) / 40
   } else {
@@ -552,7 +610,9 @@ fm_extensions <- function(x,
         convex = convex[k],
         concave = concave[k],
         dTolerance = dTolerance[k],
-        ...
+        ...,
+        format = format,
+        method = method
       )
     }
   )
@@ -563,24 +623,28 @@ fm_extensions <- function(x,
 
 #' @rdname fm_nonconvex_hull
 #' @export
-fm_nonconvex_hull.matrix <- function(x, ...) {
-  fm_nonconvex_hull.sfc(sf::st_multipoint(x), ...)
+fm_nonconvex_hull.matrix <- function(x, ..., format = "sf", method = "sf") {
+  fm_nonconvex_hull.sfc(sf::st_multipoint(x), ...,
+                        format = format, method = method)
 }
 
 #' @rdname fm_nonconvex_hull
 #' @export
-fm_nonconvex_hull.sf <- function(x, ...) {
-  fm_nonconvex_hull.sfc(sf::st_geometry(x), ...)
+fm_nonconvex_hull.sf <- function(x, ..., format = "sf", method = "sf") {
+  fm_nonconvex_hull.sfc(sf::st_geometry(x), ...,
+                        format = format, method = method)
 }
 
 #' @rdname fm_nonconvex_hull
 #' @export
-fm_nonconvex_hull.Spatial <- function(x, ...) {
-  fm_nonconvex_hull.sfc(sf::st_as_sfc(x), ...)
+fm_nonconvex_hull.Spatial <- function(x, ..., format = "sf", method = "sf") {
+  fm_nonconvex_hull.sfc(sf::st_as_sfc(x), ...,
+                        format = format, method = method)
 }
 
 #' @rdname fm_nonconvex_hull
 #' @export
-fm_nonconvex_hull.sfg <- function(x, ...) {
-  fm_nonconvex_hull.sfc(sf::st_sfc(x), ...)
+fm_nonconvex_hull.sfg <- function(x, ..., format = "sf", method = "sf") {
+  fm_nonconvex_hull.sfc(sf::st_sfc(x), ...,
+                        format = format, method = method)
 }

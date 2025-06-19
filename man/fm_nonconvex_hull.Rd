@@ -3,6 +3,7 @@
 \name{fm_nonconvex_hull}
 \alias{fm_nonconvex_hull}
 \alias{fm_nonconvex_hull.sfc}
+\alias{fm_nonconvex_hull_sf}
 \alias{fm_extensions}
 \alias{fm_nonconvex_hull.matrix}
 \alias{fm_nonconvex_hull.sf}
@@ -10,9 +11,11 @@
 \alias{fm_nonconvex_hull.sfg}
 \title{Compute an extension of a spatial object}
 \usage{
-fm_nonconvex_hull(x, ...)
+fm_nonconvex_hull(x, ..., format = "sf", method = "sf")
 
-\method{fm_nonconvex_hull}{sfc}(
+\method{fm_nonconvex_hull}{sfc}(x, ..., format = "sf", method = "sf")
+
+fm_nonconvex_hull_sf(
   x,
   convex = -0.15,
   concave = convex,
@@ -22,20 +25,33 @@ fm_nonconvex_hull(x, ...)
   ...
 )
 
-fm_extensions(x, convex = -0.15, concave = convex, dTolerance = NULL, ...)
+fm_extensions(
+  x,
+  convex = -0.15,
+  concave = convex,
+  dTolerance = NULL,
+  ...,
+  format = "sf",
+  method = "sf"
+)
 
-\method{fm_nonconvex_hull}{matrix}(x, ...)
+\method{fm_nonconvex_hull}{matrix}(x, ..., format = "sf", method = "sf")
 
-\method{fm_nonconvex_hull}{sf}(x, ...)
+\method{fm_nonconvex_hull}{sf}(x, ..., format = "sf", method = "sf")
 
-\method{fm_nonconvex_hull}{Spatial}(x, ...)
+\method{fm_nonconvex_hull}{Spatial}(x, ..., format = "sf", method = "sf")
 
-\method{fm_nonconvex_hull}{sfg}(x, ...)
+\method{fm_nonconvex_hull}{sfg}(x, ..., format = "sf", method = "sf")
 }
 \arguments{
 \item{x}{A spatial object}
 
 \item{...}{Arguments passed on to the \code{\link[=fm_nonconvex_hull]{fm_nonconvex_hull()}} sub-methods}
+
+\item{format}{character specifying the output format; "sf" (default) or "fm"}
+
+\item{method}{character specifying the construction method; "sf" (default)
+or "fm"}
 
 \item{convex}{numeric vector; How much to extend}
 
@@ -51,8 +67,8 @@ give approximately 4 or more subsegments per circular quadrant.}
 \item{crs}{Options crs object for the resulting polygon}
 }
 \value{
-\code{fm_nonconvex_hull()} returns an extended object as an \code{sfc}
-polygon object (regardless of the \code{x} class).
+\code{fm_nonconvex_hull()} returns an extended object as an \code{sfc} polygon
+object (if \code{format = "sf"}) or an \link{fm_segm} object (if `format = "fm")
 
 \code{fm_extensions()} returns a list of \code{sfc} objects.
 }
