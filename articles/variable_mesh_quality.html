@@ -30,7 +30,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0.9003</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0.9004</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -332,7 +332,7 @@ criterion:</p>
 <span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="variable_mesh_quality_files/figure-html/unnamed-chunk-10-1.png" width="480"></p>
 <p>The <code>sd.dev</code> range has clearly decreased (the maximum
-absolute deviation from 1 decreased from 0.0817 to 0.0815), and there is
+absolute deviation from 1 decreased from 0.0994 to 0.0989), and there is
 no longer a band of high values near the upper right corner.</p>
 <p>The number of additional vertices needed to accomplish this is small,
 as seen from the mesh object summaries:</p>
@@ -340,19 +340,19 @@ as seen from the mesh object summaries:</p>
 <code class="sourceCode R"><span><span class="va">mesh5</span></span>
 <span><span class="co">#&gt; fm_mesh_2d object:</span></span>
 <span><span class="co">#&gt;   Manifold:  R2</span></span>
-<span><span class="co">#&gt;   V / E / T: 1668 / 4675 / 3008</span></span>
+<span><span class="co">#&gt;   V / E / T: 1633 / 4567 / 2935</span></span>
 <span><span class="co">#&gt;   Euler char.:   1</span></span>
-<span><span class="co">#&gt;   Constraints:   Boundary: 326 boundary edges (1 group: 1), Interior: 0 edges</span></span>
-<span><span class="co">#&gt;   Bounding box: ( 0.001053993,10.999246962) x ( 0.001053993,10.999246962)</span></span>
-<span><span class="co">#&gt;   Basis d.o.f.:  1668</span></span>
+<span><span class="co">#&gt;   Constraints:   Boundary: 329 boundary edges (1 group: 1), Interior: 0 edges</span></span>
+<span><span class="co">#&gt;   Bounding box: (7.471455e-04,1.099925e+01) x (7.471455e-04,1.099925e+01)</span></span>
+<span><span class="co">#&gt;   Basis d.o.f.:  1633</span></span>
 <span><span class="va">mesh6</span></span>
 <span><span class="co">#&gt; fm_mesh_2d object:</span></span>
 <span><span class="co">#&gt;   Manifold:  R2</span></span>
-<span><span class="co">#&gt;   V / E / T: 2117 / 6021 / 3905</span></span>
+<span><span class="co">#&gt;   V / E / T: 2009 / 5692 / 3684</span></span>
 <span><span class="co">#&gt;   Euler char.:   1</span></span>
-<span><span class="co">#&gt;   Constraints:   Boundary: 327 boundary edges (1 group: 1), Interior: 0 edges</span></span>
-<span><span class="co">#&gt;   Bounding box: ( 0.001053993,10.999246962) x ( 0.001053993,10.999246962)</span></span>
-<span><span class="co">#&gt;   Basis d.o.f.:  2117</span></span></code></pre></div>
+<span><span class="co">#&gt;   Constraints:   Boundary: 332 boundary edges (1 group: 1), Interior: 0 edges</span></span>
+<span><span class="co">#&gt;   Bounding box: (7.471455e-04,1.099925e+01) x (7.471455e-04,1.099925e+01)</span></span>
+<span><span class="co">#&gt;   Basis d.o.f.:  2009</span></span></code></pre></div>
 </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

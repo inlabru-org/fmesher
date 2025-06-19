@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0.9003</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0.9004</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -95,11 +95,11 @@ Lindgren</h4>
 <span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; fm_mesh_2d object:</span></span>
 <span><span class="co">#&gt;   Manifold:  R2</span></span>
-<span><span class="co">#&gt;   V / E / T: 880 / 2598 / 1719</span></span>
+<span><span class="co">#&gt;   V / E / T: 911 / 2685 / 1775</span></span>
 <span><span class="co">#&gt;   Euler char.:   1</span></span>
-<span><span class="co">#&gt;   Constraints:   Boundary: 39 boundary edges (1 group: 1), Interior: 111 interior edges (1 group: 1)</span></span>
-<span><span class="co">#&gt;   Bounding box: (-11.963110,  8.246925) x (-5.522181, 5.499657)</span></span>
-<span><span class="co">#&gt;   Basis d.o.f.:  880</span></span></code></pre></div>
+<span><span class="co">#&gt;   Constraints:   Boundary: 45 boundary edges (1 group: 1), Interior: 127 interior edges (1 group: 1)</span></span>
+<span><span class="co">#&gt;   Bounding box: (-11.976144,  8.248637) x (-5.528888, 5.506054)</span></span>
+<span><span class="co">#&gt;   Basis d.o.f.:  911</span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">(</span><span class="va">mesh1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_mesh_1d.html">fm_mesh_1d</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">7</span>, <span class="fl">10</span><span class="op">)</span>,</span>
@@ -125,14 +125,14 @@ Lindgren</h4>
 <span><span class="va">bary</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_bary.html">fm_bary</a></span><span class="op">(</span><span class="va">mesh2</span>, loc <span class="op">=</span> <span class="va">pts</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">bary</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 2</span></span></span>
-<span><span class="co">#&gt;   index where[,1]  [,2]  [,3]</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>   817    0.047<span style="text-decoration: underline;">2</span> 0.581 0.371</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>  <span style="text-decoration: underline;">1</span>403    0.139  0.722 0.139</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>   982    0.432  0.138 0.430</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>  <span style="text-decoration: underline;">1</span>096    0.201  0.372 0.427</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>   966    0.213  0.369 0.419</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>   155    0.444  0.174 0.382</span></span>
+<span><span class="co">#&gt;   index where[,1]  [,2]   [,3]</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>  <span style="text-decoration: underline;">1</span>369     0.515 0.124 0.361 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>   491     0.818 0.157 0.025<span style="text-decoration: underline;">4</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>  <span style="text-decoration: underline;">1</span>521     0.679 0.234 0.087<span style="text-decoration: underline;">6</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>  <span style="text-decoration: underline;">1</span>275     0.465 0.144 0.392 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>  <span style="text-decoration: underline;">1</span>054     0.785 0.158 0.056<span style="text-decoration: underline;">9</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>  <span style="text-decoration: underline;">1</span>532     0.191 0.230 0.579</span></span>
 <span><span class="co"># How many points are outside the mesh?</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">bary</span><span class="op">$</span><span class="va">index</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 2</span></span>
@@ -158,7 +158,7 @@ Lindgren</h4>
 <span><span class="va">field</span> <span class="op">&lt;-</span> <span class="va">mesh2</span><span class="op">$</span><span class="va">loc</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span></span>
 <span><span class="va">value</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_evaluate.html">fm_evaluate</a></span><span class="op">(</span><span class="va">evaluator</span>, field <span class="op">=</span> <span class="va">field</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">pts</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span> <span class="op">-</span> <span class="va">value</span><span class="op">)</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 4.332298e-14</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 4.604303e-14</span></span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pts1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2</span>, <span class="fl">12</span>, length.out <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span>
 <span></span>
