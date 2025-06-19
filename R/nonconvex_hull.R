@@ -305,14 +305,14 @@ fm_extensions <- function(x,
 
 
 #' @describeIn fm_nonconvex_hull `fmesher` method for `fm_nonconvex_hull()`,
-#' which uses the `splancs::nndistF()` function to compute
-#' nearest-neighbour distances.
-#' @param resolution integer; The internal computation resolution.  A warning will be
-#' issued when this needs to be increased for higher accuracy, with the
-#' required resolution stated. For `method="fm"` only.
+#'   which uses the `splancs::nndistF()` function to compute nearest-neighbour
+#'   distances.
+#' @param resolution integer; The internal computation resolution.  A warning
+#'   will be issued when this needs to be increased for higher accuracy, with
+#'   the required resolution stated. For `method="fm"` only.
 #' @param eps,eps_rel The polygonal curve simplification tolerances used for
-#' simplifying the resulting boundary curve.  See [fm_simplify_helper()] for
-#' details. For `method="fm"` only.
+#'   simplifying the resulting boundary curve.  See [fm_simplify_helper()] for
+#'   details. For `method="fm"` only.
 #' @export
 fm_nonconvex_hull_fm <- function(x,
                                  convex = -0.15,
@@ -785,8 +785,8 @@ fm_nonconvex_hull_inla <- function(x,
 }
 
 #' @export
-#' @describeIn fm_nonconvex_hull_inla Special method [fm_nonconvex_hull_fm()] method for
-#'   `concave = 0`. Requires `splancs::nndistF()`.
+#' @describeIn fm_nonconvex_hull_inla Special method [fm_nonconvex_hull_fm()]
+#'   method for `concave = 0`. Requires `splancs::nndistF()`.
 ## Based on an idea from Elias Teixeira Krainski
 #' @inheritParams fm_nonconvex_hull
 #' @keywords internal

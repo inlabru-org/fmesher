@@ -69,9 +69,9 @@ or "sf"}
 \item{concave}{numeric vector; The minimum allowed reentrant curvature.
 Default equal to \code{convex}}
 
-\item{resolution}{integer; The internal computation resolution.  A warning will be
-issued when this needs to be increased for higher accuracy, with the
-required resolution stated. For \code{method="fm"} only.}
+\item{resolution}{integer; The internal computation resolution.  A warning
+will be issued when this needs to be increased for higher accuracy, with
+the required resolution stated. For \code{method="fm"} only.}
 
 \item{eps, eps_rel}{The polygonal curve simplification tolerances used for
 simplifying the resulting boundary curve.  See \code{\link[=fm_simplify_helper]{fm_simplify_helper()}} for
@@ -128,8 +128,8 @@ The \code{...} arguments are passed on to \code{fm_nonconvex_hull_fm()}
 or \code{fm_nonconvex_hull_sf()}, depending on the \code{method} argument.
 
 \item \code{fm_nonconvex_hull_fm()}: \code{fmesher} method for \code{fm_nonconvex_hull()},
-which uses the \code{splancs::nndistF()} function to compute
-nearest-neighbour distances.
+which uses the \code{splancs::nndistF()} function to compute nearest-neighbour
+distances.
 
 \item \code{fm_nonconvex_hull_sf()}: Differs from \code{sf::st_buffer(x, convex)} followed by
 \code{sf::st_concave_hull()} (available from GEOS 3.11)

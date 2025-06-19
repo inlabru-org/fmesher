@@ -32,9 +32,9 @@ fm_nonconvex_hull_inla_basic(
 \item{concave}{numeric vector; The minimum allowed reentrant curvature.
 Default equal to \code{convex}}
 
-\item{resolution}{integer; The internal computation resolution.  A warning will be
-issued when this needs to be increased for higher accuracy, with the
-required resolution stated. For \code{method="fm"} only.}
+\item{resolution}{integer; The internal computation resolution.  A warning
+will be issued when this needs to be increased for higher accuracy, with
+the required resolution stated. For \code{method="fm"} only.}
 
 \item{eps, eps_rel}{The polygonal curve simplification tolerances used for
 simplifying the resulting boundary curve.  See \code{\link[=fm_simplify_helper]{fm_simplify_helper()}} for
@@ -58,8 +58,8 @@ expecting \code{fm_segm} output) or \code{format = "sf"}.
 }
 \section{Functions}{
 \itemize{
-\item \code{fm_nonconvex_hull_inla_basic()}: Special method \code{\link[=fm_nonconvex_hull_fm]{fm_nonconvex_hull_fm()}} method for
-\code{concave = 0}. Requires \code{splancs::nndistF()}.
+\item \code{fm_nonconvex_hull_inla_basic()}: Special method \code{\link[=fm_nonconvex_hull_fm]{fm_nonconvex_hull_fm()}}
+method for \code{concave = 0}. Requires \code{splancs::nndistF()}.
 
 }}
 \section{INLA compatibility}{
