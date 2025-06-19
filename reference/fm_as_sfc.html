@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0.9003</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -91,14 +91,15 @@
 
 <dt id="arg-multi">multi<a class="anchor" aria-label="anchor" href="#arg-multi"></a></dt>
 <dd><p>logical; if <code>TRUE</code>, attempt to a
-<code>sfc_MULTIPOLYGON/LINESTRING/POINT</code>, otherwise a set of
+<code>sfc_MULTIPOLYGON/LINESTRING/POINT/GEOMETRYCOLLECTION</code>, otherwise a set of
 <code>sfc_POLYGON/LINESTRING/POINT</code>. Default <code>FALSE</code></p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
 
-<ul><li><p><code>fm_as_sfc</code>: An <code>sfc_MULTIPOLYGON/LINESTRING/POINT</code> or
+<ul><li><p><code>fm_as_sfc</code>: An
+<code>sfc_MULTIPOLYGON/LINESTRING/POINT/GEOMETRYCOLLECTION</code> or
 <code>sfc_POLYGON/LINESTRING/POINT</code> object</p></li>
 </ul></div>
     <div class="section level2">
@@ -165,18 +166,15 @@
 <span class="r-msg co"><span class="r-pr">#&gt;</span> POINT Z (-5.08812 -1.151174 0)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> POINT Z (-4.710559 -1.781097 0)</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Boundary edge conversion currently only supports (multi)linestring output,</span></span></span>
-<span class="r-in"><span><span class="co"># and does not convert to polygons.</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="fu">fm_as_sfc</span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span>, format <span class="op">=</span> <span class="st">"bnd"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Boundary edge conversion to polygons is supported from version 0.4.0.9002:</span></span></span>
+<span class="r-in"><span><span class="fu">fm_as_sfc</span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span>, format <span class="op">=</span> <span class="st">"bnd"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geometry set for 1 feature </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: LINESTRING</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: POLYGON</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Dimension:     XYZ</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: -5.331027 ymin: -3.998161 xmax: 4.061656 ymax: 5.415609</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> z_range:       zmin: 0 zmax: 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> CRS:           NA</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> LINESTRING Z (-4.991262 1.478543 0, -5.287832 0...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> POLYGON Z ((-4.991262 1.478543 0, -5.287832 0.6...</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

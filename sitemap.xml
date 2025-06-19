@@ -16,6 +16,7 @@
 <url><loc>https://inlabru-org.github.io/fmesher/reference/call-stack.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_CRS_sp.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_CRSargs.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_area.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_as_collect.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_as_fm.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_as_lattice_2d.html</loc></url>
@@ -36,6 +37,7 @@
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_block.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_centroids.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_collect.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_components.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_contains.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_cprod.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_crs-set.html</loc></url>
@@ -66,7 +68,6 @@
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_mesh_2d.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_mesh_2d_map.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_mesh_3d.html</loc></url>
-<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_mesh_components.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_mesh_intersection.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_nonconvex_hull.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_nonconvex_hull_inla.html</loc></url>
