@@ -16,57 +16,58 @@ fm_contains(x, y, ...)
 \method{fm_contains}{sfc}(x, y, ..., type = c("centroid", "vertex"))
 }
 \arguments{
-\item{x}{geometry (typically an \code{sf} or \code{sp::SpatialPolygons} object) for the queries}
+\item{x}{geometry (typically an \code{sf} or \code{sp::SpatialPolygons} object) for the
+queries}
 
-\item{y}{an \code{\link[=fm_mesh_2d]{fm_mesh_2d()}} or \code{inla.mesh} object}
+\item{y}{an \code{\link[=fm_mesh_2d]{fm_mesh_2d()}} object}
 
 \item{\dots}{Passed on to other methods}
 
-\item{type}{the query type; either \code{'centroid'} (default, for triangle centroids),
-or \code{'vertex'} (for mesh vertices)}
+\item{type}{the query type; either \code{'centroid'} (default, for triangle
+centroids), or \code{'vertex'} (for mesh vertices)}
 }
 \value{
 List of vectors of triangle indices (when \code{type} is \code{'centroid'}) or
-vertex indices (when \code{type} is \code{'vertex'}). The list has one entry per row of the \code{sf} object.
-Use \code{unlist(fm_contains(...))} if the combined union is needed.
+vertex indices (when \code{type} is \code{'vertex'}). The list has one entry per row
+of the \code{sf} object. Use \code{unlist(fm_contains(...))} if the combined union is
+needed.
 }
 \description{
-Wrapper for the \code{\link[sf:geos_binary_pred]{sf::st_contains()}} (previously \code{sp::over()}) method to find triangle centroids
-or vertices inside \code{sf} or \code{sp} polygon objects
+Wrapper for the \code{\link[sf:geos_binary_pred]{sf::st_contains()}} (previously \code{sp::over()}) method to find
+triangle centroids or vertices inside \code{sf} or \code{sp} polygon objects
 }
 \examples{
-if (TRUE &&
-  fm_safe_sp()) {
-  # Create a polygon and a mesh
-  obj <- sp::SpatialPolygons(
-    list(sp::Polygons(
-      list(sp::Polygon(rbind(
-        c(0, 0),
-        c(50, 0),
-        c(50, 50),
-        c(0, 50)
-      ))),
-      ID = 1
-    )),
-    proj4string = fm_CRS("longlat_globe")
-  )
-  mesh <- fm_rcdt_2d_inla(globe = 2, crs = fm_crs("sphere"))
+# Create a polygon and a mesh
+obj <- sf::st_sfc(
+  sf::st_polygon(
+    list(rbind(
+      c(0, 0),
+      c(50, 0),
+      c(50, 50),
+      c(0, 50),
+      c(0, 0)
+    ))
+  ),
+  crs = fm_crs("longlat_globe")
+)
+mesh <- fm_rcdt_2d_inla(globe = 2, crs = fm_crs("sphere"))
 
-  ## 3 vertices found in the polygon
-  fm_contains(obj, mesh, type = "vertex")
+## 2 vertices found in the polygon
+fm_contains(obj, mesh, type = "vertex")
 
-  ## 3 triangles found in the polygon
-  fm_contains(obj, mesh)
+## 3 triangles found in the polygon
+fm_contains(obj, mesh)
 
-  ## Multiple transformations can lead to slightly different results due to edge cases
-  ## 4 triangles found in the polygon
-  fm_contains(
-    obj,
-    fm_transform(mesh, crs = fm_crs("mollweide_norm"))
-  )
-}
+## Multiple transformations can lead to slightly different results
+## due to edge cases:
+## 4 triangles found in the polygon
+fm_contains(
+  obj,
+  fm_transform(mesh, crs = fm_crs("mollweide_norm"))
+)
 
 }
 \author{
-Haakon Bakka, \email{bakka@r-inla.org}, and Finn Lindgren \email{finn.lindgren@gmail.com}
+Haakon Bakka, \href{mailto:bakka@r-inla.org}{bakka@r-inla.org}, and Finn Lindgren
+\href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}
 }

@@ -17,10 +17,12 @@ fm_covariance(Q, A1 = NULL, A2 = NULL, partial = FALSE)
 fm_sample(n, Q, mu = 0, constr = NULL)
 }
 \arguments{
-\item{x}{A mesh object, e.g. from \code{fm_mesh_1d()} or \code{fm_mesh_2d()}.}
+\item{x}{A mesh object, e.g. from \code{fm_mesh_1d()}, \code{fm_mesh_2d()}, or
+other object with supporting \code{\link[=fm_fem]{fm_fem()}} and \code{\link[=fm_manifold_dim]{fm_manifold_dim()}} methods.}
 
 \item{alpha}{The SPDE operator order. The resulting smoothness index
-is \code{nu = alpha - dim / 2}.}
+is \code{nu = alpha - dim / 2}. Supports integers 1, 2, 3, etc. that give
+\code{nu > 0}.}
 
 \item{rho}{The Matérn range parameter
 (scale parameter \code{kappa = sqrt(8 * nu) / rho})}
@@ -34,7 +36,8 @@ is \code{nu = alpha - dim / 2}.}
 
 \item{Q}{A precision matrix}
 
-\item{A1, A2}{Matrices, typically obtained from \code{\link[=fm_basis]{fm_basis()}} and/or \code{\link[=fm_block]{fm_block()}}.}
+\item{A1, A2}{Matrices, typically obtained from \code{\link[=fm_basis]{fm_basis()}} and/or
+\code{\link[=fm_block]{fm_block()}}.}
 
 \item{partial}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} If \code{TRUE}, compute the
 partial inverse of \code{Q}, i.e. the elements of the inverse corresponding to
@@ -49,10 +52,10 @@ is reimplemented.)}
 \code{A} and \code{e}. Should only be used for a small number of exact constraints.}
 }
 \value{
-\code{fm_matern_sample()} returns a matrix, where each column is a sampled
-field. If \code{loc} is \code{NULL}, the \code{fm_dof(mesh)} basis weights are given.
-Otherwise, the evaluated field at the \code{nrow(loc)} locations \code{loc} are given
-(from version \verb{0.1.4.9001})
+\code{fm_matern_sample()} returns a matrix, where each column is a
+sampled field. If \code{loc} is \code{NULL}, the \code{fm_dof(mesh)} basis weights are
+given. Otherwise, the evaluated field at the \code{nrow(loc)} locations \code{loc}
+are given (from version \verb{0.1.4.9001})
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}

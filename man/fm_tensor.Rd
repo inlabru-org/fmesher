@@ -18,7 +18,8 @@ A \code{fm_tensor} or \code{fm_tensor_list} object. Elements of \code{fm_tensor}
 \item{manifold}{character; manifold type summary. Regular subset of Rd "Rd",
 if all function spaces have type "R",
 torus connected "Td" if all function spaces have type "S", and otherwise "Md"
-In all cases, \code{d} is the sum of the manifold dimensions of the function spaces.}
+In all cases, \code{d} is the sum of the manifold dimensions of the function
+spaces.}
 }
 }
 \description{
@@ -40,14 +41,19 @@ str(fm_fem(m))
 }
 \seealso{
 Other object creation and conversion: 
+\code{\link{fm_as_collect}()},
 \code{\link{fm_as_fm}()},
 \code{\link{fm_as_lattice_2d}()},
+\code{\link{fm_as_lattice_Nd}()},
 \code{\link{fm_as_mesh_1d}()},
 \code{\link{fm_as_mesh_2d}()},
+\code{\link{fm_as_mesh_3d}()},
 \code{\link{fm_as_segm}()},
 \code{\link{fm_as_sfc}()},
 \code{\link{fm_as_tensor}()},
+\code{\link{fm_collect}()},
 \code{\link{fm_lattice_2d}()},
+\code{\link{fm_lattice_Nd}()},
 \code{\link{fm_mesh_1d}()},
 \code{\link{fm_mesh_2d}()},
 \code{\link{fm_segm}()},

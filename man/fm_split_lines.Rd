@@ -3,17 +3,14 @@
 \name{fm_split_lines}
 \alias{fm_split_lines}
 \alias{fm_split_lines.fm_mesh_2d}
-\alias{fm_split_lines.inla.mesh}
 \title{Split lines at triangle edges}
 \usage{
 fm_split_lines(mesh, ...)
 
 \method{fm_split_lines}{fm_mesh_2d}(mesh, segm, ...)
-
-\method{fm_split_lines}{inla.mesh}(mesh, ...)
 }
 \arguments{
-\item{mesh}{An \code{fm_mesh_2d} or \code{inla.mesh} object}
+\item{mesh}{An \link{fm_mesh_2d} object}
 
 \item{...}{Unused.}
 
@@ -30,7 +27,10 @@ and filter out segment of length zero.
 }
 \examples{
 mesh <- fm_mesh_2d(
-  boundary = fm_segm(rbind(c(0, 0), c(1, 0), c(1, 1), c(0, 1)), is.bnd = TRUE)
+  boundary = fm_segm(
+    rbind(c(0, 0), c(1, 0), c(1, 1), c(0, 1)),
+    is.bnd = TRUE
+  )
 )
 splitter <- fm_segm(rbind(c(0.8, 0.2), c(0.2, 0.8)))
 segm_split <- fm_split_lines(mesh, splitter)
@@ -40,5 +40,5 @@ lines(splitter)
 points(segm_split$loc)
 }
 \author{
-Finn Lindgren \email{finn.lindgren@gmail.com}
+Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}
 }

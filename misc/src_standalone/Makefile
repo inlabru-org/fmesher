@@ -13,7 +13,7 @@ FC = gfortran
 FCEXTRAFLAGS = -fno-second-underscore
 # FLAGS= -mfpmath=sse -msse2
 FLAGS= -O3 -funroll-loops -pipe -Wall -Wextra \
-  -Wsign-compare -Wundef -Wimplicit-fallthrough -fdiagnostics-color
+  -Wsign-compare -Wundef -Wimplicit-fallthrough -fdiagnostics-color -pedantic
 LD = $(CXX)
 INSTALL = install
 RSYNC = rsync
@@ -95,7 +95,7 @@ FMESHER_TEST = fmesher_test
 FMESHER_TEST2 = treetest
 
 OBJ = $(ADD_X_O) predicates.o mesh.o meshc.o vector.o ioutils.o cmdline.o \
-  basis.o locator.o trees.o fmesher_helpers.o
+  basis.o locator.o trees.o fmesher_helpers.o mesh3.o
 CMDLINE_CH = cmdline.h cmdline.c
 all: $(FMESHER)
 

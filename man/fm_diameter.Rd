@@ -7,13 +7,12 @@
 \alias{fm_diameter.sfg}
 \alias{fm_diameter.sfc}
 \alias{fm_diameter.fm_lattice_2d}
-\alias{fm_diameter.fm_segm}
-\alias{fm_diameter.fm_mesh_2d}
 \alias{fm_diameter.fm_mesh_1d}
-\alias{fm_diameter.inla.mesh.1d}
-\alias{fm_diameter.inla.mesh.segment}
-\alias{fm_diameter.inla.mesh.lattice}
-\alias{fm_diameter.inla.mesh}
+\alias{fm_diameter.fm_mesh_2d}
+\alias{fm_diameter.fm_segm}
+\alias{fm_diameter.fm_mesh_3d}
+\alias{fm_diameter.fm_tensor}
+\alias{fm_diameter.fm_collect}
 \title{Diameter bound for a geometric object}
 \usage{
 fm_diameter(x, ...)
@@ -28,19 +27,17 @@ fm_diameter(x, ...)
 
 \method{fm_diameter}{fm_lattice_2d}(x, ...)
 
-\method{fm_diameter}{fm_segm}(x, ...)
+\method{fm_diameter}{fm_mesh_1d}(x, ...)
 
 \method{fm_diameter}{fm_mesh_2d}(x, ...)
 
-\method{fm_diameter}{fm_mesh_1d}(x, ...)
+\method{fm_diameter}{fm_segm}(x, ...)
 
-\method{fm_diameter}{inla.mesh.1d}(x, ...)
+\method{fm_diameter}{fm_mesh_3d}(x, ...)
 
-\method{fm_diameter}{inla.mesh.segment}(x, ...)
+\method{fm_diameter}{fm_tensor}(x, ...)
 
-\method{fm_diameter}{inla.mesh.lattice}(x, ...)
-
-\method{fm_diameter}{inla.mesh}(x, ...)
+\method{fm_diameter}{fm_collect}(x, ...)
 }
 \arguments{
 \item{x}{A point set as an \eqn{n\times d}{n x d} matrix, or an
@@ -48,22 +45,24 @@ fm_diameter(x, ...)
 
 \item{\dots}{Additional parameters passed on to the submethods.}
 
-\item{manifold}{Character string specifying the manifold type. Default is to
-treat the point set with Euclidean \eqn{R^d} metrics. Use
-\code{manifold="S2"} for great circle distances on the unit sphere (this is
-set automatically for \code{fm_fmesh_2d} objects).}
+\item{manifold}{Character string specifying the manifold type. Default for
+\code{matrix} input is to treat the point set with Euclidean
+\eqn{\mathbb{R}^d}{R^d} metrics.
+Use \code{manifold="S2"} for great circle distances on a sphere centred at the
+origin.}
 }
 \value{
 A scalar, upper bound for the diameter of the convex hull of the
-point set.
+point set. For multi-domain spaces (e.g. \code{\link[=fm_tensor]{fm_tensor()}} and
+\code{\link[=fm_collect]{fm_collect()}}), a vector of upper bounds for each domain is returned.
 }
 \description{
-Find an upper bound to the convex hull of a point set
+Find an upper bound to the convex hull of a point set or function space
 }
 \examples{
 
 fm_diameter(matrix(c(0, 1, 1, 0, 0, 0, 1, 1), 4, 2))
 }
 \author{
-Finn Lindgren \href{mailto:finn.lindgren@gmail.com}{finn.lindgren@gmail.com}
+Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}
 }

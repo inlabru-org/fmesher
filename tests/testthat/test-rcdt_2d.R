@@ -31,9 +31,12 @@ test_that("Flat CDT works", {
   min.angle <-
     180 / pi * min(acos(pmin(1, pmax(
       -1, c(
-        -rowSums(edges[[1]] * edges[[2]]) / rowSums(edges[[1]]^2)^0.5 / rowSums(edges[[2]]^2)^0.5,
-        -rowSums(edges[[2]] * edges[[3]]) / rowSums(edges[[2]]^2)^0.5 / rowSums(edges[[3]]^2)^0.5,
-        -rowSums(edges[[3]] * edges[[1]]) / rowSums(edges[[3]]^2)^0.5 / rowSums(edges[[1]]^2)^0.5
+        -rowSums(edges[[1]] * edges[[2]]) /
+          (rowSums(edges[[1]]^2)^0.5 * rowSums(edges[[2]]^2)^0.5),
+        -rowSums(edges[[2]] * edges[[3]]) /
+          (rowSums(edges[[2]]^2)^0.5 * rowSums(edges[[3]]^2)^0.5),
+        -rowSums(edges[[3]] * edges[[1]]) /
+          (rowSums(edges[[3]]^2)^0.5 * rowSums(edges[[1]]^2)^0.5)
       )
     ))))
   max.edge <- max(rowSums(do.call(rbind, edges)^2)^0.5)
@@ -85,4 +88,65 @@ test_that("fm_lattice_2d ordering", {
   expect_equal(latt1$x, latt2$x)
   expect_equal(latt1$y, latt2$y)
   expect_equal(latt1$loc, latt2$loc)
+})
+
+
+test_that("interior should be single object", {
+  # create boundary polygon
+  bnd <- sf::st_sfc(sf::st_polygon(list(as.matrix(
+    data.frame(x = c(0, 0, 10, 10, 0), y = c(0, 10, 10, 0, 0))
+  ))))
+  # create interior polygon
+  interior <- sf::st_sfc(sf::st_polygon(list(as.matrix(
+    data.frame(x = c(3, 3, 7, 7, 3), y = c(0, 5, 5, 0, 0))
+  ))))
+
+  # simple mesh
+  expect_error(fm_mesh_2d_inla(boundary = bnd, max.edge = 1), NA)
+  # with interior
+  expect_error(
+    fm_mesh_2d_inla(
+      boundary = bnd,
+      interior = interior,
+      max.edge = 1
+    ),
+    NA
+  )
+  # extended boundary
+  expect_error(fm_mesh_2d_inla(boundary = bnd, max.edge = c(1, 2)), NA)
+  # or extended by running non-convex for the boundary
+  expect_error(fm_mesh_2d_inla(
+    boundary = list(bnd, fm_nonconvex_hull(bnd)),
+    max.edge = 1
+  ), NA)
+
+  # combining extended and interior segment should not fail
+  expect_error(
+    fm_mesh_2d_inla(boundary = bnd, interior = interior, max.edge = c(1, 2)),
+    NA
+  )
+  expect_error(
+    fm_mesh_2d_inla(
+      boundary = list(bnd, fm_nonconvex_hull(bnd)),
+      interior = interior, max.edge = 1
+    ),
+    NA
+  )
+
+  # List interior supported from 0.2.0.9016
+  expect_error(
+    fm_mesh_2d_inla(
+      boundary = bnd,
+      interior = list(interior),
+      max.edge = c(1, 2)
+    ),
+    NA
+  )
+  expect_error(
+    fm_mesh_2d_inla(
+      boundary = list(bnd, fm_nonconvex_hull(bnd)),
+      interior = list(interior), max.edge = 1
+    ),
+    NA
+  )
 })

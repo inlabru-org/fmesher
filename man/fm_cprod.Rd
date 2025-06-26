@@ -7,21 +7,21 @@
 fm_cprod(..., na.rm = NULL, .blockwise = FALSE)
 }
 \arguments{
-\item{...}{\code{data.frame}, \code{sf}, or \code{SpatialPointsDataFrame} objects, each one
-usually obtained by a call to an \code{\link[=fm_int]{fm_int()}} method.}
+\item{...}{\code{tibble}, \code{data.frame}, \code{sf}, or \code{SpatialPointsDataFrame} objects,
+each one usually obtained by a call to an \code{\link[=fm_int]{fm_int()}} method.}
 
 \item{na.rm}{logical; if \code{TRUE}, the rows with weight \code{NA} from the
-non-overlapping full_join will be removed; if \code{FALSE}, set the undefined weights to \code{NA}.
-If \code{NULL} (default), act as \code{TRUE}, but warn if any elements needed removing.}
+non-overlapping full_join will be removed; if \code{FALSE}, set the undefined
+weights to \code{NA}. If \code{NULL} (default), act as \code{TRUE}, but warn if any
+elements needed removing.}
 
-\item{.blockwise}{logical; if \code{FALSE}, computes full tensor product integration.
-If \code{TRUE}, computes within-block tensor product integration (used internally
-by \code{\link[=fm_int]{fm_int()}}).
-Default \code{FALSE}}
+\item{.blockwise}{logical; if \code{FALSE}, computes full tensor product
+integration. If \code{TRUE}, computes within-block tensor product integration
+(used internally by \code{\link[=fm_int]{fm_int()}}). Default \code{FALSE}}
 }
 \value{
-A \code{data.frame}, \code{sf}, or \code{SpatialPointsDataFrame} of multidimensional
-integration points and their weights
+A \code{data.frame}, \code{sf}, or \code{SpatialPointsDataFrame} of
+multidimensional integration points and their weights
 }
 \description{
 Calculates the groupwise cross product of integration points in different
@@ -30,10 +30,7 @@ If the object defining points in a particular dimension has no
 weights attached to it all weights are assumed to be 1.
 }
 \examples{
-\donttest{
-# fm_int needs INLA
-if (TRUE &&
-  require("ggplot2")) {
+if (require("ggplot2")) {
   # Create integration points in dimension 'myDim' and 'myDiscreteDim'
   ips1 <- fm_int(fm_mesh_1d(1:20),
     rbind(c(0, 3), c(3, 8)),
@@ -48,7 +45,6 @@ if (TRUE &&
   ggplot(ips) +
     geom_point(aes(myDim, myDiscreteDim, size = weight)) +
     scale_size_area()
-}
 }
 
 }

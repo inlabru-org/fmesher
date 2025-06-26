@@ -5,14 +5,17 @@
 # @aliases st_signed_area
 # @export
 # @param sfg A POLYGON sfg object
-# @return Returns the signed area.  Negative values indicate
+# @returns Returns the signed area.  Negative values indicate
 # anti-clockwise winding direction.
 # @author Andrew Seaton \email{Andrew.Seaton.2@@glasgow.ac.uk}
-# @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+# @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 # @keywords internal
 
 st_signed_area <- function(sfg) {
-  warning("st_signed_area is not fully implemented, and should be avoided until it is.")
+  warning("st_signed_area is not fully implemented,",
+    " and should be avoided until it is.",
+    immediate. = TRUE
+  )
   if (!inherits(sfg, c("POLYGON", "sfg"))) {
     stop("Signed area only implemented for POLYGON sfg objects")
   }
@@ -21,7 +24,7 @@ st_signed_area <- function(sfg) {
   i <- seq_len(nrow(coords) - 1)
   edges <- cbind(coords[i, , drop = FALSE], coords[i + 1, , drop = FALSE])
   area <- sum((edges[, 3] - edges[, 1]) * (edges[, 2] + edges[, 4]) / 2)
-  return(area)
+  area
 }
 
 
@@ -34,9 +37,9 @@ st_signed_area <- function(sfg) {
 # @aliases st_check_polygon
 # @export
 # @param sfg A POLYGON sfg object
-# @return LOGICAL; `TRUE` if the `sfg` holes are entirely inside the outer ring, and
-# are disjoint, otherwise `FALSE`. When `FALSE`, the attribute `Message` is set
-# to a character vector describing the detected reasons.
+# @returns logical; `TRUE` if the `sfg` holes are entirely inside the outer
+#   ring, and are disjoint, otherwise `FALSE`. When `FALSE`, the attribute
+#   `Message` is set to a character vector describing the detected reasons.
 # @keywords internal
 
 st_check_polygon <- function(sfg) {

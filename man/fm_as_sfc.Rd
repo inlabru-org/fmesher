@@ -2,9 +2,7 @@
 % Please edit documentation in R/sf_mesh.R
 \name{fm_as_sfc}
 \alias{fm_as_sfc}
-\alias{fm_as_sfc.inla.mesh}
 \alias{fm_as_sfc.fm_mesh_2d}
-\alias{fm_as_sfc.inla.mesh.segment}
 \alias{fm_as_sfc.fm_segm}
 \alias{fm_as_sfc.sfc}
 \alias{fm_as_sfc.sf}
@@ -12,11 +10,7 @@
 \usage{
 fm_as_sfc(x, ...)
 
-\method{fm_as_sfc}{inla.mesh}(x, ..., multi = FALSE)
-
-\method{fm_as_sfc}{fm_mesh_2d}(x, ..., multi = FALSE)
-
-\method{fm_as_sfc}{inla.mesh.segment}(x, ..., multi = FALSE)
+\method{fm_as_sfc}{fm_mesh_2d}(x, ..., format = NULL, multi = FALSE)
 
 \method{fm_as_sfc}{fm_segm}(x, ..., multi = FALSE)
 
@@ -29,16 +23,17 @@ fm_as_sfc(x, ...)
 
 \item{...}{Arguments passed on to other methods}
 
-\item{multi}{logical; if \code{TRUE}, attempt to a \code{sfc_MULTIPOLYGON}, otherwise
-a set of \code{sfc_POLYGON}. Default \code{FALSE}}
+\item{format}{One of "mesh", "int", "bnd", or "loc". Default
+"mesh".}
+
+\item{multi}{logical; if \code{TRUE}, attempt to a
+\code{sfc_MULTIPOLYGON/LINESTRING/POINT}, otherwise a set of
+\code{sfc_POLYGON/LINESTRING/POINT}. Default \code{FALSE}}
 }
 \value{
 \itemize{
-\item \code{fm_as_sfc}: An \code{sfc_MULTIPOLYGON} or \code{sfc_POLYGON} object
-}
-
-\itemize{
-\item \code{fm_as_sfc}: An \code{sfc_MULTIPOLYGON} or \code{sfc_POLYGON} object
+\item \code{fm_as_sfc}: An \code{sfc_MULTIPOLYGON/LINESTRING/POINT} or
+\code{sfc_POLYGON/LINESTRING/POINT} object
 }
 }
 \description{
@@ -46,11 +41,7 @@ Conversion methods from mesh related objects to sfc
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{fm_as_sfc(inla.mesh)}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-
 \item \code{fm_as_sfc(fm_mesh_2d)}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-
-\item \code{fm_as_sfc(inla.mesh.segment)}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 \item \code{fm_as_sfc(fm_segm)}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
@@ -58,17 +49,29 @@ Conversion methods from mesh related objects to sfc
 \examples{
 fm_as_sfc(fmexample$mesh)
 fm_as_sfc(fmexample$mesh, multi = TRUE)
+fm_as_sfc(fmexample$mesh, format = "loc")
+
+# Boundary edge conversion currently only supports (multi)linestring output,
+# and does not convert to polygons.
+suppressWarnings(
+  fm_as_sfc(fmexample$mesh, format = "bnd")
+)
 
 }
 \seealso{
 Other object creation and conversion: 
+\code{\link{fm_as_collect}()},
 \code{\link{fm_as_fm}()},
 \code{\link{fm_as_lattice_2d}()},
+\code{\link{fm_as_lattice_Nd}()},
 \code{\link{fm_as_mesh_1d}()},
 \code{\link{fm_as_mesh_2d}()},
+\code{\link{fm_as_mesh_3d}()},
 \code{\link{fm_as_segm}()},
 \code{\link{fm_as_tensor}()},
+\code{\link{fm_collect}()},
 \code{\link{fm_lattice_2d}()},
+\code{\link{fm_lattice_Nd}()},
 \code{\link{fm_mesh_1d}()},
 \code{\link{fm_mesh_2d}()},
 \code{\link{fm_segm}()},

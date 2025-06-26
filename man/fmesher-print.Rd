@@ -4,10 +4,15 @@
 \alias{fmesher-print}
 \alias{print.fm_segm}
 \alias{print.fm_segm_list}
+\alias{print.fm_list}
 \alias{print.fm_mesh_2d}
+\alias{print.fm_mesh_3d}
 \alias{print.fm_mesh_1d}
 \alias{print.fm_bbox}
 \alias{print.fm_tensor}
+\alias{print.fm_collect}
+\alias{print.fm_lattice_2d}
+\alias{print.fm_lattice_Nd}
 \alias{print.fm_crs}
 \alias{print.fm_CRS}
 \title{Print objects}
@@ -16,13 +21,23 @@
 
 \method{print}{fm_segm_list}(x, ..., digits = NULL, verbose = FALSE, newline = TRUE)
 
+\method{print}{fm_list}(x, ..., digits = NULL, verbose = FALSE, newline = TRUE)
+
 \method{print}{fm_mesh_2d}(x, ..., digits = NULL, verbose = FALSE)
+
+\method{print}{fm_mesh_3d}(x, ..., digits = NULL, verbose = FALSE)
 
 \method{print}{fm_mesh_1d}(x, ..., digits = NULL, verbose = FALSE)
 
 \method{print}{fm_bbox}(x, ..., digits = NULL, verbose = TRUE, newline = TRUE)
 
 \method{print}{fm_tensor}(x, ..., digits = NULL, verbose = FALSE)
+
+\method{print}{fm_collect}(x, ..., digits = NULL, verbose = FALSE)
+
+\method{print}{fm_lattice_2d}(x, ..., digits = NULL, verbose = FALSE)
+
+\method{print}{fm_lattice_Nd}(x, ..., digits = NULL, verbose = FALSE)
 
 \method{print}{fm_crs}(x, ...)
 
@@ -34,7 +49,8 @@
 \item{\dots}{further arguments passed to or from other methods.}
 
 \item{digits}{a positive integer indicating how many significant digits are
-to be used for numeric and complex x. The default, NULL, uses \code{getOption("digits")}.}
+to be used for numeric and complex x. The default, NULL, uses
+\code{getOption("digits")}.}
 
 \item{verbose}{logical}
 

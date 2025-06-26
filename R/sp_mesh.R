@@ -9,7 +9,13 @@
 #' @param closed logical; whether to treat a point sequence as a closed polygon.
 #' Default: `FALSE`
 fm_as_segm.matrix <-
-  function(x, reverse = FALSE, grp = NULL, is.bnd = FALSE, crs = NULL, closed = FALSE, ...) {
+  function(x,
+           reverse = FALSE,
+           grp = NULL,
+           is.bnd = FALSE,
+           crs = NULL,
+           closed = FALSE,
+           ...) {
     loc <- x
     n <- dim(loc)[1L]
     if (closed) {
@@ -24,7 +30,7 @@ fm_as_segm.matrix <-
       }
     }
     fm_segm(
-      loc = loc, idx = idx, grp = grp, is.bnd = is.bnd, crs = fm_CRS(crs)
+      loc = loc, idx = idx, grp = grp, is.bnd = is.bnd, crs = fm_crs(crs)
     )
   }
 
@@ -78,7 +84,7 @@ fm_as_segm.Line <-
       idx <- seq_len(n)
     }
     fm_segm(
-      loc = loc, idx = idx, grp = grp, is.bnd = FALSE, crs = fm_CRS(crs)
+      loc = loc, idx = idx, grp = grp, is.bnd = FALSE, crs = fm_crs(crs)
     )
   }
 
@@ -164,7 +170,7 @@ fm_as_segm.Polygons <-
   function(x, join = TRUE, crs = NULL, grp = NULL, ...) {
     segm <- as.list(lapply(
       x@Polygons,
-      function(x) fm_as_segm(x, crs = fm_CRS(crs), ...)
+      function(x) fm_as_segm(x, crs = fm_crs(crs), ...)
     ))
     if (join) {
       if (missing(grp)) {
@@ -196,7 +202,7 @@ fm_as_segm.Polygon <-
       loc = loc,
       idx = idx,
       is.bnd = TRUE,
-      crs = fm_CRS(crs)
+      crs = fm_crs(crs)
     )
   }
 
@@ -205,8 +211,8 @@ fm_as_segm.Polygon <-
 
 
 #' @export
-#' @describeIn fmesher-deprecated `r lifecycle::badge("deprecated")` in favour of
-#' [fm_as_segm()]
+#' @describeIn fmesher-deprecated `r lifecycle::badge("deprecated")` in favour
+#'   of [fm_as_segm()]
 fm_sp2segment <- function(...) {
   fm_as_segm(...)
 }

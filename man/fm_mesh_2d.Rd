@@ -45,7 +45,9 @@ relative to the approximate data diameter (default=-0.10???)}
 \item{boundary}{one or more (as list) of \code{\link[=fm_segm]{fm_segm()}} objects, or objects
 supported by \code{\link[=fm_as_segm]{fm_as_segm()}}}
 
-\item{interior}{one object supported by \code{\link[=fm_as_segm]{fm_as_segm()}}}
+\item{interior}{one object supported by \code{\link[=fm_as_segm]{fm_as_segm()}}, or (from version
+\verb{0.2.0.9016}) a list of such objects.  If a list, the objects are joined
+into a single object.}
 
 \item{max.edge}{The largest allowed triangle edge length.  One or two
 values.}
@@ -74,7 +76,7 @@ result after each step of the multi-step domain extension algorithm.}
 \item{crs}{An optional \code{\link[=fm_crs]{fm_crs()}}, \code{sf::crs} or \code{sp::CRS} object}
 }
 \value{
-An \code{inla.mesh} object.
+An \code{fm_mesh_2d} object.
 }
 \description{
 Make a 2D mesh object
@@ -105,20 +107,25 @@ fm_mesh_2d_inla(boundary = fm_extensions(cbind(2, 1), convex = 1, 2))
 \code{\link[=fm_nonconvex_hull]{fm_nonconvex_hull()}}, \code{\link[=fm_extensions]{fm_extensions()}}, \code{\link[=fm_refine]{fm_refine()}}
 
 Other object creation and conversion: 
+\code{\link{fm_as_collect}()},
 \code{\link{fm_as_fm}()},
 \code{\link{fm_as_lattice_2d}()},
+\code{\link{fm_as_lattice_Nd}()},
 \code{\link{fm_as_mesh_1d}()},
 \code{\link{fm_as_mesh_2d}()},
+\code{\link{fm_as_mesh_3d}()},
 \code{\link{fm_as_segm}()},
 \code{\link{fm_as_sfc}()},
 \code{\link{fm_as_tensor}()},
+\code{\link{fm_collect}()},
 \code{\link{fm_lattice_2d}()},
+\code{\link{fm_lattice_Nd}()},
 \code{\link{fm_mesh_1d}()},
 \code{\link{fm_segm}()},
 \code{\link{fm_simplify}()},
 \code{\link{fm_tensor}()}
 }
 \author{
-Finn Lindgren \email{finn.lindgren@gmail.com}
+Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}
 }
 \concept{object creation and conversion}

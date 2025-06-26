@@ -37,18 +37,40 @@
 #' @param free.clamped If `TRUE`, for `'free'` boundaries, clamp the
 #' basis functions to the interval endpoints.
 #' @param \dots Additional options, currently unused.
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @returns An `fm_mesh_1d` object
 #' @export
 #' @family object creation and conversion
 #' @examples
 #' if (require("ggplot2")) {
-#'   m <- fm_mesh_1d(c(1, 2, 3, 5, 8, 10),
+#'   m1 <- fm_mesh_1d(c(1, 2, 3, 5, 8, 10),
+#'     boundary = c("neumann", "free")
+#'   )
+#'   weights <- c(2, 3, 6, 3, 4, 7)
+#'   ggplot() +
+#'     geom_fm(data = m1, xlim = c(0.5, 11), weights = weights)
+#'
+#'   m2 <- fm_mesh_1d(c(1, 2, 3, 5, 8, 10),
 #'     boundary = c("neumann", "free"),
 #'     degree = 2
 #'   )
 #'   ggplot() +
-#'     geom_fm(data = m, xlim = c(0.5, 10.5))
+#'     geom_fm(data = m2, xlim = c(0.5, 11), weights = weights)
+#'
+#'   # The knot interpretation is different for degree=2 and degree=1 meshes:
+#'   ggplot() +
+#'     geom_fm(data = m1, xlim = c(0.5, 11), weights = weights) +
+#'     geom_fm(data = m2, xlim = c(0.5, 11), weights = weights)
+#'
+#'   # The `mid` values are the representative basis function midpoints,
+#'   # and can be used to connect degree=2 and degree=1 mesh interpretations:
+#'   m1b <- fm_mesh_1d(m2$mid,
+#'     boundary = c("neumann", "free"),
+#'     degree = 1
+#'   )
+#'   ggplot() +
+#'     geom_fm(data = m2, xlim = c(0.5, 11), weights = weights) +
+#'     geom_fm(data = m1b, xlim = c(0.5, 11), weights = weights)
 #' }
 #'
 fm_mesh_1d <- function(loc,
@@ -73,12 +95,15 @@ fm_mesh_1d <- function(loc,
   loc.orig <- loc
   if (cyclic) {
     if (diff(interval) < diff(range(loc))) {
-      warning("Given cyclic interval is narrower than the range of knot locations.")
+      warning(
+        "Given cyclic interval is narrower than the range of knot locations."
+      )
     }
     loc_1 <- min(loc)
     if (loc_1 < interval[1]) {
       # Keep the point to the left of the interval, but adjacent
-      loc_1 <- (loc_1 - interval[1]) %% diff(interval) - diff(interval) + interval[1]
+      loc_1 <- (loc_1 - interval[1]) %% diff(interval) - diff(interval) +
+        interval[1]
     }
     if (loc_1 > interval[2]) {
       # Move the point into the interval
@@ -87,16 +112,28 @@ fm_mesh_1d <- function(loc,
     loc <- sort(unique((loc - loc_1) %% diff(interval))) + loc_1
   } else {
     if (loc[1] < interval[1]) {
-      warning("fm_mesh_1d: All 'loc' should be >= interval[1]. Moving to interval edge.")
+      warning(
+        "fm_mesh_1d: All 'loc' should be >= interval[1].",
+        " Moving to interval edge."
+      )
     }
     if (loc[2] > interval[2]) {
-      warning("fm_mesh_1d: All 'loc' should be <= interval[2]. Moving to interval edge.")
+      warning(
+        "fm_mesh_1d: All 'loc' should be <= interval[2].",
+        " Moving to interval edge."
+      )
     }
     if (min(loc) > interval[1]) {
-      warning("fm_mesh_1d: 'min(loc)' should be == interval[1]. Adding knot at interval edge.")
+      warning(
+        "fm_mesh_1d: 'min(loc)' should be == interval[1].",
+        " Adding knot at interval edge."
+      )
     }
     if (max(loc) < interval[2]) {
-      warning("fm_mesh_1d: 'max(loc)' should be == interval[2]. Adding knot at interval edge.")
+      warning(
+        "fm_mesh_1d: 'max(loc)' should be == interval[2].",
+        " Adding knot at interval edge."
+      )
     }
     loc <-
       sort(unique(c(
@@ -109,8 +146,8 @@ fm_mesh_1d <- function(loc,
 
   n <- length(loc)
 
-  if ((degree < 0) || (degree > 2)) {
-    stop(paste("'degree' must be 0, 1, or 2.  'degree=",
+  if ((degree < 0) || (degree > 3)) {
+    stop(paste("'degree' must be 0, 1, 2, 3.  'degree=",
       degree,
       "' is not supported.",
       sep = ""
@@ -123,17 +160,26 @@ fm_mesh_1d <- function(loc,
 
 
   ## Number of basis functions
-  if (degree == 0) {
-    basis.reduction <- c(0, 1, 0, 1 / 2) ## neu, dir, free, cyclic
-  } else if (degree == 1) {
-    basis.reduction <- c(0, 1, 0, 1 / 2) ## neu, dir, free, cyclic
+  stopifnot(degree >= 0)
+  stopifnot(degree <= 3)
+  m_free <- n + c(0, 0, 1, 2)
+  # How many more basis functions at each end, compared with the number of
+  # knots; for cyclic, is only applied once:
+  m_adjust <- list(
+    c(0, -1, 0, 0), ## neu, dir, free, cyclic
+    c(0, -1, 0, 0), ## neu, dir, free, cyclic
+    c(-1, -1, 0, -1), ## neu, dir, free, cyclic
+    c(-1, -1, 0, -2) ## neu, dir, free, cyclic
+  )
+  if (cyclic) {
+    m <- m_free[degree + 1] + m_adjust[[degree + 1]][4]
   } else {
-    basis.reduction <- c(1, 1, 0, 1)
+    i1 <- pmatch(boundary[1], boundary.options)
+    i2 <- pmatch(boundary[2], boundary.options)
+    m <- m_free[degree + 1] +
+      m_adjust[[degree + 1]][i1] +
+      m_adjust[[degree + 1]][i2]
   }
-  m <- (n + cyclic + (degree == 2) * 1
-    - basis.reduction[pmatch(boundary[1], boundary.options)]
-    - basis.reduction[pmatch(boundary[2], boundary.options)])
-  ## if (m < 1+max(1,degree)) {
   if (m < 1L) {
     stop("Degree ", degree,
       " meshes must have at least ", 1L,
@@ -149,24 +195,40 @@ fm_mesh_1d <- function(loc,
       mid <- mid[-1]
     }
     if (boundary[2] == "dirichlet") {
-      mid <- mid[-(m + 1)]
+      mid <- mid[-length(mid)]
+    }
+  } else if (degree == 3) {
+    mid <- loc
+    if (boundary[1] == "dirichlet") {
+      mid <- mid[-1]
+    }
+    if (boundary[2] == "dirichlet") {
+      mid <- mid[-length(mid)]
     }
   } else { ## degree==2
     if (cyclic) {
       mid <- (loc + c(loc[-1], interval[2])) / 2
     } else {
-      mid <- c(loc[1], (loc[-n] + loc[-1]) / 2, loc[n])
+      mid <- (loc[-n] + loc[-1]) / 2
       mid <-
         switch(boundary[1],
-          neumann = mid[-1],
-          dirichlet = mid[-1],
-          free = mid
+          neumann = mid,
+          dirichlet = mid,
+          free = if (free.clamped[1]) {
+            c(loc[1], mid)
+          } else {
+            c(loc[1] - diff(loc[1:2]) / 2, mid)
+          }
         )
       mid <-
         switch(boundary[2],
-          neumann = mid[-(m + 1)],
-          dirichlet = mid[-(m + 1)],
-          free = mid
+          neumann = mid,
+          dirichlet = mid,
+          free = if (free.clamped[2]) {
+            c(mid, loc[n])
+          } else {
+            c(mid, loc[n] + diff(loc[(n - 1):n]) / 2)
+          }
         )
     }
   }
@@ -189,16 +251,16 @@ fm_mesh_1d <- function(loc,
       class = c("fm_mesh_1d", "inla.mesh.1d")
     )
 
-  if (degree < 2) {
+  if (degree != 2) {
     mesh$idx$loc <-
-      fm_bary(mesh, loc.orig, method = "nearest")$t[, 1]
+      fm_bary(mesh, loc.orig, method = "nearest")$index
   } else {
     if (length(mid) >= 2) {
       mesh$idx$loc <-
         fm_bary(fm_mesh_1d(mid, degree = 0),
           loc.orig,
           method = "nearest"
-        )$t[, 1]
+        )$index
     } else {
       mesh$idx$loc <- rep(1, length(loc.orig))
     }

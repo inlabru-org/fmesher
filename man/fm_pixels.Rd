@@ -11,9 +11,7 @@ fm_pixels(
   ylim = NULL,
   mask = TRUE,
   format = "sf",
-  minimal = TRUE,
-  nx = deprecated(),
-  ny = deprecated()
+  minimal = TRUE
 )
 }
 \arguments{
@@ -33,12 +31,6 @@ object.}
 
 \item{minimal}{logical; if \code{TRUE} (default), the default range is determined
 by the minimum of the ranges of the mesh and mask, otherwise only the mesh.}
-
-\item{nx}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Number of pixels in x direction,
-or a numeric vector of x-values}
-
-\item{ny}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Number of pixels in y direction,
-or a numeric vector of y-values}
 }
 \value{
 \code{sf}, \code{SpatRaster}, or \code{SpatialPixelsDataFrame} covering the mesh or
@@ -90,5 +82,5 @@ if (require("ggplot2", quietly = TRUE) &&
 }
 }
 \author{
-Finn Lindgren \email{finn.lindgren@gmail.com}
+Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}
 }

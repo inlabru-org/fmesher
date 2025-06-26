@@ -4,30 +4,32 @@
 
 #' @title Compute finite element matrices
 #'
-#' @description (...)
+#' @description Compute finite element mass and structure matrices
 #'
-#' @param mesh `fm_mesh_1d` or other supported mesh class object
-#' @param order integer
+#' @param mesh [fm_mesh_1d()], [fm_mesh_2d()], or other supported mesh class
+#' object
+#' @param order integer; the maximum operator order
 #' @param ... Currently unused
 #'
 #' @export
 #' @examples
-#' str(fm_fem(fmexample$mesh))
+#' names(fm_fem(fm_mesh_1d(1:4), order = 3))
+#' names(fm_fem(fmexample$mesh, order = 3))
 #'
 fm_fem <- function(mesh, order = 2, ...) {
   UseMethod("fm_fem")
 }
 
+make_symmetric <- function(x) {
+  (x + Matrix::t(x)) / 2
+}
+
 #' @rdname fm_fem
-#' @return `fm_fem.fm_mesh_1d`: A list with elements `c0`, `c1`, `g1`, `g2`.
+#' @returns `fm_fem.fm_mesh_1d`: A list with elements `c0`, `c1`, `g1`, `g2`,
+#' etc.
 #' When `mesh$degree == 2`, also `g01`, `g02`, and `g12`.
 #' @export
 fm_fem.fm_mesh_1d <- function(mesh, order = 2, ...) {
-  if (order > 2) {
-    warning("Only fem order <= 2 implemented for fm_mesh_1d")
-    order <- 2
-  }
-
   ## Use the same matrices for degree 0 as for degree 1
   if ((mesh$degree == 0) || (mesh$degree == 1)) {
     if (mesh$cyclic) {
@@ -136,8 +138,16 @@ fm_fem.fm_mesh_1d <- function(mesh, order = 2, ...) {
         x = c(c1.l, c1.r, c1.0),
         dims = c(mesh$m, mesh$m)
       )
-    g2 <- Matrix::t(g1) %*% Matrix::Diagonal(mesh$m, 1 / c0) %*% g1
-    c0 <- Matrix::Diagonal(mesh$m, c0)
+
+    c0_ <- c0
+    c0 <- Matrix::Diagonal(mesh$m, c0_)
+
+    g_list <- list(
+      g1 = g1,
+      g2 = make_symmetric(
+        (Matrix::t(g1) %*% Matrix::Diagonal(mesh$m, 1 / c0_)) %*% g1
+      )
+    )
   } else if (mesh$degree == 2) {
     if (mesh$cyclic) {
       knots1 <- mesh$loc
@@ -169,9 +179,10 @@ fm_fem.fm_mesh_1d <- function(mesh, order = 2, ...) {
     g02 <- Matrix::t(info$A) %*% info$d2A
     g12 <- Matrix::t(info$dA) %*% info$d2A
 
-    c0 <- Matrix::Diagonal(nrow(c1), Matrix::rowSums(c1))
+    c0_ <- Matrix::rowSums(c1)
+    c0 <- Matrix::Diagonal(nrow(c1), c0_)
 
-    return(list(c0 = c0, c1 = c1, g1 = g1, g2 = g2, g01 = g01, g02 = g02, g12 = g12))
+    g_list <- list(g1 = g1, g2 = g2, g01 = g01, g02 = g02, g12 = g12)
   } else {
     stop(paste("Mesh basis degree=", mesh$degree,
       " is not supported by fm_fem.fm_mesh_1d.",
@@ -179,17 +190,26 @@ fm_fem.fm_mesh_1d <- function(mesh, order = 2, ...) {
     ))
   }
 
-  return(list(c0 = c0, c1 = c1, g1 = g1, g2 = g2))
+  if (order > 2) {
+    tmp <- Matrix::t(g_list[["g2"]]) %*% Matrix::Diagonal(mesh$m, 1 / c0_)
+    for (k in seq_len(order - 2) + 2) {
+      g_list[[paste0("g", k)]] <-
+        make_symmetric(tmp %*% g_list[[paste0("g", k - 2)]])
+    }
+  }
+
+  return(c(list(c0 = c0, c1 = c1), g_list))
 }
 
 #' @rdname fm_fem
-#' @param aniso If non-NULL, a `list(gamma, v)`. Calculates anisotropic structure
-#' matrices (in addition to the regular) for \eqn{\gamma}{gamma} and \eqn{v}{v} for
-#' an anisotropic operator \eqn{\nabla\cdot H \nabla}{div H grad}, where
-#' \eqn{H=\gamma I + v v^\top}{H = gamma I + v v'}.
-#' Currently (2023-08-05) the fields need to be given per vertex.
-#' @return `fm_fem.fm_mesh_2d`: A list with elements `c0`, `c1`, `g1`, `va`, `ta`,
-#' and more if `order > 1`. When `aniso` is non-NULL, also `g1aniso` matrices, etc.
+#' @param aniso If non-NULL, a `list(gamma, v)`. Calculates anisotropic
+#'   structure matrices (in addition to the regular) for \eqn{\gamma}{gamma} and
+#'   \eqn{v}{v} for an anisotropic operator \eqn{\nabla\cdot H \nabla}{div H
+#'   grad}, where \eqn{H=\gamma I + v v^\top}{H = gamma I + v v'}. Currently
+#'   (2023-08-05) the fields need to be given per vertex.
+#' @returns `fm_fem.fm_mesh_2d`: A list with elements `c0`, `c1`, `g1`, `va`,
+#'   `ta`, and more if `order > 1`. When `aniso` is non-NULL, also `g1aniso`
+#'   matrices, etc.
 #'
 #' @export
 fm_fem.fm_mesh_2d <- function(mesh, order = 2,
@@ -282,7 +302,7 @@ fm_fem.fm_tensor <- function(mesh, order = 2, ...) {
     for (k in seq_len(length(x) - 1)) {
       result <- kronecker(x[[k + 1]], result)
     }
-    return(result)
+    result
   }
 
   cc <- kron_multi(cc_list)
@@ -303,4 +323,186 @@ fm_fem.fm_tensor <- function(mesh, order = 2, ...) {
   }
 
   return(list(cc = cc, g1 = g1, g2 = g2))
+}
+
+
+
+#' @rdname fm_fem
+#' @returns `fm_fem.fm_collect`: A list with elements `c0`, `c1`,
+#' `g1`, `g2`, etc, and `cc` (`c0` for every model except `fm_mesh_1d` with
+#' `degree=2`, for which it is `c1`). If the base type for the collection
+#' provides `va` and `ta` values, those are also returned.
+#' @export
+fm_fem.fm_collect <- function(mesh, order = 2, ...) {
+  fem_list <- lapply(mesh$fun_spaces, fm_fem, order = order)
+  cc_list <- lapply(seq_along(mesh$fun_spaces), function(i) {
+    if (inherits(mesh$fun_spaces[[i]], "fm_mesh_1d") &&
+      mesh$fun_spaces[[i]]$degree == 2) {
+      return(fem_list[[i]]$c1)
+    }
+    fem_list[[i]]$c0
+  })
+
+  result <- list(
+    cc = Matrix::.bdiag(cc_list),
+    c0 = Matrix::.bdiag(lapply(fem_list, function(x) x$c0)),
+    c1 = Matrix::.bdiag(lapply(fem_list, function(x) x$c1))
+  )
+  if ("va" %in% names(fem_list[[1]])) {
+    result$va <- unlist(lapply(fem_list, function(x) x$va))
+  }
+  if ("ta" %in% names(fem_list[[1]])) {
+    result$ta <- unlist(lapply(fem_list, function(x) x$ta))
+  }
+  for (k in seq_len(order)) {
+    result[[paste0("g", k)]] <-
+      Matrix::.bdiag(lapply(fem_list, function(x) x[[paste0("g", k)]]))
+  }
+
+  result
+}
+
+
+
+
+row_cross_product <- function(e1, e2) {
+  cbind(
+    e1[, 2] * e2[, 3] - e1[, 3] * e2[, 2],
+    e1[, 3] * e2[, 1] - e1[, 1] * e2[, 3],
+    e1[, 1] * e2[, 2] - e1[, 2] * e2[, 1]
+  )
+}
+
+row_volume_product <- function(e1, e2, e3) {
+  rowSums(row_cross_product(e1, e2) * e3)
+}
+
+#' @rdname fm_fem
+#' @returns `fm_fem.fm_mesh_3d`: A list with elements `c0`, `c1`, `g1`, `g2`,
+#'   `va`, `ta`, and more if `order > 2`.
+#'
+#' @export
+fm_fem.fm_mesh_3d <- function(mesh, order = 2, ...) {
+  if (order > 2) {
+    warning("Only fem order <= 2 implemented for fm_mesh_3d")
+  }
+  v1 <- mesh$loc[mesh$graph$tv[, 1], , drop = FALSE]
+  v2 <- mesh$loc[mesh$graph$tv[, 2], , drop = FALSE]
+  v3 <- mesh$loc[mesh$graph$tv[, 3], , drop = FALSE]
+  v4 <- mesh$loc[mesh$graph$tv[, 4], , drop = FALSE]
+  e1 <- v2 - v1
+  e2 <- v3 - v2
+  e3 <- v4 - v3
+  e4 <- v1 - v4
+  vols_t <- abs(row_volume_product(e1, e2, e3)) / 6
+
+  c0 <- Matrix::sparseMatrix(
+    i = as.vector(mesh$graph$tv),
+    j = as.vector(mesh$graph$tv),
+    x = rep(vols_t / 4, times = 4),
+    dims = c(mesh$n, mesh$n)
+  )
+  vols_v <- Matrix::diag(c0)
+
+  # Sign changes for b2 and b4 for consistent in/out vector orientation
+  b1 <- row_cross_product(e2, e3)
+  b2 <- -row_cross_product(e3, e4)
+  b3 <- row_cross_product(e4, e1)
+  b4 <- -row_cross_product(e1, e2)
+
+  g_i <- g_j <- g_x <- numeric(nrow(mesh$graph$tv) * 16)
+  for (tt in seq_len(nrow(mesh$graph$tv))) {
+    GG <- rbind(
+      b1[tt, , drop = FALSE],
+      b2[tt, , drop = FALSE],
+      b3[tt, , drop = FALSE],
+      b4[tt, , drop = FALSE]
+    )
+    ii <- (tt - 1) * 16 + seq_len(16)
+    g_i[ii] <- rep(mesh$graph$tv[tt, ], each = 4)
+    g_j[ii] <- rep(mesh$graph$tv[tt, ], times = 4)
+    g_x[ii] <- as.vector((GG %*% t(GG)) / vols_t[tt] / 36)
+  }
+  g1 <- Matrix::sparseMatrix(
+    i = g_i,
+    j = g_j,
+    x = g_x,
+    dims = c(mesh$n, mesh$n)
+  )
+
+  list(
+    c0 = c0,
+    g1 = g1,
+    g2 = g1 %*% Matrix::Diagonal(mesh$n, 1 / vols_v) %*% g1,
+    va = vols_v,
+    ta = vols_t
+  )
+}
+
+
+#' @title fm_sizes
+#' @description `r lifecycle::badge("experimental")`
+#'   Compute effective sizes of faces/cells and vertices in a mesh
+#' @param ... Passed on to submethods
+#' @returns A `list` with elements `face` and `vertex` for 2D meshes, or `cell`
+#'   and `vertex` for 3D meshes. The elements are vectors of effective sizes of
+#'   the faces/cells and vertices, respectively.
+#' @export
+#' @examples
+#' str(fm_sizes(fmexample$mesh))
+#'
+fm_sizes <- function(...) {
+  UseMethod("fm_sizes")
+}
+
+#' @rdname fm_sizes
+#' @param mesh object of a supported mesh class
+#' @export
+fm_sizes.fm_mesh_2d <- function(mesh, ...) {
+  if (fm_manifold(mesh, "S")) {
+    warning("`fm_sizes()` does not handle spherical triangles.")
+  }
+  v1 <- mesh$loc[mesh$graph$tv[, 1], , drop = FALSE]
+  v2 <- mesh$loc[mesh$graph$tv[, 2], , drop = FALSE]
+  v3 <- mesh$loc[mesh$graph$tv[, 3], , drop = FALSE]
+  e1 <- v2 - v1
+  e2 <- v3 - v2
+  e3 <- v3 - v1
+  areas_t <- rowSums((row_cross_product(e1, e2) +
+    row_cross_product(e2, e3) +
+    row_cross_product(e3, e1))^2)^0.5 / 6
+
+  c0 <- Matrix::sparseMatrix(
+    i = as.vector(mesh$graph$tv),
+    j = as.vector(mesh$graph$tv),
+    x = rep(areas_t / 3, times = 3),
+    dims = c(mesh$n, mesh$n)
+  )
+  areas_v <- Matrix::diag(c0)
+
+  list(face = areas_t, vertex = areas_v)
+}
+
+#' @rdname fm_sizes
+#' @export
+fm_sizes.fm_mesh_3d <- function(mesh, ...) {
+  v1 <- mesh$loc[mesh$graph$tv[, 1], , drop = FALSE]
+  v2 <- mesh$loc[mesh$graph$tv[, 2], , drop = FALSE]
+  v3 <- mesh$loc[mesh$graph$tv[, 3], , drop = FALSE]
+  v4 <- mesh$loc[mesh$graph$tv[, 4], , drop = FALSE]
+  e1 <- v2 - v1
+  e2 <- v3 - v2
+  e3 <- v4 - v3
+  e4 <- v1 - v4
+  vols_t <- abs(row_volume_product(e1, e2, e3)) / 6
+
+  c0 <- Matrix::sparseMatrix(
+    i = as.vector(mesh$graph$tv),
+    j = as.vector(mesh$graph$tv),
+    x = rep(vols_t / 4, times = 4),
+    dims = c(mesh$n, mesh$n)
+  )
+  vols_v <- Matrix::diag(c0)
+
+  list(cell = vols_t, vertex = vols_v)
 }

@@ -20,6 +20,7 @@ fm_rcdt_2d_inla(
   cutoff = 1e-12,
   quality.spec = NULL,
   crs = NULL,
+  delaunay = TRUE,
   ...
 )
 
@@ -29,8 +30,9 @@ fm_delaunay_2d(loc, crs = NULL, ...)
 \item{...}{Currently passed on to \code{fm_mesh_2d_inla} or converted to
 \code{\link[=fmesher_rcdt]{fmesher_rcdt()}} options.}
 
-\item{loc}{Input coordinates that should be part of the mesh. Can be a matrix, \code{sf}, \code{sfc}, \code{SpatialPoints},
-or other object supported by \code{\link[=fm_unify_coords]{fm_unify_coords()}}.}
+\item{loc}{Input coordinates that should be part of the mesh. Can be a
+matrix, \code{sf}, \code{sfc}, \code{SpatialPoints}, or other object supported by
+\code{\link[=fm_unify_coords]{fm_unify_coords()}}.}
 
 \item{tv}{Initial triangulation, as a N-by-3 index vector into \code{loc}}
 
@@ -72,6 +74,10 @@ specification for each location in \code{loc}, \code{boundary/interior}
 (\code{segm}), and \code{lattice}.  Only used if refining the mesh.}
 
 \item{crs}{Optional crs object}
+
+\item{delaunay}{logical; If \code{FALSE}, \code{refine} is \code{FALSE}, and a ready-made
+mesh is provided, only creates the mesh data structure. Default \code{TRUE}, for
+ensuring a Delaunay triangulation.}
 }
 \value{
 An \code{fm_mesh_2d} object

@@ -5,21 +5,15 @@
 \alias{fm_mesh_2d_map_lim}
 \title{Special coordinate mappings for \code{fm_mesh_2d} projections.}
 \usage{
-fm_mesh_2d_map(
-  loc,
-  projection = c("default", "longlat", "longsinlat", "mollweide"),
-  inverse = TRUE
-)
+fm_mesh_2d_map(loc, projection = NULL, inverse = TRUE)
 
-fm_mesh_2d_map_lim(
-  loc = NULL,
-  projection = c("default", "longlat", "longsinlat", "mollweide")
-)
+fm_mesh_2d_map_lim(loc = NULL, projection = NULL)
 }
 \arguments{
 \item{loc}{Coordinates to be mapped.}
 
-\item{projection}{The projection type.}
+\item{projection}{The projection type. One of \code{NULL},
+"default", "longlat", "longsinlat", or "mollweide".}
 
 \item{inverse}{If \code{TRUE}, \code{loc} are map coordinates and
 coordinates in the spherical domain are calculated.  If \code{FALSE}, \code{loc}
@@ -51,6 +45,6 @@ fm_mesh_2d_map(loc, "longlat", inverse = FALSE)
 \code{\link[=fm_evaluator]{fm_evaluator()}}
 }
 \author{
-Finn Lindgren \email{finn.lindgren@gmail.com}
+Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}
 }
 \keyword{internal}

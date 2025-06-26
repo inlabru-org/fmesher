@@ -4,7 +4,8 @@
 #'
 #' @param which The number of frames to go back from the caller
 #' @param override character; Overrides the automated function name logic
-#' @returns `fm_caller_name` returns a string with the the name of a calling function
+#' @returns `fm_caller_name` returns a string with the the name of a calling
+#'   function
 #' @export
 #' @name call-stack
 #' @rdname call-stack
@@ -62,23 +63,15 @@ fm_call_stack <- function(start = 0L, end = 0L, with_numbers = TRUE, ...) {
         lapply(
           stack,
           function(x) {
-            paste0(
-              vapply(
-                x,
-                function(x) {
-                  if (nchar(x) > 80) {
-                    paste0(
-                      substr(x, 1, 74),
-                      " [...]"
-                    )
-                  } else {
-                    x
-                  }
-                },
-                ""
-              ),
-              collapse = paste0("\n   ")
-            )
+            x <- paste0(trimws(x), collapse = " ")
+            if (nchar(x) > 80) {
+              paste0(
+                strtrim(x, 74),
+                " [...]"
+              )
+            } else {
+              x
+            }
           }
         )
       )
@@ -92,9 +85,9 @@ fm_call_stack <- function(start = 0L, end = 0L, with_numbers = TRUE, ...) {
 #' @describeIn call-stack Inspired by `berryFunctions::tryStack`
 #'
 #' @param expr An `expression` to evaluate
-#' @returns `fm_try_callstack` If successful, returns (invisibly) the value from the
-#' evaluated expression, otherwise an error object with call stack information attached
-#' to the error message.
+#' @returns `fm_try_callstack` If successful, returns (invisibly) the value from
+#'   the evaluated expression, otherwise an error object with call stack
+#'   information attached to the error message.
 #' @export
 fm_try_callstack <- function(expr) {
   try_envir <- new.env()
@@ -103,13 +96,19 @@ fm_try_callstack <- function(expr) {
     # Get whole stack except the handlers
     stack <- fm_call_stack(start = 0, end = 2, with_numbers = FALSE)
     # Remove the fm_try_callstack tryCatch calls part(s),
-    # There are 6 of them. First find the fm_try_callstack call (or multiple calls
-    # for nested use, which should theoretically (almost) never happen,
+    # There are 6 of them. First find the fm_try_callstack call (or multiple
+    # calls for nested use, which should theoretically (almost) never happen,
     # since the inner call shouldn't fail!)
     self <- which(
-      vapply(stack, function(x) grepl("^fm_try_callstack\\(", x), TRUE) |
-        vapply(stack, function(x) grepl("^fmesher::fm_try_callstack\\(", x), TRUE) |
-        vapply(stack, function(x) grepl("^fmesher:::fm_try_callstack\\(", x), TRUE)
+      vapply(stack, function(x) {
+        grepl("^fm_try_callstack\\(", x)
+      }, TRUE) |
+        vapply(stack, function(x) {
+          grepl("^fmesher::fm_try_callstack\\(", x)
+        }, TRUE) |
+        vapply(stack, function(x) {
+          grepl("^fmesher:::fm_try_callstack\\(", x)
+        }, TRUE)
     )
     for (idx in rev(self)) {
       stack <- stack[-(idx + seq_len(6))]
@@ -323,8 +322,8 @@ fm_as_dgTMatrix.fmesher_sparse <- function(x, unique = TRUE, ...) {
 #' `INLA::inla.spde.make.A()`.
 #' @param weights Optional scaling weights to be applied row-wise to the
 #' resulting matrix.
-#' @return A `Matrix::sparseMatrix` object.
-#' @author Finn Lindgren \email{finn.lindgren@@gmail.com}
+#' @returns A `Matrix::sparseMatrix` object.
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @export
 #' @examples
 #' fm_row_kron(rbind(c(1, 1, 0), c(0, 1, 1)), rbind(c(1, 2), c(3, 4)))
@@ -367,8 +366,8 @@ fm_row_kron <- function(M1, M2, repl = NULL, n.repl = NULL, weights = NULL # ,
   ## TODO: Maybe move big sparseMatrix call outside the loop.
   ## TODO: Automatically choose M1 or M2 for looping.
 
-  M1 <- as(as(as(as(M1, "dMatrix"), "generalMatrix"), "CsparseMatrix"), "TsparseMatrix")
-  M2 <- as(as(as(as(M2, "dMatrix"), "generalMatrix"), "CsparseMatrix"), "TsparseMatrix")
+  M1 <- fm_as_dgTMatrix(M1, unique = TRUE)
+  M2 <- fm_as_dgTMatrix(M2, unique = TRUE)
   n1 <- (as.vector(Matrix::sparseMatrix(
     i = 1L + M1@i, j = rep(1L, length(M1@i)),
     x = 1L, dims = c(n, 1)
@@ -456,65 +455,51 @@ fm_row_kron <- function(M1, M2, repl = NULL, n.repl = NULL, weights = NULL # ,
   return(M)
 }
 
-# row_kron_time_test <- function(N = c(1000, 1000), n = 10) {
-#   A1 <- Matrix::sparseMatrix(
-#     i = sample(seq_len(N[1]), size = N[1] * n, replace = TRUE),
-#     j = sample(seq_len(N[2]), size = N[1] * n, replace = TRUE),
-#     x = rnorm(N[1] * n),
-#     dims = N
-#   )
-#   A2 <- Matrix::sparseMatrix(
-#     i = sample(seq_len(N[1]), size = N[1] * n, replace = TRUE),
-#     j = sample(seq_len(N[2]), size = N[1] * n, replace = TRUE),
-#     x = rnorm(N[1] * n),
-#     dims = N
-#   )
-#   bench::mark(
-#     Method1 = fm_row_kron(A1, A2, method. = 1),
-#     Method2 = fm_row_kron(A1, A2, method. = 2)
-#   )
-# }
 
-# Speed comparisons show the new method can be between 2 to 30 times faster
-#
-# > row_kron_time_test(N=c(1000,1000),n=10)
-# # A tibble: 2 × 13
-# expression      min   median `itr/sec` mem_alloc `gc/sec` n_itr  n_gc total_time result               memory time
-# <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl> <int> <dbl>   <bch:tm> <list>               <list> <list>
-#   1 Method1     193.1ms  195.3ms      5.14        NA     17.1     3    10      584ms <dgCMatrx[,1000000]> <NULL> <bench_tm>
-#   2 Method2      39.5ms   46.7ms     22.0         NA     16.0    11     8      501ms <dgCMatrx[,1000000]> <NULL> <bench_tm>
-#   # ℹ 1 more variable: gc <list>
-#   Warning message:
-#   Some expressions had a GC in every iteration; so filtering is disabled.
-# > row_kron_time_test(N=c(100,10000),n=10)
-# # A tibble: 2 × 13
-# expression     min  median `itr/sec` mem_alloc `gc/sec` n_itr  n_gc total_time result                 memory time
-# <bch:expr> <bch:t> <bch:t>     <dbl> <bch:byt>    <dbl> <int> <dbl>   <bch:tm> <list>                 <list> <list>
-#   1 Method1      12.4s   12.4s    0.0810        NA     1.21     1    15      12.4s <dgCMatrx[,100000000]> <NULL> <bench_tm>
-#   2 Method2    306.1ms 439.7ms    2.27          NA     2.27     2     2    879.4ms <dgCMatrx[,100000000]> <NULL> <bench_tm>
-#   # ℹ 1 more variable: gc <list>
-#   Warning message:
-#   Some expressions had a GC in every iteration; so filtering is disabled.
-# > row_kron_time_test(N=c(10000,100),n=10)
-# # A tibble: 2 × 13
-# expression      min   median `itr/sec` mem_alloc `gc/sec` n_itr  n_gc total_time result             memory time
-# <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl> <int> <dbl>   <bch:tm> <list>             <list> <list>
-#   1 Method1       609ms    609ms      1.64        NA     1.64     1     1      609ms <dgCMatrx[,10000]> <NULL> <bench_tm>
-#   2 Method2       199ms    216ms      4.69        NA     1.56     3     1      640ms <dgCMatrx[,10000]> <NULL> <bench_tm>
-#   # ℹ 1 more variable: gc <list>
-#   Warning message:
-#   Some expressions had a GC in every iteration; so filtering is disabled.
-
-
-# @title Find S3 method supported classes
-# @description Calls `utils::.S3Methods` and extracts the class information
-# as a character vector
-# @param f character; the name of an S3 generic
-# @keyword internal
+#' @title Find S3 method supported classes
+#' @description Calls `utils::.S3Methods` and extracts the class information
+#' as a character vector
+#' @param f character; the name of an S3 generic
+#' @keywords internal
+#' @noRd
 method_classes <- function(f) {
-  gsub(
-    pattern = paste0("^", f, "\\.([^*]*)\\*?"),
-    replacement = "\\1",
-    x = format(utils::.S3methods(f))
+  try(
+    gsub(
+      pattern = paste0("^", f, "\\.([^*]*)\\*?"),
+      replacement = "\\1",
+      x = format(utils::.S3methods(f))
+    ),
+    silent = TRUE
   )
+}
+
+class_methods <- function(cl) {
+  utils::.S3methods(class = cl)
+}
+
+package_methods <- function() {
+  pkg_methods <- names(parent.env(environment()))
+  pkg_methods <- pkg_methods[grepl(
+    pattern = paste0("^[^\\.]*\\.([^*]*)\\*?"),
+    x = pkg_methods
+  )]
+  setdiff(
+    unique(gsub(
+      pattern = paste0("^([^\\.]*)\\.[^*]*\\*?"),
+      replacement = "\\1",
+      x = pkg_methods
+    )),
+    c("", "is", "as", "match")
+  )
+}
+
+
+
+fm_capabilities <- function(class = NULL,
+                            method = NULL) {
+  if (!is.null(class)) {
+    class_methods(class)
+  } else if (!is.null(method)) {
+    method_classes(method)
+  }
 }
