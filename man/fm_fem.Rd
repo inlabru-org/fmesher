@@ -4,6 +4,7 @@
 \alias{fm_fem}
 \alias{fm_fem.fm_mesh_1d}
 \alias{fm_fem.fm_mesh_2d}
+\alias{fm_fem_aniso}
 \alias{fm_fem.inla.mesh.1d}
 \alias{fm_fem.inla.mesh}
 \alias{fm_fem.fm_tensor}
@@ -16,6 +17,8 @@ fm_fem(mesh, order = 2, ...)
 \method{fm_fem}{fm_mesh_1d}(mesh, order = 2, ...)
 
 \method{fm_fem}{fm_mesh_2d}(mesh, order = 2, aniso = NULL, ...)
+
+fm_fem_aniso(mesh, aniso, ...)
 
 \method{fm_fem}{inla.mesh.1d}(mesh, order = 2, ...)
 
@@ -35,11 +38,12 @@ object}
 
 \item{...}{Currently unused}
 
-\item{aniso}{If non-NULL, a \code{list(gamma, v)}. Calculates anisotropic structure
-matrices (in addition to the regular) for \eqn{\gamma}{gamma} and \eqn{v}{v} for
-an anisotropic operator \eqn{\nabla\cdot H \nabla}{div H grad}, where
-\eqn{H=\gamma I + v v^\top}{H = gamma I + v v'}.
-Currently (2023-08-05) the fields need to be given per vertex.}
+\item{aniso}{A \code{list(kappa, v)}.
+Calculates anisotropic structure matrices for
+an anisotropic operator \eqn{\kappa^2-\nabla\cdot H \nabla}{kappa^2-div H grad}.
+Here \eqn{\kappa>0,v=(v_1,v_2)\in\mathbb{R}^2}{kappa>0,v=(v1,v2) in R^2} and
+\eqn{H=e^{|v|}\tilde{v}\tilde{v}^T+e^{-|v|}\tilde{v}_\perp\tilde{v}^T_\perp}{H = H = exp(|v|) * v_tilde * v_tilde' + exp(-|v|) * v_tilde_perp * v_tilde_perp'}., where
+and \eqn{\tilde{v}=|v| e^{i \alpha /2 }, \alpha := \arctan(v_2 /v_1)}{v_tilde=|v|exp(i alpha /2),arctan(v2 /v1)}.}
 }
 \value{
 \code{fm_fem.fm_mesh_1d}: A list with elements \code{c0}, \code{c1}, \code{g1}, \code{g2},
@@ -49,8 +53,6 @@ When \code{mesh$degree == 2}, also \code{g01}, \code{g02}, and \code{g12}.
 \code{fm_fem.fm_mesh_2d}: A list with elements \code{c0}, \code{c1}, \code{g1}, \code{va},
 \code{ta}, and more if \code{order > 1}. When \code{aniso} is non-NULL, also \code{g1aniso}
 matrices, etc.
-\code{fm_fem.fm_mesh_2d}: A list with elements \code{c0}, \code{c1}, \code{g1}, \code{va}, \code{ta},
-and more if \code{order > 1}. When \code{aniso} is non-NULL, also \code{g1aniso} matrices, etc.
 
 \code{fm_fem_aniso}: A list with elements \code{c0}, \code{c1}, \code{g1}, \code{g2} \code{va}, \code{ta},
 
