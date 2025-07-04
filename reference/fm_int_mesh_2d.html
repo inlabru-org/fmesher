@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0.9004</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0.9005</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -142,6 +142,16 @@
 <span>  int.args <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  format <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'fm_segm'</span></span>
+<span><span class="fu">fm_int_mesh_2d</span><span class="op">(</span></span>
+<span>  <span class="va">samplers</span>,</span>
+<span>  <span class="va">domain</span>,</span>
+<span>  name <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  int.args <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  format <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -205,6 +215,7 @@ point coordinate information and additional columns <code>weight</code> and <cod
 <li><p><code>fm_int_mesh_2d(sfc_MULTIPOLYGON)</code>: <code>sfc_MULTIPOLYGON</code> integration</p></li>
 <li><p><code>fm_int_mesh_2d(sfc_GEOMETRY)</code>: <code>sfc_GEOMERY</code> integration</p></li>
 <li><p><code>fm_int_mesh_2d(Spatial)</code>: <code>Spatial</code> integration</p></li>
+<li><p><code>fm_int_mesh_2d(fm_segm)</code>: <code>fm_segm</code> integration</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="functions">Functions<a class="anchor" aria-label="anchor" href="#functions"></a></h2>
