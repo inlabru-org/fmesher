@@ -292,12 +292,12 @@ fm_int.list <- function(domain, samplers = NULL, ...) {
   }
 
   # Change a mix of sp, sfc, and sf objects to sf
+  segm_samplers <- unlist(lapply(samplers, function(x) inherits(x, "fm_segm")))
   sfc_samplers <- unlist(lapply(samplers, function(x) inherits(x, "sfc")))
-  samplers[sfc_samplers] <- lapply(samplers[sfc_samplers], sf::st_as_sf)
   sf_samplers <- unlist(lapply(samplers, function(x) inherits(x, "sf")))
   sp_samplers <- unlist(lapply(samplers, function(x) inherits(x, "Spatial")))
   if (any(sp_samplers)) {
-    if (any(sf_samplers)) {
+    if (any(sf_samplers) || any(sfc_samplers) || any(segm_samplers)) {
       warning(paste0(
         "Both `sf` and `sp` objects in the samplers are detected.",
         " Output will be `sf`."
@@ -332,12 +332,13 @@ fm_int.list <- function(domain, samplers = NULL, ...) {
     lapply(
       samplers[index_multi_samplers],
       function(x) {
-        if (inherits(x, "fm_segm")) {
+        if (inherits(x, c("fm_segm", "sfc"))) {
           stop(
             paste0(
-              "Unnamed sampler in the samplers is an 'fm_segm' object.\n",
-              "Use an 'sf' object or other supported",
-              " multi-sampler class instead."
+              "Unnamed sampler in the samplers is an 'fm_segm' or 'sfc' object.\n",
+              "  Name them explicitly, or convert to an 'sf' object with the ",
+              "appropriate geometry column name,\n",
+              "  or use other supported multi-sampler class instead."
             )
           )
           NULL
@@ -795,7 +796,7 @@ fm_int.fm_mesh_2d <- function(domain,
   }
   if (!is.null(format)) {
     if (identical(format, "bary")) {
-      # TODO: Reverse the logic of fm_in_mesh_2d() to generate fm_bary directly
+      # TODO: Reverse the logic of fm_int_mesh_2d() to generate fm_bary directly
       ips <- fm_bary(domain, ips)
     } else if (identical(format, "sf") && !inherits(ips, "sf")) {
       ips <- sf::st_as_sf(ips)
@@ -1518,6 +1519,28 @@ fm_int_mesh_2d.Spatial <- function(samplers,
                                    format = NULL,
                                    ...) {
   samplers <- sf::st_as_sf(samplers)
+
+  ips <-
+    fm_int_mesh_2d(
+      samplers,
+      domain = domain,
+      name = name,
+      int.args = int.args,
+      ...
+    )
+
+  ips
+}
+
+#' @export
+#' @describeIn fm_int_mesh_2d `fm_segm` integration
+fm_int_mesh_2d.fm_segm <- function(samplers,
+                                   domain,
+                                   name = NULL,
+                                   int.args = NULL,
+                                   format = NULL,
+                                   ...) {
+  samplers <- fm_as_sfc(samplers)
 
   ips <-
     fm_int_mesh_2d(

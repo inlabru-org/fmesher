@@ -11,6 +11,13 @@
   methods and output formats, with default method "fm" and output format "sf",
   making `fm_nonconvex_hull_inla()` deprecated.
   (version `0.4.0.9004`)
+* Add `fm_segm` as boundary input to `fm_hexagon_lattice()`
+  (version `0.4.0.9005`)
+* Detect unnamed `sfc` objects in `fm_int()` for multi-domain integration
+  and give an error, as the user must provide a geometry name.
+  (version `0.4.0.9005`)
+* Add `fm_segm` integration support for `fm_mesh_2d` objects in `fm_int()`
+  (version `0.4.0.9005`)
 
 # fmesher 0.4.0
 

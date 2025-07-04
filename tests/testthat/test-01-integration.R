@@ -101,8 +101,39 @@ test_that("Tensor space integration", {
 
 
 
-test_that("Integrating a polygon on a mesh domain", {
+test_that("Integrating an sf polygon on a mesh domain", {
   ips <- fm_int(fmexample$mesh, samplers = fmexample$boundary_sf[[1]])
+
+  expect_s3_class(ips, "sf")
+  expect_equal(
+    sort(colnames(as.data.frame(ips))),
+    sort(c("weight", ".block", "geometry"))
+  )
+  expect_equal(sum(ips$weight), 18.339, tolerance = lowtol)
+
+  expect_error(
+    fm_int(
+      list(geometry = fmexample$mesh),
+      samplers = fmexample$boundary_sf[[1]]
+    ),
+    "Unnamed sampler in the samplers"
+  )
+
+  ips <- fm_int(
+    list(geometry = fmexample$mesh),
+    samplers = list(geometry = fmexample$boundary_sf[[1]])
+  )
+
+  expect_s3_class(ips, "sf")
+  expect_equal(
+    sort(colnames(as.data.frame(ips))),
+    sort(c("weight", ".block", "geometry"))
+  )
+  expect_equal(sum(ips$weight), 18.339, tolerance = lowtol)
+})
+
+test_that("Integrating a fm_segm polygon on a mesh domain", {
+  ips <- fm_int(fmexample$mesh, samplers = fmexample$boundary_fm[[1]])
 
   expect_s3_class(ips, "sf")
   expect_equal(
