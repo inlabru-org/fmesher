@@ -15,7 +15,7 @@ weighting."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0.9005</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0.9006</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -124,9 +124,10 @@ weighting.</p>
 <dd><p>integer vector; block information. If <code>NULL</code>,
 <code>rep(1L, block_len)</code> is used, where <code>block_len</code> is determined by
 <code>length(log_weights)))</code> or <code>length(weights)))</code>. A single scalar is also
-repeated to a vector of corresponding length to the weights. 'character'
-input is converted to integer with <code>as.integer(factor(block))</code> (from
-<code>0.2.0.9017</code>).</p></dd>
+repeated to a vector of corresponding length to the weights.</p>
+<p>Note: from version <code>0.2.0.9017</code> to <code>0.4.0.9005</code>, 'character'
+input was converted to integer with <code>as.integer(factor(block))</code>. As this
+could lead to unintended ordering of the output, this is no longer allowed.</p></dd>
 
 
 <dt id="arg-weights">weights<a class="anchor" aria-label="anchor" href="#arg-weights"></a></dt>
