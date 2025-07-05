@@ -163,8 +163,10 @@ test_that("Conversion of whole 2D mesh to integration points", {
   ips <- fm_int(fmexample$mesh, format = "sf")
 
   expect_s3_class(ips, "sf")
-  expect_equal(colnames(ips),
-               c("weight", ".block", "geometry", ".block_origin"))
+  expect_equal(
+    colnames(ips),
+    c("weight", ".block", "geometry", ".block_origin")
+  )
   expect_equal(sum(ips$weight), 64.58135, tolerance = lowtol)
 
   skip_if_not(fm_safe_sp())
@@ -440,11 +442,13 @@ test_that("Block integration has correct result order", {
   )
 
   ips0 <- fm_int(fmexample$mesh,
-                 samplers = fmexample$boundary_sf[[1]],
-                 int.args = list(nsub2 = 1))
+    samplers = fmexample$boundary_sf[[1]],
+    int.args = list(nsub2 = 1)
+  )
   ips <- fm_int(fmexample$mesh,
-                samplers = samplers,
-                int.args = list(nsub2 = 1))
+    samplers = samplers,
+    int.args = list(nsub2 = 1)
+  )
 
   expect_s3_class(ips, "sf")
 
@@ -465,11 +469,17 @@ test_that("Block integration has correct result order", {
     weight = 1:10
   )
 
-  ips <- fm_int(list(geometry = fmexample$mesh,
-                     time = 1:2),
-                samplers = list(samplers,
-                                data.frame(time = 1:2, weight = c(1, 100))),
-                int.args = list(nsub2 = 1))
+  ips <- fm_int(
+    list(
+      geometry = fmexample$mesh,
+      time = 1:2
+    ),
+    samplers = list(
+      samplers,
+      data.frame(time = 1:2, weight = c(1, 100))
+    ),
+    int.args = list(nsub2 = 1)
+  )
 
   expect_s3_class(ips, "sf")
 

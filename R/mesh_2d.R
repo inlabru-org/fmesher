@@ -1327,14 +1327,13 @@ fm_hexagon_lattice <- function(bnd,
 
 
 circle_mesh <- function(
-  centre = c(0, 0),
-  radius = 1,
-  max.edge = NULL,
-  layers = ceiling(sqrt(2) * radius / max.edge),
-  crs = NULL,
-  cumulative_shifts = FALSE,
-  ...
-) {
+    centre = c(0, 0),
+    radius = 1,
+    max.edge = NULL,
+    layers = ceiling(sqrt(2) * radius / max.edge),
+    crs = NULL,
+    cumulative_shifts = FALSE,
+    ...) {
   centre <- fm_unify_coords(centre, crs = fm_crs(crs))
 
   print(layers)

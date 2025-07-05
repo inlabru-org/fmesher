@@ -112,7 +112,7 @@ fm_cprod <- function(..., na.rm = NULL, .blockwise = FALSE) {
               by = by,
               relationship = "many-to-many"
             ),
-            sf_column_name =  if (inherits(ips1, "sf")) {
+            sf_column_name = if (inherits(ips1, "sf")) {
               attr(ips1, "sf_column", exact = TRUE)
             } else if (inherits(ips2, "sf")) {
               attr(ips2, "sf_column", exact = TRUE)
@@ -393,7 +393,8 @@ fm_int.list <- function(domain, samplers = NULL, ...) {
         if (inherits(x, c("fm_segm", "sfc"))) {
           stop(
             paste0(
-              "Unnamed sampler in the samplers is an 'fm_segm' or 'sfc' object.\n",
+              "Unnamed sampler in the samplers is an 'fm_segm' or",
+              " 'sfc' object.\n",
               "  Name them explicitly, or convert to an 'sf' object with the ",
               "appropriate geometry column name,\n",
               "  or use other supported multi-sampler class instead."
@@ -558,8 +559,12 @@ fm_int.factor <- function(domain, samplers = NULL, name = "x", ...) {
   }
 
   if (!is.data.frame(samplers)) {
-    samplers <- fm_int_object(factor(as.vector(samplers), levels = levels(domain)),
-                         name = name)
+    samplers <- fm_int_object(
+      factor(as.vector(samplers),
+        levels = levels(domain)
+      ),
+      name = name
+    )
   } else {
     samplers <- fm_int_object(samplers)
   }
@@ -628,10 +633,12 @@ fm_int.fm_mesh_1d <- function(domain,
 
   if (is.null(samplers)) {
     samplers <- fm_int_object(cbind(domain$interval[1], domain$interval[2]),
-                              name = name)
+      name = name
+    )
   } else if (is.null(dim(samplers))) {
     samplers <- fm_int_object(cbind(samplers[1], samplers[2]),
-                              name = name)
+      name = name
+    )
   } else if (is.matrix(samplers)) {
     samplers <- fm_int_object(samplers, name = name)
   } else {
@@ -720,10 +727,11 @@ fm_int.fm_mesh_1d <- function(domain,
         weight = weight_simpson[(weight_simpson > 0)] * theweight,
         .block = the.block,
         .block_origin = matrix(the.block_origin,
-                               sum(weight_simpson > 0),
-                               ncol(the.block_origin),
-                               byrow = TRUE)
-        ))
+          sum(weight_simpson > 0),
+          ncol(the.block_origin),
+          byrow = TRUE
+        )
+      ))
     } else {
       nsub <- int.args[["nsub1"]]
       u <- rep(
@@ -751,9 +759,10 @@ fm_int.fm_mesh_1d <- function(domain,
         weight = int_w[inside] * theweight,
         .block = the.block,
         .block_origin = matrix(the.block_origin,
-                               sum(inside),
-                               ncol(the.block_origin),
-                               byrow = TRUE)
+          sum(inside),
+          ncol(the.block_origin),
+          byrow = TRUE
+        )
       ))
     }
   }
@@ -765,7 +774,11 @@ fm_int.fm_mesh_1d <- function(domain,
       "{name}" := numeric(0),
       weight = numeric(0),
       .block = integer(0),
-      .block_origin = matrix(integer(0), nrow = 0, ncol = ips[[".block_origin"]])
+      .block_origin = matrix(
+        integer(0),
+        nrow = 0,
+        ncol = NCOL(ips[[".block_origin"]])
+      )
     ))
   }
 

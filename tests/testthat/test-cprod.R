@@ -39,9 +39,13 @@ test_that("fm_cprod(..., na.rm = FALSE) sf output with different geometry", {
 
   expect_s3_class(ips, "sf")
   expect_equal(nrow(ips), 12)
-  expect_equal(sort(names(ips)),
-               sort(c("geometry1", "geometry2", "weight",
-                      ".block", ".block_origin")))
+  expect_equal(
+    sort(names(ips)),
+    sort(c(
+      "geometry1", "geometry2", "weight",
+      ".block", ".block_origin"
+    ))
+  )
   expect_equal(
     as.numeric(unlist(sf::st_geometry(ips))),
     unlist(

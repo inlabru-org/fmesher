@@ -1752,10 +1752,11 @@ fm_block_prep <- function(block = NULL,
       "0.4.0.9006",
       "fm_block_prep(block = 'as `character` is no longer supported')",
       details =
-        c("Converting character block information to integer",
+        c(
+          "Converting character block information to integer",
           "with `as.integer(factor(block))` is no longer supported,",
           "as it may lead to incorrect ordering of the results."
-          )
+        )
     )
   }
   if (min(block) < 1L) {
