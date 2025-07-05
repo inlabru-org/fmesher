@@ -1,7 +1,9 @@
 test_that("Discrete integration", {
   domain <- 2:5
   samplers <- 3:7
-  ips_ <- tibble::tibble(x = 3:5, weight = rep(1, 3), .block = 1L:3L)
+  ips_ <- fm_int_object(
+    tibble::tibble(x = 3:5, weight = rep(1, 3), .block = 1L:3L)
+  )
 
   ips <- fm_int(domain, samplers = samplers)
   expect_identical(ips, ips_)
@@ -24,11 +26,11 @@ test_that("Continuous integration", {
   domain <- fm_mesh_1d(2:5)
 
   samplers <- c(3, 5)
-  ips_ <- tibble::tibble(
+  ips_ <- fm_int_object(tibble::tibble(
     x = c(3:5, 3.5, 4.5),
     weight = c(1 / 6, 1 / 3, 1 / 6, 2 / 3, 2 / 3),
     .block = 1L
-  )
+  ))
   ips_ <- ips_[order(ips_$x), ]
 
   ips <- fm_int(domain, samplers = samplers)
@@ -53,11 +55,11 @@ test_that("Continuous integration", {
   domain <- fm_mesh_1d(2:5, degree = 2)
 
   samplers <- c(3, 5)
-  ips_ <- tibble::tibble(
+  ips_ <- fm_int_object(tibble::tibble(
     x = c(3:5, 3.5, 4.5),
     weight = c(1 / 6, 1 / 3, 1 / 6, 2 / 3, 2 / 3),
     .block = 1L
-  )
+  ))
   ips_ <- ips_[order(ips_$x), ]
 
   ips <- fm_int(domain, samplers = samplers)
@@ -107,7 +109,7 @@ test_that("Integrating an sf polygon on a mesh domain", {
   expect_s3_class(ips, "sf")
   expect_equal(
     sort(colnames(as.data.frame(ips))),
-    sort(c("weight", ".block", "geometry"))
+    sort(c("weight", ".block", ".block_origin", "geometry"))
   )
   expect_equal(sum(ips$weight), 18.339, tolerance = lowtol)
 
@@ -127,7 +129,7 @@ test_that("Integrating an sf polygon on a mesh domain", {
   expect_s3_class(ips, "sf")
   expect_equal(
     sort(colnames(as.data.frame(ips))),
-    sort(c("weight", ".block", "geometry"))
+    sort(c("weight", ".block", ".block_origin", "geometry"))
   )
   expect_equal(sum(ips$weight), 18.339, tolerance = lowtol)
 })
@@ -138,7 +140,7 @@ test_that("Integrating a fm_segm polygon on a mesh domain", {
   expect_s3_class(ips, "sf")
   expect_equal(
     sort(colnames(as.data.frame(ips))),
-    sort(c("weight", ".block", "geometry"))
+    sort(c("weight", ".block", ".block_origin", "geometry"))
   )
   expect_equal(sum(ips$weight), 18.339, tolerance = lowtol)
 })
@@ -151,7 +153,7 @@ test_that("Integrating a SpatialPolygon on a mesh domain", {
   expect_s4_class(ips, "SpatialPointsDataFrame")
   expect_equal(
     sort(colnames(as.data.frame(ips))),
-    sort(c("weight", ".block", "x", "y", "z"))
+    sort(c("weight", ".block", ".block_origin", "x", "y", "z"))
   )
   expect_equal(sum(ips$weight), 18.339, tolerance = lowtol)
 })
@@ -161,7 +163,8 @@ test_that("Conversion of whole 2D mesh to integration points", {
   ips <- fm_int(fmexample$mesh, format = "sf")
 
   expect_s3_class(ips, "sf")
-  expect_equal(colnames(ips), c("weight", ".block", "geometry"))
+  expect_equal(colnames(ips),
+               c("weight", ".block", "geometry", ".block_origin"))
   expect_equal(sum(ips$weight), 64.58135, tolerance = lowtol)
 
   skip_if_not(fm_safe_sp())
@@ -171,7 +174,7 @@ test_that("Conversion of whole 2D mesh to integration points", {
   expect_s4_class(ips, "SpatialPointsDataFrame")
   expect_equal(
     colnames(as.data.frame(ips)),
-    c("weight", ".block", "x", "y", "z")
+    c("weight", ".block", ".block_origin", "x", "y", "z")
   )
   expect_equal(sum(ips$weight), 64.58135, tolerance = lowtol)
 })
@@ -426,4 +429,58 @@ test_that("fm_int for linestring", {
   #   facet_wrap(~n, nrow = 2) +
   #   xlim(c(-1.8, -1.4)) +
   #   ylim(c(-1.6, -1.2))
+})
+
+
+test_that("Block integration has correct result order", {
+  # Single domain
+  samplers <- sf::st_sf(
+    geometry = rep(fmexample$boundary_sf[[1]], 10),
+    weight = 1:10
+  )
+
+  ips0 <- fm_int(fmexample$mesh,
+                 samplers = fmexample$boundary_sf[[1]],
+                 int.args = list(nsub2 = 1))
+  ips <- fm_int(fmexample$mesh,
+                samplers = samplers,
+                int.args = list(nsub2 = 1))
+
+  expect_s3_class(ips, "sf")
+
+  vals <- fm_block_eval(
+    block = ips$.block,
+    weights = ips$weight,
+    n_block = 10,
+    rescale = FALSE,
+    values = rep(1, nrow(ips))
+  )
+
+  expect_equal(length(vals), nrow(samplers))
+  expect_equal(vals, (1:10) * sum(ips0$weight))
+
+  # Multi-domain, at least one with >= 10 blocks
+  samplers <- sf::st_sf(
+    geometry = rep(fmexample$boundary_sf[[1]], 10),
+    weight = 1:10
+  )
+
+  ips <- fm_int(list(geometry = fmexample$mesh,
+                     time = 1:2),
+                samplers = list(samplers,
+                                data.frame(time = 1:2, weight = c(1, 100))),
+                int.args = list(nsub2 = 1))
+
+  expect_s3_class(ips, "sf")
+
+  vals <- fm_block_eval(
+    block = ips$.block,
+    weights = ips$weight,
+    n_block = 20,
+    rescale = FALSE,
+    values = rep(1, nrow(ips))
+  )
+
+  expect_equal(length(vals), nrow(samplers) * 2)
+  expect_equal(vals, c((1:10), (1:10) * 100) * sum(ips0$weight))
 })

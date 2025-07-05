@@ -1367,9 +1367,11 @@ internal_bspline2 <- function(x, knots, degree = 1, deriv = 0) {
 #' @param block integer vector; block information. If `NULL`,
 #'   `rep(1L, block_len)` is used, where `block_len` is determined by
 #'   `length(log_weights)))` or `length(weights)))`. A single scalar is also
-#'   repeated to a vector of corresponding length to the weights. 'character'
-#'   input is converted to integer with `as.integer(factor(block))` (from
-#'   `0.2.0.9017`).
+#'   repeated to a vector of corresponding length to the weights.
+#'
+#'   Note: from version `0.2.0.9017` to `0.4.0.9005`, 'character'
+#'   input was converted to integer with `as.integer(factor(block))`. As this
+#'   could lead to unintended ordering of the output, this is no longer allowed.
 #' @param weights Optional weight vector
 #' @param log_weights Optional `log(weights)` vector. Overrides `weights` when
 #' non-NULL.
@@ -1746,7 +1748,15 @@ fm_block_prep <- function(block = NULL,
     block <- rep(block, n_values)
   }
   if (is.character(block)) {
-    block <- as.integer(factor(block))
+    lifecycle::deprecate_stop(
+      "0.4.0.9006",
+      "fm_block_prep(block = 'as `character` is no longer supported')",
+      details =
+        c("Converting character block information to integer",
+          "with `as.integer(factor(block))` is no longer supported,",
+          "as it may lead to incorrect ordering of the results."
+          )
+    )
   }
   if (min(block) < 1L) {
     warning(paste0(
