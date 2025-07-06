@@ -709,7 +709,10 @@ fm_nonconvex_hull.fm_segm <- function(x, ..., format = "sf", method = "fm") {
 
 #' @rdname fm_nonconvex_hull
 #' @export
-fm_nonconvex_hull.fm_segm_list <- function(x, ..., format = "sf", method = "fm") {
+fm_nonconvex_hull.fm_segm_list <- function(x,
+                                           ...,
+                                           format = "sf",
+                                           method = "fm") {
   fm_nonconvex_hull.sfc(fm_as_sfc(x), ..., format = format, method = method)
 }
 
