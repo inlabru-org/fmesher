@@ -243,7 +243,7 @@ fm_extensions <- function(x,
                           format = "sf",
                           method = "fm") {
   if (any(convex < 0) || any(concave < 0)) {
-    diameter_bound <- fm_diameter(x)
+    diameter_bound <- max(fm_diameter(x))
   }
   len <- max(length(convex), length(concave))
   if ("dTolerance" %in% names(list(...))) {
@@ -359,9 +359,11 @@ fm_nonconvex_hull_fm <- function(x,
       x_interior <- fm_hexagon_lattice(x, edge_len = convex)
 
       z_int <- sf::st_coordinates(x_interior)
-      z_int <- z_int[, intersect(colnames(z_int), c("X", "Y")), drop = FALSE]
+      if (NROW(z_int) > 0) {
+        z_int <- z_int[, intersect(colnames(z_int), c("X", "Y")), drop = FALSE]
 
-      z <- rbind(z, z_int)
+        z <- rbind(z, z_int)
+      }
     }
 
     if (inherits(x, c(
@@ -681,7 +683,8 @@ fm_nonconvex_hull.matrix <- function(x, ..., format = "sf", method = "fm") {
 #' @rdname fm_nonconvex_hull
 #' @export
 fm_nonconvex_hull.sf <- function(x, ..., format = "sf", method = "fm") {
-  fm_nonconvex_hull.sfc(sf::st_geometry(x), ...,
+  fm_nonconvex_hull.sfc(
+    sf::st_geometry(x), ...,
     format = format, method = method
   )
 }
@@ -689,17 +692,25 @@ fm_nonconvex_hull.sf <- function(x, ..., format = "sf", method = "fm") {
 #' @rdname fm_nonconvex_hull
 #' @export
 fm_nonconvex_hull.Spatial <- function(x, ..., format = "sf", method = "fm") {
-  fm_nonconvex_hull.sfc(sf::st_as_sfc(x), ...,
-    format = format, method = method
-  )
+  fm_nonconvex_hull.sfc(sf::st_as_sfc(x), ..., format = format, method = method)
 }
 
 #' @rdname fm_nonconvex_hull
 #' @export
 fm_nonconvex_hull.sfg <- function(x, ..., format = "sf", method = "fm") {
-  fm_nonconvex_hull.sfc(sf::st_sfc(x), ...,
-    format = format, method = method
-  )
+  fm_nonconvex_hull.sfc(sf::st_sfc(x), ..., format = format, method = method)
+}
+
+#' @rdname fm_nonconvex_hull
+#' @export
+fm_nonconvex_hull.fm_segm <- function(x, ..., format = "sf", method = "fm") {
+  fm_nonconvex_hull.sfc(fm_as_sfc(x), ..., format = format, method = method)
+}
+
+#' @rdname fm_nonconvex_hull
+#' @export
+fm_nonconvex_hull.fm_segm_list <- function(x, ..., format = "sf", method = "fm") {
+  fm_nonconvex_hull.sfc(fm_as_sfc(x), ..., format = format, method = method)
 }
 
 # Legacy methods ####

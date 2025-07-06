@@ -13,6 +13,7 @@
 \alias{fm_diameter.fm_mesh_3d}
 \alias{fm_diameter.fm_tensor}
 \alias{fm_diameter.fm_collect}
+\alias{fm_diameter.fm_list}
 \title{Diameter bound for a geometric object}
 \usage{
 fm_diameter(x, ...)
@@ -38,6 +39,8 @@ fm_diameter(x, ...)
 \method{fm_diameter}{fm_tensor}(x, ...)
 
 \method{fm_diameter}{fm_collect}(x, ...)
+
+\method{fm_diameter}{fm_list}(x, ...)
 }
 \arguments{
 \item{x}{A point set as an \eqn{n\times d}{n x d} matrix, or an

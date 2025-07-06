@@ -137,3 +137,9 @@ fm_diameter.fm_tensor <- function(x, ...) {
 fm_diameter.fm_collect <- function(x, ...) {
   vapply(x[["fun_spaces"]], fm_diameter, ..., 1.0)
 }
+
+#' @rdname fm_diameter
+#' @export
+fm_diameter.fm_list <- function(x, ...) {
+  vapply(x, fm_diameter, ..., 1.0)
+}

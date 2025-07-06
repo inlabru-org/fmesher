@@ -4,6 +4,7 @@
 \alias{fm_as_sfc}
 \alias{fm_as_sfc.fm_mesh_2d}
 \alias{fm_as_sfc.fm_segm}
+\alias{fm_as_sfc.fm_segm_list}
 \alias{fm_as_sfc.sfc}
 \alias{fm_as_sfc.sf}
 \title{Conversion methods from mesh related objects to sfc}
@@ -13,6 +14,8 @@ fm_as_sfc(x, ...)
 \method{fm_as_sfc}{fm_mesh_2d}(x, ..., format = NULL, multi = FALSE)
 
 \method{fm_as_sfc}{fm_segm}(x, ..., multi = FALSE)
+
+\method{fm_as_sfc}{fm_segm_list}(x, ...)
 
 \method{fm_as_sfc}{sfc}(x, ...)
 

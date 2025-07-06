@@ -10,6 +10,8 @@
 \alias{fm_nonconvex_hull.sf}
 \alias{fm_nonconvex_hull.Spatial}
 \alias{fm_nonconvex_hull.sfg}
+\alias{fm_nonconvex_hull.fm_segm}
+\alias{fm_nonconvex_hull.fm_segm_list}
 \title{Compute an extension of a spatial object}
 \usage{
 fm_nonconvex_hull(x, ..., format = "sf", method = "fm")
@@ -53,6 +55,10 @@ fm_nonconvex_hull_sf(
 \method{fm_nonconvex_hull}{Spatial}(x, ..., format = "sf", method = "fm")
 
 \method{fm_nonconvex_hull}{sfg}(x, ..., format = "sf", method = "fm")
+
+\method{fm_nonconvex_hull}{fm_segm}(x, ..., format = "sf", method = "fm")
+
+\method{fm_nonconvex_hull}{fm_segm_list}(x, ..., format = "sf", method = "fm")
 }
 \arguments{
 \item{x}{A spatial object}

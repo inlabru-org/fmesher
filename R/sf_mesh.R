@@ -210,6 +210,13 @@ fm_as_sfc.fm_segm <- function(x, ..., multi = FALSE) {
 #' @rdname fm_as_sfc
 #'
 #' @export
+fm_as_sfc.fm_segm_list <- function(x, ...) {
+  do.call(c, lapply(x, fm_as_sfc, ...))
+}
+
+#' @rdname fm_as_sfc
+#'
+#' @export
 fm_as_sfc.sfc <- function(x, ...) {
   x
 }

@@ -370,16 +370,6 @@ fm_int.list <- function(domain, samplers = NULL, ...) {
     names(domain)[names(domain) %in% "coordinates"] <- "geometry"
   }
 
-  # TODO 20220126 lapply to extract the names, the current one is not sufficient
-  # TODO Sort multidomain samplers, single domain samplers
-  # TODO Multidomain samplers happens when a sampler across several domains. How
-  # to detect that?
-  # TODO we should then do the name check for domain and samplers here
-  # TODO remove sampler domains and full domain samplers
-  # TODO some thoughts for S3 methods, there should be an extra layer ie
-  # function to sort samplers and domain arguments and difine multidomain,
-  # singledomain and full domain s3 class
-  #######################
   names_domain <- names(domain)
   names_lsamplers <- names(samplers)
   if (is.null(names_lsamplers)) {
@@ -431,6 +421,17 @@ fm_int.list <- function(domain, samplers = NULL, ...) {
         "The unnamed sampler #", i, " in the samplers has no sub-names."
       ))
     }
+    if (!any(names_samplers[[i]] %in% names_domain)) {
+      stop(
+        paste0(
+          "Sampler #", i, " with names (",
+          paste0(names_samplers[[i]], collapse = ","),
+          ") has no matching domains (",
+          paste0(names(domain), collapse = ","),
+          ")."
+        )
+      )
+    }
     lips_samplers[[i]] <-
       fm_int_multi_sampler(
         domain = domain,
@@ -446,9 +447,11 @@ fm_int.list <- function(domain, samplers = NULL, ...) {
     if (length(nm) == 0) {
       stop(
         paste0(
-          "The named sampler '",
+          "Named sampler #", i, " (",
           names_lsamplers[[i]],
-          "' in the samplers has no corresponding domain."
+          ") has no corresponding domain (",
+          paste0(names_domain, collapse = ","),
+          ")."
         )
       )
     }
