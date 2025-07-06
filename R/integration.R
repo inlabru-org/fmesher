@@ -165,6 +165,8 @@ fm_cprod <- function(..., na.rm = NULL, .blockwise = FALSE) {
     ips <- na.omit(ips)
   }
 
+  ips <- dplyr::arrange(ips, .data$.block)
+
   # TODO Transform back to sp only if they are required. ips is a tibble sf tbl
   # data.frame.
   # It does not make sense to revert certain indices back after merging. Hence,

@@ -18,6 +18,11 @@
   (version `0.4.0.9005`)
 * Add `fm_segm` integration support for `fm_mesh_2d` objects in `fm_int()`
   (version `0.4.0.9005`)
+* Remove support for `character` `.block` information in `fm_int()`, forcing the
+  use of `integer`, as `character could lead to incorrect block aggregation
+  output ordering. The equivalent information is now available in
+  `.block_origin`. Also clean up of `fm_cprod()` and `sf` handling.
+  (version `0.4.0.9006`)
 
 # fmesher 0.4.0
 
