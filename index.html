@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0.9006</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0.9007</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -145,17 +145,17 @@
 <span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; fm_mesh_2d object:</span></span>
 <span><span class="co">#&gt;   Manifold:  R2</span></span>
-<span><span class="co">#&gt;   V / E / T: 269 / 772 / 504</span></span>
+<span><span class="co">#&gt;   V / E / T: 304 / 877 / 574</span></span>
 <span><span class="co">#&gt;   Euler char.:   1</span></span>
-<span><span class="co">#&gt;   Constraints:   Boundary: 32 boundary edges (1 group: 1), Interior: 44 interior edges (1 group: 1)</span></span>
-<span><span class="co">#&gt;   Bounding box: (-1.499887, 1.499887) x (-1.499887, 1.499887)</span></span>
-<span><span class="co">#&gt;   Basis d.o.f.:  269</span></span></code></pre></div>
+<span><span class="co">#&gt;   Constraints:   Boundary: 32 boundary edges (1 group: 1), Interior: 54 interior edges (1 group: 1)</span></span>
+<span><span class="co">#&gt;   Bounding box: (-1.498873, 1.498873) x (-1.498873, 1.498873)</span></span>
+<span><span class="co">#&gt;   Basis d.o.f.:  304</span></span></code></pre></div>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="reference/geom_fm.html">geom_fm</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mesh</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-example2-plot-1.png" alt="2D triangular mesh" width="100%"></p>
-<p>Mostly regular triangulations can be constructed by supplying a regular set of input points. The (experimental, developed by Man Ho Suen) <code><a href="reference/fm_hexagon_lattice.html">fm_hexagon_lattice()</a></code> function generates points in a regular hexagonal lattice pattern, contained in a given <code>sf</code> polygon.</p>
+<p>Mostly regular triangulations can be constructed by supplying a regular set of input points. The <code><a href="reference/fm_hexagon_lattice.html">fm_hexagon_lattice()</a></code> function (developed by Man Ho Suen) generates points in a regular hexagonal lattice pattern, contained in a given <code>sf</code> polygon.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hex_points</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/fm_hexagon_lattice.html">fm_hexagon_lattice</a></span><span class="op">(</span>bnd <span class="op">=</span> <span class="va">bnd</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, edge_len <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span></span>
 <span><span class="op">(</span><span class="va">mesh_hex</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/fm_mesh_2d.html">fm_mesh_2d_inla</a></span><span class="op">(</span></span>
@@ -165,11 +165,11 @@
 <span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; fm_mesh_2d object:</span></span>
 <span><span class="co">#&gt;   Manifold:  R2</span></span>
-<span><span class="co">#&gt;   V / E / T: 154 / 427 / 274</span></span>
+<span><span class="co">#&gt;   V / E / T: 164 / 457 / 294</span></span>
 <span><span class="co">#&gt;   Euler char.:   1</span></span>
-<span><span class="co">#&gt;   Constraints:   Boundary: 32 boundary edges (1 group: 1), Interior: 32 interior edges (1 group: 1)</span></span>
-<span><span class="co">#&gt;   Bounding box: (-1.499887, 1.499887) x (-1.499887, 1.499887)</span></span>
-<span><span class="co">#&gt;   Basis d.o.f.:  154</span></span></code></pre></div>
+<span><span class="co">#&gt;   Constraints:   Boundary: 32 boundary edges (1 group: 1), Interior: 33 interior edges (1 group: 1)</span></span>
+<span><span class="co">#&gt;   Bounding box: (-1.498873, 1.498873) x (-1.498873, 1.498873)</span></span>
+<span><span class="co">#&gt;   Basis d.o.f.:  164</span></span></code></pre></div>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="reference/geom_fm.html">geom_fm</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mesh_hex</span><span class="op">)</span> <span class="op">+</span></span>
