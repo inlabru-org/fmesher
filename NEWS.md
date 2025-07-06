@@ -26,7 +26,7 @@
 * Detect unnamed `sfc` objects in `fm_int()` for multi-domain integration
   and give an error, as the user must provide a geometry name
   (version `0.4.0.9005`)
-* Check that every `fm_int()` sampler for doain lists has at least one
+* Check that every `fm_int()` sampler for domain lists has at least one
   corresponding domain (version `0.4.0.9007`)
 * Remove support for `character` `.block` information in
   `fm_int()`/`fm_cprod()`, forcing the use of `integer`, as `character` could
