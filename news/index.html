@@ -60,6 +60,7 @@
 <li>Add <code>fm_segm</code> as boundary input to <code><a href="../reference/fm_hexagon_lattice.html">fm_hexagon_lattice()</a></code> (version <code>0.4.0.9005</code>)</li>
 <li>Detect unnamed <code>sfc</code> objects in <code><a href="../reference/fm_int.html">fm_int()</a></code> for multi-domain integration and give an error, as the user must provide a geometry name. (version <code>0.4.0.9005</code>)</li>
 <li>Add <code>fm_segm</code> integration support for <code>fm_mesh_2d</code> objects in <code><a href="../reference/fm_int.html">fm_int()</a></code> (version <code>0.4.0.9005</code>)</li>
+<li>Remove support for <code>character</code> <code>.block</code> information in <code><a href="../reference/fm_int.html">fm_int()</a></code>, forcing the use of <code>integer</code>, as <code>character could lead to incorrect block aggregation   output ordering. The equivalent information is now available in</code>.block_origin<code>. Also clean up of</code>fm_cprod()<code>and</code>sf<code>handling.   (version</code>0.4.0.9006`)</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.4.0" id="fmesher-040">fmesher 0.4.0<a class="anchor" aria-label="anchor" href="#fmesher-040"></a></h2><p class="text-muted">CRAN release: 2025-06-12</p>
