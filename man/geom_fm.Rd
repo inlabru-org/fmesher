@@ -124,7 +124,10 @@ ggplot() +
   geom_fm(data = m, crs = fm_crs("epsg:27700"))
 \donttest{
 # Compute a mesh vertex based function on a different grid
-px <- fm_pixels(fm_transform(m, fm_crs("mollweide_globe")))
+px <- fm_pixels(
+  fm_transform(m, fm_crs("mollweide_globe")),
+  dims = c(50, 50) # Speed up the example by lowering the resolution
+)
 px$fun <- fm_evaluate(m,
   loc = px,
   field = sin(m$loc[, 1] / 5) * sin(m$loc[, 2] / 5)
@@ -141,9 +144,11 @@ ggplot() +
 }
 \dontshow{\}) # examplesIf}
 \dontshow{if (require("ggplot2", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-m <- fm_mesh_1d(c(1, 2, 4, 6, 10), boundary = c("n", "d"), degree = 2)
+m1 <- fm_segm(rbind(c(1, 2), c(4, 3), c(2, 4)), is.bnd = TRUE)
+m2 <- fm_segm(rbind(c(2, 2), c(3, 4), c(2, 3)), is.bnd = FALSE)
 ggplot() +
-  geom_fm(data = m, weights = c(4, 2, 4, -1))
+  geom_fm(data = m1) +
+  geom_fm(data = m2)
 \dontshow{\}) # examplesIf}
 \dontshow{if (require("ggplot2", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 m <- fm_mesh_1d(
