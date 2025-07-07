@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0.9007</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,20 +52,23 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="fmesher-development-version">fmesher (development version)<a class="anchor" aria-label="anchor" href="#fmesher-development-version"></a></h2>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.5.0" id="fmesher-050">fmesher 0.5.0<a class="anchor" aria-label="anchor" href="#fmesher-050"></a></h2>
 <div class="section level3">
-<h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
+<h3 id="new-features-0-5-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-5-0"></a></h3>
 <ul><li>Add <code><a href="../reference/fm_area.html">fm_area()</a></code> method for <code>fm_segm</code> area calculations (version <code>0.4.0.9002</code>)</li>
 <li>Make <code><a href="../reference/fm_nonconvex_hull.html">fm_nonconvex_hull()</a></code> a unified function for “fm” and “sf” construction methods and input/output formats, with default method “fm” and output format “sf”, making <code><a href="../reference/fm_nonconvex_hull_inla.html">fm_nonconvex_hull_inla()</a></code> deprecated. (version <code>0.4.0.9004</code>)</li>
 </ul></div>
 <div class="section level3">
-<h3 id="improved-features-development-version">Improved features<a class="anchor" aria-label="anchor" href="#improved-features-development-version"></a></h3>
+<h3 id="improved-features-0-5-0">Improved features<a class="anchor" aria-label="anchor" href="#improved-features-0-5-0"></a></h3>
 <ul><li>Rename <code><a href="../reference/fm_components.html">fm_mesh_components()</a></code> to <code><a href="../reference/fm_components.html">fm_components()</a></code> and add support for <code>fm_segm</code> objects (version <code>0.4.0.9001</code>)</li>
 <li>Add support for polygon output in <code><a href="../reference/fm_as_sfc.html">fm_as_sfc()</a></code> for closed boundary <code>fm_segm</code> objects (version <code>0.4.0.9002</code>)</li>
 <li>Add support for <code>fm_segm</code> as boundary input to <code><a href="../reference/fm_hexagon_lattice.html">fm_hexagon_lattice()</a></code> (version <code>0.4.0.9005</code>)</li>
 <li>Add <code>fm_segm</code> integration support for <code>fm_mesh_2d</code> objects in <code><a href="../reference/fm_int.html">fm_int()</a></code> (version <code>0.4.0.9005</code>)</li>
 </ul></div>
 <div class="section level3">
-<h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
+<h3 id="bug-fixes-0-5-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-5-0"></a></h3>
 <ul><li>Fix indexing bug in <code><a href="../reference/fm_basis.html">fm_basis.fm_mesh_1d()</a></code> for <code>degree = 2</code> and <code>NA</code> locations (version <code>0.4.0.9003</code>)</li>
 <li>Detect unnamed <code>sfc</code> objects in <code><a href="../reference/fm_int.html">fm_int()</a></code> for multi-domain integration and give an error, as the user must provide a geometry name (version <code>0.4.0.9005</code>)</li>
 <li>Check that every <code><a href="../reference/fm_int.html">fm_int()</a></code> sampler for domain lists has at least one corresponding domain (version <code>0.4.0.9007</code>)</li>
