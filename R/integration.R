@@ -151,7 +151,20 @@ fm_cprod <- function(..., na.rm = NULL, .blockwise = FALSE) {
       ips[[".block.x"]] <- NULL
       ips[[".block.y"]] <- NULL
     }
+
+    # Reorder the columns to have ips1-only first, ips2-only second,
+    # and joint last
+    nms <- names(ips)
+    nms1 <- names(ips1)
+    nms2 <- names(ips2)
+    nms_joint <- setdiff(nms,
+                         union(setdiff(nms1, nms2),
+                               setdiff(nms2, nms1)))
+    nms1 <- intersect(nms, setdiff(nms1, nms_joint))
+    nms2 <- intersect(nms, setdiff(nms2, nms_joint))
+    ips <- ips[, c(nms1, nms2, nms_joint), drop = FALSE]
   }
+
   if (any(is.na(ips$weight)) && !isFALSE(na.rm)) {
     if (is.null(na.rm)) {
       warning(
