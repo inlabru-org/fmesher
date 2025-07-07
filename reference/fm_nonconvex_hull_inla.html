@@ -161,7 +161,11 @@ different, and potentially change in the future.</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">fm_nonconvex_hull_inla</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, convex <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>`fm_nonconvex_hull_inla()` was deprecated in fmesher 0.4.0.9002.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please use the `method` argument of `fm_nonconvex_hull()` instead.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please use the `format` argument of `fm_nonconvex_hull()` instead.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> The `fm_nonconvex_hull()` method with `method = "fm"` and `format = "fm"` has</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   replaced `fm_nonconvex_hull_inla()`. Most use cases can use</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   `fm_nonconvex_hull(...)` for `sf` output, which since version `0.4.0.9002`</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   uses the "fm" method by default.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> fm_segm object:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   32 boundary edges (1 group: 1)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Bounding box = (-0.9992483, 0.9992483) x (-0.9992483, 0.9992483) x (0,0)</span>

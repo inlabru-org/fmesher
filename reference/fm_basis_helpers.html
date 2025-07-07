@@ -66,14 +66,7 @@
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">fm_basis_mesh_1d</span><span class="op">(</span></span>
-<span>  <span class="va">mesh</span>,</span>
-<span>  <span class="va">loc</span>,</span>
-<span>  weights <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  derivatives <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  method <span class="op">=</span> <span class="fu">deprecated</span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  <span class="va">...</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">fm_basis_mesh_1d</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">loc</span>, weights <span class="op">=</span> <span class="cn">NULL</span>, derivatives <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -96,12 +89,6 @@ for <code>fm_mesh_1d</code> objects, and <code>dx</code>, <code>dy</code>, <code
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Passed on to submethods</p></dd>
-
-
-<dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
-<dd><p>character; either "default", "nearest", "linear", or
-"quadratic". With <code>NULL</code> or "default", uses the object definition of the
-function space. Otherwise overrides the object definition.</p></dd>
 
 </dl></div>
     <div class="section level2">
