@@ -125,9 +125,9 @@ ggplot() +
 ```
 
 Mostly regular triangulations can be constructed by supplying a regular set of
-input points. The (experimental, developed by Man Ho Suen)
-`fm_hexagon_lattice()` function generates points in a regular
-hexagonal lattice pattern, contained in a given `sf` polygon.
+input points. The `fm_hexagon_lattice()` function (developed by Man Ho Suen)
+generates points in a regular hexagonal lattice pattern, contained in a given
+`sf` polygon.
 ```{r example2hex}
 hex_points <- fm_hexagon_lattice(bnd = bnd[[1]], edge_len = 0.2)
 (mesh_hex <- fm_mesh_2d_inla(

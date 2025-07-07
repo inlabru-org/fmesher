@@ -21,7 +21,7 @@ fm_nonconvex_hull_inla_basic(
   convex = -0.15,
   resolution = 40,
   eps = NULL,
-  crs = NULL
+  crs = fm_crs(x)
 )
 }
 \arguments{
@@ -32,15 +32,16 @@ fm_nonconvex_hull_inla_basic(
 \item{concave}{numeric vector; The minimum allowed reentrant curvature.
 Default equal to \code{convex}}
 
-\item{resolution}{The internal computation resolution.  A warning will be
-issued when this needs to be increased for higher accuracy, with the
-required resolution stated.}
+\item{resolution}{integer; The internal computation resolution.  A warning
+will be issued when this needs to be increased for higher accuracy, with
+the required resolution stated. For \code{method="fm"} only.}
 
 \item{eps, eps_rel}{The polygonal curve simplification tolerances used for
 simplifying the resulting boundary curve.  See \code{\link[=fm_simplify_helper]{fm_simplify_helper()}} for
-details.}
+details. For \code{method="fm"} only.}
 
-\item{crs}{Options crs object for the resulting polygon}
+\item{crs}{Optional crs object for the resulting polygon. Default is
+\code{fm_crs(x)}}
 
 \item{\dots}{Unused.}
 }
@@ -49,14 +50,16 @@ details.}
 object, for compatibility with \code{inla.nonconvex.hull()}.
 }
 \description{
-Legacy method for \code{INLA::inla.nonconvex.hull()}
-}
-\details{
-Requires \code{splancs::nndistF()}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+Legacy method for \code{INLA::inla.nonconvex.hull()}.
+Use \code{\link[=fm_nonconvex_hull]{fm_nonconvex_hull()}} with \code{method = "fm"} instead, with
+either \code{format = "fm"} (for compatibility with code
+expecting \code{fm_segm} output) or \code{format = "sf"}.
 }
 \section{Functions}{
 \itemize{
-\item \code{fm_nonconvex_hull_inla_basic()}: Special method for \code{convex = 0}.
+\item \code{fm_nonconvex_hull_inla_basic()}: Special method \code{\link[=fm_nonconvex_hull_fm]{fm_nonconvex_hull_fm()}}
+method for \code{concave = 0}. Requires \code{splancs::nndistF()}.
 
 }}
 \section{INLA compatibility}{
@@ -82,3 +85,4 @@ Other nonconvex inla legacy support:
 \code{\link{fm_simplify_helper}()}
 }
 \concept{nonconvex inla legacy support}
+\keyword{internal}

@@ -25,7 +25,9 @@ test_that("fm_nonconvex_hull_inla works", {
   mat <- matrix(c(1:6, 6:1), 6, 2, byrow = TRUE)
   expect_error(
     {
-      hull <- fm_nonconvex_hull_inla(mat)
+      suppressWarnings({
+        hull <- fm_nonconvex_hull_inla(mat)
+      })
     },
     NA
   )

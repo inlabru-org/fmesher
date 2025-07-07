@@ -3,9 +3,9 @@
 # as a sequence, or as a two-column matrix. But it is always stored as a two
 # column matrix, with no general guarantee that one line connects to the one in
 # the next row.
-# This makes conversion to sp and sf polygons more difficult, which is why there
-# isn't a general fm_as_sp.inla.mesh.segment method, but fm_as_sfc() has partial
-# support.
+# This makes conversion to sp and sf polygons more difficult, but from
+# 0.4.0.9002, fm_as_sfc() has full polygon support, with the help of the
+# new methods fm_components() and fm_area().
 
 test_that("Conversion from matrix to fm_segm", {
   ## sfc_POINT ##

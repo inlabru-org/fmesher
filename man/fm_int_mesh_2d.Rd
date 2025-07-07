@@ -12,6 +12,7 @@
 \alias{fm_int_mesh_2d.sfc_MULTIPOLYGON}
 \alias{fm_int_mesh_2d.sfc_GEOMETRY}
 \alias{fm_int_mesh_2d.Spatial}
+\alias{fm_int_mesh_2d.fm_segm}
 \title{Subset integration on a mesh}
 \usage{
 fm_int_mesh_2d(samplers, domain, name = NULL, int.args = NULL, ...)
@@ -91,6 +92,15 @@ fm_int_mesh_2d_NULL(samplers, domain, name = NULL, int.args = NULL, ...)
   format = NULL,
   ...
 )
+
+\method{fm_int_mesh_2d}{fm_segm}(
+  samplers,
+  domain,
+  name = NULL,
+  int.args = NULL,
+  format = NULL,
+  ...
+)
 }
 \arguments{
 \item{samplers}{For single domain \code{fm_int} methods, an object specifying one
@@ -148,6 +158,8 @@ Integration methods for spatial samplers on \code{fm_mesh_2d} meshes.
 \item \code{fm_int_mesh_2d(sfc_GEOMETRY)}: \code{sfc_GEOMERY} integration
 
 \item \code{fm_int_mesh_2d(Spatial)}: \code{Spatial} integration
+
+\item \code{fm_int_mesh_2d(fm_segm)}: \code{fm_segm} integration
 
 }}
 \section{Functions}{

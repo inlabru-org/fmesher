@@ -1,3 +1,39 @@
+# fmesher 0.5.0
+
+## New features
+
+* Add `fm_area()` method for `fm_segm` area calculations (version `0.4.0.9002`)
+* Make `fm_nonconvex_hull()` a unified function for "fm" and "sf" construction
+  methods and input/output formats, with default method "fm" and output format
+  "sf", making `fm_nonconvex_hull_inla()` deprecated.
+  (version `0.4.0.9004`)
+
+## Improved features
+
+* Rename `fm_mesh_components()` to `fm_components()` and add support for
+  `fm_segm` objects (version `0.4.0.9001`)
+* Add support for polygon output in `fm_as_sfc()` for closed boundary `fm_segm`
+  objects (version `0.4.0.9002`)
+* Add support for `fm_segm` as boundary input to `fm_hexagon_lattice()`
+  (version `0.4.0.9005`)
+* Add `fm_segm` integration support for `fm_mesh_2d` objects in `fm_int()`
+  (version `0.4.0.9005`)
+
+## Bug fixes
+
+* Fix indexing bug in `fm_basis.fm_mesh_1d()` for `degree = 2` and `NA`
+  locations (version `0.4.0.9003`)
+* Detect unnamed `sfc` objects in `fm_int()` for multi-domain integration
+  and give an error, as the user must provide a geometry name
+  (version `0.4.0.9005`)
+* Check that every `fm_int()` sampler for domain lists has at least one
+  corresponding domain (version `0.4.0.9007`)
+* Remove support for `character` `.block` information in
+  `fm_int()`/`fm_cprod()`, forcing the use of `integer`, as `character` could
+  lead to incorrect block aggregation output ordering. The equivalent
+  information is now available in `.block_origin`. Also clean up of
+  `fm_cprod()` and `sf` handling (version `0.4.0.9006`)
+
 # fmesher 0.4.0
 
 ## New features

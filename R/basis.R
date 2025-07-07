@@ -741,48 +741,13 @@ fm_basis_mesh_2d <- function(mesh,
 }
 
 
-#' @param method character; either "default", "nearest", "linear", or
-#' "quadratic". With `NULL` or "default", uses the object definition of the
-#' function space. Otherwise overrides the object definition.
 #' @export
 #' @rdname fm_basis_helpers
 fm_basis_mesh_1d <- function(mesh,
                              loc,
                              weights = NULL,
                              derivatives = NULL,
-                             method = deprecated(),
                              ...) {
-  if (lifecycle::is_present(method)) {
-    lifecycle::deprecate_stop(
-      "0.0.9.9020",
-      "fm_evaluator_mesh_1d(method)",
-      details = c("Create a separate fm_mesh_1d() object instead.")
-    )
-    method <- match.arg(method, c(
-      "default",
-      "nearest",
-      "linear",
-      "quadratic"
-    ))
-
-    if (!(method %in% "default") &&
-      (mesh$degree != c(nearest = 0, linear = 1, quadratic = 2)[method])) {
-      deg <- c(nearest = 0, linear = 1, quadratic = 2)[method]
-      info <- fm_basis_mesh_1d(
-        fm_mesh_1d(mesh$loc,
-          interval = mesh$interval,
-          boundary = mesh$boundary,
-          free.clamped = mesh$free.clamped,
-          degree = deg
-        ),
-        loc = loc,
-        weights = weights,
-        derivatives = derivatives
-      )
-      return(info)
-    }
-  }
-
   if (is.null(weights)) {
     weights <- rep(1.0, NROW(loc))
   } else if (length(weights) == 1L) {
@@ -912,15 +877,16 @@ fm_basis_mesh_1d <- function(mesh,
   } else if (mesh$degree == 2) {
     if (mesh$cyclic) {
       knots <- mesh$loc - mesh$loc[1]
-      loc <- loc - mesh$loc[1]
       inter <- c(0, diff(mesh$interval))
     } else {
       knots <- mesh$loc - mesh$loc[1]
-      loc <- loc - mesh$loc[1]
       inter <- range(knots)
     }
+    if (!inherits(loc, "fm_bary")) {
+      loc <- loc - mesh$loc[1]
+    }
 
-    # Note: If loc is `fm_bary`, it's still valid for this local fm_mesh_1d.
+    # Note: If loc is `fm_bary`, it's also valid for this local fm_mesh_1d.
     info <-
       fm_bary(
         fm_mesh_1d(
@@ -1034,7 +1000,11 @@ fm_basis_mesh_1d <- function(mesh,
       # Convert boundary basis functions to linear
       # First remove anything from above outside the interval, then add back in
       # the appropriate values
-      ok <- (loc[bary_ok] >= inter[1]) & (loc[bary_ok] <= inter[2])
+      if (inherits(loc, "fm_bary")) {
+        ok <- (loc$where[bary_ok, 1] >= 0) & (loc$where[bary_ok, 2] >= 0)
+      } else {
+        ok <- (loc[bary_ok] >= inter[1]) & (loc[bary_ok] <= inter[2])
+      }
       i_ <- i_[ok]
       j_ <- j_[ok]
       x_ <- x_[ok]
@@ -1044,7 +1014,11 @@ fm_basis_mesh_1d <- function(mesh,
       }
 
       # left
-      ok <- (loc < 0) & (simplex[, 1] == 1L)
+      if (inherits(loc, "fm_bary")) {
+        ok <- (loc$where[bary_ok, 2] < 0) & (simplex[, 1] == 1L)
+      } else {
+        ok <- (loc[bary_ok] < 0) & (simplex[, 1] == 1L)
+      }
       i_l <- c(which(bary_ok)[ok], which(bary_ok)[ok])
       j_l <- c(simplex[ok, 1], simplex[ok, 2])
       x_l <- c(
@@ -1057,7 +1031,11 @@ fm_basis_mesh_1d <- function(mesh,
       }
 
       # right
-      ok <- (loc > inter[2]) & (simplex[, 2] == length(knots))
+      if (inherits(loc, "fm_bary")) {
+        ok <- (loc$where[bary_ok, 1] < 0) & (simplex[, 2] == length(knots))
+      } else {
+        ok <- (loc[bary_ok] > inter[2]) & (simplex[, 2] == length(knots))
+      }
       i_r <- c(which(bary_ok)[ok], which(bary_ok)[ok])
       j_r <- c(simplex[ok, 2], simplex[ok, 1]) + 1L
       x_r <- c(
@@ -1176,7 +1154,7 @@ fm_basis_mesh_1d <- function(mesh,
         i = i_,
         j = j_,
         x = weights[i_] * x_d1,
-        dims = c(length(loc), mesh$m)
+        dims = c(NROW(loc), mesh$m)
       )
       info_$d2A <- Matrix::sparseMatrix(
         i = i_,
@@ -1354,9 +1332,11 @@ internal_bspline2 <- function(x, knots, degree = 1, deriv = 0) {
 #' @param block integer vector; block information. If `NULL`,
 #'   `rep(1L, block_len)` is used, where `block_len` is determined by
 #'   `length(log_weights)))` or `length(weights)))`. A single scalar is also
-#'   repeated to a vector of corresponding length to the weights. 'character'
-#'   input is converted to integer with `as.integer(factor(block))` (from
-#'   `0.2.0.9017`).
+#'   repeated to a vector of corresponding length to the weights.
+#'
+#'   Note: from version `0.2.0.9017` to `0.4.0.9005`, 'character'
+#'   input was converted to integer with `as.integer(factor(block))`. As this
+#'   could lead to unintended ordering of the output, this is no longer allowed.
 #' @param weights Optional weight vector
 #' @param log_weights Optional `log(weights)` vector. Overrides `weights` when
 #' non-NULL.
@@ -1733,7 +1713,16 @@ fm_block_prep <- function(block = NULL,
     block <- rep(block, n_values)
   }
   if (is.character(block)) {
-    block <- as.integer(factor(block))
+    lifecycle::deprecate_stop(
+      "0.4.0.9006",
+      "fm_block_prep(block = 'as `character` is no longer supported')",
+      details =
+        c(
+          "Converting character block information to integer",
+          "with `as.integer(factor(block))` is no longer supported,",
+          "as it may lead to incorrect ordering of the results."
+        )
+    )
   }
   if (min(block) < 1L) {
     warning(paste0(

@@ -69,9 +69,11 @@ fm_block_prep(
 \item{block}{integer vector; block information. If \code{NULL},
 \code{rep(1L, block_len)} is used, where \code{block_len} is determined by
 \verb{length(log_weights)))} or \verb{length(weights)))}. A single scalar is also
-repeated to a vector of corresponding length to the weights. 'character'
-input is converted to integer with \code{as.integer(factor(block))} (from
-\verb{0.2.0.9017}).}
+repeated to a vector of corresponding length to the weights.
+
+Note: from version \verb{0.2.0.9017} to \verb{0.4.0.9005}, 'character'
+input was converted to integer with \code{as.integer(factor(block))}. As this
+could lead to unintended ordering of the output, this is no longer allowed.}
 
 \item{weights}{Optional weight vector}
 

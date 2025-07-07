@@ -76,7 +76,11 @@ When \code{NULL}, determined by the domain and sampler types.}
 }
 \value{
 A \code{tibble}, \code{sf}, or \code{SpatialPointsDataFrame} of 1D
-and 2D integration points, including a \code{weight} column and \code{.block} column.
+and 2D integration points, including a \code{weight} column, a\code{.block} column,
+and a matrix column \code{.block_origin}.
+The \code{.block} column is used to identify the integration
+blocks defined by the samplers. The \code{.block_origin} collects the original
+subdomain block information for tensor product blocks.
 }
 \description{
 Construct integration points on tensor product spaces

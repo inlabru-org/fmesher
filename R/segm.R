@@ -478,3 +478,49 @@ NULL
   class(object) <- class(x)
   object
 }
+
+# fm_area ####
+
+#' @title Calculate the area inside segments
+#' @description
+#' Calculate the (signed) area inside `fm_segm` boundary objects.
+#' @param x Object for which to calculate the area
+#' @param ... Currently unused
+fm_area <- function(x, ...) {
+  UseMethod("fm_area")
+}
+
+#' @export
+#' @rdname fm_area
+fm_area.fm_segm <- function(x, ...) {
+  if ((NROW(x[["idx"]]) == 0) || all(!fm_is_bnd(x))) {
+    return(0)
+  }
+
+  if (!fm_manifold(fm_detect_manifold(x$loc), "R2")) {
+    stop("Segments must be manifold in R2 to calculate area.")
+  }
+
+  if (ncol(x[["loc"]] < 3)) {
+    x[["loc"]] <- cbind(x[["loc"]], 0.0)
+  }
+
+  centre <- colMeans(x[["loc"]])
+  loc <- cbind(
+    x$loc[, 1] - centre[1],
+    x$loc[, 2] - centre[2],
+    x$loc[, 3] - centre[3]
+  )
+  area <- sum(row_cross_product(
+    loc[x[["idx"]][, 1], , drop = FALSE],
+    loc[x[["idx"]][, 2], , drop = FALSE]
+  )[, 3]) / 2.0
+
+  area
+}
+
+#' @export
+#' @rdname fm_area
+fm_area.fm_segm_list <- function(x, ...) {
+  vapply(x, fm_area, numeric(1), ...)
+}

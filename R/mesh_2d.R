@@ -1145,7 +1145,7 @@ fm_hexagon_lattice_orig <- function(bnd,
 #'   hexagon lattice points within a boundary. By default, the hexagonal lattice
 #'   is anchored at the coordinate system origin, so that grids with different
 #'   but overlapping boundaries will have matching points.
-#' @param bnd Boundary object (currently must be an `sf` polygon)
+#' @param bnd Boundary object (`sf` polygon or boundary `fm_segm` object)
 #' @param edge_len Triangle edge length. Default `diff(fm_bbox(bnd)[[1]]) /
 #'   250`.
 #' @param buffer_n Number of triangle height multiples for buffer inside the
@@ -1215,6 +1215,9 @@ fm_hexagon_lattice <- function(bnd,
                                align = "origin",
                                meta = FALSE) {
   #  stopifnot(x_bin / 2 > edge_len_n)
+  if (inherits(bnd, "fm_segm")) {
+    bnd <- fm_as_sfc(bnd)
+  }
   crs <- fm_crs(bnd)
   # Avoid longlat S2 issues by removing the CRS information
   fm_crs(bnd) <- NA
@@ -1320,4 +1323,55 @@ fm_hexagon_lattice <- function(bnd,
   }
 
   pts_lattice_sfc
+}
+
+
+circle_mesh <- function(
+    centre = c(0, 0),
+    radius = 1,
+    max.edge = NULL,
+    layers = ceiling(sqrt(2) * radius / max.edge),
+    crs = NULL,
+    cumulative_shifts = FALSE,
+    ...) {
+  centre <- fm_unify_coords(centre, crs = fm_crs(crs))
+
+  layers <- max(1L, layers)
+  if (is.null(max.edge)) {
+    max.edge <- sqrt(2) * radius / layers
+  }
+
+  kk <- seq_len(layers)
+  m <- ceiling(pi * kk * radius / (3 * layers * max.edge))
+  n <- c(1, 6 * m)
+  radii <- radius * c(0, kk) / layers
+  shift <- (c(0, 0, 1 * (diff(m) == 0)))
+  if (cumulative_shifts) {
+    shift <- cumsum(shift)
+  }
+  angles <- lapply(seq_along(n), function(k) {
+    (seq_len(n[k]) - 1 + 0.5 * shift[k]) * 2 * pi / n[k]
+  })
+  loc <- lapply(seq_along(n), function(k) {
+    theta <- angles[[k]]
+    x <- centre[1] + radii[k] * cos(theta)
+    y <- centre[2] + radii[k] * sin(theta)
+    cbind(x, y)
+  })
+  loc <- do.call(rbind, loc)
+  bnd <- fm_segm(
+    loc[sum(n[-(layers + 1L)]) + seq_len(n[layers + 1L]), , drop = FALSE],
+    is.bnd = TRUE
+  )
+
+  mesh <- fm_mesh_2d(
+    loc = loc,
+    boundary = bnd,
+    max.edge = max.edge * 2,
+    crs = fm_crs(crs),
+    ...
+  )
+  mesh$radius <- sqrt((mesh$loc[, 1] - centre[1])^2 +
+    (mesh$loc[, 2] - centre[2])^2)
+  mesh
 }

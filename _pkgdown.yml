@@ -54,6 +54,7 @@ reference:
   - starts_with("fm_evaluator")
   - starts_with("fm_diameter")
   - starts_with("fm_bbox")
+  - starts_with("fm_area")
   - starts_with("fm_sizes")
   - starts_with("fm_vertices")
   - starts_with("fm_centroids")

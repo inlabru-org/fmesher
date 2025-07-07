@@ -348,10 +348,7 @@ test_that("Conversion from sfc_GEOMETRY to fm_segm", {
 
 test_that("Conversion from fm_mesh_2d to sfc", {
   mesh_m_sfc <- fm_as_sfc(fmexample$mesh, format = "mesh")
-  expect_warning(
-    mesh_b_sfc <- fm_as_sfc(fmexample$mesh, format = "bnd"),
-    "fm_as_sfc currently only supports"
-  )
+  mesh_b_sfc <- fm_as_sfc(fmexample$mesh, format = "bnd")
   mesh_i_sfc <- fm_as_sfc(fmexample$mesh, format = "int")
   mesh_l_sfc <- fm_as_sfc(fmexample$mesh, format = "loc")
 
@@ -361,7 +358,7 @@ test_that("Conversion from fm_mesh_2d to sfc", {
   )
   expect_equal(
     as.character(sf::st_geometry_type(mesh_b_sfc)),
-    "LINESTRING"
+    "POLYGON"
   )
   expect_equal(
     as.character(sf::st_geometry_type(mesh_i_sfc)),
@@ -373,10 +370,7 @@ test_that("Conversion from fm_mesh_2d to sfc", {
   )
 
   mesh_m_sfc <- fm_as_sfc(fmexample$mesh, multi = TRUE, format = "mesh")
-  expect_warning(
-    mesh_b_sfc <- fm_as_sfc(fmexample$mesh, multi = TRUE, format = "bnd"),
-    "fm_as_sfc currently only supports"
-  )
+  mesh_b_sfc <- fm_as_sfc(fmexample$mesh, multi = TRUE, format = "bnd")
   mesh_i_sfc <- fm_as_sfc(fmexample$mesh, multi = TRUE, format = "int")
   mesh_l_sfc <- fm_as_sfc(fmexample$mesh, multi = TRUE, format = "loc")
 
@@ -384,13 +378,15 @@ test_that("Conversion from fm_mesh_2d to sfc", {
     as.character(sf::st_geometry_type(mesh_m_sfc)),
     "MULTIPOLYGON"
   )
+  # This can be a POLYGON or MULTIPOLYGON, depending on the mesh
   expect_equal(
     as.character(sf::st_geometry_type(mesh_b_sfc)),
-    "MULTILINESTRING"
+    "POLYGON"
   )
+  # This can be a LINESTRING or MULTILINESTRING, depending on the mesh
   expect_equal(
     as.character(sf::st_geometry_type(mesh_i_sfc)),
-    "MULTILINESTRING"
+    "LINESTRING"
   )
   expect_equal(
     as.character(sf::st_geometry_type(mesh_l_sfc)),

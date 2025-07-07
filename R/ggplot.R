@@ -38,7 +38,7 @@ geom_fm <- function(mapping = NULL, data = NULL, ...) {
 #' ... = linewidth = 0.25, color = "grey" # default for triangle mapping
 #' defs = list(
 #'   int = list(linewidth = 0.5, color = "blue"),
-#'   bnd = list(linewidth = 1, color = "black"),
+#'   bnd = list(linewidth = 1, color = "black", alpha = 0),
 #'   loc = list(size = 1, color = "red")
 #' )
 #' ```
@@ -68,7 +68,10 @@ geom_fm <- function(mapping = NULL, data = NULL, ...) {
 #'   geom_fm(data = m, crs = fm_crs("epsg:27700"))
 #' \donttest{
 #' # Compute a mesh vertex based function on a different grid
-#' px <- fm_pixels(fm_transform(m, fm_crs("mollweide_globe")))
+#' px <- fm_pixels(
+#'   fm_transform(m, fm_crs("mollweide_globe")),
+#'   dims = c(50, 50) # Speed up the example by lowering the resolution
+#' )
 #' px$fun <- fm_evaluate(m,
 #'   loc = px,
 #'   field = sin(m$loc[, 1] / 5) * sin(m$loc[, 2] / 5)
@@ -100,48 +103,32 @@ geom_fm.fm_mesh_2d <- function(mapping = NULL,
     defs <- list()
   }
   if (lifecycle::is_present(mapping_int)) {
-    lifecycle::deprecate_warn(
+    lifecycle::deprecate_stop(
       "0.1.7.9009",
       "geom_fm(mapping_int)",
       "geom_fm(mappings = list(int = mapping_int))"
     )
-    if (!is.null(mappings$int)) {
-      stop("Both mapping_int and mappings$int are provided.")
-    }
-    mappings$int <- mapping_int
   }
   if (lifecycle::is_present(mapping_bnd)) {
-    lifecycle::deprecate_warn(
+    lifecycle::deprecate_stop(
       "0.1.7.9009",
       "geom_fm(mapping_bnd)",
       "geom_fm(mappings = list(bnd = mapping_bnd))"
     )
-    if (!is.null(mappings$bnd)) {
-      stop("Both mapping_bnd and mappings$bnd are provided.")
-    }
-    mappings$bnd <- mapping_bnd
   }
   if (lifecycle::is_present(defs_int)) {
-    lifecycle::deprecate_warn(
+    lifecycle::deprecate_stop(
       "0.1.7.9009",
       "geom_fm(defs_int)",
       "geom_fm(defs = list(int = defs_int))"
     )
-    if (!is.null(defs$int)) {
-      stop("Both defs_int and defs$int are provided.")
-    }
-    defs$int <- defs_int
   }
   if (lifecycle::is_present(defs_bnd)) {
-    lifecycle::deprecate_warn(
+    lifecycle::deprecate_stop(
       "0.1.7.9009",
       "geom_fm(defs_bnd)",
       "geom_fm(defs = list(bnd = defs_bnd))"
     )
-    if (!is.null(defs$bnd)) {
-      stop("Both defs_bnd and defs$bnd are provided.")
-    }
-    defs$bnd <- defs_bnd
   }
 
   if (!is.null(crs)) {
@@ -192,7 +179,7 @@ geom_fm.fm_mesh_2d <- function(mapping = NULL,
   defs_def <- list(
     mesh = list(linewidth = 0.25, color = "grey"),
     int = list(linewidth = 0.5, color = "blue"),
-    bnd = list(linewidth = 1, color = "black"),
+    bnd = list(linewidth = 1, color = "black", alpha = 0),
     loc = list(size = 1, color = "red")
   )
   def <- lapply(
@@ -237,9 +224,11 @@ geom_fm.fm_mesh_2d <- function(mapping = NULL,
 #' `geom_sf` to visualize it.
 #' @export
 #' @examplesIf require("ggplot2", quietly = TRUE)
-#' m <- fm_mesh_1d(c(1, 2, 4, 6, 10), boundary = c("n", "d"), degree = 2)
+#' m1 <- fm_segm(rbind(c(1, 2), c(4, 3), c(2, 4)), is.bnd = TRUE)
+#' m2 <- fm_segm(rbind(c(2, 2), c(3, 4), c(2, 3)), is.bnd = FALSE)
 #' ggplot() +
-#'   geom_fm(data = m, weights = c(4, 2, 4, -1))
+#'   geom_fm(data = m1) +
+#'   geom_fm(data = m2)
 #'
 geom_fm.fm_segm <- function(mapping = NULL,
                             data = NULL,
@@ -249,7 +238,6 @@ geom_fm.fm_segm <- function(mapping = NULL,
     data <- fm_transform(data, crs = crs)
   }
 
-  fm_is_bnd(data) <- FALSE # Avoid warning from fm_as_sfc
   segm_sf <- fm_as_sfc(data)
 
   maps <-

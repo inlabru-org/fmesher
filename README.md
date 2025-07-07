@@ -130,11 +130,11 @@ bnd <- fm_extensions(cbind(0, 0), convex = c(1, 1.5))
 ))
 #> fm_mesh_2d object:
 #>   Manifold:  R2
-#>   V / E / T: 269 / 772 / 504
+#>   V / E / T: 304 / 877 / 574
 #>   Euler char.:   1
-#>   Constraints:   Boundary: 32 boundary edges (1 group: 1), Interior: 44 interior edges (1 group: 1)
-#>   Bounding box: (-1.499887, 1.499887) x (-1.499887, 1.499887)
-#>   Basis d.o.f.:  269
+#>   Constraints:   Boundary: 32 boundary edges (1 group: 1), Interior: 54 interior edges (1 group: 1)
+#>   Bounding box: (-1.498873, 1.498873) x (-1.498873, 1.498873)
+#>   Basis d.o.f.:  304
 ```
 
 ``` r
@@ -146,9 +146,9 @@ ggplot() +
 <img src="man/figures/README-example2-plot-1.png" alt="2D triangular mesh" width="100%" />
 
 Mostly regular triangulations can be constructed by supplying a regular
-set of input points. The (experimental, developed by Man Ho Suen)
-`fm_hexagon_lattice()` function generates points in a regular hexagonal
-lattice pattern, contained in a given `sf` polygon.
+set of input points. The `fm_hexagon_lattice()` function (developed by
+Man Ho Suen) generates points in a regular hexagonal lattice pattern,
+contained in a given `sf` polygon.
 
 ``` r
 hex_points <- fm_hexagon_lattice(bnd = bnd[[1]], edge_len = 0.2)
@@ -159,11 +159,11 @@ hex_points <- fm_hexagon_lattice(bnd = bnd[[1]], edge_len = 0.2)
 ))
 #> fm_mesh_2d object:
 #>   Manifold:  R2
-#>   V / E / T: 154 / 427 / 274
+#>   V / E / T: 164 / 457 / 294
 #>   Euler char.:   1
-#>   Constraints:   Boundary: 32 boundary edges (1 group: 1), Interior: 32 interior edges (1 group: 1)
-#>   Bounding box: (-1.499887, 1.499887) x (-1.499887, 1.499887)
-#>   Basis d.o.f.:  154
+#>   Constraints:   Boundary: 32 boundary edges (1 group: 1), Interior: 33 interior edges (1 group: 1)
+#>   Bounding box: (-1.498873, 1.498873) x (-1.498873, 1.498873)
+#>   Basis d.o.f.:  164
 ```
 
 ``` r
