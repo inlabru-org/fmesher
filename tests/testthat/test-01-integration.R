@@ -2,7 +2,8 @@ test_that("Discrete integration", {
   domain <- 2:5
   samplers <- 3:7
   ips_ <- fm_int_object(
-    tibble::tibble(x = 3:5, weight = rep(1, 3), .block = 1L:3L)
+    tibble::tibble(x = 3:5, weight = rep(1, 3), .block = 1L:3L),
+    name = "x"
   )
 
   ips <- fm_int(domain, samplers = samplers)
@@ -26,11 +27,14 @@ test_that("Continuous integration", {
   domain <- fm_mesh_1d(2:5)
 
   samplers <- c(3, 5)
-  ips_ <- fm_int_object(tibble::tibble(
-    x = c(3:5, 3.5, 4.5),
-    weight = c(1 / 6, 1 / 3, 1 / 6, 2 / 3, 2 / 3),
-    .block = 1L
-  ))
+  ips_ <- fm_int_object(
+    tibble::tibble(
+      x = c(3:5, 3.5, 4.5),
+      weight = c(1 / 6, 1 / 3, 1 / 6, 2 / 3, 2 / 3),
+      .block = 1L
+    ),
+    name = "x"
+  )
   ips_ <- ips_[order(ips_$x), ]
 
   ips <- fm_int(domain, samplers = samplers)
@@ -55,11 +59,14 @@ test_that("Continuous integration", {
   domain <- fm_mesh_1d(2:5, degree = 2)
 
   samplers <- c(3, 5)
-  ips_ <- fm_int_object(tibble::tibble(
-    x = c(3:5, 3.5, 4.5),
-    weight = c(1 / 6, 1 / 3, 1 / 6, 2 / 3, 2 / 3),
-    .block = 1L
-  ))
+  ips_ <- fm_int_object(
+    tibble::tibble(
+      x = c(3:5, 3.5, 4.5),
+      weight = c(1 / 6, 1 / 3, 1 / 6, 2 / 3, 2 / 3),
+      .block = 1L
+    ),
+    name = "x"
+  )
   ips_ <- ips_[order(ips_$x), ]
 
   ips <- fm_int(domain, samplers = samplers)
@@ -96,8 +103,14 @@ test_that("Tensor space integration", {
 
   expect_equal(sort(names(ips1)), sort(names(ips2)))
   expect_equal(
-    dplyr::arrange(ips1, .block, time, space),
-    dplyr::arrange(ips2[names(ips1)], .block, time, space)
+    dplyr::arrange(
+      dplyr::select(ips1, time, space, weight, .block),
+      .block, time, space
+    ),
+    dplyr::arrange(
+      dplyr::select(ips2, time, space, weight, .block),
+      .block, time, space
+    )
   )
 })
 
@@ -108,7 +121,7 @@ test_that("Integrating an sf polygon on a mesh domain", {
 
   expect_s3_class(ips, "sf")
   expect_equal(
-    sort(colnames(as.data.frame(ips))),
+    sort(colnames(ips)),
     sort(c("weight", ".block", ".block_origin", "geometry"))
   )
   expect_equal(sum(ips$weight), 18.339, tolerance = lowtol)
@@ -128,7 +141,7 @@ test_that("Integrating an sf polygon on a mesh domain", {
 
   expect_s3_class(ips, "sf")
   expect_equal(
-    sort(colnames(as.data.frame(ips))),
+    sort(colnames(ips)),
     sort(c("weight", ".block", ".block_origin", "geometry"))
   )
   expect_equal(sum(ips$weight), 18.339, tolerance = lowtol)
@@ -139,7 +152,7 @@ test_that("Integrating a fm_segm polygon on a mesh domain", {
 
   expect_s3_class(ips, "sf")
   expect_equal(
-    sort(colnames(as.data.frame(ips))),
+    sort(colnames(ips)),
     sort(c("weight", ".block", ".block_origin", "geometry"))
   )
   expect_equal(sum(ips$weight), 18.339, tolerance = lowtol)
@@ -175,8 +188,12 @@ test_that("Conversion of whole 2D mesh to integration points", {
 
   expect_s4_class(ips, "SpatialPointsDataFrame")
   expect_equal(
-    colnames(as.data.frame(ips)),
-    c("weight", ".block", ".block_origin", "x", "y", "z")
+    names(ips),
+    c("weight", ".block", ".block_origin")
+  )
+  expect_equal(
+    sp::coordnames(ips),
+    c("x", "y", "z")
   )
   expect_equal(sum(ips$weight), 64.58135, tolerance = lowtol)
 })
