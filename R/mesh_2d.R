@@ -1336,7 +1336,6 @@ circle_mesh <- function(
     ...) {
   centre <- fm_unify_coords(centre, crs = fm_crs(crs))
 
-  print(layers)
   layers <- max(1L, layers)
   if (is.null(max.edge)) {
     max.edge <- sqrt(2) * radius / layers
@@ -1344,7 +1343,6 @@ circle_mesh <- function(
 
   kk <- seq_len(layers)
   m <- ceiling(pi * kk * radius / (3 * layers * max.edge))
-  print(m)
   n <- c(1, 6 * m)
   radii <- radius * c(0, kk) / layers
   shift <- (c(0, 0, 1 * (diff(m) == 0)))
@@ -1366,13 +1364,14 @@ circle_mesh <- function(
     is.bnd = TRUE
   )
 
-  m <- fm_mesh_2d(
+  mesh <- fm_mesh_2d(
     loc = loc,
     boundary = bnd,
     max.edge = max.edge * 2,
     crs = fm_crs(crs),
     ...
   )
-  m$radius <- sqrt((m$loc[, 1] - centre[1])^2 + (m$loc[, 2] - centre[2])^2)
-  m
+  mesh$radius <- sqrt((mesh$loc[, 1] - centre[1])^2 +
+    (mesh$loc[, 2] - centre[2])^2)
+  mesh
 }

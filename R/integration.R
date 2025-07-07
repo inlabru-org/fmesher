@@ -157,9 +157,13 @@ fm_cprod <- function(..., na.rm = NULL, .blockwise = FALSE) {
     nms <- names(ips)
     nms1 <- names(ips1)
     nms2 <- names(ips2)
-    nms_joint <- setdiff(nms,
-                         union(setdiff(nms1, nms2),
-                               setdiff(nms2, nms1)))
+    nms_joint <- setdiff(
+      nms,
+      union(
+        setdiff(nms1, nms2),
+        setdiff(nms2, nms1)
+      )
+    )
     nms1 <- intersect(nms, setdiff(nms1, nms_joint))
     nms2 <- intersect(nms, setdiff(nms2, nms_joint))
     ips <- ips[, c(nms1, nms2, nms_joint), drop = FALSE]
