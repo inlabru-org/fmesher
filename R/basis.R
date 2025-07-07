@@ -741,48 +741,13 @@ fm_basis_mesh_2d <- function(mesh,
 }
 
 
-#' @param method character; either "default", "nearest", "linear", or
-#' "quadratic". With `NULL` or "default", uses the object definition of the
-#' function space. Otherwise overrides the object definition.
 #' @export
 #' @rdname fm_basis_helpers
 fm_basis_mesh_1d <- function(mesh,
                              loc,
                              weights = NULL,
                              derivatives = NULL,
-                             method = deprecated(),
                              ...) {
-  if (lifecycle::is_present(method)) {
-    lifecycle::deprecate_stop(
-      "0.0.9.9020",
-      "fm_evaluator_mesh_1d(method)",
-      details = c("Create a separate fm_mesh_1d() object instead.")
-    )
-    method <- match.arg(method, c(
-      "default",
-      "nearest",
-      "linear",
-      "quadratic"
-    ))
-
-    if (!(method %in% "default") &&
-      (mesh$degree != c(nearest = 0, linear = 1, quadratic = 2)[method])) {
-      deg <- c(nearest = 0, linear = 1, quadratic = 2)[method]
-      info <- fm_basis_mesh_1d(
-        fm_mesh_1d(mesh$loc,
-          interval = mesh$interval,
-          boundary = mesh$boundary,
-          free.clamped = mesh$free.clamped,
-          degree = deg
-        ),
-        loc = loc,
-        weights = weights,
-        derivatives = derivatives
-      )
-      return(info)
-    }
-  }
-
   if (is.null(weights)) {
     weights <- rep(1.0, NROW(loc))
   } else if (length(weights) == 1L) {

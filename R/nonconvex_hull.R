@@ -747,7 +747,14 @@ fm_nonconvex_hull_inla <- function(x,
   lifecycle::deprecate_soft(
     "0.4.0.9002",
     "fm_nonconvex_hull_inla()",
-    'fm_nonconvex_hull(method = "fm")'
+    'fm_nonconvex_hull(format = "fm")',
+    paste0(
+      " The `fm_nonconvex_hull()` method  with `method = \"fm\"` and",
+      "\n",
+      " `format = \"fm\"` has replaced `fm_nonconvex_hull_inla()`.\n",
+      "Most use cases can use `fm_nonconvex_hull(...)` for `sf` output,",
+      " which since version `0.4.0.9002` uses the \"fm\" method by default."
+    )
   )
 
   stopifnot(!is.null(x))

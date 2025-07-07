@@ -100,48 +100,32 @@ geom_fm.fm_mesh_2d <- function(mapping = NULL,
     defs <- list()
   }
   if (lifecycle::is_present(mapping_int)) {
-    lifecycle::deprecate_warn(
+    lifecycle::deprecate_stop(
       "0.1.7.9009",
       "geom_fm(mapping_int)",
       "geom_fm(mappings = list(int = mapping_int))"
     )
-    if (!is.null(mappings$int)) {
-      stop("Both mapping_int and mappings$int are provided.")
-    }
-    mappings$int <- mapping_int
   }
   if (lifecycle::is_present(mapping_bnd)) {
-    lifecycle::deprecate_warn(
+    lifecycle::deprecate_stop(
       "0.1.7.9009",
       "geom_fm(mapping_bnd)",
       "geom_fm(mappings = list(bnd = mapping_bnd))"
     )
-    if (!is.null(mappings$bnd)) {
-      stop("Both mapping_bnd and mappings$bnd are provided.")
-    }
-    mappings$bnd <- mapping_bnd
   }
   if (lifecycle::is_present(defs_int)) {
-    lifecycle::deprecate_warn(
+    lifecycle::deprecate_stop(
       "0.1.7.9009",
       "geom_fm(defs_int)",
       "geom_fm(defs = list(int = defs_int))"
     )
-    if (!is.null(defs$int)) {
-      stop("Both defs_int and defs$int are provided.")
-    }
-    defs$int <- defs_int
   }
   if (lifecycle::is_present(defs_bnd)) {
-    lifecycle::deprecate_warn(
+    lifecycle::deprecate_stop(
       "0.1.7.9009",
       "geom_fm(defs_bnd)",
       "geom_fm(defs = list(bnd = defs_bnd))"
     )
-    if (!is.null(defs$bnd)) {
-      stop("Both defs_bnd and defs$bnd are provided.")
-    }
-    defs$bnd <- defs_bnd
   }
 
   if (!is.null(crs)) {
