@@ -198,9 +198,9 @@ df <- tribble(
     "fm_block()",
     "fm_block_eval()"
   ), c(
-    "inlabru::bru_mapper_multi()",
+    "inlabru::bm_multi()",
     "inlabru::ibm_jacobian()",
-    "inlabru::bru_mapper_aggregate()"
+    "inlabru::bm_aggregate()"
   ),
   "inla.mesh.deriv()", "fm_basis()", character(0)
 )
