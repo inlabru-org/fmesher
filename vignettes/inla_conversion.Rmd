@@ -174,7 +174,9 @@ df <- tribble(
   ), "",
   "inla.mesh.components()", "fm_mesh_components()", "",
   NA_character_, "fm_subdivide()", "",
-  NA_character_, "fm_hexagon_lattice()", "Creates points for equilateral triangles inside a polygon domain.",
+  NA_character_,
+  "fm_hexagon_lattice()",
+  "Creates points for equilateral triangles inside a polygon domain.",
 )
 df <- convert_fun_links(df)
 ```
