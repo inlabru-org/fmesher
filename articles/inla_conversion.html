@@ -72,7 +72,7 @@
 
       <h1>Converting legacy INLA mesh code to fmesher</h1>
             
-            <h4 data-toc-skip class="date">Updated 11 April 2025</h4>
+            <h4 data-toc-skip class="date">Updated 11 July 2025</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/inlabru-org/fmesher/blob/devel/vignettes/inla_conversion.Rmd" class="external-link"><code>vignettes/inla_conversion.Rmd</code></a></small>
       <div class="d-none name"><code>inla_conversion.Rmd</code></div>
@@ -123,7 +123,8 @@ programme for mesh construction and related operations. (From
 <li>
 <code>2L</code> uses the full range of <code>fmesher</code> package
 methods, and does not use the standalone <code>fmesher</code> programme.
-(From <code>INLA</code> around version 23.08.20)</li>
+(From <code>INLA</code> around version 23.08.20, and is now the only
+supported option.)</li>
 </ul>
 </li>
 <li><p><code>fmesher.evolution.warn</code>, logical: When
@@ -175,12 +176,14 @@ interfaces may change in the future.</p>
 </h2>
 <table class="table">
 <colgroup>
-<col width="17%">
-<col width="82%">
+<col width="11%">
+<col width="71%">
+<col width="16%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">INLA</th>
 <th align="left">fmesher</th>
+<th align="left">Comments</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
@@ -190,6 +193,7 @@ interfaces may change in the future.</p>
 ,
 <a href="https://inlabru-org.github.io/fmesher/reference/fm_rcdt_2d.html"><code>fm_rcdt_2d_inla()</code></a>
 </td>
+<td align="left"></td>
 </tr>
 <tr class="even">
 <td align="left"><code>inla.mesh.2d()</code></td>
@@ -198,22 +202,27 @@ interfaces may change in the future.</p>
 ,
 <a href="https://inlabru-org.github.io/fmesher/reference/fm_mesh_2d.html"><code>fm_mesh_2d_inla()</code></a>
 </td>
+<td align="left"></td>
 </tr>
 <tr class="odd">
 <td align="left"><code>inla.delaunay()</code></td>
 <td align="left"><a href="https://inlabru-org.github.io/fmesher/reference/fm_rcdt_2d.html"><code>fm_delaunay_2d()</code></a></td>
+<td align="left"></td>
 </tr>
 <tr class="even">
 <td align="left"><code>inla.mesh.1d()</code></td>
 <td align="left"><a href="https://inlabru-org.github.io/fmesher/reference/fm_mesh_1d.html"><code>fm_mesh_1d()</code></a></td>
+<td align="left"></td>
 </tr>
 <tr class="odd">
 <td align="left"><code>inla.mesh.lattice()</code></td>
 <td align="left"><a href="https://inlabru-org.github.io/fmesher/reference/fm_lattice_2d.html"><code>fm_lattice_2d()</code></a></td>
+<td align="left"></td>
 </tr>
 <tr class="even">
 <td align="left"><code>inla.mesh.segment()</code></td>
 <td align="left"><a href="https://inlabru-org.github.io/fmesher/reference/fm_segm.html"><code>fm_segm()</code></a></td>
+<td align="left"></td>
 </tr>
 <tr class="odd">
 <td align="left"><code>inla.nonconvex.hull()</code></td>
@@ -223,27 +232,36 @@ interfaces may change in the future.</p>
 ,
 <a href="https://inlabru-org.github.io/fmesher/reference/fm_simplify.html"><code>fm_simplify()</code></a>
 </td>
+<td align="left">Use <code>format = "fm"</code> to get
+<code>fm_segm</code> output from <code><a href="../reference/fm_nonconvex_hull.html">fm_nonconvex_hull()</a></code>.</td>
 </tr>
 <tr class="even">
 <td align="left">
-<code>inla.nonconvex.hull()</code> ,
 <code>inla.contour.segment()</code>,
 <code>inla.simplify.curve()</code>
 </td>
 <td align="left">
-<a href="https://inlabru-org.github.io/fmesher/reference/fm_nonconvex_hull_inla.html"><code>fm_nonconvex_hull_inla()</code></a>,
 <a href="https://inlabru-org.github.io/fmesher/reference/fm_simplify_helper.html"><code>fm_simplify_helper()</code></a>
 ,
 <a href="https://inlabru-org.github.io/fmesher/reference/fm_segm_contour_helper.html"><code>fm_segm_contour_helper()</code></a>
 </td>
+<td align="left"></td>
 </tr>
 <tr class="odd">
 <td align="left"><code>inla.mesh.components()</code></td>
 <td align="left"><a href="https://inlabru-org.github.io/fmesher/reference/fm_components.html"><code>fm_mesh_components()</code></a></td>
+<td align="left"></td>
 </tr>
 <tr class="even">
 <td align="left"><code>NA</code></td>
 <td align="left"><a href="https://inlabru-org.github.io/fmesher/reference/fm_subdivide.html"><code>fm_subdivide()</code></a></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>NA</code></td>
+<td align="left"><a href="https://inlabru-org.github.io/fmesher/reference/fm_hexagon_lattice.html"><code>fm_hexagon_lattice()</code></a></td>
+<td align="left">Creates points for equilateral triangles inside a
+polygon domain.</td>
 </tr>
 </tbody>
 </table>
