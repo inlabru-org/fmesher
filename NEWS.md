@@ -1,5 +1,10 @@
 # fmesher (development version)
 
+## Bug fixes
+
+* Make `fm_subdivide()` store the indexing information for the original mesh
+  locations in `$idx$loc` (version `0.5.0.9001`)
+
 # fmesher 0.5.0
 
 ## New features
