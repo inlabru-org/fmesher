@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -267,13 +267,13 @@ polygon domain.</td>
 </table>
 </div>
 <div class="section level2">
-<h2 id="basis-and-function-evaluation">Basis and function evaluation<a class="anchor" aria-label="anchor" href="#basis-and-function-evaluation"></a>
+<h2 id="location-basis-and-function-evaluation">Location, basis and function evaluation<a class="anchor" aria-label="anchor" href="#location-basis-and-function-evaluation"></a>
 </h2>
 <table class="table">
 <colgroup>
-<col width="3%">
-<col width="52%">
-<col width="44%">
+<col width="2%">
+<col width="58%">
+<col width="38%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">INLA</th>
@@ -282,18 +282,25 @@ polygon domain.</td>
 </tr></thead>
 <tbody>
 <tr class="odd">
+<td align="left"><code>inla.mesh.query()</code></td>
+<td align="left">N/A</td>
+<td align="left"><a href="No%20fmesher%20equivalent%20in%20version%20&lt;=%200.5.0.html"><code>No fmesher equivalent in version &lt;= 0.5.0::No fmesher equivalent in version &lt;= 0.5.0No fmesher equivalent in version &lt;= 0.5.0</code></a></td>
+</tr>
+<tr class="even">
 <td align="left"><code>inla.mesh.projector()</code></td>
 <td align="left"><a href="https://inlabru-org.github.io/fmesher/reference/fm_evaluate.html"><code>fm_evaluator()</code></a></td>
 <td align="left"></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><code>inla.mesh.project()</code></td>
 <td align="left"><a href="https://inlabru-org.github.io/fmesher/reference/fm_evaluate.html"><code>fm_evaluate()</code></a></td>
 <td align="left"></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><code>inla.spde.make.A()</code></td>
 <td align="left">
+<a href="https://inlabru-org.github.io/fmesher/reference/fm_bary.html"><code>fm_bary()</code></a>
+,
 <a href="https://inlabru-org.github.io/fmesher/reference/fm_basis.html"><code>fm_basis()</code></a>
 ,
 <a href="https://inlabru-org.github.io/fmesher/reference/fm_row_kron.html"><code>fm_row_kron()</code></a>,
@@ -308,7 +315,7 @@ polygon domain.</td>
 <a href="https://inlabru-org.github.io/inlabru/reference/bm_aggregate.html" class="external-link"><code>inlabru::bm_aggregate()</code></a>
 </td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><code>inla.mesh.deriv()</code></td>
 <td align="left"><a href="https://inlabru-org.github.io/fmesher/reference/fm_basis.html"><code>fm_basis()</code></a></td>
 <td align="left"></td>
@@ -340,18 +347,18 @@ polygon domain.</td>
 <td align="left"></td>
 </tr>
 <tr class="even">
-<td align="left"><code></code></td>
+<td align="left"><code>NA</code></td>
 <td align="left"><a href="https://inlabru-org.github.io/fmesher/reference/fm_gmrf.html"><code>fm_matern_precision()</code></a></td>
 <td align="left"></td>
 </tr>
 <tr class="odd">
-<td align="left"><code></code></td>
+<td align="left"><code>NA</code></td>
 <td align="left"><a href="https://inlabru-org.github.io/fmesher/reference/fm_gmrf.html"><code>fm_matern_sample()</code></a></td>
 <td align="left">Convenience function that combines
 <code><a href="../reference/fm_gmrf.html">fm_matern_precision()</a></code> and <code><a href="../reference/fm_gmrf.html">fm_sample()</a></code>.</td>
 </tr>
 <tr class="even">
-<td align="left"><code></code></td>
+<td align="left"><code>NA</code></td>
 <td align="left"><a href="https://inlabru-org.github.io/fmesher/reference/fm_gmrf.html"><code>fm_covariance()</code></a></td>
 <td align="left">Basic helper function for computing covariances between
 different locations. Can produce sparse inverses like
@@ -359,7 +366,7 @@ different locations. Can produce sparse inverses like
 force’ method.</td>
 </tr>
 <tr class="odd">
-<td align="left"><code>inla.qinv</code></td>
+<td align="left"><code></code></td>
 <td align="left"><a href="https://inlabru-org.github.io/fmesher/reference/fm_qinv.html"><code>fm_qinv()</code></a></td>
 <td align="left">Produce sparse inverses like <code>inla.qinv()</code>,
 but currently (version 0.2.0.9010) by an R implementation.</td>
