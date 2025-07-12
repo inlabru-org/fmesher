@@ -193,7 +193,9 @@ knitr::kable(df)
 ```{r echo = FALSE}
 df <- tribble(
   ~INLA, ~fmesher, ~inlabru,
-  "inla.mesh.query()", NA_character_, "No fmesher equivalent in version <= 0.5.0",
+  "inla.mesh.query()",
+  NA_character_,
+  "No fmesher equivalent in version <= 0.5.0",
   "inla.mesh.projector()", "fm_evaluator()", character(0),
   "inla.mesh.project()", "fm_evaluate()", character(0),
   "inla.spde.make.A()", c(
