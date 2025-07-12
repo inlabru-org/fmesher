@@ -16,12 +16,14 @@
 #' @param add If `TRUE`, add to the current plot, otherwise start a new
 #' plot.
 #' @param xlim,ylim X and Y axis limits for a new plot.
-#' @param rgl If `TRUE`, use `rgl` for plotting.
 #' @param asp Aspect ratio for new plots. Default 1.
 #' @param axes logical; whether axes should be drawn on the plot.
 #' Default FALSE.
 #' @param xlab,ylab character; labels for the axes.
 #' @param \dots Additional parameters, passed on to graphics methods.
+#' @param rgl `r lifecycle::badge("deprecated")` in favour of the
+#' [plot_rgl()] and [lines_rgl()] methods.
+#'   If `TRUE`, use `rgl` for plotting.
 #' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @returns None
 #' @seealso [fm_segm()], [plot.fm_mesh_2d]
@@ -31,7 +33,7 @@
 #' lines(fm_segm(fmexample$mesh, boundary = FALSE), col = 2)
 #'
 plot.fm_segm <- function(x, ..., add = FALSE) {
-  lines(x, add = add, rgl = FALSE, ...)
+  lines(x, add = add, ...)
 }
 
 #' @param visibility If "front" only display mesh faces with normal pointing
@@ -41,21 +43,26 @@ plot.fm_segm <- function(x, ..., add = FALSE) {
 lines.fm_segm <- function(x, loc = NULL, col = NULL,
                           colors = c("black", "blue", "red", "green"),
                           add = TRUE, xlim = NULL, ylim = NULL,
-                          rgl = FALSE, asp = 1,
+                          asp = 1,
                           axes = FALSE,
                           xlab = "",
                           ylab = "",
                           visibility = "front",
+                          rgl = deprecated(),
                           ...) {
-  if (rgl) {
-    lines_rgl(
+  if (lifecycle::is_present(rgl)) {
+    lifecycle::deprecate_warn(
+      "0.5.0.9000", "lines.fm_segm(rgl = )",
+      "lines_rgl()"
+    )
+    return(lines_rgl(
       x,
       loc = loc,
       col = col,
       colors = colors,
       add = add,
       ...
-    )
+    ))
   }
   segm <- x
   if (!is.null(segm$loc)) {
@@ -194,6 +201,15 @@ plot.fm_mesh_2d <- function(
     xlab = "",
     ylab = "",
     ...) {
+  if (lifecycle::is_present(rgl)) {
+    lifecycle::deprecate_warn(
+      "0.1.0",
+      "plot.fm_mesh_2d(rgl = )",
+      "plot_rgl()"
+    )
+    return(plot_rgl(x, ...))
+  }
+
   force(t.sub)
   force(xlim)
   force(ylim)
