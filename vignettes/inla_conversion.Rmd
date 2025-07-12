@@ -20,6 +20,9 @@ suppressPackageStartupMessages(library(fmesher))
 suppressPackageStartupMessages(library(tibble))
 
 convert_fun_link <- function(x, webref) {
+  if (all(is.na(x))) {
+    return("N/A")
+  }
   pkg_name <- sub(
     pattern = "^(([^:]*)::)?([^(]+)(\\(.*\\))(<-)?$",
     replacement = "\\2",
@@ -185,14 +188,16 @@ df <- convert_fun_links(df)
 knitr::kable(df)
 ```
 
-## Basis and function evaluation
+## Location, basis and function evaluation
 
 ```{r echo = FALSE}
 df <- tribble(
   ~INLA, ~fmesher, ~inlabru,
+  "inla.mesh.query()", NA_character_, "No fmesher equivalent in version <= 0.5.0",
   "inla.mesh.projector()", "fm_evaluator()", character(0),
   "inla.mesh.project()", "fm_evaluate()", character(0),
   "inla.spde.make.A()", c(
+    "fm_bary()",
     "fm_basis()",
     "fm_row_kron()",
     "fm_block()",
@@ -217,13 +222,13 @@ knitr::kable(df)
 df <- tribble(
   ~INLA, ~fmesher, ~Comments,
   c("inla.mesh.fem()", "inla.mesh.1d.fem()"), "fm_fem()", " ",
-  " ", "fm_matern_precision()", " ",
-  " ", "fm_matern_sample()", paste0(
+  NA_character_, "fm_matern_precision()", " ",
+  NA_character_, "fm_matern_sample()", paste0(
     "Convenience function that combines",
     " `fm_matern_precision()`",
     " and `fm_sample()`."
   ),
-  " ", "fm_covariance()",
+  NA_character_, "fm_covariance()",
   paste0(
     "Basic helper function for computing",
     " covariances between different locations.",
@@ -231,7 +236,7 @@ df <- tribble(
     " `inla.qinv()`, but currently (version 0.1.1) only",
     " by a 'brute force' method."
   ),
-  "inla.qinv", "fm_qinv()",
+  " ", "fm_qinv()",
   paste0(
     "Produce sparse inverses like",
     " `inla.qinv()`, but currently (version 0.2.0.9010)",
