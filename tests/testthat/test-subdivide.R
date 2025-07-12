@@ -86,6 +86,17 @@ test_that("fmesher_subdivide works", {
   m1_ <- fm_subdivide(mesh, 1)
   m2_ <- fm_subdivide(mesh, 2)
 
+  # For subdivisions, the idx$loc information should point back to the original
+  # locations, but that won't be the case for the direct constructions
+  expect_identical(m0_$idx$loc, seq_len(3))
+  expect_identical(m1_$idx$loc, seq_len(3))
+  expect_identical(m2_$idx$loc, seq_len(3))
+  m0$idx$loc <- NULL
+  m1$idx$loc <- NULL
+  m2$idx$loc <- NULL
+  m0_$idx$loc <- NULL
+  m1_$idx$loc <- NULL
+  m2_$idx$loc <- NULL
   expect_identical(m0, m0_)
   expect_identical(m1, m1_)
   expect_identical(m2, m2_)
