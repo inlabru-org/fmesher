@@ -225,17 +225,9 @@ fm_subdivide <- function(mesh, n = 1, delaunay = FALSE) {
   )
 
   # Map original points:
-  bary <- fm_bary(new_mesh, mesh$loc)
-  which_col <- (bary$where[, 1] > 1 - 1 / (n + 1) / 10) * 1L +
-    (bary$where[, 2] > 1 - 1 / (n + 1) / 10) * 2L +
-    (bary$where[, 3] > 1 - 1 / (n + 1) / 10) * 3L
-  new_mesh$idx$loc <- rep(NA_integer_, nrow(mesh$loc))
-  new_mesh$idx$loc[which_col == 1L] <-
-    new_mesh$graph$tv[bary$index[which_col == 1L], 1L]
-  new_mesh$idx$loc[which_col == 2L] <-
-    new_mesh$graph$tv[bary$index[which_col == 2L], 2L]
-  new_mesh$idx$loc[which_col == 3L] <-
-    new_mesh$graph$tv[bary$index[which_col == 3L], 3L]
+  # Relies on the input points always being placed first, which
+  # is supposed to be true.
+  new_mesh$idx$loc <- seq_len(nrow(mesh$loc))
 
   new_mesh
 }
