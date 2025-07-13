@@ -184,7 +184,10 @@ fmesher_split_lines <- function(mesh_loc, mesh_tv, loc, idx, options) {
 #' interior constraints, currently ignored
 #' @param subdivisions integer; number of new points along each edge.
 #' @param options list of triangulation options (`sphere_tolerance`)
-#' @returns A list of new `loc` and `tv` information
+#' @returns A list of new `loc` and `tv` information, and `bary_index` and
+#' `bary_where` containing the fm_bary information for the new points.
+#' Can be e.g. used to construct an interpolation mapping matrix from the old
+#' to new mesh.
 #' @keywords internal
 #' @seealso [fm_subdivide()]
 #' @examples

@@ -1,9 +1,17 @@
 # fmesher (development version)
 
+## Improved features
+
+* Add `bary=fm_bary()` information to `fm_subdivide()` output, mapping the new
+  mesh locations to the original mesh locations, e.g. for interpolating
+  functions from the original mesh to the new mesh (version `0.5.0.9002`)
+
 ## Bug fixes
 
 * Make `fm_subdivide()` store the indexing information for the original mesh
   locations in `$idx$loc` (version `0.5.0.9001`)
+* Correct off-by-one indexing error in `$graph$vt` triangle indices
+  (version `0.5.0.9002`)
 
 # fmesher 0.5.0
 

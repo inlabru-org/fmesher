@@ -558,6 +558,7 @@ fm_rcdt_2d_inla <- function(loc = NULL,
       loc = result[["s"]],
       graph = list(
         tv = idx_C2R(result[["tv"]]),
+        # Note: triangle vt indexing will be sorted out in remap_unused.
         vt = lapply(result[["vt"]], idx_C2R),
         tt = idx_C2R(result[["tt"]]),
         tti = idx_C2R(result[["tti"]]),
@@ -586,8 +587,10 @@ fm_rcdt_2d_inla <- function(loc = NULL,
     if (length(mesh$graph$vt) > 0) {
       for (vv in seq_len(nrow(mesh$loc))) {
         vt <- mesh$graph$vt[[vv]]
+        # Need to do the C->R index conversion for the triangle indices here!
         mesh$graph$vt[[vv]] <-
-          matrix(c(as.integer(names(vt)), vt), length(vt), 2)
+          matrix(c(as.integer(names(vt)) + 1L, vt), length(vt), 2)
+        colnames(mesh$graph$vt[[vv]]) <- c("t", "vi")
       }
     } else {
       # warning("VT information missing from mesh, rebuilding")
@@ -595,6 +598,7 @@ fm_rcdt_2d_inla <- function(loc = NULL,
       mesh$graph$vt <- list()
       for (vv in seq_len(nrow(mesh$loc))) {
         mesh$graph$vt[[vv]] <- matrix(NA_integer_, 0, 2)
+        colnames(mesh$graph$vt[[vv]]) <- c("t", "vi")
       }
       for (tt in seq_len(nrow(mesh$graph$tv))) {
         for (vvi in seq_len(3)) {
@@ -635,6 +639,7 @@ fm_rcdt_2d_inla <- function(loc = NULL,
     mesh
   }
 
+  # Note: this also handles the C->R conversion for triangle indexing in vt.
   m <- remap_unused(m)
 
   m

@@ -179,7 +179,9 @@ fm_refine <- function(mesh, refine = list(max.edge = 1)) {
 #' @param delaunay logical; if `TRUE`, the subdivided mesh is forced into a
 #'   Delaunay triangle structure. If `FALSE` (default), the triangles are
 #'   subdivided uniformly instead.
-#' @returns A refined [fm_mesh_2d] object
+#' @returns A refined [fm_mesh_2d] object, with added `bary` information
+#'   (an [fm_bary()] object), that can be used for interpolating functions from
+#'   the original mesh to the new mesh (from version `0.5.0.9002`).
 #' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @export
 #' @examples
@@ -191,12 +193,27 @@ fm_refine <- function(mesh, refine = list(max.edge = 1)) {
 #' mesh
 #' mesh_sub
 #'
+#' # Difference should be zero for flat triangle meshes:
+#' sum((mesh_sub$loc - fm_basis(mesh, mesh_sub$bary) %*% mesh$loc)^2)
+#'
 #' plot(mesh_sub, edge.color = 2)
 #'
 #' plot(fm_subdivide(fmexample$mesh, 3), edge.color = 2)
 #' plot(fmexample$mesh, add = TRUE, edge.color = 1)
 fm_subdivide <- function(mesh, n = 1, delaunay = FALSE) {
   if (n < 1) {
+    bary_index <- vapply(mesh$graph$vt, function(x) x[1, 1], integer(1))
+    bary_where <- as.matrix(Matrix::sparseMatrix(
+      i = seq_len(mesh$n),
+      j = vapply(mesh$graph$vt, function(x) x[1, 2], integer(1)),
+      x = rep(1, mesh$n),
+      dims = c(mesh$n, 3)
+    ))
+    mesh$bary <- fm_bary(list(bary_index, bary_where))
+
+    # Map original points, to be consistent with n >= 1:
+    mesh$idx$loc <- seq_len(nrow(mesh$loc))
+
     return(mesh)
   }
 
@@ -223,6 +240,10 @@ fm_subdivide <- function(mesh, n = 1, delaunay = FALSE) {
     crs = fm_crs(mesh),
     delaunay = delaunay
   )
+
+  bary_index <- sub$bary_index[new_mesh$idx$loc] + 1L
+  bary_where <- sub$bary_where[new_mesh$idx$loc, , drop = FALSE]
+  new_mesh$bary <- fm_bary(list(bary_index, bary_where))
 
   # Map original points:
   # Relies on the input points always being placed first, which
