@@ -1,5 +1,11 @@
 # fmesher (development version)
 
+## New features
+
+* Add `fm_subset()` method for constructing a subset of a mesh based on a set
+  of triangle (for `fm_mesh_2d`) or tetrahedron (for `fm_mesh_3d`) indices.
+  (version `0.5.0.9003`)
+
 ## Improved features
 
 * Add `bary=fm_bary()` information to `fm_subdivide()` output, mapping the new

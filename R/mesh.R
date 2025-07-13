@@ -255,6 +255,55 @@ fm_subdivide <- function(mesh, n = 1, delaunay = FALSE) {
 
 
 
+#' Extract a subset of a mesh
+#'
+#' `r lifecycle::badge("experimental")` (from version `0.5.0.9003`)
+#' Constructs a new mesh based on a subset of the triangles of an existing mesh.
+#' The current version drops any edge constraint information from the mesh.
+#'
+#' @param mesh an mesh to subset
+#' @param t_sub triangle or tetrahedron indices.
+#' @returns A subset mesh.
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
+#' @export
+#' @examples
+#' mesh_sub <- fm_subset(fmexample$mesh, 1:100)
+#' mesh_sub
+#' plot(mesh_sub)
+#'
+#' (m <- fm_delaunay_3d(matrix(rnorm(30), 10, 3)))
+#' fm_subset(m, seq_len(min(5, nrow(m$graph$tv))))
+fm_subset <- function(mesh, t_sub) {
+  tv <- mesh$graph$tv[t_sub, , drop = FALSE]
+  v <- sort(unique(as.vector(tv)))
+  idx <- rep(as.integer(NA), nrow(mesh$loc))
+  idx[v] <- seq_len(length(v))
+  tv <- matrix(idx[tv], nrow(tv), ncol(tv))
+  loc <- mesh$loc[v, , drop = FALSE]
+
+  if (inherits(mesh, "fm_mesh_2d")) {
+    mesh <- fmesher::fm_rcdt_2d_inla(
+      loc = loc,
+      tv = tv,
+      refine = FALSE,
+      crs = fm_crs(mesh),
+      delaunay = FALSE
+    )
+  } else if (inherits(mesh, "fm_mesh_3d")) {
+    mesh <- fmesher::fm_mesh_3d(loc = loc, tv = tv)
+  } else {
+    stop("`fm_subset()` currently only supports fm_mesh_2d and fm_mesh_3d.")
+  }
+
+  idx[v] <- mesh$idx$loc
+  mesh$idx$loc <- idx
+
+  mesh
+
+}
+
+
+
 join_segm <- function(...) {
   segm_list <- list(...)
   loc <- matrix(0, 0, 3)
