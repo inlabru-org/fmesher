@@ -17,7 +17,7 @@ The current version drops any edge constraint information from the mesh."></head
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -86,7 +86,9 @@ subdivided uniformly instead.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A refined <a href="fm_mesh_2d.html">fm_mesh_2d</a> object</p>
+    <p>A refined <a href="fm_mesh_2d.html">fm_mesh_2d</a> object, with added <code>bary</code> information
+(an <code><a href="fm_bary.html">fm_bary()</a></code> object), that can be used for interpolating functions from
+the original mesh to the new mesh (from version <code>0.5.0.9002</code>).</p>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
@@ -116,6 +118,10 @@ subdivided uniformly instead.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Constraints:	Boundary: 12 boundary edges (1 group: 0), Interior: 0 edges</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Bounding box: (0,1) x (0,1)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Basis d.o.f.:	15</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Difference should be zero for flat triangle meshes:</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="op">(</span><span class="va">mesh_sub</span><span class="op">$</span><span class="va">loc</span> <span class="op">-</span> <span class="fu"><a href="fm_basis.html">fm_basis</a></span><span class="op">(</span><span class="va">mesh</span>, <span class="va">mesh_sub</span><span class="op">$</span><span class="va">bary</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">mesh</span><span class="op">$</span><span class="va">loc</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mesh_sub</span>, edge.color <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="fm_subdivide-1.png" alt="" width="700" height="433"></span>
