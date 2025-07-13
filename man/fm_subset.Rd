@@ -24,8 +24,10 @@ mesh_sub <- fm_subset(fmexample$mesh, 1:100)
 mesh_sub
 plot(mesh_sub)
 
-(m <- fm_delaunay_3d(matrix(rnorm(30), 10, 3)))
-fm_subset(m, seq_len(min(5, nrow(m$graph$tv))))
+if (requireNamespace("geometry", quietly = TRUE)) {
+  (m <- fm_delaunay_3d(matrix(rnorm(30), 10, 3)))
+  fm_subset(m, seq_len(min(5, nrow(m$graph$tv))))
+}
 }
 \author{
 Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}

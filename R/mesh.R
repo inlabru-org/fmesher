@@ -271,8 +271,10 @@ fm_subdivide <- function(mesh, n = 1, delaunay = FALSE) {
 #' mesh_sub
 #' plot(mesh_sub)
 #'
-#' (m <- fm_delaunay_3d(matrix(rnorm(30), 10, 3)))
-#' fm_subset(m, seq_len(min(5, nrow(m$graph$tv))))
+#' if (requireNamespace("geometry", quietly = TRUE)) {
+#'   (m <- fm_delaunay_3d(matrix(rnorm(30), 10, 3)))
+#'   fm_subset(m, seq_len(min(5, nrow(m$graph$tv))))
+#' }
 fm_subset <- function(mesh, t_sub) {
   tv <- mesh$graph$tv[t_sub, , drop = FALSE]
   v <- sort(unique(as.vector(tv)))
