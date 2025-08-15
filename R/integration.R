@@ -946,6 +946,9 @@ fm_vertex_projection <- function(points, mesh) {
     inherits(points, "Spatial")) {
     n_points <- NROW(points)
     res <- fm_bary(mesh, points)
+  } else if (inherits(points, "fm_bary")) {
+    n_points <- NROW(points)
+    res <- points
   } else {
     n_points <- NROW(points$loc)
     res <- fm_bary(mesh, points$loc)
@@ -1462,11 +1465,17 @@ fm_int_mesh_2d_polygon <- function(samplers,
 
     idx <- sf::st_contains(samplers, integ_sf, sparse = TRUE)
 
+    if (method %in% c("stable")) {
+      integ_bary_ <- fm_bary(domain, integ_sf)
+      integ_bary_$weight <- integ$weight
+    }
+
     for (g in seq_along(idx)) {
       if (length(idx[[g]]) > 0) {
         integ_ <- integ[idx[[g]], , drop = FALSE]
 
         if (method %in% c("stable")) {
+          integ_ <- integ_bary_[idx[[g]], , drop = FALSE]
           # Project integration points and weights to mesh nodes
           integ_ <- fm_vertex_projection(integ_, domain)
         }

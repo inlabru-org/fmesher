@@ -11,6 +11,8 @@
 * Add `bary=fm_bary()` information to `fm_subdivide()` output, mapping the new
   mesh locations to the original mesh locations, e.g. for interpolating
   functions from the original mesh to the new mesh (version `0.5.0.9002`)
+* Speed up `fm_int()` for polygons by bulk pre-computing `fm_bary()` information
+  instead of separate calls in `fm_vertex_projection()` (version `0.5.0.9004`)
 
 ## Bug fixes
 
