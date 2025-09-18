@@ -73,7 +73,7 @@ different, and potentially change in the future.
 }
 
 \examples{
-\dontshow{if (require("splancs")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (require("splancs")) withAutoprint(\{ # examplesIf}
 fm_nonconvex_hull_inla(cbind(0, 0), convex = 1)
 \dontshow{\}) # examplesIf}
 }

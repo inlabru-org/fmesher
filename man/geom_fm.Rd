@@ -105,11 +105,11 @@ defs = list(
 
 }}
 \examples{
-\dontshow{if (require("ggplot2", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (require("ggplot2", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 ggplot() +
   geom_fm(data = fmexample$mesh)
 \dontshow{\}) # examplesIf}
-\dontshow{if (require("ggplot2", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (require("ggplot2", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 m <- fm_mesh_2d(
   cbind(10, 20),
   boundary = fm_extensions(cbind(10, 20), c(25, 65)),
@@ -143,14 +143,14 @@ ggplot() +
   )
 }
 \dontshow{\}) # examplesIf}
-\dontshow{if (require("ggplot2", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (require("ggplot2", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 m1 <- fm_segm(rbind(c(1, 2), c(4, 3), c(2, 4)), is.bnd = TRUE)
 m2 <- fm_segm(rbind(c(2, 2), c(3, 4), c(2, 3)), is.bnd = FALSE)
 ggplot() +
   geom_fm(data = m1) +
   geom_fm(data = m2)
 \dontshow{\}) # examplesIf}
-\dontshow{if (require("ggplot2", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (require("ggplot2", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 m <- fm_mesh_1d(
   c(1, 2, 3, 5, 7),
   boundary = c("dirichlet", "neumann"),

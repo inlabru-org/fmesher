@@ -218,7 +218,10 @@ fm_cprod <- function(..., na.rm = NULL, .blockwise = FALSE) {
 # blocks=FALSE gives default .block=1L
 # blocks=TRUE gives default .block=seq_len(NROW(object)
 # weight=1L is the default weight
-fm_int_object <- function(object, blocks = FALSE, weight = NULL, name = NULL) {
+# If name is non-null and override=TRUE for sf object, the current sf_column is
+# renamed to name.
+fm_int_object <- function(object, blocks = FALSE, weight = NULL,
+                          name = NULL, override = FALSE) {
   if (!is.data.frame(object)) {
     if (is.null(name) || (nzchar(name) == 0)) {
       stop("A dimension name must be provided for the integration points.")
@@ -247,6 +250,17 @@ fm_int_object <- function(object, blocks = FALSE, weight = NULL, name = NULL) {
         object <- tibble::as_tibble(object)
       }
     }
+    if (override) {
+      if (!is.null(name) && inherits(object, "sf")) {
+        if (name %in% names(object)) {
+          if (inherits(object[[name]], "sfc")) {
+            sf::st_geometry(object) <- name
+          }
+        } else if (!is.null(attr(object, "sf_column", exact = TRUE))) {
+          sf::st_geometry(object) <- name
+        }
+      }
+    }
     if (is.null(object[["weight"]])) {
       if (is.null(weight)) {
         object[["weight"]] <- 1
@@ -270,6 +284,7 @@ fm_int_object <- function(object, blocks = FALSE, weight = NULL, name = NULL) {
       colnames(object[[".block_origin"]]) <- name
     }
   }
+
   object
 }
 
@@ -1041,6 +1056,13 @@ fm_vertex_projection <- function(points, mesh) {
     ret <- data
   }
 
+  if (inherits(ret, "sf") && inherits(points, "sf")) {
+    if (!is.null(attr(points, "sf_column")) &&
+      (attr(points, "sf_column") != attr(ret, "sf_column"))) {
+      ret <- dplyr::rename(ret, "{attr(points, 'sf_column')}" := "geometry")
+    }
+  }
+
   ret
 }
 
@@ -1298,15 +1320,11 @@ fm_int_mesh_2d_lines <- function(samplers,
     byrow = TRUE,
     dimnames = list(NULL, colnames(.block_origin))
   )
-  ips <- fm_int_object(ips, name = name)
+  ips <- fm_int_object(ips, name = name, override = TRUE)
 
   # Project to mesh vertices
   if (project) {
     ips <- fm_vertex_projection(ips, domain)
-  }
-
-  if (!is.null(name) && (name != attr(ips, "sf_column"))) {
-    ips <- dplyr::rename(ips, "{name}" := "geometry")
   }
 
   ips
@@ -1493,7 +1511,8 @@ fm_int_mesh_2d_polygon <- function(samplers,
               coords = c("x", "y", "z"),
               crs = domain_crs
             ),
-            name = name
+            name = name,
+            override = TRUE
           )
         } else {
           ips <- fm_int_object(
@@ -1507,7 +1526,8 @@ fm_int_mesh_2d_polygon <- function(samplers,
               coords = c("x", "y"),
               crs = domain_crs
             ),
-            name = name
+            name = name,
+            override = TRUE
           )
         }
 
@@ -1533,7 +1553,8 @@ fm_int_mesh_2d_polygon <- function(samplers,
           coords = c("x", "y", "z"),
           crs = domain_crs
         ),
-        name = name
+        name = name,
+        override = TRUE
       ))
     } else {
       ipsl <- list(fm_int_object(
@@ -1547,19 +1568,17 @@ fm_int_mesh_2d_polygon <- function(samplers,
           coords = c("x", "y"),
           crs = domain_crs
         ),
-        name = name
+        name = name,
+        override = TRUE
       ))
     }
   }
 
   ips <- fm_int_object(
     do.call(dplyr::bind_rows, ipsl),
-    name = name
+    name = name,
+    override = TRUE
   )
-
-  if (!is.null(name) && (name != attr(ips, "sf_column"))) {
-    ips <- dplyr::rename(ips, "{name}" := "geometry")
-  }
 
   ips
 }
@@ -1588,11 +1607,7 @@ fm_int_mesh_2d.sfc_POLYGON <- function(samplers,
 
   ips$weight <- ips$weight * .weight[ips$.block]
   ips$.block <- .block[ips$.block]
-  ips <- fm_int_object(ips, name = name)
-
-  if (!is.null(name) && (name != attr(ips, "sf_column"))) {
-    ips <- dplyr::rename(ips, "{name}" := "geometry")
-  }
+  ips <- fm_int_object(ips, name = name, override = TRUE)
 
   ips
 }
@@ -1617,11 +1632,7 @@ fm_int_mesh_2d.sfc_MULTIPOLYGON <- function(samplers,
 
   ips$weight <- ips$weight * .weight[ips$.block]
   ips$.block <- .block[ips$.block]
-  ips <- fm_int_object(ips, name = name)
-
-  if (!is.null(name) && (name != attr(ips, "sf_column"))) {
-    ips <- dplyr::rename(ips, "{name}" := "geometry")
-  }
+  ips <- fm_int_object(ips, name = name, override = TRUE)
 
   ips
 }
@@ -1660,12 +1671,9 @@ fm_int_mesh_2d.sfc_GEOMETRY <- function(samplers,
   }
   ips <- fm_int_object(
     do.call(dplyr::bind_rows, ips),
-    name = name
+    name = name,
+    override = TRUE
   )
-
-  if (!is.null(name) && (name != attr(ips, "sf_column"))) {
-    ips <- dplyr::rename(ips, "{name}" := "geometry")
-  }
 
   ips
 }
