@@ -13,6 +13,11 @@
   functions from the original mesh to the new mesh (version `0.5.0.9002`)
 * Speed up `fm_int()` for polygons by bulk pre-computing `fm_bary()` information
   instead of separate calls in `fm_vertex_projection()` (version `0.5.0.9004`)
+* Handle heterogeneous `sf` geometry XY/XYZ dimensions in
+  `fm_bary()`/`fm_basis()` via new internal `fm_zm()` method that is called
+  by `fm_onto_mesh()` and `fm_unify_coords()` to promote XY to XYZ when needed,
+  before calling `sf::st_coordinates()`, as `sf::st_coordinates()` otherwise fails.
+  (version `0.5.0.9005`)
 
 ## Bug fixes
 
@@ -20,6 +25,8 @@
   locations in `$idx$loc` (version `0.5.0.9001`)
 * Correct off-by-one indexing error in `$graph$vt` triangle indices
   (version `0.5.0.9002`)
+* Propagate correct `crs` information in `fm_bary_loc()` for 2D spaces
+  (version `0.5.0.9005`)
 
 # fmesher 0.5.0
 

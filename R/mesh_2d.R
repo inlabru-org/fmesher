@@ -124,7 +124,8 @@ fm_unify_coords.sf <- function(x, crs = NULL) {
 #' @rdname fm_unify_coords
 #' @export
 fm_unify_coords.sfc <- function(x, crs = NULL) {
-  loc <- sf::st_coordinates(x)
+  loc <- fm_zm(x)
+  loc <- sf::st_coordinates(loc)
   loc <- loc[, intersect(colnames(loc), c("X", "Y", "Z")), drop = FALSE]
   x <- fm_transform(
     loc,

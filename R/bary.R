@@ -761,7 +761,7 @@ fm_bary_loc.fm_mesh_2d <- function(mesh, bary = NULL, ..., format = NULL) {
     loc <- sf::st_as_sf(
       as.data.frame(loc),
       coords = seq_len(ncol(loc)),
-      crs = fm_crs(loc)
+      crs = fm_crs(mesh)
     )
   }
   loc
@@ -876,7 +876,7 @@ fm_bary_loc.fm_lattice_2d <- function(mesh, bary = NULL, ..., format = NULL) {
     loc <- sf::st_as_sf(
       as.data.frame(loc),
       coords = seq_len(ncol(loc)),
-      crs = fm_crs(loc)
+      crs = fm_crs(mesh)
     )
   }
   loc

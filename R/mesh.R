@@ -569,6 +569,50 @@ fm_centroids <- function(x, format = NULL) {
 }
 
 
+fm_zm <- function(geometry) {
+  if (NROW(geometry) == 0L) {
+    return(geometry)
+  }
+  # Individual elements in sf columns may have different XY/XYZ properties,
+  # so need to find out if any of them have Z, and then extend all others
+  # to have Z too. M is essentially ignored here, so the results may have a
+  # mix of with/without M, as sf::st_zm currently doesn't support drop=FALSE
+  # for M features.
+  if (NROW(geometry) > 0L) {
+    ncols <- vapply(
+      geometry, function(x) {
+        if (inherits(x, c("XY", "XYM"))) {
+          2L
+        } else if (inherits(x, c("XYZ", "XYZM"))) {
+          3L
+        } else {
+          0L
+        }
+      },
+      0L
+    )
+    ncol_minmax <- range(ncols)
+  } else {
+    ncol_minmax <- c(3L, 3L)
+  }
+  if (NROW(geometry) > 0L) {
+    if (ncol_minmax[1] != ncol_minmax[2]) {
+      # Some with Z, some without
+      geometry[ncols == 2L] <-
+        sf::st_zm(geometry[ncols == 2L], drop = FALSE, what = "Z")
+    }
+  } else {
+    geometry <-
+      sf::st_as_sf(
+        as.data.frame(
+          matrix(0.0, 0L, ncol_minmax[2])
+        ),
+        coords = seq_len(ncol_minmax[2]),
+        crs = fm_crs(geometry)
+      )$geometry
+  }
+  geometry
+}
 
 # Convert loc information to raw matrix coordinates for the mesh
 fm_onto_mesh <- function(mesh, loc, crs = NULL) {
@@ -585,6 +629,12 @@ fm_onto_mesh <- function(mesh, loc, crs = NULL) {
     fm_safe_sp(force = TRUE)
     loc <- sp::coordinates(loc)
   } else if (inherits(loc, c("sf", "sfc", "sfg"))) {
+    if (inherits(loc, "sf")) {
+      loc <- sf::st_geometry(loc)
+    } else if (inherits(loc, "sfg")) {
+      loc <- sf::st_sfc(loc)
+    }
+    loc <- fm_zm(loc)
     loc <- sf::st_coordinates(loc)
     c_names <- colnames(loc)
     c_names <- intersect(c_names, c("X", "Y", "Z"))
