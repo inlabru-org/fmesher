@@ -359,21 +359,88 @@ join_segm <- function(...) {
 #' Construct the intersection mesh of a mesh and a polygon
 #'
 #' @param mesh `fm_mesh_2d` object to be intersected
-#' @param poly `fm_segm` object with a closed polygon
-#'   to intersect with the mesh
+#' @param poly `fm_segm` object with a closed polygon to intersect with the
+#'   mesh, or a polygon object that can be converted with [fm_as_segm()]
 #' @returns An [fm_mesh_2d] object
 #' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @keywords internal
 #' @export
 #' @examples
-#' segm <- fm_segm(rbind(c(-4, -4), c(4, -4), c(0, 4)),
+#' segm <- fm_segm(
+#'   rbind(c(-4, -4), c(4, -3), c(0, 4)),
 #'   is.bnd = TRUE
 #' )
-#' str(m <- fm_mesh_intersection(fmexample$mesh, segm))
+#' (m <- fm_mesh_intersection(fmexample$mesh, segm))
 #' plot(fmexample$mesh)
 #' lines(segm, col = 4)
 #' plot(m, edge.color = 2, add = TRUE)
+#'
+#' \donttest{
+#' # Non-overlapping addition
+#' segm2 <- fm_segm(c(
+#'   segm,
+#'   fm_segm(
+#'     rbind(c(-4, 0), c(-3, 0), c(-2, 2)),
+#'     is.bnd = TRUE
+#'   )
+#' ))
+#' (m2 <- fm_mesh_intersection(fm_subdivide(fmexample$mesh, 2), segm2))
+#' m2_int <- fm_int(m2)
+#' plot(m2, edge.color = 2)
+#' lines(segm2, col = 4)
+#' plot(fmexample$mesh, edge.color = 1, add = TRUE)
+#' plot(m2_int$geometry, pch = 20, cex = sqrt(m2_int$weight) * 4, add = TRUE)
+#' }
+#'
+#' \donttest{
+#' # Add a hole and restrict to inner part of the original mesh
+#' # To avoid issues with intersecting boundary segments, compute
+#' # two separate intersection calculations in sequence.
+#' # To allow this to be done as a single step, would need to first
+#' # cross-intersect the boundary segments.
+#' inner_bnd <- fm_segm(fmexample$mesh, boundary = FALSE)
+#' fm_is_bnd(inner_bnd) <- TRUE
+#' segm3 <- fm_segm(c(
+#'   segm2,
+#'   fm_segm(
+#'     rbind(c(-1.5, 0), c(1, -0.5), c(0, -1.5)),
+#'     is.bnd = TRUE
+#'   )
+#' ))
+#' (m3 <- fm_mesh_intersection(
+#'   fm_mesh_intersection(
+#'     fm_subdivide(fmexample$mesh, 2),
+#'     inner_bnd
+#'   ),
+#'   segm3
+#' ))
+#' m3_int <- fm_int(m3)
+#' plot(fmexample$mesh)
+#' plot(m3, edge.color = 2, add = TRUE)
+#' lines(segm3, col = 4)
+#' plot(m3_int$geometry, pch = 20, cex = sqrt(m3_int$weight) * 4, add = TRUE)
+#' }
+#'
+#' \donttest{
+#' # Spherical mesh
+#' (m_s2 <- fm_rcdt_2d(globe = 4))
+#' segm4 <- fm_segm(
+#'   rbind(
+#'     c(1, 0, 0.1) / sqrt(1.01),
+#'     c(0, 1, 0),
+#'     c(-1, -1, 1) / sqrt(3)
+#'   ),
+#'   is.bnd = TRUE
+#' )
+#' (m4 <- fm_mesh_intersection(fm_subdivide(m_s2, 1), segm4))
+#' m4_int <- fm_int(m4)
+#' plot(m_s2)
+#' plot(m4, edge.color = 2, add = TRUE)
+#' plot(m4_int$geometry, pch = 20, cex = sqrt(m4_int$weight) * 8, add = TRUE)
+#' }
 fm_mesh_intersection <- function(mesh, poly) {
+  poly <- fm_as_segm(poly)
+  poly <- fm_transform(poly, fm_crs(mesh), passthrough = TRUE)
   if (ncol(poly$loc) < 3) {
     poly$loc <- cbind(poly$loc, 0)
   }
@@ -401,32 +468,14 @@ fm_mesh_intersection <- function(mesh, poly) {
     extend = TRUE
   )
 
-  mesh_poly <- fm_rcdt_2d_inla(boundary = poly)
+  mesh_poly <- fm_rcdt_2d_inla(boundary = split_segm)
 
-  loc_tri <-
-    (mesh_joint_cover$loc[mesh_joint_cover$graph$tv[, 1], , drop = FALSE] +
-      mesh_joint_cover$loc[mesh_joint_cover$graph$tv[, 2], , drop = FALSE] +
-      mesh_joint_cover$loc[mesh_joint_cover$graph$tv[, 3], , drop = FALSE]) / 3
+  loc_tri <- fm_centroids(mesh_joint_cover)
   ok_tri <-
     fm_is_within(loc_tri, mesh) &
       fm_is_within(loc_tri, mesh_poly)
   if (any(ok_tri)) {
-    loc_subset <- unique(sort(as.vector(
-      mesh_joint_cover$graph$tv[ok_tri, , drop = FALSE]
-    )))
-    new_idx <- integer(mesh$n)
-    new_idx[loc_subset] <- seq_along(loc_subset)
-    tv_subset <-
-      matrix(
-        new_idx[mesh_joint_cover$graph$tv[ok_tri, , drop = FALSE]],
-        ncol = 3
-      )
-    loc_subset <- mesh_joint_cover$loc[loc_subset, , drop = FALSE]
-    mesh_subset <- fm_rcdt_2d_inla(
-      loc = loc_subset,
-      tv = tv_subset,
-      extend = FALSE
-    )
+    mesh_subset <- fm_subset(mesh_joint_cover, which(ok_tri))
   } else {
     mesh_subset <- NULL
   }
@@ -568,11 +617,46 @@ fm_centroids <- function(x, format = NULL) {
   )
 }
 
+# # Idea:
+# # If add=NULL, ensure all elements use the minimal XY/XYZ/XYM/XYZM required
+# # to store all the data
+# # And to expand more than required by the existing data:
+# # If add="Z", require minimally valid XYZ or XYZM
+# # If add="M", require minimally valid XYM or XYZM
+# # If add="ZM", require XYZM
+# # And a corresponding feature, e.g. a "remove" argument, to allow reducing
+# # to a smaller set than the existing data
+# # (with configurable warning e.g. if removing non-zero Z-values)
+# # If safety="warn", warn if removing non-zero Z with remove="Z"
+# # If safety="error", give an error
+# # If safety="silent", silently drop non-zero Z
+# fm_zm <-function(x, add=NULL,remove=NULL,safety="warn"){...}
+# # Example: fm_zm(x, add="Z", remove="M")
+#
+# XY is compatible with XY,XYZ,XYM,XYZM
+# XYZ and add="Z" are compatible with XYZ,XYZM
+# XYM and add="M" are compatible with XYM,XYZM
+# XYZM and add="ZM" are compatible with XYZM
+# Compute the intersection between the compatibility sets, and use the first
+#   in the sequence, as it will be the minimal compatible version.
+# If remove is non-NULL, first remove incompatible versions, and discard empty
+#   compatibility sets before computing their intersections.
+#
+# XY -> XYZ (cbind)
+# XY -> XYM (cbind)
+# XY -> XYZM (cbind 2 columns)
+# XYZ -> XYZM (cbind)
+# XYM -> XYZM (splice)
+# XYZM -> XYZ (drop last)
+# XYZM -> XYM (drop inner)
+# XYZM -> XY (drop last two)
+# XYZ -> XY (drop last)
+# XYM -> XY (drop last)
+#
+# XYZ -> XYM (zero out the last column)
+# XYM -> XYZ (zero out the last column)
 
 fm_zm <- function(geometry) {
-  if (NROW(geometry) == 0L) {
-    return(geometry)
-  }
   # Individual elements in sf columns may have different XY/XYZ properties,
   # so need to find out if any of them have Z, and then extend all others
   # to have Z too. M is essentially ignored here, so the results may have a

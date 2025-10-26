@@ -27,6 +27,11 @@
   (version `0.5.0.9002`)
 * Propagate correct `crs` information in `fm_bary_loc()` for 2D spaces
   (version `0.5.0.9005`)
+* Fix bugs in `fm_mesh_intersection()` and `fm_bary()` C++ code that caused
+  incorrect behaviour for locating points on meshes on subsets of the sphere.
+  Also allow `fm_mesh_intersection()` to generate non-Delaunay triangles,
+  allowing the generated meshes to be used for stable integration schemes
+  (version `0.5.0.9006`)
 
 # fmesher 0.5.0
 
