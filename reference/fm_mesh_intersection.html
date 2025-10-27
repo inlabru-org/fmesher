@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.9005</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.9006</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,8 +69,8 @@
 
 
 <dt id="arg-poly">poly<a class="anchor" aria-label="anchor" href="#arg-poly"></a></dt>
-<dd><p><code>fm_segm</code> object with a closed polygon
-to intersect with the mesh</p></dd>
+<dd><p><code>fm_segm</code> object with a closed polygon to intersect with the
+mesh, or a polygon object that can be converted with <code><a href="fm_as_segm.html">fm_as_segm()</a></code></p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -84,455 +84,117 @@ to intersect with the mesh</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">segm</span> <span class="op">&lt;-</span> <span class="fu"><a href="fm_segm.html">fm_segm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">4</span>, <span class="op">-</span><span class="fl">4</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="op">-</span><span class="fl">4</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span>,</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">segm</span> <span class="op">&lt;-</span> <span class="fu"><a href="fm_segm.html">fm_segm</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">4</span>, <span class="op">-</span><span class="fl">4</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="op">-</span><span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  is.bnd <span class="op">=</span> <span class="cn">TRUE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu">fm_mesh_intersection</span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span>, <span class="va">segm</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> List of 8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ meta    :List of 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ is.refined: logi FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ manifold: chr "R2"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ n       : int 246</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ loc     : num [1:246, 1:3] 3.36 2.99 2.8 2.61 2.6 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ graph   :List of 5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ tv : int [1:407, 1:3] 3 221 97 94 99 128 164 95 101 221 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ vt :List of 246</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1, 1:2] 74 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:4, 1:2] 1 74 293 295 3 2 3 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:3, 1:2] 1 290 318 1 3 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:2, 1:2] 285 290 1 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:4, 1:2] 11 285 287 314 3 2 3 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:2, 1:2] 287 319 1 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:3, 1:2] 4 174 319 2 3 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:2, 1:2] 4 307 3 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:3, 1:2] 8 85 307 3 1 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:3, 1:2] 63 79 85 3 1 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:3, 1:2] 61 79 82 3 2 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:2, 1:2] 59 61 3 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:2, 1:2] 59 324 1 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:3, 1:2] 58 127 324 3 1 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:4, 1:2] 5 127 206 330 3 2 2 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:2, 1:2] 125 330 1 3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:3, 1:2] 15 125 325 3 2 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:2, 1:2] 102 325 1 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:3, 1:2] 23 102 129 3 2 3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:3, 1:2] 23 51 331 1 3 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:2, 1:2] 51 332 1 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:3, 1:2] 49 111 332 1 3 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:2, 1:2] 20 49 1 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:3, 1:2] 9 20 24 3 2 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:3, 1:2] 24 107 219 3 3 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:2, 1:2] 107 342 1 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:4, 1:2] 25 113 328 342 3 3 2 3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:2, 1:2] 25 221 1 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:3, 1:2] 221 333 347 3 3 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:2, 1:2] 333 350 1 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:3, 1:2] 34 37 350 3 2 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:4, 1:2] 37 39 40 343 3 3 2 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1, 1:2] 40 3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:2, 1:2] 39 40 1 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:3, 1:2] 38 39 343 3 2 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:2, 1:2] 38 344 1 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:4, 1:2] 35 36 41 344 3 2 3 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:2, 1:2] 35 334 1 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:3, 1:2] 42 334 348 3 3 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:2, 1:2] 42 345 1 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:3, 1:2] 30 31 345 3 2 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:2, 1:2] 31 188 3 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:4, 1:2] 28 43 114 188 3 2 2 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:2, 1:2] 114 351 3 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:3, 1:2] 27 351 402 3 2 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:2, 1:2] 26 27 1 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:3, 1:2] 26 160 163 2 1 3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:2, 1:2] 22 163 2 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:3, 1:2] 22 159 164 3 3 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:3, 1:2] 47 159 215 3 1 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:2, 1:2] 47 166 1 3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:2, 1:2] 101 166 2 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:3, 1:2] 101 214 217 3 3 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:3, 1:2] 18 214 374 3 1 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:2, 1:2] 18 226 1 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:3, 1:2] 226 245 391 3 3 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:2, 1:2] 245 388 1 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:2, 1:2] 228 388 1 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:3, 1:2] 81 123 228 1 3 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:3, 1:2] 81 229 243 2 3 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:2, 1:2] 55 229 3 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:2, 1:2] 55 183 1 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:3, 1:2] 145 183 337 3 2 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:4, 1:2] 246 336 337 339 3 3 2 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:2, 1:2] 336 340 1 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:3, 1:2] 64 99 340 3 1 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:2, 1:2] 65 99 1 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:4, 1:2] 65 67 69 278 2 3 3 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:2, 1:2] 69 98 1 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:3, 1:2] 92 98 100 3 3 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:3, 1:2] 92 194 270 1 3 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:2, 1:2] 194 257 1 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:2, 1:2] 149 257 1 3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:4, 1:2] 71 77 149 259 3 2 2 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1, 1:2] 77 3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:3, 1:2] 78 144 261 1 2 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:3, 1:2] 76 144 267 2 3 3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:3, 1:2] 76 263 266 3 2 3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:3, 1:2] 263 268 284 3 2 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:2, 1:2] 296 407 1 3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:3, 1:2] 74 295 296 3 1 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:5, 1:2] 67 153 278 403 404 2 2 3 3 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:6, 1:2] 196 210 260 265 300 405 3 2 3 1 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:6, 1:2] 73 147 265 299 300 321 2 3 2 3 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:5, 1:2] 147 272 298 321 322 1 2 2 3 3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:6, 1:2] 168 262 264 275 298 322 1 1 2 1 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:5, 1:2] 168 171 274 275 305 2 1 1 3 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:6, 1:2] 224 273 280 281 283 311 1 2 3 3 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:6, 1:2] 172 224 240 291 311 312 2 2 2 3 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:5, 1:2] 173 286 291 294 312 2 3 1 2 3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:6, 1:2] 173 288 294 310 313 316 3 1 1 3 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:7, 1:2] 11 13 288 313 314 317 320 2 3 2 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:6, 1:2] 11 88 174 287 319 320 1 2 2 2 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:7, 1:2] 4 8 14 88 174 307 308 1 2 2 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:6, 1:2] 7 8 14 63 85 86 3 1 3 2 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:6, 1:2] 63 66 79 82 84 86 1 3 3 1 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:8, 1:2] 3 58 59 61 82 84 91 324 1 2 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:5, 1:2] 3 58 127 206 323 2 1 3 1 3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : int [1:5, 1:2] 5 15 125 329 330 1 2 3 3 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : chr [1:2] "t" "vi"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. [list output truncated]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ tt : int [1:407, 1:3] 293 68 323 NA 206 104 14 307 20 175 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ tti: int [1:407, 1:3] 2 1 1 NA 1 1 2 1 1 1 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ vv :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..@ i       : int [1:1304] 1 80 0 2 80 227 243 1 3 227 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..@ p       : int [1:247] 0 2 7 11 14 19 22 26 29 33 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..@ Dim     : int [1:2] 246 246</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..@ Dimnames:List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..@ x       : num [1:1304] 1 1 1 1 1 1 1 1 1 1 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..@ factors : list()</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ segm    :List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ int:List of 5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ loc   : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ idx   : int[0 , 1:2] </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ grp   : int(0) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ is.bnd: logi(0) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ crs   : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..- attr(*, "class")= chr [1:2] "fm_segm" "inla.mesh.segment"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ bnd:List of 5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ loc   : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ idx   : int [1:83, 1:2] 1 2 3 4 5 6 7 8 9 10 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ grp   : int [1:83] 0 0 0 0 0 0 0 0 0 0 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ is.bnd: logi [1:83] TRUE TRUE TRUE TRUE TRUE TRUE ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ crs   : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..- attr(*, "class")= chr [1:2] "fm_segm" "inla.mesh.segment"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ idx     :List of 3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ segm   : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ lattice: NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ loc    : int [1:246] 1 2 3 4 5 6 7 8 9 10 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ crs     :List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ input: chr NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ wkt  : chr NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..- attr(*, "class")= chr "crs"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - attr(*, "class")= chr [1:2] "fm_mesh_2d" "inla.mesh"</span>
+<span class="r-in"><span><span class="op">(</span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu">fm_mesh_intersection</span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span>, <span class="va">segm</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fm_mesh_2d object:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Manifold:	R2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   V / E / T:	251 / 665 / 415</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Euler char.:	1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Constraints:	Boundary: 85 boundary edges (1 group: 0), Interior: 0 edges</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Bounding box: (-3.378964, 3.623639) x (-3.691805, 4.000000)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Basis d.o.f.:	251</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="va">segm</span>, col <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m</span>, edge.color <span class="op">=</span> <span class="fl">2</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="fm_mesh_intersection-1.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="co"># Non-overlapping addition</span></span></span>
+<span class="r-in"><span><span class="va">segm2</span> <span class="op">&lt;-</span> <span class="fu"><a href="fm_segm.html">fm_segm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">segm</span>,</span></span>
+<span class="r-in"><span>  <span class="fu"><a href="fm_segm.html">fm_segm</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">4</span>, <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">3</span>, <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    is.bnd <span class="op">=</span> <span class="cn">TRUE</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">(</span><span class="va">m2</span> <span class="op">&lt;-</span> <span class="fu">fm_mesh_intersection</span><span class="op">(</span><span class="fu"><a href="fm_subdivide.html">fm_subdivide</a></span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span>, <span class="fl">2</span><span class="op">)</span>, <span class="va">segm2</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fm_mesh_2d object:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Manifold:	R2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   V / E / T:	1920 / 5398 / 3480</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Euler char.:	2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Constraints:	Boundary: 356 boundary edges (1 group: 0), Interior: 0 edges</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Bounding box: (-4.000000, 3.623639) x (-3.691805, 4.000000)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Basis d.o.f.:	1920</span>
+<span class="r-in"><span><span class="va">m2_int</span> <span class="op">&lt;-</span> <span class="fu"><a href="fm_int.html">fm_int</a></span><span class="op">(</span><span class="va">m2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m2</span>, edge.color <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="va">segm2</span>, col <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span>, edge.color <span class="op">=</span> <span class="fl">1</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m2_int</span><span class="op">$</span><span class="va">geometry</span>, pch <span class="op">=</span> <span class="fl">20</span>, cex <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">m2_int</span><span class="op">$</span><span class="va">weight</span><span class="op">)</span> <span class="op">*</span> <span class="fl">4</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="fm_mesh_intersection-2.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="co"># Add a hole and restrict to inner part of the original mesh</span></span></span>
+<span class="r-in"><span><span class="co"># To avoid issues with intersecting boundary segments, compute</span></span></span>
+<span class="r-in"><span><span class="co"># two separate intersection calculations in sequence.</span></span></span>
+<span class="r-in"><span><span class="co"># To allow this to be done as a single step, would need to first</span></span></span>
+<span class="r-in"><span><span class="co"># cross-intersect the boundary segments.</span></span></span>
+<span class="r-in"><span><span class="va">inner_bnd</span> <span class="op">&lt;-</span> <span class="fu"><a href="fm_segm.html">fm_segm</a></span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span>, boundary <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="fm_segm.html">fm_is_bnd</a></span><span class="op">(</span><span class="va">inner_bnd</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="cn">TRUE</span></span></span>
+<span class="r-in"><span><span class="va">segm3</span> <span class="op">&lt;-</span> <span class="fu"><a href="fm_segm.html">fm_segm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">segm2</span>,</span></span>
+<span class="r-in"><span>  <span class="fu"><a href="fm_segm.html">fm_segm</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1.5</span>, <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="op">-</span><span class="fl">0.5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="op">-</span><span class="fl">1.5</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    is.bnd <span class="op">=</span> <span class="cn">TRUE</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">(</span><span class="va">m3</span> <span class="op">&lt;-</span> <span class="fu">fm_mesh_intersection</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu">fm_mesh_intersection</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="fm_subdivide.html">fm_subdivide</a></span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span>, <span class="fl">2</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="va">inner_bnd</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="va">segm3</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fm_mesh_2d object:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Manifold:	R2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   V / E / T:	1388 / 3788 / 2401</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Euler char.:	1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Constraints:	Boundary: 373 boundary edges (1 group: 0), Interior: 0 edges</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Bounding box: (-3.344418, 2.076846) x (-1.995602, 3.260485)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Basis d.o.f.:	1388</span>
+<span class="r-in"><span><span class="va">m3_int</span> <span class="op">&lt;-</span> <span class="fu"><a href="fm_int.html">fm_int</a></span><span class="op">(</span><span class="va">m3</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m3</span>, edge.color <span class="op">=</span> <span class="fl">2</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="va">segm3</span>, col <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m3_int</span><span class="op">$</span><span class="va">geometry</span>, pch <span class="op">=</span> <span class="fl">20</span>, cex <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">m3_int</span><span class="op">$</span><span class="va">weight</span><span class="op">)</span> <span class="op">*</span> <span class="fl">4</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="fm_mesh_intersection-3.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="co"># Spherical mesh</span></span></span>
+<span class="r-in"><span><span class="op">(</span><span class="va">m_s2</span> <span class="op">&lt;-</span> <span class="fu"><a href="fm_rcdt_2d.html">fm_rcdt_2d</a></span><span class="op">(</span>globe <span class="op">=</span> <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fm_mesh_2d object:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Manifold:	S2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   V / E / T:	162 / 480 / 320</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Euler char.:	2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Constraints:	Boundary: 0 edges, Interior: 0 edges</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Bounding box: (-1, 1) x (-1, 1) x (-1, 1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Basis d.o.f.:	162</span>
+<span class="r-in"><span><span class="va">segm4</span> <span class="op">&lt;-</span> <span class="fu"><a href="fm_segm.html">fm_segm</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0.1</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">1.01</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="op">-</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span>,</span></span>
+<span class="r-in"><span>  is.bnd <span class="op">=</span> <span class="cn">TRUE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">(</span><span class="va">m4</span> <span class="op">&lt;-</span> <span class="fu">fm_mesh_intersection</span><span class="op">(</span><span class="fu"><a href="fm_subdivide.html">fm_subdivide</a></span><span class="op">(</span><span class="va">m_s2</span>, <span class="fl">1</span><span class="op">)</span>, <span class="va">segm4</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fm_mesh_2d object:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Manifold:	S2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   V / E / T:	259 / 690 / 432</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Euler char.:	1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Constraints:	Boundary: 84 boundary edges (1 group: 0), Interior: 0 edges</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Bounding box: (-0.7070939, 0.9950372) x (-0.674452, 1.000000) x (0,1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Basis d.o.f.:	259</span>
+<span class="r-in"><span><span class="va">m4_int</span> <span class="op">&lt;-</span> <span class="fu"><a href="fm_int.html">fm_int</a></span><span class="op">(</span><span class="va">m4</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m_s2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m4</span>, edge.color <span class="op">=</span> <span class="fl">2</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m4_int</span><span class="op">$</span><span class="va">geometry</span>, pch <span class="op">=</span> <span class="fl">20</span>, cex <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">m4_int</span><span class="op">$</span><span class="va">weight</span><span class="op">)</span> <span class="op">*</span> <span class="fl">8</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="fm_mesh_intersection-4.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
