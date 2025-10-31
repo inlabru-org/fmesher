@@ -16,7 +16,7 @@ mesh, or a polygon object that can be converted with \code{\link[=fm_as_segm]{fm
 An \link{fm_mesh_2d} object
 }
 \description{
-Construct the intersection mesh of a mesh and a polygon
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} (from version \verb{0.5.0.9006})
 }
 \examples{
 segm <- fm_segm(

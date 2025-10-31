@@ -358,6 +358,8 @@ join_segm <- function(...) {
 
 #' Construct the intersection mesh of a mesh and a polygon
 #'
+#' @description `r lifecycle::badge("experimental")` (from version `0.5.0.9006`)
+#'
 #' @param mesh `fm_mesh_2d` object to be intersected
 #' @param poly `fm_segm` object with a closed polygon to intersect with the
 #'   mesh, or a polygon object that can be converted with [fm_as_segm()]
@@ -468,7 +470,11 @@ fm_mesh_intersection <- function(mesh, poly) {
     extend = TRUE
   )
 
-  mesh_poly <- fm_rcdt_2d_inla(boundary = split_segm)
+  # In case the polygon is a hole, need to ensure the mesh covers the original
+  # mesh. Achieved by giving it the joint mesh points as domain
+  # points.
+  mesh_poly <- fm_rcdt_2d_inla(loc = mesh_joint_cover$loc,
+                               boundary = split_segm)
 
   loc_tri <- fm_centroids(mesh_joint_cover)
   ok_tri <-
