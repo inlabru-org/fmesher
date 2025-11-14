@@ -829,7 +829,7 @@ fm_int.fm_mesh_1d <- function(domain,
         }
       } else if (diff(subsampler) <= 0.0) {
         # Empty interval, skip to next subsampler
-        next
+        return(NULL)
       }
 
       if (identical(int.args[["method"]], "stable")) {
