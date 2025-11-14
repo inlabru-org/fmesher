@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.9006</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.9007</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -198,7 +198,7 @@ Lindgren</h4>
 <span><span class="va">value1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_evaluate.html">fm_evaluate</a></span><span class="op">(</span><span class="va">evaluator1</span>, field <span class="op">=</span> <span class="va">field1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pts1</span>, <span class="va">value1</span>, type <span class="op">=</span> <span class="st">"l"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="basic_use_files/figure-html/lookup1-1.png" alt="Evaluated 1D function" width="480"><p class="caption">
+<img src="basic_use_files/figure-html/lookup1-1.png" class="r-plt" alt="Evaluated 1D function" width="480"><p class="caption">
 Evaluated 1D function
 </p>
 </div>
@@ -212,7 +212,7 @@ Evaluated 1D function
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mesh2</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="basic_use_files/figure-html/unnamed-chunk-2-1.png" alt="2D triangulation mesh (base graphics version)" width="480"><p class="caption">
+<img src="basic_use_files/figure-html/unnamed-chunk-2-1.png" class="r-plt" alt="2D triangulation mesh (base graphics version)" width="480"><p class="caption">
 2D triangulation mesh (base graphics version)
 </p>
 </div>
@@ -226,7 +226,7 @@ Evaluated 1D function
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_fm.html">geom_fm</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mesh2</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="basic_use_files/figure-html/unnamed-chunk-3-1.png" alt="2D triangulation mesh (ggplot version)" width="480"><p class="caption">
+<img src="basic_use_files/figure-html/unnamed-chunk-3-1.png" class="r-plt" alt="2D triangulation mesh (ggplot version)" width="480"><p class="caption">
 2D triangulation mesh (ggplot version)
 </p>
 </div>
@@ -235,7 +235,7 @@ Evaluated 1D function
 <span>  <span class="fu"><a href="../reference/geom_fm.html">geom_fm</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mesh1</span>, weights <span class="op">=</span> <span class="va">field1</span> <span class="op">+</span> <span class="fl">2</span>, xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2</span>, <span class="fl">12</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_fm.html">geom_fm</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mesh1</span>, linetype <span class="op">=</span> <span class="fl">2</span>, alpha <span class="op">=</span> <span class="fl">0.5</span>, xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2</span>, <span class="fl">12</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="basic_use_files/figure-html/unnamed-chunk-4-1.png" alt="1D B-spline function space basis functions with evaluated function (ggplot version)" width="480"><p class="caption">
+<img src="basic_use_files/figure-html/unnamed-chunk-4-1.png" class="r-plt" alt="1D B-spline function space basis functions with evaluated function (ggplot version)" width="480"><p class="caption">
 1D B-spline function space basis functions with evaluated function
 (ggplot version)
 </p>
@@ -264,7 +264,7 @@ Evaluated 1D function
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/image.html" class="external-link">image</a></span><span class="op">(</span><span class="va">evaluator</span><span class="op">$</span><span class="va">x</span>, <span class="va">evaluator</span><span class="op">$</span><span class="va">y</span>, <span class="fu"><a href="../reference/fm_evaluate.html">fm_evaluate</a></span><span class="op">(</span><span class="va">evaluator</span>, field <span class="op">=</span> <span class="va">samp</span><span class="op">)</span>, asp <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="basic_use_files/figure-html/sim-1.png" alt="Simulated 2D Matérn field" width="480"><p class="caption">
+<img src="basic_use_files/figure-html/sim-1.png" class="r-plt" alt="Simulated 2D Matérn field" width="480"><p class="caption">
 Simulated 2D Matérn field
 </p>
 </div>
@@ -280,7 +280,7 @@ Simulated 2D Matérn field
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>

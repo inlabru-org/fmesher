@@ -1,0 +1,92 @@
+# The fmesher C++ library
+
+The plan is to briefly describe the backend fmesher C++ library.
+
+## Introduction
+
+The `fmesher` C++ library was initially written by Finn Lindgren in
+April/May 2010, as an implementation of the data structures and refined
+constrained Delaunay triangulation (RCDT) methods from Hjelle and Dæhlen
+(2006), extended to RCDTs on spheres.
+
+## Data structures
+
+The key to the algorithm speed is the use of traversal operators for the
+mesh graph, made efficient by support in the data structure for key
+operations.
+
+### Triangle centric data model
+
+The mesh storage is composed of a 3-column matrix of vertex coordinates,
+`S`, and three triangle graph topology 3-column integer matrices:
+
+- `TV`: 3 vertex indices, in CCW order
+- `TT`: For each of the 3 corners, the index of the opposing edge
+  neighbouring triangle, if any, otherwise -1.
+- `TTi`: For each of the 3 corners, the in-triangle index of the
+  opposing edge’s neighbouring triangle’s opposing in-triangle index.
+  This structure can be turned on/off to allow certain operations to be
+  more efficient.
+
+This is similar to a winged-edge or half-edge structure, but treats
+triangles as primary objects, allowing compact storage as well as
+efficient graph traversal.
+
+Note: A further structure, `VT`, can be enabled, that for each vertex
+holds the set of triangle indices that it is used by. Before 2025, only
+a single triangle index was stored, so that there was no cheap way to
+access *all* triangles that connect to a given vertex, unless the mesh
+was a proper edge-connected manifold. For example, some operation would
+not handle meshes where the forward and inverse `orbit0` operations
+could not reach all the connected triangles.
+
+### Graph traversal algebra
+
+- `Dart` location objects; originator vertex, edge direction, and
+  triangle
+- Each `alpha` operator alters only one simplex quantity:
+  - `alpha0`: swap the originating vertex for the edge, keep the
+    triangle
+  - `alpha1`: swap to the edge pointing to the remaining 3rd vertex,
+    keep the originator vertex and triangle
+  - `alpha2`: swap to the adjacent triangle, stay along the same edge
+    and keep the originator vertex
+- Each `orbit` keeps one simplex quantity fixed while altering the other
+  two, keeping orientation intact; If one starts with a `Dart` pointing
+  in CCW direction in a triangle, each successful orbit operation will
+  keep that property.
+  - `orbit0 = alpha1,alpha2`: move to the next CCW adjacent triangle,
+    except on boundary
+  - `orbit1 = alpha2,alpha0`: move to the adjacent triangle and swap
+    edge direction, except on boundary
+  - `orbit2 = alpha0,alpha1`: move to the next CCW vertex in the
+    triangle
+
+These operators, and their inverses, allow arbitrary graph traversal of
+2-manifold meshes with triangles connected via edges.
+
+### Matrices
+
+### Point locator trees
+
+## Operations
+
+### RCDT
+
+### Point locator
+
+## Rcpp interface
+
+### rcdt
+
+### bary
+
+### fem
+
+### split_lines
+
+## References
+
+Hjelle, Øyvind, and Morten Dæhlen. 2006. *Triangulations and
+Applications*. Springer Berlin, Heidelberg.
+<https://doi.org/10.1007/3-540-33261-8>.
