@@ -473,8 +473,10 @@ fm_mesh_intersection <- function(mesh, poly) {
   # In case the polygon is a hole, need to ensure the mesh covers the original
   # mesh. Achieved by giving it the joint mesh points as domain
   # points.
-  mesh_poly <- fm_rcdt_2d_inla(loc = mesh_joint_cover$loc,
-                               boundary = split_segm)
+  mesh_poly <- fm_rcdt_2d_inla(
+    loc = mesh_joint_cover$loc,
+    boundary = split_segm
+  )
 
   loc_tri <- fm_centroids(mesh_joint_cover)
   ok_tri <-
@@ -482,6 +484,144 @@ fm_mesh_intersection <- function(mesh, poly) {
       fm_is_within(loc_tri, mesh_poly)
   if (any(ok_tri)) {
     mesh_subset <- fm_subset(mesh_joint_cover, which(ok_tri))
+  } else {
+    mesh_subset <- NULL
+  }
+
+  mesh_subset
+}
+
+#' @title Planned faster replacement for fm_mesh_intersection
+#' @noRd
+#' @examples
+#' segm <- fm_segm(
+#'   rbind(c(-4, -4), c(4, -3), c(0, 4)),
+#'   is.bnd = TRUE
+#' )
+#' (m <- fm_intersect(fmexample$mesh, segm))
+#' plot(fmexample$mesh)
+#' lines(segm, col = 4)
+#' plot(m, edge.color = 2, add = TRUE)
+#'
+#' \donttest{
+#' # Non-overlapping addition
+#' segm2 <- fm_segm(c(
+#'   segm,
+#'   fm_segm(
+#'     rbind(c(-4, 0), c(-3, 0), c(-2, 2)),
+#'     is.bnd = TRUE
+#'   )
+#' ))
+#' (m2 <- fm_intersect(fm_subdivide(fmexample$mesh, 2), segm2))
+#' m2_int <- fm_int(m2)
+#' plot(m2, edge.color = 2)
+#' lines(segm2, col = 4)
+#' plot(fmexample$mesh, edge.color = 1, add = TRUE)
+#' plot(m2_int$geometry, pch = 20, cex = sqrt(m2_int$weight) * 4, add = TRUE)
+#' }
+#'
+#' \donttest{
+#' # Add a hole and restrict to inner part of the original mesh
+#' # To avoid issues with intersecting boundary segments, compute
+#' # two separate intersection calculations in sequence.
+#' # To allow this to be done as a single step, would need to first
+#' # cross-intersect the boundary segments.
+#' inner_bnd <- fm_segm(fmexample$mesh, boundary = FALSE)
+#' fm_is_bnd(inner_bnd) <- TRUE
+#' segm3 <- fm_segm(c(
+#'   segm2,
+#'   fm_segm(
+#'     rbind(c(-1.5, 0), c(1, -0.5), c(0, -1.5)),
+#'     is.bnd = TRUE
+#'   )
+#' ))
+#' (m3 <- fm_intersect(
+#'   fm_intersect(
+#'     fm_subdivide(fmexample$mesh, 2),
+#'     inner_bnd
+#'   ),
+#'   segm3
+#' ))
+#' mm <- fm_subdivide(fmexample$mesh, 2)
+#' bench::mark(
+#'   A = {
+#'     (m3A <- fm_mesh_intersection(fm_mesh_intersection(mm, inner_bnd), segm3))
+#'   },
+#'   B = {
+#'     (m3B <- fm_intersect(fm_intersect(mm, inner_bnd), segm3))
+#'   },
+#'   C = {
+#'     (m3C <- fm_intersect(fm_intersect(mm, segm3), inner_bnd))
+#'   },
+#'   check = FALSE, iterations = 5
+#' )
+#' m3_int <- fm_int(m3)
+#' plot(fmexample$mesh)
+#' plot(m3, edge.color = 2, add = TRUE)
+#' lines(segm3, col = 4)
+#' plot(m3_int$geometry, pch = 20, cex = sqrt(m3_int$weight) * 4, add = TRUE)
+#' }
+#'
+#' \donttest{
+#' # Spherical mesh
+#' (m_s2 <- fm_rcdt_2d(globe = 4))
+#' segm4 <- fm_segm(
+#'   rbind(
+#'     c(1, 0, 0.1) / sqrt(1.01),
+#'     c(0, 1, 0),
+#'     c(-1, -1, 1) / sqrt(3)
+#'   ),
+#'   is.bnd = TRUE
+#' )
+#' (m4 <- fm_intersect(fm_subdivide(m_s2, 1), segm4))
+#' m4_int <- fm_int(m4)
+#' plot(m_s2)
+#' plot(m4, edge.color = 2, add = TRUE)
+#' plot(m4_int$geometry, pch = 20, cex = sqrt(m4_int$weight) * 8, add = TRUE)
+#' }
+fm_intersect <- function(mesh, poly) {
+  poly <- fm_as_segm(poly)
+  poly <- fm_transform(poly, fm_crs(mesh), passthrough = TRUE)
+  if (ncol(poly$loc) < 3) {
+    poly$loc <- cbind(poly$loc, 0)
+  }
+  if (ncol(mesh$loc) < 3) {
+    mesh$loc <- cbind(mesh$loc, 0)
+  }
+
+  mesh_bnd <- fm_segm(mesh, boundary = TRUE)
+  all_edges <- fm_segm(
+    loc = mesh$loc,
+    idx = cbind(
+      as.vector(t(mesh$graph$tv)),
+      as.vector(t(mesh$graph$tv[, c(2, 3, 1), drop = FALSE]))
+    ),
+    is.bnd = FALSE
+  )
+
+  mesh_cover <- fm_rcdt_2d_inla(
+    loc = rbind(mesh$loc, poly$loc),
+    interior = all_edges
+  )
+
+  split_segm <- fm_split_lines(mesh_cover, segm = poly)
+  fm_is_bnd(split_segm) <- TRUE
+
+  #  joint_segm <- join_segm(split_segm, all_edges)
+
+  new_mesh <- fm_rcdt_2d_inla(
+    boundary = join_segm(split_segm, mesh_bnd),
+    interior = all_edges,
+    extend = FALSE
+  )
+
+  # In case the true intersection is empty, need this additional check
+  loc_tri <- fm_centroids(new_mesh)
+  ok_tri <-
+    fm_is_within(loc_tri, mesh) # &
+  #    fm_is_within(loc_tri, mesh_poly)
+  if (any(ok_tri)) {
+    mesh_subset <- fm_subset(new_mesh, which(ok_tri))
   } else {
     mesh_subset <- NULL
   }

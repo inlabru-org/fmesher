@@ -18,6 +18,9 @@
   by `fm_onto_mesh()` and `fm_unify_coords()` to promote XY to XYZ when needed,
   before calling `sf::st_coordinates()`, as `sf::st_coordinates()` otherwise fails.
   (version `0.5.0.9005`)
+* Allow `fm_int.fm_mesh_1d()` to handle lists of matrices (for interval
+  integration) and vectors (sums over point sets), for more
+  flexible blockwise integration and summation schemes. (version `0.5.0.9007`)
 
 ## Bug fixes
 

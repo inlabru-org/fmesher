@@ -682,10 +682,13 @@ fm_int.fm_lattice_2d <- function(domain, samplers = NULL, name = "x", ...) {
 #' @export
 #' @describeIn fm_int `fm_mesh_1d` integration. Supported samplers:
 #' * `NULL` for integration over the entire domain;
-#' * A length 2 vector defining an interval;
+#' * A vector defining points for summation (up to `0.5.0`, length 2 vectors
+#'   were interpreted as intervals. From 0.6.0 intervals must be specified as
+#'   rows of a 2-column matrix);
 #' * A 2-column matrix with a single interval in each row;
-#' * A tibble with a named column containing a matrix, and optionally a
-#'  `weight` column.
+#' * A list of such vectors or matrices
+#' * A tibble with a named column containing a vector/matrix/list as above,
+#'   and optionally a `weight` column.
 #' @examples
 #' # Continuous integration on intervals
 #' ips <- fm_int(
@@ -718,141 +721,212 @@ fm_int.fm_mesh_1d <- function(domain,
       blocks = FALSE,
       name = name
     )
-  } else if (is.null(dim(samplers))) {
-    samplers <- fm_int_object(
-      cbind(samplers[1], samplers[2]),
-      blocks = TRUE,
-      name = name
-    )
   } else if (is.matrix(samplers)) {
     samplers <- fm_int_object(samplers, blocks = TRUE, name = name)
-  } else {
+  } else if (is.data.frame(samplers)) {
     samplers <- fm_int_object(samplers, blocks = TRUE, name = name)
     if (!(name %in% colnames(samplers))) {
       stop(paste0("Domain name '", name, "' missing from sampler."))
     }
+  } else if (is.list(samplers)) {
+    samplers <- fm_int_object(samplers, blocks = TRUE, name = name)
+  } else {
+    samplers <- fm_int_object(samplers, blocks = TRUE, name = name)
   }
 
   ips <- list()
-  for (j in seq_len(nrow(samplers))) {
-    subsampler <- samplers[[name]][j, , drop = TRUE]
+  for (j in seq_len(NROW(samplers))) {
+    subsampler <- samplers[j, name, drop = TRUE]
     theweight <- samplers[j, "weight", drop = TRUE]
     the.block <- samplers[j, ".block", drop = TRUE]
     the.block_origin <- samplers[j, ".block_origin", drop = TRUE]
 
-    if (isTRUE(domain$cyclic)) {
-      if (diff(subsampler) >= diff(domain$interval)) {
-        subsampler <- domain$interval
-      } else {
-        subsampler[1] <- domain$interval[1] +
-          (subsampler[1] - domain$interval[1]) %% diff(domain$interval)
-        subsampler[2] <- subsampler[1] +
-          diff(subsampler) %% diff(domain$interval)
-        if (diff(subsampler) == 0.0) {
-          subsampler <- domain$interval
-        } else if (subsampler[2] > domain$interval[2]) {
-          subsampler[2] <- domain$interval[1] +
-            (subsampler[2] - domain$interval[1]) %% diff(domain$interval)
-        }
+    if (is.list(subsampler)) {
+      # List of pointwise/interval samplers
+      ips_list <- list()
+      for (k in seq_along(subsampler)) {
+        loc_subsampler <- subsampler[[k]]
+        ips_list[[k]] <- fm_int.fm_mesh_1d(
+          domain = domain,
+          samplers = loc_subsampler,
+          name = name,
+          int.args = int.args,
+          format = format
+        )
+        ips_list[[k]]$weight <- ips_list[[k]]$weight * theweight
+        ips_list[[k]]$.block <- the.block
+        ips_list[[k]]$.block_origin <-
+          matrix(
+            the.block_origin,
+            NROW(ips_list[[k]]),
+            ncol(the.block_origin),
+            byrow = TRUE,
+            dimnames = list(
+              NULL,
+              colnames(the.block_origin)
+            )
+          )
       }
-    } else if (diff(subsampler) <= 0.0) {
-      # Empty interval, skip to next subsampler
+      ips[[j]] <- dplyr::bind_rows(ips_list)
       next
     }
 
-    if (identical(int.args[["method"]], "stable")) {
-      if (isTRUE(domain$cyclic)) {
-        loc_trap <- sort(unique(pmin(
-          domain$interval[2],
-          pmax(
-            domain$interval[1],
-            c(
-              domain$loc,
-              as.vector(subsampler),
-              domain$interval
-            )
-          )
-        )))
-      } else {
-        ## Old code required integration only over the main interval:
-        #        loc_trap <- sort(unique(pmin(
-        #          domain$interval[2],
-        #          pmax(
-        #            domain$interval[1],
-        #            c(domain$loc,
-        #              as.vector(subsampler)
-        #              )))))
-        ## New code allows extrapolated integration:
-        loc_trap <- sort(unique(c(
-          domain$interval,
-          domain$loc,
-          as.vector(subsampler)
-        )))
-      }
+    fm_int_1d_points <- function(domain, subsampler,
+                                 theweight,
+                                 the.block,
+                                 the.block_origin) {
+      # Pointwise summation
+      loc_point <- subsampler
+      weight_point <- rep(1.0, length(loc_point))
 
-      # Simpson's rule integration
-      loc_mid <- (loc_trap[-1] + loc_trap[-length(loc_trap)]) / 2
-      # Detect mid-points inside the samplers
-      if (isTRUE(domain$cyclic) && (subsampler[1] > subsampler[2])) {
-        inside <- (loc_mid < min(subsampler)) |
-          (loc_mid > max(subsampler))
-      } else {
-        inside <- (loc_mid >= min(subsampler)) &
-          (loc_mid <= max(subsampler))
-      }
-      weight_mid <- diff(loc_trap)
-      weight_mid[!inside] <- 0.0
-
-      weight_trap <- c(weight_mid / 2, 0) + c(0, weight_mid / 2)
-      loc_simpson <- c(loc_trap, loc_mid)
-      weight_simpson <- c(weight_trap / 3, weight_mid * 2 / 3)
-
-      ips[[j]] <- fm_int_object(tibble::tibble(
-        "{name}" := loc_simpson[(weight_simpson > 0)],
-        weight = weight_simpson[(weight_simpson > 0)] * theweight,
+      ips <- fm_int_object(tibble::tibble(
+        "{name}" := loc_point[weight_point > 0],
+        weight = weight_point[weight_point > 0] * theweight,
         .block = the.block,
         .block_origin = matrix(
           the.block_origin,
-          sum(weight_simpson > 0),
+          sum(weight_point > 0),
           ncol(the.block_origin),
           byrow = TRUE,
           dimnames = list(NULL, colnames(the.block_origin))
         )
       ))
-    } else {
-      nsub <- int.args[["nsub1"]]
-      u <- rep(
-        (seq_len(nsub) - 0.5) / nsub,
-        domain$n - 1
-      )
-      int_loc <-
-        domain$loc[rep(seq_len(domain$n - 1), each = nsub)] * (1 - u) +
-        domain$loc[rep(seq_len(domain$n - 1) + 1, each = nsub)] * u
-      int_w <-
-        (domain$loc[rep(seq_len(domain$n - 1) + 1, each = nsub)] -
-          domain$loc[rep(seq_len(domain$n - 1), each = nsub)]) /
-          nsub
+      ips
+    }
 
-      if (isTRUE(domain$cyclic) && (subsampler[1] > subsampler[2])) {
-        inside <- (int_loc < min(subsampler)) |
-          (int_loc > max(subsampler))
-      } else {
-        inside <- (int_loc >= min(subsampler)) &
-          (int_loc <= max(subsampler))
+    if (!is.matrix(subsampler)) {
+      ips[[j]] <- fm_int_1d_points(
+        domain = domain,
+        subsampler = subsampler,
+        theweight = theweight,
+        the.block = the.block,
+        the.block_origin = the.block_origin
+      )
+
+      next
+    }
+
+    fm_int_1d_interval <- function(domain, subsampler,
+                                   theweight,
+                                   the.block,
+                                   the.block_origin) {
+      # Interval integration
+      subsampler <- as.vector(subsampler)
+      if (isTRUE(domain$cyclic)) {
+        if (diff(subsampler) >= diff(domain$interval)) {
+          subsampler <- domain$interval
+        } else {
+          subsampler[1] <- domain$interval[1] +
+            (subsampler[1] - domain$interval[1]) %% diff(domain$interval)
+          subsampler[2] <- subsampler[1] +
+            diff(subsampler) %% diff(domain$interval)
+          if (diff(subsampler) == 0.0) {
+            subsampler <- domain$interval
+          } else if (subsampler[2] > domain$interval[2]) {
+            subsampler[2] <- domain$interval[1] +
+              (subsampler[2] - domain$interval[1]) %% diff(domain$interval)
+          }
+        }
+      } else if (diff(subsampler) <= 0.0) {
+        # Empty interval, skip to next subsampler
+        next
       }
 
-      ips[[j]] <- fm_int_object(tibble::tibble(
-        "{name}" := int_loc[inside],
-        weight = int_w[inside] * theweight,
-        .block = the.block,
-        .block_origin = matrix(the.block_origin,
-          sum(inside),
-          ncol(the.block_origin),
-          byrow = TRUE,
-          dimnames = list(NULL, name)
+      if (identical(int.args[["method"]], "stable")) {
+        if (isTRUE(domain$cyclic)) {
+          loc_trap <- sort(unique(pmin(
+            domain$interval[2],
+            pmax(
+              domain$interval[1],
+              c(
+                domain$loc,
+                as.vector(subsampler),
+                domain$interval
+              )
+            )
+          )))
+        } else {
+          loc_trap <- sort(unique(c(
+            domain$interval,
+            domain$loc,
+            as.vector(subsampler)
+          )))
+        }
+
+        # Simpson's rule integration
+        loc_mid <- (loc_trap[-1] + loc_trap[-length(loc_trap)]) / 2
+        # Detect mid-points inside the samplers
+        if (isTRUE(domain$cyclic) && (subsampler[1] > subsampler[2])) {
+          inside <- (loc_mid < min(subsampler)) |
+            (loc_mid > max(subsampler))
+        } else {
+          inside <- (loc_mid >= min(subsampler)) &
+            (loc_mid <= max(subsampler))
+        }
+        weight_mid <- diff(loc_trap)
+        weight_mid[!inside] <- 0.0
+
+        weight_trap <- c(weight_mid / 2, 0) + c(0, weight_mid / 2)
+        loc_simpson <- c(loc_trap, loc_mid)
+        weight_simpson <- c(weight_trap / 3, weight_mid * 2 / 3)
+
+        ips <- fm_int_object(tibble::tibble(
+          "{name}" := loc_simpson[(weight_simpson > 0)],
+          weight = weight_simpson[(weight_simpson > 0)] * theweight,
+          .block = the.block,
+          .block_origin = matrix(
+            the.block_origin,
+            sum(weight_simpson > 0),
+            ncol(the.block_origin),
+            byrow = TRUE,
+            dimnames = list(NULL, colnames(the.block_origin))
+          )
+        ))
+      } else {
+        nsub <- int.args[["nsub1"]]
+        u <- rep(
+          (seq_len(nsub) - 0.5) / nsub,
+          domain$n - 1
         )
-      ))
+        int_loc <-
+          domain$loc[rep(seq_len(domain$n - 1), each = nsub)] * (1 - u) +
+          domain$loc[rep(seq_len(domain$n - 1) + 1, each = nsub)] * u
+        int_w <-
+          (domain$loc[rep(seq_len(domain$n - 1) + 1, each = nsub)] -
+            domain$loc[rep(seq_len(domain$n - 1), each = nsub)]) /
+            nsub
+
+        if (isTRUE(domain$cyclic) && (subsampler[1] > subsampler[2])) {
+          inside <- (int_loc < min(subsampler)) |
+            (int_loc > max(subsampler))
+        } else {
+          inside <- (int_loc >= min(subsampler)) &
+            (int_loc <= max(subsampler))
+        }
+
+        ips <- fm_int_object(tibble::tibble(
+          "{name}" := int_loc[inside],
+          weight = int_w[inside] * theweight,
+          .block = the.block,
+          .block_origin = matrix(the.block_origin,
+            sum(inside),
+            ncol(the.block_origin),
+            byrow = TRUE,
+            dimnames = list(NULL, name)
+          )
+        ))
+      }
+
+      ips
     }
+
+    ips[[j]] <- fm_int_1d_interval(
+      domain = domain,
+      subsampler = subsampler,
+      theweight = theweight,
+      the.block = the.block,
+      the.block_origin = the.block_origin
+    )
   }
 
   ips <- fm_int_object(

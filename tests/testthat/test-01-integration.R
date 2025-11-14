@@ -26,7 +26,7 @@ test_that("Discrete integration", {
 test_that("Continuous integration", {
   domain <- fm_mesh_1d(2:5)
 
-  samplers <- c(3, 5)
+  samplers <- cbind(3, 5)
   ips_ <- fm_int_object(
     tibble::tibble(
       x = c(3:5, 3.5, 4.5),
@@ -58,7 +58,7 @@ test_that("Continuous integration", {
   # degree = 2
   domain <- fm_mesh_1d(2:5, degree = 2)
 
-  samplers <- c(3, 5)
+  samplers <- cbind(3, 5)
   ips_ <- fm_int_object(
     tibble::tibble(
       x = c(3:5, 3.5, 4.5),
