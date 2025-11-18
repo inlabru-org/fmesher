@@ -24,6 +24,8 @@
 * Allow `fm_int.list()` to include non-domain variables in the output object,
   e.g. for including per-transect covariates in the integration scheme.
   (version `0.5.0.9008`)
+* Allow `fm_int()` for numeric/character/factor/`fm_mesh_1d` to handle
+  nested list samplers (version `0.5.0.9009`)
 
 ## Bug fixes
 
