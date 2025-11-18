@@ -367,6 +367,9 @@ fm_int <- function(domain, samplers = NULL, ...) {
 #' @param domain A list of named domains
 #' @param samplers A named list of samplers
 #' @param ... Passed on to each [fm_int()] call.
+#' @param extra Optional character vector with names of variables other than the
+#'   integration domains to be included from the samplers. If `NULL` (default),
+#'   all additional variables are included.
 #' @returns An object with integration points and weights
 #' @export
 #' @keywords internal
@@ -378,7 +381,7 @@ fm_int <- function(domain, samplers = NULL, ...) {
 #'     y = c(12, 11)
 #'   )
 #' )
-fm_int_multi_sampler <- function(domain, samplers, ...) {
+fm_int_multi_sampler <- function(domain, samplers, ..., extra = NULL) {
   if (is.null(names(domain))) {
     stop("For 'fm_int_multi_sampler', the domain must be a named list.")
   }
@@ -399,7 +402,7 @@ fm_int_multi_sampler <- function(domain, samplers, ...) {
     ))
   }
 
-  names_intersect <- intersect(names(samplers), names(domain))
+  names_intersect <- intersect(names_samplers, names_domain)
   ips_list <- lapply(
     names_intersect,
     function(nm) {
@@ -413,17 +416,33 @@ fm_int_multi_sampler <- function(domain, samplers, ...) {
   )
   ips <- do.call(fm_cprod, c(ips_list, list(.blockwise = TRUE)))
 
-  if ("weight" %in% names(samplers)) {
-    ips$weight <- ips$weight * samplers$weight[ips$.block]
+  if ("weight" %in% names_samplers) {
+    ips$weight <- ips[["weight"]] * samplers[["weight"]][ips$.block]
+  }
+
+  names_extra <- setdiff(
+    names_samplers,
+    c(names_domain, names_reserved, names(ips))
+  )
+  if (!is.null(extra)) {
+    names_extra <- intersect(names_extra, extra)
+  }
+  if (length(names_extra) > 0) {
+    for (nm in names_extra) {
+      ips[[nm]] <- samplers[[nm]][ips$.block]
+    }
   }
 
   ips
 }
 
 
+#' @param extra Optional character vector with names of variables other than the
+#'   integration domains to be included from the samplers. If `NULL` (default),
+#'   all additional variables are included.
 #' @export
 #' @describeIn fm_int Multi-domain integration
-fm_int.list <- function(domain, samplers = NULL, ...) {
+fm_int.list <- function(domain, samplers = NULL, ..., extra = NULL) {
   weight_name <- "weight"
 
   if (is.null(names(domain))) {
@@ -721,17 +740,11 @@ fm_int.fm_mesh_1d <- function(domain,
       blocks = FALSE,
       name = name
     )
-  } else if (is.matrix(samplers)) {
-    samplers <- fm_int_object(samplers, blocks = TRUE, name = name)
-  } else if (is.data.frame(samplers)) {
-    samplers <- fm_int_object(samplers, blocks = TRUE, name = name)
-    if (!(name %in% colnames(samplers))) {
-      stop(paste0("Domain name '", name, "' missing from sampler."))
-    }
-  } else if (is.list(samplers)) {
-    samplers <- fm_int_object(samplers, blocks = TRUE, name = name)
   } else {
     samplers <- fm_int_object(samplers, blocks = TRUE, name = name)
+    if (is.data.frame(samplers) && !(name %in% colnames(samplers))) {
+      stop(paste0("Domain name '", name, "' missing from `samplers`."))
+    }
   }
 
   ips <- list()

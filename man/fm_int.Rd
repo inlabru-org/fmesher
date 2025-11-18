@@ -14,7 +14,7 @@
 \usage{
 fm_int(domain, samplers = NULL, ...)
 
-\method{fm_int}{list}(domain, samplers = NULL, ...)
+\method{fm_int}{list}(domain, samplers = NULL, ..., extra = NULL)
 
 \method{fm_int}{numeric}(domain, samplers = NULL, name = "x", ...)
 
@@ -55,6 +55,10 @@ frame elements may contain information for multiple domains, in which case
 each row represent a separate tensor product integration subspace.}
 
 \item{\dots}{Additional arguments passed on to other methods}
+
+\item{extra}{Optional character vector with names of variables other than the
+integration domains to be included from the samplers. If \code{NULL} (default),
+all additional variables are included.}
 
 \item{name}{For single-domain methods, the variable name to use for the
 integration points. Default 'x'}
