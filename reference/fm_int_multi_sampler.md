@@ -5,7 +5,7 @@ Combine integration over different domains
 ## Usage
 
 ``` r
-fm_int_multi_sampler(domain, samplers, ...)
+fm_int_multi_sampler(domain, samplers, ..., extra = NULL)
 ```
 
 ## Arguments
@@ -23,6 +23,12 @@ fm_int_multi_sampler(domain, samplers, ...)
   Passed on to each
   [`fm_int()`](https://inlabru-org.github.io/fmesher/reference/fm_int.md)
   call.
+
+- extra:
+
+  Optional character vector with names of variables other than the
+  integration domains to be included from the samplers. If `NULL`
+  (default), all additional variables are included.
 
 ## Value
 

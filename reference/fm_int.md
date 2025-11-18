@@ -8,7 +8,7 @@ Construct integration points on tensor product spaces
 fm_int(domain, samplers = NULL, ...)
 
 # S3 method for class 'list'
-fm_int(domain, samplers = NULL, ...)
+fm_int(domain, samplers = NULL, ..., extra = NULL)
 
 # S3 method for class 'numeric'
 fm_int(domain, samplers = NULL, name = "x", ...)
@@ -64,6 +64,12 @@ fm_int(
 - ...:
 
   Additional arguments passed on to other methods
+
+- extra:
+
+  Optional character vector with names of variables other than the
+  integration domains to be included from the samplers. If `NULL`
+  (default), all additional variables are included.
 
 - name:
 

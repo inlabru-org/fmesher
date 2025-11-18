@@ -39,6 +39,11 @@
   to handle lists of matrices (for interval integration) and vectors
   (sums over point sets), for more flexible blockwise integration and
   summation schemes. (version `0.5.0.9007`)
+- Allow
+  [`fm_int.list()`](https://inlabru-org.github.io/fmesher/reference/fm_int.md)
+  to include non-domain variables in the output object, e.g. for
+  including per-transect covariates in the integration scheme. (version
+  `0.5.0.9008`)
 
 ### Bug fixes
 
