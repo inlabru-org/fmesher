@@ -59,6 +59,9 @@ Add and/or remove Z and/or M information from simple feature geometries.
 \item \code{fm_zm_target()}: Determines the target target Z/M format
 
 }}
+\examples{
+fm_zm(fmexample$loc_sf, add = "Z")
+}
 \author{
 Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}
 }

@@ -788,6 +788,8 @@ fm_centroids <- function(x, format = NULL) {
 #' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @export
 #' @rdname fm_zm
+#' @examples
+#' fm_zm(fmexample$loc_sf, add = "Z")
 fm_zm <- function(x, ...) {
   UseMethod("fm_zm")
 }
