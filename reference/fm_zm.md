@@ -73,3 +73,21 @@ An object of the same class as `x`, with modified Z/M dimensions.
 ## Author
 
 Finn Lindgren <Finn.Lindgren@gmail.com>
+
+## Examples
+
+``` r
+fm_zm(fmexample$loc_sf, add = "Z")
+#> Geometry set for 10 features 
+#> Geometry type: POINT
+#> Dimension:     XYZ
+#> Bounding box:  xmin: -2.345698 ymin: -0.9983864 xmax: 1.084441 ymax: 2.415835
+#> z_range:       zmin: 0 zmax: 0
+#> CRS:           NA
+#> First 5 geometries:
+#> POINT Z (-1.207066 -0.4771927 0)
+#> POINT Z (0.2774292 -0.9983864 0)
+#> POINT Z (1.084441 -0.7762539 0)
+#> POINT Z (-2.345698 0.06445882 0)
+#> POINT Z (0.4291247 0.9594941 0)
+```
