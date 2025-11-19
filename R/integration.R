@@ -215,11 +215,26 @@ fm_cprod <- function(..., na.rm = NULL, .blockwise = FALSE) {
   ips
 }
 
-# blocks=FALSE gives default .block=1L
-# blocks=TRUE gives default .block=seq_len(NROW(object)
-# weight=1L is the default weight
-# If name is non-null and override=TRUE for sf object, the current sf_column is
-# renamed to name.
+#' @title Construct integration scheme objects
+#' @description Constructor method for integration scheme objects, allowing
+#'   default construction of `.block` information. Primarily meant for internal
+#'   use, but can be used to manually create data of the same structure as
+#'   [fm_int()] output.
+#'
+#' @param object An object representing integration points; either a
+#' data.frame-like object, or a vector/list of coordinates or other location
+#' reference objects.
+#' @param blocks logical; if `TRUE`, set per-element `.block` indices.
+#' If `FALSE` (default), set a common block, `1L`.
+#' @param weight Optional weight variable; if `NULL`, all weights are set to 1.
+#' @param name character; name of the integration domain.
+#' @param override logical; If `name` is non-NULL and `override=TRUE` for sf object,
+#'   the current `sf_column` is renamed to `name`.
+#' @returns A tibble or sf/tibble object
+#' @seealso [fm_int()]
+#' @export
+#' @examples
+#' fm_int_object(1:4, blocks = TRUE, weight = c(1, 2, 1, 3), name = "z")
 fm_int_object <- function(object, blocks = FALSE, weight = NULL,
                           name = NULL, override = FALSE) {
   if (!is.data.frame(object)) {
@@ -231,6 +246,9 @@ fm_int_object <- function(object, blocks = FALSE, weight = NULL,
     } else {
       1L
     }
+    if (inherits(object, "sfg")) {
+      stop("fm_int_object() sfg input should be converted to sfc first.")
+    }
     object <- tibble::tibble(
       "{name}" := object,
       weight = if (is.null(weight)) 1 else weight,
@@ -239,6 +257,9 @@ fm_int_object <- function(object, blocks = FALSE, weight = NULL,
         dimnames = list(NULL, name)
       )
     )
+    if (inherits(object[[name]], "sfc")) {
+      object <- sf::st_as_sf(object, sf_column_name = name)
+    }
   } else {
     if (!tibble::is_tibble(object)) {
       if (inherits(object, "sf")) {
@@ -1311,8 +1332,13 @@ fm_int_mesh_2d.sfc_POINT <- function(samplers,
   if (is.null(name)) {
     name <- "geometry"
   }
-  ips <- fm_int_object(samplers, blocks = TRUE, weight = .weight, name = name)
-  ips <- sf::st_as_sf(ips, sf_column_name = name)
+  ips <- fm_int_object(
+    samplers,
+    blocks = TRUE,
+    weight = .weight,
+    name = name,
+    override = TRUE
+  )
 
   # TODO: remove points outside the domain
 
@@ -1338,11 +1364,14 @@ fm_int_mesh_2d.sfc_MULTIPOINT <- function(samplers,
     crs = fm_crs(samplers)
   )
 
+  ips <- fm_int_object(
+    ips,
+    name = name,
+    override = TRUE
+  )
+
   # TODO: remove points outside the domain
 
-  if (!is.null(name) && (name != attr(ips, "sf_column"))) {
-    ips <- dplyr::rename(ips, "{name}" := "geometry")
-  }
   ips
 }
 

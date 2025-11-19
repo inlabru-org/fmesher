@@ -7,6 +7,9 @@
   (version `0.5.0.9003`)
 * Add `fm_zm()` method for adding/removing/unifying the Z/M dimensions of
   coordinate matrices and `sf` objects (version `0.5.0.9010`)
+* New method `fm_int_object()` to construct tibbles with the same output format
+  as the `fm_int()` method, for user-defined integration schemes
+  (version `0.5.0.9011`)
 
 ## Improved features
 
