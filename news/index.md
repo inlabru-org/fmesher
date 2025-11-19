@@ -9,6 +9,10 @@
   method for constructing a subset of a mesh based on a set of triangle
   (for `fm_mesh_2d`) or tetrahedron (for `fm_mesh_3d`) indices. (version
   `0.5.0.9003`)
+- Add
+  [`fm_zm()`](https://inlabru-org.github.io/fmesher/reference/fm_zm.md)
+  method for adding/removing/unifying the Z/M dimensions of coordinate
+  matrices and `sf` objects (version `0.5.0.9010`)
 
 ### Improved features
 
@@ -26,8 +30,9 @@
   (version `0.5.0.9004`)
 - Handle heterogeneous `sf` geometry XY/XYZ dimensions in
   [`fm_bary()`](https://inlabru-org.github.io/fmesher/reference/fm_bary.md)/[`fm_basis()`](https://inlabru-org.github.io/fmesher/reference/fm_basis.md)
-  via new internal `fm_zm()` method that is called by `fm_onto_mesh()`
-  and
+  via
+  [`fm_zm()`](https://inlabru-org.github.io/fmesher/reference/fm_zm.md)
+  method that is called by `fm_onto_mesh()` and
   [`fm_unify_coords()`](https://inlabru-org.github.io/fmesher/reference/fm_unify_coords.md)
   to promote XY to XYZ when needed, before calling
   [`sf::st_coordinates()`](https://r-spatial.github.io/sf/reference/st_coordinates.html),

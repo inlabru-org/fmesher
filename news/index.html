@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.9009</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.9010</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,12 +55,13 @@
 <div class="section level3">
 <h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
 <ul><li>Add <code><a href="../reference/fm_subset.html">fm_subset()</a></code> method for constructing a subset of a mesh based on a set of triangle (for <code>fm_mesh_2d</code>) or tetrahedron (for <code>fm_mesh_3d</code>) indices. (version <code>0.5.0.9003</code>)</li>
+<li>Add <code><a href="../reference/fm_zm.html">fm_zm()</a></code> method for adding/removing/unifying the Z/M dimensions of coordinate matrices and <code>sf</code> objects (version <code>0.5.0.9010</code>)</li>
 </ul></div>
 <div class="section level3">
 <h3 id="improved-features-development-version">Improved features<a class="anchor" aria-label="anchor" href="#improved-features-development-version"></a></h3>
 <ul><li>Add <code>bary=fm_bary()</code> information to <code><a href="../reference/fm_subdivide.html">fm_subdivide()</a></code> output, mapping the new mesh locations to the original mesh locations, e.g. for interpolating functions from the original mesh to the new mesh (version <code>0.5.0.9002</code>)</li>
 <li>Speed up <code><a href="../reference/fm_int.html">fm_int()</a></code> for polygons by bulk pre-computing <code><a href="../reference/fm_bary.html">fm_bary()</a></code> information instead of separate calls in <code><a href="../reference/fm_vertex_projection.html">fm_vertex_projection()</a></code> (version <code>0.5.0.9004</code>)</li>
-<li>Handle heterogeneous <code>sf</code> geometry XY/XYZ dimensions in <code><a href="../reference/fm_bary.html">fm_bary()</a></code>/<code><a href="../reference/fm_basis.html">fm_basis()</a></code> via new internal <code>fm_zm()</code> method that is called by <code>fm_onto_mesh()</code> and <code><a href="../reference/fm_unify_coords.html">fm_unify_coords()</a></code> to promote XY to XYZ when needed, before calling <code><a href="https://r-spatial.github.io/sf/reference/st_coordinates.html" class="external-link">sf::st_coordinates()</a></code>, as <code><a href="https://r-spatial.github.io/sf/reference/st_coordinates.html" class="external-link">sf::st_coordinates()</a></code> otherwise fails. (version <code>0.5.0.9005</code>)</li>
+<li>Handle heterogeneous <code>sf</code> geometry XY/XYZ dimensions in <code><a href="../reference/fm_bary.html">fm_bary()</a></code>/<code><a href="../reference/fm_basis.html">fm_basis()</a></code> via <code><a href="../reference/fm_zm.html">fm_zm()</a></code> method that is called by <code>fm_onto_mesh()</code> and <code><a href="../reference/fm_unify_coords.html">fm_unify_coords()</a></code> to promote XY to XYZ when needed, before calling <code><a href="https://r-spatial.github.io/sf/reference/st_coordinates.html" class="external-link">sf::st_coordinates()</a></code>, as <code><a href="https://r-spatial.github.io/sf/reference/st_coordinates.html" class="external-link">sf::st_coordinates()</a></code> otherwise fails. (version <code>0.5.0.9005</code>)</li>
 <li>Allow <code><a href="../reference/fm_int.html">fm_int.fm_mesh_1d()</a></code> to handle lists of matrices (for interval integration) and vectors (sums over point sets), for more flexible blockwise integration and summation schemes. (version <code>0.5.0.9007</code>)</li>
 <li>Allow <code><a href="../reference/fm_int.html">fm_int.list()</a></code> to include non-domain variables in the output object, e.g. for including per-transect covariates in the integration scheme. (version <code>0.5.0.9008</code>)</li>
 <li>Allow <code><a href="../reference/fm_int.html">fm_int()</a></code> for numeric/character/factor/<code>fm_mesh_1d</code> to handle nested list samplers (version <code>0.5.0.9009</code>)</li>
