@@ -763,85 +763,209 @@ fm_centroids <- function(x, format = NULL) {
   )
 }
 
-# # Idea:
-# # If add=NULL, ensure all elements use the minimal XY/XYZ/XYM/XYZM required
-# # to store all the data
-# # And to expand more than required by the existing data:
-# # If add="Z", require minimally valid XYZ or XYZM
-# # If add="M", require minimally valid XYM or XYZM
-# # If add="ZM", require XYZM
-# # And a corresponding feature, e.g. a "remove" argument, to allow reducing
-# # to a smaller set than the existing data
-# # (with configurable warning e.g. if removing non-zero Z-values)
-# # If safety="warn", warn if removing non-zero Z with remove="Z"
-# # If safety="error", give an error
-# # If safety="silent", silently drop non-zero Z
-# fm_zm <-function(x, add=NULL,remove=NULL,safety="warn"){...}
-# # Example: fm_zm(x, add="Z", remove="M")
-#
-# XY is compatible with XY,XYZ,XYM,XYZM
-# XYZ and add="Z" are compatible with XYZ,XYZM
-# XYM and add="M" are compatible with XYM,XYZM
-# XYZM and add="ZM" are compatible with XYZM
-# Compute the intersection between the compatibility sets, and use the first
-#   in the sequence, as it will be the minimal compatible version.
-# If remove is non-NULL, first remove incompatible versions, and discard empty
-#   compatibility sets before computing their intersections.
-#
-# XY -> XYZ (cbind)
-# XY -> XYM (cbind)
-# XY -> XYZM (cbind 2 columns)
-# XYZ -> XYZM (cbind)
-# XYM -> XYZM (splice)
-# XYZM -> XYZ (drop last)
-# XYZM -> XYM (drop inner)
-# XYZM -> XY (drop last two)
-# XYZ -> XY (drop last)
-# XYM -> XY (drop last)
-#
-# XYZ -> XYM (zero out the last column)
-# XYM -> XYZ (zero out the last column)
 
-fm_zm <- function(geometry) {
-  # Individual elements in sf columns may have different XY/XYZ properties,
-  # so need to find out if any of them have Z, and then extend all others
-  # to have Z too. M is essentially ignored here, so the results may have a
-  # mix of with/without M, as sf::st_zm currently doesn't support drop=FALSE
-  # for M features.
-  if (NROW(geometry) > 0L) {
-    ncols <- vapply(
-      geometry, function(x) {
-        if (inherits(x, c("XY", "XYM"))) {
-          2L
-        } else if (inherits(x, c("XYZ", "XYZM"))) {
-          3L
-        } else {
-          0L
-        }
-      },
-      0L
-    )
-    ncol_minmax <- range(ncols)
+#' @title Add or remove Z/M information
+#' @description `r lifecycle::badge("experimental")`
+#' Add and/or remove Z and/or M information from simple feature geometries.
+#'
+#' @param x An object to modify
+#' @param ... Further arguments passed to methods
+#' @param add character; one of `NULL`, `"Z"`, `"M"`, or `"ZM"`. Specifies
+#'   which dimensions to add.
+#' @param remove character; one of `NULL`, `"Z"`, `"M"`, or `"ZM"`. Specifies
+#'   which dimensions to remove.
+#' @param target character; one of `"XY"`, `"XYZ"`, `"XYM"`, or `"XYZM"`.
+#'   Specifies the target dimension format. If provided, overrides `add` and
+#'   `remove`. When both `add` and `remove` are `NULL`, the default target is
+#'   the smallest format that can hold all the inputs without loss of
+#'   information.
+#' @param input character or character vector; one of `NULL`, `"XY"`, `"XYZ"`,
+#'   `"XYM"`, or `"XYZM"`.
+#'   Specifies the input dimension format. If `NULL` (default), the input format
+#'   is inferred from the number of columns in `x` (for matrices/numerics) or
+#'   from the geometry type (for `sfc` objects).
+#' @returns An object of the same class as `x`, with modified Z/M dimensions.
+#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
+#' @export
+#' @rdname fm_zm
+fm_zm <- function(x, ...) {
+  UseMethod("fm_zm")
+}
+
+#' @export
+#' @rdname fm_zm
+fm_zm.sf <- function(x, ...) {
+  sf::st_geometry(x) <- fm_zm(sf::st_geometry(x), ...)
+  x
+}
+
+#' @export
+#' @rdname fm_zm
+fm_zm.sfc <- function(x, ..., add = NULL, remove = NULL, target = NULL) {
+  target <- fm_zm_target(vapply(
+    x,
+    function(xx) {
+      class(xx)[1]
+    },
+    character(1)
+  ), add = add, remove = remove, target = target)
+
+  sf::st_sfc(lapply(x, fm_zm, ..., target = target), crs = sf::st_crs(x))
+}
+
+#' @export
+#' @rdname fm_zm
+fm_zm.sfg <- function(x, ..., add = NULL, remove = NULL, target = NULL) {
+  input <- class(x)[1]
+  target <- fm_zm_target(input, add = add, remove = remove, target = target)
+  if (is.list(x)) {
+    ret <- lapply(x, fm_zm, input = input, target = target)
   } else {
-    ncol_minmax <- c(3L, 3L)
+    ret <- fm_zm(unclass(x), input = input, target = target)
   }
-  if (NROW(geometry) > 0L) {
-    if (ncol_minmax[1] != ncol_minmax[2]) {
-      # Some with Z, some without
-      geometry[ncols == 2L] <-
-        sf::st_zm(geometry[ncols == 2L], drop = FALSE, what = "Z")
+
+  structure(ret, class = c(target, class(x)[-1]))
+}
+
+#' @export
+#' @rdname fm_zm
+fm_zm.numeric <- function(x,
+                          ...,
+                          add = NULL,
+                          remove = NULL,
+                          target = NULL,
+                          input = NULL) {
+  if (is.null(input)) {
+    input <- c("", "XY", "XYZ", "XYZM")[length(x)]
+  }
+
+  fm_zm(
+    matrix(x, nrow = 1L),
+    input = input,
+    add = add,
+    remove = remove,
+    target = target
+  )[1, ]
+}
+
+#' @export
+#' @rdname fm_zm
+fm_zm.matrix <- function(x,
+                         ...,
+                         add = NULL,
+                         remove = NULL,
+                         target = NULL,
+                         input = NULL) {
+  if (is.null(input)) {
+    input <- c("", "XY", "XYZ", "XYZM")[ncol(x)]
+  }
+  input <- match.arg(input, c("XY", "XYZ", "XYM", "XYZM"))
+
+  target <- fm_zm_target(
+    input = input,
+    add = add,
+    remove = remove,
+    target = target
+  )
+
+  ncol_for_type <- list(
+    "XY" = 2L,
+    "XYZ" = 3L,
+    "XYM" = 3L,
+    "XYZM" = 4L
+  )[[target]]
+
+  if (input == target) {
+    values <- x
+  } else if (input == "XY") {
+    if (target == "XYZ") {
+      values <- cbind(x, 0.0)
+    } else if (target == "XYM") {
+      values <- cbind(x, 0.0)
+    } else if (input == "XY" && target == "XYZM") {
+      values <- cbind(x, 0.0, 0.0)
+    }
+  } else if (input == "XYZ") {
+    if (target == "XY") {
+      values <- x[, 1:2, drop = FALSE]
+    } else if (target == "XYM") {
+      values <- cbind(x[, 1:2, drop = FALSE], 0.0)
+    } else if (target == "XYZM") {
+      values <- cbind(x, 0.0)
+    }
+  } else if (input == "XYM") {
+    if (target == "XY") {
+      values <- x[, 1:2, drop = FALSE]
+    } else if (target == "XYZ") {
+      values <- cbind(x[, 1:2, drop = FALSE], 0.0)
+    } else if (target == "XYZM") {
+      values <- cbind(x[, 1:2, drop = FALSE], 0.0, x[, 3])
+    }
+  } else if (input == "XYZM") {
+    if (target == "XY") {
+      values <- x[, 1:2, drop = FALSE]
+    } else if (target == "XYZ") {
+      values <- x[, 1:3, drop = FALSE]
+    } else if (target == "XYM") {
+      values <- x[, c(1, 2, 4), drop = FALSE]
     }
   } else {
-    geometry <-
-      sf::st_as_sf(
-        as.data.frame(
-          matrix(0.0, 0L, ncol_minmax[2])
-        ),
-        coords = seq_len(ncol_minmax[2]),
-        crs = fm_crs(geometry)
-      )$geometry
+    stop("Invalid fm_zm `input` argument")
   }
-  geometry
+
+  values
+}
+
+#' @describeIn fm_zm Determines the target target Z/M format
+#' @export
+fm_zm_target <- function(input, add = NULL, remove = NULL, target = NULL) {
+  if (!is.null(target)) {
+    return(target)
+  }
+
+  all_types <- c("XY", "XYZ", "XYM", "XYZM")
+  compat <- list(
+    "XY" = c("XY", "XYZ", "XYM", "XYZM"),
+    "XYZ" = c("XYZ", "XYZM"),
+    "XYM" = c("XYM", "XYZM"),
+    "XYZM" = c("XYZM")
+  )
+  output_add <-
+    list(
+      "Z" = c("XYZ", "XYZM"),
+      "M" = c("XYM", "XYZM"),
+      "ZM" = c("XYZM")
+    )
+  output_rm <-
+    list(
+      "Z" = c("XY", "XYM"),
+      "M" = c("XY", "XYZ"),
+      "ZM" = c("XY")
+    )
+  output_compat <- all_types
+  for (compat_types in compat[unique(input)]) {
+    output_compat <- intersect(output_compat, compat_types)
+  }
+
+  if (is.null(target)) {
+    output <- output_compat
+    if (!is.null(add)) {
+      output <- intersect(output, output_add[[add]])
+    }
+    if (!is.null(remove)) {
+      output <- intersect(output, output_rm[[remove]])
+      if (length(output) == 0) {
+        # Will remove something
+        output <- output_rm[[remove]]
+        output <- output[length(output)]
+      }
+    }
+    target <- output[1]
+  } else {
+    target <- target
+  }
+
+  target
 }
 
 # Convert loc information to raw matrix coordinates for the mesh

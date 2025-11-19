@@ -82,6 +82,7 @@ reference:
   desc: "Functions for handling coordinate systems and conversions"
   contents:
   - starts_with("fm_crs")
+  - starts_with("fm_zm")
   - starts_with("fm_transform")
   - starts_with("fm_CRS")
   - starts_with("fm_wkt")

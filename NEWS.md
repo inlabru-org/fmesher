@@ -5,6 +5,8 @@
 * Add `fm_subset()` method for constructing a subset of a mesh based on a set
   of triangle (for `fm_mesh_2d`) or tetrahedron (for `fm_mesh_3d`) indices.
   (version `0.5.0.9003`)
+* Add `fm_zm()` method for adding/removing/unifying the Z/M dimensions of
+  coordinate matrices and `sf` objects (version `0.5.0.9010`)
 
 ## Improved features
 
@@ -14,7 +16,7 @@
 * Speed up `fm_int()` for polygons by bulk pre-computing `fm_bary()` information
   instead of separate calls in `fm_vertex_projection()` (version `0.5.0.9004`)
 * Handle heterogeneous `sf` geometry XY/XYZ dimensions in
-  `fm_bary()`/`fm_basis()` via new internal `fm_zm()` method that is called
+  `fm_bary()`/`fm_basis()` via `fm_zm()` method that is called
   by `fm_onto_mesh()` and `fm_unify_coords()` to promote XY to XYZ when needed,
   before calling `sf::st_coordinates()`, as `sf::st_coordinates()` otherwise fails.
   (version `0.5.0.9005`)

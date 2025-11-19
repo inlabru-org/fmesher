@@ -706,8 +706,10 @@ fm_int.numeric <- function(domain, samplers = NULL, name = "x", ...) {
     ips
   }
 
-  ips <- fm_int_wrapper(domain = domain, samplers = samplers, name = name, ...,
-                        int_fun = fm_int_numeric)
+  ips <- fm_int_wrapper(
+    domain = domain, samplers = samplers, name = name, ...,
+    int_fun = fm_int_numeric
+  )
 
   ips
 }
@@ -730,8 +732,10 @@ fm_int.character <- function(domain, samplers = NULL, name = "x", ...) {
     ips
   }
 
-  ips <- fm_int_wrapper(domain = domain, samplers = samplers, name = name, ...,
-                        int_fun = fm_int_character)
+  ips <- fm_int_wrapper(
+    domain = domain, samplers = samplers, name = name, ...,
+    int_fun = fm_int_character
+  )
 
   ips
 }
@@ -748,15 +752,18 @@ fm_int.factor <- function(domain, samplers = NULL, name = "x", ...) {
 
   fm_int_factor <- function(domain, samplers, name, ...) {
     samplers[[name]] <- factor(as.vector(samplers[[name]]),
-                               levels = levels(domain))
+      levels = levels(domain)
+    )
 
     ok <- samplers[[name]] %in% domain
     ips <- samplers[ok, , drop = FALSE]
     ips
   }
 
-  ips <- fm_int_wrapper(domain = domain, samplers = samplers, name = name, ...,
-                        int_fun = fm_int_factor)
+  ips <- fm_int_wrapper(
+    domain = domain, samplers = samplers, name = name, ...,
+    int_fun = fm_int_factor
+  )
 
   ips
 }
@@ -986,7 +993,6 @@ fm_int.fm_mesh_1d <- function(domain,
           sampler_row = samplers[j, , drop = FALSE]
         )
       } else {
-
         ips[[j]] <- fm_int_1d_interval(
           domain = domain,
           sampler_row = samplers[j, , drop = FALSE]
@@ -1021,9 +1027,11 @@ fm_int.fm_mesh_1d <- function(domain,
     ips
   }
 
-  ips <- fm_int_wrapper(domain = domain, samplers = samplers, name = name,
-                        int.args = int.args, format = format,
-                        int_fun = fm_int_mesh_1d)
+  ips <- fm_int_wrapper(
+    domain = domain, samplers = samplers, name = name,
+    int.args = int.args, format = format,
+    int_fun = fm_int_mesh_1d
+  )
 
   ips
 }
