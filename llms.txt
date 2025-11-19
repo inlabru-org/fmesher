@@ -281,6 +281,9 @@ Functions for computing or accessing object properties
 - [`fm_int()`](https://inlabru-org.github.io/fmesher/reference/fm_int.md)
   : Multi-domain integration
 
+- [`fm_int_object()`](https://inlabru-org.github.io/fmesher/reference/fm_int_object.md)
+  : Construct integration scheme objects
+
 - [`fm_bary()`](https://inlabru-org.github.io/fmesher/reference/fm_bary.md)
   : Compute barycentric coordinates
 

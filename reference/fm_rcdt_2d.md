@@ -172,9 +172,9 @@ interfaces may be different, and potentially change in the future.
 fm_delaunay_2d(matrix(rnorm(30), 15, 2))
 #> fm_mesh_2d object:
 #>   Manifold:  R2
-#>   V / E / T: 15 / 36 / 22
+#>   V / E / T: 15 / 37 / 23
 #>   Euler char.:   1
-#>   Constraints:   Boundary: 6 boundary edges (1 group: 1), Interior: 0 edges
-#>   Bounding box: (-2.028607, 2.143613) x (-2.586141, 1.095199)
+#>   Constraints:   Boundary: 5 boundary edges (1 group: 1), Interior: 0 edges
+#>   Bounding box: (-2.028607, 1.456001) x (-2.586141, 1.095199)
 #>   Basis d.o.f.:  15
 ```

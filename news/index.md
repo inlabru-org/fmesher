@@ -13,6 +13,11 @@
   [`fm_zm()`](https://inlabru-org.github.io/fmesher/reference/fm_zm.md)
   method for adding/removing/unifying the Z/M dimensions of coordinate
   matrices and `sf` objects (version `0.5.0.9010`)
+- New method
+  [`fm_int_object()`](https://inlabru-org.github.io/fmesher/reference/fm_int_object.md)
+  to construct tibbles with the same output format as the
+  [`fm_int()`](https://inlabru-org.github.io/fmesher/reference/fm_int.md)
+  method, for user-defined integration schemes (version `0.5.0.9011`)
 
 ### Improved features
 
