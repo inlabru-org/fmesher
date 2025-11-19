@@ -228,8 +228,8 @@ fm_cprod <- function(..., na.rm = NULL, .blockwise = FALSE) {
 #' If `FALSE` (default), set a common block, `1L`.
 #' @param weight Optional weight variable; if `NULL`, all weights are set to 1.
 #' @param name character; name of the integration domain.
-#' @param override logical; If `name` is non-NULL and `override=TRUE` for sf object,
-#'   the current `sf_column` is renamed to `name`.
+#' @param override logical; If `name` is non-NULL and `override=TRUE` for sf
+#'   object, the current `sf_column` is renamed to `name`.
 #' @returns A tibble or sf/tibble object
 #' @seealso [fm_int()]
 #' @export

@@ -24,8 +24,8 @@ If \code{FALSE} (default), set a common block, \code{1L}.}
 
 \item{name}{character; name of the integration domain.}
 
-\item{override}{logical; If \code{name} is non-NULL and \code{override=TRUE} for sf object,
-the current \code{sf_column} is renamed to \code{name}.}
+\item{override}{logical; If \code{name} is non-NULL and \code{override=TRUE} for sf
+object, the current \code{sf_column} is renamed to \code{name}.}
 }
 \value{
 A tibble or sf/tibble object
