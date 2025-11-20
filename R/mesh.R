@@ -937,13 +937,17 @@ fm_zm_input.sf <- function(x, ...) {
 #' @export
 #' @rdname fm_zm
 fm_zm_input.sfc <- function(x, ...) {
-  unique(unlist(lapply(x, function(xx) { class(xx)[1] })))
+  unique(unlist(lapply(x, function(xx) {
+    class(xx)[1]
+  })))
 }
 
 #' @export
 #' @rdname fm_zm
 fm_zm_input.list <- function(x, ...) {
-  unique(unlist(lapply(x, function(xx) { fm_zm_input(xx) })))
+  unique(unlist(lapply(x, function(xx) {
+    fm_zm_input(xx)
+  })))
 }
 
 #' @export
