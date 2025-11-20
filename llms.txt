@@ -429,6 +429,7 @@ Functions for handling coordinate systems and conversions
   [`fm_crs_detect_manifold()`](https://inlabru-org.github.io/fmesher/reference/fm_detect_manifold.md)
   : Detect manifold type
 - [`fm_zm()`](https://inlabru-org.github.io/fmesher/reference/fm_zm.md)
+  [`fm_zm_input()`](https://inlabru-org.github.io/fmesher/reference/fm_zm.md)
   [`fm_zm_target()`](https://inlabru-org.github.io/fmesher/reference/fm_zm.md)
   **\[experimental\]** : Add or remove Z/M information
 - [`fm_transform()`](https://inlabru-org.github.io/fmesher/reference/fm_transform.md)

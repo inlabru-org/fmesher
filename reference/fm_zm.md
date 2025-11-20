@@ -14,6 +14,9 @@ fm_zm(x, ...)
 # S3 method for class 'sfc'
 fm_zm(x, ..., add = NULL, remove = NULL, target = NULL)
 
+# S3 method for class 'list'
+fm_zm(x, ..., add = NULL, remove = NULL, target = NULL)
+
 # S3 method for class 'sfg'
 fm_zm(x, ..., add = NULL, remove = NULL, target = NULL)
 
@@ -22,6 +25,26 @@ fm_zm(x, ..., add = NULL, remove = NULL, target = NULL, input = NULL)
 
 # S3 method for class 'matrix'
 fm_zm(x, ..., add = NULL, remove = NULL, target = NULL, input = NULL)
+
+fm_zm_input(x, ...)
+
+# S3 method for class 'sf'
+fm_zm_input(x, ...)
+
+# S3 method for class 'sfc'
+fm_zm_input(x, ...)
+
+# S3 method for class 'list'
+fm_zm_input(x, ...)
+
+# S3 method for class 'sfg'
+fm_zm_input(x, ...)
+
+# S3 method for class 'numeric'
+fm_zm_input(x, ..., input = NULL)
+
+# S3 method for class 'matrix'
+fm_zm_input(x, ..., input = NULL)
 
 fm_zm_target(input, add = NULL, remove = NULL, target = NULL)
 ```
@@ -68,7 +91,14 @@ An object of the same class as `x`, with modified Z/M dimensions.
 
 ## Functions
 
-- `fm_zm_target()`: Determines the target target Z/M format
+- `fm_zm_input()`: Find the set of distinct XY/XYZ/XYM/XYZM types
+
+- `fm_zm_target()`: Determines the target XY/XYZ/XYM/XYZM format
+
+## See also
+
+[`sf::st_zm()`](https://r-spatial.github.io/sf/reference/st_zm.html)
+that supports a subset of these operations.
 
 ## Author
 
@@ -90,4 +120,14 @@ fm_zm(fmexample$loc_sf, add = "Z")
 #> POINT Z (1.084441 -0.7762539 0)
 #> POINT Z (-2.345698 0.06445882 0)
 #> POINT Z (0.4291247 0.9594941 0)
+
+fm_zm_input(fmexample$loc_sf)
+#> [1] "XY"
+
+fm_zm_target(c("XY", "XYZ"))
+#> [1] "XYZ"
+fm_zm_target("XY", add = "Z")
+#> [1] "XYZ"
+fm_zm_target(c("XY", "XYZM"), remove = "M")
+#> [1] "XYZ"
 ```

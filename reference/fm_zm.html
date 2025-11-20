@@ -15,7 +15,7 @@ Add and/or remove Z and/or M information from simple feature geometries."></head
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.9011</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.9012</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,6 +68,9 @@ Add and/or remove Z and/or M information from simple feature geometries.</p>
 <span><span class="co"># S3 method for class 'sfc'</span></span>
 <span><span class="fu">fm_zm</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, add <span class="op">=</span> <span class="cn">NULL</span>, remove <span class="op">=</span> <span class="cn">NULL</span>, target <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># S3 method for class 'list'</span></span>
+<span><span class="fu">fm_zm</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, add <span class="op">=</span> <span class="cn">NULL</span>, remove <span class="op">=</span> <span class="cn">NULL</span>, target <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
 <span><span class="co"># S3 method for class 'sfg'</span></span>
 <span><span class="fu">fm_zm</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, add <span class="op">=</span> <span class="cn">NULL</span>, remove <span class="op">=</span> <span class="cn">NULL</span>, target <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
@@ -76,6 +79,26 @@ Add and/or remove Z and/or M information from simple feature geometries.</p>
 <span></span>
 <span><span class="co"># S3 method for class 'matrix'</span></span>
 <span><span class="fu">fm_zm</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, add <span class="op">=</span> <span class="cn">NULL</span>, remove <span class="op">=</span> <span class="cn">NULL</span>, target <span class="op">=</span> <span class="cn">NULL</span>, input <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">fm_zm_input</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'sf'</span></span>
+<span><span class="fu">fm_zm_input</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'sfc'</span></span>
+<span><span class="fu">fm_zm_input</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'list'</span></span>
+<span><span class="fu">fm_zm_input</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'sfg'</span></span>
+<span><span class="fu">fm_zm_input</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'numeric'</span></span>
+<span><span class="fu">fm_zm_input</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, input <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'matrix'</span></span>
+<span><span class="fu">fm_zm_input</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, input <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">fm_zm_target</span><span class="op">(</span><span class="va">input</span>, add <span class="op">=</span> <span class="cn">NULL</span>, remove <span class="op">=</span> <span class="cn">NULL</span>, target <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -125,8 +148,13 @@ from the geometry type (for <code>sfc</code> objects).</p></dd>
     <div class="section level2">
     <h2 id="functions">Functions<a class="anchor" aria-label="anchor" href="#functions"></a></h2>
 
-<ul><li><p><code>fm_zm_target()</code>: Determines the target target Z/M format</p></li>
+<ul><li><p><code>fm_zm_input()</code>: Find the set of distinct XY/XYZ/XYM/XYZM types</p></li>
+<li><p><code>fm_zm_target()</code>: Determines the target XY/XYZ/XYM/XYZM format</p></li>
 </ul></div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p><code><a href="https://r-spatial.github.io/sf/reference/st_zm.html" class="external-link">sf::st_zm()</a></code> that supports a subset of these operations.</p></div>
+    </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
     <p>Finn Lindgren <a href="mailto:Finn.Lindgren@gmail.com">Finn.Lindgren@gmail.com</a></p>
@@ -147,6 +175,17 @@ from the geometry type (for <code>sfc</code> objects).</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> POINT Z (1.084441 -0.7762539 0)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> POINT Z (-2.345698 0.06445882 0)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> POINT Z (0.4291247 0.9594941 0)</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">fm_zm_input</span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">loc_sf</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "XY"</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">fm_zm_target</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"XY"</span>, <span class="st">"XYZ"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "XYZ"</span>
+<span class="r-in"><span><span class="fu">fm_zm_target</span><span class="op">(</span><span class="st">"XY"</span>, add <span class="op">=</span> <span class="st">"Z"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "XYZ"</span>
+<span class="r-in"><span><span class="fu">fm_zm_target</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"XY"</span>, <span class="st">"XYZM"</span><span class="op">)</span>, remove <span class="op">=</span> <span class="st">"M"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "XYZ"</span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

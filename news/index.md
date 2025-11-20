@@ -10,9 +10,9 @@
   (for `fm_mesh_2d`) or tetrahedron (for `fm_mesh_3d`) indices. (version
   `0.5.0.9003`)
 - Add
-  [`fm_zm()`](https://inlabru-org.github.io/fmesher/reference/fm_zm.md)
-  method for adding/removing/unifying the Z/M dimensions of coordinate
-  matrices and `sf` objects (version `0.5.0.9010`)
+  [`fm_zm()`](https://inlabru-org.github.io/fmesher/reference/fm_zm.md)/[`fm_zm_input()`](https://inlabru-org.github.io/fmesher/reference/fm_zm.md)/[`fm_zm_target()`](https://inlabru-org.github.io/fmesher/reference/fm_zm.md)
+  methods for adding/removing/unifying the Z/M dimensions of coordinate
+  matrices and `sf` objects (version `0.5.0.9012`)
 - New method
   [`fm_int_object()`](https://inlabru-org.github.io/fmesher/reference/fm_int_object.md)
   to construct tibbles with the same output format as the
