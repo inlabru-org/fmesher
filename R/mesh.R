@@ -785,11 +785,13 @@ fm_centroids <- function(x, format = NULL) {
 #'   is inferred from the number of columns in `x` (for matrices/numerics) or
 #'   from the geometry type (for `sfc` objects).
 #' @returns An object of the same class as `x`, with modified Z/M dimensions.
+#' @seealso [sf::st_zm()] that supports a subset of these operations.
 #' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @export
 #' @rdname fm_zm
 #' @examples
 #' fm_zm(fmexample$loc_sf, add = "Z")
+#'
 fm_zm <- function(x, ...) {
   UseMethod("fm_zm")
 }
@@ -804,21 +806,25 @@ fm_zm.sf <- function(x, ...) {
 #' @export
 #' @rdname fm_zm
 fm_zm.sfc <- function(x, ..., add = NULL, remove = NULL, target = NULL) {
-  target <- fm_zm_target(vapply(
-    x,
-    function(xx) {
-      class(xx)[1]
-    },
-    character(1)
-  ), add = add, remove = remove, target = target)
+  input <- fm_zm_input(x, ...)
+  target <- fm_zm_target(input, add = add, remove = remove, target = target)
 
   sf::st_sfc(lapply(x, fm_zm, ..., target = target), crs = sf::st_crs(x))
 }
 
 #' @export
 #' @rdname fm_zm
+fm_zm.list <- function(x, ..., add = NULL, remove = NULL, target = NULL) {
+  input <- fm_zm_input(x, ...)
+  target <- fm_zm_target(input, add = add, remove = remove, target = target)
+
+  lapply(x, fm_zm, ..., target = target)
+}
+
+#' @export
+#' @rdname fm_zm
 fm_zm.sfg <- function(x, ..., add = NULL, remove = NULL, target = NULL) {
-  input <- class(x)[1]
+  input <- fm_zm_input(x)
   target <- fm_zm_target(input, add = add, remove = remove, target = target)
   if (is.list(x)) {
     ret <- lapply(x, fm_zm, input = input, target = target)
@@ -837,9 +843,7 @@ fm_zm.numeric <- function(x,
                           remove = NULL,
                           target = NULL,
                           input = NULL) {
-  if (is.null(input)) {
-    input <- c("", "XY", "XYZ", "XYZM")[length(x)]
-  }
+  input <- fm_zm_input(x, ..., input = input)
 
   fm_zm(
     matrix(x, nrow = 1L),
@@ -858,10 +862,7 @@ fm_zm.matrix <- function(x,
                          remove = NULL,
                          target = NULL,
                          input = NULL) {
-  if (is.null(input)) {
-    input <- c("", "XY", "XYZ", "XYZM")[ncol(x)]
-  }
-  input <- match.arg(input, c("XY", "XYZ", "XYM", "XYZM"))
+  input <- fm_zm_input(x, ..., input = input)
 
   target <- fm_zm_target(
     input = input,
@@ -918,8 +919,68 @@ fm_zm.matrix <- function(x,
   values
 }
 
-#' @describeIn fm_zm Determines the target target Z/M format
 #' @export
+#' @describeIn fm_zm Find the set of distinct XY/XYZ/XYM/XYZM types
+#' @examples
+#' fm_zm_input(fmexample$loc_sf)
+#'
+fm_zm_input <- function(x, ...) {
+  UseMethod("fm_zm_input")
+}
+
+#' @export
+#' @rdname fm_zm
+fm_zm_input.sf <- function(x, ...) {
+  fm_zm_input(sf::st_geometry(x), ...)
+}
+
+#' @export
+#' @rdname fm_zm
+fm_zm_input.sfc <- function(x, ...) {
+  unique(unlist(lapply(x, function(xx) { class(xx)[1] })))
+}
+
+#' @export
+#' @rdname fm_zm
+fm_zm_input.list <- function(x, ...) {
+  unique(unlist(lapply(x, function(xx) { fm_zm_input(xx) })))
+}
+
+#' @export
+#' @rdname fm_zm
+fm_zm_input.sfg <- function(x, ...) {
+  class(x)[1]
+}
+
+#' @export
+#' @rdname fm_zm
+fm_zm_input.numeric <- function(x, ..., input = NULL) {
+  if (is.null(input)) {
+    input <- c("", "XY", "XYZ", "XYZM")[length(x)]
+  }
+  input <- match.arg(input, c("XY", "XYZ", "XYM", "XYZM"))
+
+  input
+}
+
+#' @export
+#' @rdname fm_zm
+fm_zm_input.matrix <- function(x, ..., input = NULL) {
+  if (is.null(input)) {
+    input <- c("", "XY", "XYZ", "XYZM")[ncol(x)]
+  }
+  input <- match.arg(input, c("XY", "XYZ", "XYM", "XYZM"))
+
+  input
+}
+
+#' @describeIn fm_zm Determines the target XY/XYZ/XYM/XYZM format
+#' @export
+#' @examples
+#' fm_zm_target(c("XY", "XYZ"))
+#' fm_zm_target("XY", add = "Z")
+#' fm_zm_target(c("XY", "XYZM"), remove = "M")
+#'
 fm_zm_target <- function(input, add = NULL, remove = NULL, target = NULL) {
   if (!is.null(target)) {
     return(target)

@@ -4,9 +4,17 @@
 \alias{fm_zm}
 \alias{fm_zm.sf}
 \alias{fm_zm.sfc}
+\alias{fm_zm.list}
 \alias{fm_zm.sfg}
 \alias{fm_zm.numeric}
 \alias{fm_zm.matrix}
+\alias{fm_zm_input}
+\alias{fm_zm_input.sf}
+\alias{fm_zm_input.sfc}
+\alias{fm_zm_input.list}
+\alias{fm_zm_input.sfg}
+\alias{fm_zm_input.numeric}
+\alias{fm_zm_input.matrix}
 \alias{fm_zm_target}
 \title{Add or remove Z/M information}
 \usage{
@@ -16,11 +24,27 @@ fm_zm(x, ...)
 
 \method{fm_zm}{sfc}(x, ..., add = NULL, remove = NULL, target = NULL)
 
+\method{fm_zm}{list}(x, ..., add = NULL, remove = NULL, target = NULL)
+
 \method{fm_zm}{sfg}(x, ..., add = NULL, remove = NULL, target = NULL)
 
 \method{fm_zm}{numeric}(x, ..., add = NULL, remove = NULL, target = NULL, input = NULL)
 
 \method{fm_zm}{matrix}(x, ..., add = NULL, remove = NULL, target = NULL, input = NULL)
+
+fm_zm_input(x, ...)
+
+\method{fm_zm_input}{sf}(x, ...)
+
+\method{fm_zm_input}{sfc}(x, ...)
+
+\method{fm_zm_input}{list}(x, ...)
+
+\method{fm_zm_input}{sfg}(x, ...)
+
+\method{fm_zm_input}{numeric}(x, ..., input = NULL)
+
+\method{fm_zm_input}{matrix}(x, ..., input = NULL)
 
 fm_zm_target(input, add = NULL, remove = NULL, target = NULL)
 }
@@ -56,11 +80,23 @@ Add and/or remove Z and/or M information from simple feature geometries.
 }
 \section{Functions}{
 \itemize{
-\item \code{fm_zm_target()}: Determines the target target Z/M format
+\item \code{fm_zm_input()}: Find the set of distinct XY/XYZ/XYM/XYZM types
+
+\item \code{fm_zm_target()}: Determines the target XY/XYZ/XYM/XYZM format
 
 }}
 \examples{
 fm_zm(fmexample$loc_sf, add = "Z")
+
+fm_zm_input(fmexample$loc_sf)
+
+fm_zm_target(c("XY", "XYZ"))
+fm_zm_target("XY", add = "Z")
+fm_zm_target(c("XY", "XYZM"), remove = "M")
+
+}
+\seealso{
+\code{\link[sf:st_zm]{sf::st_zm()}} that supports a subset of these operations.
 }
 \author{
 Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}

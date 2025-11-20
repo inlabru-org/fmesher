@@ -5,8 +5,9 @@
 * Add `fm_subset()` method for constructing a subset of a mesh based on a set
   of triangle (for `fm_mesh_2d`) or tetrahedron (for `fm_mesh_3d`) indices.
   (version `0.5.0.9003`)
-* Add `fm_zm()` method for adding/removing/unifying the Z/M dimensions of
-  coordinate matrices and `sf` objects (version `0.5.0.9010`)
+* Add `fm_zm()`/`fm_zm_input()`/`fm_zm_target()` methods for
+  adding/removing/unifying the Z/M dimensions of coordinate matrices and
+  `sf` objects (version `0.5.0.9012`)
 * New method `fm_int_object()` to construct tibbles with the same output format
   as the `fm_int()` method, for user-defined integration schemes
   (version `0.5.0.9011`)
