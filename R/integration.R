@@ -238,7 +238,7 @@ fm_cprod <- function(..., na.rm = NULL, .blockwise = FALSE) {
 #' new_fm_int(1:4, blocks = TRUE, weight = c(1, 2, 1, 3), name = "z")
 new_fm_int <- function(object, blocks = FALSE, weight = NULL,
                        name = NULL, override = FALSE) {
-    if (!is.data.frame(object)) {
+  if (!is.data.frame(object)) {
     if (is.null(name) || (nzchar(name) == 0)) {
       stop("A dimension name must be provided for the integration points.")
     }
@@ -310,7 +310,8 @@ new_fm_int <- function(object, blocks = FALSE, weight = NULL,
   object
 }
 
-#' @describeIn fmesher-deprecated Deprecated function; use [new_fm_int()] instead.
+#' @describeIn fmesher-deprecated Deprecated function; use [new_fm_int()]
+#'   instead.
 fm_int_object <- function(...) {
   lifecycle::deprecate_warn(
     when = "0.5.13",
