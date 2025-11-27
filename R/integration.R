@@ -314,7 +314,7 @@ new_fm_int <- function(object, blocks = FALSE, weight = NULL,
 #'   instead.
 fm_int_object <- function(...) {
   lifecycle::deprecate_warn(
-    when = "0.5.13",
+    when = "0.5.0.9013",
     what = "fm_int_object()",
     with = "new_fm_int()",
     always = TRUE
