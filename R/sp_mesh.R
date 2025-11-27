@@ -214,5 +214,11 @@ fm_as_segm.Polygon <-
 #' @describeIn fmesher-deprecated `r lifecycle::badge("deprecated")` in favour
 #'   of [fm_as_segm()]
 fm_sp2segment <- function(...) {
+  # Can be removed from exports after inlabru 2.14.0 is released
+  lifecycle::deprecate_stop(
+    "0.2.0",
+    "fm_sp2segment()",
+    "fm_as_segm()"
+  )
   fm_as_segm(...)
 }

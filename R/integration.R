@@ -71,18 +71,18 @@ fm_cprod <- function(..., na.rm = NULL, .blockwise = FALSE) {
   }
 
   if (length(ipl) == 1) {
-    ips <- fm_int_object(ipl[[1]], name = names(ipl)[1])
+    ips <- new_fm_int(ipl[[1]], name = names(ipl)[1])
     nms1 <- names(ips)
     nms2 <- c("weight", ".block", ".block_origin")
   } else {
-    ips1 <- fm_int_object(ipl[[1]], name = names(ipl)[1])
+    ips1 <- new_fm_int(ipl[[1]], name = names(ipl)[1])
     if (length(ipl) > 2) {
       ips2 <- do.call(
         fm_cprod,
         c(ipl[-1], list(na.rm = na.rm, .blockwise = .blockwise))
       )
     } else {
-      ips2 <- fm_int_object(ipl[[2]], name = names(ipl)[2])
+      ips2 <- new_fm_int(ipl[[2]], name = names(ipl)[2])
     }
 
     by <- setdiff(intersect(names(ips1), names(ips2)), "weight")
@@ -230,14 +230,15 @@ fm_cprod <- function(..., na.rm = NULL, .blockwise = FALSE) {
 #' @param name character; name of the integration domain.
 #' @param override logical; If `name` is non-NULL and `override=TRUE` for sf
 #'   object, the current `sf_column` is renamed to `name`.
-#' @returns A tibble or sf/tibble object
+#' @returns A tibble or sf/tibble object. May acquire additional class
+#' attributes in the future.
 #' @seealso [fm_int()]
 #' @export
 #' @examples
-#' fm_int_object(1:4, blocks = TRUE, weight = c(1, 2, 1, 3), name = "z")
-fm_int_object <- function(object, blocks = FALSE, weight = NULL,
-                          name = NULL, override = FALSE) {
-  if (!is.data.frame(object)) {
+#' new_fm_int(1:4, blocks = TRUE, weight = c(1, 2, 1, 3), name = "z")
+new_fm_int <- function(object, blocks = FALSE, weight = NULL,
+                       name = NULL, override = FALSE) {
+    if (!is.data.frame(object)) {
     if (is.null(name) || (nzchar(name) == 0)) {
       stop("A dimension name must be provided for the integration points.")
     }
@@ -309,6 +310,16 @@ fm_int_object <- function(object, blocks = FALSE, weight = NULL,
   object
 }
 
+#' @describeIn fmesher-deprecated Deprecated function; use [new_fm_int()] instead.
+fm_int_object <- function(...) {
+  lifecycle::deprecate_warn(
+    when = "0.5.13",
+    what = "fm_int_object()",
+    with = "new_fm_int()",
+    always = TRUE
+  )
+  new_fm_int(...)
+}
 
 fm_int_object_as_Spatial <- function(ips) {
   geom <- sf::st_geometry(ips)
@@ -677,7 +688,7 @@ fm_int_wrapper <- function(domain, samplers, name, ..., int_fun) {
         )
       }
     }
-    ips <- fm_int_object(
+    ips <- new_fm_int(
       do.call(dplyr::bind_rows, ips),
       name = name
     )
@@ -686,7 +697,7 @@ fm_int_wrapper <- function(domain, samplers, name, ..., int_fun) {
   }
 
   if (NROW(ips) == 0) {
-    ips <- fm_int_object(tibble::tibble(
+    ips <- new_fm_int(tibble::tibble(
       "{name}" := numeric(0),
       weight = numeric(0),
       .block = integer(0),
@@ -713,11 +724,11 @@ fm_int_wrapper <- function(domain, samplers, name, ..., int_fun) {
 #'
 fm_int.numeric <- function(domain, samplers = NULL, name = "x", ...) {
   if (is.null(samplers)) {
-    ips <- fm_int_object(as.vector(domain), name = name)
+    ips <- new_fm_int(as.vector(domain), name = name)
     return(ips)
   }
 
-  samplers <- fm_int_object(samplers, blocks = TRUE, name = name)
+  samplers <- new_fm_int(samplers, blocks = TRUE, name = name)
 
   fm_int_numeric <- function(domain, samplers, name, ...) {
     storage.mode(samplers[[name]]) <- storage.mode(domain)
@@ -739,11 +750,11 @@ fm_int.numeric <- function(domain, samplers = NULL, name = "x", ...) {
 #' @describeIn fm_int Discrete character space integration
 fm_int.character <- function(domain, samplers = NULL, name = "x", ...) {
   if (is.null(samplers)) {
-    ips <- fm_int_object(as.vector(domain), name = name)
+    ips <- new_fm_int(as.vector(domain), name = name)
     return(ips)
   }
 
-  samplers <- fm_int_object(samplers, blocks = TRUE, name = name)
+  samplers <- new_fm_int(samplers, blocks = TRUE, name = name)
 
   fm_int_character <- function(domain, samplers, name, ...) {
     storage.mode(samplers[[name]]) <- storage.mode(domain)
@@ -765,11 +776,11 @@ fm_int.character <- function(domain, samplers = NULL, name = "x", ...) {
 #' @describeIn fm_int Discrete factor space integration
 fm_int.factor <- function(domain, samplers = NULL, name = "x", ...) {
   if (is.null(samplers)) {
-    ips <- fm_int_object(as.vector(domain), name = name)
+    ips <- new_fm_int(as.vector(domain), name = name)
     return(ips)
   }
 
-  samplers <- fm_int_object(samplers, blocks = TRUE, name = name)
+  samplers <- new_fm_int(samplers, blocks = TRUE, name = name)
 
   fm_int_factor <- function(domain, samplers, name, ...) {
     samplers[[name]] <- factor(as.vector(samplers[[name]]),
@@ -850,13 +861,13 @@ fm_int.fm_mesh_1d <- function(domain,
   }
 
   if (is.null(samplers)) {
-    samplers <- fm_int_object(
+    samplers <- new_fm_int(
       cbind(domain$interval[1], domain$interval[2]),
       blocks = FALSE,
       name = name
     )
   } else {
-    samplers <- fm_int_object(samplers, blocks = TRUE, name = name)
+    samplers <- new_fm_int(samplers, blocks = TRUE, name = name)
     if (is.data.frame(samplers) && !(name %in% colnames(samplers))) {
       stop(paste0("Domain name '", name, "' missing from `samplers`."))
     }
@@ -873,7 +884,7 @@ fm_int.fm_mesh_1d <- function(domain,
       loc_point <- subsampler
       weight_point <- rep(1.0, length(loc_point))
 
-      ips <- fm_int_object(tibble::tibble(
+      ips <- new_fm_int(tibble::tibble(
         "{name}" := loc_point[weight_point > 0],
         weight = weight_point[weight_point > 0] * theweight,
         .block = the.block,
@@ -954,7 +965,7 @@ fm_int.fm_mesh_1d <- function(domain,
         loc_simpson <- c(loc_trap, loc_mid)
         weight_simpson <- c(weight_trap / 3, weight_mid * 2 / 3)
 
-        ips <- fm_int_object(tibble::tibble(
+        ips <- new_fm_int(tibble::tibble(
           "{name}" := loc_simpson[(weight_simpson > 0)],
           weight = weight_simpson[(weight_simpson > 0)] * theweight,
           .block = the.block,
@@ -988,7 +999,7 @@ fm_int.fm_mesh_1d <- function(domain,
             (int_loc <= max(subsampler))
         }
 
-        ips <- fm_int_object(tibble::tibble(
+        ips <- new_fm_int(tibble::tibble(
           "{name}" := int_loc[inside],
           weight = int_w[inside] * theweight,
           .block = the.block,
@@ -1021,13 +1032,13 @@ fm_int.fm_mesh_1d <- function(domain,
       }
     }
 
-    ips <- fm_int_object(
+    ips <- new_fm_int(
       do.call(dplyr::bind_rows, ips),
       name = name
     )
 
     if (NROW(ips) == 0) {
-      ips <- fm_int_object(tibble::tibble(
+      ips <- new_fm_int(tibble::tibble(
         "{name}" := numeric(0),
         weight = numeric(0),
         .block = integer(0),
@@ -1176,7 +1187,7 @@ fm_vertex_projection <- function(points, mesh) {
   }
 
   data <-
-    fm_int_object(tibble::tibble(
+    new_fm_int(tibble::tibble(
       .vertex = as.vector(mesh$graph$tv[tri[ok], ]),
       weight = as.vector(points$weight[ok] * bary[ok, ]),
       .block = rep(points$.block[ok], times = 3),
@@ -1332,7 +1343,7 @@ fm_int_mesh_2d.sfc_POINT <- function(samplers,
   if (is.null(name)) {
     name <- "geometry"
   }
-  ips <- fm_int_object(
+  ips <- new_fm_int(
     samplers,
     blocks = TRUE,
     weight = .weight,
@@ -1364,7 +1375,7 @@ fm_int_mesh_2d.sfc_MULTIPOINT <- function(samplers,
     crs = fm_crs(samplers)
   )
 
-  ips <- fm_int_object(
+  ips <- new_fm_int(
     ips,
     name = name,
     override = TRUE
@@ -1502,7 +1513,7 @@ fm_int_mesh_2d_lines <- function(samplers,
     byrow = TRUE,
     dimnames = list(NULL, colnames(.block_origin))
   )
-  ips <- fm_int_object(ips, name = name, override = TRUE)
+  ips <- new_fm_int(ips, name = name, override = TRUE)
 
   # Project to mesh vertices
   if (project) {
@@ -1681,7 +1692,7 @@ fm_int_mesh_2d_polygon <- function(samplers,
         }
 
         if (ncol(integ_$loc) > 2) {
-          ips <- fm_int_object(
+          ips <- new_fm_int(
             sf::st_as_sf(
               tibble::tibble(
                 x = integ_$loc[, 1],
@@ -1697,7 +1708,7 @@ fm_int_mesh_2d_polygon <- function(samplers,
             override = TRUE
           )
         } else {
-          ips <- fm_int_object(
+          ips <- new_fm_int(
             sf::st_as_sf(
               tibble::tibble(
                 x = integ_$loc[, 1],
@@ -1723,7 +1734,7 @@ fm_int_mesh_2d_polygon <- function(samplers,
     }
 
     if (ncol(integ$loc) > 2) {
-      ipsl <- list(fm_int_object(
+      ipsl <- list(new_fm_int(
         sf::st_as_sf(
           tibble::tibble(
             x = integ$loc[, 1],
@@ -1739,7 +1750,7 @@ fm_int_mesh_2d_polygon <- function(samplers,
         override = TRUE
       ))
     } else {
-      ipsl <- list(fm_int_object(
+      ipsl <- list(new_fm_int(
         sf::st_as_sf(
           tibble::tibble(
             x = integ$loc[, 1],
@@ -1756,7 +1767,7 @@ fm_int_mesh_2d_polygon <- function(samplers,
     }
   }
 
-  ips <- fm_int_object(
+  ips <- new_fm_int(
     do.call(dplyr::bind_rows, ipsl),
     name = name,
     override = TRUE
@@ -1789,7 +1800,7 @@ fm_int_mesh_2d.sfc_POLYGON <- function(samplers,
 
   ips$weight <- ips$weight * .weight[ips$.block]
   ips$.block <- .block[ips$.block]
-  ips <- fm_int_object(ips, name = name, override = TRUE)
+  ips <- new_fm_int(ips, name = name, override = TRUE)
 
   ips
 }
@@ -1814,7 +1825,7 @@ fm_int_mesh_2d.sfc_MULTIPOLYGON <- function(samplers,
 
   ips$weight <- ips$weight * .weight[ips$.block]
   ips$.block <- .block[ips$.block]
-  ips <- fm_int_object(ips, name = name, override = TRUE)
+  ips <- new_fm_int(ips, name = name, override = TRUE)
 
   ips
 }
@@ -1849,9 +1860,9 @@ fm_int_mesh_2d.sfc_GEOMETRY <- function(samplers,
         .weight = .weight[subset]
       )
     ips[[g_class]][[".block"]] <- .block[subset][ips[[g_class]][[".block"]]]
-    ips[[g_class]] <- fm_int_object(ips[[g_class]], name = name)
+    ips[[g_class]] <- new_fm_int(ips[[g_class]], name = name)
   }
-  ips <- fm_int_object(
+  ips <- new_fm_int(
     do.call(dplyr::bind_rows, ips),
     name = name,
     override = TRUE

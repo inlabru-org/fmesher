@@ -343,10 +343,10 @@ fm_basis.fm_collect <- function(x,
 #' weight for each row of the basis matrix)
 #' @export
 fm_basis.matrix <- function(x, ok = NULL, weights = NULL, ..., full = FALSE) {
-  if (!full) {
+  if (!full && is.null(weights)) {
     return(x)
   }
-  fm_basis(list(A = x, ok = ok, ...), weights = weights, full = TRUE)
+  fm_basis(list(A = x, ok = ok, ...), weights = weights, full = full)
 }
 
 #' @describeIn fm_basis Creates a new `fm_basis` object with elements `A` and
@@ -357,10 +357,10 @@ fm_basis.matrix <- function(x, ok = NULL, weights = NULL, ..., full = FALSE) {
 #'   returns the matrix unchanged.
 #' @export
 fm_basis.Matrix <- function(x, ok = NULL, weights = NULL, ..., full = FALSE) {
-  if (!full) {
+  if (!full && is.null(weights)) {
     return(x)
   }
-  fm_basis(list(A = x, ok = ok, ...), weights = weights, full = TRUE)
+  fm_basis(list(A = x, ok = ok, ...), weights = weights, full = full)
 }
 
 #' @describeIn fm_basis Creates a new `fm_basis` object from a plain list

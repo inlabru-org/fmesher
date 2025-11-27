@@ -4,7 +4,7 @@
 \alias{as.triangles3d.fm_mesh_3d}
 \title{Convert a 3D mesh to a 3D rgl triangulation}
 \usage{
-\method{as.triangles3d}{fm_mesh_3d}(obj, subset = NULL, ...)
+as.triangles3d.fm_mesh_3d(obj, subset = NULL, ...)
 }
 \arguments{
 \item{obj}{An \code{fm_mesh_3d} object}

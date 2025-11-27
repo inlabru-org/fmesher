@@ -8,9 +8,9 @@
 * Add `fm_zm()`/`fm_zm_input()`/`fm_zm_target()` methods for
   adding/removing/unifying the Z/M dimensions of coordinate matrices and
   `sf` objects (version `0.5.0.9012`)
-* New method `fm_int_object()` to construct tibbles with the same output format
+* New method `new_fm_int()` to construct tibbles with the same output format
   as the `fm_int()` method, for user-defined integration schemes
-  (version `0.5.0.9011`)
+  (version `0.5.0.9013`)
 
 ## Improved features
 
@@ -46,6 +46,8 @@
   Also allow `fm_mesh_intersection()` to generate non-Delaunay triangles,
   allowing the generated meshes to be used for stable integration schemes
   (version `0.5.0.9006`)
+* Handle the `weights` argument in `fm_basis.matrix()` and `fm_basis.Matrix()`
+  when `full = FALSE` (version `0.5.0.9013`)
 
 # fmesher 0.5.0
 
