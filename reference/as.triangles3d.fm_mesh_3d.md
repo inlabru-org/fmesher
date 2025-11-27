@@ -6,8 +6,7 @@ Extracts a matrix of coordinates of triangles, suitable for passing to
 ## Usage
 
 ``` r
-# S3 method for class 'fm_mesh_3d'
-as.triangles3d(obj, subset = NULL, ...)
+as.triangles3d.fm_mesh_3d(obj, subset = NULL, ...)
 ```
 
 ## Arguments

@@ -15,7 +15,7 @@ future version."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.9012</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.9013</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,7 +49,7 @@ future version."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Deprecated functions in fmesher</h1>
-      <small class="dont-index">Source: <a href="https://github.com/inlabru-org/fmesher/blob/devel/R/deprecated.R" class="external-link"><code>R/deprecated.R</code></a>, <a href="https://github.com/inlabru-org/fmesher/blob/devel/R/crs.R" class="external-link"><code>R/crs.R</code></a>, <a href="https://github.com/inlabru-org/fmesher/blob/devel/R/sp_mesh.R" class="external-link"><code>R/sp_mesh.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/inlabru-org/fmesher/blob/devel/R/deprecated.R" class="external-link"><code>R/deprecated.R</code></a>, <a href="https://github.com/inlabru-org/fmesher/blob/devel/R/integration.R" class="external-link"><code>R/integration.R</code></a>, <a href="https://github.com/inlabru-org/fmesher/blob/devel/R/sp_mesh.R" class="external-link"><code>R/sp_mesh.R</code></a></small>
       <div class="d-none name"><code>fmesher-deprecated.Rd</code></div>
     </div>
 
@@ -60,16 +60,7 @@ future version.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fm_spTransform</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Default S3 method</span></span>
-<span><span class="fu">fm_spTransform</span><span class="op">(</span><span class="va">x</span>, crs0 <span class="op">=</span> <span class="cn">NULL</span>, crs1 <span class="op">=</span> <span class="cn">NULL</span>, passthrough <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S3 method for class 'SpatialPoints'</span></span>
-<span><span class="fu">fm_spTransform</span><span class="op">(</span><span class="va">x</span>, <span class="va">CRSobj</span>, passthrough <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S3 method for class 'SpatialPointsDataFrame'</span></span>
-<span><span class="fu">fm_spTransform</span><span class="op">(</span><span class="va">x</span>, <span class="va">CRSobj</span>, passthrough <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fm_int_object</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">fm_sp2segment</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -78,47 +69,17 @@ future version.</p>
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>The object that should be transformed from it's current CRS to a new CRS</p></dd>
-
-
-<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Potential additional arguments</p></dd>
-
-
-<dt id="arg-crs-">crs0<a class="anchor" aria-label="anchor" href="#arg-crs-"></a></dt>
-<dd><p>The source sp::CRS or inla.CRS object</p></dd>
-
-
-<dt id="arg-crs-">crs1<a class="anchor" aria-label="anchor" href="#arg-crs-"></a></dt>
-<dd><p>The target sp::CRS or inla.CRS object</p></dd>
-
-
-<dt id="arg-passthrough">passthrough<a class="anchor" aria-label="anchor" href="#arg-passthrough"></a></dt>
-<dd><p>Default is FALSE.
-Setting to TRUE allows objects with no CRS information to be passed
-through without transformation.</p></dd>
-
-
-<dt id="arg-crsobj">CRSobj<a class="anchor" aria-label="anchor" href="#arg-crsobj"></a></dt>
-<dd><p>The target sp::CRS or inla.CRS object</p></dd>
+<dl><dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>Usually passed on to other methods</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="functions">Functions<a class="anchor" aria-label="anchor" href="#functions"></a></h2>
 
-<ul><li><p><code>fm_spTransform()</code>: <a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> (See <code><a href="fm_transform.html">fm_transform()</a></code> instead)
-Handle transformation of various inla objects according to coordinate
-reference systems of <code><a href="https://edzer.github.io/sp/reference/CRS-class.html" class="external-link">sp::CRS</a></code> or <code>INLA::inla.CRS</code> class.</p></li>
-<li><p><code>fm_spTransform(default)</code>: The default method handles low level
-transformation of raw coordinates.</p></li>
+<ul><li><p><code>fm_int_object()</code>: Deprecated function; use <code><a href="new_fm_int.html">new_fm_int()</a></code> instead.</p></li>
 <li><p><code>fm_sp2segment()</code>: <a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> in favour
 of <code><a href="fm_as_segm.html">fm_as_segm()</a></code></p></li>
 </ul></div>
-    <div class="section level2">
-    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="fm_transform.html">fm_transform()</a></code></p></div>
-    </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
     <p>Finn Lindgren <a href="mailto:Finn.Lindgren@gmail.com">Finn.Lindgren@gmail.com</a></p>

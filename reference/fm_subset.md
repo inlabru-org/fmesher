@@ -49,14 +49,14 @@ if (requireNamespace("geometry", quietly = TRUE)) {
 }
 #> fm_mesh_3d object:
 #>   Manifold:  R3
-#>   V / E / T / Tet:   10 / 31 / 37 / 15
+#>   V / E / T / Tet:   10 / 32 / 40 / 17
 #>   Euler char.:   1
-#>   Bounding box: (-0.4881249, 1.7987806) x (-0.8802615, 2.1752306) x (-2.536983, 1.641478)
+#>   Bounding box: (-0.4881249, 1.7987806) x (-0.686793, 2.175231) x (-2.536983, 1.641478)
 #>   Basis d.o.f.:  10
 #> fm_mesh_3d object:
 #>   Manifold:  R3
 #>   V / E / T / Tet:   7 / 16 / 15 / 5
 #>   Euler char.:   1
-#>   Bounding box: (-0.4881249, 1.7987806) x (-0.8802615, 2.1752306) x (-2.536983, 1.641478)
+#>   Bounding box: (-0.4881249, 1.7987806) x (-0.686793, 2.175231) x (-2.536983, 1.641478)
 #>   Basis d.o.f.:  7
 ```

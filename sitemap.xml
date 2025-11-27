@@ -59,7 +59,6 @@
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_int_mesh_2d.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_int_mesh_2d_core.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_int_multi_sampler.html</loc></url>
-<url><loc>https://inlabru-org.github.io/fmesher/reference/fm_int_object.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_is_within.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_lattice_2d.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/fm_lattice_Nd.html</loc></url>
@@ -114,6 +113,7 @@
 <url><loc>https://inlabru-org.github.io/fmesher/reference/geom_fm.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/index.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/local_testthat.html</loc></url>
+<url><loc>https://inlabru-org.github.io/fmesher/reference/new_fm_int.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/plot.fm_mesh_2d.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/plot.fm_segm.html</loc></url>
 <url><loc>https://inlabru-org.github.io/fmesher/reference/plot_rgl.html</loc></url>

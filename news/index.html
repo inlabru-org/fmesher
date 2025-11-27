@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.9012</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.9013</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,7 +56,7 @@
 <h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
 <ul><li>Add <code><a href="../reference/fm_subset.html">fm_subset()</a></code> method for constructing a subset of a mesh based on a set of triangle (for <code>fm_mesh_2d</code>) or tetrahedron (for <code>fm_mesh_3d</code>) indices. (version <code>0.5.0.9003</code>)</li>
 <li>Add <code><a href="../reference/fm_zm.html">fm_zm()</a></code>/<code><a href="../reference/fm_zm.html">fm_zm_input()</a></code>/<code><a href="../reference/fm_zm.html">fm_zm_target()</a></code> methods for adding/removing/unifying the Z/M dimensions of coordinate matrices and <code>sf</code> objects (version <code>0.5.0.9012</code>)</li>
-<li>New method <code><a href="../reference/fm_int_object.html">fm_int_object()</a></code> to construct tibbles with the same output format as the <code><a href="../reference/fm_int.html">fm_int()</a></code> method, for user-defined integration schemes (version <code>0.5.0.9011</code>)</li>
+<li>New method <code><a href="../reference/new_fm_int.html">new_fm_int()</a></code> to construct tibbles with the same output format as the <code><a href="../reference/fm_int.html">fm_int()</a></code> method, for user-defined integration schemes (version <code>0.5.0.9013</code>)</li>
 </ul></div>
 <div class="section level3">
 <h3 id="improved-features-development-version">Improved features<a class="anchor" aria-label="anchor" href="#improved-features-development-version"></a></h3>
@@ -73,6 +73,7 @@
 <li>Correct off-by-one indexing error in <code>$graph$vt</code> triangle indices (version <code>0.5.0.9002</code>)</li>
 <li>Propagate correct <code>crs</code> information in <code><a href="../reference/fm_bary_loc.html">fm_bary_loc()</a></code> for 2D spaces (version <code>0.5.0.9005</code>)</li>
 <li>Fix bugs in <code><a href="../reference/fm_mesh_intersection.html">fm_mesh_intersection()</a></code> and <code><a href="../reference/fm_bary.html">fm_bary()</a></code> C++ code that caused incorrect behaviour for locating points on meshes on subsets of the sphere. Also allow <code><a href="../reference/fm_mesh_intersection.html">fm_mesh_intersection()</a></code> to generate non-Delaunay triangles, allowing the generated meshes to be used for stable integration schemes (version <code>0.5.0.9006</code>)</li>
+<li>Handle the <code>weights</code> argument in <code><a href="../reference/fm_basis.html">fm_basis.matrix()</a></code> and <code><a href="../reference/fm_basis.html">fm_basis.Matrix()</a></code> when <code>full = FALSE</code> (version <code>0.5.0.9013</code>)</li>
 </ul></div>
 </div>
     <div class="section level2">

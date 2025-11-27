@@ -51,8 +51,8 @@ An `fm_mesh_3d` object
 (m <- fm_delaunay_3d(matrix(rnorm(30), 10, 3)))
 #> fm_mesh_3d object:
 #>   Manifold:  R3
-#>   V / E / T / Tet:   10 / 35 / 47 / 21
+#>   V / E / T / Tet:   10 / 34 / 44 / 19
 #>   Euler char.:   1
-#>   Bounding box: (-1.193641, 1.455841) x (-1.433321, 1.460110) x (-2.177576, 1.893360)
+#>   Bounding box: (-1.431271, 1.382911) x (-1.433321, 1.460110) x (-2.177576, 1.893360)
 #>   Basis d.o.f.:  10
 ```

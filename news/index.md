@@ -14,10 +14,10 @@
   methods for adding/removing/unifying the Z/M dimensions of coordinate
   matrices and `sf` objects (version `0.5.0.9012`)
 - New method
-  [`fm_int_object()`](https://inlabru-org.github.io/fmesher/reference/fm_int_object.md)
+  [`new_fm_int()`](https://inlabru-org.github.io/fmesher/reference/new_fm_int.md)
   to construct tibbles with the same output format as the
   [`fm_int()`](https://inlabru-org.github.io/fmesher/reference/fm_int.md)
-  method, for user-defined integration schemes (version `0.5.0.9011`)
+  method, for user-defined integration schemes (version `0.5.0.9013`)
 
 ### Improved features
 
@@ -79,6 +79,11 @@
   [`fm_mesh_intersection()`](https://inlabru-org.github.io/fmesher/reference/fm_mesh_intersection.md)
   to generate non-Delaunay triangles, allowing the generated meshes to
   be used for stable integration schemes (version `0.5.0.9006`)
+- Handle the `weights` argument in
+  [`fm_basis.matrix()`](https://inlabru-org.github.io/fmesher/reference/fm_basis.md)
+  and
+  [`fm_basis.Matrix()`](https://inlabru-org.github.io/fmesher/reference/fm_basis.md)
+  when `full = FALSE` (version `0.5.0.9013`)
 
 ## fmesher 0.5.0
 

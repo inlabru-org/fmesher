@@ -64,7 +64,11 @@ Functions for computing or accessing object properties
 - [`fm_int()`](https://inlabru-org.github.io/fmesher/reference/fm_int.md)
   : Multi-domain integration
 
-- [`fm_int_object()`](https://inlabru-org.github.io/fmesher/reference/fm_int_object.md)
+- [`fm_int_object()`](https://inlabru-org.github.io/fmesher/reference/fmesher-deprecated.md)
+  [`fm_sp2segment()`](https://inlabru-org.github.io/fmesher/reference/fmesher-deprecated.md)
+  : Deprecated functions in fmesher
+
+- [`new_fm_int()`](https://inlabru-org.github.io/fmesher/reference/new_fm_int.md)
   : Construct integration scheme objects
 
 - [`fm_bary()`](https://inlabru-org.github.io/fmesher/reference/fm_bary.md)
@@ -293,7 +297,7 @@ Functions for converting non-fmesher objects to fmesher objects.
   [`` `[`( ``*`<fm_list>`*`)`](https://inlabru-org.github.io/fmesher/reference/fm_list.md)
   : Handle lists of fmesher objects
 
-- [`as.triangles3d(`*`<fm_mesh_3d>`*`)`](https://inlabru-org.github.io/fmesher/reference/as.triangles3d.fm_mesh_3d.md)
+- [`as.triangles3d.fm_mesh_3d()`](https://inlabru-org.github.io/fmesher/reference/as.triangles3d.fm_mesh_3d.md)
   : Convert a 3D mesh to a 3D rgl triangulation
 
 ## Plotting methods
@@ -385,7 +389,3 @@ Direct C++ interface methods, not intended for package users.
 ## Deprecated methods
 
 Deprecated methods
-
-- [`fm_spTransform()`](https://inlabru-org.github.io/fmesher/reference/fmesher-deprecated.md)
-  [`fm_sp2segment()`](https://inlabru-org.github.io/fmesher/reference/fmesher-deprecated.md)
-  : Deprecated functions in fmesher
