@@ -50,6 +50,7 @@ reference:
   - starts_with("fm_basis")
   - starts_with("fm_raw_basis")
   - starts_with("fm_int")
+  - starts_with("new_fm_int")
   - starts_with("fm_bary")
   - starts_with("fm_evaluate")
   - starts_with("fm_evaluator")
