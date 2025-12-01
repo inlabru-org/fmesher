@@ -131,7 +131,7 @@ fmesher_spherical_bsplines <- function(loc, n, degree, uniform) {
 #' Compute spherical harmonics on the unit sphere
 #'
 #' @param loc numeric matrix; coordinates of points to locate in the mesh
-#' @param n integer; the maximum basis order
+#' @param max_order integer; the maximum basis order
 #' @param rotationally_symmetric logical; If `TRUE`, only evaluate rotationally
 #' invariant basis functions
 #' @rdname fmesher_spherical_harmonics

@@ -9,10 +9,10 @@ fmesher_spherical_harmonics(loc, max_order, rotationally_symmetric)
 \arguments{
 \item{loc}{numeric matrix; coordinates of points to locate in the mesh}
 
+\item{max_order}{integer; the maximum basis order}
+
 \item{rotationally_symmetric}{logical; If \code{TRUE}, only evaluate rotationally
 invariant basis functions}
-
-\item{n}{integer; the maximum basis order}
 }
 \value{
 A matrix of evaluated spherical harmonic basis functions
