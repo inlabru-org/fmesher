@@ -137,8 +137,8 @@ fmesher_spherical_bsplines <- function(loc, n, degree, uniform) {
 #' @rdname fmesher_spherical_harmonics
 #' @examples
 #' m <- fm_rcdt_2d(globe = 1)
-#' fmesher_spherical_bsplines(m$loc, max_order = 2, TRUE)
-#' fmesher_spherical_bsplines(m$loc, max_order = 2, FALSE)
+#' fmesher_spherical_harmonics(m$loc, max_order = 2, TRUE)
+#' fmesher_spherical_harmonics(m$loc, max_order = 2, FALSE)
 #' @export
 #' @keywords internal
 #' @returns A matrix of evaluated spherical harmonic basis functions

@@ -22,7 +22,7 @@ Compute spherical harmonics on the unit sphere
 }
 \examples{
 m <- fm_rcdt_2d(globe = 1)
-fmesher_spherical_bsplines(m$loc, max_order = 2, TRUE)
-fmesher_spherical_bsplines(m$loc, max_order = 2, FALSE)
+fmesher_spherical_harmonics(m$loc, max_order = 2, TRUE)
+fmesher_spherical_harmonics(m$loc, max_order = 2, FALSE)
 }
 \keyword{internal}
