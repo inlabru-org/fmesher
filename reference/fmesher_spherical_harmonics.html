@@ -85,10 +85,47 @@ invariant basis functions</p></dd>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="fm_rcdt_2d.html">fm_rcdt_2d</a></span><span class="op">(</span>globe <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="fmesher_spherical_bsplines.html">fmesher_spherical_bsplines</a></span><span class="op">(</span><span class="va">m</span><span class="op">$</span><span class="va">loc</span>, max_order <span class="op">=</span> <span class="fl">2</span>, <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fmesher_spherical_bsplines(m$loc, max_order = 2, TRUE):</span> unused argument (max_order = 2)</span>
-<span class="r-in"><span><span class="fu"><a href="fmesher_spherical_bsplines.html">fmesher_spherical_bsplines</a></span><span class="op">(</span><span class="va">m</span><span class="op">$</span><span class="va">loc</span>, max_order <span class="op">=</span> <span class="fl">2</span>, <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fmesher_spherical_bsplines(m$loc, max_order = 2, FALSE):</span> unused argument (max_order = 2)</span>
+<span class="r-in"><span><span class="fu">fmesher_spherical_harmonics</span><span class="op">(</span><span class="va">m</span><span class="op">$</span><span class="va">loc</span>, max_order <span class="op">=</span> <span class="fl">2</span>, <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       [,1]       [,2]       [,3]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1,]    1  1.7320508  2.2360680</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [2,]    1  0.8660254 -0.2795085</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3,]    1  0.8660254 -0.2795085</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4,]    1  0.8660254 -0.2795085</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5,]    1  0.8660254 -0.2795085</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6,]    1  0.8660254 -0.2795085</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7,]    1 -0.8660254 -0.2795085</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8,]    1 -0.8660254 -0.2795085</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9,]    1 -0.8660254 -0.2795085</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10,]    1 -0.8660254 -0.2795085</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11,]    1 -0.8660254 -0.2795085</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [12,]    1 -1.7320508  2.2360680</span>
+<span class="r-in"><span><span class="fu">fmesher_spherical_harmonics</span><span class="op">(</span><span class="va">m</span><span class="op">$</span><span class="va">loc</span>, max_order <span class="op">=</span> <span class="fl">2</span>, <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       [,1]          [,2]       [,3]       [,4]          [,5]          [,6]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1,]    1  0.000000e+00  1.7320508  0.0000000  0.000000e+00  0.000000e+00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [2,]    1  0.000000e+00  0.8660254 -1.5000000  0.000000e+00  0.000000e+00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3,]    1  1.426585e+00  0.8660254 -0.4635255 -8.536809e-01  1.594970e+00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4,]    1  8.816779e-01  0.8660254  1.2135255  1.381285e+00  9.857458e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5,]    1 -8.816779e-01  0.8660254  1.2135255 -1.381285e+00 -9.857458e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6,]    1 -1.426585e+00  0.8660254 -0.4635255  8.536809e-01 -1.594970e+00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7,]    1  8.816779e-01 -0.8660254 -1.2135255 -1.381285e+00 -9.857458e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8,]    1  1.426585e+00 -0.8660254  0.4635255  8.536809e-01 -1.594970e+00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9,]    1  1.836970e-16 -0.8660254  1.5000000  3.557277e-16 -2.053795e-16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10,]    1 -1.426585e+00 -0.8660254  0.4635255 -8.536809e-01  1.594970e+00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11,]    1 -8.816779e-01 -0.8660254 -1.2135255  1.381285e+00  9.857458e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [12,]    1  0.000000e+00 -1.7320508  0.0000000  0.000000e+00  0.000000e+00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             [,7]       [,8]       [,9]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1,]  2.2360680  0.0000000  0.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [2,] -0.2795085 -1.6770510  1.4523688</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3,] -0.2795085 -0.5182373 -1.1749910</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4,] -0.2795085  1.3567627  0.4488066</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5,] -0.2795085  1.3567627  0.4488066</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6,] -0.2795085 -0.5182373 -1.1749910</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7,] -0.2795085  1.3567627  0.4488066</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8,] -0.2795085 -0.5182373 -1.1749910</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9,] -0.2795085 -1.6770510  1.4523688</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10,] -0.2795085 -0.5182373 -1.1749910</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11,] -0.2795085  1.3567627  0.4488066</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [12,]  2.2360680  0.0000000  0.0000000</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
