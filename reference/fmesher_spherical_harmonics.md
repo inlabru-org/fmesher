@@ -14,14 +14,14 @@ fmesher_spherical_harmonics(loc, max_order, rotationally_symmetric)
 
   numeric matrix; coordinates of points to locate in the mesh
 
+- max_order:
+
+  integer; the maximum basis order
+
 - rotationally_symmetric:
 
   logical; If `TRUE`, only evaluate rotationally invariant basis
   functions
-
-- n:
-
-  integer; the maximum basis order
 
 ## Value
 
