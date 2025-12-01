@@ -464,6 +464,41 @@ internal_spline_mesh_1d <- function(interval,
 }
 
 
+
+# fmesher_spherical_harmonics_gsl <- function(loc,
+#                                             max_order,
+#                                             rotationally_symmetric) {
+#   n <- max_order
+#   rot.inv <- rotationally_symmetric
+#   loc <- loc / rowSums(loc^2)^0.5
+#   if (rot.inv) {
+#     basis <- matrix(0, nrow(loc), n + 1)
+#     for (l in seq(0, n)) {
+#       basis[, l + 1] <- sqrt(2 * l + 1) *
+#         gsl::legendre_Pl(l = l, x = loc[, 3])
+#     }
+#   } else {
+#     angle <- atan2(loc[, 2], loc[, 1])
+#     basis <- matrix(0, nrow(loc), (n + 1)^2)
+#     for (l in seq(0, n)) {
+#       basis[, 1 + l * (l + 1)] <-
+#         sqrt(2 * l + 1) *
+#         gsl::legendre_Pl(l = l, x = loc[, 3])
+#       for (m in seq_len(l)) {
+#         scaling <- sqrt(2 * (2 * l + 1) * exp(lgamma(l - m + 1) -
+#                                                 lgamma(l + m + 1)))
+#         poly <- gsl::legendre_Plm(l = l, m = m, x = loc[, 3])
+#         basis[, 1 + l * (l + 1) - m] <-
+#           scaling * sin(-m * angle) * poly
+#         basis[, 1 + l * (l + 1) + m] <-
+#           scaling * cos(m * angle) * poly
+#       }
+#     }
+#   }
+#   basis
+# }
+
+
 #' Basis functions for mesh manifolds
 #'
 #' Calculate basis functions on [fm_mesh_1d()] or [fm_mesh_2d()],
@@ -586,52 +621,13 @@ fm_raw_basis <- function(mesh,
     if (!identical(mesh$manifold, "S2")) {
       stop("Only know how to make spherical harmonics on S2.")
     }
-    # With GSL activated:
-    #        if (rot.inv) {
-    #            basis <- (inla.fmesher.smorg(
-    #                mesh$loc,
-    #                mesh$graph$tv,
-    #                sph0 = n
-    #            )$sph0)
-    #        } else {
-    #            basis <- (inla.fmesher.smorg(
-    #                mesh$loc,
-    #                mesh$graph$tv,
-    #                sph = n
-    #            )$sph)
-    #        }
-
-    fm_require_stop(
-      "gsl",
-      "The 'gsl' R package is needed for spherical harmonics."
-    )
-
     # Make sure we have radius-1 coordinates
     loc <- mesh$loc / rowSums(mesh$loc^2)^0.5
-    if (rot.inv) {
-      basis <- matrix(0, nrow(loc), n + 1)
-      for (l in seq(0, n)) {
-        basis[, l + 1] <- sqrt(2 * l + 1) *
-          gsl::legendre_Pl(l = l, x = loc[, 3])
-      }
-    } else {
-      angle <- atan2(loc[, 2], loc[, 1])
-      basis <- matrix(0, nrow(loc), (n + 1)^2)
-      for (l in seq(0, n)) {
-        basis[, 1 + l * (l + 1)] <-
-          sqrt(2 * l + 1) *
-            gsl::legendre_Pl(l = l, x = loc[, 3])
-        for (m in seq_len(l)) {
-          scaling <- sqrt(2 * (2 * l + 1) * exp(lgamma(l - m + 1) -
-            lgamma(l + m + 1)))
-          poly <- gsl::legendre_Plm(l = l, m = m, x = loc[, 3])
-          basis[, 1 + l * (l + 1) - m] <-
-            scaling * sin(-m * angle) * poly
-          basis[, 1 + l * (l + 1) + m] <-
-            scaling * cos(m * angle) * poly
-        }
-      }
-    }
+    basis <- fmesher_spherical_harmonics(
+      loc,
+      max_order = as.integer(n),
+      rotationally_symmetric = isTRUE(rot.inv)
+    )
   }
 
   return(basis)

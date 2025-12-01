@@ -19,7 +19,8 @@ future version.
 }
 \section{Functions}{
 \itemize{
-\item \code{fm_int_object()}: Deprecated function; use \code{\link[=new_fm_int]{new_fm_int()}} instead.
+\item \code{fm_int_object()}: Deprecated function; use \code{\link[=new_fm_int]{new_fm_int()}}
+instead.
 
 \item \code{fm_sp2segment()}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} in favour
 of \code{\link[=fm_as_segm]{fm_as_segm()}}

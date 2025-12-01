@@ -782,6 +782,56 @@ SEXP fmesher_spherical_bsplines(Rcpp::NumericMatrix loc,
   //  return Rcpp::wrap(matrices);
 }
 
+//' @title Spherical harmonics
+//'
+//' @description
+//' Compute spherical harmonics on the unit sphere
+//'
+//' @param loc numeric matrix; coordinates of points to locate in the mesh
+//' @param n integer; the maximum basis order
+//' @param rotationally_symmetric logical; If `TRUE`, only evaluate rotationally
+//' invariant basis functions
+//' @rdname fmesher_spherical_harmonics
+//' @examples
+//' m <- fm_rcdt_2d(globe = 1)
+//' fmesher_spherical_bsplines(m$loc, max_order = 2, TRUE)
+//' fmesher_spherical_bsplines(m$loc, max_order = 2, FALSE)
+//' @export
+//' @keywords internal
+//' @returns A matrix of evaluated spherical harmonic basis functions
+// [[Rcpp::export]]
+SEXP fmesher_spherical_harmonics(Rcpp::NumericMatrix loc,
+                                 int max_order,
+                                 Rcpp::LogicalVector rotationally_symmetric) {
+  if (max_order < 0) {
+    Rcpp::stop("'max_order' must be at least 0.");
+  }
+  if (loc.cols() < 3) {
+    Rcpp::stop("'ncol(loc)' must be at least 3.");
+  }
+
+  MatrixC matrices;
+  matrices.attach("loc",
+                  std::make_unique<Matrix<double>>(Matrix3double(Matrix<double>(loc))));
+
+  FMLOG("sph_harm output." << std::endl);
+
+  bool bool_rot_inv = Rcpp::is_true(Rcpp::all(rotationally_symmetric));
+  if (bool_rot_inv) {
+    FMLOG("rotationally invariant = TRUE" << std::endl);
+  } else {
+    FMLOG("rotationally uniform = FALSE" << std::endl);
+  }
+  matrices.attach(
+    string("sph.harm"),
+    spherical_harmonics(matrices.DD("loc"), max_order, bool_rot_inv));
+  matrices.matrixtype("sph.harm", fmesh::IOMatrixtype::General);
+  matrices.output("sph.harm");
+
+  return Rcpp::wrap(matrices.DD("sph.harm"));
+  //  return Rcpp::wrap(matrices);
+}
+
 
 
 
