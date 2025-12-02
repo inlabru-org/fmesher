@@ -58,6 +58,10 @@
   [`fm_int()`](https://inlabru-org.github.io/fmesher/reference/fm_int.md)
   for numeric/character/factor/`fm_mesh_1d` to handle nested list
   samplers (version `0.5.0.9009`)
+- Drop `gsl` package dependency by using a native C++ implementation of
+  the associated Legendre polynomials and spherical harmonics via
+  [`fm_raw_basis()`](https://inlabru-org.github.io/fmesher/reference/fm_raw_basis.md)
+  (version `0.5.0.9014`)
 
 ### Bug fixes
 

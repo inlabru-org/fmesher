@@ -5,7 +5,7 @@ Compute spherical harmonics on the unit sphere
 ## Usage
 
 ``` r
-fmesher_spherical_harmonics(loc, max_order, rotationally_symmetric)
+fmesher_spherical_harmonics(loc, max_order, rot_inv)
 ```
 
 ## Arguments
@@ -18,7 +18,7 @@ fmesher_spherical_harmonics(loc, max_order, rotationally_symmetric)
 
   integer; the maximum basis order
 
-- rotationally_symmetric:
+- rot_inv:
 
   logical; If `TRUE`, only evaluate rotationally invariant basis
   functions

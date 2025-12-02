@@ -103,6 +103,7 @@ fm_bary_loc(fmexample$mesh, bary, format = "sf")
 #> Geometry type: POINT
 #> Dimension:     XYZ
 #> Bounding box:  xmin: -2.345698 ymin: -0.9983864 xmax: 1.084441 ymax: 2.415835
+#> z_range:       zmin: 0 zmax: 0
 #> CRS:           NA
 #>                          geometry
 #> 1  POINT Z (-1.207066 -0.47719...
