@@ -57,7 +57,7 @@ fm_segm_contour_helper <- function(x = seq(0, 1, length.out = nrow(z)),
     levels <- pretty(range(z, na.rm = TRUE), nlevels)
   }
   if (is.null(groups)) {
-    groups <- seq_len(length(levels))
+    groups <- seq_along(levels)
   }
 
   ## End of input checking.
@@ -104,7 +104,7 @@ fm_segm_contour_helper <- function(x = seq(0, 1, length.out = nrow(z)),
   loc <- matrix(0, 0, 2)
   idx <- matrix(0, 0, 2)
   grp <- c()
-  for (k in seq_len(length(curves))) {
+  for (k in seq_along(curves)) {
     curve.loc <- cbind(curves[[k]]$x, curves[[k]]$y)
     curve.n <- nrow(curve.loc)
 
@@ -560,7 +560,7 @@ fm_nonconvex_hull_fm_basic <- function(x, convex = -0.15, resolution = 40,
     eps = eps,
     crs = crs
   )
-  return(segm)
+  segm
 }
 
 

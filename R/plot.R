@@ -110,7 +110,7 @@ lines.fm_segm <- function(x, loc = NULL, col = NULL,
       ...
     )
   }
-  return(invisible(dev))
+  invisible(dev)
 }
 
 
@@ -301,7 +301,7 @@ plot.fm_mesh_2d <- function(
       )
     }
   }
-  return(invisible())
+  invisible()
 }
 
 
@@ -324,7 +324,7 @@ get_tv_sub <- function(tv, loc, t.sub, visibility = "front") {
     tv <- tv[ok, , drop = FALSE]
     t.sub <- t.sub[ok]
   }
-  return(list(tv = tv, t.sub = t.sub))
+  list(tv = tv, t.sub = t.sub)
 }
 
 
@@ -416,7 +416,7 @@ lines_rgl.fm_segm <- function(x, loc = NULL, col = NULL,
       ...
     )
   }
-  return(invisible(dev))
+  invisible(dev)
 }
 
 #' @export
@@ -553,7 +553,7 @@ plot_rgl.fm_mesh_2d <- function(x, col = "white", color.axis = NULL,
     )
   }
 
-  return(invisible(dev))
+  invisible(dev)
 }
 
 #' @rdname plot_rgl
@@ -684,5 +684,5 @@ fm_generate_colors <- function(color,
     stop("color specification must be character, matrix, or vector.")
   }
 
-  return(list(colors = colors, alpha = alpha))
+  list(colors = colors, alpha = alpha)
 }

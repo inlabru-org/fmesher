@@ -114,7 +114,7 @@ fm_try_callstack <- function(expr) {
       stack <- stack[-(idx + seq_len(6))]
       stack[idx] <- "fm_try_callstack(...)"
     }
-    stack <- paste0(seq_len(length(stack)), ": ", stack, collapse = "\n")
+    stack <- paste0(seq_along(stack), ": ", stack, collapse = "\n")
     assign("error_stack", value = stack, envir = try_envir)
   }
   result <- try(
@@ -154,7 +154,7 @@ fm_require_message <- function(pkg, msg = NULL, override = NULL) {
       msg
     )
   )
-  return(FALSE)
+  FALSE
 }
 fm_require_stop <- function(pkg, msg = NULL, override = NULL) {
   if (requireNamespace(pkg, quietly = TRUE)) {
@@ -452,7 +452,7 @@ fm_row_kron <- function(M1, M2, repl = NULL, n.repl = NULL, weights = NULL # ,
   )
   #  }
 
-  return(M)
+  M
 }
 
 

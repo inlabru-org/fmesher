@@ -89,7 +89,7 @@ fm_mesh_3d <- function(loc = NULL,
     if (!all(used)) {
       used <- which(used)
       idx.map <- rep(NA, nrow(mesh$loc))
-      idx.map[used] <- seq_len(length(used))
+      idx.map[used] <- seq_along(used)
       mesh$loc <- mesh$loc[used, , drop = FALSE]
       mesh$n <- nrow(mesh[["loc"]])
       mesh$graph$tv <-

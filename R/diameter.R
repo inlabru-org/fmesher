@@ -73,7 +73,7 @@ fm_diameter.matrix <- function(x, manifold = NULL, ...) {
     center[k] <- mean(range(x[, k]))
   }
   diam <- 2 * max(distance(center, x))
-  return(diam)
+  diam
 }
 
 #' @rdname fm_diameter

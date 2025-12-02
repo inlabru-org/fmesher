@@ -2164,8 +2164,8 @@ fm_crs_is_identical <- function(crs0, crs1, crsonly = FALSE) {
   if (crsonly) {
     return(crs_ident)
   }
-  return(crs_ident &&
-    identical(fm_crs_oblique(crs0), fm_crs_oblique(crs1)))
+  crs_ident &&
+    identical(fm_crs_oblique(crs0), fm_crs_oblique(crs1))
 }
 
 

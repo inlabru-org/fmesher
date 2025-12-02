@@ -142,7 +142,7 @@ fm_lattice_Nd.fm_bbox <- function(
   if (is.null(dims)) {
     dims <- rep(2L, length(x))
   }
-  values <- lapply(seq_len(length(x)), function(k) {
+  values <- lapply(seq_along(x), function(k) {
     seq(x[[k]][1], x[[k]][2], length.out = dims[k])
   })
   loc <- as.matrix(expand.grid(values, stringsAsFactors = FALSE))

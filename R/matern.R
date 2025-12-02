@@ -228,5 +228,5 @@ fm_sample <- function(n, Q, mu = 0, constr = NULL) {
     #     )
     # )
   }
-  return(as.matrix(result))
+  as.matrix(result)
 }

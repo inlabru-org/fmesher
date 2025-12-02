@@ -629,7 +629,7 @@ fm_raw_basis <- function(mesh,
     )
   }
 
-  return(basis)
+  basis
 }
 
 
@@ -1229,7 +1229,7 @@ internal_bspline <- function(x, knots, degree = 1, deriv = 0) {
     #    message("knots: ", knots)
     #    message("unique j: ", unique(basis$j))
   }
-  return(basis)
+  basis
 }
 
 
@@ -1311,7 +1311,7 @@ internal_bspline2 <- function(x, knots, degree = 1, deriv = 0) {
         (knots[l + deg + 1L] - knots[l + 1L])
     }
   }
-  return(basis)
+  basis
 }
 
 
@@ -1397,7 +1397,7 @@ fm_block <- function(block = NULL,
 
   Matrix::sparseMatrix(
     i = info$block,
-    j = seq_len(length(info$block)),
+    j = seq_along(info$block),
     x = as.numeric(weights),
     dims = c(info$n_block, length(info$block))
   )

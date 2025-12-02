@@ -186,7 +186,7 @@ fm_evaluator.fm_mesh_3d <- function(mesh,
       )
   }
 
-  return(projector)
+  projector
 }
 
 
@@ -246,7 +246,7 @@ fm_evaluator.fm_mesh_2d <- function(mesh,
       )
   }
 
-  return(projector)
+  projector
 }
 
 
@@ -273,7 +273,7 @@ fm_evaluator.fm_mesh_1d <- function(mesh,
       class = "fm_evaluator"
     )
 
-  return(projector)
+  projector
 }
 
 

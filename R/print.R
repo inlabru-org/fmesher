@@ -113,7 +113,7 @@ print.fm_segm <- function(x,
   if (newline) {
     cat("\n", sep = "")
   }
-  return(invisible(x))
+  invisible(x)
 }
 
 
@@ -153,7 +153,7 @@ print.fm_segm_list <- function(x,
       }
     }
   }
-  return(invisible(x))
+  invisible(x)
 }
 
 
@@ -187,7 +187,7 @@ print.fm_list <- function(x,
       }
     }
   }
-  return(invisible(x))
+  invisible(x)
 }
 
 
@@ -386,7 +386,7 @@ print.fm_bbox <- function(x,
   if (newline) {
     cat("\n", sep = "")
   }
-  return(invisible(x))
+  invisible(x)
 }
 
 

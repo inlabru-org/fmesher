@@ -163,7 +163,7 @@ fm_refine <- function(mesh, refine = list(max.edge = 1)) {
     crs = fm_crs(mesh),
     refine = refine
   )
-  return(rmesh)
+  rmesh
 }
 
 
@@ -279,7 +279,7 @@ fm_subset <- function(mesh, t_sub) {
   tv <- mesh$graph$tv[t_sub, , drop = FALSE]
   v <- sort(unique(as.vector(tv)))
   idx <- rep(as.integer(NA), nrow(mesh$loc))
-  idx[v] <- seq_len(length(v))
+  idx[v] <- seq_along(v)
   tv <- matrix(idx[tv], nrow(tv), ncol(tv))
   loc <- mesh$loc[v, , drop = FALSE]
 

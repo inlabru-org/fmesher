@@ -104,7 +104,7 @@ fm_mesh_2d_map <- function(loc,
   } else {
     stop(paste("Unknown projection '", projection, "'.", sep = ""))
   }
-  return(proj)
+  proj
 }
 
 
@@ -135,7 +135,7 @@ fm_mesh_2d_map_lim <- function(loc = NULL,
   } else {
     stop(paste("Unknown projection '", projection, "'.", sep = ""))
   }
-  return(lim)
+  lim
 }
 
 
@@ -324,7 +324,7 @@ fm_lattice_2d.default <- function(
     ),
     class = c("fm_lattice_2d", "inla.mesh.lattice")
   )
-  return(lattice)
+  lattice
 }
 
 #' @title Convert objects to `fm_lattice_2d`

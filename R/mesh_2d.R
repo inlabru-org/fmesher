@@ -16,7 +16,7 @@ vt_list2matrix <- function(vt) {
   if (is.null(vt)) {
     return(NULL)
   }
-  v <- rep(seq_len(length(vt)), vapply(vt, NROW, 1L))
+  v <- rep(seq_along(vt), vapply(vt, NROW, 1L))
   vt_new <- cbind(v, do.call(rbind, vt))
   vt_new
 }
@@ -62,7 +62,7 @@ fm_unify_coords <- function(x, crs = NULL) {
 #' fm_unify_coords(x, crs = NULL)
 #' @export
 fm_unify_coords.NULL <- function(x, crs = NULL) {
-  return(matrix(0.0, 0, 3))
+  matrix(0.0, 0, 3)
 }
 
 #' @rdname fm_unify_coords
@@ -612,7 +612,7 @@ fm_rcdt_2d_inla <- function(loc = NULL,
     if (!all(used)) {
       used <- which(used)
       idx.map <- rep(NA, nrow(mesh$loc))
-      idx.map[used] <- seq_len(length(used))
+      idx.map[used] <- seq_along(used)
       mesh$loc <- mesh$loc[used, , drop = FALSE]
       mesh$n <- nrow(mesh[["loc"]])
       mesh$graph$tv <-
@@ -670,7 +670,7 @@ fm_delaunay_2d <- function(loc, crs = NULL, ...) {
     crs = crs,
     ...
   )
-  return(mesh)
+  mesh
 }
 
 
@@ -1024,7 +1024,7 @@ fm_mesh_2d_inla <- function(loc = NULL,
     plot(mesh3)
   }
 
-  return(mesh3)
+  mesh3
 }
 
 #' @title Convert objects to `fm_mesh_2d`
@@ -1138,11 +1138,11 @@ fm_hexagon_lattice_orig <- function(bnd,
   pts_inside <- lengths(sf::st_intersects(lattice_sfc, bnd_inner)) != 0
   pts_lattice_sfc <- lattice_sfc[pts_inside]
   fm_crs(pts_lattice_sfc) <- fm_crs(bnd_inner) <- crs
-  return(list(
+  list(
     lattice = pts_lattice_sfc,
     edge_len = edge_len,
     bnd_inner = bnd_inner
-  ))
+  )
 }
 
 

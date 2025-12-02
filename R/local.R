@@ -112,7 +112,7 @@ check_package_version_and_load <-
       }
       return(NA_character_)
     }
-    return(version)
+    version
   }
 
 
@@ -202,5 +202,5 @@ fm_safe_sp <- function(quietly = FALSE,
       }
     }
   }
-  return(invisible(TRUE))
+  invisible(TRUE)
 }

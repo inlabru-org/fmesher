@@ -93,7 +93,7 @@ fm_as_segm.Line <-
 fm_as_segm.Lines <-
   function(x, join = TRUE, grp = NULL, crs = NULL, ...) {
     segm <- as.list(lapply(
-      seq_len(length(x@Lines)),
+      seq_along(x@Lines),
       function(k) {
         x <- x@Lines[[k]]
         if (!is.null(grp)) {
@@ -116,7 +116,7 @@ fm_as_segm.SpatialLines <-
   function(x, join = TRUE, grp = NULL, ...) {
     crs <- fm_CRS(x)
     segm <- list()
-    for (k in seq_len(length(x@lines))) {
+    for (k in seq_along(x@lines)) {
       segm[[k]] <- fm_as_segm(x@lines[[k]],
         join = TRUE,
         crs = crs, ...
@@ -124,7 +124,7 @@ fm_as_segm.SpatialLines <-
     }
     if (join) {
       if (missing(grp)) {
-        grp <- seq_len(length(segm))
+        grp <- seq_along(segm)
       }
       segm <- fm_segm_join(segm, grp = grp)
     }
@@ -144,13 +144,13 @@ fm_as_segm.SpatialPolygons <-
   function(x, join = TRUE, grp = NULL, ...) {
     crs <- fm_CRS(x)
     segm <- list()
-    for (k in seq_len(length(x@polygons))) {
+    for (k in seq_along(x@polygons)) {
       segm[[k]] <-
         fm_as_segm(x@polygons[[k]], join = TRUE, crs = crs)
     }
     if (join) {
       if (missing(grp)) {
-        grp <- seq_len(length(segm))
+        grp <- seq_along(segm)
       }
       segm <- fm_segm_join(segm, grp = grp)
     }
@@ -174,7 +174,7 @@ fm_as_segm.Polygons <-
     ))
     if (join) {
       if (missing(grp)) {
-        grp <- seq_len(length(segm))
+        grp <- seq_along(segm)
       }
       segm <- fm_segm_join(segm, grp = grp)
     }
