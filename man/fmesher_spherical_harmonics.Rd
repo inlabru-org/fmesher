@@ -4,14 +4,14 @@
 \alias{fmesher_spherical_harmonics}
 \title{Spherical harmonics}
 \usage{
-fmesher_spherical_harmonics(loc, max_order, rotationally_symmetric)
+fmesher_spherical_harmonics(loc, max_order, rot_inv)
 }
 \arguments{
 \item{loc}{numeric matrix; coordinates of points to locate in the mesh}
 
 \item{max_order}{integer; the maximum basis order}
 
-\item{rotationally_symmetric}{logical; If \code{TRUE}, only evaluate rotationally
+\item{rot_inv}{logical; If \code{TRUE}, only evaluate rotationally
 invariant basis functions}
 }
 \value{

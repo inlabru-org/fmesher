@@ -34,9 +34,9 @@ using std::endl;
 
 namespace fmesh {
 
-int sph_basis_n(int kmax, bool rot_sym) {
+int sph_basis_n(int kmax, bool rot_inv) {
   if (kmax >= 0) {
-    if (rot_sym)
+    if (rot_inv)
       return (kmax + 1);
     else
       return (kmax + 1) * (kmax + 1);
@@ -45,32 +45,33 @@ int sph_basis_n(int kmax, bool rot_sym) {
   }
 }
 
-int sph_basis_index(int order, int mode, bool rot_sym) {
+int sph_basis_index(int order, int mode, bool rot_inv) {
   return order * (order + 1) + mode;
 }
 
-size_t legendre_array_index(int order, int mode, bool rot_sym) {
+size_t legendre_array_index(int order, int mode, bool rot_inv) {
 #ifdef FMESHER_WITH_GSL
   return gsl_sf_legendre_array_index(order, mode);
 #else
-  if (rot_sym) {
+  if (rot_inv) {
     return order;
   }
+  /* Ordering: order by order and mode within order */
   /* order: 0, 1,1, 2,2,2, 3,3,3,3, ... */
   /* mode:  0, 0,1, 0,1,2, 0,1,2,3, ... */
   /* index: 0, 1,2, 3,4,5, 6,7,8,9, ... */
-  /* 0, 1, 3, 6, 10, ... = m + o*(o+1)/2 */
+  /* 0, 1, 3, 6, 10, ... = o*(o+1)/2 */
   return (order * (order + 1)) / 2 + mode;
 #endif
 }
-size_t legendre_array_n(int max_order, bool rot_sym) {
+size_t legendre_array_n(int max_order, bool rot_inv) {
 #ifdef FMESHER_WITH_GSL
   return gsl_sf_legendre_array_n(max_order);
 #else
-  if (rot_sym) {
+  if (rot_inv) {
     return max_order + 1;
   }
-  return (max_order * (max_order + 1)) / 2 + max_order + 1;
+  return ((max_order + 2) * (max_order + 1)) / 2;
 #endif
 }
 
@@ -102,8 +103,8 @@ void legendre_array(int max_order, double x,
 
   /* Scaling for spherical harmonics, like GSL_SF_LEGENDRE_SPHARM */
   for (int n = 0; n <= max_order; n++) {
-    double scaling = (2.0 * n + 1.0) / M_2_SQRT_PI / M_2_SQRT_PI;
-    res_array[legendre_array_index(n, 0, true)] *= std::sqrt(scaling);
+    res_array[legendre_array_index(n, 0, true)] *=
+      std::sqrt(2.0 * n + 1.0) / M_2_SQRT_PI;
   }
 
 #endif
@@ -167,21 +168,21 @@ void legendre_array_e(int max_order, double x, int csphase,
 std::unique_ptr<Matrix<double>> spherical_harmonics(
     const Matrix3<double> &S,
     size_t max_order,
-    bool rotationally_symmetric) {
+    bool rot_inv) {
 
   auto sph =
-      std::make_unique<Matrix<double>>(sph_basis_n(max_order, rotationally_symmetric));
+      std::make_unique<Matrix<double>>(sph_basis_n(max_order, rot_inv));
 
   size_t i, k, m;
-  size_t GSL_res_n = legendre_array_n(max_order, rotationally_symmetric);
+  size_t GSL_res_n = legendre_array_n(max_order, rot_inv);
   auto GSL_res_array = std::make_unique<double[]>(GSL_res_n);
 
-  if (rotationally_symmetric) {
+  if (rot_inv) {
     for (i = 0; i < S.rows(); i++) {
       legendre_array(max_order, S[i][2], &GSL_res_array[0]);
       for (k = 0; k <= max_order; k++) {
         (*sph)(i, k) =
-            M_2_SQRT_PI * GSL_res_array[legendre_array_index(k, 0, rotationally_symmetric)];
+            M_2_SQRT_PI * GSL_res_array[legendre_array_index(k, 0, rot_inv)];
       }
     }
   } else {
@@ -199,16 +200,16 @@ std::unique_ptr<Matrix<double>> spherical_harmonics(
       legendre_array_e(max_order, S[i][2], -1, &GSL_res_array[0]);
       for (k = 0; k <= max_order; k++) {
         (*sph)(i, Idxs2[k]) =
-            M_2_SQRT_PI * GSL_res_array[legendre_array_index(k, 0, rotationally_symmetric)];
+            M_2_SQRT_PI * GSL_res_array[legendre_array_index(k, 0, rot_inv)];
       }
       for (m = 1; m <= max_order; m++) {
         scaling_sin = M_2_SQRT_PI * M_SQRT2 * sin(-(m * phi));
         scaling_cos = M_2_SQRT_PI * M_SQRT2 * cos(m * phi);
         for (k = m; k <= max_order; k++) {
           (*sph)(i, Idxs2[k] - m) =
-              scaling_sin * GSL_res_array[legendre_array_index(k, m, rotationally_symmetric)];
+              scaling_sin * GSL_res_array[legendre_array_index(k, m, rot_inv)];
           (*sph)(i, Idxs2[k] + m) =
-              scaling_cos * GSL_res_array[legendre_array_index(k, m, rotationally_symmetric)];
+              scaling_cos * GSL_res_array[legendre_array_index(k, m, rot_inv)];
         }
       }
     }

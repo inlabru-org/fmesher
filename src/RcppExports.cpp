@@ -106,15 +106,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // fmesher_spherical_harmonics
-SEXP fmesher_spherical_harmonics(Rcpp::NumericMatrix loc, int max_order, Rcpp::LogicalVector rotationally_symmetric);
-RcppExport SEXP _fmesher_fmesher_spherical_harmonics(SEXP locSEXP, SEXP max_orderSEXP, SEXP rotationally_symmetricSEXP) {
+SEXP fmesher_spherical_harmonics(Rcpp::NumericMatrix loc, int max_order, Rcpp::LogicalVector rot_inv);
+RcppExport SEXP _fmesher_fmesher_spherical_harmonics(SEXP locSEXP, SEXP max_orderSEXP, SEXP rot_invSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type loc(locSEXP);
     Rcpp::traits::input_parameter< int >::type max_order(max_orderSEXP);
-    Rcpp::traits::input_parameter< Rcpp::LogicalVector >::type rotationally_symmetric(rotationally_symmetricSEXP);
-    rcpp_result_gen = Rcpp::wrap(fmesher_spherical_harmonics(loc, max_order, rotationally_symmetric));
+    Rcpp::traits::input_parameter< Rcpp::LogicalVector >::type rot_inv(rot_invSEXP);
+    rcpp_result_gen = Rcpp::wrap(fmesher_spherical_harmonics(loc, max_order, rot_inv));
     return rcpp_result_gen;
 END_RCPP
 }

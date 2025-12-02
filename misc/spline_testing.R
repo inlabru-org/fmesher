@@ -6,15 +6,15 @@ n <- 6
 deg <- 3
 B1 <- fmesher_spherical_bsplines1(z, n = n, degree = deg, uniform = TRUE)
 B2 <- fmesher_spherical_bsplines1(z, n = n, degree = deg, uniform = FALSE)
-B3 <- fmesher_spherical_harmonics(Z, max_order = 5, rotationally_symmetric = TRUE)
-B4 <- fmesher_spherical_harmonics(Z, max_order = 5, rotationally_symmetric = FALSE)
-B3_gsl <- fmesher_spherical_harmonics_gsl(Z, max_order = 5, rotationally_symmetric = TRUE)
-B4_gsl <- fmesher_spherical_harmonics_gsl(Z, max_order = 5, rotationally_symmetric = FALSE)
+B3 <- fmesher_spherical_harmonics(Z, max_order = 5, rot_inv = TRUE)
+B4 <- fmesher_spherical_harmonics(Z, max_order = 5, rot_int = FALSE)
+B3_gsl <- fmesher_spherical_harmonics_gsl(Z, max_order = 5, rot_inv = TRUE)
+B4_gsl <- fmesher_spherical_harmonics_gsl(Z, max_order = 5, rot_inv = FALSE)
 bench::mark(
-  sph_harm_new0 = fmesher_spherical_harmonics(Z, max_order = 5, rotationally_symmetric = TRUE),
-  sph_harm_gsl0 = fmesher_spherical_harmonics_gsl(Z, max_order = 5, rotationally_symmetric = TRUE),
-  sph_harm_new = fmesher_spherical_harmonics(Z, max_order = 5, rotationally_symmetric = FALSE),
-  sph_harm_gsl = fmesher_spherical_harmonics_gsl(Z, max_order = 5, rotationally_symmetric = FALSE),
+  sph_harm_new0 = fmesher_spherical_harmonics(Z, max_order = 5, rot_inv = TRUE),
+  sph_harm_gsl0 = fmesher_spherical_harmonics_gsl(Z, max_order = 5, rot_inv = TRUE),
+  sph_harm_new = fmesher_spherical_harmonics(Z, max_order = 5, rot_inv = FALSE),
+  sph_harm_gsl = fmesher_spherical_harmonics_gsl(Z, max_order = 5, rot_inv = FALSE),
   check = FALSE
 )
 df <- data.frame(

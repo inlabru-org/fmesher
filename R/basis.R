@@ -467,11 +467,10 @@ internal_spline_mesh_1d <- function(interval,
 
 # fmesher_spherical_harmonics_gsl <- function(loc,
 #                                             max_order,
-#                                             rotationally_symmetric) {
+#                                             rot_inv) {
 #   n <- max_order
-#   rot.inv <- rotationally_symmetric
 #   loc <- loc / rowSums(loc^2)^0.5
-#   if (rot.inv) {
+#   if (rot_inv) {
 #     basis <- matrix(0, nrow(loc), n + 1)
 #     for (l in seq(0, n)) {
 #       basis[, l + 1] <- sqrt(2 * l + 1) *
@@ -626,7 +625,7 @@ fm_raw_basis <- function(mesh,
     basis <- fmesher_spherical_harmonics(
       loc,
       max_order = as.integer(n),
-      rotationally_symmetric = isTRUE(rot.inv)
+      rot_inv = isTRUE(rot.inv)
     )
   }
 

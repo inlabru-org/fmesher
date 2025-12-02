@@ -132,7 +132,7 @@ fmesher_spherical_bsplines <- function(loc, n, degree, uniform) {
 #'
 #' @param loc numeric matrix; coordinates of points to locate in the mesh
 #' @param max_order integer; the maximum basis order
-#' @param rotationally_symmetric logical; If `TRUE`, only evaluate rotationally
+#' @param rot_inv logical; If `TRUE`, only evaluate rotationally
 #' invariant basis functions
 #' @rdname fmesher_spherical_harmonics
 #' @examples
@@ -142,8 +142,8 @@ fmesher_spherical_bsplines <- function(loc, n, degree, uniform) {
 #' @export
 #' @keywords internal
 #' @returns A matrix of evaluated spherical harmonic basis functions
-fmesher_spherical_harmonics <- function(loc, max_order, rotationally_symmetric) {
-    .Call(`_fmesher_fmesher_spherical_harmonics`, loc, max_order, rotationally_symmetric)
+fmesher_spherical_harmonics <- function(loc, max_order, rot_inv) {
+    .Call(`_fmesher_fmesher_spherical_harmonics`, loc, max_order, rot_inv)
 }
 
 #' @title Finite element matrix computation

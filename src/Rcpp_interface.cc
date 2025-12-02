@@ -789,7 +789,7 @@ SEXP fmesher_spherical_bsplines(Rcpp::NumericMatrix loc,
 //'
 //' @param loc numeric matrix; coordinates of points to locate in the mesh
 //' @param max_order integer; the maximum basis order
-//' @param rotationally_symmetric logical; If `TRUE`, only evaluate rotationally
+//' @param rot_inv logical; If `TRUE`, only evaluate rotationally
 //' invariant basis functions
 //' @rdname fmesher_spherical_harmonics
 //' @examples
@@ -802,7 +802,7 @@ SEXP fmesher_spherical_bsplines(Rcpp::NumericMatrix loc,
 // [[Rcpp::export]]
 SEXP fmesher_spherical_harmonics(Rcpp::NumericMatrix loc,
                                  int max_order,
-                                 Rcpp::LogicalVector rotationally_symmetric) {
+                                 Rcpp::LogicalVector rot_inv) {
   if (max_order < 0) {
     Rcpp::stop("'max_order' must be at least 0.");
   }
@@ -816,7 +816,7 @@ SEXP fmesher_spherical_harmonics(Rcpp::NumericMatrix loc,
 
   FMLOG("sph_harm output." << std::endl);
 
-  bool bool_rot_inv = Rcpp::is_true(Rcpp::all(rotationally_symmetric));
+  bool bool_rot_inv = Rcpp::is_true(Rcpp::all(rot_inv));
   if (bool_rot_inv) {
     FMLOG("rotationally invariant = TRUE" << std::endl);
   } else {

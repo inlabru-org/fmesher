@@ -32,6 +32,9 @@
   (version `0.5.0.9008`)
 * Allow `fm_int()` for numeric/character/factor/`fm_mesh_1d` to handle
   nested list samplers (version `0.5.0.9009`)
+* Drop `gsl` package dependency by using a native C++ implementation of the
+  associated Legendre polynomials and spherical harmonics via `fm_raw_basis()`
+  (version `0.5.0.9014`)
 
 ## Bug fixes
 

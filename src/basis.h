@@ -24,7 +24,7 @@ namespace fmesh {
 
 std::unique_ptr<Matrix<double>> spherical_harmonics(
     const Matrix3<double> &S, size_t max_order,
-    bool rotationally_symmetric);
+    bool rot_inv);
 
 std::unique_ptr<Matrix<double>> spherical_bsplines1(
     const Matrix<double> &S, size_t n_basis,
