@@ -171,7 +171,6 @@ lines.fm_mesh_2d <- function(x, ..., add = TRUE) {
 }
 
 
-
 #' @rdname plot.fm_mesh_2d
 #' @param rgl Deprecated
 #' @inheritParams plot.fm_segm
@@ -180,27 +179,28 @@ lines.fm_mesh_2d <- function(x, ..., add = TRUE) {
 #' mesh <- fm_mesh_2d(cbind(0, 1), offset = c(1, 1.5), max.edge = 0.5)
 #' plot(mesh)
 plot.fm_mesh_2d <- function(
-    x,
-    col = "white",
-    t.sub = seq_len(nrow(x$graph$tv)),
-    add = FALSE,
-    lwd = 1,
-    xlim = range(x$loc[, 1]),
-    ylim = range(x$loc[, 2]),
-    main = NULL,
-    size = 1,
-    draw.vertices = FALSE,
-    vertex.color = "black",
-    draw.edges = TRUE,
-    edge.color = rgb(0.3, 0.3, 0.3),
-    draw.segments = draw.edges,
-    rgl = deprecated(),
-    visibility = "front",
-    asp = 1,
-    axes = FALSE,
-    xlab = "",
-    ylab = "",
-    ...) {
+  x,
+  col = "white",
+  t.sub = seq_len(nrow(x$graph$tv)),
+  add = FALSE,
+  lwd = 1,
+  xlim = range(x$loc[, 1]),
+  ylim = range(x$loc[, 2]),
+  main = NULL,
+  size = 1,
+  draw.vertices = FALSE,
+  vertex.color = "black",
+  draw.edges = TRUE,
+  edge.color = rgb(0.3, 0.3, 0.3),
+  draw.segments = draw.edges,
+  rgl = deprecated(),
+  visibility = "front",
+  asp = 1,
+  axes = FALSE,
+  xlab = "",
+  ylab = "",
+  ...
+) {
   if (lifecycle::is_present(rgl)) {
     lifecycle::deprecate_warn(
       "0.1.0",
@@ -328,10 +328,6 @@ get_tv_sub <- function(tv, loc, t.sub, visibility = "front") {
 }
 
 
-
-
-
-
 # plot_rgl ####
 
 
@@ -364,7 +360,7 @@ get_tv_sub <- function(tv, loc, t.sub, visibility = "front") {
 #' @export
 #' @examples
 #' \donttest{
-#' if (interactive() && require("rgl")) {
+#' if (interactive() && requireNamespace("rgl")) {
 #'   mesh <- fm_rcdt_2d(globe = 10)
 #'   plot_rgl(mesh, col = mesh$loc[, 1])
 #' }
@@ -487,9 +483,7 @@ plot_rgl.fm_mesh_2d <- function(x, col = "white", color.axis = NULL,
   )
 
   tTV <- t(TV)
-  Tx <- S[tTV, 1]
-  Ty <- S[tTV, 2]
-  Tz <- S[tTV, 3]
+  Txyz <- S[tTV, ]
   if (length(colors$colors) == 1) {
     ## One color
     Tcol <- colors$colors
@@ -540,12 +534,11 @@ plot_rgl.fm_mesh_2d <- function(x, col = "white", color.axis = NULL,
     rgl::points3d(S_, color = "black", ...)
   }
   if (draw.edges) {
-    rgl::lines3d(Ec[, 1], Ec[, 2], Ec[, 3], color = Ecol, lwd = lwd, ...)
+    rgl::lines3d(Ec, color = Ecol, lwd = lwd, ...)
   }
   if (draw.faces) {
-    rgl::triangles3d(Tx,
-      Ty,
-      Tz,
+    rgl::triangles3d(
+      Txyz,
       color = Tcol,
       specular = specular,
       alpha = Talpha,
@@ -576,7 +569,6 @@ lines_rgl.fm_segm_list <- function(x, ...) {
 }
 
 
-
 ## library(geometry)
 ## S = cbind(x=rnorm(30), y=rnorm(30), z=0)
 ## TV = delaunayn(S[, 1:2]) # NOTE: inconsistent triangle orders, only for test.
@@ -592,7 +584,6 @@ lines_rgl.fm_segm_list <- function(x, ...) {
 ## Ecol = Ecol[, c(2, 3, 1)] # Permute
 ## Ecol = rgb(Ecol[1,], Ecol[2,], Ecol[3,], maxColorValue = 1)
 ## Ecol = Ecol[tETV]
-
 
 
 #' Generate text RGB color specifications.

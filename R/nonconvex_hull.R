@@ -734,7 +734,13 @@ fm_nonconvex_hull.fm_segm_list <- function(x,
 #' @family nonconvex inla legacy support
 #' @inheritSection fm_mesh_2d INLA compatibility
 #' @examplesIf require("splancs")
-#' fm_nonconvex_hull_inla(cbind(0, 0), convex = 1)
+#' # New preferred method for "fm_segm" output:
+#' fm_nonconvex_hull(cbind(0, 0), convex = 1, format = "fm")
+#'
+#' # Deprecated:
+#' suppressWarnings(
+#'   fm_nonconvex_hull_inla(cbind(0, 0), convex = 1)
+#' )
 #'
 fm_nonconvex_hull_inla <- function(x,
                                    convex = -0.15,
