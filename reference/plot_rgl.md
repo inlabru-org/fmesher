@@ -163,7 +163,7 @@ Finn Lindgren <Finn.Lindgren@gmail.com>
 
 ``` r
 # \donttest{
-if (interactive() && require("rgl")) {
+if (interactive() && requireNamespace("rgl")) {
   mesh <- fm_rcdt_2d(globe = 10)
   plot_rgl(mesh, col = mesh$loc[, 1])
 }

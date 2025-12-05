@@ -102,13 +102,16 @@ Other nonconvex inla legacy support:
 ## Examples
 
 ``` r
-fm_nonconvex_hull_inla(cbind(0, 0), convex = 1)
-#> Warning: `fm_nonconvex_hull_inla()` was deprecated in fmesher 0.4.0.9002.
-#> ℹ Please use the `format` argument of `fm_nonconvex_hull()` instead.
-#> ℹ The `fm_nonconvex_hull()` method with `method = "fm"` and `format = "fm"` has
-#>   replaced `fm_nonconvex_hull_inla()`. Most use cases can use
-#>   `fm_nonconvex_hull(...)` for `sf` output, which since version `0.4.0.9002`
-#>   uses the "fm" method by default.
+# New preferred method for "fm_segm" output:
+fm_nonconvex_hull(cbind(0, 0), convex = 1, format = "fm")
+#> fm_segm object:
+#>   32 boundary edges (1 group: 1)
+#>   Bounding box = (-0.9992483, 0.9992483) x (-0.9992483, 0.9992483) x (0,0)
+
+# Deprecated:
+suppressWarnings(
+  fm_nonconvex_hull_inla(cbind(0, 0), convex = 1)
+)
 #> fm_segm object:
 #>   32 boundary edges (1 group: 1)
 #>   Bounding box = (-0.9992483, 0.9992483) x (-0.9992483, 0.9992483) x (0,0)

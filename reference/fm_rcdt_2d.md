@@ -175,6 +175,6 @@ fm_delaunay_2d(matrix(rnorm(30), 15, 2))
 #>   V / E / T: 15 / 36 / 22
 #>   Euler char.:   1
 #>   Constraints:   Boundary: 6 boundary edges (1 group: 1), Interior: 0 edges
-#>   Bounding box: (-2.028607, 2.143613) x (-2.586141, 1.095199)
+#>   Bounding box: (-1.3698427, 0.9132348) x (-2.280354, 2.068741)
 #>   Basis d.o.f.:  15
 ```
