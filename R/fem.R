@@ -283,7 +283,6 @@ fm_fem.fm_tensor <- function(mesh, order = 2, ...) {
 }
 
 
-
 #' @rdname fm_fem
 #' @returns `fm_fem.fm_collect`: A list with elements `c0`, `c1`,
 #' `g1`, `g2`, etc, and `cc` (`c0` for every model except `fm_mesh_1d` with
@@ -318,8 +317,6 @@ fm_fem.fm_collect <- function(mesh, order = 2, ...) {
 
   result
 }
-
-
 
 
 row_cross_product <- function(e1, e2) {

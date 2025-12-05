@@ -139,8 +139,6 @@ fm_mesh_2d_map_lim <- function(loc = NULL,
 }
 
 
-
-
 #' @title Make a lattice object
 #' @export
 #' @param ... Passed on to submethods
@@ -214,18 +212,19 @@ fm_lattice_2d <- function(...) {
 #' @rdname fm_lattice_2d
 #' @export
 fm_lattice_2d.default <- function(
-    x = seq(0, 1, length.out = 2),
-    y = seq(0, 1, length.out = 2),
-    z = NULL,
-    dims =
-      if (is.matrix(x)) {
-        dim(x)
-      } else {
-        c(length(x), length(y))
-      },
-    units = NULL,
-    crs = NULL,
-    ...) {
+  x = seq(0, 1, length.out = 2),
+  y = seq(0, 1, length.out = 2),
+  z = NULL,
+  dims =
+    if (is.matrix(x)) {
+      dim(x)
+    } else {
+      c(length(x), length(y))
+    },
+  units = NULL,
+  crs = NULL,
+  ...
+) {
   if (is.null(crs)) {
     units <- match.arg(
       units,

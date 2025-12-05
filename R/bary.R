@@ -332,7 +332,6 @@ fm_bary.fm_mesh_3d <- function(mesh,
 }
 
 
-
 #' @describeIn fm_bary An `fm_bary` object with columns `index` (vector of
 #'   lattice cell indices) and `where` (4-column matrix of barycentric
 #'   coordinates). Points that are outside the lattice are given `NA` entries in

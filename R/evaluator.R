@@ -147,7 +147,6 @@ fm_evaluator.default <- function(...) {
 }
 
 
-
 #' @export
 #' @describeIn fm_evaluate The `...` arguments are passed on to
 #'   `fm_evaluator_lattice()` if no `loc` or `lattice` is provided.
@@ -275,7 +274,6 @@ fm_evaluator.fm_mesh_1d <- function(mesh,
 
   projector
 }
-
 
 
 #' @describeIn fm_evaluate

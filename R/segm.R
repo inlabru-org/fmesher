@@ -429,8 +429,6 @@ fm_as_segm.inla.mesh.segment <- function(x, ...) {
 }
 
 
-
-
 #' Methods for fm_segm lists
 #'
 #' `fm_segm` lists can be combined into `fm_segm_list` list objects.

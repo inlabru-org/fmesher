@@ -134,7 +134,6 @@ fm_try_callstack <- function(expr) {
 }
 
 
-
 fm_require_message <- function(pkg, msg = NULL, override = NULL) {
   if (requireNamespace(pkg, quietly = TRUE)) {
     return(TRUE)
@@ -179,7 +178,6 @@ fm_require_stop <- function(pkg, msg = NULL, override = NULL) {
     )
   )
 }
-
 
 
 #' @title Conversion between sparse matrix types
@@ -304,7 +302,6 @@ fm_as_dgTMatrix.fmesher_sparse <- function(x, unique = TRUE, ...) {
     repr = "T"
   )
 }
-
 
 
 #' Row-wise Kronecker products
@@ -492,7 +489,6 @@ package_methods <- function() {
     c("", "is", "as", "match")
   )
 }
-
 
 
 fm_capabilities <- function(class = NULL,

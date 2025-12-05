@@ -19,7 +19,6 @@ fm_is_within <- function(x, y, ...) {
 }
 
 
-
 # fm_basis ####
 
 #' @title Compute mapping matrix between mesh function space and points
@@ -408,8 +407,6 @@ fm_basis.fm_evaluator <- function(x, ..., full = FALSE) {
 }
 
 
-
-
 internal_spline_mesh_1d <- function(interval,
                                     m,
                                     degree,
@@ -462,7 +459,6 @@ internal_spline_mesh_1d <- function(interval,
     free.clamped = free.clamped
   )
 }
-
 
 
 # fmesher_spherical_harmonics_gsl <- function(loc,
@@ -631,8 +627,6 @@ fm_raw_basis <- function(mesh,
 
   basis
 }
-
-
 
 
 #' @title Internal helper functions for mesh field evaluation
@@ -1166,7 +1160,6 @@ fm_basis_mesh_1d <- function(mesh,
 }
 
 
-
 # Plain B-spline basis evaluation by Farin eq 10.13-10.14,
 # building the basis function matrices recursively via index vectors
 internal_bspline <- function(x, knots, degree = 1, deriv = 0) {
@@ -1313,8 +1306,6 @@ internal_bspline2 <- function(x, knots, degree = 1, deriv = 0) {
   }
   basis
 }
-
-
 
 
 # Block methods ####

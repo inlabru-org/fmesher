@@ -245,8 +245,6 @@ fm_components.fm_mesh_3d <- function(x, ...) {
 }
 
 
-
-
 #' @rdname fm_components
 #' @returns For `fm_segm`, returns a list of segments, each with component
 #'   either a single closed loop of segments, or an open segment chain.

@@ -146,7 +146,6 @@ fm_as_list <- function(x, ..., .class_stub = NULL) {
 }
 
 
-
 #' @export
 #' @describeIn fm_list The `...` arguments should be coercible to `fm_list`
 #' objects.

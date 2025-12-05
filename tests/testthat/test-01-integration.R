@@ -115,7 +115,6 @@ test_that("Tensor space integration", {
 })
 
 
-
 test_that("Integrating an sf polygon on a mesh domain", {
   ips <- fm_int(fmexample$mesh, samplers = fmexample$boundary_sf[[1]])
 
@@ -264,8 +263,6 @@ test_that("Integration line splitting", {
     NA
   )
 })
-
-
 
 
 # Additional mesh integration tests

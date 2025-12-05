@@ -291,7 +291,6 @@ print.fm_mesh_2d <- function(x, ..., digits = NULL, verbose = FALSE) {
 }
 
 
-
 #' @export
 #' @rdname fmesher-print
 print.fm_mesh_3d <- function(x, ..., digits = NULL, verbose = FALSE) {
@@ -329,7 +328,6 @@ print.fm_mesh_3d <- function(x, ..., digits = NULL, verbose = FALSE) {
 }
 
 
-
 #' @param verbose logical
 #'
 #' @export
@@ -354,7 +352,6 @@ print.fm_mesh_1d <- function(x, ..., digits = NULL, verbose = FALSE) {
 
   invisible(x)
 }
-
 
 
 #' @export
@@ -495,7 +492,6 @@ print.fm_lattice_Nd <- function(x, ..., digits = NULL, verbose = FALSE) {
   cat("  Basis d.o.f.:\t", fm_dof(x), "\n", sep = "")
   invisible(x)
 }
-
 
 
 #' Print method for `fm_basis`

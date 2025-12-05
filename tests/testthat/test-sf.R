@@ -242,7 +242,6 @@ test_that("Conversion from sfc_POLYGON to fm_segm", {
 })
 
 
-
 test_that("Conversion from sfc_MULTIPOLYGON to fm_segm", {
   ## sfc_MULTIPOLYGON ##
 
@@ -327,8 +326,6 @@ test_that("Conversion from sfc_MULTIPOLYGON to fm_segm", {
   B <- minimal_shift(seg_sf_u$loc[12 + 1:4, ], seg_1$loc[12 + 1:4, ])
   expect_identical(seg_sf_u$loc[12 + 1:4, ], B)
 })
-
-
 
 
 test_that("Conversion from sfc_GEOMETRY to fm_segm", {

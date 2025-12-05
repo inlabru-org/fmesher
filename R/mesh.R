@@ -138,7 +138,6 @@ fm_pixels <- function(mesh,
 }
 
 
-
 #' @title Refine a 2d mesh
 #'
 #' @description Refine an existing mesh
@@ -165,7 +164,6 @@ fm_refine <- function(mesh, refine = list(max.edge = 1)) {
   )
   rmesh
 }
-
 
 
 #' Split triangles of a mesh into subtriangles
@@ -254,7 +252,6 @@ fm_subdivide <- function(mesh, n = 1, delaunay = FALSE) {
 }
 
 
-
 #' Extract a subset of a mesh
 #'
 #' `r lifecycle::badge("experimental")` (from version `0.5.0.9003`)
@@ -302,7 +299,6 @@ fm_subset <- function(mesh, t_sub) {
 
   mesh
 }
-
 
 
 join_segm <- function(...) {
@@ -628,7 +624,6 @@ fm_intersect <- function(mesh, poly) {
 
   mesh_subset
 }
-
 
 
 #' @title Store points in different formats
@@ -1092,31 +1087,6 @@ fm_onto_mesh <- function(mesh, loc, crs = NULL) {
 
   loc
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 #' @title Function spece degrees of freedom

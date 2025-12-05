@@ -158,7 +158,6 @@ fm_segm_contour_helper <- function(x = seq(0, 1, length.out = nrow(z)),
 }
 
 
-
 # fm_nonconvex_hull ####
 
 #' @title Compute an extension of a spatial object
@@ -298,10 +297,6 @@ fm_extensions <- function(x,
 
   y
 }
-
-
-
-
 
 
 #' @describeIn fm_nonconvex_hull `fmesher` method for `fm_nonconvex_hull()`,
@@ -564,7 +559,6 @@ fm_nonconvex_hull_fm_basic <- function(x, convex = -0.15, resolution = 40,
 }
 
 
-
 #' @describeIn fm_nonconvex_hull
 #' Differs from `sf::st_buffer(x, convex)` followed by
 #' `sf::st_concave_hull()` (available from GEOS 3.11)
@@ -641,9 +635,6 @@ fm_nonconvex_hull_sf <- function(x,
   }
   y
 }
-
-
-
 
 
 # Methods ####

@@ -238,7 +238,6 @@ fm_crs_set_ellipsoid_radius <- function(crs, radius) {
 # Length unit ----
 
 
-
 #' @param crs An `sf::crs`, `sp::CRS`, `fm_crs` or `inla.CRS` object
 #' @param wkt A WKT2 character string
 #' @param unit character, name of a unit. Supported names are
@@ -431,8 +430,6 @@ fm_length_unit.character <- function(x) {
 }
 
 
-
-
 #' @returns For `fm_length_unit<-`, a crs object with
 #' altered length units.
 #' Note that the length unit for the ellipsoid radius is unchanged.
@@ -488,7 +485,6 @@ fm_length_unit.character <- function(x) {
   fm_length_unit(x$crs) <- value
   invisible(x)
 }
-
 
 
 # fm_crs ----
@@ -564,8 +560,6 @@ fm_crs <- function(x,
                    oblique = NULL) {
   UseMethod("fm_crs")
 }
-
-
 
 
 #' @title Check if a crs is NULL or NA
@@ -660,7 +654,6 @@ print.fm_crs <- function(x, ...) {
 }
 
 
-
 #' @export
 #' @rdname fm_crs
 fm_crs.default <- function(x, ..., units = NULL, oblique = NULL) {
@@ -698,8 +691,6 @@ fm_crs.crs <- function(x, ..., units = NULL, oblique = NULL) {
   fm_length_unit(x) <- units
   x
 }
-
-
 
 
 #' @export
@@ -763,7 +754,6 @@ fm_crs.Spatial <- function(x, ..., units = NULL, oblique = NULL) {
   fm_length_unit(crs) <- units
   crs
 }
-
 
 
 #' @rdname fm_crs
@@ -898,8 +888,6 @@ fm_crs.matrix <- function(x, ..., units = NULL, oblique = NULL) {
   x <- sf::NA_crs_
   fm_crs.crs(x, units = units, oblique = oblique)
 }
-
-
 
 
 # crs assignment operators ####
@@ -1105,9 +1093,6 @@ fm_crs.matrix <- function(x, ..., units = NULL, oblique = NULL) {
 }
 
 
-
-
-
 # fm_CRS ----
 
 #' Create a coordinate reference system object
@@ -1300,7 +1285,6 @@ fm_CRS.matrix <- function(x, ..., units = NULL, oblique = NULL) {
   x <- sp::CRS()
   fm_CRS.CRS(x, ..., units = units, oblique = oblique)
 }
-
 
 
 #' @export
@@ -1568,9 +1552,6 @@ fm_wkt_predef <- function() {
 }
 
 
-
-
-
 #' Internal WKT handling
 #'
 #' Conversion between WKT and a tree representation
@@ -1724,8 +1705,6 @@ fm_wkt_tree_set_item <- function(x, item_tree, duplicate = 1) {
 }
 
 
-
-
 #' @export
 #' @rdname fm_CRSargs
 fm_CRS_as_list <- function(x, ...) {
@@ -1840,9 +1819,6 @@ print.fm_CRS <- function(x, ...) {
 }
 
 
-
-
-
 # fm_wkt ----
 
 #' @describeIn fm_crs_wkt Returns a WKT2 string, for any input supported by
@@ -1943,7 +1919,6 @@ fm_crs_transform_oblique <- function(x, oblique, to.oblique = TRUE) {
     x %*% fm_rotmat3123(c(1, -1, 1, 1) * oblique * pi / 180)
   }
 }
-
 
 
 #' @describeIn fm_crs_wkt Returns "longlat", "lambert", "mollweide", "hammer",
@@ -2266,8 +2241,6 @@ fm_detect_manifold.fm_mesh_2d <- function(x) {
 }
 
 
-
-
 # fm_transform ----
 
 #' @title Object coordinate transformation
@@ -2322,7 +2295,6 @@ fm_transform.default <- function(x, crs, ..., crs0 = NULL) {
 fm_transform.NULL <- function(x, crs, ...) {
   NULL
 }
-
 
 
 fm_transform_raw <- function(x, from, to) {
@@ -2678,8 +2650,6 @@ fm_transform.fm_list <- function(x, crs, ...) {
   class(y) <- cl
   y
 }
-
-
 
 
 # Legacy class support ####

@@ -815,7 +815,6 @@ fm_int.fm_lattice_2d <- function(domain, samplers = NULL, name = "x", ...) {
 }
 
 
-
 # fm_mesh_1d integration ####
 
 #' @param int.args List of arguments passed to line and integration methods.
@@ -1388,13 +1387,6 @@ fm_int_mesh_2d.sfc_MULTIPOINT <- function(samplers,
 }
 
 
-
-
-
-
-
-
-
 fm_int_mesh_2d_lines <- function(samplers,
                                  domain,
                                  name = NULL,
@@ -1558,7 +1550,6 @@ fm_int_mesh_2d.sfc_MULTILINESTRING <- function(samplers,
 
   ips
 }
-
 
 
 #' Integration scheme for mesh triangle interiors
@@ -1778,9 +1769,6 @@ fm_int_mesh_2d_polygon <- function(samplers,
 }
 
 
-
-
-
 #' @export
 #' @describeIn fm_int_mesh_2d `sfc_POLYGON` integration
 fm_int_mesh_2d.sfc_POLYGON <- function(samplers,
@@ -1832,7 +1820,6 @@ fm_int_mesh_2d.sfc_MULTIPOLYGON <- function(samplers,
 }
 
 
-
 #' @export
 #' @describeIn fm_int_mesh_2d `sfc_GEOMERY` integration
 fm_int_mesh_2d.sfc_GEOMETRY <- function(samplers,
@@ -1871,13 +1858,6 @@ fm_int_mesh_2d.sfc_GEOMETRY <- function(samplers,
 
   ips
 }
-
-
-
-
-
-
-
 
 
 #' @export

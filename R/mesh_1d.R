@@ -270,7 +270,6 @@ fm_mesh_1d <- function(loc,
 }
 
 
-
 #' @title Convert objects to `fm_segm`
 #' @describeIn fm_as_mesh_1d Convert an object to `fm_mesh_1d`.
 #' @param x Object to be converted.

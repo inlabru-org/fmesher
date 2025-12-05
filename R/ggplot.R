@@ -27,7 +27,6 @@ geom_fm <- function(mapping = NULL, data = NULL, ...) {
 }
 
 
-
 #' @describeIn geom_fm
 #' Converts an [fm_mesh_2d()] object to `sf` with [fm_as_sfc()] and uses
 #' `geom_sf` to visualize the triangles and edges.
@@ -218,7 +217,6 @@ geom_fm.fm_mesh_2d <- function(mapping = NULL,
 }
 
 
-
 #' @describeIn geom_fm
 #' Converts an [fm_segm()] object to `sf` with [fm_as_sfc()] and uses
 #' `geom_sf` to visualize it.
@@ -282,9 +280,6 @@ geom_fm.fm_segm <- function(mapping = NULL,
     list(mapping = maps$segm, data = segm_sf), defs$segm
   ))
 }
-
-
-
 
 
 #' @describeIn geom_fm

@@ -68,7 +68,6 @@ fm_as_segm.SpatialPointsDataFrame <-
   }
 
 
-
 #' @export
 #' @rdname fm_as_segm
 fm_as_segm.Line <-
@@ -205,9 +204,6 @@ fm_as_segm.Polygon <-
       crs = fm_crs(crs)
     )
   }
-
-
-
 
 
 #' @export
