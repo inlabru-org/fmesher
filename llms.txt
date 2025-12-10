@@ -221,9 +221,6 @@ print(fm_proj4string(fm_crs("sphere")))
 
 Functions for constructing meshes and function spaces.
 
-- [`fm_components()`](https://inlabru-org.github.io/fmesher/reference/fm_components.md)
-  [`fm_mesh_components()`](https://inlabru-org.github.io/fmesher/reference/fm_components.md)
-  : Compute connected mesh subsets
 - [`fm_mesh_1d()`](https://inlabru-org.github.io/fmesher/reference/fm_mesh_1d.md)
   : Make a 1D mesh object
 - [`fm_mesh_2d()`](https://inlabru-org.github.io/fmesher/reference/fm_mesh_2d.md)
@@ -232,6 +229,10 @@ Functions for constructing meshes and function spaces.
 - [`fm_mesh_3d()`](https://inlabru-org.github.io/fmesher/reference/fm_mesh_3d.md)
   [`fm_delaunay_3d()`](https://inlabru-org.github.io/fmesher/reference/fm_mesh_3d.md)
   : Construct a 3D tetrahedralisation
+- [`fm_mesh_components()`](https://inlabru-org.github.io/fmesher/reference/fmesher-deprecated.md)
+  [`fm_int_object()`](https://inlabru-org.github.io/fmesher/reference/fmesher-deprecated.md)
+  [`fm_sp2segment()`](https://inlabru-org.github.io/fmesher/reference/fmesher-deprecated.md)
+  : Deprecated functions in fmesher
 - [`fm_rcdt_2d()`](https://inlabru-org.github.io/fmesher/reference/fm_rcdt_2d.md)
   [`fm_rcdt_2d_inla()`](https://inlabru-org.github.io/fmesher/reference/fm_rcdt_2d.md)
   [`fm_delaunay_2d()`](https://inlabru-org.github.io/fmesher/reference/fm_rcdt_2d.md)
@@ -240,6 +241,8 @@ Functions for constructing meshes and function spaces.
   **\[experimental\]** : Split triangles of a mesh into subtriangles
 - [`fm_subset()`](https://inlabru-org.github.io/fmesher/reference/fm_subset.md)
   **\[experimental\]** : Extract a subset of a mesh
+- [`fm_components()`](https://inlabru-org.github.io/fmesher/reference/fm_components.md)
+  : Compute connected mesh subsets
 - [`fm_lattice_2d()`](https://inlabru-org.github.io/fmesher/reference/fm_lattice_2d.md)
   : Make a lattice object
 - [`fm_lattice_Nd()`](https://inlabru-org.github.io/fmesher/reference/fm_lattice_Nd.md)
@@ -281,7 +284,8 @@ Functions for computing or accessing object properties
 - [`fm_int()`](https://inlabru-org.github.io/fmesher/reference/fm_int.md)
   : Multi-domain integration
 
-- [`fm_int_object()`](https://inlabru-org.github.io/fmesher/reference/fmesher-deprecated.md)
+- [`fm_mesh_components()`](https://inlabru-org.github.io/fmesher/reference/fmesher-deprecated.md)
+  [`fm_int_object()`](https://inlabru-org.github.io/fmesher/reference/fmesher-deprecated.md)
   [`fm_sp2segment()`](https://inlabru-org.github.io/fmesher/reference/fmesher-deprecated.md)
   : Deprecated functions in fmesher
 

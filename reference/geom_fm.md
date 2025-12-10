@@ -23,11 +23,7 @@ geom_fm(
   ...,
   mappings = NULL,
   defs = NULL,
-  crs = NULL,
-  mapping_int = deprecated(),
-  mapping_bnd = deprecated(),
-  defs_int = deprecated(),
-  defs_bnd = deprecated()
+  crs = NULL
 )
 
 # S3 method for class 'fm_segm'
@@ -73,10 +69,6 @@ geom_fm(
 - crs:
 
   Optional crs to transform the object to before plotting.
-
-- mapping_int, mapping_bnd, defs_int, defs_bnd:
-
-  **\[deprecated\]** arguments; see `mappings` and `defs`.
 
 - xlim:
 

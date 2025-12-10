@@ -15,7 +15,7 @@ future version."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.9014</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.9015</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,7 +49,7 @@ future version."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Deprecated functions in fmesher</h1>
-      <small class="dont-index">Source: <a href="https://github.com/inlabru-org/fmesher/blob/devel/R/deprecated.R" class="external-link"><code>R/deprecated.R</code></a>, <a href="https://github.com/inlabru-org/fmesher/blob/devel/R/integration.R" class="external-link"><code>R/integration.R</code></a>, <a href="https://github.com/inlabru-org/fmesher/blob/devel/R/sp_mesh.R" class="external-link"><code>R/sp_mesh.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/inlabru-org/fmesher/blob/devel/R/deprecated.R" class="external-link"><code>R/deprecated.R</code></a>, <a href="https://github.com/inlabru-org/fmesher/blob/devel/R/components.R" class="external-link"><code>R/components.R</code></a>, <a href="https://github.com/inlabru-org/fmesher/blob/devel/R/integration.R" class="external-link"><code>R/integration.R</code></a>, and 1 more</small>
       <div class="d-none name"><code>fmesher-deprecated.Rd</code></div>
     </div>
 
@@ -60,7 +60,9 @@ future version.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fm_int_object</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fm_mesh_components</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">fm_int_object</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">fm_sp2segment</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -76,8 +78,10 @@ future version.</p>
     <div class="section level2">
     <h2 id="functions">Functions<a class="anchor" aria-label="anchor" href="#functions"></a></h2>
 
-<ul><li><p><code>fm_int_object()</code>: Deprecated function; use <code><a href="new_fm_int.html">new_fm_int()</a></code>
-instead.</p></li>
+<ul><li><p><code>fm_mesh_components()</code>: Backwards compatibility for <code><a href="fm_components.html">fm_components()</a></code>, deprecated since
+version <code>0.4.0.9001</code>, disabled since <code>0.6.0</code></p></li>
+<li><p><code>fm_int_object()</code>: Deprecated function since <code>0.5.0.9013</code>;
+use <code><a href="new_fm_int.html">new_fm_int()</a></code> instead.</p></li>
 <li><p><code>fm_sp2segment()</code>: <a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> in favour
 of <code><a href="fm_as_segm.html">fm_as_segm()</a></code></p></li>
 </ul></div>

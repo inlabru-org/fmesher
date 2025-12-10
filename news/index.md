@@ -89,6 +89,12 @@
   [`fm_basis.Matrix()`](https://inlabru-org.github.io/fmesher/reference/fm_basis.md)
   when `full = FALSE` (version `0.5.0.9013`)
 
+### Deprecation updates
+
+- Increased deprecation warning and error messages for old unsupported
+  methods (version `0.5.0.9015`)
+- Removed exports of deprecated `CRSargs` methods (version `0.5.0.9015`)
+
 ## fmesher 0.5.0
 
 CRAN release: 2025-07-07
@@ -109,7 +115,7 @@ CRAN release: 2025-07-07
 ### Improved features
 
 - Rename
-  [`fm_mesh_components()`](https://inlabru-org.github.io/fmesher/reference/fm_components.md)
+  [`fm_mesh_components()`](https://inlabru-org.github.io/fmesher/reference/fmesher-deprecated.md)
   to
   [`fm_components()`](https://inlabru-org.github.io/fmesher/reference/fm_components.md)
   and add support for `fm_segm` objects (version `0.4.0.9001`)
@@ -156,7 +162,7 @@ CRAN release: 2025-06-12
   [`fm_mesh_2d()`](https://inlabru-org.github.io/fmesher/reference/fm_mesh_2d.md),
   from Man Ho Suen (version `0.3.0.9001` and `0.3.0.9006`)
 - Add
-  [`fm_mesh_components()`](https://inlabru-org.github.io/fmesher/reference/fm_components.md)
+  [`fm_mesh_components()`](https://inlabru-org.github.io/fmesher/reference/fmesher-deprecated.md)
   method for extracting (dis)connected components from 2D and 3D meshes
   (version `0.3.0.9005`)
 - Add

@@ -86,7 +86,7 @@ lines(x, ...)
 
 - rgl:
 
-  **\[deprecated\]** in favour of the
+  **\[deprecated\]** since `0.5.0.9000` in favour of the
   [`plot_rgl()`](https://inlabru-org.github.io/fmesher/reference/plot_rgl.md)
   and
   [`lines_rgl()`](https://inlabru-org.github.io/fmesher/reference/plot_rgl.md)

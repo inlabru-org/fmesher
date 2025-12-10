@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.9014</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.9015</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,6 +76,11 @@
 <li>Fix bugs in <code><a href="../reference/fm_mesh_intersection.html">fm_mesh_intersection()</a></code> and <code><a href="../reference/fm_bary.html">fm_bary()</a></code> C++ code that caused incorrect behaviour for locating points on meshes on subsets of the sphere. Also allow <code><a href="../reference/fm_mesh_intersection.html">fm_mesh_intersection()</a></code> to generate non-Delaunay triangles, allowing the generated meshes to be used for stable integration schemes (version <code>0.5.0.9006</code>)</li>
 <li>Handle the <code>weights</code> argument in <code><a href="../reference/fm_basis.html">fm_basis.matrix()</a></code> and <code><a href="../reference/fm_basis.html">fm_basis.Matrix()</a></code> when <code>full = FALSE</code> (version <code>0.5.0.9013</code>)</li>
 </ul></div>
+<div class="section level3">
+<h3 id="deprecation-updates-development-version">Deprecation updates<a class="anchor" aria-label="anchor" href="#deprecation-updates-development-version"></a></h3>
+<ul><li>Increased deprecation warning and error messages for old unsupported methods (version <code>0.5.0.9015</code>)</li>
+<li>Removed exports of deprecated <code>CRSargs</code> methods (version <code>0.5.0.9015</code>)</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.0" id="fmesher-050">fmesher 0.5.0<a class="anchor" aria-label="anchor" href="#fmesher-050"></a></h2><p class="text-muted">CRAN release: 2025-07-07</p>
@@ -86,7 +91,7 @@
 </ul></div>
 <div class="section level3">
 <h3 id="improved-features-0-5-0">Improved features<a class="anchor" aria-label="anchor" href="#improved-features-0-5-0"></a></h3>
-<ul><li>Rename <code><a href="../reference/fm_components.html">fm_mesh_components()</a></code> to <code><a href="../reference/fm_components.html">fm_components()</a></code> and add support for <code>fm_segm</code> objects (version <code>0.4.0.9001</code>)</li>
+<ul><li>Rename <code><a href="../reference/fmesher-deprecated.html">fm_mesh_components()</a></code> to <code><a href="../reference/fm_components.html">fm_components()</a></code> and add support for <code>fm_segm</code> objects (version <code>0.4.0.9001</code>)</li>
 <li>Add support for polygon output in <code><a href="../reference/fm_as_sfc.html">fm_as_sfc()</a></code> for closed boundary <code>fm_segm</code> objects (version <code>0.4.0.9002</code>)</li>
 <li>Add support for <code>fm_segm</code> as boundary input to <code><a href="../reference/fm_hexagon_lattice.html">fm_hexagon_lattice()</a></code> (version <code>0.4.0.9005</code>)</li>
 <li>Add <code>fm_segm</code> integration support for <code>fm_mesh_2d</code> objects in <code><a href="../reference/fm_int.html">fm_int()</a></code> (version <code>0.4.0.9005</code>)</li>
@@ -104,7 +109,7 @@
 <div class="section level3">
 <h3 id="new-features-0-4-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-4-0"></a></h3>
 <ul><li>Add <code><a href="../reference/fm_hexagon_lattice.html">fm_hexagon_lattice()</a></code> for creating regular hexagonal lattice points to use with <code><a href="../reference/fm_mesh_2d.html">fm_mesh_2d()</a></code>, from Man Ho Suen (version <code>0.3.0.9001</code> and <code>0.3.0.9006</code>)</li>
-<li>Add <code><a href="../reference/fm_components.html">fm_mesh_components()</a></code> method for extracting (dis)connected components from 2D and 3D meshes (version <code>0.3.0.9005</code>)</li>
+<li>Add <code><a href="../reference/fmesher-deprecated.html">fm_mesh_components()</a></code> method for extracting (dis)connected components from 2D and 3D meshes (version <code>0.3.0.9005</code>)</li>
 <li>Add <code><a href="../reference/fm_collect.html">fm_collect()</a></code> method for creating a collection of meshes of the same type (version <code>0.3.0.9009</code>)</li>
 </ul></div>
 <div class="section level3">

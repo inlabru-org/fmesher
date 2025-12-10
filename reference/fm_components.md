@@ -13,8 +13,6 @@ objects into connected components.
 ``` r
 fm_components(x, ...)
 
-fm_mesh_components(...)
-
 # S3 method for class 'fm_mesh_2d'
 fm_components(x, ...)
 
@@ -65,10 +63,6 @@ component they belong, and `info`, a `data.frame` with columns
 
 For `fm_segm`, returns a list of segments, each with component either a
 single closed loop of segments, or an open segment chain.
-
-## Functions
-
-- `fm_mesh_components()`: Backwards compatibility for version `0.4.0`
 
 ## See also
 
