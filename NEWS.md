@@ -52,6 +52,12 @@
 * Handle the `weights` argument in `fm_basis.matrix()` and `fm_basis.Matrix()`
   when `full = FALSE` (version `0.5.0.9013`)
 
+## Deprecation updates
+
+* Increased deprecation warning and error messages for old unsupported methods
+  (version `0.5.0.9015`)
+* Removed exports of deprecated `CRSargs` methods (version `0.5.0.9015`)
+
 # fmesher 0.5.0
 
 ## New features
@@ -223,19 +229,25 @@
 
 # fmesher 0.1.7
 
-* Fix regression bug in `fm_manifold()` that made it ignore all but the first given type options. See #16 (version `0.1.6.9001)
+* Fix regression bug in `fm_manifold()` that made it ignore all but the first
+  given type options. See #16 (version `0.1.6.9001)
 * Fix `plot.fm_mesh_2d` vectorisation bug (version `0.1.6.9002`)
 * Add new `fm_subdivide()` method for `fm_mesh_2d` meshes (version `0.1.6.9003`)
 
 # fmesher 0.1.6
 
 * Fix for hiding away-facing triangle edges in `plot.fm_mesh_2d()` and `lines.fm_segm()`.
-* Fix duplicated `fm_unify_coords.sf()` method. Thanks to Pablo Paccioretti for debugging and reporting, see #13 (version `0.1.5.9001`)
+* Fix duplicated `fm_unify_coords.sf()` method. Thanks to Pablo Paccioretti for
+  debugging and reporting, see #13 (version `0.1.5.9001`)
 * Use batched `fm_bary.fm_mesh_2d()` computations for data sizes of `2e5` and upwards.
-  This improves performance of `fm_basis()`/`inla.spde.make.A()` for large data sets, see #14 (version `0.1.5.9002`)
-* Automatically convert raw `sfc` samplers objects to `sf` objects in `fm_int.list()` (version `0.1.5.9003`)
-* Detect and warn about unsupported use of `fm_segm` objects in `fm_int.list()` (version `0.1.5.9004`)
-* Add `fm_basis()` and `fm_fem()` support for `fm_tensor` function spaces (version `0.1.5.9005`)
+  This improves performance of `fm_basis()`/`inla.spde.make.A()` for large data
+  sets, see #14 (version `0.1.5.9002`)
+* Automatically convert raw `sfc` samplers objects to `sf` objects in
+  `fm_int.list()` (version `0.1.5.9003`)
+* Detect and warn about unsupported use of `fm_segm` objects in `fm_int.list()`
+  (version `0.1.5.9004`)
+* Add `fm_basis()` and `fm_fem()` support for `fm_tensor` function spaces
+  (version `0.1.5.9005`)
 * Add `fm_CRS()` support for `terra` objects (version `0.1.5.9006`)
 
 # fmesher 0.1.5

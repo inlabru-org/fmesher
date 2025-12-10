@@ -48,8 +48,6 @@ geom_fm <- function(mapping = NULL, data = NULL, ...) {
 #'   the mesh, named "int" for interior constraint edges, "bnd" for boundary
 #'   edges, and "loc" for the vertices. For `fm_mesh_1d`, the elements are
 #'   "knots" and "fun".
-#' @param mapping_int,mapping_bnd,defs_int,defs_bnd
-#' `r lifecycle::badge("deprecated")` arguments; see `mappings` and `defs`.
 #' @param crs Optional crs to transform the object to before plotting.
 #' @importFrom utils modifyList
 #' @examplesIf require("ggplot2", quietly = TRUE)
@@ -90,44 +88,12 @@ geom_fm.fm_mesh_2d <- function(mapping = NULL,
                                ...,
                                mappings = NULL,
                                defs = NULL,
-                               crs = NULL,
-                               mapping_int = deprecated(),
-                               mapping_bnd = deprecated(),
-                               defs_int = deprecated(),
-                               defs_bnd = deprecated()) {
+                               crs = NULL) {
   if (is.null(mappings)) {
     mappings <- list()
   }
   if (is.null(defs)) {
     defs <- list()
-  }
-  if (lifecycle::is_present(mapping_int)) {
-    lifecycle::deprecate_stop(
-      "0.1.7.9009",
-      "geom_fm(mapping_int)",
-      "geom_fm(mappings = list(int = mapping_int))"
-    )
-  }
-  if (lifecycle::is_present(mapping_bnd)) {
-    lifecycle::deprecate_stop(
-      "0.1.7.9009",
-      "geom_fm(mapping_bnd)",
-      "geom_fm(mappings = list(bnd = mapping_bnd))"
-    )
-  }
-  if (lifecycle::is_present(defs_int)) {
-    lifecycle::deprecate_stop(
-      "0.1.7.9009",
-      "geom_fm(defs_int)",
-      "geom_fm(defs = list(int = defs_int))"
-    )
-  }
-  if (lifecycle::is_present(defs_bnd)) {
-    lifecycle::deprecate_stop(
-      "0.1.7.9009",
-      "geom_fm(defs_bnd)",
-      "geom_fm(defs = list(bnd = defs_bnd))"
-    )
   }
 
   if (!is.null(crs)) {

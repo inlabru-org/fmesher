@@ -36,6 +36,7 @@ reference:
   - starts_with("fm_delaunay")
   - starts_with("fm_subdivide")
   - starts_with("fm_subset")
+  - starts_with("fm_components")
   - starts_with("fm_lattice_")
   - starts_with("fm_hexagon_")
   - starts_with("fm_segm")

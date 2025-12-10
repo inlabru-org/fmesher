@@ -56,8 +56,8 @@ Default FALSE.}
 \item{visibility}{If "front" only display mesh faces with normal pointing
 towards the camera.}
 
-\item{rgl}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} in favour of the
-\code{\link[=plot_rgl]{plot_rgl()}} and \code{\link[=lines_rgl]{lines_rgl()}} methods.
+\item{rgl}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} since \verb{0.5.0.9000}
+in favour of the \code{\link[=plot_rgl]{plot_rgl()}} and \code{\link[=lines_rgl]{lines_rgl()}} methods.
 If \code{TRUE}, use \code{rgl} for plotting.}
 }
 \value{

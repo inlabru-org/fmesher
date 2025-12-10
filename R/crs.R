@@ -1705,57 +1705,57 @@ fm_wkt_tree_set_item <- function(x, item_tree, duplicate = 1) {
 }
 
 
-#' @export
-#' @rdname fm_CRSargs
+# @export
+# @rdname fm_CRSargs
 fm_CRS_as_list <- function(x, ...) {
   fm_CRSargs_as_list(fm_proj4string(x))
 }
 
 
-#' @export
-#' @rdname fm_CRSargs
+# @export
+# @rdname fm_CRSargs
 fm_list_as_CRS <- function(x, ...) {
   fm_CRS(fm_list_as_CRSargs(x))
 }
 
-#' Show expanded CRS arguments
-#'
-#' `r lifecycle::badge("deprecated")`
-#' Wrappers for `sp::CRS` and `inla.CRS` objects to handle the
-#' coordinate reference system argument string.
-#' These methods should no longer be used with PROJ6/rgdal3;
-#' see [fm_wkt()] and [fm_proj4string()] for a new approach.
-#'
-#' @aliases fm_CRSargs fm_CRS_as_list fm_CRSargs_as_list fm_list_as_CRS
-#' fm_list_as_CRSargs
-#' @param x An `sp::CRS` or `inla.CRS` object (for
-#' `fm_CRSargs` and `fm_CRS_as_list`), a character string (for
-#' `fm_CRSargs_as_list`), or a list (for `fm_list_as_CRS` and
-#' `fm_list_as_CRSargs`).
-#' @param \dots Additional arguments passed on to other methods.
-#' @returns For `fm_CRSargs` and `fm_list_as_CRSargs`, a character
-#' string with PROJ.4 arguments.
-#'
-#' For `fm_CRS_as_list` and `fm_CRSargs_as_list`, a list of
-#' name/value pairs.
-#'
-#' For `fm_list_as_CRS`, a `CRS` or `inla.CRS` object.
-#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
-#' @seealso [fm_CRS()]
-#' @export
-#' @keywords internal
-#' @examples
-#' if (fm_safe_sp()) {
-#'   crs0 <- fm_CRS("longlat_norm")
-#'   p4s <- fm_proj4string(crs0)
-#'   lst <- fm_CRSargs_as_list(p4s)
-#'   crs1 <- fm_list_as_CRS(lst)
-#'   lst$a <- 2
-#'   crs2 <- fm_CRS(p4s, args = lst)
-#'   print(fm_proj4string(crs0))
-#'   print(fm_proj4string(crs1))
-#'   print(fm_proj4string(crs2))
-#' }
+# Show expanded CRS arguments
+#
+# `r lifecycle::badge("deprecated")`
+# Wrappers for `sp::CRS` and `inla.CRS` objects to handle the
+# coordinate reference system argument string.
+# These methods should no longer be used with PROJ6/rgdal3;
+# see [fm_wkt()] and [fm_proj4string()] for a new approach.
+#
+# @aliases fm_CRSargs fm_CRS_as_list fm_CRSargs_as_list fm_list_as_CRS
+# fm_list_as_CRSargs
+# @param x An `sp::CRS` or `inla.CRS` object (for
+# `fm_CRSargs` and `fm_CRS_as_list`), a character string (for
+# `fm_CRSargs_as_list`), or a list (for `fm_list_as_CRS` and
+# `fm_list_as_CRSargs`).
+# @param \dots Additional arguments passed on to other methods.
+# @returns For `fm_CRSargs` and `fm_list_as_CRSargs`, a character
+# string with PROJ.4 arguments.
+#
+# For `fm_CRS_as_list` and `fm_CRSargs_as_list`, a list of
+# name/value pairs.
+#
+# For `fm_list_as_CRS`, a `CRS` or `inla.CRS` object.
+# @author Finn Lindgren <Finn.Lindgren@@gmail.com>
+# @seealso [fm_CRS()]
+# @export
+# @keywords internal
+# @examples
+# if (fm_safe_sp()) {
+#   crs0 <- fm_CRS("longlat_norm")
+#   p4s <- fm_proj4string(crs0)
+#   lst <- fm_CRSargs_as_list(p4s)
+#   crs1 <- fm_list_as_CRS(lst)
+#   lst$a <- 2
+#   crs2 <- fm_CRS(p4s, args = lst)
+#   print(fm_proj4string(crs0))
+#   print(fm_proj4string(crs1))
+#   print(fm_proj4string(crs2))
+# }
 fm_CRSargs <- function(x, ...) {
   lifecycle::deprecate_stop("0.0.1", "fm_CRSargs()", "fm_proj4string()")
 
@@ -1763,9 +1763,9 @@ fm_CRSargs <- function(x, ...) {
 }
 
 
-#' @returns For `fm_list_as_CRSargs()`, a CRS proj4 string for name=value pair
-#'   list
-#' @rdname fm_CRSargs
+# @returns For `fm_list_as_CRSargs()`, a CRS proj4 string for name=value pair
+#   list
+# @rdname fm_CRSargs
 fm_list_as_CRSargs <- function(x, ...) {
   paste(
     lapply(
@@ -1782,10 +1782,10 @@ fm_list_as_CRSargs <- function(x, ...) {
   )
 }
 
-#' @returns For `fm_CRSargs_as_list()`, a list of name=value pairs from CRS
-#'   proj4string
-#' @rdname fm_CRSargs
-#' @export
+# @returns For `fm_CRSargs_as_list()`, a list of name=value pairs from CRS
+#   proj4string
+# @rdname fm_CRSargs
+# @export
 fm_CRSargs_as_list <- function(x, ...) {
   if (is.na(x)) {
     return(list())

@@ -310,8 +310,8 @@ new_fm_int <- function(object, blocks = FALSE, weight = NULL,
   object
 }
 
-#' @describeIn fmesher-deprecated Deprecated function; use [new_fm_int()]
-#'   instead.
+#' @describeIn fmesher-deprecated Deprecated function since `0.5.0.9013`;
+#'   use [new_fm_int()] instead.
 fm_int_object <- function(...) {
   lifecycle::deprecate_warn(
     when = "0.5.0.9013",

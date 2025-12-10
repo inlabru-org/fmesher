@@ -21,8 +21,8 @@
 #' Default FALSE.
 #' @param xlab,ylab character; labels for the axes.
 #' @param \dots Additional parameters, passed on to graphics methods.
-#' @param rgl `r lifecycle::badge("deprecated")` in favour of the
-#' [plot_rgl()] and [lines_rgl()] methods.
+#' @param rgl `r lifecycle::badge("deprecated")` since `0.5.0.9000`
+#'   in favour of the [plot_rgl()] and [lines_rgl()] methods.
 #'   If `TRUE`, use `rgl` for plotting.
 #' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @returns None
@@ -202,7 +202,7 @@ plot.fm_mesh_2d <- function(
   ...
 ) {
   if (lifecycle::is_present(rgl)) {
-    lifecycle::deprecate_warn(
+    lifecycle::deprecate_stop(
       "0.1.0",
       "plot.fm_mesh_2d(rgl = )",
       "plot_rgl()"

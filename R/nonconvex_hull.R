@@ -741,7 +741,7 @@ fm_nonconvex_hull_inla <- function(x,
                                    eps_rel = NULL,
                                    crs = NULL,
                                    ...) {
-  lifecycle::deprecate_soft(
+  lifecycle::deprecate_warn(
     "0.4.0.9002",
     "fm_nonconvex_hull_inla()",
     'fm_nonconvex_hull(format = "fm")',
@@ -810,7 +810,7 @@ fm_nonconvex_hull_inla <- function(x,
 #' @keywords internal
 fm_nonconvex_hull_inla_basic <- function(x, convex = -0.15, resolution = 40,
                                          eps = NULL, crs = fm_crs(x)) {
-  lifecycle::deprecate_soft(
+  lifecycle::deprecate_warn(
     "0.4.0.9003",
     "fm_nonconvex_hull_inla_basic()",
     I('fm_nonconvex_hull(..., method = "fm", format = "fm", concave = 0)')
