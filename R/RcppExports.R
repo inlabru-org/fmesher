@@ -125,6 +125,27 @@ fmesher_spherical_bsplines <- function(loc, n, degree, uniform) {
     .Call(`_fmesher_fmesher_spherical_bsplines`, loc, n, degree, uniform)
 }
 
+#' @title Spherical harmonics
+#'
+#' @description
+#' Compute spherical harmonics on the unit sphere
+#'
+#' @param loc numeric matrix; coordinates of points to locate in the mesh
+#' @param max_order integer; the maximum basis order
+#' @param rot_inv logical; If `TRUE`, only evaluate rotationally
+#' invariant basis functions
+#' @rdname fmesher_spherical_harmonics
+#' @examples
+#' m <- fm_rcdt_2d(globe = 1)
+#' fmesher_spherical_harmonics(m$loc, max_order = 2, TRUE)
+#' fmesher_spherical_harmonics(m$loc, max_order = 2, FALSE)
+#' @export
+#' @keywords internal
+#' @returns A matrix of evaluated spherical harmonic basis functions
+fmesher_spherical_harmonics <- function(loc, max_order, rot_inv) {
+    .Call(`_fmesher_fmesher_spherical_harmonics`, loc, max_order, rot_inv)
+}
+
 #' @title Finite element matrix computation
 #'
 #' @description
@@ -184,7 +205,10 @@ fmesher_split_lines <- function(mesh_loc, mesh_tv, loc, idx, options) {
 #' interior constraints, currently ignored
 #' @param subdivisions integer; number of new points along each edge.
 #' @param options list of triangulation options (`sphere_tolerance`)
-#' @returns A list of new `loc` and `tv` information
+#' @returns A list of new `loc` and `tv` information, and `bary_index` and
+#' `bary_where` containing the fm_bary information for the new points.
+#' Can be e.g. used to construct an interpolation mapping matrix from the old
+#' to new mesh.
 #' @keywords internal
 #' @seealso [fm_subdivide()]
 #' @examples

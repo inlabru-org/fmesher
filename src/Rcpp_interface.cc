@@ -782,6 +782,56 @@ SEXP fmesher_spherical_bsplines(Rcpp::NumericMatrix loc,
   //  return Rcpp::wrap(matrices);
 }
 
+//' @title Spherical harmonics
+//'
+//' @description
+//' Compute spherical harmonics on the unit sphere
+//'
+//' @param loc numeric matrix; coordinates of points to locate in the mesh
+//' @param max_order integer; the maximum basis order
+//' @param rot_inv logical; If `TRUE`, only evaluate rotationally
+//' invariant basis functions
+//' @rdname fmesher_spherical_harmonics
+//' @examples
+//' m <- fm_rcdt_2d(globe = 1)
+//' fmesher_spherical_harmonics(m$loc, max_order = 2, TRUE)
+//' fmesher_spherical_harmonics(m$loc, max_order = 2, FALSE)
+//' @export
+//' @keywords internal
+//' @returns A matrix of evaluated spherical harmonic basis functions
+// [[Rcpp::export]]
+SEXP fmesher_spherical_harmonics(Rcpp::NumericMatrix loc,
+                                 int max_order,
+                                 Rcpp::LogicalVector rot_inv) {
+  if (max_order < 0) {
+    Rcpp::stop("'max_order' must be at least 0.");
+  }
+  if (loc.cols() < 3) {
+    Rcpp::stop("'ncol(loc)' must be at least 3.");
+  }
+
+  MatrixC matrices;
+  matrices.attach("loc",
+                  std::make_unique<Matrix<double>>(Matrix3double(Matrix<double>(loc))));
+
+  FMLOG("sph_harm output." << std::endl);
+
+  bool bool_rot_inv = Rcpp::is_true(Rcpp::all(rot_inv));
+  if (bool_rot_inv) {
+    FMLOG("rotationally invariant = TRUE" << std::endl);
+  } else {
+    FMLOG("rotationally uniform = FALSE" << std::endl);
+  }
+  matrices.attach(
+    string("sph.harm"),
+    spherical_harmonics(matrices.DD("loc"), max_order, bool_rot_inv));
+  matrices.matrixtype("sph.harm", fmesh::IOMatrixtype::General);
+  matrices.output("sph.harm");
+
+  return Rcpp::wrap(matrices.DD("sph.harm"));
+  //  return Rcpp::wrap(matrices);
+}
+
 
 
 
@@ -1032,7 +1082,10 @@ struct std::hash<edge_point_t>
 //' interior constraints, currently ignored
 //' @param subdivisions integer; number of new points along each edge.
 //' @param options list of triangulation options (`sphere_tolerance`)
-//' @returns A list of new `loc` and `tv` information
+//' @returns A list of new `loc` and `tv` information, and `bary_index` and
+//' `bary_where` containing the fm_bary information for the new points.
+//' Can be e.g. used to construct an interpolation mapping matrix from the old
+//' to new mesh.
 //' @keywords internal
 //' @seealso [fm_subdivide()]
 //' @examples
@@ -1062,8 +1115,24 @@ Rcpp::List fmesher_subdivide(
   Matrix<double> &loc = matrices.DD("loc");
   Matrix<int> &tv = matrices.DI("tv");
 
+  matrices.attach("bary_index",
+                  std::make_unique<Matrix<int>>(Matrix1int()));
+  matrices.attach("bary_where",
+                  std::make_unique<Matrix<double>>(Matrix3double()));
+  Matrix<double> &bary_where = matrices.DD("bary_where");
+  Matrix<int> &bary_index = matrices.DI("bary_index");
+
   loc.capacity(M.nT() * (subdivisions + 2) * (subdivisions + 3) / 2);
   tv.rows(M.nT() * (subdivisions + 1) * (subdivisions + 1));
+  bary_index.capacity(M.nT() * (subdivisions + 2) * (subdivisions + 3) / 2);
+  bary_where.capacity(M.nT() * (subdivisions + 2) * (subdivisions + 3) / 2);
+
+  bary_index.rows(M.nV());
+  bary_where.rows(M.nV());
+  bary_where.zeros(0, M.nV());
+  for (size_t v = 0; v < M.nV(); v++) {
+    bary_index(v, 0) = -1;
+  }
 
   FMLOG("Construct new points." << std::endl);
   // Points along edge
@@ -1082,6 +1151,15 @@ Rcpp::List fmesher_subdivide(
     triangle_to_point[0][0] = M.TV()(t, 0);
     triangle_to_point[subdivisions + 1][0] = M.TV()(t, 1);
     triangle_to_point[0][subdivisions + 1] = M.TV()(t, 2);
+
+    for (int j = 0; j < 3; j++) {
+      if (bary_index(M.TV()(t, j), 0) < 0) {
+        bary_index(M.TV()(t, j), 0) = t;
+        bary_where(M.TV()(t, j), j) = 1.0;
+        bary_where(M.TV()(t, j), (j+1) % 3) = 0.0;
+        bary_where(M.TV()(t, j), (j+2) % 3) = 0.0;
+      }
+    }
 
     FMLOG("Edge points" << std::endl);
 
@@ -1102,14 +1180,22 @@ Rcpp::List fmesher_subdivide(
                            << loc(M.TV()(t, (i+1) % 3),2) << std::endl);
           FMLOG("subs - k = " << subdivisions - k << std::endl);
           FMLOG("k + 1    = " << k + 1 << std::endl);
+
+          bary_index.rows(new_vtx + 1);
+          bary_where.rows(new_vtx + 1);
+          bary_index(new_vtx, 0) = t;
+          bary_where(new_vtx, i) = double(subdivisions - k) / (subdivisions + 1);
+          bary_where(new_vtx, (i+1) % 3) = double(k + 1) / (subdivisions + 1);
+          bary_where(new_vtx, (i+2) % 3) = 0.0;
+
           loc.rows(new_vtx + 1);
           for (int dim = 0; dim < 3; ++dim) {
             loc(new_vtx, dim) = (loc(M.TV()(t, i), dim) * (subdivisions - k) +
               loc(M.TV()(t, (i+1) % 3), dim) * (k + 1)) / (subdivisions + 1);
           }
           FMLOG("interp: " << loc(new_vtx,0) << ", "
-                            << loc(new_vtx,1) << ", "
-                            << loc(new_vtx,2) << std::endl);
+                           << loc(new_vtx,1) << ", "
+                           << loc(new_vtx,2) << std::endl);
           // TODO: project onto sphere for S2 meshes
           // Now done in the R interface fm_subdivide
           // FMLOG("TODO: fmesher_subdivide: handle spherical meshes." << std::endl);
@@ -1138,6 +1224,8 @@ Rcpp::List fmesher_subdivide(
     // total : subs * (subs - 1) / 2
     int new_vtx = loc.rows();
     loc.rows(loc.rows() + subdivisions * (subdivisions - 1) / 2);
+    bary_index.rows(loc.rows());
+    bary_where.rows(loc.rows());
     for (int j = 1; j < subdivisions; ++j) {
       for (int i = 1; i < subdivisions - j + 1; ++i) {
         int k = subdivisions + 1 - i - j;
@@ -1147,6 +1235,12 @@ Rcpp::List fmesher_subdivide(
               loc(M.TV(t)[1], dim) * i +
               loc(M.TV(t)[2], dim) * j) / (subdivisions + 1);
         }
+
+        bary_index(new_vtx, 0) = t;
+        bary_where(new_vtx, 0) = double(k) / (subdivisions + 1);
+        bary_where(new_vtx, 1) = double(i) / (subdivisions + 1);
+        bary_where(new_vtx, 2) = double(j) / (subdivisions + 1);
+
         triangle_to_point[i][j] = new_vtx;
         // TODO: project onto sphere for S2 meshes
         // Now done in the R interface fm_subdivide
@@ -1196,6 +1290,7 @@ Rcpp::List fmesher_subdivide(
   FMLOG("Triangles = " << tv.rows() << std::endl);
 
   matrices.output("loc").output("tv");
+  matrices.output("bary_index").output("bary_where");
 
   return Rcpp::wrap(matrices);
 }

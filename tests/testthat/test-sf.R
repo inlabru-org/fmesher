@@ -7,6 +7,43 @@ test_that("sf coordinate unification", {
     NA
   )
   expect_equal(fm_coords, cbind(sf_coords, 0.0), ignore_attr = TRUE)
+
+  # Test handling of mixed XY/XYZ geometries with fm_zm()
+  sf2 <- sf::st_zm(fmexample$loc_sf, drop = TRUE)
+  sf3 <- sf::st_zm(fmexample$loc_sf, drop = FALSE, what = "Z")
+  sf23 <- c(sf2, sf3)
+  expect_error(
+    {
+      expect_warning(
+        {
+          sf23_coords <- sf::st_coordinates(sf23)
+        },
+        "is not a sub-multiple or multiple of the number of rows"
+      )
+    },
+    "length of 'dimnames' [2] not equal to array extent",
+    fixed = TRUE
+  )
+  expect_error(
+    {
+      sf23_zm <- fm_zm(sf23)
+    },
+    NA
+  )
+  expect_error(
+    {
+      sf23_zm_coords <- sf::st_coordinates(sf23_zm)
+    },
+    NA
+  )
+  expect_equal(
+    sf23_zm_coords,
+    rbind(
+      cbind(sf_coords, 0.0),
+      cbind(sf_coords, 0.0)
+    ),
+    ignore_attr = TRUE
+  )
 })
 
 test_that("sf standards compliance: basic polygons", {
@@ -205,7 +242,6 @@ test_that("Conversion from sfc_POLYGON to fm_segm", {
 })
 
 
-
 test_that("Conversion from sfc_MULTIPOLYGON to fm_segm", {
   ## sfc_MULTIPOLYGON ##
 
@@ -290,8 +326,6 @@ test_that("Conversion from sfc_MULTIPOLYGON to fm_segm", {
   B <- minimal_shift(seg_sf_u$loc[12 + 1:4, ], seg_1$loc[12 + 1:4, ])
   expect_identical(seg_sf_u$loc[12 + 1:4, ], B)
 })
-
-
 
 
 test_that("Conversion from sfc_GEOMETRY to fm_segm", {

@@ -35,6 +35,8 @@ reference:
   - starts_with("fm_rcdt")
   - starts_with("fm_delaunay")
   - starts_with("fm_subdivide")
+  - starts_with("fm_subset")
+  - starts_with("fm_components")
   - starts_with("fm_lattice_")
   - starts_with("fm_hexagon_")
   - starts_with("fm_segm")
@@ -49,6 +51,7 @@ reference:
   - starts_with("fm_basis")
   - starts_with("fm_raw_basis")
   - starts_with("fm_int")
+  - starts_with("new_fm_int")
   - starts_with("fm_bary")
   - starts_with("fm_evaluate")
   - starts_with("fm_evaluator")
@@ -81,6 +84,7 @@ reference:
   desc: "Functions for handling coordinate systems and conversions"
   contents:
   - starts_with("fm_crs")
+  - starts_with("fm_zm")
   - starts_with("fm_transform")
   - starts_with("fm_CRS")
   - starts_with("fm_wkt")

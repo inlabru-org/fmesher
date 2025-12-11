@@ -99,7 +99,6 @@ fm_matern_sample <- function(x, alpha = 2, rho, sigma, n = 1, loc = NULL) {
 }
 
 
-
 #' @describeIn fm_gmrf Compute the covariance between "A1 x" and "A2 x", when
 #' x is a basis vector with precision matrix `Q`.
 #' @param A1,A2 Matrices, typically obtained from [fm_basis()] and/or
@@ -228,5 +227,5 @@ fm_sample <- function(n, Q, mu = 0, constr = NULL) {
     #     )
     # )
   }
-  return(as.matrix(result))
+  as.matrix(result)
 }

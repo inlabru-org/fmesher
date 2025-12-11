@@ -9,23 +9,88 @@ fm_mesh_intersection(mesh, poly)
 \arguments{
 \item{mesh}{\code{fm_mesh_2d} object to be intersected}
 
-\item{poly}{\code{fm_segm} object with a closed polygon
-to intersect with the mesh}
+\item{poly}{\code{fm_segm} object with a closed polygon to intersect with the
+mesh, or a polygon object that can be converted with \code{\link[=fm_as_segm]{fm_as_segm()}}}
 }
 \value{
 An \link{fm_mesh_2d} object
 }
 \description{
-Construct the intersection mesh of a mesh and a polygon
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} (from version \verb{0.5.0.9006})
 }
 \examples{
-segm <- fm_segm(rbind(c(-4, -4), c(4, -4), c(0, 4)),
+segm <- fm_segm(
+  rbind(c(-4, -4), c(4, -3), c(0, 4)),
   is.bnd = TRUE
 )
-str(m <- fm_mesh_intersection(fmexample$mesh, segm))
+(m <- fm_mesh_intersection(fmexample$mesh, segm))
 plot(fmexample$mesh)
 lines(segm, col = 4)
 plot(m, edge.color = 2, add = TRUE)
+
+\donttest{
+# Non-overlapping addition
+segm2 <- fm_segm(c(
+  segm,
+  fm_segm(
+    rbind(c(-4, 0), c(-3, 0), c(-2, 2)),
+    is.bnd = TRUE
+  )
+))
+(m2 <- fm_mesh_intersection(fm_subdivide(fmexample$mesh, 2), segm2))
+m2_int <- fm_int(m2)
+plot(m2, edge.color = 2)
+lines(segm2, col = 4)
+plot(fmexample$mesh, edge.color = 1, add = TRUE)
+plot(m2_int$geometry, pch = 20, cex = sqrt(m2_int$weight) * 4, add = TRUE)
+}
+
+\donttest{
+# Add a hole and restrict to inner part of the original mesh
+# To avoid issues with intersecting boundary segments, compute
+# two separate intersection calculations in sequence.
+# To allow this to be done as a single step, would need to first
+# cross-intersect the boundary segments.
+inner_bnd <- fm_segm(fmexample$mesh, boundary = FALSE)
+fm_is_bnd(inner_bnd) <- TRUE
+segm3 <- fm_segm(c(
+  segm2,
+  fm_segm(
+    rbind(c(-1.5, 0), c(1, -0.5), c(0, -1.5)),
+    is.bnd = TRUE
+  )
+))
+(m3 <- fm_mesh_intersection(
+  fm_mesh_intersection(
+    fm_subdivide(fmexample$mesh, 2),
+    inner_bnd
+  ),
+  segm3
+))
+m3_int <- fm_int(m3)
+plot(fmexample$mesh)
+plot(m3, edge.color = 2, add = TRUE)
+lines(segm3, col = 4)
+plot(m3_int$geometry, pch = 20, cex = sqrt(m3_int$weight) * 4, add = TRUE)
+}
+
+\donttest{
+# Spherical mesh
+(m_s2 <- fm_rcdt_2d(globe = 4))
+segm4 <- fm_segm(
+  rbind(
+    c(1, 0, 0.1) / sqrt(1.01),
+    c(0, 1, 0),
+    c(-1, -1, 1) / sqrt(3)
+  ),
+  is.bnd = TRUE
+)
+(m4 <- fm_mesh_intersection(fm_subdivide(m_s2, 1), segm4))
+m4_int <- fm_int(m4)
+plot(m_s2)
+plot(m4, edge.color = 2, add = TRUE)
+plot(m4_int$geometry, pch = 20, cex = sqrt(m4_int$weight) * 8, add = TRUE)
+}
 }
 \author{
 Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}

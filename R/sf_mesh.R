@@ -2,7 +2,6 @@
 #' @include deprecated.R
 
 
-
 # fm_as_sfc ####
 
 #' @title Conversion methods from mesh related objects to sfc
@@ -228,9 +227,6 @@ fm_as_sfc.sf <- function(x, ...) {
 }
 
 
-
-
-
 # fm_as_mesh_2d ####
 
 #' @rdname fm_as_mesh_2d
@@ -317,7 +313,6 @@ fm_as_mesh_2d.sf <-
   }
 
 
-
 # fm_as_segm ####
 
 #' @rdname fm_as_segm
@@ -380,11 +375,11 @@ fm_as_segm.sfc_LINESTRING <-
 
     segm <- list()
     if (is.null(grp)) {
-      grp <- seq_len(length(sfc))
+      grp <- seq_along(sfc)
     } else {
       grp <- c(grp, rep(grp[length(grp)], length(sfc) - length(grp)))
     }
-    for (k in seq_len(length(sfc))) {
+    for (k in seq_along(sfc)) {
       loc <- sf::st_coordinates(sfc[k])
       coord_names <- intersect(c("X", "Y", "Z"), colnames(loc))
       if (nrow(loc) == 0) {
@@ -432,11 +427,11 @@ fm_as_segm.sfc_MULTILINESTRING <-
 
     segm <- list()
     if (is.null(grp)) {
-      grp <- seq_len(length(sfc))
+      grp <- seq_along(sfc)
     } else {
       grp <- c(grp, rep(grp[length(grp)], length(sfc) - length(grp)))
     }
-    for (k in seq_len(length(sfc))) {
+    for (k in seq_along(sfc)) {
       loc <- sf::st_coordinates(sfc[k])
       coord_names <- intersect(c("X", "Y", "Z"), colnames(loc))
       if (nrow(loc) == 0) {
@@ -460,7 +455,7 @@ fm_as_segm.sfc_MULTILINESTRING <-
           function(i) {
             subset <- which((Linfo[, 1] == uniqueLinfo[i, 1]) &
               (Linfo[, 2] == uniqueLinfo[i, 2]))
-            idx <- seq_len(length(subset))
+            idx <- seq_along(subset)
             if (reverse) {
               idx <- rev(idx)
             }
@@ -493,11 +488,11 @@ fm_as_segm.sfc_POLYGON <-
 
     segm <- list()
     if (is.null(grp)) {
-      grp <- seq_len(length(sfc))
+      grp <- seq_along(sfc)
     } else {
       grp <- c(grp, rep(grp[length(grp)], length(sfc) - length(grp)))
     }
-    for (k in seq_len(length(sfc))) {
+    for (k in seq_along(sfc)) {
       loc <- sf::st_coordinates(sfc[k])
       coord_names <- intersect(c("X", "Y", "Z"), colnames(loc))
       if (nrow(loc) == 0) {
@@ -554,11 +549,11 @@ fm_as_segm.sfc_MULTIPOLYGON <-
 
     segm <- list()
     if (is.null(grp)) {
-      grp <- seq_len(length(sfc))
+      grp <- seq_along(sfc)
     } else {
       grp <- c(grp, rep(grp[length(grp)], length(sfc) - length(grp)))
     }
-    for (k in seq_len(length(sfc))) {
+    for (k in seq_along(sfc)) {
       loc <- sf::st_coordinates(sfc[k])
       coord_names <- intersect(c("X", "Y", "Z"), colnames(loc))
       if (nrow(loc) == 0) {
@@ -610,7 +605,7 @@ fm_as_segm.sfc_MULTIPOLYGON <-
 fm_as_segm.sfc_GEOMETRY <-
   function(x, grp = NULL, join = TRUE, ...) {
     if (is.null(grp)) {
-      grp <- seq_len(length(x))
+      grp <- seq_along(x)
     } else {
       grp <- c(grp, rep(grp[length(grp)], length(x) - length(grp)))
     }

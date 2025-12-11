@@ -16,7 +16,7 @@ vt_list2matrix <- function(vt) {
   if (is.null(vt)) {
     return(NULL)
   }
-  v <- rep(seq_len(length(vt)), vapply(vt, NROW, 1L))
+  v <- rep(seq_along(vt), vapply(vt, NROW, 1L))
   vt_new <- cbind(v, do.call(rbind, vt))
   vt_new
 }
@@ -62,7 +62,7 @@ fm_unify_coords <- function(x, crs = NULL) {
 #' fm_unify_coords(x, crs = NULL)
 #' @export
 fm_unify_coords.NULL <- function(x, crs = NULL) {
-  return(matrix(0.0, 0, 3))
+  matrix(0.0, 0, 3)
 }
 
 #' @rdname fm_unify_coords
@@ -124,7 +124,8 @@ fm_unify_coords.sf <- function(x, crs = NULL) {
 #' @rdname fm_unify_coords
 #' @export
 fm_unify_coords.sfc <- function(x, crs = NULL) {
-  loc <- sf::st_coordinates(x)
+  loc <- fm_zm(x)
+  loc <- sf::st_coordinates(loc)
   loc <- loc[, intersect(colnames(loc), c("X", "Y", "Z")), drop = FALSE]
   x <- fm_transform(
     loc,
@@ -146,13 +147,6 @@ fm_unify_coords.sfc <- function(x, crs = NULL) {
   colnames(x) <- NULL
   x
 }
-
-
-
-
-
-
-
 
 
 unify_segm_coords <- function(segm, crs = NULL) {
@@ -179,17 +173,16 @@ unify_segm_coords <- function(segm, crs = NULL) {
 }
 
 
-
-
 handle_rcdt_options_inla <- function(
-    ...,
-    quality.spec = NULL,
-    cutoff = 1e-12,
-    extend = NULL,
-    refine = NULL,
-    delaunay = TRUE,
-    .n,
-    .loc) {
+  ...,
+  quality.spec = NULL,
+  cutoff = 1e-12,
+  extend = NULL,
+  refine = NULL,
+  delaunay = TRUE,
+  .n,
+  .loc
+) {
   options <- list(cutoff = cutoff, delaunay = delaunay)
   if (is.null(quality.spec)) {
     quality <- NULL
@@ -283,7 +276,6 @@ handle_rcdt_options_inla <- function(
 
   options
 }
-
 
 
 #' @title Refined Constrained Delaunay Triangulation
@@ -558,6 +550,7 @@ fm_rcdt_2d_inla <- function(loc = NULL,
       loc = result[["s"]],
       graph = list(
         tv = idx_C2R(result[["tv"]]),
+        # Note: triangle vt indexing will be sorted out in remap_unused.
         vt = lapply(result[["vt"]], idx_C2R),
         tt = idx_C2R(result[["tt"]]),
         tti = idx_C2R(result[["tti"]]),
@@ -586,8 +579,10 @@ fm_rcdt_2d_inla <- function(loc = NULL,
     if (length(mesh$graph$vt) > 0) {
       for (vv in seq_len(nrow(mesh$loc))) {
         vt <- mesh$graph$vt[[vv]]
+        # Need to do the C->R index conversion for the triangle indices here!
         mesh$graph$vt[[vv]] <-
-          matrix(c(as.integer(names(vt)), vt), length(vt), 2)
+          matrix(c(as.integer(names(vt)) + 1L, vt), length(vt), 2)
+        colnames(mesh$graph$vt[[vv]]) <- c("t", "vi")
       }
     } else {
       # warning("VT information missing from mesh, rebuilding")
@@ -595,6 +590,7 @@ fm_rcdt_2d_inla <- function(loc = NULL,
       mesh$graph$vt <- list()
       for (vv in seq_len(nrow(mesh$loc))) {
         mesh$graph$vt[[vv]] <- matrix(NA_integer_, 0, 2)
+        colnames(mesh$graph$vt[[vv]]) <- c("t", "vi")
       }
       for (tt in seq_len(nrow(mesh$graph$tv))) {
         for (vvi in seq_len(3)) {
@@ -607,7 +603,7 @@ fm_rcdt_2d_inla <- function(loc = NULL,
     if (!all(used)) {
       used <- which(used)
       idx.map <- rep(NA, nrow(mesh$loc))
-      idx.map[used] <- seq_len(length(used))
+      idx.map[used] <- seq_along(used)
       mesh$loc <- mesh$loc[used, , drop = FALSE]
       mesh$n <- nrow(mesh[["loc"]])
       mesh$graph$tv <-
@@ -635,6 +631,7 @@ fm_rcdt_2d_inla <- function(loc = NULL,
     mesh
   }
 
+  # Note: this also handles the C->R conversion for triangle indexing in vt.
   m <- remap_unused(m)
 
   m
@@ -664,7 +661,7 @@ fm_delaunay_2d <- function(loc, crs = NULL, ...) {
     crs = crs,
     ...
   )
-  return(mesh)
+  mesh
 }
 
 
@@ -1018,7 +1015,7 @@ fm_mesh_2d_inla <- function(loc = NULL,
     plot(mesh3)
   }
 
-  return(mesh3)
+  mesh3
 }
 
 #' @title Convert objects to `fm_mesh_2d`
@@ -1132,11 +1129,11 @@ fm_hexagon_lattice_orig <- function(bnd,
   pts_inside <- lengths(sf::st_intersects(lattice_sfc, bnd_inner)) != 0
   pts_lattice_sfc <- lattice_sfc[pts_inside]
   fm_crs(pts_lattice_sfc) <- fm_crs(bnd_inner) <- crs
-  return(list(
+  list(
     lattice = pts_lattice_sfc,
     edge_len = edge_len,
     bnd_inner = bnd_inner
-  ))
+  )
 }
 
 
@@ -1327,13 +1324,14 @@ fm_hexagon_lattice <- function(bnd,
 
 
 circle_mesh <- function(
-    centre = c(0, 0),
-    radius = 1,
-    max.edge = NULL,
-    layers = ceiling(sqrt(2) * radius / max.edge),
-    crs = NULL,
-    cumulative_shifts = FALSE,
-    ...) {
+  centre = c(0, 0),
+  radius = 1,
+  max.edge = NULL,
+  layers = ceiling(sqrt(2) * radius / max.edge),
+  crs = NULL,
+  cumulative_shifts = FALSE,
+  ...
+) {
   centre <- fm_unify_coords(centre, crs = fm_crs(crs))
 
   layers <- max(1L, layers)

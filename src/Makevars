@@ -12,8 +12,8 @@ PKG_CPPFLAGS=-DFMESHER_WITH_R
 #  -DEIGEN_PERMANENTLY_DISABLE_STUPID_WARNINGS
 
 ## GSL flags; the R package uses the R 'gsl' package instead
+## From December 2025, anative spherical harmonics implementation is used instead.
 #  -DFMESHER_WITH_GSL
-#  -DFMESHER_WITH_SPHERICAL_HARMONICS
 # PKG_LIBS=-lgsl -lgslcblas
 
 ## Extra code to reduce the library size, but not allowed on CRAN, see

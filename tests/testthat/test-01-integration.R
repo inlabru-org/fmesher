@@ -1,7 +1,7 @@
 test_that("Discrete integration", {
   domain <- 2:5
   samplers <- 3:7
-  ips_ <- fm_int_object(
+  ips_ <- new_fm_int(
     tibble::tibble(x = 3:5, weight = rep(1, 3), .block = 1L:3L),
     name = "x"
   )
@@ -26,8 +26,8 @@ test_that("Discrete integration", {
 test_that("Continuous integration", {
   domain <- fm_mesh_1d(2:5)
 
-  samplers <- c(3, 5)
-  ips_ <- fm_int_object(
+  samplers <- cbind(3, 5)
+  ips_ <- new_fm_int(
     tibble::tibble(
       x = c(3:5, 3.5, 4.5),
       weight = c(1 / 6, 1 / 3, 1 / 6, 2 / 3, 2 / 3),
@@ -58,8 +58,8 @@ test_that("Continuous integration", {
   # degree = 2
   domain <- fm_mesh_1d(2:5, degree = 2)
 
-  samplers <- c(3, 5)
-  ips_ <- fm_int_object(
+  samplers <- cbind(3, 5)
+  ips_ <- new_fm_int(
     tibble::tibble(
       x = c(3:5, 3.5, 4.5),
       weight = c(1 / 6, 1 / 3, 1 / 6, 2 / 3, 2 / 3),
@@ -113,7 +113,6 @@ test_that("Tensor space integration", {
     )
   )
 })
-
 
 
 test_that("Integrating an sf polygon on a mesh domain", {
@@ -264,8 +263,6 @@ test_that("Integration line splitting", {
     NA
   )
 })
-
-
 
 
 # Additional mesh integration tests

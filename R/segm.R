@@ -138,7 +138,7 @@ fm_segm.default <- function(loc = NULL, idx = NULL, grp = NULL, is.bnd = TRUE,
     list(loc = loc, idx = idx, grp = grp, is.bnd = is.bnd, crs = crs),
     class = c("fm_segm", "inla.mesh.segment")
   )
-  return(ret)
+  ret
 }
 
 #' @describeIn fm_segm Join multiple `fm_segm` objects into a single `fm_segm`
@@ -294,7 +294,7 @@ fm_segm_split <- function(x, grp = NULL, grp.default = 0L) {
       )
     }
   )
-  return(fm_as_segm_list(segm_list))
+  fm_as_segm_list(segm_list)
 }
 #' @rdname fm_segm
 #' @export
@@ -345,7 +345,7 @@ fm_segm.fm_mesh_2d <- function(x, boundary = TRUE, grp = NULL, ...) {
         is.bnd = is.bnd,
         crs = crs
       )
-    return(segments)
+    segments
   }
 
   if (boundary) {
@@ -427,8 +427,6 @@ fm_as_segm.inla.mesh.segment <- function(x, ...) {
   x[["is.bnd"]] <- rep(value, length(x[["is.bnd"]]))
   invisible(x)
 }
-
-
 
 
 #' Methods for fm_segm lists

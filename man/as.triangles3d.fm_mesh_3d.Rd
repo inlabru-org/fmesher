@@ -4,7 +4,7 @@
 \alias{as.triangles3d.fm_mesh_3d}
 \title{Convert a 3D mesh to a 3D rgl triangulation}
 \usage{
-\method{as.triangles3d}{fm_mesh_3d}(obj, subset = NULL, ...)
+as.triangles3d.fm_mesh_3d(obj, subset = NULL, ...)
 }
 \arguments{
 \item{obj}{An \code{fm_mesh_3d} object}
@@ -23,11 +23,14 @@ Extracts a matrix of coordinates of triangles, suitable for
 passing to \code{rgl::triangles3d()}.
 }
 \examples{
-if (requireNamespace("geometry", quietly = TRUE) &&
+# Protect against unavailable rgl device by only running interactively
+if (interactive() &&
+  requireNamespace("geometry", quietly = TRUE) &&
   requireNamespace("rgl", quietly = TRUE)) {
   (m <- fm_delaunay_3d(matrix(rnorm(30), 10, 3)))
   rgl::open3d()
   rgl::triangles3d(rgl::as.triangles3d(m, "boundary"), col = "blue")
+  rgl::axes3d()
 }
 
 }

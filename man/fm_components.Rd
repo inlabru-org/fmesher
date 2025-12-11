@@ -2,7 +2,6 @@
 % Please edit documentation in R/components.R
 \name{fm_components}
 \alias{fm_components}
-\alias{fm_mesh_components}
 \alias{fm_components.fm_mesh_2d}
 \alias{fm_components.fm_mesh_3d}
 \alias{fm_components.fm_segm}
@@ -10,8 +9,6 @@
 \title{Compute connected mesh subsets}
 \usage{
 fm_components(x, ...)
-
-fm_mesh_components(...)
 
 \method{fm_components}{fm_mesh_2d}(x, ...)
 
@@ -48,11 +45,6 @@ Compute subsets of vertices and triangles/tetrahedrons in an
 \link{fm_mesh_2d} or \link{fm_mesh_3d} object that are connected by edges/triangles,
 and split \link{fm_segm} objects into connected components.
 }
-\section{Functions}{
-\itemize{
-\item \code{fm_mesh_components()}: Backwards compatibility for version \verb{0.4.0}
-
-}}
 \examples{
 
 # Construct two simple meshes:

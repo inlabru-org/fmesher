@@ -3,7 +3,7 @@ test_that("fmesher_subdivide works", {
     rbind(c(0, 0), c(1, 0), c(-0.1, 1)),
     rbind(c(0, 1, 2)) + 1L
   )
-  #                          refine=list(max.edge = 0.1))
+  # refine=list(max.edge = 0.1))
 
   # 2
   # 0, 1
@@ -86,6 +86,44 @@ test_that("fmesher_subdivide works", {
   m1_ <- fm_subdivide(mesh, 1)
   m2_ <- fm_subdivide(mesh, 2)
 
+  expect_identical(m0_$idx$loc, seq_len(3))
+  expect_identical(m1_$idx$loc, seq_len(3))
+  expect_identical(m2_$idx$loc, seq_len(3))
+  expect_identical(m0_$bary$index, rep(1L, 3))
+  expect_identical(m1_$bary$index, rep(1L, 6))
+  expect_identical(m2_$bary$index, rep(1L, 10))
+  expect_identical(
+    m0_$bary$where,
+    matrix(rep(c(1, 0, 1, 0, 1), c(1, 3, 1, 3, 1)), 3, 3)
+  )
+  expect_identical(
+    m1_$bary$where,
+    rbind(
+      matrix(rep(c(1, 0, 1, 0, 1), c(1, 3, 1, 3, 1)), 3, 3),
+      matrix(rep(c(0.5, 0, 0.5, 0, 0.5), c(1, 1, 3, 2, 2)), 3, 3)
+    )
+  )
+  expect_identical(
+    m2_$bary$where,
+    rbind(
+      matrix(rep(c(1, 0, 1, 0, 1), c(1, 3, 1, 3, 1)), 3, 3),
+      matrix(c(2 / 3, 1 / 3, 1 / 3, 2 / 3, 0, 0), 2, 3),
+      matrix(c(2 / 3, 1 / 3, 1 / 3, 2 / 3, 0, 0), 2, 3)[, c(3, 1, 2)],
+      matrix(c(2 / 3, 1 / 3, 1 / 3, 2 / 3, 0, 0), 2, 3)[, c(2, 3, 1)],
+      matrix(1 / 3, 1, 3)
+    )
+  )
+
+  # For subdivisions, the idx$loc information should point back to the original
+  # locations, but that won't be the case for the direct constructions.
+  # Also, the direct constructions don't have the corresponding `bary`
+  # information.
+  m0$bary <- m0$idx$loc <- NULL
+  m1$bary <- m1$idx$loc <- NULL
+  m2$bary <- m2$idx$loc <- NULL
+  m0_$bary <- m0_$idx$loc <- NULL
+  m1_$bary <- m1_$idx$loc <- NULL
+  m2_$bary <- m2_$idx$loc <- NULL
   expect_identical(m0, m0_)
   expect_identical(m1, m1_)
   expect_identical(m2, m2_)

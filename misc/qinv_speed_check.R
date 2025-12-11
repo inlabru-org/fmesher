@@ -48,7 +48,7 @@ fit <- list(list(), list())
 for (car_order in 1:2) {
   for (method_ in unique(data$method)) {
     fit[[car_order]][[method_]] <- lm(time~I(n/1e3)+I(n^2/1e6)+I(n^3/1e9)+I(n^4/1e12),
-                                      data = data %>% filter(method == method_, car==car_order))
+                                      data = data |> filter(method == method_, car==car_order))
     data[data$method == method_ & data$car == car_order, "fit"] <-
       predict(fit[[car_order]][[method_]],
               newdata = data.frame(n = n, N = N_))

@@ -76,10 +76,10 @@ fm_simplify_helper <- function(loc, idx, eps = NULL, eps_rel = NULL) {
   }
 
   ## Do the split recursively:
-  return(c(
+  c(
     fm_simplify_helper(loc, idx[1L:split], eps = eps, eps_rel = eps_rel),
     fm_simplify_helper(loc, idx[split:n], eps = eps, eps_rel = eps_rel)[-1L]
-  ))
+  )
 }
 
 #' @title Recursive curve simplification.

@@ -29,7 +29,10 @@ interior constraints, currently ignored}
 \item{options}{list of triangulation options (\code{sphere_tolerance})}
 }
 \value{
-A list of new \code{loc} and \code{tv} information
+A list of new \code{loc} and \code{tv} information, and \code{bary_index} and
+\code{bary_where} containing the fm_bary information for the new points.
+Can be e.g. used to construct an interpolation mapping matrix from the old
+to new mesh.
 }
 \description{
 Subdivide a mesh with congruent and anti-congruent subtriangles

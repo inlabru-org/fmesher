@@ -238,7 +238,6 @@ fm_crs_set_ellipsoid_radius <- function(crs, radius) {
 # Length unit ----
 
 
-
 #' @param crs An `sf::crs`, `sp::CRS`, `fm_crs` or `inla.CRS` object
 #' @param wkt A WKT2 character string
 #' @param unit character, name of a unit. Supported names are
@@ -431,8 +430,6 @@ fm_length_unit.character <- function(x) {
 }
 
 
-
-
 #' @returns For `fm_length_unit<-`, a crs object with
 #' altered length units.
 #' Note that the length unit for the ellipsoid radius is unchanged.
@@ -488,7 +485,6 @@ fm_length_unit.character <- function(x) {
   fm_length_unit(x$crs) <- value
   invisible(x)
 }
-
 
 
 # fm_crs ----
@@ -564,8 +560,6 @@ fm_crs <- function(x,
                    oblique = NULL) {
   UseMethod("fm_crs")
 }
-
-
 
 
 #' @title Check if a crs is NULL or NA
@@ -660,7 +654,6 @@ print.fm_crs <- function(x, ...) {
 }
 
 
-
 #' @export
 #' @rdname fm_crs
 fm_crs.default <- function(x, ..., units = NULL, oblique = NULL) {
@@ -698,8 +691,6 @@ fm_crs.crs <- function(x, ..., units = NULL, oblique = NULL) {
   fm_length_unit(x) <- units
   x
 }
-
-
 
 
 #' @export
@@ -763,7 +754,6 @@ fm_crs.Spatial <- function(x, ..., units = NULL, oblique = NULL) {
   fm_length_unit(crs) <- units
   crs
 }
-
 
 
 #' @rdname fm_crs
@@ -898,8 +888,6 @@ fm_crs.matrix <- function(x, ..., units = NULL, oblique = NULL) {
   x <- sf::NA_crs_
   fm_crs.crs(x, units = units, oblique = oblique)
 }
-
-
 
 
 # crs assignment operators ####
@@ -1105,9 +1093,6 @@ fm_crs.matrix <- function(x, ..., units = NULL, oblique = NULL) {
 }
 
 
-
-
-
 # fm_CRS ----
 
 #' Create a coordinate reference system object
@@ -1300,7 +1285,6 @@ fm_CRS.matrix <- function(x, ..., units = NULL, oblique = NULL) {
   x <- sp::CRS()
   fm_CRS.CRS(x, ..., units = units, oblique = oblique)
 }
-
 
 
 #' @export
@@ -1568,9 +1552,6 @@ fm_wkt_predef <- function() {
 }
 
 
-
-
-
 #' Internal WKT handling
 #'
 #' Conversion between WKT and a tree representation
@@ -1724,59 +1705,57 @@ fm_wkt_tree_set_item <- function(x, item_tree, duplicate = 1) {
 }
 
 
-
-
-#' @export
-#' @rdname fm_CRSargs
+# @export
+# @rdname fm_CRSargs
 fm_CRS_as_list <- function(x, ...) {
   fm_CRSargs_as_list(fm_proj4string(x))
 }
 
 
-#' @export
-#' @rdname fm_CRSargs
+# @export
+# @rdname fm_CRSargs
 fm_list_as_CRS <- function(x, ...) {
   fm_CRS(fm_list_as_CRSargs(x))
 }
 
-#' Show expanded CRS arguments
-#'
-#' `r lifecycle::badge("deprecated")`
-#' Wrappers for `sp::CRS` and `inla.CRS` objects to handle the
-#' coordinate reference system argument string.
-#' These methods should no longer be used with PROJ6/rgdal3;
-#' see [fm_wkt()] and [fm_proj4string()] for a new approach.
-#'
-#' @aliases fm_CRSargs fm_CRS_as_list fm_CRSargs_as_list fm_list_as_CRS
-#' fm_list_as_CRSargs
-#' @param x An `sp::CRS` or `inla.CRS` object (for
-#' `fm_CRSargs` and `fm_CRS_as_list`), a character string (for
-#' `fm_CRSargs_as_list`), or a list (for `fm_list_as_CRS` and
-#' `fm_list_as_CRSargs`).
-#' @param \dots Additional arguments passed on to other methods.
-#' @returns For `fm_CRSargs` and `fm_list_as_CRSargs`, a character
-#' string with PROJ.4 arguments.
-#'
-#' For `fm_CRS_as_list` and `fm_CRSargs_as_list`, a list of
-#' name/value pairs.
-#'
-#' For `fm_list_as_CRS`, a `CRS` or `inla.CRS` object.
-#' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
-#' @seealso [fm_CRS()]
-#' @export
-#' @keywords internal
-#' @examples
-#' if (fm_safe_sp()) {
-#'   crs0 <- fm_CRS("longlat_norm")
-#'   p4s <- fm_proj4string(crs0)
-#'   lst <- fm_CRSargs_as_list(p4s)
-#'   crs1 <- fm_list_as_CRS(lst)
-#'   lst$a <- 2
-#'   crs2 <- fm_CRS(p4s, args = lst)
-#'   print(fm_proj4string(crs0))
-#'   print(fm_proj4string(crs1))
-#'   print(fm_proj4string(crs2))
-#' }
+# Show expanded CRS arguments
+#
+# `r lifecycle::badge("deprecated")`
+# Wrappers for `sp::CRS` and `inla.CRS` objects to handle the
+# coordinate reference system argument string.
+# These methods should no longer be used with PROJ6/rgdal3;
+# see [fm_wkt()] and [fm_proj4string()] for a new approach.
+#
+# @aliases fm_CRSargs fm_CRS_as_list fm_CRSargs_as_list fm_list_as_CRS
+# fm_list_as_CRSargs
+# @param x An `sp::CRS` or `inla.CRS` object (for
+# `fm_CRSargs` and `fm_CRS_as_list`), a character string (for
+# `fm_CRSargs_as_list`), or a list (for `fm_list_as_CRS` and
+# `fm_list_as_CRSargs`).
+# @param \dots Additional arguments passed on to other methods.
+# @returns For `fm_CRSargs` and `fm_list_as_CRSargs`, a character
+# string with PROJ.4 arguments.
+#
+# For `fm_CRS_as_list` and `fm_CRSargs_as_list`, a list of
+# name/value pairs.
+#
+# For `fm_list_as_CRS`, a `CRS` or `inla.CRS` object.
+# @author Finn Lindgren <Finn.Lindgren@@gmail.com>
+# @seealso [fm_CRS()]
+# @export
+# @keywords internal
+# @examples
+# if (fm_safe_sp()) {
+#   crs0 <- fm_CRS("longlat_norm")
+#   p4s <- fm_proj4string(crs0)
+#   lst <- fm_CRSargs_as_list(p4s)
+#   crs1 <- fm_list_as_CRS(lst)
+#   lst$a <- 2
+#   crs2 <- fm_CRS(p4s, args = lst)
+#   print(fm_proj4string(crs0))
+#   print(fm_proj4string(crs1))
+#   print(fm_proj4string(crs2))
+# }
 fm_CRSargs <- function(x, ...) {
   lifecycle::deprecate_stop("0.0.1", "fm_CRSargs()", "fm_proj4string()")
 
@@ -1784,9 +1763,9 @@ fm_CRSargs <- function(x, ...) {
 }
 
 
-#' @returns For `fm_list_as_CRSargs()`, a CRS proj4 string for name=value pair
-#'   list
-#' @rdname fm_CRSargs
+# @returns For `fm_list_as_CRSargs()`, a CRS proj4 string for name=value pair
+#   list
+# @rdname fm_CRSargs
 fm_list_as_CRSargs <- function(x, ...) {
   paste(
     lapply(
@@ -1803,10 +1782,10 @@ fm_list_as_CRSargs <- function(x, ...) {
   )
 }
 
-#' @returns For `fm_CRSargs_as_list()`, a list of name=value pairs from CRS
-#'   proj4string
-#' @rdname fm_CRSargs
-#' @export
+# @returns For `fm_CRSargs_as_list()`, a list of name=value pairs from CRS
+#   proj4string
+# @rdname fm_CRSargs
+# @export
 fm_CRSargs_as_list <- function(x, ...) {
   if (is.na(x)) {
     return(list())
@@ -1838,9 +1817,6 @@ print.fm_CRS <- function(x, ...) {
   cat(paste0("Oblique: c(", paste0(x[["oblique"]], collapse = ", "), ")\n"))
   invisible(x)
 }
-
-
-
 
 
 # fm_wkt ----
@@ -1943,7 +1919,6 @@ fm_crs_transform_oblique <- function(x, oblique, to.oblique = TRUE) {
     x %*% fm_rotmat3123(c(1, -1, 1, 1) * oblique * pi / 180)
   }
 }
-
 
 
 #' @describeIn fm_crs_wkt Returns "longlat", "lambert", "mollweide", "hammer",
@@ -2164,8 +2139,8 @@ fm_crs_is_identical <- function(crs0, crs1, crsonly = FALSE) {
   if (crsonly) {
     return(crs_ident)
   }
-  return(crs_ident &&
-    identical(fm_crs_oblique(crs0), fm_crs_oblique(crs1)))
+  crs_ident &&
+    identical(fm_crs_oblique(crs0), fm_crs_oblique(crs1))
 }
 
 
@@ -2266,8 +2241,6 @@ fm_detect_manifold.fm_mesh_2d <- function(x) {
 }
 
 
-
-
 # fm_transform ----
 
 #' @title Object coordinate transformation
@@ -2322,7 +2295,6 @@ fm_transform.default <- function(x, crs, ..., crs0 = NULL) {
 fm_transform.NULL <- function(x, crs, ...) {
   NULL
 }
-
 
 
 fm_transform_raw <- function(x, from, to) {
@@ -2680,8 +2652,6 @@ fm_transform.fm_list <- function(x, crs, ...) {
 }
 
 
-
-
 # Legacy class support ####
 
 #' @rdname fm_crs_wkt
@@ -2733,63 +2703,4 @@ is.na.inla.CRS <- function(x) {
 #' @export
 fm_CRS.inla.CRS <- function(x, ..., units = NULL, oblique = NULL) {
   fm_CRS(fm_crs(x, oblique = oblique, ...))
-}
-
-
-# fm_spTransform ----
-
-#' @describeIn fmesher-deprecated
-#' `r lifecycle::badge("deprecated")` (See [fm_transform()] instead)
-#' Handle transformation of various inla objects according to coordinate
-#' reference systems of `sp::CRS` or `INLA::inla.CRS` class.
-#'
-#' @param x
-#' The object that should be transformed from it's current CRS to a new CRS
-#' @param crs0
-#' The source sp::CRS or inla.CRS object
-#' @param crs1
-#' The target sp::CRS or inla.CRS object
-#' @param CRSobj
-#' The target sp::CRS or inla.CRS object
-#' @param passthrough
-#' Default is FALSE.
-#' Setting to TRUE allows objects with no CRS information to be passed
-#' through without transformation.
-#' @param \dots
-#' Potential additional arguments
-#' @seealso [fm_transform()]
-#' @export
-fm_spTransform <- function(x, ...) {
-  lifecycle::deprecate_stop("0.0.1", "fm_spTransform()", "fm_transform()")
-  UseMethod("fm_spTransform")
-}
-
-#' @describeIn fmesher-deprecated The default method handles low level
-#'   transformation of raw coordinates.
-#' @export
-fm_spTransform.default <- function(x,
-                                   crs0 = NULL,
-                                   crs1 = NULL,
-                                   passthrough = FALSE,
-                                   ...) {
-  fm_transform(x,
-    crs = crs1,
-    crs0 = crs0,
-    passthrough = passthrough
-  )
-}
-
-#' @export
-#' @rdname fmesher-deprecated
-fm_spTransform.SpatialPoints <- function(x, CRSobj, passthrough = FALSE, ...) {
-  fm_transform(x, crs = CRSobj, passthrough = passthrough)
-}
-
-#' @export
-#' @rdname fmesher-deprecated
-fm_spTransform.SpatialPointsDataFrame <- function(x,
-                                                  CRSobj,
-                                                  passthrough = FALSE,
-                                                  ...) {
-  fm_transform(x, crs = CRSobj, passthrough = passthrough)
 }

@@ -21,7 +21,7 @@
   } else if (length(arg) > length) {
     stop("Option list too long.")
   }
-  return(arg)
+  arg
 }
 
 #' @title Make a 1D mesh object
@@ -266,9 +266,8 @@ fm_mesh_1d <- function(loc,
     }
   }
 
-  return(mesh)
+  mesh
 }
-
 
 
 #' @title Convert objects to `fm_segm`

@@ -13,10 +13,12 @@ fm_components <- function(x, ...) {
   UseMethod("fm_components")
 }
 
-#' @describeIn fm_components Backwards compatibility for version `0.4.0`
+#' @describeIn fmesher-deprecated
+#'   Backwards compatibility for [fm_components()], deprecated since
+#'   version `0.4.0.9001`, disabled since `0.6.0`
 #' @export
 fm_mesh_components <- function(...) {
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     "0.4.0.9001",
     "fm_mesh_components()",
     "fm_components()"
@@ -243,8 +245,6 @@ fm_components.fm_mesh_3d <- function(x, ...) {
     info = info
   )
 }
-
-
 
 
 #' @rdname fm_components

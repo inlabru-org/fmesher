@@ -198,7 +198,7 @@ fm_fem.fm_mesh_1d <- function(mesh, order = 2, ...) {
     }
   }
 
-  return(c(list(c0 = c0, c1 = c1), g_list))
+  c(list(c0 = c0, c1 = c1), g_list)
 }
 
 #' @rdname fm_fem
@@ -279,9 +279,8 @@ fm_fem.fm_tensor <- function(mesh, order = 2, ...) {
     mat_list[[i]] <- cc_list[[i]]
   }
 
-  return(list(cc = cc, g1 = g1, g2 = g2))
+  list(cc = cc, g1 = g1, g2 = g2)
 }
-
 
 
 #' @rdname fm_fem
@@ -318,8 +317,6 @@ fm_fem.fm_collect <- function(mesh, order = 2, ...) {
 
   result
 }
-
-
 
 
 row_cross_product <- function(e1, e2) {

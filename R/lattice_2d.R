@@ -104,7 +104,7 @@ fm_mesh_2d_map <- function(loc,
   } else {
     stop(paste("Unknown projection '", projection, "'.", sep = ""))
   }
-  return(proj)
+  proj
 }
 
 
@@ -135,10 +135,8 @@ fm_mesh_2d_map_lim <- function(loc = NULL,
   } else {
     stop(paste("Unknown projection '", projection, "'.", sep = ""))
   }
-  return(lim)
+  lim
 }
-
-
 
 
 #' @title Make a lattice object
@@ -214,18 +212,19 @@ fm_lattice_2d <- function(...) {
 #' @rdname fm_lattice_2d
 #' @export
 fm_lattice_2d.default <- function(
-    x = seq(0, 1, length.out = 2),
-    y = seq(0, 1, length.out = 2),
-    z = NULL,
-    dims =
-      if (is.matrix(x)) {
-        dim(x)
-      } else {
-        c(length(x), length(y))
-      },
-    units = NULL,
-    crs = NULL,
-    ...) {
+  x = seq(0, 1, length.out = 2),
+  y = seq(0, 1, length.out = 2),
+  z = NULL,
+  dims =
+    if (is.matrix(x)) {
+      dim(x)
+    } else {
+      c(length(x), length(y))
+    },
+  units = NULL,
+  crs = NULL,
+  ...
+) {
   if (is.null(crs)) {
     units <- match.arg(
       units,
@@ -324,7 +323,7 @@ fm_lattice_2d.default <- function(
     ),
     class = c("fm_lattice_2d", "inla.mesh.lattice")
   )
-  return(lattice)
+  lattice
 }
 
 #' @title Convert objects to `fm_lattice_2d`

@@ -57,7 +57,7 @@ fm_segm_contour_helper <- function(x = seq(0, 1, length.out = nrow(z)),
     levels <- pretty(range(z, na.rm = TRUE), nlevels)
   }
   if (is.null(groups)) {
-    groups <- seq_len(length(levels))
+    groups <- seq_along(levels)
   }
 
   ## End of input checking.
@@ -104,7 +104,7 @@ fm_segm_contour_helper <- function(x = seq(0, 1, length.out = nrow(z)),
   loc <- matrix(0, 0, 2)
   idx <- matrix(0, 0, 2)
   grp <- c()
-  for (k in seq_len(length(curves))) {
+  for (k in seq_along(curves)) {
     curve.loc <- cbind(curves[[k]]$x, curves[[k]]$y)
     curve.n <- nrow(curve.loc)
 
@@ -156,7 +156,6 @@ fm_segm_contour_helper <- function(x = seq(0, 1, length.out = nrow(z)),
 
   fm_segm(loc = loc, idx = idx, grp = grp, is.bnd = FALSE, crs = crs)
 }
-
 
 
 # fm_nonconvex_hull ####
@@ -298,10 +297,6 @@ fm_extensions <- function(x,
 
   y
 }
-
-
-
-
 
 
 #' @describeIn fm_nonconvex_hull `fmesher` method for `fm_nonconvex_hull()`,
@@ -560,9 +555,8 @@ fm_nonconvex_hull_fm_basic <- function(x, convex = -0.15, resolution = 40,
     eps = eps,
     crs = crs
   )
-  return(segm)
+  segm
 }
-
 
 
 #' @describeIn fm_nonconvex_hull
@@ -641,9 +635,6 @@ fm_nonconvex_hull_sf <- function(x,
   }
   y
 }
-
-
-
 
 
 # Methods ####
@@ -734,7 +725,13 @@ fm_nonconvex_hull.fm_segm_list <- function(x,
 #' @family nonconvex inla legacy support
 #' @inheritSection fm_mesh_2d INLA compatibility
 #' @examplesIf require("splancs")
-#' fm_nonconvex_hull_inla(cbind(0, 0), convex = 1)
+#' # New preferred method for "fm_segm" output:
+#' fm_nonconvex_hull(cbind(0, 0), convex = 1, format = "fm")
+#'
+#' # Deprecated:
+#' suppressWarnings(
+#'   fm_nonconvex_hull_inla(cbind(0, 0), convex = 1)
+#' )
 #'
 fm_nonconvex_hull_inla <- function(x,
                                    convex = -0.15,
@@ -744,7 +741,7 @@ fm_nonconvex_hull_inla <- function(x,
                                    eps_rel = NULL,
                                    crs = NULL,
                                    ...) {
-  lifecycle::deprecate_soft(
+  lifecycle::deprecate_warn(
     "0.4.0.9002",
     "fm_nonconvex_hull_inla()",
     'fm_nonconvex_hull(format = "fm")',
@@ -813,7 +810,7 @@ fm_nonconvex_hull_inla <- function(x,
 #' @keywords internal
 fm_nonconvex_hull_inla_basic <- function(x, convex = -0.15, resolution = 40,
                                          eps = NULL, crs = fm_crs(x)) {
-  lifecycle::deprecate_soft(
+  lifecycle::deprecate_warn(
     "0.4.0.9003",
     "fm_nonconvex_hull_inla_basic()",
     I('fm_nonconvex_hull(..., method = "fm", format = "fm", concave = 0)')

@@ -66,10 +66,10 @@ ifeq ($(OS_TYPE), Windows)
 endif
 
 
-# Activate GSL, only needed for spherical harmonics, which can be computed with the R gsl package instead
+# Activate GSL, for alternative implementation of spherical harmonics
 ifeq ($(FMESHER_WITH_GSL), 1)
   OS_LDFLAGS:=$(OS_LDFLAGS) -lgsl -lgslcblas
-  OS_FLAGS:=$(OS_FLAGS) -DFMESHER_WITH_GSL -DFMESHER_WITH_SPHERICAL_HARMONICS
+  OS_FLAGS:=$(OS_FLAGS) -DFMESHER_WITH_GSL
 endif
 
 ################################################################################
@@ -84,7 +84,6 @@ RMDIR = rmdir
 
 GITCOMMIT:= $(shell git log --pretty=format:"%H - %cd" | head -n1)
 INCL    = -I$(PREFIX)/include
-##LDFLAGS = $(FLAGS) $(OS_LDFLAGS) -lgsl -lgslcblas
 LDFLAGSXX = $(FLAGS) $(OS_LDFLAGS)
 FFLAGS  = $(FLAGS) $(FCEXTRAFLAGS) $(INCL)
 CFLAGS  = -std=gnu99 $(FLAGS) $(OS_FLAGS) $(INCL) -I$(LEXTPREFIX)/include -DCMDLINE_VERSION="\"${GITCOMMIT}\""

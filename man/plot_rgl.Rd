@@ -109,7 +109,7 @@ Plots a triangulation mesh using \code{rgl}.
 }
 \examples{
 \donttest{
-if (interactive() && require("rgl")) {
+if (interactive() && requireNamespace("rgl")) {
   mesh <- fm_rcdt_2d(globe = 10)
   plot_rgl(mesh, col = mesh$loc[, 1])
 }
