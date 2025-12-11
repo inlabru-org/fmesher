@@ -1,11 +1,12 @@
 This is a minor bug fix and feature update release.
 
-## Changes from 0.5.0 to 0.6.0
+## Changes from 0.5.0 to 0.6.0 and 0.6.1
 
 * Bug fixes
 * Minor feature updates
+* 0.6.1 adds a fix for an invalid link in the package vignettes
 
-## R CMD check results for 0.6.0
+## R CMD check results for 0.6.1
 
 No new notes, warnings, or errors
 

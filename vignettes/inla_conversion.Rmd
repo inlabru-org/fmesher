@@ -192,12 +192,12 @@ knitr::kable(df)
 
 ```{r echo = FALSE}
 df <- tribble(
-  ~INLA, ~fmesher, ~inlabru,
+  ~INLA, ~fmesher, ~inlabru, ~Comments,
   "inla.mesh.query()",
-  NA_character_,
-  "No fmesher equivalent in version <= 0.5.0",
-  "inla.mesh.projector()", "fm_evaluator()", character(0),
-  "inla.mesh.project()", "fm_evaluate()", character(0),
+  NA_character_, NA_character_,
+  "For tt and vt multi-order neighbours. No fmesher equivalent in version <= 0.6.0",
+  "inla.mesh.projector()", "fm_evaluator()", character(0), "",
+  "inla.mesh.project()", "fm_evaluate()", character(0), "",
   "inla.spde.make.A()", c(
     "fm_bary()",
     "fm_basis()",
@@ -208,8 +208,8 @@ df <- tribble(
     "inlabru::bm_multi()",
     "inlabru::ibm_jacobian()",
     "inlabru::bm_aggregate()"
-  ),
-  "inla.mesh.deriv()", "fm_basis()", character(0)
+  ), "",
+  "inla.mesh.deriv()", "fm_basis()", character(0), ""
 )
 df <- convert_fun_links(df)
 ```
