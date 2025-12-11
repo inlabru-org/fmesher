@@ -1,7 +1,5 @@
 # fmesher 0.6.1
 
-# fmesher 0.6.0
-
 ## New features
 
 * Add `fm_subset()` method for constructing a subset of a mesh based on a set
