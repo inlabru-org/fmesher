@@ -4,7 +4,7 @@ This is a minor bug fix and feature update release.
 
 * Bug fixes
 * Minor feature updates
-* 0.6.1 adds a fix for an invalid link in the package vignettes
+* 0.6.1 adds a fix for an invalid link in the package vignettes (sorry!)
 
 ## R CMD check results for 0.6.1
 
