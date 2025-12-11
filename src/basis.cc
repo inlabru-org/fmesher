@@ -14,14 +14,7 @@
 #include <sstream>
 #include <vector>
 #ifdef FMESHER_WITH_GSL
-  #ifdef FMESHER_WITH_SPHERICAL_HARMONICS
-    #ifdef NO_SPHERICAL_HARMONICS
-      #undef NO_SPHERICAL_HARMONICS
-    #endif
-  #endif
-  #ifdef FMESHER_WITH_SPHERICAL_HARMONICS
-    #include "gsl/gsl_sf_legendre.h"
-  #endif
+  #include "gsl/gsl_sf_legendre.h"
 #endif
 
 #include "fmesher_debuglog.h"
