@@ -1612,10 +1612,8 @@ fm_int_mesh_2d_core <- function(mesh, tri_subset = NULL, nsub = NULL) {
     loc[idx, ] <-
       as.matrix(barycentric_grid %*%
         mesh$loc[mesh$graph$tv[tri, ], , drop = FALSE])
-    bary[idx, ] <- fm_bary(list(
-      index = tri,
-      where = barycentric_grid
-    ))
+    bary$index[idx] <- tri
+    bary$where[idx, ] <- barycentric_grid
   }
 
   if (is_spherical) {
