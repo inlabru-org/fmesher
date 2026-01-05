@@ -1149,6 +1149,9 @@ fm_vertex_projection <- function(points, mesh) {
   } else if (inherits(points, "fm_bary")) {
     n_points <- NROW(points)
     res <- points
+  } else if ("bary" %in% names(points)) {
+    n_points <- NROW(points$bary)
+    res <- points$bary
   } else {
     n_points <- NROW(points$loc)
     res <- fm_bary(mesh, points$loc)
@@ -1561,7 +1564,7 @@ fm_int_mesh_2d.sfc_MULTILINESTRING <- function(samplers,
 #'    `(nsub + 1)^2` proto-integration points used to compute
 #'   the vertex weights
 #'   (default `nsub=9`, giving 100 integration points for each triangle)
-#' @returns `tibble` with columns `loc` and `weight` with
+#' @returns `tibble` with columns `loc`, `weight`, and `bary` with
 #'   integration points for the mesh
 #' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @keywords internal
@@ -1597,13 +1600,22 @@ fm_int_mesh_2d_core <- function(mesh, tri_subset = NULL, nsub = NULL) {
 
   # Construct integration points
   loc <- matrix(0.0, length(tri_subset) * nB, ncol(mesh$loc))
+  bary <- fm_bary(list(
+    index = integer(length(tri_subset) * nB),
+    where = matrix(0.0, length(tri_subset) * nB, 3)
+  ))
   idx_end <- 0
   for (tri in tri_subset) {
     idx_start <- idx_end + 1
     idx_end <- idx_start + nB - 1
-    loc[seq(idx_start, idx_end, length.out = nB), ] <-
+    idx <- seq(idx_start, idx_end, length.out = nB)
+    loc[idx, ] <-
       as.matrix(barycentric_grid %*%
         mesh$loc[mesh$graph$tv[tri, ], , drop = FALSE])
+    bary[idx, ] <- fm_bary(list(
+      index = tri,
+      where = barycentric_grid
+    ))
   }
 
   if (is_spherical) {
@@ -1623,7 +1635,8 @@ fm_int_mesh_2d_core <- function(mesh, tri_subset = NULL, nsub = NULL) {
 
   tibble::tibble(
     loc = loc,
-    weight = rep(tri_area / nB, each = nB)
+    weight = rep(tri_area / nB, each = nB),
+    bary = bary
   )
 }
 
@@ -1669,8 +1682,13 @@ fm_int_mesh_2d_polygon <- function(samplers,
     idx <- sf::st_contains(samplers, integ_sf, sparse = TRUE)
 
     if (method %in% c("stable")) {
-      integ_bary_ <- fm_bary(domain, integ_sf)
-      integ_bary_$weight <- integ$weight
+      if ("bary" %in% names(integ)) {
+        integ_bary_ <- integ$bary
+        integ_bary_$weight <- integ$weight
+      } else {
+        integ_bary_ <- fm_bary(domain, integ_sf)
+        integ_bary_$weight <- integ$weight
+      }
     }
 
     for (g in seq_along(idx)) {

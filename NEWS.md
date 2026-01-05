@@ -1,9 +1,15 @@
 # fmesher (development version)
 
+## Improved features
+
+* Speed up of `fm_int()` for 2D meshes by internally storing the barycentric
+  coordinate information during the integration scheme construction
+  (version `0.6.1.9002`)
+
 ## Bug fixes
 
 * Fix `fm_subdivide()` to handle 2-column coordinate storage inputs.
-  (version `0.6.0.9001`)
+  (version `0.6.1.9001`)
 
 # fmesher 0.6.1
 
