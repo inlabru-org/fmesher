@@ -28,8 +28,8 @@ fm_int_mesh_2d_core(mesh, tri_subset = NULL, nsub = NULL)
 
 ## Value
 
-`tibble` with columns `loc` and `weight` with integration points for the
-mesh
+`tibble` with columns `loc`, `weight`, and `bary` with integration
+points for the mesh
 
 ## Author
 
@@ -39,7 +39,10 @@ Finn Lindgren <Finn.Lindgren@gmail.com>
 
 ``` r
 str(fm_int_mesh_2d_core(fmexample$mesh))
-#> tibble [52,700 × 2] (S3: tbl_df/tbl/data.frame)
+#> tibble [52,700 × 3] (S3: tbl_df/tbl/data.frame)
 #>  $ loc   : num [1:52700, 1:3] 1.58 1.57 1.56 1.55 1.53 ...
 #>  $ weight: num [1:52700] 0.000641 0.000641 0.000641 0.000641 0.000641 ...
+#>  $ bary  : fm_bary [52,700 × 2] (S3: fm_bary/tbl_df/tbl/data.frame)
+#>   ..$ index: int [1:52700] 1 1 1 1 1 1 1 1 1 1 ...
+#>   ..$ where: num [1:52700, 1:3] 0.933 0.833 0.733 0.633 0.533 ...
 ```
