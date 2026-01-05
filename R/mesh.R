@@ -216,7 +216,7 @@ fm_subdivide <- function(mesh, n = 1, delaunay = FALSE) {
   }
 
   sub <- fmesher_subdivide(
-    mesh_loc = mesh$loc,
+    mesh_loc = fm_unify_coords(mesh$loc),
     mesh_tv = mesh$graph$tv - 1L,
     mesh_boundary = mesh$segm$bnd$idx - 1L,
     mesh_interior = mesh$segm$int$idx - 1L,

@@ -1,5 +1,10 @@
 # fmesher (development version)
 
+## Bug fixes
+
+* Fix `fm_subdivide()` to handle 2-column coordinate storage inputs.
+  (version `0.6.0.9001`)
+
 # fmesher 0.6.1
 
 ## New features

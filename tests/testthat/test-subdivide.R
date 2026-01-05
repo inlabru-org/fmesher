@@ -8,7 +8,7 @@ test_that("fmesher_subdivide works", {
   # 2
   # 0, 1
   sub0.tv <- rbind(c(0, 1, 2))
-  sub0 <- fmesher_subdivide(
+  sub0 <- fmesher:::fmesher_subdivide(
     mesh$loc,
     mesh$graph$tv - 1L,
     mesh$segm$bnd$idx - 1L,
@@ -32,7 +32,7 @@ test_that("fmesher_subdivide works", {
     mesh$loc,
     cbind(rbind(c(0.5, 0), c(0.5 - 0.1 * 0.5, 0.5), c(0 - 0.1 * 0.5, 0.5)), 0)
   )
-  sub1 <- fmesher_subdivide(
+  sub1 <- fmesher:::fmesher_subdivide(
     mesh$loc,
     mesh$graph$tv - 1L,
     mesh$segm$bnd$idx - 1L,
@@ -67,7 +67,7 @@ test_that("fmesher_subdivide works", {
       c(1 / 3 - 0.1 * 1 / 3, 1 / 3)
     ), 0)
   )
-  sub2 <- fmesher_subdivide(
+  sub2 <- fmesher:::fmesher_subdivide(
     mesh$loc,
     mesh$graph$tv - 1L,
     mesh$segm$bnd$idx - 1L,
@@ -127,6 +127,11 @@ test_that("fmesher_subdivide works", {
   expect_identical(m0, m0_)
   expect_identical(m1, m1_)
   expect_identical(m2, m2_)
+
+  # Check that fm_subdivide handles 2-column coordinate inputs:
+  mesh_dim_2 <- mesh
+  mesh_dim_2$loc <- mesh_dim_2$loc[, 1:2, drop = FALSE]
+  expect_error(fm_subdivide(mesh_dim_2, 1), NA)
 })
 
 test_that("fm_subdivide works for S2 meshes", {
