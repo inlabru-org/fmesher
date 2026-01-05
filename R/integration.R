@@ -1600,10 +1600,9 @@ fm_int_mesh_2d_core <- function(mesh, tri_subset = NULL, nsub = NULL) {
 
   # Construct integration points
   loc <- matrix(0.0, length(tri_subset) * nB, ncol(mesh$loc))
-  bary <- fm_bary(list(
-    index = integer(length(tri_subset) * nB),
-    where = matrix(0.0, length(tri_subset) * nB, 3)
-  ))
+  # tibble indexing is slow, so use raw storage in the loop:
+  bary_index <- integer(length(tri_subset) * nB)
+  bary_where <- matrix(0.0, length(tri_subset) * nB, 3)
   idx_end <- 0
   for (tri in tri_subset) {
     idx_start <- idx_end + 1
@@ -1612,9 +1611,10 @@ fm_int_mesh_2d_core <- function(mesh, tri_subset = NULL, nsub = NULL) {
     loc[idx, ] <-
       as.matrix(barycentric_grid %*%
         mesh$loc[mesh$graph$tv[tri, ], , drop = FALSE])
-    bary$index[idx] <- tri
-    bary$where[idx, ] <- barycentric_grid
+    bary_index[idx] <- tri
+    bary_where[idx, ] <- barycentric_grid
   }
+  bary <- fm_bary(list(index = bary_index, where = bary_where))
 
   if (is_spherical) {
     # Normalise
