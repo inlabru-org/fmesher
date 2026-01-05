@@ -30,7 +30,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.1.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -135,7 +135,7 @@ follows:</p>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_fm.html">geom_fm</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mesh1</span><span class="op">)</span></span></code></pre></div>
-<p><img src="variable_mesh_quality_files/figure-html/label1-1.png" class="r-plt" width="480"></p>
+<p><img src="variable_mesh_quality_files/figure-html/label1-1.png" class="r-plt" alt="" width="480"></p>
 <p>The <code>fm_nonconvex_hull_inla</code> function creates a polygon to
 be used as the boundary of the mesh, extending the domain by a distance
 <code>convex</code> from the given points, while keeping the outside
@@ -155,7 +155,7 @@ we change the <code>max.edge</code> value:</p>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_fm.html">geom_fm</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mesh2</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">coord_sf</a></span><span class="op">(</span>default <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="variable_mesh_quality_files/figure-html/unnamed-chunk-2-1.png" class="r-plt" width="480"></p>
+<p><img src="variable_mesh_quality_files/figure-html/unnamed-chunk-2-1.png" class="r-plt" alt="" width="480"></p>
 <p>It is often possible and desirable to increase the minimum allowed
 angle to achieve smooth transitions between small and large triangles
 (values as high as 26 or 27, but almost never as high as 35, may be
@@ -188,7 +188,7 @@ parameter instead of <code>max.edge</code>:</p>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_fm.html">geom_fm</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mesh3</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">coord_sf</a></span><span class="op">(</span>default <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="variable_mesh_quality_files/figure-html/unnamed-chunk-3-1.png" class="r-plt" width="480"></p>
+<p><img src="variable_mesh_quality_files/figure-html/unnamed-chunk-3-1.png" class="r-plt" alt="" width="480"></p>
 <p>This gave a smooth transition between large and small triangles!</p>
 <p>We can also use different settings on the boundary,
 e.g. <code>NA_real_</code> or <code>Inf</code> to make it not care about
@@ -209,7 +209,7 @@ edge lengths near the boundary:</p>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_fm.html">geom_fm</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mesh5</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">coord_sf</a></span><span class="op">(</span>default <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="variable_mesh_quality_files/figure-html/unnamed-chunk-4-1.png" class="r-plt" width="480"></p>
+<p><img src="variable_mesh_quality_files/figure-html/unnamed-chunk-4-1.png" class="r-plt" alt="" width="480"></p>
 <p>We can also make more complicated specifications, but beware of
 asking only for reasonable triangulations; When experimenting, I
 recommend setting the <code>max.n.strict</code> and <code>max.n</code>
@@ -237,7 +237,7 @@ infinitely many triangles!</p>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_fm.html">geom_fm</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mesh5</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">coord_sf</a></span><span class="op">(</span>default <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="variable_mesh_quality_files/figure-html/unnamed-chunk-5-1.png" class="r-plt" width="480"></p>
+<p><img src="variable_mesh_quality_files/figure-html/unnamed-chunk-5-1.png" class="r-plt" alt="" width="480"></p>
 </div>
 <div class="section level2">
 <h2 id="assessing-the-mesh-quality">Assessing the mesh quality<a class="anchor" aria-label="anchor" href="#assessing-the-mesh-quality"></a>
@@ -266,7 +266,7 @@ the effect of variable mesh quality settings:</p>
 <span>    palette <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>    na.value <span class="op">=</span> <span class="st">"transparent"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p><img src="variable_mesh_quality_files/figure-html/unnamed-chunk-7-1.png" class="r-plt" width="480"></p>
+<p><img src="variable_mesh_quality_files/figure-html/unnamed-chunk-7-1.png" class="r-plt" alt="" width="480"></p>
 <p>A “good” mesh should have <code>sd.dev</code> close to 1; this
 indicates that the nominal variance specified by the continuous domain
 model and the variance of the discretise model are similar.</p>
@@ -288,7 +288,7 @@ model and the variance of the discretise model are similar.</p>
 <span>    limits <span class="op">=</span> <span class="va">sd.dev.limits</span>,</span>
 <span>    values <span class="op">=</span> <span class="va">col.values</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p><img src="variable_mesh_quality_files/figure-html/unnamed-chunk-8-1.png" class="r-plt" width="480"></p>
+<p><img src="variable_mesh_quality_files/figure-html/unnamed-chunk-8-1.png" class="r-plt" alt="" width="480"></p>
 <p>Here, we see that the standard deviation of the discretised model is
 smaller in the triangle interiors than at the vertices, but the ratio is
 close to 1, and more uniform where the triangles are small compared with
@@ -330,7 +330,7 @@ criterion:</p>
 <span>    limits <span class="op">=</span> <span class="va">sd.dev.limits</span>,</span>
 <span>    values <span class="op">=</span> <span class="va">col.values</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p><img src="variable_mesh_quality_files/figure-html/unnamed-chunk-10-1.png" class="r-plt" width="480"></p>
+<p><img src="variable_mesh_quality_files/figure-html/unnamed-chunk-10-1.png" class="r-plt" alt="" width="480"></p>
 <p>The <code>sd.dev</code> range has clearly decreased (the maximum
 absolute deviation from 1 decreased from 0.0994 to 0.0989), and there is
 no longer a band of high values near the upper right corner.</p>

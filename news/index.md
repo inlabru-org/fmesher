@@ -2,7 +2,15 @@
 
 ## fmesher (development version)
 
+### Bug fixes
+
+- Fix
+  [`fm_subdivide()`](https://inlabru-org.github.io/fmesher/reference/fm_subdivide.md)
+  to handle 2-column coordinate storage inputs. (version `0.6.0.9001`)
+
 ## fmesher 0.6.1
+
+CRAN release: 2025-12-12
 
 ### New features
 
