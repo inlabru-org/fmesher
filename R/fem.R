@@ -491,5 +491,10 @@ fm_sizes.fm_mesh_3d <- function(mesh, ...) {
   )
   vols_v <- Matrix::diag(c0)
 
-  list(cell = vols_t, cell_face = cell_face_t, cell_edge_t, vertex = vols_v)
+  list(
+    cell = vols_t,
+    cell_face = cell_face_t,
+    cell_edge = cell_edge_t,
+    vertex = vols_v
+  )
 }
