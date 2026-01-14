@@ -10,6 +10,8 @@
 
 * Fix `fm_subdivide()` to handle 2-column coordinate storage inputs.
   (version `0.6.1.9001`)
+* Fix triangle area calculations in `fm_sizes()` that caused calculated areas
+  to be 1/3 of the actual areas (version `0.6.1.9003`)
 
 # fmesher 0.6.1
 

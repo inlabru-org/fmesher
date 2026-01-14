@@ -400,7 +400,9 @@ fm_fem.fm_mesh_3d <- function(mesh, order = 2, ...) {
 #' @param ... Passed on to submethods
 #' @returns A `list` with elements `face` and `vertex` for 2D meshes, or `cell`
 #'   and `vertex` for 3D meshes. The elements are vectors of effective sizes of
-#'   the faces/cells and vertices, respectively.
+#'   the faces/cells and vertices, respectively. For 2D meshes, also
+#'   `face_edge`, a matrix with one row per triangle and 3 columns, with edge
+#'   lengths for the edge opposing each triangle vertex.
 #' @export
 #' @examples
 #' str(fm_sizes(fmexample$mesh))
@@ -419,12 +421,17 @@ fm_sizes.fm_mesh_2d <- function(mesh, ...) {
   v1 <- mesh$loc[mesh$graph$tv[, 1], , drop = FALSE]
   v2 <- mesh$loc[mesh$graph$tv[, 2], , drop = FALSE]
   v3 <- mesh$loc[mesh$graph$tv[, 3], , drop = FALSE]
-  e1 <- v2 - v1
-  e2 <- v3 - v2
-  e3 <- v3 - v1
+  e1 <- v3 - v2
+  e2 <- v1 - v3
+  e3 <- v2 - v1
   areas_t <- rowSums((row_cross_product(e1, e2) +
-    row_cross_product(e2, e3) +
-    row_cross_product(e3, e1))^2)^0.5 / 6
+                        row_cross_product(e2, e3) +
+                        row_cross_product(e3, e1))^2)^0.5 / 6
+  lengths_t <- cbind(
+    rowSums(e1 * e1)^0.5,
+    rowSums(e2 * e2)^0.5,
+    rowSums(e3 * e3)^0.5
+  )
 
   c0 <- Matrix::sparseMatrix(
     i = as.vector(mesh$graph$tv),
@@ -434,7 +441,7 @@ fm_sizes.fm_mesh_2d <- function(mesh, ...) {
   )
   areas_v <- Matrix::diag(c0)
 
-  list(face = areas_t, vertex = areas_v)
+  list(face = areas_t, face_edge = lengths_t, vertex = areas_v)
 }
 
 #' @rdname fm_sizes

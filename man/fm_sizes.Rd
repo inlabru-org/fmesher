@@ -20,7 +20,9 @@ fm_sizes(...)
 \value{
 A \code{list} with elements \code{face} and \code{vertex} for 2D meshes, or \code{cell}
 and \code{vertex} for 3D meshes. The elements are vectors of effective sizes of
-the faces/cells and vertices, respectively.
+the faces/cells and vertices, respectively. For 2D meshes, also
+\code{face_edge}, a matrix with one row per triangle and 3 columns, with edge
+lengths for the edge opposing each triangle vertex.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
