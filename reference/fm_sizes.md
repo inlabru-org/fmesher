@@ -27,11 +27,41 @@ fm_sizes(mesh, ...)
 
 ## Value
 
-A `list` with elements `face` and `vertex` for 2D meshes, or `cell` and
-`vertex` for 3D meshes. The elements are vectors of effective sizes of
-the faces/cells and vertices, respectively. For 2D meshes, also
-`face_edge`, a matrix with one row per triangle and 3 columns, with edge
-lengths for the edge opposing each triangle vertex.
+A `list` with elements of simplex size information. For 2D meshes:
+
+- `face`:
+
+  Vector with the area of each triangle
+
+- `vertex`:
+
+  Vector with the triangle area apportioned to each vertex
+
+- `face_edge`:
+
+  A matrix with one row per triangle and 3 columns, with edge lengths
+  for the edge opposing each triangle vertex.
+
+For 3D meshes:
+
+- `cell`:
+
+  Vector with the volume of each tetrahedron
+
+- `vertex`:
+
+  Vector with the tetrahedron volume apportioned to each vertex
+
+- `cell_face`:
+
+  A matrix with one row per cell and 4 columns, with triangle areas for
+  the triangle opposing each tetrahedron vertex.
+
+- `cell_edge`:
+
+  A matrix with one row per cell and 4 columns, with edge lengths for
+  the edge anchored at each vertex, pointing to the next vertex in the
+  internal ordering.
 
 ## Examples
 

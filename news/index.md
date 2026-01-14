@@ -9,6 +9,10 @@
   for 2D meshes by internally storing the barycentric coordinate
   information during the integration scheme construction (version
   `0.6.1.9002`)
+- Add `face_edge` (for 2D meshes), `cell_face`, and `cell_edge` (for 3D
+  meshes) information to
+  [`fm_sizes()`](https://inlabru-org.github.io/fmesher/reference/fm_sizes.md)
+  output (version `0.6.1.9004`)
 
 ### Bug fixes
 

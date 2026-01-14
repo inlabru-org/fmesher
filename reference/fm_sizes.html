@@ -15,7 +15,7 @@ Compute effective sizes of faces/cells and vertices in a mesh"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.1.9003</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.1.9004</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -83,12 +83,35 @@ Compute effective sizes of faces/cells and vertices in a mesh</p>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A <code>list</code> with elements <code>face</code> and <code>vertex</code> for 2D meshes, or <code>cell</code>
-and <code>vertex</code> for 3D meshes. The elements are vectors of effective sizes of
-the faces/cells and vertices, respectively. For 2D meshes, also
-<code>face_edge</code>, a matrix with one row per triangle and 3 columns, with edge
-lengths for the edge opposing each triangle vertex.</p>
-    </div>
+    <p>A <code>list</code> with elements of simplex size information. For 2D meshes:</p><dl><dt><code>face</code></dt>
+<dd><p>Vector with the area of each triangle</p></dd>
+
+<dt><code>vertex</code></dt>
+<dd><p>Vector with the triangle area apportioned to each vertex</p></dd>
+
+<dt><code>face_edge</code></dt>
+<dd><p>A matrix with one row per triangle and 3 columns, with
+edge lengths for the edge opposing each triangle vertex.</p></dd>
+
+
+</dl><p>For 3D meshes:</p><dl><dt><code>cell</code></dt>
+<dd><p>Vector with the volume of each tetrahedron</p></dd>
+
+<dt><code>vertex</code></dt>
+<dd><p>Vector with the tetrahedron volume apportioned to each
+vertex</p></dd>
+
+<dt><code>cell_face</code></dt>
+<dd><p>A matrix with one row per cell and 4 columns, with
+triangle areas for the triangle opposing each tetrahedron vertex.</p></dd>
+
+<dt><code>cell_edge</code></dt>
+<dd><p>A matrix with one row per cell and 4 columns, with
+edge lengths for the edge anchored at each vertex, pointing to the next
+vertex in the internal ordering.</p></dd>
+
+
+</dl></div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
