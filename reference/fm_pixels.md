@@ -98,7 +98,7 @@ if (require("ggplot2", quietly = TRUE) &&
     geom_spatraster(data = pxl, aes(fill = val)) +
     geom_sf(data = fm_as_sfc(fmexample$mesh), alpha = 0.2)
 }
-#> terra 1.8.86
+#> terra 1.8.93
 #> 
 #> Attaching package: ‘terra’
 #> The following objects are masked from ‘package:splancs’:

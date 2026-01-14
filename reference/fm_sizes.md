@@ -29,13 +29,16 @@ fm_sizes(mesh, ...)
 
 A `list` with elements `face` and `vertex` for 2D meshes, or `cell` and
 `vertex` for 3D meshes. The elements are vectors of effective sizes of
-the faces/cells and vertices, respectively.
+the faces/cells and vertices, respectively. For 2D meshes, also
+`face_edge`, a matrix with one row per triangle and 3 columns, with edge
+lengths for the edge opposing each triangle vertex.
 
 ## Examples
 
 ``` r
 str(fm_sizes(fmexample$mesh))
-#> List of 2
-#>  $ face  : num [1:527] 0.0214 0.0266 0.0265 0.0245 0.0128 ...
-#>  $ vertex: num [1:279] 0.114 0.181 0.142 0.188 0.146 ...
+#> List of 3
+#>  $ face     : num [1:527] 0.0641 0.0799 0.0794 0.0734 0.0383 ...
+#>  $ face_edge: num [1:527, 1:3] 0.495 0.48 0.408 0.45 0.417 ...
+#>  $ vertex   : num [1:279] 0.343 0.542 0.427 0.564 0.439 ...
 ```

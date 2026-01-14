@@ -15,6 +15,10 @@
 - Fix
   [`fm_subdivide()`](https://inlabru-org.github.io/fmesher/reference/fm_subdivide.md)
   to handle 2-column coordinate storage inputs. (version `0.6.1.9001`)
+- Fix triangle area calculations in
+  [`fm_sizes()`](https://inlabru-org.github.io/fmesher/reference/fm_sizes.md)
+  that caused calculated areas to be 1/3 of the actual areas (version
+  `0.6.1.9003`)
 
 ## fmesher 0.6.1
 

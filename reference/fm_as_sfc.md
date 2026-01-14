@@ -104,6 +104,7 @@ fm_as_sfc(fmexample$mesh, format = "loc")
 #> Geometry type: POINT
 #> Dimension:     XYZ
 #> Bounding box:  xmin: -5.331027 ymin: -3.998161 xmax: 4.061656 ymax: 5.415609
+#> z_range:       zmin: 0 zmax: 0
 #> CRS:           NA
 #> First 5 geometries:
 #> POINT Z (-4.991262 1.478543 0)
