@@ -1132,11 +1132,18 @@ fm_basis_mesh_1d <- function(mesh,
     stop("Unsupported B-spline degree = ", mesh$degree)
   }
 
-  info_$A <- sparseMatrix_nonzero(i_, j_, weights[i_] * x_, dims = c(NROW(loc), mesh$m))
+  info_$A <- sparseMatrix_nonzero(
+    i_,
+    j_,
+    weights[i_] * x_,
+    dims = c(NROW(loc), mesh$m)
+  )
   if (derivatives) {
     if (mesh$degree <= 1) {
-      info_$dA <- sparseMatrix_nonzero(i = i_d, j = j_d, x = weights[i_d] * x_d,
-                                 dims = c(NROW(loc), mesh$m))
+      info_$dA <- sparseMatrix_nonzero(
+        i = i_d, j = j_d, x = weights[i_d] * x_d,
+        dims = c(NROW(loc), mesh$m)
+      )
     } else {
       # degree is 2
       info_$dA <- sparseMatrix_nonzero(

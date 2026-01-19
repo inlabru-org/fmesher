@@ -439,8 +439,9 @@ fm_sizes.fm_mesh_2d <- function(mesh, ...) {
   e3 <- v2 - v1
   areas_t <- rowSums(
     (row_cross_product(e1, e2) +
-    row_cross_product(e2, e3) +
-    row_cross_product(e3, e1))^2)^0.5 / 6
+      row_cross_product(e2, e3) +
+      row_cross_product(e3, e1))^2
+  )^0.5 / 6
   lengths_t <- cbind(
     rowSums(e1 * e1)^0.5,
     rowSums(e2 * e2)^0.5,
