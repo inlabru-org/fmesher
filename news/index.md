@@ -13,6 +13,9 @@
   meshes) information to
   [`fm_sizes()`](https://inlabru-org.github.io/fmesher/reference/fm_sizes.md)
   output (version `0.6.1.9004`)
+- Eliminate explicit zero entries from
+  [`fm_basis()`](https://inlabru-org.github.io/fmesher/reference/fm_basis.md)
+  matrices (version `0.6.1.9005`)
 
 ### Bug fixes
 
