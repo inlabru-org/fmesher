@@ -7,6 +7,8 @@
   (version `0.6.1.9002`)
 * Add `face_edge` (for 2D meshes), `cell_face`, and `cell_edge` (for 3D meshes)
   information to `fm_sizes()` output (version `0.6.1.9004`)
+* Eliminate explicit zero entries from `fm_basis()` matrices
+  (version `0.6.1.9005`)
 
 ## Bug fixes
 
