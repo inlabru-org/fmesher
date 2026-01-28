@@ -243,10 +243,13 @@ fm_fem.fm_mesh_2d <- function(mesh, order = 2,
 #' and \eqn{\tilde{v}=|v| e^{i \alpha /2 }, \alpha := \arctan(v_2 /v_1)}
 #' @examples
 #' mesh <- fm_rcdt_2d_inla(globe = 1)
-#' v <- matrix(0, mesh$n, 3))
+#' v <- matrix(0, mesh$n, 3)
 #' fem3 <- fm_fem_aniso(mesh,
-#' aniso =list(kappa = rep(1, mesh$n),
-#' v = v)
+#'   aniso = list(
+#'     kappa = rep(1, mesh$n),
+#'     v = v
+#'   )
+#' )
 #' @return `fm_fem_aniso`: A list with elements `c0`, `c1`, `g1`,
 #'  `g2` `va`, `ta`,
 #'
