@@ -72,6 +72,8 @@ jobs:
           extra-packages: |
              rcmdcheck
              Cairo
+          # gsl requires R >= 4.5.0, so we ignore it on older R versions
+          pak-ignore: ${{ matrix.config.r == 'oldrel-1' && 'gsl' || '' }}
 
       - name: Session info
         run: |
