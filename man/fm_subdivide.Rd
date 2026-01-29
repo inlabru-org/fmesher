@@ -16,7 +16,9 @@ Delaunay triangle structure. If \code{FALSE} (default), the triangles are
 subdivided uniformly instead.}
 }
 \value{
-A refined \link{fm_mesh_2d} object
+A refined \link{fm_mesh_2d} object, with added \code{bary} information
+(an \code{\link[=fm_bary]{fm_bary()}} object), that can be used for interpolating functions from
+the original mesh to the new mesh (from version \verb{0.5.0.9002}).
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
@@ -31,6 +33,9 @@ mesh <- fm_rcdt_2d_inla(
 mesh_sub <- fm_subdivide(mesh, 3)
 mesh
 mesh_sub
+
+# Difference should be zero for flat triangle meshes:
+sum((mesh_sub$loc - fm_basis(mesh, mesh_sub$bary) \%*\% mesh$loc)^2)
 
 plot(mesh_sub, edge.color = 2)
 

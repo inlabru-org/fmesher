@@ -4,6 +4,7 @@
 \alias{fm_as_sfc}
 \alias{fm_as_sfc.fm_mesh_2d}
 \alias{fm_as_sfc.fm_segm}
+\alias{fm_as_sfc.fm_segm_list}
 \alias{fm_as_sfc.sfc}
 \alias{fm_as_sfc.sf}
 \title{Conversion methods from mesh related objects to sfc}
@@ -13,6 +14,8 @@ fm_as_sfc(x, ...)
 \method{fm_as_sfc}{fm_mesh_2d}(x, ..., format = NULL, multi = FALSE)
 
 \method{fm_as_sfc}{fm_segm}(x, ..., multi = FALSE)
+
+\method{fm_as_sfc}{fm_segm_list}(x, ...)
 
 \method{fm_as_sfc}{sfc}(x, ...)
 
@@ -27,12 +30,13 @@ fm_as_sfc(x, ...)
 "mesh".}
 
 \item{multi}{logical; if \code{TRUE}, attempt to a
-\code{sfc_MULTIPOLYGON/LINESTRING/POINT}, otherwise a set of
+\code{sfc_MULTIPOLYGON/LINESTRING/POINT/GEOMETRYCOLLECTION}, otherwise a set of
 \code{sfc_POLYGON/LINESTRING/POINT}. Default \code{FALSE}}
 }
 \value{
 \itemize{
-\item \code{fm_as_sfc}: An \code{sfc_MULTIPOLYGON/LINESTRING/POINT} or
+\item \code{fm_as_sfc}: An
+\code{sfc_MULTIPOLYGON/LINESTRING/POINT/GEOMETRYCOLLECTION} or
 \code{sfc_POLYGON/LINESTRING/POINT} object
 }
 }
@@ -51,11 +55,8 @@ fm_as_sfc(fmexample$mesh)
 fm_as_sfc(fmexample$mesh, multi = TRUE)
 fm_as_sfc(fmexample$mesh, format = "loc")
 
-# Boundary edge conversion currently only supports (multi)linestring output,
-# and does not convert to polygons.
-suppressWarnings(
-  fm_as_sfc(fmexample$mesh, format = "bnd")
-)
+# Boundary edge conversion to polygons is supported from version 0.4.0.9002:
+fm_as_sfc(fmexample$mesh, format = "bnd")
 
 }
 \seealso{

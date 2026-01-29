@@ -4,7 +4,7 @@
 \alias{fm_int_multi_sampler}
 \title{Multi-domain sampler integration}
 \usage{
-fm_int_multi_sampler(domain, samplers, ...)
+fm_int_multi_sampler(domain, samplers, ..., extra = NULL)
 }
 \arguments{
 \item{domain}{A list of named domains}
@@ -12,6 +12,10 @@ fm_int_multi_sampler(domain, samplers, ...)
 \item{samplers}{A named list of samplers}
 
 \item{...}{Passed on to each \code{\link[=fm_int]{fm_int()}} call.}
+
+\item{extra}{Optional character vector with names of variables other than the
+integration domains to be included from the samplers. If \code{NULL} (default),
+all additional variables are included.}
 }
 \value{
 An object with integration points and weights

@@ -78,7 +78,6 @@ fm_manifold_get.fm_lattice_Nd <- function(x) {
 }
 
 
-
 # Check match for a single type
 fm_manifold_match <- function(x, type) {
   if (is.null(x)) {

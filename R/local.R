@@ -50,7 +50,6 @@ local_fm_testthat_tolerances <- function(tolerances = c(1e-4, 1e-2, 1e-1),
 }
 
 
-
 #' @describeIn local_testthat Initialise environment for tests.
 #' To be called either at the top of a testfile, or inside tests.
 #' @export
@@ -79,13 +78,6 @@ local_fm_testthat_setup <- function(envir = parent.frame()) {
 }
 
 
-
-
-
-
-
-
-
 check_package_version_and_load <-
   function(pkg, minimum_version, quietly = FALSE) {
     version <- tryCatch(utils::packageVersion(pkg),
@@ -112,7 +104,7 @@ check_package_version_and_load <-
       }
       return(NA_character_)
     }
-    return(version)
+    version
   }
 
 
@@ -202,5 +194,5 @@ fm_safe_sp <- function(quietly = FALSE,
       }
     }
   }
-  return(invisible(TRUE))
+  invisible(TRUE)
 }

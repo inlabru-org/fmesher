@@ -19,7 +19,6 @@ fm_is_within <- function(x, y, ...) {
 }
 
 
-
 # fm_basis ####
 
 #' @title Compute mapping matrix between mesh function space and points
@@ -123,7 +122,7 @@ fm_basis.fm_mesh_3d <- function(x, loc, weights = NULL, ...,
   } else if (length(weights) == 1) {
     weights <- rep(weights, n_loc)
   }
-  A <- Matrix::sparseMatrix(
+  A <- sparseMatrix_nonzero(
     i = rep(which(ok), 4),
     j = as.vector(simplex),
     x = as.numeric(as.vector(bary$where[ok, ]) * weights[rep(which(ok), 4)]),
@@ -146,7 +145,7 @@ fm_basis.fm_lattice_2d <- function(x, loc, weights = NULL, ...,
   } else if (length(weights) == 1) {
     weights <- rep(weights, n_loc)
   }
-  A <- Matrix::sparseMatrix(
+  A <- sparseMatrix_nonzero(
     i = rep(which(ok), 4),
     j = as.vector(simplex),
     x = as.numeric(as.vector(bary$where[ok, ]) * weights[rep(which(ok), 4)]),
@@ -169,7 +168,7 @@ fm_basis.fm_lattice_Nd <- function(x, loc, weights = NULL, ...,
   } else if (length(weights) == 1) {
     weights <- rep(weights, n_loc)
   }
-  A <- Matrix::sparseMatrix(
+  A <- sparseMatrix_nonzero(
     i = rep(which(ok), ncol(bary$where)),
     j = as.vector(simplex),
     x = as.numeric(as.vector(bary$where[ok, ]) *
@@ -343,10 +342,10 @@ fm_basis.fm_collect <- function(x,
 #' weight for each row of the basis matrix)
 #' @export
 fm_basis.matrix <- function(x, ok = NULL, weights = NULL, ..., full = FALSE) {
-  if (!full) {
+  if (!full && is.null(weights)) {
     return(x)
   }
-  fm_basis(list(A = x, ok = ok, ...), weights = weights, full = TRUE)
+  fm_basis(list(A = x, ok = ok, ...), weights = weights, full = full)
 }
 
 #' @describeIn fm_basis Creates a new `fm_basis` object with elements `A` and
@@ -357,10 +356,10 @@ fm_basis.matrix <- function(x, ok = NULL, weights = NULL, ..., full = FALSE) {
 #'   returns the matrix unchanged.
 #' @export
 fm_basis.Matrix <- function(x, ok = NULL, weights = NULL, ..., full = FALSE) {
-  if (!full) {
+  if (!full && is.null(weights)) {
     return(x)
   }
-  fm_basis(list(A = x, ok = ok, ...), weights = weights, full = TRUE)
+  fm_basis(list(A = x, ok = ok, ...), weights = weights, full = full)
 }
 
 #' @describeIn fm_basis Creates a new `fm_basis` object from a plain list
@@ -406,8 +405,6 @@ fm_basis.fm_basis <- function(x, ..., full = FALSE) {
 fm_basis.fm_evaluator <- function(x, ..., full = FALSE) {
   fm_basis(x$proj, full = full)
 }
-
-
 
 
 internal_spline_mesh_1d <- function(interval,
@@ -462,6 +459,39 @@ internal_spline_mesh_1d <- function(interval,
     free.clamped = free.clamped
   )
 }
+
+
+# fmesher_spherical_harmonics_gsl <- function(loc,
+#                                             max_order,
+#                                             rot_inv) {
+#   n <- max_order
+#   loc <- loc / rowSums(loc^2)^0.5
+#   if (rot_inv) {
+#     basis <- matrix(0, nrow(loc), n + 1)
+#     for (l in seq(0, n)) {
+#       basis[, l + 1] <- sqrt(2 * l + 1) *
+#         gsl::legendre_Pl(l = l, x = loc[, 3])
+#     }
+#   } else {
+#     angle <- atan2(loc[, 2], loc[, 1])
+#     basis <- matrix(0, nrow(loc), (n + 1)^2)
+#     for (l in seq(0, n)) {
+#       basis[, 1 + l * (l + 1)] <-
+#         sqrt(2 * l + 1) *
+#         gsl::legendre_Pl(l = l, x = loc[, 3])
+#       for (m in seq_len(l)) {
+#         scaling <- sqrt(2 * (2 * l + 1) * exp(lgamma(l - m + 1) -
+#                                                 lgamma(l + m + 1)))
+#         poly <- gsl::legendre_Plm(l = l, m = m, x = loc[, 3])
+#         basis[, 1 + l * (l + 1) - m] <-
+#           scaling * sin(-m * angle) * poly
+#         basis[, 1 + l * (l + 1) + m] <-
+#           scaling * cos(m * angle) * poly
+#       }
+#     }
+#   }
+#   basis
+# }
 
 
 #' Basis functions for mesh manifolds
@@ -586,58 +616,26 @@ fm_raw_basis <- function(mesh,
     if (!identical(mesh$manifold, "S2")) {
       stop("Only know how to make spherical harmonics on S2.")
     }
-    # With GSL activated:
-    #        if (rot.inv) {
-    #            basis <- (inla.fmesher.smorg(
-    #                mesh$loc,
-    #                mesh$graph$tv,
-    #                sph0 = n
-    #            )$sph0)
-    #        } else {
-    #            basis <- (inla.fmesher.smorg(
-    #                mesh$loc,
-    #                mesh$graph$tv,
-    #                sph = n
-    #            )$sph)
-    #        }
-
-    fm_require_stop(
-      "gsl",
-      "The 'gsl' R package is needed for spherical harmonics."
-    )
-
     # Make sure we have radius-1 coordinates
     loc <- mesh$loc / rowSums(mesh$loc^2)^0.5
-    if (rot.inv) {
-      basis <- matrix(0, nrow(loc), n + 1)
-      for (l in seq(0, n)) {
-        basis[, l + 1] <- sqrt(2 * l + 1) *
-          gsl::legendre_Pl(l = l, x = loc[, 3])
-      }
-    } else {
-      angle <- atan2(loc[, 2], loc[, 1])
-      basis <- matrix(0, nrow(loc), (n + 1)^2)
-      for (l in seq(0, n)) {
-        basis[, 1 + l * (l + 1)] <-
-          sqrt(2 * l + 1) *
-            gsl::legendre_Pl(l = l, x = loc[, 3])
-        for (m in seq_len(l)) {
-          scaling <- sqrt(2 * (2 * l + 1) * exp(lgamma(l - m + 1) -
-            lgamma(l + m + 1)))
-          poly <- gsl::legendre_Plm(l = l, m = m, x = loc[, 3])
-          basis[, 1 + l * (l + 1) - m] <-
-            scaling * sin(-m * angle) * poly
-          basis[, 1 + l * (l + 1) + m] <-
-            scaling * cos(m * angle) * poly
-        }
-      }
-    }
+    basis <- fmesher_spherical_harmonics(
+      loc,
+      max_order = as.integer(n),
+      rot_inv = isTRUE(rot.inv)
+    )
   }
 
-  return(basis)
+  basis
 }
 
-
+# Create sparse matrix with no explicit zeros
+sparseMatrix_nonzero <- function(i, j, x, dims) {
+  nonzero <- (x != 0)
+  i <- i[nonzero]
+  j <- j[nonzero]
+  x <- x[nonzero]
+  Matrix::sparseMatrix(i = i, j = j, x = x, dims = dims)
+}
 
 
 #' @title Internal helper functions for mesh field evaluation
@@ -675,7 +673,7 @@ fm_basis_mesh_2d <- function(mesh,
   }
 
   ii <- which(ok)
-  A <- (Matrix::sparseMatrix(
+  A <- (sparseMatrix_nonzero(
     dims = c(n_loc, mesh$n),
     i = rep(ii, 3),
     j = as.vector(mesh$graph$tv[loc$index[ii], ]),
@@ -700,19 +698,19 @@ fm_basis_mesh_2d <- function(mesh,
     x <- cbind(g1[, 1], g2[, 1], g3[, 1])
     y <- cbind(g1[, 2], g2[, 2], g3[, 2])
     z <- cbind(g1[, 3], g2[, 3], g3[, 3])
-    dx <- (Matrix::sparseMatrix(
+    dx <- (sparseMatrix_nonzero(
       dims = c(n_loc, n.mesh),
       i = rep(ii, 3),
       j = as.vector(tv),
       x = as.vector(x) * weights[rep(ii, 3)]
     ))
-    dy <- (Matrix::sparseMatrix(
+    dy <- (sparseMatrix_nonzero(
       dims = c(n_loc, n.mesh),
       i = rep(ii, 3),
       j = as.vector(tv),
       x = as.vector(y) * weights[rep(ii, 3)]
     ))
-    dz <- (Matrix::sparseMatrix(
+    dz <- (sparseMatrix_nonzero(
       dims = c(n_loc, n.mesh),
       i = rep(ii, 3),
       j = as.vector(tv),
@@ -741,48 +739,13 @@ fm_basis_mesh_2d <- function(mesh,
 }
 
 
-#' @param method character; either "default", "nearest", "linear", or
-#' "quadratic". With `NULL` or "default", uses the object definition of the
-#' function space. Otherwise overrides the object definition.
 #' @export
 #' @rdname fm_basis_helpers
 fm_basis_mesh_1d <- function(mesh,
                              loc,
                              weights = NULL,
                              derivatives = NULL,
-                             method = deprecated(),
                              ...) {
-  if (lifecycle::is_present(method)) {
-    lifecycle::deprecate_stop(
-      "0.0.9.9020",
-      "fm_evaluator_mesh_1d(method)",
-      details = c("Create a separate fm_mesh_1d() object instead.")
-    )
-    method <- match.arg(method, c(
-      "default",
-      "nearest",
-      "linear",
-      "quadratic"
-    ))
-
-    if (!(method %in% "default") &&
-      (mesh$degree != c(nearest = 0, linear = 1, quadratic = 2)[method])) {
-      deg <- c(nearest = 0, linear = 1, quadratic = 2)[method]
-      info <- fm_basis_mesh_1d(
-        fm_mesh_1d(mesh$loc,
-          interval = mesh$interval,
-          boundary = mesh$boundary,
-          free.clamped = mesh$free.clamped,
-          degree = deg
-        ),
-        loc = loc,
-        weights = weights,
-        derivatives = derivatives
-      )
-      return(info)
-    }
-  }
-
   if (is.null(weights)) {
     weights <- rep(1.0, NROW(loc))
   } else if (length(weights) == 1L) {
@@ -912,15 +875,16 @@ fm_basis_mesh_1d <- function(mesh,
   } else if (mesh$degree == 2) {
     if (mesh$cyclic) {
       knots <- mesh$loc - mesh$loc[1]
-      loc <- loc - mesh$loc[1]
       inter <- c(0, diff(mesh$interval))
     } else {
       knots <- mesh$loc - mesh$loc[1]
-      loc <- loc - mesh$loc[1]
       inter <- range(knots)
     }
+    if (!inherits(loc, "fm_bary")) {
+      loc <- loc - mesh$loc[1]
+    }
 
-    # Note: If loc is `fm_bary`, it's still valid for this local fm_mesh_1d.
+    # Note: If loc is `fm_bary`, it's also valid for this local fm_mesh_1d.
     info <-
       fm_bary(
         fm_mesh_1d(
@@ -1034,7 +998,11 @@ fm_basis_mesh_1d <- function(mesh,
       # Convert boundary basis functions to linear
       # First remove anything from above outside the interval, then add back in
       # the appropriate values
-      ok <- (loc[bary_ok] >= inter[1]) & (loc[bary_ok] <= inter[2])
+      if (inherits(loc, "fm_bary")) {
+        ok <- (loc$where[bary_ok, 1] >= 0) & (loc$where[bary_ok, 2] >= 0)
+      } else {
+        ok <- (loc[bary_ok] >= inter[1]) & (loc[bary_ok] <= inter[2])
+      }
       i_ <- i_[ok]
       j_ <- j_[ok]
       x_ <- x_[ok]
@@ -1044,7 +1012,11 @@ fm_basis_mesh_1d <- function(mesh,
       }
 
       # left
-      ok <- (loc < 0) & (simplex[, 1] == 1L)
+      if (inherits(loc, "fm_bary")) {
+        ok <- (loc$where[bary_ok, 2] < 0) & (simplex[, 1] == 1L)
+      } else {
+        ok <- (loc[bary_ok] < 0) & (simplex[, 1] == 1L)
+      }
       i_l <- c(which(bary_ok)[ok], which(bary_ok)[ok])
       j_l <- c(simplex[ok, 1], simplex[ok, 2])
       x_l <- c(
@@ -1057,7 +1029,11 @@ fm_basis_mesh_1d <- function(mesh,
       }
 
       # right
-      ok <- (loc > inter[2]) & (simplex[, 2] == length(knots))
+      if (inherits(loc, "fm_bary")) {
+        ok <- (loc$where[bary_ok, 1] < 0) & (simplex[, 2] == length(knots))
+      } else {
+        ok <- (loc[bary_ok] > inter[2]) & (simplex[, 2] == length(knots))
+      }
       i_r <- c(which(bary_ok)[ok], which(bary_ok)[ok])
       j_r <- c(simplex[ok, 2], simplex[ok, 1]) + 1L
       x_r <- c(
@@ -1156,29 +1132,27 @@ fm_basis_mesh_1d <- function(mesh,
     stop("Unsupported B-spline degree = ", mesh$degree)
   }
 
-  info_$A <- Matrix::sparseMatrix(
-    i = i_,
-    j = j_,
-    x = (weights[i_] * x_),
+  info_$A <- sparseMatrix_nonzero(
+    i_,
+    j_,
+    weights[i_] * x_,
     dims = c(NROW(loc), mesh$m)
   )
   if (derivatives) {
     if (mesh$degree <= 1) {
-      info_$dA <- Matrix::sparseMatrix(
-        i = i_d,
-        j = j_d,
-        x = weights[i_d] * x_d,
+      info_$dA <- sparseMatrix_nonzero(
+        i = i_d, j = j_d, x = weights[i_d] * x_d,
         dims = c(NROW(loc), mesh$m)
       )
     } else {
       # degree is 2
-      info_$dA <- Matrix::sparseMatrix(
+      info_$dA <- sparseMatrix_nonzero(
         i = i_,
         j = j_,
         x = weights[i_] * x_d1,
-        dims = c(length(loc), mesh$m)
+        dims = c(NROW(loc), mesh$m)
       )
-      info_$d2A <- Matrix::sparseMatrix(
+      info_$d2A <- sparseMatrix_nonzero(
         i = i_,
         j = j_,
         x = weights[i_] * x_d2,
@@ -1191,7 +1165,6 @@ fm_basis_mesh_1d <- function(mesh,
 
   fm_basis(info_, full = TRUE)
 }
-
 
 
 # Plain B-spline basis evaluation by Farin eq 10.13-10.14,
@@ -1256,7 +1229,7 @@ internal_bspline <- function(x, knots, degree = 1, deriv = 0) {
     #    message("knots: ", knots)
     #    message("unique j: ", unique(basis$j))
   }
-  return(basis)
+  basis
 }
 
 
@@ -1275,13 +1248,13 @@ internal_bspline2 <- function(x, knots, degree = 1, deriv = 0) {
       internal_bspline2(x, knots, degree = degree - 1, deriv = deriv - 1)
     m <- length(knots) + degree - 1L
     m_lower <- m - 1L
-    A <- Matrix::sparseMatrix(
+    A <- sparseMatrix_nonzero(
       i = basis_lower$i,
       j = basis_lower$j,
       x = basis_lower$values,
       dims = c(length(x), m_lower)
     )
-    basis_diff <- Matrix::sparseMatrix(
+    basis_diff <- sparseMatrix_nonzero(
       i = c(seq_len(m_lower), seq_len(m_lower)),
       j = c(seq_len(m_lower), seq_len(m_lower) - 1L),
       x = rep(c(1, -1), c(length(knots) - 1, length(knots) - 1)),
@@ -1338,10 +1311,8 @@ internal_bspline2 <- function(x, knots, degree = 1, deriv = 0) {
         (knots[l + deg + 1L] - knots[l + 1L])
     }
   }
-  return(basis)
+  basis
 }
-
-
 
 
 # Block methods ####
@@ -1354,9 +1325,11 @@ internal_bspline2 <- function(x, knots, degree = 1, deriv = 0) {
 #' @param block integer vector; block information. If `NULL`,
 #'   `rep(1L, block_len)` is used, where `block_len` is determined by
 #'   `length(log_weights)))` or `length(weights)))`. A single scalar is also
-#'   repeated to a vector of corresponding length to the weights. 'character'
-#'   input is converted to integer with `as.integer(factor(block))` (from
-#'   `0.2.0.9017`).
+#'   repeated to a vector of corresponding length to the weights.
+#'
+#'   Note: from version `0.2.0.9017` to `0.4.0.9005`, 'character'
+#'   input was converted to integer with `as.integer(factor(block))`. As this
+#'   could lead to unintended ordering of the output, this is no longer allowed.
 #' @param weights Optional weight vector
 #' @param log_weights Optional `log(weights)` vector. Overrides `weights` when
 #' non-NULL.
@@ -1420,9 +1393,9 @@ fm_block <- function(block = NULL,
       rescale = rescale
     )
 
-  Matrix::sparseMatrix(
+  sparseMatrix_nonzero(
     i = info$block,
-    j = seq_len(length(info$block)),
+    j = seq_along(info$block),
     x = as.numeric(weights),
     dims = c(info$n_block, length(info$block))
   )
@@ -1733,7 +1706,16 @@ fm_block_prep <- function(block = NULL,
     block <- rep(block, n_values)
   }
   if (is.character(block)) {
-    block <- as.integer(factor(block))
+    lifecycle::deprecate_stop(
+      "0.4.0.9006",
+      "fm_block_prep(block = 'as `character` is no longer supported')",
+      details =
+        c(
+          "Converting character block information to integer",
+          "with `as.integer(factor(block))` is no longer supported,",
+          "as it may lead to incorrect ordering of the results."
+        )
+    )
   }
   if (min(block) < 1L) {
     warning(paste0(

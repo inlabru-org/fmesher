@@ -15,11 +15,7 @@ geom_fm(mapping = NULL, data = NULL, ...)
   ...,
   mappings = NULL,
   defs = NULL,
-  crs = NULL,
-  mapping_int = deprecated(),
-  mapping_bnd = deprecated(),
-  defs_int = deprecated(),
-  defs_bnd = deprecated()
+  crs = NULL
 )
 
 \method{geom_fm}{fm_segm}(mapping = NULL, data = NULL, ..., crs = NULL)
@@ -51,8 +47,6 @@ edges, and "loc" for the vertices. For \code{fm_mesh_1d}, the elements are
 "knots" and "fun".}
 
 \item{crs}{Optional crs to transform the object to before plotting.}
-
-\item{mapping_int, mapping_bnd, defs_int, defs_bnd}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} arguments; see \code{mappings} and \code{defs}.}
 
 \item{xlim}{numeric 2-vector; specifies the interval for which to compute
 functions. Default is \code{data$interval}}
@@ -93,7 +87,7 @@ is non-\code{NULL}, e.g. \code{defs = list(loc = list())}. Default argument sett
 \if{html}{\out{<div class="sourceCode">}}\preformatted{... = linewidth = 0.25, color = "grey" # default for triangle mapping
 defs = list(
   int = list(linewidth = 0.5, color = "blue"),
-  bnd = list(linewidth = 1, color = "black"),
+  bnd = list(linewidth = 1, color = "black", alpha = 0),
   loc = list(size = 1, color = "red")
 )
 }\if{html}{\out{</div>}}
@@ -105,11 +99,11 @@ defs = list(
 
 }}
 \examples{
-\dontshow{if (require("ggplot2", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (require("ggplot2", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 ggplot() +
   geom_fm(data = fmexample$mesh)
 \dontshow{\}) # examplesIf}
-\dontshow{if (require("ggplot2", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (require("ggplot2", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 m <- fm_mesh_2d(
   cbind(10, 20),
   boundary = fm_extensions(cbind(10, 20), c(25, 65)),
@@ -124,7 +118,10 @@ ggplot() +
   geom_fm(data = m, crs = fm_crs("epsg:27700"))
 \donttest{
 # Compute a mesh vertex based function on a different grid
-px <- fm_pixels(fm_transform(m, fm_crs("mollweide_globe")))
+px <- fm_pixels(
+  fm_transform(m, fm_crs("mollweide_globe")),
+  dims = c(50, 50) # Speed up the example by lowering the resolution
+)
 px$fun <- fm_evaluate(m,
   loc = px,
   field = sin(m$loc[, 1] / 5) * sin(m$loc[, 2] / 5)
@@ -140,12 +137,14 @@ ggplot() +
   )
 }
 \dontshow{\}) # examplesIf}
-\dontshow{if (require("ggplot2", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-m <- fm_mesh_1d(c(1, 2, 4, 6, 10), boundary = c("n", "d"), degree = 2)
+\dontshow{if (require("ggplot2", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+m1 <- fm_segm(rbind(c(1, 2), c(4, 3), c(2, 4)), is.bnd = TRUE)
+m2 <- fm_segm(rbind(c(2, 2), c(3, 4), c(2, 3)), is.bnd = FALSE)
 ggplot() +
-  geom_fm(data = m, weights = c(4, 2, 4, -1))
+  geom_fm(data = m1) +
+  geom_fm(data = m2)
 \dontshow{\}) # examplesIf}
-\dontshow{if (require("ggplot2", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (require("ggplot2", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 m <- fm_mesh_1d(
   c(1, 2, 3, 5, 7),
   boundary = c("dirichlet", "neumann"),

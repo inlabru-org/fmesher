@@ -13,7 +13,7 @@ fm_hexagon_lattice(
 )
 }
 \arguments{
-\item{bnd}{Boundary object (currently must be an \code{sf} polygon)}
+\item{bnd}{Boundary object (\code{sf} polygon or boundary \code{fm_segm} object)}
 
 \item{edge_len}{Triangle edge length. Default \code{diff(fm_bbox(bnd)[[1]]) / 250}.}
 

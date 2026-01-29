@@ -15,14 +15,7 @@ fm_basis_mesh_2d(
   ...
 )
 
-fm_basis_mesh_1d(
-  mesh,
-  loc,
-  weights = NULL,
-  derivatives = NULL,
-  method = deprecated(),
-  ...
-)
+fm_basis_mesh_1d(mesh, loc, weights = NULL, derivatives = NULL, ...)
 }
 \arguments{
 \item{loc}{A location/value information object (\code{numeric}, \code{matrix}, \code{sf},
@@ -34,10 +27,6 @@ fm_basis_mesh_1d(
 for \code{fm_mesh_1d} objects, and \code{dx}, \code{dy}, \code{dz} for \code{fm_mesh_2d}.}
 
 \item{...}{Passed on to submethods}
-
-\item{method}{character; either "default", "nearest", "linear", or
-"quadratic". With \code{NULL} or "default", uses the object definition of the
-function space. Otherwise overrides the object definition.}
 }
 \value{
 A \code{fm_basis} object; a list of evaluator information objects,

@@ -63,13 +63,42 @@ int TriangleLocator::locate(const Point &s) const {
     d = mesh_->locate_point(Dart(*mesh_, (*si)), s);
     FMLOG("Resulting dart " << d << std::endl);
     if (!d.isnull()) {
+      FMLOG("Found dart " << d << std::endl);
+      if (mesh_->type() == Mesh::Mtype::Sphere) {
+        FMLOG("Mesh is spherical, check half-plane." << std::endl);
+        const Point& s0(mesh_->S(mesh_->TV(d.t())[0]));
+        const Point& s1(mesh_->S(mesh_->TV(d.t())[1]));
+        const Point& s2(mesh_->S(mesh_->TV(d.t())[2]));
+        Point e0, e1, e2;
+        Vec::diff(e0, s2, s1);
+        Vec::diff(e1, s0, s2);
+        Vec::diff(e2, s1, s0);
+        Point n0, n1, n2;
+        Vec::cross(n0, e1, e2);
+        Vec::cross(n1, e2, e0);
+        Vec::cross(n2, e0, e1);
+        Vec::accum(n0, n1);
+        Vec::accum(n0, n2);
+        double inner_prod = Vec::scalar(n0, s);
+        double triangle_area = mesh_->triangleArea(s0, s1, s2) /
+                               (mesh_->sphere_radius() * mesh_->sphere_radius());
+        if (triangle_area > 2. * M_PI) {
+          FMLOG("Large spherical triangle detected; point finding may be incorrect.")
+        }
+        if (inner_prod < -MESH_EPSILON) {
+          FMLOG("Point outside spherical triangle." << std::endl);
+          continue;
+        }
+        FMLOG("Point may be inside spherical triangle." << std::endl);
+      }
       Point b;
       mesh_->barycentric(Dart(*mesh_, d.t()), s, b);
       FMLOG("Barycentric coordinates " << b << std::endl);
       if ((b[0] >= -10.0 * MESH_EPSILON) && (b[1] >= -10.0 * MESH_EPSILON) &&
-          (b[2] >= -10.0 * MESH_EPSILON))
+          (b[2] >= -10.0 * MESH_EPSILON)) {
+        FMLOG("Point found." << std::endl);
         return (d.t());
-      else {
+      } else {
         FMLOG("Mesh::locate_point reported incorrect finding." << std::endl);
       }
     }

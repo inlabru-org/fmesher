@@ -73,7 +73,7 @@ fm_diameter.matrix <- function(x, manifold = NULL, ...) {
     center[k] <- mean(range(x[, k]))
   }
   diam <- 2 * max(distance(center, x))
-  return(diam)
+  diam
 }
 
 #' @rdname fm_diameter
@@ -136,4 +136,10 @@ fm_diameter.fm_tensor <- function(x, ...) {
 #' @export
 fm_diameter.fm_collect <- function(x, ...) {
   vapply(x[["fun_spaces"]], fm_diameter, ..., 1.0)
+}
+
+#' @rdname fm_diameter
+#' @export
+fm_diameter.fm_list <- function(x, ...) {
+  vapply(x, fm_diameter, ..., 1.0)
 }

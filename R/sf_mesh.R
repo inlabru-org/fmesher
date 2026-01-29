@@ -2,7 +2,6 @@
 #' @include deprecated.R
 
 
-
 # fm_as_sfc ####
 
 #' @title Conversion methods from mesh related objects to sfc
@@ -17,11 +16,8 @@
 #' fm_as_sfc(fmexample$mesh, multi = TRUE)
 #' fm_as_sfc(fmexample$mesh, format = "loc")
 #'
-#' # Boundary edge conversion currently only supports (multi)linestring output,
-#' # and does not convert to polygons.
-#' suppressWarnings(
-#'   fm_as_sfc(fmexample$mesh, format = "bnd")
-#' )
+#' # Boundary edge conversion to polygons is supported from version 0.4.0.9002:
+#' fm_as_sfc(fmexample$mesh, format = "bnd")
 #'
 fm_as_sfc <- function(x, ...) {
   UseMethod("fm_as_sfc")
@@ -32,9 +28,10 @@ fm_as_sfc <- function(x, ...) {
 #' @param format One of "mesh", "int", "bnd", or "loc". Default
 #'   "mesh".
 #' @param multi logical; if `TRUE`, attempt to a
-#'   `sfc_MULTIPOLYGON/LINESTRING/POINT`, otherwise a set of
+#'   `sfc_MULTIPOLYGON/LINESTRING/POINT/GEOMETRYCOLLECTION`, otherwise a set of
 #'   `sfc_POLYGON/LINESTRING/POINT`. Default `FALSE`
-#' @returns * `fm_as_sfc`: An `sfc_MULTIPOLYGON/LINESTRING/POINT` or
+#' @returns * `fm_as_sfc`: An
+#' `sfc_MULTIPOLYGON/LINESTRING/POINT/GEOMETRYCOLLECTION` or
 #' `sfc_POLYGON/LINESTRING/POINT` object
 #' @export
 fm_as_sfc.fm_mesh_2d <- function(x,
@@ -98,68 +95,86 @@ fm_as_sfc.fm_mesh_2d <- function(x,
 fm_as_sfc.fm_segm <- function(x, ..., multi = FALSE) {
   stopifnot(inherits(x, "fm_segm"))
 
-  if (any(fm_is_bnd(x))) {
-    warning("fm_as_sfc currently only supports (multi)linestring output")
-  }
+  segm_comp <- fm_components(x)
 
-  group_segments <- list()
-  used_seg <- c()
-  active_group <- 0L
-  group <- integer(nrow(x$idx))
-  closed_loop <- logical(0)
-  while (any(group == 0L)) {
-    active_group <- active_group + 1L
-    closed_loop <- c(closed_loop, FALSE)
-    curr_seg <- which.min(group)
-    group[curr_seg] <- active_group
-    group_segments[[active_group]] <- curr_seg
-    used_seg <- c(used_seg, curr_seg)
-    repeat {
-      next_seg <- which(x$idx[, 1] == x$idx[curr_seg, 2])
-      if (length(next_seg) == 0) {
-        break
-      }
-      if (any(next_seg %in% used_seg)) {
-        closed_loop[active_group] <- TRUE
-        break
-      }
-      curr_seg <- min(next_seg)
-      group[curr_seg] <- active_group
-      group_segments[[active_group]] <-
-        c(group_segments[[active_group]], curr_seg)
-      used_seg <- c(used_seg, curr_seg)
-    }
-  }
+  segm_bnd <- vapply(
+    seq_along(segm_comp),
+    function(k) {
+      all(fm_is_bnd(segm_comp[[k]]))
+    },
+    logical(1L)
+  )
+  segm_bnd <- segm_comp[segm_bnd]
+  segm_int <- vapply(
+    seq_along(segm_comp),
+    function(k) {
+      all(!fm_is_bnd(segm_comp[[k]]))
+    },
+    logical(1L)
+  )
+  segm_int <- segm_comp[segm_int]
 
-  if (multi) {
-    geom <- sf::st_sfc(
-      sf::st_multilinestring(
-        lapply(
-          seq_along(group_segments),
-          function(k) {
-            x$loc[
-              c(
-                x$idx[group_segments[[k]], 1],
-                x$idx[group_segments[[k]][length(group_segments[[k]])], 2]
-              ), ,
-              drop = FALSE
-            ]
-          }
-        ),
-        dim = "XYZ"
-      ),
-      crs = fm_crs(x$crs)
-    )
-  } else {
-    geom <- sf::st_sfc(
+  geom_bnd <- NULL
+  if (length(segm_bnd) > 0) {
+    geom_bnd <-
       lapply(
-        seq_along(group_segments),
+        seq_along(segm_bnd),
+        function(k) {
+          # If all segments are boundary segments, we can use a polygon
+          # with the last point repeated to close the ring.
+          # For each positive area polygon, subtract negative area polygons
+          # that are fully contained in the positive area polygon.
+          sf::st_polygon(
+            list(
+              segm_bnd[[k]]$loc[
+                c(
+                  segm_bnd[[k]]$idx[, 1],
+                  segm_bnd[[k]]$idx[nrow(segm_bnd[[k]]$idx), 2]
+                ), ,
+                drop = FALSE
+              ]
+            ),
+            dim = "XYZ"
+          )
+        }
+      )
+    areas <- fm_area(segm_bnd) # fm_area.fm_segm_list
+    geom_bnd_pos <- geom_bnd[areas > 0]
+    geom_bnd_neg <- geom_bnd[areas < 0]
+    contains <- sf::st_contains(
+      sf::st_sfc(geom_bnd_pos, crs = fm_crs(x)),
+      sf::st_sfc(geom_bnd_neg, crs = fm_crs(x))
+    )
+    geom_list <- lapply(
+      seq_along(geom_bnd_pos),
+      function(k) {
+        if (length(contains[[k]]) > 0) {
+          poly <- sf::st_difference(
+            geom_bnd_pos[[k]],
+            sf::st_sfc(geom_bnd_neg[contains[[k]]])
+          )
+        } else {
+          poly <- geom_bnd_pos[[k]]
+        }
+        poly
+      }
+    )
+    geom_bnd <- sf::st_sfc(geom_list, crs = fm_crs(x))
+  } else {
+    geom_bnd <- sf::st_sfc(crs = fm_crs(x))
+  }
+
+  geom_int <- NULL
+  if (length(segm_int) > 0) {
+    geom_int <- sf::st_sfc(
+      lapply(
+        seq_along(segm_int),
         function(k) {
           sf::st_linestring(
-            x$loc[
+            segm_int[[k]]$loc[
               c(
-                x$idx[group_segments[[k]], 1],
-                x$idx[group_segments[[k]][length(group_segments[[k]])], 2]
+                segm_int[[k]]$idx[, 1],
+                segm_int[[k]]$idx[nrow(segm_int[[k]]$idx), 2]
               ), ,
               drop = FALSE
             ],
@@ -167,10 +182,35 @@ fm_as_sfc.fm_segm <- function(x, ..., multi = FALSE) {
           )
         }
       ),
-      crs = fm_crs(x$crs)
+      crs = fm_crs(x)
     )
   }
+
+  if (length(geom_bnd) > 0 && length(geom_int) > 0) {
+    geom <- sf::st_sfc(
+      c(geom_bnd, geom_int),
+      crs = fm_crs(x)
+    )
+  } else if (length(geom_bnd) > 0) {
+    geom <- geom_bnd
+  } else if (length(geom_int) > 0) {
+    geom <- geom_int
+  } else {
+    geom <- sf::st_sfc(crs = fm_crs(x))
+  }
+
+  if (multi) {
+    geom <- sf::st_union(geom)
+  }
+
   geom
+}
+
+#' @rdname fm_as_sfc
+#'
+#' @export
+fm_as_sfc.fm_segm_list <- function(x, ...) {
+  do.call(c, lapply(x, fm_as_sfc, ...))
 }
 
 #' @rdname fm_as_sfc
@@ -185,9 +225,6 @@ fm_as_sfc.sfc <- function(x, ...) {
 fm_as_sfc.sf <- function(x, ...) {
   sf::st_geometry(x)
 }
-
-
-
 
 
 # fm_as_mesh_2d ####
@@ -276,7 +313,6 @@ fm_as_mesh_2d.sf <-
   }
 
 
-
 # fm_as_segm ####
 
 #' @rdname fm_as_segm
@@ -339,11 +375,11 @@ fm_as_segm.sfc_LINESTRING <-
 
     segm <- list()
     if (is.null(grp)) {
-      grp <- seq_len(length(sfc))
+      grp <- seq_along(sfc)
     } else {
       grp <- c(grp, rep(grp[length(grp)], length(sfc) - length(grp)))
     }
-    for (k in seq_len(length(sfc))) {
+    for (k in seq_along(sfc)) {
       loc <- sf::st_coordinates(sfc[k])
       coord_names <- intersect(c("X", "Y", "Z"), colnames(loc))
       if (nrow(loc) == 0) {
@@ -391,11 +427,11 @@ fm_as_segm.sfc_MULTILINESTRING <-
 
     segm <- list()
     if (is.null(grp)) {
-      grp <- seq_len(length(sfc))
+      grp <- seq_along(sfc)
     } else {
       grp <- c(grp, rep(grp[length(grp)], length(sfc) - length(grp)))
     }
-    for (k in seq_len(length(sfc))) {
+    for (k in seq_along(sfc)) {
       loc <- sf::st_coordinates(sfc[k])
       coord_names <- intersect(c("X", "Y", "Z"), colnames(loc))
       if (nrow(loc) == 0) {
@@ -419,7 +455,7 @@ fm_as_segm.sfc_MULTILINESTRING <-
           function(i) {
             subset <- which((Linfo[, 1] == uniqueLinfo[i, 1]) &
               (Linfo[, 2] == uniqueLinfo[i, 2]))
-            idx <- seq_len(length(subset))
+            idx <- seq_along(subset)
             if (reverse) {
               idx <- rev(idx)
             }
@@ -452,11 +488,11 @@ fm_as_segm.sfc_POLYGON <-
 
     segm <- list()
     if (is.null(grp)) {
-      grp <- seq_len(length(sfc))
+      grp <- seq_along(sfc)
     } else {
       grp <- c(grp, rep(grp[length(grp)], length(sfc) - length(grp)))
     }
-    for (k in seq_len(length(sfc))) {
+    for (k in seq_along(sfc)) {
       loc <- sf::st_coordinates(sfc[k])
       coord_names <- intersect(c("X", "Y", "Z"), colnames(loc))
       if (nrow(loc) == 0) {
@@ -513,11 +549,11 @@ fm_as_segm.sfc_MULTIPOLYGON <-
 
     segm <- list()
     if (is.null(grp)) {
-      grp <- seq_len(length(sfc))
+      grp <- seq_along(sfc)
     } else {
       grp <- c(grp, rep(grp[length(grp)], length(sfc) - length(grp)))
     }
-    for (k in seq_len(length(sfc))) {
+    for (k in seq_along(sfc)) {
       loc <- sf::st_coordinates(sfc[k])
       coord_names <- intersect(c("X", "Y", "Z"), colnames(loc))
       if (nrow(loc) == 0) {
@@ -569,7 +605,7 @@ fm_as_segm.sfc_MULTIPOLYGON <-
 fm_as_segm.sfc_GEOMETRY <-
   function(x, grp = NULL, join = TRUE, ...) {
     if (is.null(grp)) {
-      grp <- seq_len(length(x))
+      grp <- seq_along(x)
     } else {
       grp <- c(grp, rep(grp[length(grp)], length(x) - length(grp)))
     }

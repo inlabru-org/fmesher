@@ -3,8 +3,6 @@
 ##   Copyright (C) 2015-2025, Finn Lindgren
 
 
-
-
 fm_internal_clip <- function(bounds, coords, eps = 0.05) {
   stopifnot(requireNamespace("sp"))
   ## Clip 2D coordinate matrix of polylines and generate a list of Line objects
@@ -33,7 +31,6 @@ fm_internal_clip <- function(bounds, coords, eps = 0.05) {
   }
   thelines
 }
-
 
 
 #' @title Plot CRS and fm_crs objects

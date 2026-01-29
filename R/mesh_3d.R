@@ -89,7 +89,7 @@ fm_mesh_3d <- function(loc = NULL,
     if (!all(used)) {
       used <- which(used)
       idx.map <- rep(NA, nrow(mesh$loc))
-      idx.map[used] <- seq_len(length(used))
+      idx.map[used] <- seq_along(used)
       mesh$loc <- mesh$loc[used, , drop = FALSE]
       mesh$n <- nrow(mesh[["loc"]])
       mesh$graph$tv <-
@@ -124,7 +124,6 @@ fm_delaunay_3d <- function(loc, ...) {
     ...
   )
 }
-
 
 
 #' @title Convert objects to `fm_mesh_3d`
@@ -172,11 +171,14 @@ fm_as_mesh_3d.fm_mesh_3d <- function(x, ...) {
 #' @returns A 3-column matrix of coordinates of triangles, suitable for
 #'   passing to `rgl::triangles3d()`.
 #' @examples
-#' if (requireNamespace("geometry", quietly = TRUE) &&
+#' # Protect against unavailable rgl device by only running interactively
+#' if (interactive() &&
+#'   requireNamespace("geometry", quietly = TRUE) &&
 #'   requireNamespace("rgl", quietly = TRUE)) {
 #'   (m <- fm_delaunay_3d(matrix(rnorm(30), 10, 3)))
 #'   rgl::open3d()
 #'   rgl::triangles3d(rgl::as.triangles3d(m, "boundary"), col = "blue")
+#'   rgl::axes3d()
 #' }
 #'
 as.triangles3d.fm_mesh_3d <- function(obj, subset = NULL, ...) {

@@ -1,3 +1,118 @@
+# fmesher (development version)
+
+## Improved features
+
+* Speed up of `fm_int()` for 2D meshes by internally storing the barycentric
+  coordinate information during the integration scheme construction
+  (version `0.6.1.9002`)
+* Add `face_edge` (for 2D meshes), `cell_face`, and `cell_edge` (for 3D meshes)
+  information to `fm_sizes()` output (version `0.6.1.9004`)
+* Eliminate explicit zero entries from `fm_basis()` matrices
+  (version `0.6.1.9005`)
+
+## Bug fixes
+
+* Fix `fm_subdivide()` to handle 2-column coordinate storage inputs.
+  (version `0.6.1.9001`)
+* Fix triangle area calculations in `fm_sizes()` that caused calculated areas
+  to be 1/3 of the actual areas (version `0.6.1.9003`)
+
+# fmesher 0.6.1
+
+## New features
+
+* Add `fm_subset()` method for constructing a subset of a mesh based on a set
+  of triangle (for `fm_mesh_2d`) or tetrahedron (for `fm_mesh_3d`) indices.
+  (version `0.5.0.9003`)
+* Add `fm_zm()`/`fm_zm_input()`/`fm_zm_target()` methods for
+  adding/removing/unifying the Z/M dimensions of coordinate matrices and
+  `sf` objects (version `0.5.0.9012`)
+* New method `new_fm_int()` to construct tibbles with the same output format
+  as the `fm_int()` method, for user-defined integration schemes
+  (version `0.5.0.9013`)
+
+## Improved features
+
+* Add `bary=fm_bary()` information to `fm_subdivide()` output, mapping the new
+  mesh locations to the original mesh locations, e.g. for interpolating
+  functions from the original mesh to the new mesh (version `0.5.0.9002`)
+* Speed up `fm_int()` for polygons by bulk pre-computing `fm_bary()` information
+  instead of separate calls in `fm_vertex_projection()` (version `0.5.0.9004`)
+* Handle heterogeneous `sf` geometry XY/XYZ dimensions in
+  `fm_bary()`/`fm_basis()` via `fm_zm()` method that is called
+  by `fm_onto_mesh()` and `fm_unify_coords()` to promote XY to XYZ when needed,
+  before calling `sf::st_coordinates()`, as `sf::st_coordinates()` otherwise fails.
+  (version `0.5.0.9005`)
+* Allow `fm_int.fm_mesh_1d()` to handle lists of matrices (for interval
+  integration) and vectors (sums over point sets), for more
+  flexible blockwise integration and summation schemes. (version `0.5.0.9007`)
+* Allow `fm_int.list()` to include non-domain variables in the output object,
+  e.g. for including per-transect covariates in the integration scheme.
+  (version `0.5.0.9008`)
+* Allow `fm_int()` for numeric/character/factor/`fm_mesh_1d` to handle
+  nested list samplers (version `0.5.0.9009`)
+* Drop `gsl` package dependency by using a native C++ implementation of the
+  associated Legendre polynomials and spherical harmonics via `fm_raw_basis()`
+  (version `0.5.0.9014`)
+
+## Bug fixes
+
+* Make `fm_subdivide()` store the indexing information for the original mesh
+  locations in `$idx$loc` (version `0.5.0.9001`)
+* Correct off-by-one indexing error in `$graph$vt` triangle indices
+  (version `0.5.0.9002`)
+* Propagate correct `crs` information in `fm_bary_loc()` for 2D spaces
+  (version `0.5.0.9005`)
+* Fix bugs in `fm_mesh_intersection()` and `fm_bary()` C++ code that caused
+  incorrect behaviour for locating points on meshes on subsets of the sphere.
+  Also allow `fm_mesh_intersection()` to generate non-Delaunay triangles,
+  allowing the generated meshes to be used for stable integration schemes
+  (version `0.5.0.9006`)
+* Handle the `weights` argument in `fm_basis.matrix()` and `fm_basis.Matrix()`
+  when `full = FALSE` (version `0.5.0.9013`)
+
+## Deprecation updates
+
+* Increased deprecation warning and error messages for old unsupported methods
+  (version `0.5.0.9015`)
+* Removed exports of deprecated `CRSargs` methods (version `0.5.0.9015`)
+
+# fmesher 0.5.0
+
+## New features
+
+* Add `fm_area()` method for `fm_segm` area calculations (version `0.4.0.9002`)
+* Make `fm_nonconvex_hull()` a unified function for "fm" and "sf" construction
+  methods and input/output formats, with default method "fm" and output format
+  "sf", making `fm_nonconvex_hull_inla()` deprecated.
+  (version `0.4.0.9004`)
+
+## Improved features
+
+* Rename `fm_mesh_components()` to `fm_components()` and add support for
+  `fm_segm` objects (version `0.4.0.9001`)
+* Add support for polygon output in `fm_as_sfc()` for closed boundary `fm_segm`
+  objects (version `0.4.0.9002`)
+* Add support for `fm_segm` as boundary input to `fm_hexagon_lattice()`
+  (version `0.4.0.9005`)
+* Add `fm_segm` integration support for `fm_mesh_2d` objects in `fm_int()`
+  (version `0.4.0.9005`)
+
+## Bug fixes
+
+* Fix indexing bug in `fm_basis.fm_mesh_1d()` for `degree = 2` and `NA`
+  locations (version `0.4.0.9003`)
+* Detect unnamed `sfc` objects in `fm_int()` for multi-domain integration
+  and give an error, as the user must provide a geometry name
+  (version `0.4.0.9005`)
+* Check that every `fm_int()` sampler for domain lists has at least one
+  corresponding domain (version `0.4.0.9007`)
+* Remove support for `character` `.block` information in
+  `fm_int()`/`fm_cprod()`, forcing the use of `integer`, as `character` could
+  lead to incorrect block aggregation output ordering. The equivalent
+  information is now available in `.block_origin`. Also clean up of
+  `fm_cprod()` and `sf` handling (version `0.4.0.9006`)
+
 # fmesher 0.4.0
 
 ## New features
@@ -133,19 +248,25 @@
 
 # fmesher 0.1.7
 
-* Fix regression bug in `fm_manifold()` that made it ignore all but the first given type options. See #16 (version `0.1.6.9001)
+* Fix regression bug in `fm_manifold()` that made it ignore all but the first
+  given type options. See #16 (version `0.1.6.9001)
 * Fix `plot.fm_mesh_2d` vectorisation bug (version `0.1.6.9002`)
 * Add new `fm_subdivide()` method for `fm_mesh_2d` meshes (version `0.1.6.9003`)
 
 # fmesher 0.1.6
 
 * Fix for hiding away-facing triangle edges in `plot.fm_mesh_2d()` and `lines.fm_segm()`.
-* Fix duplicated `fm_unify_coords.sf()` method. Thanks to Pablo Paccioretti for debugging and reporting, see #13 (version `0.1.5.9001`)
+* Fix duplicated `fm_unify_coords.sf()` method. Thanks to Pablo Paccioretti for
+  debugging and reporting, see #13 (version `0.1.5.9001`)
 * Use batched `fm_bary.fm_mesh_2d()` computations for data sizes of `2e5` and upwards.
-  This improves performance of `fm_basis()`/`inla.spde.make.A()` for large data sets, see #14 (version `0.1.5.9002`)
-* Automatically convert raw `sfc` samplers objects to `sf` objects in `fm_int.list()` (version `0.1.5.9003`)
-* Detect and warn about unsupported use of `fm_segm` objects in `fm_int.list()` (version `0.1.5.9004`)
-* Add `fm_basis()` and `fm_fem()` support for `fm_tensor` function spaces (version `0.1.5.9005`)
+  This improves performance of `fm_basis()`/`inla.spde.make.A()` for large data
+  sets, see #14 (version `0.1.5.9002`)
+* Automatically convert raw `sfc` samplers objects to `sf` objects in
+  `fm_int.list()` (version `0.1.5.9003`)
+* Detect and warn about unsupported use of `fm_segm` objects in `fm_int.list()`
+  (version `0.1.5.9004`)
+* Add `fm_basis()` and `fm_fem()` support for `fm_tensor` function spaces
+  (version `0.1.5.9005`)
 * Add `fm_CRS()` support for `terra` objects (version `0.1.5.9006`)
 
 # fmesher 0.1.5

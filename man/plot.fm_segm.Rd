@@ -17,12 +17,12 @@
   add = TRUE,
   xlim = NULL,
   ylim = NULL,
-  rgl = FALSE,
   asp = 1,
   axes = FALSE,
   xlab = "",
   ylab = "",
   visibility = "front",
+  rgl = deprecated(),
   ...
 )
 
@@ -46,8 +46,6 @@ plot.}
 
 \item{xlim, ylim}{X and Y axis limits for a new plot.}
 
-\item{rgl}{If \code{TRUE}, use \code{rgl} for plotting.}
-
 \item{asp}{Aspect ratio for new plots. Default 1.}
 
 \item{axes}{logical; whether axes should be drawn on the plot.
@@ -57,6 +55,10 @@ Default FALSE.}
 
 \item{visibility}{If "front" only display mesh faces with normal pointing
 towards the camera.}
+
+\item{rgl}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} since \verb{0.5.0.9000}
+in favour of the \code{\link[=plot_rgl]{plot_rgl()}} and \code{\link[=lines_rgl]{lines_rgl()}} methods.
+If \code{TRUE}, use \code{rgl} for plotting.}
 }
 \value{
 None

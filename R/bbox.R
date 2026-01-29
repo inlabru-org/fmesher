@@ -112,7 +112,7 @@ fm_bbox.fm_mesh_2d <- function(x, ...) {
   }
   box <- fm_bbox(x[["loc"]][, seq_len(d), drop = FALSE])
   ranges <- vapply(
-    seq_len(length(box)),
+    seq_along(box),
     function(k) {
       diff(box[[k]])
     },

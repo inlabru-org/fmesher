@@ -47,10 +47,11 @@ fm_lattice_Nd <- function(x = NULL, ...) {
 #' @rdname fm_lattice_Nd
 #' @export
 fm_lattice_Nd.matrix <- function(
-    x = NULL,
-    dims = NULL,
-    values = NULL,
-    ...) {
+  x = NULL,
+  dims = NULL,
+  values = NULL,
+  ...
+) {
   if (is.null(dims)) {
     stop("The 'dims' argument must be specified.")
   }
@@ -85,17 +86,19 @@ fm_lattice_Nd.matrix <- function(
 #' @rdname fm_lattice_Nd
 #' @export
 fm_lattice_Nd.data.frame <- function(
-    x = NULL,
-    ...) {
+  x = NULL,
+  ...
+) {
   fm_lattice_Nd(as.matrix(x), ...)
 }
 
 #' @rdname fm_lattice_Nd
 #' @export
 fm_lattice_Nd.list <- function(
-    x = NULL,
-    dims = NULL,
-    ...) {
+  x = NULL,
+  dims = NULL,
+  ...
+) {
   mat <- vapply(x, function(xx) is.array(xx), logical(1))
   if (all(mat)) {
     if (is.null(dims)) {
@@ -136,13 +139,14 @@ fm_lattice_Nd.list <- function(
 #' @rdname fm_lattice_Nd
 #' @export
 fm_lattice_Nd.fm_bbox <- function(
-    x = NULL,
-    dims = NULL,
-    ...) {
+  x = NULL,
+  dims = NULL,
+  ...
+) {
   if (is.null(dims)) {
     dims <- rep(2L, length(x))
   }
-  values <- lapply(seq_len(length(x)), function(k) {
+  values <- lapply(seq_along(x), function(k) {
     seq(x[[k]][1], x[[k]][2], length.out = dims[k])
   })
   loc <- as.matrix(expand.grid(values, stringsAsFactors = FALSE))

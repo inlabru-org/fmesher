@@ -142,9 +142,8 @@ fm_as_list <- function(x, ..., .class_stub = NULL) {
   }
 
   class(y) <- c("fm_list", "list")
-  return(y)
+  y
 }
-
 
 
 #' @export
