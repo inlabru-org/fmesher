@@ -49,6 +49,7 @@ using fmesh::Matrix3double;
 using fmesh::Matrix3int;
 using fmesh::Matrix4double;
 using fmesh::Matrix4int;
+using fmesh::Matrix1double;
 using fmesh::Matrix1int;
 using fmesh::MatrixC;
 using fmesh::Mesh;
@@ -1487,6 +1488,91 @@ Rcpp::List fmesher_mesh3d(Rcpp::List options,
 
    return out;
  }
+
+
+
+
+
+//' @title Compute areas and edge lengths
+//'
+//' @description
+//' Compute triangle areas, edge lengths, and vertex-associated areas
+//'
+//' @param mesh_loc numeric matrix; mesh vertex coordinates
+//' @param mesh_tv 3-column integer matrix with 0-based vertex indices for each triangle
+//' @param options list of triangulation options (`sphere_tolerance`)
+//' @returns A list of `face`, `face_edge`, and `vertex`
+//' @keywords internal
+//' @seealso [fm_sizes()]
+//' @examples
+//' mesh <- fm_mesh_2d(
+//'   boundary = fm_segm(rbind(c(0,0), c(1,0), c(1,1), c(0, 1)), is.bnd = TRUE)
+//' )
+//' sz <- fm_sizes(mesh)
+//' summary(sz$face)
+// [[Rcpp::export]]
+ Rcpp::List fmesher_sizes_mesh2d(
+     Rcpp::NumericMatrix mesh_loc,
+     Rcpp::IntegerMatrix mesh_tv,
+     Rcpp::List options) {
+   MatrixC matrices;
+   Mesh M = Rcpp_import_mesh(mesh_loc, mesh_tv, matrices, Rcpp::List());
+
+   FMLOG("Compute areas and edge lengths." << std::endl);
+
+   /*
+   matrices.attach("face",
+                   std::make_unique<Matrix<double>>(Matrix1double(M.nT())));
+   matrices.attach("face_edge",
+                   std::make_unique<Matrix<double>>(Matrix3double(M.nT())));
+   matrices.attach("vertex",
+                   std::make_unique<Matrix<double>>(Matrix1double(M.nV())));
+   Matrix<double> &face = matrices.DD("face");
+   Matrix<double> &face_edge = matrices.DD("face_edge");
+   Matrix<double> &vertex = matrices.DD("vertex");
+   vertex.zeros(0, M.nV());
+
+   for (size_t t = 0; t < M.nT(); t++) {
+     face(t, 0) = M.triangleArea(t);
+     Dart e_dart(M, t);
+     for (int e = 0; e < 3; e++) {
+       e_dart = e_dart.orbit2();
+       face_edge(t, e) = M.edgeLength(e_dart);
+     }
+     for (int j = 0; j < 3; j++) {
+       vertex(M.TV()(t, j), 0) += face(t, 0) / 3.0;
+     }
+   }
+
+    */
+
+   Rcpp::NumericVector face(M.nT());
+   Rcpp::NumericMatrix face_edge(M.nT(), 3);
+   Rcpp::NumericVector vertex(M.nV()); // Auto-initialized with zeros!
+
+   for (size_t t = 0; t < M.nT(); t++) {
+     face[t] = M.triangleArea(t);
+     Dart e_dart(M, t);
+     for (int e = 0; e < 3; e++) {
+       e_dart = e_dart.orbit2();
+       face_edge(t, e) = M.edgeLength(e_dart);
+     }
+     for (int j = 0; j < 3; j++) {
+       vertex[M.TV()(t, j)] += face[t] / 3.0;
+     }
+   }
+
+   FMLOG("Done" << std::endl);
+
+   Rcpp::List result;
+   result["face"] = face;
+   result["face_edge"] = face_edge;
+   result["vertex"] = vertex;
+
+   return result;
+ }
+
+
 
 
 

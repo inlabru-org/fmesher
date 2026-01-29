@@ -426,11 +426,22 @@ fm_sizes <- function(...) {
 
 #' @rdname fm_sizes
 #' @param mesh object of a supported mesh class
+#' @param method character; "R" or "Rcpp". For "S2" manifolds, the "Rcpp"
+#' method is always used. The "R" method is currently faster, due to the cost
+#' of building internal data structures in the C++ code.
 #' @export
-fm_sizes.fm_mesh_2d <- function(mesh, ...) {
-  if (fm_manifold(mesh, "S")) {
-    warning("`fm_sizes()` does not handle spherical triangles.")
+fm_sizes.fm_mesh_2d <- function(mesh, ..., method = "R") {
+  if (fm_manifold(mesh, "S") || (identical(method, "Rcpp"))) {
+    sz <- fmesher_sizes_mesh2d(
+      mesh_loc = fm_unify_coords(mesh$loc),
+      mesh_tv = mesh$graph$tv - 1L,
+      options = list()
+    )
+    sz$face <- as.vector(sz$face)
+    sz$vertex <- as.vector(sz$vertex)
+    return(sz)
   }
+
   v1 <- mesh$loc[mesh$graph$tv[, 1], , drop = FALSE]
   v2 <- mesh$loc[mesh$graph$tv[, 2], , drop = FALSE]
   v3 <- mesh$loc[mesh$graph$tv[, 3], , drop = FALSE]

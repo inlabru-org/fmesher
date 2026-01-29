@@ -177,6 +177,19 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// fmesher_sizes_mesh2d
+Rcpp::List fmesher_sizes_mesh2d(Rcpp::NumericMatrix mesh_loc, Rcpp::IntegerMatrix mesh_tv, Rcpp::List options);
+RcppExport SEXP _fmesher_fmesher_sizes_mesh2d(SEXP mesh_locSEXP, SEXP mesh_tvSEXP, SEXP optionsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type mesh_loc(mesh_locSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerMatrix >::type mesh_tv(mesh_tvSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type options(optionsSEXP);
+    rcpp_result_gen = Rcpp::wrap(fmesher_sizes_mesh2d(mesh_loc, mesh_tv, options));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_fmesher_fmesher_qinv", (DL_FUNC) &_fmesher_fmesher_qinv, 1},
@@ -191,6 +204,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_fmesher_fmesher_split_lines", (DL_FUNC) &_fmesher_fmesher_split_lines, 5},
     {"_fmesher_fmesher_subdivide", (DL_FUNC) &_fmesher_fmesher_subdivide, 6},
     {"_fmesher_fmesher_mesh3d", (DL_FUNC) &_fmesher_fmesher_mesh3d, 3},
+    {"_fmesher_fmesher_sizes_mesh2d", (DL_FUNC) &_fmesher_fmesher_sizes_mesh2d, 3},
     {NULL, NULL, 0}
 };
 

@@ -240,3 +240,24 @@ fmesher_mesh3d <- function(options, loc, tv) {
     .Call(`_fmesher_fmesher_mesh3d`, options, loc, tv)
 }
 
+#' @title Compute areas and edge lengths
+#'
+#' @description
+#' Compute triangle areas, edge lengths, and vertex-associated areas
+#'
+#' @param mesh_loc numeric matrix; mesh vertex coordinates
+#' @param mesh_tv 3-column integer matrix with 0-based vertex indices for each triangle
+#' @param options list of triangulation options (`sphere_tolerance`)
+#' @returns A list of `face`, `face_edge`, and `vertex`
+#' @keywords internal
+#' @seealso [fm_sizes()]
+#' @examples
+#' mesh <- fm_mesh_2d(
+#'   boundary = fm_segm(rbind(c(0,0), c(1,0), c(1,1), c(0, 1)), is.bnd = TRUE)
+#' )
+#' sz <- fm_sizes(mesh)
+#' summary(sz$face)
+fmesher_sizes_mesh2d <- function(mesh_loc, mesh_tv, options) {
+    .Call(`_fmesher_fmesher_sizes_mesh2d`, mesh_loc, mesh_tv, options)
+}
+

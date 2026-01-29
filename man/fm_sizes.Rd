@@ -8,7 +8,7 @@
 \usage{
 fm_sizes(...)
 
-\method{fm_sizes}{fm_mesh_2d}(mesh, ...)
+\method{fm_sizes}{fm_mesh_2d}(mesh, ..., method = "R")
 
 \method{fm_sizes}{fm_mesh_3d}(mesh, ...)
 }
@@ -16,6 +16,10 @@ fm_sizes(...)
 \item{...}{Passed on to submethods}
 
 \item{mesh}{object of a supported mesh class}
+
+\item{method}{character; "R" or "Rcpp". For "S2" manifolds, the "Rcpp"
+method is always used. The "R" method is currently faster, due to the cost
+of building internal data structures in the C++ code.}
 }
 \value{
 A \code{list} with elements of simplex size information. For 2D meshes:

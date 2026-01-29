@@ -9,6 +9,7 @@
   information to `fm_sizes()` output (version `0.6.1.9004`)
 * Eliminate explicit zero entries from `fm_basis()` matrices
   (version `0.6.1.9005`)
+* Add spherical mesh support to `fm_sizes()` (version `0.6.1.9006`)
 
 ## Bug fixes
 
