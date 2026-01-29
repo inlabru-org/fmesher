@@ -10,6 +10,8 @@ fmesher_qinv(AA)
 \item{AA}{A sparse matrix}
 }
 \description{
+Internal C++ method.
+
 Requires RcppEigen which is not compiled in by default. Enable with
 \code{PKG_CPPFLAGS=-DFMESHER_WITH_EIGEN} in \code{src/Makevars} and add \code{RcppEigen}
 to the \code{DESCRIPTION} \code{LinkingTo} field.

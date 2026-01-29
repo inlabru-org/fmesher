@@ -24,6 +24,8 @@ if \code{FALSE}, the knots are spaced uniformly by \code{sin(latitude)}}
 A matrix of evaluated b-spline basis functions
 }
 \description{
+Internal C++ method.
+
 Compute rotationally invariant spherical B-splines on the unit sphere
 }
 \examples{

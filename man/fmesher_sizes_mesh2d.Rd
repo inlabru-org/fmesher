@@ -17,6 +17,8 @@ fmesher_sizes_mesh2d(mesh_loc, mesh_tv, options)
 A list of \code{face}, \code{face_edge}, and \code{vertex}
 }
 \description{
+Internal C++ method.
+
 Compute triangle areas, edge lengths, and vertex-associated areas
 }
 \examples{

@@ -13,6 +13,9 @@ fmesher_globe_points(globe)
 A matrix of points on a unit radius globe
 }
 \description{
+C++ method, may get a stable R interface as \code{fm_globe_points()} in the
+future.
+
 Create points on a globe
 }
 \examples{

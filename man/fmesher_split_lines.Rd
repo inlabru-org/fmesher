@@ -21,6 +21,8 @@ fmesher_split_lines(mesh_loc, mesh_tv, loc, idx, options)
 A list of line splitting information objects
 }
 \description{
+Internal C++ method.
+
 Split a sequence of line segments at triangle edges
 }
 \examples{
@@ -33,3 +35,4 @@ segm_split <- fm_split_lines(mesh, splitter)
 \seealso{
 \code{\link[=fm_split_lines]{fm_split_lines()}}
 }
+\keyword{internal}

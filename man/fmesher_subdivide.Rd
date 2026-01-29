@@ -35,6 +35,8 @@ Can be e.g. used to construct an interpolation mapping matrix from the old
 to new mesh.
 }
 \description{
+Internal C++ method.
+
 Subdivide a mesh with congruent and anti-congruent subtriangles
 }
 \examples{
