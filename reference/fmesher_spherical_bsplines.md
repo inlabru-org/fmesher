@@ -1,5 +1,7 @@
 # Rotationally invariant spherical B-splines
 
+Internal C++ method.
+
 Compute rotationally invariant spherical B-splines on the unit sphere
 
 ## Usage

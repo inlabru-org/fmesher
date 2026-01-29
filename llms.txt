@@ -592,20 +592,8 @@ Data objects
 
 Direct C++ interface methods, not intended for package users.
 
-- [`fmesher_bary()`](https://inlabru-org.github.io/fmesher/reference/fmesher_bary.md)
-  : Barycentric coordinate computation
-- [`fmesher_bary3d()`](https://inlabru-org.github.io/fmesher/reference/fmesher_bary3d.md)
-  : Barycentric coordinate computation
-- [`fmesher_fem()`](https://inlabru-org.github.io/fmesher/reference/fmesher_fem.md)
-  : Finite element matrix computation
 - [`fmesher_globe_points()`](https://inlabru-org.github.io/fmesher/reference/fmesher_globe_points.md)
   : Globe points
-- [`fmesher_mesh3d()`](https://inlabru-org.github.io/fmesher/reference/fmesher_mesh3d.md)
-  : 3D tetrahedralisation storage
-- [`fmesher_rcdt()`](https://inlabru-org.github.io/fmesher/reference/fmesher_rcdt.md)
-  : Refined Constrained Delaunay Triangulation
-- [`fmesher_split_lines()`](https://inlabru-org.github.io/fmesher/reference/fmesher_split_lines.md)
-  : Split lines at triangle edges
 
 ## Deprecated methods
 

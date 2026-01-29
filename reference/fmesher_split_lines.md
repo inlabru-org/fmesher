@@ -1,5 +1,7 @@
 # Split lines at triangle edges
 
+Internal C++ method.
+
 Split a sequence of line segments at triangle edges
 
 ## Usage

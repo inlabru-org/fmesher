@@ -1,5 +1,7 @@
 # Finite element matrix computation
 
+Internal C++ method.
+
 Construct finite element structure matrices
 
 ## Usage

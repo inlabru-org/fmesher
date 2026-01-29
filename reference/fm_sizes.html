@@ -15,7 +15,7 @@ Compute effective sizes of faces/cells and vertices in a mesh"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.1.9005</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.1.9006</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,7 +63,7 @@ Compute effective sizes of faces/cells and vertices in a mesh</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fm_sizes</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'fm_mesh_2d'</span></span>
-<span><span class="fu">fm_sizes</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">fm_sizes</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">...</span>, method <span class="op">=</span> <span class="st">"R"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'fm_mesh_3d'</span></span>
 <span><span class="fu">fm_sizes</span><span class="op">(</span><span class="va">mesh</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
@@ -79,6 +79,12 @@ Compute effective sizes of faces/cells and vertices in a mesh</p>
 
 <dt id="arg-mesh">mesh<a class="anchor" aria-label="anchor" href="#arg-mesh"></a></dt>
 <dd><p>object of a supported mesh class</p></dd>
+
+
+<dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
+<dd><p>character; "R" or "Rcpp". For "S2" manifolds, the "Rcpp"
+method is always used. The "R" method is currently faster, due to the cost
+of building internal data structures in the C++ code.</p></dd>
 
 </dl></div>
     <div class="section level2">

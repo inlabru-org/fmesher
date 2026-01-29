@@ -16,6 +16,9 @@
 - Eliminate explicit zero entries from
   [`fm_basis()`](https://inlabru-org.github.io/fmesher/reference/fm_basis.md)
   matrices (version `0.6.1.9005`)
+- Add spherical mesh support to
+  [`fm_sizes()`](https://inlabru-org.github.io/fmesher/reference/fm_sizes.md)
+  (version `0.6.1.9006`)
 
 ### Bug fixes
 

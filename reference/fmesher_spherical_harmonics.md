@@ -1,5 +1,7 @@
 # Spherical harmonics
 
+Internal C++ method.
+
 Compute spherical harmonics on the unit sphere
 
 ## Usage

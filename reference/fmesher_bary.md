@@ -1,5 +1,7 @@
 # Barycentric coordinate computation
 
+Internal C++ method.
+
 Locate points and compute triangular barycentric coordinates
 
 ## Usage

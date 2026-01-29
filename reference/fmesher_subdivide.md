@@ -1,5 +1,7 @@
 # Subdivide triangles
 
+Internal C++ method.
+
 Subdivide a mesh with congruent and anti-congruent subtriangles
 
 ## Usage

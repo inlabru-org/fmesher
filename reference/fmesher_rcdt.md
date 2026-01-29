@@ -1,5 +1,7 @@
 # Refined Constrained Delaunay Triangulation
 
+Internal C++ method.
+
 (...)
 
 ## Usage

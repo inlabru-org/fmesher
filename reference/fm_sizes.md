@@ -9,7 +9,7 @@ in a mesh
 fm_sizes(...)
 
 # S3 method for class 'fm_mesh_2d'
-fm_sizes(mesh, ...)
+fm_sizes(mesh, ..., method = "R")
 
 # S3 method for class 'fm_mesh_3d'
 fm_sizes(mesh, ...)
@@ -24,6 +24,12 @@ fm_sizes(mesh, ...)
 - mesh:
 
   object of a supported mesh class
+
+- method:
+
+  character; "R" or "Rcpp". For "S2" manifolds, the "Rcpp" method is
+  always used. The "R" method is currently faster, due to the cost of
+  building internal data structures in the C++ code.
 
 ## Value
 

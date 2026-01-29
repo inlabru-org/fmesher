@@ -1,5 +1,7 @@
 # 3D tetrahedralisation storage
 
+Internal C++ method.
+
 (...)
 
 ## Usage

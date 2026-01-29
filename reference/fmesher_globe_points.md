@@ -1,5 +1,8 @@
 # Globe points
 
+C++ method, may get a stable R interface as `fm_globe_points()` in the
+future.
+
 Create points on a globe
 
 ## Usage
