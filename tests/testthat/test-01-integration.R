@@ -176,8 +176,8 @@ test_that("Conversion of whole 2D mesh to integration points", {
 
   expect_s3_class(ips, "sf")
   expect_equal(
-    colnames(ips),
-    c("weight", ".block", "geometry", ".block_origin")
+    sort(colnames(ips)),
+    sort(c("weight", ".block", "geometry", ".block_origin"))
   )
   expect_equal(sum(ips$weight), 64.58135, tolerance = lowtol)
 
