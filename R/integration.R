@@ -1137,49 +1137,62 @@ fm_int.fm_mesh_2d <- function(domain,
   ips
 }
 
+# Extract graph information, ensuring unified storage modes
+fm_graph <- function(mesh) {
+  if (is.null(mesh$graph$vt) || !is.list(mesh$graph$vt)) {
+    # Old storage mode: mesh$graph$vt <- rep(NA_integer_, nrow(mesh$loc))
+    message(
+      paste0(
+        "Graph 'vt' information missing or using old storage format.",
+        " Rebuilding."
+      )
+    )
+    mesh$graph$vt <- NULL
+  }
+  if (is.null(mesh$graph$vt)) {
+    mesh$graph$vt <- list()
+    for (vv in seq_len(nrow(mesh$loc))) {
+      mesh$graph$vt[[vv]] <- matrix(
+        NA_integer_,
+        0,
+        2,
+        dimnames = list(NULL, c("t", "vi"))
+      )
+    }
+    for (tt in seq_len(nrow(mesh$graph$tv))) {
+      for (vvi in seq_len(ncol(mesh$graph$tv))) {
+        vv <- mesh$graph$tv[tt, vvi]
+        mesh$graph$vt[[vv]] <- rbind(mesh$graph$vt[[vv]], c(tt, vvi))
+      }
+    }
+  } else if (is.null(colnames(mesh$graph$vt[[1]]))) {
+    # Backwards compatibility for old stored meshes
+    for (i in seq_along(mesh$graph$vt)) {
+      colnames(mesh$graph$vt[[i]]) <- c("t", "vi")
+    }
+  }
+  mesh$graph
+}
+
 # Construct barycentric info for mesh vertices
 # sum((fm_bary_loc(fmexample$mesh, fm_bary_vertex(fmexample$mesh)) -
 #   fmexample$mesh$loc)^2) # should be zero
 fm_bary_vertex <- function(mesh) {
-  if (is.null(mesh$graph$vt)) {
-    # Backwards compatibility for old stored meshes
-    vtx <- seq_len(nrow(mesh$loc))
-    idx1 <- match(vtx, mesh$graph$tv[, 1])
-    idx2 <- match(vtx, mesh$graph$tv[, 2])
-    idx3 <- match(vtx, mesh$graph$tv[, 3])
-    idx2[!is.na(idx1)] <- NA_integer_
-    idx3[!is.na(idx1)] <- NA_integer_
-    idx3[!is.na(idx2)] <- NA_integer_
-    bary_vtx_index <- integer(nrow(mesh$loc))
-    bary_vtx_index[!is.na(idx1)] <- idx1[!is.na(idx1)]
-    bary_vtx_index[!is.na(idx2)] <- idx2[!is.na(idx2)]
-    bary_vtx_index[!is.na(idx3)] <- idx3[!is.na(idx3)]
-    bary_vtx_vi <- integer(nrow(mesh$loc))
-    bary_vtx_vi[!is.na(idx1)] <- 1L
-    bary_vtx_vi[!is.na(idx2)] <- 2L
-    bary_vtx_vi[!is.na(idx3)] <- 3L
-  } else {
-    if (is.null(colnames(mesh$graph$vt[[1]]))) {
-      # Backwards compatibility for old stored meshes
-      for (i in seq_along(mesh$graph$vt)) {
-        colnames(mesh$graph$vt[[i]]) <- c("t", "vi")
-      }
-    }
-    bary_vtx_index <- vapply(
-      seq_len(nrow(mesh$loc)),
-      function(i) {
-        mesh$graph$vt[[i]][1, "t"]
-      },
-      1L
-    )
-    bary_vtx_vi <- vapply(
-      seq_len(nrow(mesh$loc)),
-      function(i) {
-        mesh$graph$vt[[i]][1, "vi"]
-      },
-      1L
-    )
-  }
+  graph <- fm_graph(mesh)
+  bary_vtx_index <- vapply(
+    seq_len(nrow(mesh$loc)),
+    function(i) {
+      graph$vt[[i]][1, "t"]
+    },
+    1L
+  )
+  bary_vtx_vi <- vapply(
+    seq_len(nrow(mesh$loc)),
+    function(i) {
+      graph$vt[[i]][1, "vi"]
+    },
+    1L
+  )
   bary_vtx <- fm_bary(
     list(
       index = bary_vtx_index,
