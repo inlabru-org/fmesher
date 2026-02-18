@@ -199,6 +199,8 @@ fm_refine <- function(mesh, refine = list(max.edge = 1)) {
 #' plot(fm_subdivide(fmexample$mesh, 3), edge.color = 2)
 #' plot(fmexample$mesh, add = TRUE, edge.color = 1)
 fm_subdivide <- function(mesh, n = 1, delaunay = FALSE) {
+  # In case of old stored meshes, unify the graph storage:
+  mesh$graph <- fm_graph(mesh)
   if (n < 1) {
     bary_index <- vapply(mesh$graph$vt, function(x) x[1, 1], integer(1))
     bary_where <- as.matrix(Matrix::sparseMatrix(
