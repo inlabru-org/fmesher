@@ -1170,13 +1170,15 @@ fm_bary_vertex <- function(mesh) {
       function(i) {
         mesh$graph$vt[[i]][1, "t"]
       },
-      1L)
+      1L
+    )
     bary_vtx_vi <- vapply(
       seq_len(nrow(mesh$loc)),
       function(i) {
         mesh$graph$vt[[i]][1, "vi"]
       },
-      1L)
+      1L
+    )
   }
   bary_vtx <- fm_bary(
     list(
