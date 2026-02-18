@@ -17,6 +17,11 @@
   (version `0.6.1.9001`)
 * Fix triangle area calculations in `fm_sizes()` that caused calculated areas
   to be 1/3 of the actual areas (version `0.6.1.9003`)
+* Use `expect_setequal()` in package tests for checking that integration output
+  objects contain the correct columns. Some tests were not using `sort()` on the
+  names, causing them to fail when external object merges and constructors
+  changed behaviour. Thanks to Edzer Pebesma for the initial PR, #30
+  (version `0.6.1.9007`)
 
 # fmesher 0.6.1
 

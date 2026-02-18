@@ -101,7 +101,7 @@ test_that("Tensor space integration", {
 
   ips2 <- fm_int(domain, samplers2)
 
-  expect_equal(sort(names(ips1)), sort(names(ips2)))
+  expect_setequal(names(ips1), names(ips2))
   expect_equal(
     dplyr::arrange(
       dplyr::select(ips1, time, space, weight, .block),
@@ -119,9 +119,9 @@ test_that("Integrating an sf polygon on a mesh domain", {
   ips <- fm_int(fmexample$mesh, samplers = fmexample$boundary_sf[[1]])
 
   expect_s3_class(ips, "sf")
-  expect_equal(
-    sort(colnames(ips)),
-    sort(c("weight", ".block", ".block_origin", "geometry"))
+  expect_setequal(
+    colnames(ips),
+    c("weight", ".block", ".block_origin", "geometry")
   )
   expect_equal(sum(ips$weight), 18.339, tolerance = lowtol)
 
@@ -139,9 +139,9 @@ test_that("Integrating an sf polygon on a mesh domain", {
   )
 
   expect_s3_class(ips, "sf")
-  expect_equal(
-    sort(colnames(ips)),
-    sort(c("weight", ".block", ".block_origin", "geometry"))
+  expect_setequal(
+    colnames(ips),
+    c("weight", ".block", ".block_origin", "geometry")
   )
   expect_equal(sum(ips$weight), 18.339, tolerance = lowtol)
 })
@@ -150,9 +150,9 @@ test_that("Integrating a fm_segm polygon on a mesh domain", {
   ips <- fm_int(fmexample$mesh, samplers = fmexample$boundary_fm[[1]])
 
   expect_s3_class(ips, "sf")
-  expect_equal(
-    sort(colnames(ips)),
-    sort(c("weight", ".block", ".block_origin", "geometry"))
+  expect_setequal(
+    colnames(ips),
+    c("weight", ".block", ".block_origin", "geometry")
   )
   expect_equal(sum(ips$weight), 18.339, tolerance = lowtol)
 })
@@ -163,9 +163,9 @@ test_that("Integrating a SpatialPolygon on a mesh domain", {
   ips <- fm_int(fmexample$mesh, samplers = fmexample_sp()$boundary_sp[[1]])
 
   expect_s4_class(ips, "SpatialPointsDataFrame")
-  expect_equal(
-    sort(colnames(as.data.frame(ips))),
-    sort(c("weight", ".block", ".block_origin", "x", "y", "z"))
+  expect_setequal(
+    colnames(as.data.frame(ips)),
+    c("weight", ".block", ".block_origin", "x", "y", "z")
   )
   expect_equal(sum(ips$weight), 18.339, tolerance = lowtol)
 })
@@ -175,9 +175,9 @@ test_that("Conversion of whole 2D mesh to integration points", {
   ips <- fm_int(fmexample$mesh, format = "sf")
 
   expect_s3_class(ips, "sf")
-  expect_equal(
-    sort(colnames(ips)),
-    sort(c("weight", ".block", "geometry", ".block_origin"))
+  expect_setequal(
+    colnames(ips),
+    c("weight", ".block", "geometry", ".block_origin")
   )
   expect_equal(sum(ips$weight), 64.58135, tolerance = lowtol)
 
@@ -186,7 +186,7 @@ test_that("Conversion of whole 2D mesh to integration points", {
   ips <- fm_int(fmexample$mesh, format = "sp")
 
   expect_s4_class(ips, "SpatialPointsDataFrame")
-  expect_equal(
+  expect_setequal(
     names(ips),
     c("weight", ".block", ".block_origin")
   )
