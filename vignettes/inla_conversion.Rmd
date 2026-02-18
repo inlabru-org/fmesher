@@ -195,7 +195,10 @@ df <- tribble(
   ~INLA, ~fmesher, ~inlabru, ~Comments,
   "inla.mesh.query()",
   NA_character_, NA_character_,
-  "For tt and vt multi-order neighbours. No fmesher equivalent in version <= 0.6.0",
+  paste0(
+    "For tt and vt multi-order neighbours. ",
+    "No fmesher equivalent in version <= 0.6.0"
+  ),
   "inla.mesh.projector()", "fm_evaluator()", character(0), "",
   "inla.mesh.project()", "fm_evaluate()", character(0), "",
   "inla.spde.make.A()", c(

@@ -25,9 +25,12 @@ Currently (2023-08-05) the fields need to be given per vertex.}
 A list of matrices
 }
 \description{
+Internal C++ method.
+
 Construct finite element structure matrices
 }
 \examples{
 m <- fmesher_rcdt(list(cet_margin = 1), matrix(0, 1, 2))
 b <- fmesher_fem(m$s, m$tv, fem_order_max = 2, aniso = NULL, options = list())
 }
+\keyword{internal}

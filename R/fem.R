@@ -398,9 +398,24 @@ fm_fem.fm_mesh_3d <- function(mesh, order = 2, ...) {
 #' @description `r lifecycle::badge("experimental")`
 #'   Compute effective sizes of faces/cells and vertices in a mesh
 #' @param ... Passed on to submethods
-#' @returns A `list` with elements `face` and `vertex` for 2D meshes, or `cell`
-#'   and `vertex` for 3D meshes. The elements are vectors of effective sizes of
-#'   the faces/cells and vertices, respectively.
+#' @returns A `list` with elements of simplex size information. For 2D meshes:
+#'   \describe{
+#'   \item{`face`}{Vector with the area of each triangle}
+#'   \item{`vertex`}{Vector with the triangle area apportioned to each vertex}
+#'   \item{`face_edge`}{A matrix with one row per triangle and 3 columns, with
+#'     edge lengths for the edge opposing each triangle vertex.}
+#'   }
+#'   For 3D meshes:
+#'   \describe{
+#'   \item{`cell`}{Vector with the volume of each tetrahedron}
+#'   \item{`vertex`}{Vector with the tetrahedron volume apportioned to each
+#'   vertex}
+#'   \item{`cell_face`}{A matrix with one row per cell and 4 columns, with
+#'   triangle areas for the triangle opposing each tetrahedron vertex.}
+#'   \item{`cell_edge`}{A matrix with one row per cell and 4 columns, with
+#'     edge lengths for the edge anchored at each vertex, pointing to the next
+#'     vertex in the internal ordering.}
+#'   }
 #' @export
 #' @examples
 #' str(fm_sizes(fmexample$mesh))
@@ -411,20 +426,38 @@ fm_sizes <- function(...) {
 
 #' @rdname fm_sizes
 #' @param mesh object of a supported mesh class
+#' @param method character; "R" or "Rcpp". For "S2" manifolds, the "Rcpp"
+#' method is always used. The "R" method is currently faster, due to the cost
+#' of building internal data structures in the C++ code.
 #' @export
-fm_sizes.fm_mesh_2d <- function(mesh, ...) {
-  if (fm_manifold(mesh, "S")) {
-    warning("`fm_sizes()` does not handle spherical triangles.")
+fm_sizes.fm_mesh_2d <- function(mesh, ..., method = "R") {
+  if (fm_manifold(mesh, "S") || (identical(method, "Rcpp"))) {
+    sz <- fmesher_sizes_mesh2d(
+      mesh_loc = fm_unify_coords(mesh$loc),
+      mesh_tv = mesh$graph$tv - 1L,
+      options = list()
+    )
+    sz$face <- as.vector(sz$face)
+    sz$vertex <- as.vector(sz$vertex)
+    return(sz)
   }
+
   v1 <- mesh$loc[mesh$graph$tv[, 1], , drop = FALSE]
   v2 <- mesh$loc[mesh$graph$tv[, 2], , drop = FALSE]
   v3 <- mesh$loc[mesh$graph$tv[, 3], , drop = FALSE]
-  e1 <- v2 - v1
-  e2 <- v3 - v2
-  e3 <- v3 - v1
-  areas_t <- rowSums((row_cross_product(e1, e2) +
-    row_cross_product(e2, e3) +
-    row_cross_product(e3, e1))^2)^0.5 / 6
+  e1 <- v3 - v2
+  e2 <- v1 - v3
+  e3 <- v2 - v1
+  areas_t <- rowSums(
+    (row_cross_product(e1, e2) +
+      row_cross_product(e2, e3) +
+      row_cross_product(e3, e1))^2
+  )^0.5 / 6
+  lengths_t <- cbind(
+    rowSums(e1 * e1)^0.5,
+    rowSums(e2 * e2)^0.5,
+    rowSums(e3 * e3)^0.5
+  )
 
   c0 <- Matrix::sparseMatrix(
     i = as.vector(mesh$graph$tv),
@@ -434,7 +467,7 @@ fm_sizes.fm_mesh_2d <- function(mesh, ...) {
   )
   areas_v <- Matrix::diag(c0)
 
-  list(face = areas_t, vertex = areas_v)
+  list(face = areas_t, face_edge = lengths_t, vertex = areas_v)
 }
 
 #' @rdname fm_sizes
@@ -449,6 +482,18 @@ fm_sizes.fm_mesh_3d <- function(mesh, ...) {
   e3 <- v4 - v3
   e4 <- v1 - v4
   vols_t <- abs(row_volume_product(e1, e2, e3)) / 6
+  cell_face_t <- cbind(
+    rowSums(row_cross_product(e2, e3)^2)^0.5,
+    rowSums(row_cross_product(e3, e4)^2)^0.5,
+    rowSums(row_cross_product(e4, e1)^2)^0.5,
+    rowSums(row_cross_product(e1, e2)^2)^0.5
+  ) / 2
+  cell_edge_t <- cbind(
+    rowSums(e1^2)^0.5,
+    rowSums(e2^2)^0.5,
+    rowSums(e3^2)^0.5,
+    rowSums(e4^2)^0.5
+  )
 
   c0 <- Matrix::sparseMatrix(
     i = as.vector(mesh$graph$tv),
@@ -458,5 +503,10 @@ fm_sizes.fm_mesh_3d <- function(mesh, ...) {
   )
   vols_v <- Matrix::diag(c0)
 
-  list(cell = vols_t, vertex = vols_v)
+  list(
+    cell = vols_t,
+    cell_face = cell_face_t,
+    cell_edge = cell_edge_t,
+    vertex = vols_v
+  )
 }

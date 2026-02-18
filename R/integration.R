@@ -1105,10 +1105,23 @@ fm_int.fm_mesh_2d <- function(domain,
   if (is.null(format) && inherits(samplers, "Spatial")) {
     format <- "sp"
   }
+  if (!identical(format, "bary")) {
+    ips <- dplyr::select(ips, -dplyr::any_of("bary"))
+  }
   if (!is.null(format)) {
     if (identical(format, "bary")) {
-      # TODO: Reverse the logic of fm_int_mesh_2d() to generate fm_bary directly
-      ips <- fm_bary(domain, ips)
+      if (is.null(ips[["bary"]])) {
+        bary <- fm_bary(domain, ips)
+      } else {
+        bary <- ips[["bary"]]
+      }
+      ips <- tibble::as_tibble(ips)
+      if (!is.null(name)) {
+        ips <- dplyr::mutate(ips, "{name}" := bary)
+        if (!identical(name, "bary")) {
+          ips <- dplyr::select(ips, -dplyr::any_of("bary"))
+        }
+      }
     } else if (identical(format, "sf") && !inherits(ips, "sf")) {
       ips <- sf::st_as_sf(ips)
       if (!is.null(name) && (name != attr(ips, "sf_column"))) {
@@ -1122,6 +1135,78 @@ fm_int.fm_mesh_2d <- function(domain,
   }
 
   ips
+}
+
+# Extract graph information, ensuring unified storage modes
+fm_graph <- function(mesh) {
+  if (is.null(mesh$graph$vt) || !is.list(mesh$graph$vt)) {
+    # Old storage mode: mesh$graph$vt <- rep(NA_integer_, nrow(mesh$loc))
+    message(
+      paste0(
+        "Graph 'vt' information missing or using old storage format.",
+        " Rebuilding."
+      )
+    )
+    mesh$graph$vt <- NULL
+  }
+  if (is.null(mesh$graph$vt)) {
+    mesh$graph$vt <- list()
+    for (vv in seq_len(nrow(mesh$loc))) {
+      mesh$graph$vt[[vv]] <- matrix(
+        NA_integer_,
+        0,
+        2,
+        dimnames = list(NULL, c("t", "vi"))
+      )
+    }
+    for (tt in seq_len(nrow(mesh$graph$tv))) {
+      for (vvi in seq_len(ncol(mesh$graph$tv))) {
+        vv <- mesh$graph$tv[tt, vvi]
+        mesh$graph$vt[[vv]] <- rbind(mesh$graph$vt[[vv]], c(tt, vvi))
+      }
+    }
+  } else if (is.null(colnames(mesh$graph$vt[[1]]))) {
+    # Backwards compatibility for old stored meshes
+    for (i in seq_along(mesh$graph$vt)) {
+      colnames(mesh$graph$vt[[i]]) <- c("t", "vi")
+    }
+  }
+  mesh$graph
+}
+
+# Construct barycentric info for mesh vertices
+# sum((fm_bary_loc(fmexample$mesh, fm_bary_vertex(fmexample$mesh)) -
+#   fmexample$mesh$loc)^2) # should be zero
+fm_bary_vertex <- function(mesh) {
+  graph <- fm_graph(mesh)
+  bary_vtx_index <- vapply(
+    seq_len(nrow(mesh$loc)),
+    function(i) {
+      graph$vt[[i]][1, "t"]
+    },
+    1L
+  )
+  bary_vtx_vi <- vapply(
+    seq_len(nrow(mesh$loc)),
+    function(i) {
+      graph$vt[[i]][1, "vi"]
+    },
+    1L
+  )
+  bary_vtx <- fm_bary(
+    list(
+      index = bary_vtx_index,
+      where = as.matrix(
+        Matrix::sparseMatrix(
+          i = seq_along(bary_vtx_vi),
+          j = bary_vtx_vi,
+          x = rep(1, length(bary_vtx_vi)),
+          dims = c(nrow(mesh$loc), 3)
+        )
+      )
+    )
+  )
+  bary_vtx
 }
 
 #' @title Project integration points to mesh vertices
@@ -1149,6 +1234,9 @@ fm_vertex_projection <- function(points, mesh) {
   } else if (inherits(points, "fm_bary")) {
     n_points <- NROW(points)
     res <- points
+  } else if ("bary" %in% names(points)) {
+    n_points <- NROW(points$bary)
+    res <- points$bary
   } else {
     n_points <- NROW(points$loc)
     res <- fm_bary(mesh, points$loc)
@@ -1206,6 +1294,8 @@ fm_vertex_projection <- function(points, mesh) {
     )
   coords <- mesh$loc[data$.vertex, , drop = FALSE]
   data <- dplyr::select(data, c("weight", ".block", ".block_origin", ".vertex"))
+
+  data$bary <- fm_bary_vertex(mesh)[data$.vertex, , drop = FALSE]
 
   if (inherits(points, "Spatial")) {
     fm_safe_sp(force = TRUE)
@@ -1561,7 +1651,7 @@ fm_int_mesh_2d.sfc_MULTILINESTRING <- function(samplers,
 #'    `(nsub + 1)^2` proto-integration points used to compute
 #'   the vertex weights
 #'   (default `nsub=9`, giving 100 integration points for each triangle)
-#' @returns `tibble` with columns `loc` and `weight` with
+#' @returns `tibble` with columns `loc`, `weight`, and `bary` with
 #'   integration points for the mesh
 #' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @keywords internal
@@ -1597,14 +1687,21 @@ fm_int_mesh_2d_core <- function(mesh, tri_subset = NULL, nsub = NULL) {
 
   # Construct integration points
   loc <- matrix(0.0, length(tri_subset) * nB, ncol(mesh$loc))
+  # tibble indexing is slow, so use raw storage in the loop:
+  bary_index <- integer(length(tri_subset) * nB)
+  bary_where <- matrix(0.0, length(tri_subset) * nB, 3)
   idx_end <- 0
   for (tri in tri_subset) {
     idx_start <- idx_end + 1
     idx_end <- idx_start + nB - 1
-    loc[seq(idx_start, idx_end, length.out = nB), ] <-
+    idx <- seq(idx_start, idx_end, length.out = nB)
+    loc[idx, ] <-
       as.matrix(barycentric_grid %*%
         mesh$loc[mesh$graph$tv[tri, ], , drop = FALSE])
+    bary_index[idx] <- tri
+    bary_where[idx, ] <- barycentric_grid
   }
+  bary <- fm_bary(list(index = bary_index, where = bary_where))
 
   if (is_spherical) {
     # Normalise
@@ -1623,7 +1720,8 @@ fm_int_mesh_2d_core <- function(mesh, tri_subset = NULL, nsub = NULL) {
 
   tibble::tibble(
     loc = loc,
-    weight = rep(tri_area / nB, each = nB)
+    weight = rep(tri_area / nB, each = nB),
+    bary = bary
   )
 }
 
@@ -1669,8 +1767,13 @@ fm_int_mesh_2d_polygon <- function(samplers,
     idx <- sf::st_contains(samplers, integ_sf, sparse = TRUE)
 
     if (method %in% c("stable")) {
-      integ_bary_ <- fm_bary(domain, integ_sf)
-      integ_bary_$weight <- integ$weight
+      if ("bary" %in% names(integ)) {
+        integ_bary_ <- integ$bary
+        integ_bary_$weight <- integ$weight
+      } else {
+        integ_bary_ <- fm_bary(domain, integ_sf)
+        integ_bary_$weight <- integ$weight
+      }
     }
 
     for (g in seq_along(idx)) {
@@ -1733,7 +1836,8 @@ fm_int_mesh_2d_polygon <- function(samplers,
             y = integ$loc[, 2],
             z = integ$loc[, 3],
             weight = integ$weight,
-            .block = 1L
+            .block = 1L,
+            bary = integ$bary
           ),
           coords = c("x", "y", "z"),
           crs = domain_crs
@@ -1748,7 +1852,8 @@ fm_int_mesh_2d_polygon <- function(samplers,
             x = integ$loc[, 1],
             y = integ$loc[, 2],
             weight = integ$weight,
-            .block = 1L
+            .block = 1L,
+            bary = integ$bary
           ),
           coords = c("x", "y"),
           crs = domain_crs

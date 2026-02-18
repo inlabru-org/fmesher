@@ -1,3 +1,31 @@
+# fmesher 0.7.0
+
+## Improved features
+
+* Speed up of `fm_int()` for 2D meshes by internally storing the barycentric
+  coordinate information during the integration scheme construction
+  (version `0.6.1.9002`)
+* Add `face_edge` (for 2D meshes), `cell_face`, and `cell_edge` (for 3D meshes)
+  information to `fm_sizes()` output (version `0.6.1.9004`)
+* Eliminate explicit zero entries from `fm_basis()` matrices
+  (version `0.6.1.9005`)
+* Add spherical mesh support to `fm_sizes()` (version `0.6.1.9006`)
+
+## Bug fixes
+
+* Fix `fm_subdivide()` to handle 2-column coordinate storage inputs.
+  (version `0.6.1.9001`)
+* Fix triangle area calculations in `fm_sizes()` that caused calculated areas
+  to be 1/3 of the actual areas (version `0.6.1.9003`)
+* Use `expect_setequal()` in package tests for checking that integration output
+  objects contain the correct columns. Some tests were not using `sort()` on the
+  names, causing them to fail when external object merges and constructors
+  changed behaviour. Thanks to Edzer Pebesma for the initial PR, #30
+  (version `0.6.1.9007`)
+* Regenerated the `fmexample` objects with the latest version of the package,
+  to ensure they have up-to-date structure, and use the current boundary
+  construction methods. (version `0.6.1.9008`)
+
 # fmesher 0.6.1
 
 ## New features

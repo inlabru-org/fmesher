@@ -103,7 +103,7 @@ fm_components.fm_mesh_2d <- function(x, ...) {
     tri_prev <- integer(Nt)
     while (any(tri_prev != tri)) {
       tri_prev <- tri
-      tri <- tri | as.vector(tt %*% tri > 0)
+      tri <- tri | (as.vector(tt %*% tri) > 0)
     }
     triangle[tri > 0] <- component
     vtx <- sort(unique(as.vector(mesh$graph$tv[tri > 0, ])))
@@ -194,7 +194,7 @@ fm_components.fm_mesh_3d <- function(x, ...) {
     tri_prev <- integer(Nt)
     while (any(tri_prev != tri)) {
       tri_prev <- tri
-      tri <- tri | as.vector(tt %*% tri > 0)
+      tri <- tri | (as.vector(tt %*% tri) > 0)
     }
     tetra[tri > 0] <- component
     vtx <- sort(unique(as.vector(mesh$graph$tv[tri > 0, ])))

@@ -20,6 +20,8 @@ A list with vector \code{index} (triangle index) and matrix \code{where}
 (3-column barycentric matrix)
 }
 \description{
+Internal C++ method.
+
 Locate points and compute triangular barycentric coordinates
 }
 \examples{
@@ -29,3 +31,4 @@ b <- fmesher_bary(m$s,
                   matrix(c(0.5, 0.5), 1, 2),
                   list())
 }
+\keyword{internal}

@@ -17,6 +17,8 @@ fmesher_mesh3d(options, loc, tv)
 A list of information objects for a generated tetrahedralisation
 }
 \description{
+Internal C++ method.
+
 (...)
 }
 \examples{
@@ -24,3 +26,4 @@ m <- fmesher_mesh3d(list(),
                     matrix(c(1,0,0,0,1,0,0,0,1,0,0,0), 4, 3, byrow=TRUE),
                     matrix(c(0,1,2,3), 1, 4, byrow=TRUE))
 }
+\keyword{internal}

@@ -18,6 +18,8 @@ invariant basis functions}
 A matrix of evaluated spherical harmonic basis functions
 }
 \description{
+Internal C++ method.
+
 Compute spherical harmonics on the unit sphere
 }
 \examples{

@@ -4,6 +4,8 @@
 #' @title Compute sparse matrix inverse
 #'
 #' @description
+#' Internal C++ method.
+#'
 #' Requires RcppEigen which is not compiled in by default. Enable with
 #' `PKG_CPPFLAGS=-DFMESHER_WITH_EIGEN` in `src/Makevars` and add `RcppEigen`
 #' to the `DESCRIPTION` `LinkingTo` field.
@@ -17,6 +19,9 @@ fmesher_qinv <- function(AA) {
 #' @title Globe points
 #'
 #' @description
+#' C++ method, may get a stable R interface as `fm_globe_points()` in the
+#' future.
+#'
 #' Create points on a globe
 #'
 #' @param globe integer; the number of edge subdivision segments, 1 or higher.
@@ -31,6 +36,8 @@ fmesher_globe_points <- function(globe) {
 #' @title Refined Constrained Delaunay Triangulation
 #'
 #' @description
+#' Internal C++ method.
+#'
 #' (...)
 #'
 #' @param options list of triangulation options
@@ -45,6 +52,7 @@ fmesher_globe_points <- function(globe) {
 #' @examples
 #' m <- fmesher_rcdt(list(cet_margin = 1), matrix(0, 1, 2))
 #' @returns A list of information objects for a generated triangulation
+#' @keywords internal
 #' @export
 fmesher_rcdt <- function(options, loc, tv = NULL, boundary = NULL, interior = NULL, boundary_grp = NULL, interior_grp = NULL) {
     .Call(`_fmesher_fmesher_rcdt`, options, loc, tv, boundary, interior, boundary_grp, interior_grp)
@@ -53,6 +61,8 @@ fmesher_rcdt <- function(options, loc, tv = NULL, boundary = NULL, interior = NU
 #' @title Barycentric coordinate computation
 #'
 #' @description
+#' Internal C++ method.
+#'
 #' Locate points and compute triangular barycentric coordinates
 #'
 #' @param mesh_loc numeric matrix; mesh vertex coordinates
@@ -67,6 +77,7 @@ fmesher_rcdt <- function(options, loc, tv = NULL, boundary = NULL, interior = NU
 #'                   list())
 #' @returns A list with vector `index` (triangle index) and matrix `where`
 #' (3-column barycentric matrix)
+#' @keywords internal
 #' @export
 fmesher_bary <- function(mesh_loc, mesh_tv, loc, options) {
     .Call(`_fmesher_fmesher_bary`, mesh_loc, mesh_tv, loc, options)
@@ -75,6 +86,8 @@ fmesher_bary <- function(mesh_loc, mesh_tv, loc, options) {
 #' @title Barycentric coordinate computation
 #'
 #' @description
+#' Internal C++ method.
+#'
 #' Locate points and compute triangular barycentric coordinates
 #'
 #' @param mesh_loc numeric matrix; mesh vertex coordinates
@@ -91,6 +104,7 @@ fmesher_bary <- function(mesh_loc, mesh_tv, loc, options) {
 #'                     list())
 #' @returns A list with vector `index` (tetra index) and matrix `where`
 #' (4-column barycentric matrix)
+#' @keywords internal
 #' @export
 fmesher_bary3d <- function(mesh_loc, mesh_tv, loc, options) {
     .Call(`_fmesher_fmesher_bary3d`, mesh_loc, mesh_tv, loc, options)
@@ -99,6 +113,8 @@ fmesher_bary3d <- function(mesh_loc, mesh_tv, loc, options) {
 #' @title Rotationally invariant spherical B-splines
 #'
 #' @description
+#' Internal C++ method.
+#'
 #' Compute rotationally invariant spherical B-splines on the unit sphere
 #'
 #' @param loc numeric vector/matrix; coordinates of points to locate in the mesh,
@@ -112,14 +128,15 @@ fmesher_bary3d <- function(mesh_loc, mesh_tv, loc, options) {
 #' m <- fm_rcdt_2d(globe = 1)
 #' fmesher_spherical_bsplines(m$loc, n = 3, degree = 2, uniform = FALSE)
 #' fmesher_spherical_bsplines1(m$loc[, 3], n = 3, degree = 2, uniform = FALSE)
-#' @export
-#' @keywords internal
 #' @returns A matrix of evaluated b-spline basis functions
+#' @keywords internal
+#' @export
 fmesher_spherical_bsplines1 <- function(loc, n, degree, uniform) {
     .Call(`_fmesher_fmesher_spherical_bsplines1`, loc, n, degree, uniform)
 }
 
 #' @rdname fmesher_spherical_bsplines
+#' @keywords internal
 #' @export
 fmesher_spherical_bsplines <- function(loc, n, degree, uniform) {
     .Call(`_fmesher_fmesher_spherical_bsplines`, loc, n, degree, uniform)
@@ -128,6 +145,8 @@ fmesher_spherical_bsplines <- function(loc, n, degree, uniform) {
 #' @title Spherical harmonics
 #'
 #' @description
+#' Internal C++ method.
+#'
 #' Compute spherical harmonics on the unit sphere
 #'
 #' @param loc numeric matrix; coordinates of points to locate in the mesh
@@ -139,9 +158,9 @@ fmesher_spherical_bsplines <- function(loc, n, degree, uniform) {
 #' m <- fm_rcdt_2d(globe = 1)
 #' fmesher_spherical_harmonics(m$loc, max_order = 2, TRUE)
 #' fmesher_spherical_harmonics(m$loc, max_order = 2, FALSE)
-#' @export
-#' @keywords internal
 #' @returns A matrix of evaluated spherical harmonic basis functions
+#' @keywords internal
+#' @export
 fmesher_spherical_harmonics <- function(loc, max_order, rot_inv) {
     .Call(`_fmesher_fmesher_spherical_harmonics`, loc, max_order, rot_inv)
 }
@@ -149,6 +168,8 @@ fmesher_spherical_harmonics <- function(loc, max_order, rot_inv) {
 #' @title Finite element matrix computation
 #'
 #' @description
+#' Internal C++ method.
+#'
 #' Construct finite element structure matrices
 #'
 #' @param mesh_loc numeric matrix; mesh vertex coordinates
@@ -164,6 +185,7 @@ fmesher_spherical_harmonics <- function(loc, max_order, rot_inv) {
 #' m <- fmesher_rcdt(list(cet_margin = 1), matrix(0, 1, 2))
 #' b <- fmesher_fem(m$s, m$tv, fem_order_max = 2, aniso = NULL, options = list())
 #' @returns A list of matrices
+#' @keywords internal
 #' @export
 fmesher_fem <- function(mesh_loc, mesh_tv, fem_order_max, aniso, options) {
     .Call(`_fmesher_fmesher_fem`, mesh_loc, mesh_tv, fem_order_max, aniso, options)
@@ -172,6 +194,8 @@ fmesher_fem <- function(mesh_loc, mesh_tv, fem_order_max, aniso, options) {
 #' @title Split lines at triangle edges
 #'
 #' @description
+#' Internal C++ method.
+#'
 #' Split a sequence of line segments at triangle edges
 #'
 #' @param mesh_loc numeric matrix; mesh vertex coordinates
@@ -179,6 +203,7 @@ fmesher_fem <- function(mesh_loc, mesh_tv, fem_order_max, aniso, options) {
 #' @param loc numeric coordinate matrix
 #' @param idx 2-column integer matrix
 #' @param options list of triangulation options (`sphere_tolerance`)
+#' @keywords internal
 #' @export
 #' @returns A list of line splitting information objects
 #' @seealso [fm_split_lines()]
@@ -195,6 +220,8 @@ fmesher_split_lines <- function(mesh_loc, mesh_tv, loc, idx, options) {
 #' @title Subdivide triangles
 #'
 #' @description
+#' Internal C++ method.
+#'
 #' Subdivide a mesh with congruent and anti-congruent subtriangles
 #'
 #' @param mesh_loc numeric matrix; mesh vertex coordinates
@@ -225,6 +252,8 @@ fmesher_subdivide <- function(mesh_loc, mesh_tv, mesh_boundary, mesh_interior, s
 #' @title 3D tetrahedralisation storage
 #'
 #' @description
+#' Internal C++ method.
+#'
 #' (...)
 #'
 #' @param options list of triangulation options
@@ -235,8 +264,32 @@ fmesher_subdivide <- function(mesh_loc, mesh_tv, mesh_boundary, mesh_interior, s
 #'                     matrix(c(1,0,0,0,1,0,0,0,1,0,0,0), 4, 3, byrow=TRUE),
 #'                     matrix(c(0,1,2,3), 1, 4, byrow=TRUE))
 #' @returns A list of information objects for a generated tetrahedralisation
+#' @keywords internal
 #' @export
 fmesher_mesh3d <- function(options, loc, tv) {
     .Call(`_fmesher_fmesher_mesh3d`, options, loc, tv)
+}
+
+#' @title Compute areas and edge lengths
+#'
+#' @description
+#' Internal C++ method.
+#'
+#' Compute triangle areas, edge lengths, and vertex-associated areas
+#'
+#' @param mesh_loc numeric matrix; mesh vertex coordinates
+#' @param mesh_tv 3-column integer matrix with 0-based vertex indices for each triangle
+#' @param options list of triangulation options (`sphere_tolerance`)
+#' @returns A list of `face`, `face_edge`, and `vertex`
+#' @keywords internal
+#' @seealso [fm_sizes()]
+#' @examples
+#' mesh <- fm_mesh_2d(
+#'   boundary = fm_segm(rbind(c(0,0), c(1,0), c(1,1), c(0, 1)), is.bnd = TRUE)
+#' )
+#' sz <- fm_sizes(mesh)
+#' summary(sz$face)
+fmesher_sizes_mesh2d <- function(mesh_loc, mesh_tv, options) {
+    .Call(`_fmesher_fmesher_sizes_mesh2d`, mesh_loc, mesh_tv, options)
 }
 

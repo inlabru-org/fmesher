@@ -8,7 +8,7 @@
 \usage{
 fm_sizes(...)
 
-\method{fm_sizes}{fm_mesh_2d}(mesh, ...)
+\method{fm_sizes}{fm_mesh_2d}(mesh, ..., method = "R")
 
 \method{fm_sizes}{fm_mesh_3d}(mesh, ...)
 }
@@ -16,11 +16,30 @@ fm_sizes(...)
 \item{...}{Passed on to submethods}
 
 \item{mesh}{object of a supported mesh class}
+
+\item{method}{character; "R" or "Rcpp". For "S2" manifolds, the "Rcpp"
+method is always used. The "R" method is currently faster, due to the cost
+of building internal data structures in the C++ code.}
 }
 \value{
-A \code{list} with elements \code{face} and \code{vertex} for 2D meshes, or \code{cell}
-and \code{vertex} for 3D meshes. The elements are vectors of effective sizes of
-the faces/cells and vertices, respectively.
+A \code{list} with elements of simplex size information. For 2D meshes:
+\describe{
+\item{\code{face}}{Vector with the area of each triangle}
+\item{\code{vertex}}{Vector with the triangle area apportioned to each vertex}
+\item{\code{face_edge}}{A matrix with one row per triangle and 3 columns, with
+edge lengths for the edge opposing each triangle vertex.}
+}
+For 3D meshes:
+\describe{
+\item{\code{cell}}{Vector with the volume of each tetrahedron}
+\item{\code{vertex}}{Vector with the tetrahedron volume apportioned to each
+vertex}
+\item{\code{cell_face}}{A matrix with one row per cell and 4 columns, with
+triangle areas for the triangle opposing each tetrahedron vertex.}
+\item{\code{cell_edge}}{A matrix with one row per cell and 4 columns, with
+edge lengths for the edge anchored at each vertex, pointing to the next
+vertex in the internal ordering.}
+}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}

@@ -20,6 +20,8 @@ A list with vector \code{index} (tetra index) and matrix \code{where}
 (4-column barycentric matrix)
 }
 \description{
+Internal C++ method.
+
 Locate points and compute triangular barycentric coordinates
 }
 \examples{
@@ -31,3 +33,4 @@ b <- fmesher_bary3d(m$loc,
                     matrix(c(0.5, 0.5, 0.5), 1, 3),
                     list())
 }
+\keyword{internal}

@@ -122,7 +122,7 @@ fm_basis.fm_mesh_3d <- function(x, loc, weights = NULL, ...,
   } else if (length(weights) == 1) {
     weights <- rep(weights, n_loc)
   }
-  A <- Matrix::sparseMatrix(
+  A <- sparseMatrix_nonzero(
     i = rep(which(ok), 4),
     j = as.vector(simplex),
     x = as.numeric(as.vector(bary$where[ok, ]) * weights[rep(which(ok), 4)]),
@@ -145,7 +145,7 @@ fm_basis.fm_lattice_2d <- function(x, loc, weights = NULL, ...,
   } else if (length(weights) == 1) {
     weights <- rep(weights, n_loc)
   }
-  A <- Matrix::sparseMatrix(
+  A <- sparseMatrix_nonzero(
     i = rep(which(ok), 4),
     j = as.vector(simplex),
     x = as.numeric(as.vector(bary$where[ok, ]) * weights[rep(which(ok), 4)]),
@@ -168,7 +168,7 @@ fm_basis.fm_lattice_Nd <- function(x, loc, weights = NULL, ...,
   } else if (length(weights) == 1) {
     weights <- rep(weights, n_loc)
   }
-  A <- Matrix::sparseMatrix(
+  A <- sparseMatrix_nonzero(
     i = rep(which(ok), ncol(bary$where)),
     j = as.vector(simplex),
     x = as.numeric(as.vector(bary$where[ok, ]) *
@@ -628,6 +628,15 @@ fm_raw_basis <- function(mesh,
   basis
 }
 
+# Create sparse matrix with no explicit zeros
+sparseMatrix_nonzero <- function(i, j, x, dims) {
+  nonzero <- (x != 0)
+  i <- i[nonzero]
+  j <- j[nonzero]
+  x <- x[nonzero]
+  Matrix::sparseMatrix(i = i, j = j, x = x, dims = dims)
+}
+
 
 #' @title Internal helper functions for mesh field evaluation
 #'
@@ -664,7 +673,7 @@ fm_basis_mesh_2d <- function(mesh,
   }
 
   ii <- which(ok)
-  A <- (Matrix::sparseMatrix(
+  A <- (sparseMatrix_nonzero(
     dims = c(n_loc, mesh$n),
     i = rep(ii, 3),
     j = as.vector(mesh$graph$tv[loc$index[ii], ]),
@@ -689,19 +698,19 @@ fm_basis_mesh_2d <- function(mesh,
     x <- cbind(g1[, 1], g2[, 1], g3[, 1])
     y <- cbind(g1[, 2], g2[, 2], g3[, 2])
     z <- cbind(g1[, 3], g2[, 3], g3[, 3])
-    dx <- (Matrix::sparseMatrix(
+    dx <- (sparseMatrix_nonzero(
       dims = c(n_loc, n.mesh),
       i = rep(ii, 3),
       j = as.vector(tv),
       x = as.vector(x) * weights[rep(ii, 3)]
     ))
-    dy <- (Matrix::sparseMatrix(
+    dy <- (sparseMatrix_nonzero(
       dims = c(n_loc, n.mesh),
       i = rep(ii, 3),
       j = as.vector(tv),
       x = as.vector(y) * weights[rep(ii, 3)]
     ))
-    dz <- (Matrix::sparseMatrix(
+    dz <- (sparseMatrix_nonzero(
       dims = c(n_loc, n.mesh),
       i = rep(ii, 3),
       j = as.vector(tv),
@@ -1123,29 +1132,27 @@ fm_basis_mesh_1d <- function(mesh,
     stop("Unsupported B-spline degree = ", mesh$degree)
   }
 
-  info_$A <- Matrix::sparseMatrix(
-    i = i_,
-    j = j_,
-    x = (weights[i_] * x_),
+  info_$A <- sparseMatrix_nonzero(
+    i_,
+    j_,
+    weights[i_] * x_,
     dims = c(NROW(loc), mesh$m)
   )
   if (derivatives) {
     if (mesh$degree <= 1) {
-      info_$dA <- Matrix::sparseMatrix(
-        i = i_d,
-        j = j_d,
-        x = weights[i_d] * x_d,
+      info_$dA <- sparseMatrix_nonzero(
+        i = i_d, j = j_d, x = weights[i_d] * x_d,
         dims = c(NROW(loc), mesh$m)
       )
     } else {
       # degree is 2
-      info_$dA <- Matrix::sparseMatrix(
+      info_$dA <- sparseMatrix_nonzero(
         i = i_,
         j = j_,
         x = weights[i_] * x_d1,
         dims = c(NROW(loc), mesh$m)
       )
-      info_$d2A <- Matrix::sparseMatrix(
+      info_$d2A <- sparseMatrix_nonzero(
         i = i_,
         j = j_,
         x = weights[i_] * x_d2,
@@ -1241,13 +1248,13 @@ internal_bspline2 <- function(x, knots, degree = 1, deriv = 0) {
       internal_bspline2(x, knots, degree = degree - 1, deriv = deriv - 1)
     m <- length(knots) + degree - 1L
     m_lower <- m - 1L
-    A <- Matrix::sparseMatrix(
+    A <- sparseMatrix_nonzero(
       i = basis_lower$i,
       j = basis_lower$j,
       x = basis_lower$values,
       dims = c(length(x), m_lower)
     )
-    basis_diff <- Matrix::sparseMatrix(
+    basis_diff <- sparseMatrix_nonzero(
       i = c(seq_len(m_lower), seq_len(m_lower)),
       j = c(seq_len(m_lower), seq_len(m_lower) - 1L),
       x = rep(c(1, -1), c(length(knots) - 1, length(knots) - 1)),
@@ -1386,7 +1393,7 @@ fm_block <- function(block = NULL,
       rescale = rescale
     )
 
-  Matrix::sparseMatrix(
+  sparseMatrix_nonzero(
     i = info$block,
     j = seq_along(info$block),
     x = as.numeric(weights),

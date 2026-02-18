@@ -35,8 +35,11 @@ interior edge constraint}
 A list of information objects for a generated triangulation
 }
 \description{
+Internal C++ method.
+
 (...)
 }
 \examples{
 m <- fmesher_rcdt(list(cet_margin = 1), matrix(0, 1, 2))
 }
+\keyword{internal}
