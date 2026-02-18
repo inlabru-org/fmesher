@@ -1105,10 +1105,23 @@ fm_int.fm_mesh_2d <- function(domain,
   if (is.null(format) && inherits(samplers, "Spatial")) {
     format <- "sp"
   }
+  if (!identical(format, "bary")) {
+    ips <- dplyr::select(ips, -dplyr::any_of("bary"))
+  }
   if (!is.null(format)) {
     if (identical(format, "bary")) {
-      # TODO: Reverse the logic of fm_int_mesh_2d() to generate fm_bary directly
-      ips <- fm_bary(domain, ips)
+      if (is.null(ips[["bary"]])) {
+        bary <- fm_bary(domain, ips)
+      } else {
+        bary <- ips[["bary"]]
+      }
+      ips <- tibble::as_tibble(ips)
+      if (!is.null(name)) {
+        ips <- dplyr::mutate(ips, "{name}" := bary)
+        if (!identical(name, "bary")) {
+          ips <- dplyr::select(ips, -dplyr::any_of("bary"))
+        }
+      }
     } else if (identical(format, "sf") && !inherits(ips, "sf")) {
       ips <- sf::st_as_sf(ips)
       if (!is.null(name) && (name != attr(ips, "sf_column"))) {
@@ -1122,6 +1135,63 @@ fm_int.fm_mesh_2d <- function(domain,
   }
 
   ips
+}
+
+# Construct barycentric info for mesh vertices
+# sum((fm_bary_loc(fmexample$mesh, fm_bary_vertex(fmexample$mesh)) -
+#   fmexample$mesh$loc)^2) # should be zero
+fm_bary_vertex <- function(mesh) {
+  if (is.null(mesh$graph$vt)) {
+    # Backwards compatibility for old stored meshes
+    vtx <- seq_len(nrow(mesh$loc))
+    idx1 <- match(vtx, mesh$graph$tv[, 1])
+    idx2 <- match(vtx, mesh$graph$tv[, 2])
+    idx3 <- match(vtx, mesh$graph$tv[, 3])
+    idx2[!is.na(idx1)] <- NA_integer_
+    idx3[!is.na(idx1)] <- NA_integer_
+    idx3[!is.na(idx2)] <- NA_integer_
+    bary_vtx_index <- integer(nrow(mesh$loc))
+    bary_vtx_index[!is.na(idx1)] <- idx1[!is.na(idx1)]
+    bary_vtx_index[!is.na(idx2)] <- idx2[!is.na(idx2)]
+    bary_vtx_index[!is.na(idx3)] <- idx3[!is.na(idx3)]
+    bary_vtx_vi <- integer(nrow(mesh$loc))
+    bary_vtx_vi[!is.na(idx1)] <- 1L
+    bary_vtx_vi[!is.na(idx2)] <- 2L
+    bary_vtx_vi[!is.na(idx3)] <- 3L
+  } else {
+    if (is.null(colnames(mesh$graph$vt[[1]]))) {
+      # Backwards compatibility for old stored meshes
+      for (i in seq_along(mesh$graph$vt)) {
+        colnames(mesh$graph$vt[[i]]) <- c("t", "vi")
+      }
+    }
+    bary_vtx_index <- vapply(
+      seq_len(nrow(mesh$loc)),
+      function(i) {
+        mesh$graph$vt[[i]][1, "t"]
+      },
+      1L)
+    bary_vtx_vi <- vapply(
+      seq_len(nrow(mesh$loc)),
+      function(i) {
+        mesh$graph$vt[[i]][1, "vi"]
+      },
+      1L)
+  }
+  bary_vtx <- fm_bary(
+    list(
+      index = bary_vtx_index,
+      where = as.matrix(
+        Matrix::sparseMatrix(
+          i = seq_along(bary_vtx_vi),
+          j = bary_vtx_vi,
+          x = rep(1, length(bary_vtx_vi)),
+          dims = c(nrow(mesh$loc), 3)
+        )
+      )
+    )
+  )
+  bary_vtx
 }
 
 #' @title Project integration points to mesh vertices
@@ -1209,6 +1279,8 @@ fm_vertex_projection <- function(points, mesh) {
     )
   coords <- mesh$loc[data$.vertex, , drop = FALSE]
   data <- dplyr::select(data, c("weight", ".block", ".block_origin", ".vertex"))
+
+  data$bary <- fm_bary_vertex(mesh)[data$.vertex, , drop = FALSE]
 
   if (inherits(points, "Spatial")) {
     fm_safe_sp(force = TRUE)
@@ -1749,7 +1821,8 @@ fm_int_mesh_2d_polygon <- function(samplers,
             y = integ$loc[, 2],
             z = integ$loc[, 3],
             weight = integ$weight,
-            .block = 1L
+            .block = 1L,
+            bary = integ$bary
           ),
           coords = c("x", "y", "z"),
           crs = domain_crs
@@ -1764,7 +1837,8 @@ fm_int_mesh_2d_polygon <- function(samplers,
             x = integ$loc[, 1],
             y = integ$loc[, 2],
             weight = integ$weight,
-            .block = 1L
+            .block = 1L,
+            bary = integ$bary
           ),
           coords = c("x", "y"),
           crs = domain_crs
