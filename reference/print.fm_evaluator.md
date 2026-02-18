@@ -37,7 +37,7 @@ print(fm_evaluator(fmexample$mesh, fmexample$loc))
 #> fm_evaluator object
 #>   proj:
 #>     fm_basis object
-#>       Projection matrix (A): 10-by-279
+#>       Projection matrix (A): 10-by-292
 #>       Valid evaluations (ok): 10 out of 10
 #>       Additional information: bary
 #>   Additional evaluator information: x, y, lattice, loc, crs

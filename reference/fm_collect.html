@@ -17,7 +17,7 @@ is experimental and may change."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.1.9006</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.1.9008</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -122,13 +122,13 @@ function spaces.</p></dd>
 <span class="r-in"><span><span class="va">m2</span> <span class="op">&lt;-</span> <span class="fu"><a href="fm_as_collect.html">fm_as_collect</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">m3</span> <span class="op">&lt;-</span> <span class="fu"><a href="fm_as_collect.html">fm_as_collect_list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">m</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="fm_dof.html">fm_dof</a></span><span class="op">(</span><span class="va">m</span><span class="op">$</span><span class="va">fun_spaces</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="fm_dof.html">fm_dof</a></span><span class="op">(</span><span class="va">m</span><span class="op">$</span><span class="va">fun_spaces</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>, <span class="fu"><a href="fm_dof.html">fm_dof</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 558 558</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 584 584</span>
 <span class="r-in"><span><span class="fu"><a href="fm_basis.html">fm_basis</a></span><span class="op">(</span><span class="va">m</span>, loc <span class="op">=</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  loc <span class="op">=</span> <span class="va">fmexample</span><span class="op">$</span><span class="va">loc_sf</span>,</span></span>
 <span class="r-in"><span>  index <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span>, full <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> fm_basis object</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Projection matrix (A): 10-by-558</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Projection matrix (A): 10-by-584</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Valid evaluations (ok): 10 out of 10</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Additional information: </span>
 <span class="r-in"><span><span class="fu"><a href="fm_basis.html">fm_basis</a></span><span class="op">(</span><span class="va">m</span>, loc <span class="op">=</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span></span>
@@ -136,14 +136,14 @@ function spaces.</p></dd>
 <span class="r-in"><span>  index <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"B"</span>, <span class="st">"A"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span>, full <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> fm_basis object</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Projection matrix (A): 2-by-558</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Projection matrix (A): 2-by-584</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Valid evaluations (ok): 2 out of 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Additional information: </span>
 <span class="r-in"><span><span class="fu"><a href="fm_evaluate.html">fm_evaluator</a></span><span class="op">(</span><span class="va">m</span>, loc <span class="op">=</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>loc <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, index <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> fm_evaluator object</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   proj:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     fm_basis object</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       Projection matrix (A): 1-by-558</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       Projection matrix (A): 1-by-584</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       Valid evaluations (ok): 1 out of 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       Additional information: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Additional evaluator information: </span>
@@ -151,7 +151,7 @@ function spaces.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "cc" "c0" "c1" "va" "ta" "g1" "g2"</span>
 <span class="r-in"><span><span class="fu"><a href="fm_diameter.html">fm_diameter</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        A        B </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10.54218 10.54218 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10.51699 10.51699 </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

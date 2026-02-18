@@ -160,8 +160,8 @@ bary
 #> 11     3      -1     2  
 str(fm_bary(fmexample$mesh, fmexample$loc_sf))
 #> fm_bary [10 × 2] (S3: fm_bary/tbl_df/tbl/data.frame)
-#>  $ index: int [1:10] 358 301 413 337 369 221 363 329 329 142
-#>  $ where: num [1:10, 1:3] 0.0699 0.1367 0.4852 0.0831 0.6245 ...
+#>  $ index: int [1:10] 70 47 393 83 363 326 231 395 395 13
+#>  $ where: num [1:10, 1:3] 0.33809 0.08736 0.79683 0.03091 0.00355 ...
 m <- fm_mesh_3d(
   rbind(
     c(1, 0, 0),
@@ -174,6 +174,6 @@ m <- fm_mesh_3d(
 b <- fm_bary(m, matrix(c(1, 1, 1) / 4, 1, 3))
 str(fm_bary(fmexample$mesh, fmexample$loc_sf))
 #> fm_bary [10 × 2] (S3: fm_bary/tbl_df/tbl/data.frame)
-#>  $ index: int [1:10] 358 301 413 337 369 221 363 329 329 142
-#>  $ where: num [1:10, 1:3] 0.0699 0.1367 0.4852 0.0831 0.6245 ...
+#>  $ index: int [1:10] 70 47 393 83 363 326 231 395 395 13
+#>  $ where: num [1:10, 1:3] 0.33809 0.08736 0.79683 0.03091 0.00355 ...
 ```

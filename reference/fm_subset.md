@@ -38,7 +38,7 @@ mesh_sub
 #>   V / E / T: 173 / 267 / 100
 #>   Euler char.:   6
 #>   Constraints:   Boundary: 234 boundary edges (1 group: 0), Interior: 0 edges
-#>   Bounding box: (-5.331027, 4.061656) x (-3.998161, 5.415609)
+#>   Bounding box: (-4.644074, 4.004812) x (-3.997839, 3.275186)
 #>   Basis d.o.f.:  173
 plot(mesh_sub)
 
@@ -49,14 +49,14 @@ if (requireNamespace("geometry", quietly = TRUE)) {
 }
 #> fm_mesh_3d object:
 #>   Manifold:  R3
-#>   V / E / T / Tet:   10 / 35 / 44 / 18
+#>   V / E / T / Tet:   10 / 38 / 54 / 25
 #>   Euler char.:   1
-#>   Bounding box: (-2.028607, 1.095199) x (-2.5861413, 0.1818922) x (-2.178999, 2.512680)
+#>   Bounding box: (-2.586141, 1.095199) x (-2.178999, 2.512680) x (-1.243433, 1.748147)
 #>   Basis d.o.f.:  10
 #> fm_mesh_3d object:
 #>   Manifold:  R3
-#>   V / E / T / Tet:   8 / 18 / 16 / 5
+#>   V / E / T / Tet:   8 / 19 / 17 / 5
 #>   Euler char.:   1
-#>   Bounding box: (-2.028607, 1.095199) x (-2.5861413, 0.1818922) x (-2.178999, 2.512680)
+#>   Bounding box: (-2.586141, 1.095199) x (-2.178999, 2.512680) x (-1.243433, 1.748147)
 #>   Basis d.o.f.:  8
 ```

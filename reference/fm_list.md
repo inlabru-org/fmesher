@@ -63,10 +63,10 @@ An `fm_list` object, potentially with `fm_{class_stub}_list` added.
 fm_as_list(list(fmexample$mesh, fm_segm_join(fmexample$boundary_fm)))
 #> fm_mesh_2d object:
 #>   Manifold:  R2
-#>   V / E / T: 279 / 805 / 527
+#>   V / E / T: 292 / 838 / 547
 #>   Euler char.:   1
-#>   Constraints:   Boundary: 29 boundary edges (1 group: 1), Interior: 54 interior edges (1 group: 1)
-#>   Bounding box: (-5.331027, 4.061656) x (-3.998161, 5.415609)
-#>   Basis d.o.f.:  279
-#> 72 boundary edges (1 group: 1)
+#>   Constraints:   Boundary: 35 boundary edges (1 group: 1), Interior: 55 interior edges (1 group: 1)
+#>   Bounding box: (-5.345477, 4.083580) x (-3.997839, 5.415519)
+#>   Basis d.o.f.:  292
+#> 77 boundary edges (1 group: 1)
 ```

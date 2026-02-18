@@ -17,7 +17,7 @@ is experimental and may change."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.1.9006</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.1.9008</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -123,18 +123,18 @@ spaces.</p></dd>
 <span class="r-in"><span><span class="va">m2</span> <span class="op">&lt;-</span> <span class="fu"><a href="fm_as_tensor.html">fm_as_tensor</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">m3</span> <span class="op">&lt;-</span> <span class="fu"><a href="fm_as_tensor.html">fm_as_tensor_list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">m</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="fm_dof.html">fm_dof</a></span><span class="op">(</span><span class="va">m</span><span class="op">$</span><span class="va">fun_spaces</span><span class="op">$</span><span class="va">space</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="fm_dof.html">fm_dof</a></span><span class="op">(</span><span class="va">m</span><span class="op">$</span><span class="va">fun_spaces</span><span class="op">$</span><span class="va">time</span><span class="op">)</span>, <span class="fu"><a href="fm_dof.html">fm_dof</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1395 1395</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1460 1460</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu"><a href="fm_evaluate.html">fm_evaluator</a></span><span class="op">(</span><span class="va">m</span>, loc <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>space <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, time <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> List of 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ proj:List of 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ A :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..@ i       : int [1:6] 0 0 0 0 0 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..@ p       : int [1:1396] 0 0 0 0 0 0 0 0 0 0 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..@ Dim     : int [1:2] 1 1395</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..@ p       : int [1:1461] 0 0 0 0 0 0 0 0 0 0 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..@ Dim     : int [1:2] 1 1460</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..@ Dimnames:List of 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..@ x       : num [1:6] 0.2394 0.2112 0.0494 0.2394 0.2112 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..@ x       : num [1:6] 0.135 0.3242 0.0408 0.135 0.3242 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..@ factors : list()</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ok: logi TRUE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..- attr(*, "class")= chr "fm_basis"</span>
@@ -142,41 +142,41 @@ spaces.</p></dd>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu"><a href="fm_basis.html">fm_basis</a></span><span class="op">(</span><span class="va">m</span>, loc <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>space <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, time <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Formal class 'dgCMatrix' [package "Matrix"] with 6 slots</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..@ i       : int [1:6] 0 0 0 0 0 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..@ p       : int [1:1396] 0 0 0 0 0 0 0 0 0 0 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..@ Dim     : int [1:2] 1 1395</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..@ p       : int [1:1461] 0 0 0 0 0 0 0 0 0 0 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..@ Dim     : int [1:2] 1 1460</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..@ Dimnames:List of 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : NULL</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..@ x       : num [1:6] 0.2394 0.2112 0.0494 0.2394 0.2112 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..@ x       : num [1:6] 0.135 0.3242 0.0408 0.135 0.3242 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..@ factors : list()</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu"><a href="fm_fem.html">fm_fem</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> List of 3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ cc:Formal class 'dgTMatrix' [package "Matrix"] with 6 slots</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ i       : int [1:1395] 0 1 2 3 4 5 6 7 8 9 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ j       : int [1:1395] 0 1 2 3 4 5 6 7 8 9 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ Dim     : int [1:2] 1395 1395</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ i       : int [1:1460] 0 1 2 3 4 5 6 7 8 9 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ j       : int [1:1460] 0 1 2 3 4 5 6 7 8 9 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ Dim     : int [1:2] 1460 1460</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ Dimnames:List of 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : NULL</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ x       : num [1:1395] 0.171 0.271 0.213 0.282 0.22 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ x       : num [1:1460] 0.1745 0.1268 0.0722 0.1806 0.0717 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ factors : list()</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ g1:Formal class 'dgCMatrix' [package "Matrix"] with 6 slots</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ i       : int [1:11677] 0 1 25 257 279 0 1 2 226 257 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ p       : int [1:1396] 0 5 11 16 22 28 33 39 45 51 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ Dim     : int [1:2] 1395 1395</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ i       : int [1:12176] 0 1 33 286 289 292 0 1 2 262 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ p       : int [1:1461] 0 6 12 17 23 28 34 41 48 53 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ Dim     : int [1:2] 1460 1460</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ Dimnames:List of 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : NULL</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ x       : num [1:11677] 1.337 -0.174 -0.113 -0.708 -0.343 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ x       : num [1:12176] 1.26418 -0.35484 -0.17096 -0.00842 -0.38105 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ factors : list()</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ g2:Formal class 'dgCMatrix' [package "Matrix"] with 6 slots</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ i       : int [1:42761] 0 1 2 24 25 225 226 229 233 245 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ p       : int [1:1396] 0 17 36 53 73 91 107 127 147 167 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ Dim     : int [1:2] 1395 1395</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ i       : int [1:44746] 0 1 2 32 33 239 246 262 285 286 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ p       : int [1:1461] 0 18 37 53 72 87 105 130 155 170 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ Dim     : int [1:2] 1460 1460</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ Dimnames:List of 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : NULL</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ x       : num [1:42761] 11.9277 -1.7904 0.2465 0.0254 -1.1944 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ x       : num [1:44746] 11.317 -6.118 1.065 0.213 -2.766 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ factors : list()</span>
 </code></pre></div>
     </div>

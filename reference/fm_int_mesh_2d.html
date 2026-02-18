@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.1.9006</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.1.9008</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -226,17 +226,20 @@ point coordinate information and additional columns <code>weight</code> and <cod
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu">fm_int_mesh_2d</span><span class="op">(</span>samplers <span class="op">=</span> <span class="cn">NULL</span>, domain <span class="op">=</span> <span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> sf [279 × 4] (S3: sf/tbl_df/tbl/data.frame)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ weight       : num [1:279] 0.343 0.542 0.427 0.564 0.439 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ .block       : int [1:279] 1 1 1 1 1 1 1 1 1 1 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ geometry     :sfc_POINT of length 279; first list element:  'XYZ' num [1:3] -4.99 1.48 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ .block_origin: int [1:279, 1] 1 1 1 1 1 1 1 1 1 1 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sf [292 × 5] (S3: sf/tbl_df/tbl/data.frame)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ weight       : num [1:292] 0.349 0.254 0.144 0.361 0.143 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ .block       : int [1:292] 1 1 1 1 1 1 1 1 1 1 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ bary         : fm_bary [292 × 2] (S3: fm_bary/tbl_df/tbl/data.frame)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ index: int [1:292] 444 189 80 4 461 14 74 21 51 447 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ where: num [1:292, 1:3] 1 0 1 1 1 1 0 0 1 0 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ geometry     :sfc_POINT of length 292; first list element:  'XYZ' num [1:3] -5.181 -0.896 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ .block_origin: int [1:292, 1] 1 1 1 1 1 1 1 1 1 1 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..- attr(*, "dimnames")=List of 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : NULL</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : NULL</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - attr(*, "sf_column")= chr "geometry"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - attr(*, "agr")= Factor w/ 3 levels "constant","aggregate",..: NA NA NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..- attr(*, "names")= chr [1:3] "weight" ".block" ".block_origin"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - attr(*, "agr")= Factor w/ 3 levels "constant","aggregate",..: NA NA NA NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..- attr(*, "names")= chr [1:4] "weight" ".block" "bary" ".block_origin"</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

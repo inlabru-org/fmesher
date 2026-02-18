@@ -156,10 +156,10 @@ is defined as `u(loc_i)=sum_j A_ij x_j` for all `i` where `ok[i]` is
 ``` r
 # Compute basis mapping matrix
 dim(fm_basis(fmexample$mesh, fmexample$loc))
-#> [1]  10 279
+#> [1]  10 292
 print(fm_basis(fmexample$mesh, fmexample$loc, full = TRUE))
 #> fm_basis object
-#>   Projection matrix (A): 10-by-279
+#>   Projection matrix (A): 10-by-292
 #>   Valid evaluations (ok): 10 out of 10
 #>   Additional information: bary
 
@@ -167,7 +167,7 @@ print(fm_basis(fmexample$mesh, fmexample$loc, full = TRUE))
 bary <- fm_bary(fmexample$mesh, fmexample$loc)
 print(fm_basis(fmexample$mesh, bary, full = TRUE))
 #> fm_basis object
-#>   Projection matrix (A): 10-by-279
+#>   Projection matrix (A): 10-by-292
 #>   Valid evaluations (ok): 10 out of 10
 #>   Additional information: bary
 ```

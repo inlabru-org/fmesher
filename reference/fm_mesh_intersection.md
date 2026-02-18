@@ -40,11 +40,11 @@ segm <- fm_segm(
 (m <- fm_mesh_intersection(fmexample$mesh, segm))
 #> fm_mesh_2d object:
 #>   Manifold:  R2
-#>   V / E / T: 251 / 665 / 415
+#>   V / E / T: 258 / 681 / 424
 #>   Euler char.:   1
-#>   Constraints:   Boundary: 85 boundary edges (1 group: 0), Interior: 0 edges
-#>   Bounding box: (-3.378964, 3.623639) x (-3.691805, 4.000000)
-#>   Basis d.o.f.:  251
+#>   Constraints:   Boundary: 90 boundary edges (1 group: 0), Interior: 0 edges
+#>   Bounding box: (-3.376638, 3.620641) x (-3.704482, 4.000000)
+#>   Basis d.o.f.:  258
 plot(fmexample$mesh)
 lines(segm, col = 4)
 plot(m, edge.color = 2, add = TRUE)
@@ -62,11 +62,11 @@ segm2 <- fm_segm(c(
 (m2 <- fm_mesh_intersection(fm_subdivide(fmexample$mesh, 2), segm2))
 #> fm_mesh_2d object:
 #>   Manifold:  R2
-#>   V / E / T: 1920 / 5398 / 3480
+#>   V / E / T: 1946 / 5483 / 3539
 #>   Euler char.:   2
-#>   Constraints:   Boundary: 356 boundary edges (1 group: 0), Interior: 0 edges
-#>   Bounding box: (-4.000000, 3.623639) x (-3.691805, 4.000000)
-#>   Basis d.o.f.:  1920
+#>   Constraints:   Boundary: 349 boundary edges (1 group: 0), Interior: 0 edges
+#>   Bounding box: (-4.000000, 3.620641) x (-3.704482, 4.000000)
+#>   Basis d.o.f.:  1946
 m2_int <- fm_int(m2)
 plot(m2, edge.color = 2)
 lines(segm2, col = 4)
@@ -99,11 +99,11 @@ segm3 <- fm_segm(c(
 ))
 #> fm_mesh_2d object:
 #>   Manifold:  R2
-#>   V / E / T: 1388 / 3788 / 2401
+#>   V / E / T: 1416 / 3868 / 2453
 #>   Euler char.:   1
-#>   Constraints:   Boundary: 373 boundary edges (1 group: 0), Interior: 0 edges
-#>   Bounding box: (-3.344418, 2.076846) x (-1.995602, 3.260485)
-#>   Basis d.o.f.:  1388
+#>   Constraints:   Boundary: 377 boundary edges (1 group: 0), Interior: 0 edges
+#>   Bounding box: (-3.345586, 2.076840) x (-1.997743, 3.263586)
+#>   Basis d.o.f.:  1416
 m3_int <- fm_int(m3)
 plot(fmexample$mesh)
 plot(m3, edge.color = 2, add = TRUE)

@@ -15,7 +15,7 @@ object. This acts as the inverse of fm_bary()."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.1.9006</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.1.9008</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -126,12 +126,12 @@ formats are <code>"matrix"</code> (default) and <code>"sf"</code>.</p></li>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">fm_bary_loc</span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           [,1]       [,2] [,3]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] -4.991262  1.4785425    0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] -5.287832  0.6496857    0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] -5.331027 -0.2295705    0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] -5.088120 -1.1511736    0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] -4.710559 -1.7810970    0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [6,] -4.191253 -2.3004024    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] -5.180541 -0.8956538    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] -4.924679 -1.4650761    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] -4.644074 -1.8603126    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] -4.242024 -2.2555490    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] -3.620028 -2.6507855    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6,] -3.202318 -2.8266798    0</span>
 <span class="r-in"><span><span class="va">bary</span> <span class="op">&lt;-</span> <span class="fu"><a href="fm_bary.html">fm_bary</a></span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span>, <span class="va">fmexample</span><span class="op">$</span><span class="va">loc_sf</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">fm_bary_loc</span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span>, <span class="va">bary</span>, format <span class="op">=</span> <span class="st">"matrix"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             [,1]        [,2] [,3]</span>

@@ -84,14 +84,14 @@ print(fm_bbox(matrix(1:6, 3, 2)), verbose = FALSE)
 print(fmexample$mesh)
 #> fm_mesh_2d object:
 #>   Manifold:  R2
-#>   V / E / T: 279 / 805 / 527
+#>   V / E / T: 292 / 838 / 547
 #>   Euler char.:   1
-#>   Constraints:   Boundary: 29 boundary edges (1 group: 1), Interior: 54 interior edges (1 group: 1)
-#>   Bounding box: (-5.331027, 4.061656) x (-3.998161, 5.415609)
-#>   Basis d.o.f.:  279
+#>   Constraints:   Boundary: 35 boundary edges (1 group: 1), Interior: 55 interior edges (1 group: 1)
+#>   Bounding box: (-5.345477, 4.083580) x (-3.997839, 5.415519)
+#>   Basis d.o.f.:  292
 print(fmexample$boundary_fm)
-#> 46 boundary edges (1 group: 1)
-#> 26 boundary edges (1 group: 1)
+#> 43 boundary edges (1 group: 1)
+#> 34 boundary edges (1 group: 1)
 
 print(fm_mesh_1d(c(1, 2, 3, 5, 7), degree = 2))
 #> fm_mesh_1d object:

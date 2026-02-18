@@ -79,47 +79,47 @@ Other object creation and conversion:
 
 ``` r
 fm_as_sfc(fmexample$mesh)
-#> Geometry set for 527 features 
+#> Geometry set for 547 features 
 #> Geometry type: POLYGON
 #> Dimension:     XYZ
-#> Bounding box:  xmin: -5.331027 ymin: -3.998161 xmax: 4.061656 ymax: 5.415609
+#> Bounding box:  xmin: -5.345477 ymin: -3.997839 xmax: 4.08358 ymax: 5.415519
 #> z_range:       zmin: 0 zmax: 0
 #> CRS:           NA
 #> First 5 geometries:
-#> POLYGON Z ((1.603919 0.1315077 0, 1.477037 0.36...
-#> POLYGON Z ((1.929231 -0.2412966 0, 1.426833 -0....
-#> POLYGON Z ((0.7169789 -1.03035 0, 0.3472101 -0....
-#> POLYGON Z ((-2.348761 -0.5948482 0, -2.384393 -...
-#> POLYGON Z ((-3.269508 0.4471134 0, -3.012816 0....
+#> POLYGON Z ((0.03596474 1.965644 0, 0.1158377 1....
+#> POLYGON Z ((1.504866 -0.622266 0, 1.353357 -0.8...
+#> POLYGON Z ((0.7029864 -1.896195 0, 0.6649962 -1...
+#> POLYGON Z ((-4.242024 -2.255549 0, -3.13738 -2....
+#> POLYGON Z ((-4.321078 -0.5669298 0, -3.847328 -...
 fm_as_sfc(fmexample$mesh, multi = TRUE)
 #> Geometry set for 1 feature 
 #> Geometry type: MULTIPOLYGON
 #> Dimension:     XYZ
-#> Bounding box:  xmin: -5.331027 ymin: -3.998161 xmax: 4.061656 ymax: 5.415609
+#> Bounding box:  xmin: -5.345477 ymin: -3.997839 xmax: 4.08358 ymax: 5.415519
 #> z_range:       zmin: 0 zmax: 0
 #> CRS:           NA
-#> MULTIPOLYGON Z (((1.603919 0.1315077 0, 1.47703...
+#> MULTIPOLYGON Z (((0.03596474 1.965644 0, 0.1158...
 fm_as_sfc(fmexample$mesh, format = "loc")
-#> Geometry set for 279 features 
+#> Geometry set for 292 features 
 #> Geometry type: POINT
 #> Dimension:     XYZ
-#> Bounding box:  xmin: -5.331027 ymin: -3.998161 xmax: 4.061656 ymax: 5.415609
+#> Bounding box:  xmin: -5.345477 ymin: -3.997839 xmax: 4.08358 ymax: 5.415519
 #> z_range:       zmin: 0 zmax: 0
 #> CRS:           NA
 #> First 5 geometries:
-#> POINT Z (-4.991262 1.478543 0)
-#> POINT Z (-5.287832 0.6496857 0)
-#> POINT Z (-5.331027 -0.2295705 0)
-#> POINT Z (-5.08812 -1.151174 0)
-#> POINT Z (-4.710559 -1.781097 0)
+#> POINT Z (-5.180541 -0.8956538 0)
+#> POINT Z (-4.924679 -1.465076 0)
+#> POINT Z (-4.644074 -1.860313 0)
+#> POINT Z (-4.242024 -2.255549 0)
+#> POINT Z (-3.620028 -2.650785 0)
 
 # Boundary edge conversion to polygons is supported from version 0.4.0.9002:
 fm_as_sfc(fmexample$mesh, format = "bnd")
 #> Geometry set for 1 feature 
 #> Geometry type: POLYGON
 #> Dimension:     XYZ
-#> Bounding box:  xmin: -5.331027 ymin: -3.998161 xmax: 4.061656 ymax: 5.415609
+#> Bounding box:  xmin: -5.345477 ymin: -3.997839 xmax: 4.08358 ymax: 5.415519
 #> z_range:       zmin: 0 zmax: 0
 #> CRS:           NA
-#> POLYGON Z ((-4.991262 1.478543 0, -5.287832 0.6...
+#> POLYGON Z ((-5.180541 -0.8956538 0, -4.924679 -...
 ```

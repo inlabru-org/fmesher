@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.1.9006</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.1.9008</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -91,11 +91,11 @@ mesh, or a polygon object that can be converted with <code><a href="fm_as_segm.h
 <span class="r-in"><span><span class="op">(</span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu">fm_mesh_intersection</span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span>, <span class="va">segm</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> fm_mesh_2d object:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Manifold:	R2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   V / E / T:	251 / 665 / 415</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   V / E / T:	258 / 681 / 424</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Euler char.:	1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Constraints:	Boundary: 85 boundary edges (1 group: 0), Interior: 0 edges</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Bounding box: (-3.378964, 3.623639) x (-3.691805, 4.000000)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Basis d.o.f.:	251</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Constraints:	Boundary: 90 boundary edges (1 group: 0), Interior: 0 edges</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Bounding box: (-3.376638, 3.620641) x (-3.704482, 4.000000)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Basis d.o.f.:	258</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="va">segm</span>, col <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m</span>, edge.color <span class="op">=</span> <span class="fl">2</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
@@ -113,11 +113,11 @@ mesh, or a polygon object that can be converted with <code><a href="fm_as_segm.h
 <span class="r-in"><span><span class="op">(</span><span class="va">m2</span> <span class="op">&lt;-</span> <span class="fu">fm_mesh_intersection</span><span class="op">(</span><span class="fu"><a href="fm_subdivide.html">fm_subdivide</a></span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span>, <span class="fl">2</span><span class="op">)</span>, <span class="va">segm2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> fm_mesh_2d object:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Manifold:	R2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   V / E / T:	1920 / 5398 / 3480</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   V / E / T:	1946 / 5483 / 3539</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Euler char.:	2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Constraints:	Boundary: 356 boundary edges (1 group: 0), Interior: 0 edges</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Bounding box: (-4.000000, 3.623639) x (-3.691805, 4.000000)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Basis d.o.f.:	1920</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Constraints:	Boundary: 349 boundary edges (1 group: 0), Interior: 0 edges</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Bounding box: (-4.000000, 3.620641) x (-3.704482, 4.000000)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Basis d.o.f.:	1946</span>
 <span class="r-in"><span><span class="va">m2_int</span> <span class="op">&lt;-</span> <span class="fu"><a href="fm_int.html">fm_int</a></span><span class="op">(</span><span class="va">m2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m2</span>, edge.color <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="va">segm2</span>, col <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
@@ -150,11 +150,11 @@ mesh, or a polygon object that can be converted with <code><a href="fm_as_segm.h
 <span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> fm_mesh_2d object:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Manifold:	R2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   V / E / T:	1388 / 3788 / 2401</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   V / E / T:	1416 / 3868 / 2453</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Euler char.:	1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Constraints:	Boundary: 373 boundary edges (1 group: 0), Interior: 0 edges</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Bounding box: (-3.344418, 2.076846) x (-1.995602, 3.260485)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Basis d.o.f.:	1388</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Constraints:	Boundary: 377 boundary edges (1 group: 0), Interior: 0 edges</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Bounding box: (-3.345586, 2.076840) x (-1.997743, 3.263586)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Basis d.o.f.:	1416</span>
 <span class="r-in"><span><span class="va">m3_int</span> <span class="op">&lt;-</span> <span class="fu"><a href="fm_int.html">fm_int</a></span><span class="op">(</span><span class="va">m3</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m3</span>, edge.color <span class="op">=</span> <span class="fl">2</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>

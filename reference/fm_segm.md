@@ -150,15 +150,15 @@ fm_segm(rbind(c(0, 0), c(1, 0), c(1, 1), c(0, 1)), is.bnd = TRUE)
 
 fm_segm_join(fmexample$boundary_fm)
 #> fm_segm object:
-#>   72 boundary edges (1 group: 1)
-#>   Bounding box = (-5.331027, 4.061656) x (-3.998161, 5.415609) x (0,0)
+#>   77 boundary edges (1 group: 1)
+#>   Bounding box = (-5.345477, 4.083580) x (-3.997839, 5.415519) x (0,0)
 
 fm_segm(fmexample$mesh, boundary = TRUE)
 #> fm_segm object:
-#>   29 boundary edges (1 group: 1)
-#>   Bounding box = (-5.331027, 4.061656) x (-3.998161, 5.415609) x (0,0)
+#>   35 boundary edges (1 group: 1)
+#>   Bounding box = (-5.345477, 4.083580) x (-3.997839, 5.415519) x (0,0)
 fm_segm(fmexample$mesh, boundary = FALSE)
 #> fm_segm object:
-#>   54 interior edges (1 group: 1)
-#>   Bounding box = (-3.344418, 2.076846) x (-1.995602, 3.404937) x (0,0)
+#>   55 interior edges (1 group: 1)
+#>   Bounding box = (-3.345586, 2.076840) x (-1.997743, 3.402550) x (0,0)
 ```

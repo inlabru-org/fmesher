@@ -105,11 +105,11 @@ Man Ho Suen <M.H.Suen@sms.ed.ac.uk>, Finn Lindgren
 ))
 #> fm_mesh_2d object:
 #>   Manifold:  R2
-#>   V / E / T: 189 / 537 / 349
+#>   V / E / T: 199 / 560 / 362
 #>   Euler char.:   1
-#>   Constraints:   Boundary: 27 boundary edges (1 group: 1), Interior: 49 interior edges (1 group: 1)
-#>   Bounding box: (-5.331027, 4.061656) x (-3.998161, 5.415609)
-#>   Basis d.o.f.:  189
+#>   Constraints:   Boundary: 34 boundary edges (1 group: 1), Interior: 47 interior edges (1 group: 1)
+#>   Bounding box: (-5.345477, 4.083580) x (-3.997839, 5.415519)
+#>   Basis d.o.f.:  199
 
 (m2 <- fm_mesh_2d(
   fm_hexagon_lattice(
@@ -122,11 +122,11 @@ Man Ho Suen <M.H.Suen@sms.ed.ac.uk>, Finn Lindgren
 ))
 #> fm_mesh_2d object:
 #>   Manifold:  R2
-#>   V / E / T: 195 / 554 / 360
+#>   V / E / T: 205 / 578 / 374
 #>   Euler char.:   1
-#>   Constraints:   Boundary: 28 boundary edges (1 group: 1), Interior: 50 interior edges (1 group: 1)
-#>   Bounding box: (-5.331027, 4.061656) x (-3.998161, 5.415609)
-#>   Basis d.o.f.:  195
+#>   Constraints:   Boundary: 34 boundary edges (1 group: 1), Interior: 47 interior edges (1 group: 1)
+#>   Bounding box: (-5.345477, 4.083580) x (-3.997839, 5.415519)
+#>   Basis d.o.f.:  205
 
 if (require("ggplot2", quietly = TRUE) &&
   require("patchwork", quietly = TRUE)) {

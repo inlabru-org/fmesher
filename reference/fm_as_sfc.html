@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.1.9006</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.1.9008</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -136,49 +136,49 @@
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">fm_as_sfc</span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Geometry set for 527 features </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Geometry set for 547 features </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: POLYGON</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Dimension:     XYZ</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: -5.331027 ymin: -3.998161 xmax: 4.061656 ymax: 5.415609</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: -5.345477 ymin: -3.997839 xmax: 4.08358 ymax: 5.415519</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> z_range:       zmin: 0 zmax: 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> CRS:           NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> First 5 geometries:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> POLYGON Z ((1.603919 0.1315077 0, 1.477037 0.36...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> POLYGON Z ((1.929231 -0.2412966 0, 1.426833 -0....</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> POLYGON Z ((0.7169789 -1.03035 0, 0.3472101 -0....</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> POLYGON Z ((-2.348761 -0.5948482 0, -2.384393 -...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> POLYGON Z ((-3.269508 0.4471134 0, -3.012816 0....</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> POLYGON Z ((0.03596474 1.965644 0, 0.1158377 1....</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> POLYGON Z ((1.504866 -0.622266 0, 1.353357 -0.8...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> POLYGON Z ((0.7029864 -1.896195 0, 0.6649962 -1...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> POLYGON Z ((-4.242024 -2.255549 0, -3.13738 -2....</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> POLYGON Z ((-4.321078 -0.5669298 0, -3.847328 -...</span>
 <span class="r-in"><span><span class="fu">fm_as_sfc</span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span>, multi <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geometry set for 1 feature </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: MULTIPOLYGON</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Dimension:     XYZ</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: -5.331027 ymin: -3.998161 xmax: 4.061656 ymax: 5.415609</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: -5.345477 ymin: -3.997839 xmax: 4.08358 ymax: 5.415519</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> z_range:       zmin: 0 zmax: 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> CRS:           NA</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> MULTIPOLYGON Z (((1.603919 0.1315077 0, 1.47703...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MULTIPOLYGON Z (((0.03596474 1.965644 0, 0.1158...</span>
 <span class="r-in"><span><span class="fu">fm_as_sfc</span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span>, format <span class="op">=</span> <span class="st">"loc"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Geometry set for 279 features </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Geometry set for 292 features </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: POINT</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Dimension:     XYZ</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: -5.331027 ymin: -3.998161 xmax: 4.061656 ymax: 5.415609</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: -5.345477 ymin: -3.997839 xmax: 4.08358 ymax: 5.415519</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> z_range:       zmin: 0 zmax: 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> CRS:           NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> First 5 geometries:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> POINT Z (-4.991262 1.478543 0)</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> POINT Z (-5.287832 0.6496857 0)</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> POINT Z (-5.331027 -0.2295705 0)</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> POINT Z (-5.08812 -1.151174 0)</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> POINT Z (-4.710559 -1.781097 0)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> POINT Z (-5.180541 -0.8956538 0)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> POINT Z (-4.924679 -1.465076 0)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> POINT Z (-4.644074 -1.860313 0)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> POINT Z (-4.242024 -2.255549 0)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> POINT Z (-3.620028 -2.650785 0)</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Boundary edge conversion to polygons is supported from version 0.4.0.9002:</span></span></span>
 <span class="r-in"><span><span class="fu">fm_as_sfc</span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span>, format <span class="op">=</span> <span class="st">"bnd"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geometry set for 1 feature </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: POLYGON</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Dimension:     XYZ</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: -5.331027 ymin: -3.998161 xmax: 4.061656 ymax: 5.415609</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: -5.345477 ymin: -3.997839 xmax: 4.08358 ymax: 5.415519</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> z_range:       zmin: 0 zmax: 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> CRS:           NA</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> POLYGON Z ((-4.991262 1.478543 0, -5.287832 0.6...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> POLYGON Z ((-5.180541 -0.8956538 0, -4.924679 -...</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

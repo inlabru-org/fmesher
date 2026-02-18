@@ -39,7 +39,7 @@ print(x, ..., prefix = "")
 ``` r
 print(fm_basis(fmexample$mesh, fmexample$loc, full = TRUE))
 #> fm_basis object
-#>   Projection matrix (A): 10-by-279
+#>   Projection matrix (A): 10-by-292
 #>   Valid evaluations (ok): 10 out of 10
 #>   Additional information: bary
 ```

@@ -33,7 +33,7 @@ Finn Lindgren <Finn.Lindgren@gmail.com>
 
 ``` r
 fm_dof(fmexample$mesh)
-#> [1] 279
+#> [1] 292
 fm_dof(fm_refine(fmexample$mesh, refine = list(max.edge = 1)))
-#> [1] 332
+#> [1] 338
 ```

@@ -15,7 +15,7 @@ coordinates"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.1.9006</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.1.9008</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -202,8 +202,8 @@ coordinates). Points that are outside the lattice are given <code>NA</code> entr
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span>     3      -<span style="color: #BB0000;">1</span>     2  </span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu">fm_bary</span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span>, <span class="va">fmexample</span><span class="op">$</span><span class="va">loc_sf</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> fm_bary [10 × 2] (S3: fm_bary/tbl_df/tbl/data.frame)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ index: int [1:10] 358 301 413 337 369 221 363 329 329 142</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ where: num [1:10, 1:3] 0.0699 0.1367 0.4852 0.0831 0.6245 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ index: int [1:10] 70 47 393 83 363 326 231 395 395 13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ where: num [1:10, 1:3] 0.33809 0.08736 0.79683 0.03091 0.00355 ...</span>
 <span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="fm_mesh_3d.html">fm_mesh_3d</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>,</span></span>
@@ -216,8 +216,8 @@ coordinates). Points that are outside the lattice are given <code>NA</code> entr
 <span class="r-in"><span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu">fm_bary</span><span class="op">(</span><span class="va">m</span>, <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span> <span class="op">/</span> <span class="fl">4</span>, <span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu">fm_bary</span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span>, <span class="va">fmexample</span><span class="op">$</span><span class="va">loc_sf</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> fm_bary [10 × 2] (S3: fm_bary/tbl_df/tbl/data.frame)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ index: int [1:10] 358 301 413 337 369 221 363 329 329 142</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ where: num [1:10, 1:3] 0.0699 0.1367 0.4852 0.0831 0.6245 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ index: int [1:10] 70 47 393 83 363 326 231 395 395 13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ where: num [1:10, 1:3] 0.33809 0.08736 0.79683 0.03091 0.00355 ...</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

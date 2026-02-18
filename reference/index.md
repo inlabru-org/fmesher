@@ -368,6 +368,8 @@ Data objects
 
 - [`fmexample`](https://inlabru-org.github.io/fmesher/reference/fmexample.md)
   : Example mesh data
+- [`fmexample3d`](https://inlabru-org.github.io/fmesher/reference/fmexample3d.md)
+  : Example 3D mesh data
 - [`fmexample_sp()`](https://inlabru-org.github.io/fmesher/reference/fmexample_sp.md)
   : Add sp data to fmexample
 

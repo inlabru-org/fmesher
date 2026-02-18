@@ -15,7 +15,7 @@ mesh, and locations."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.1.9006</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.1.9008</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -200,10 +200,10 @@ object. If <code>full = FALSE</code>, returns the <code>A</code> matrix containe
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Compute basis mapping matrix</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="fu">fm_basis</span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span>, <span class="va">fmexample</span><span class="op">$</span><span class="va">loc</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  10 279</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  10 292</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu">fm_basis</span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span>, <span class="va">fmexample</span><span class="op">$</span><span class="va">loc</span>, full <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> fm_basis object</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Projection matrix (A): 10-by-279</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Projection matrix (A): 10-by-292</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Valid evaluations (ok): 10 out of 10</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Additional information: bary</span>
 <span class="r-in"><span></span></span>
@@ -211,7 +211,7 @@ object. If <code>full = FALSE</code>, returns the <code>A</code> matrix containe
 <span class="r-in"><span><span class="va">bary</span> <span class="op">&lt;-</span> <span class="fu"><a href="fm_bary.html">fm_bary</a></span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span>, <span class="va">fmexample</span><span class="op">$</span><span class="va">loc</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu">fm_basis</span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span>, <span class="va">bary</span>, full <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> fm_basis object</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Projection matrix (A): 10-by-279</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Projection matrix (A): 10-by-292</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Valid evaluations (ok): 10 out of 10</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Additional information: bary</span>
 </code></pre></div>

@@ -163,23 +163,23 @@ fm_as_segm_list(list(
   fm_segm(fmexample$mesh),
   fm_segm(fmexample$mesh, boundary = FALSE)
 ))
-#> 29 boundary edges (1 group: 1)
-#> 54 interior edges (1 group: 1)
+#> 35 boundary edges (1 group: 1)
+#> 55 interior edges (1 group: 1)
 
 (segm <- fm_segm(fmexample$mesh, boundary = FALSE))
 #> fm_segm object:
-#>   54 interior edges (1 group: 1)
-#>   Bounding box = (-3.344418, 2.076846) x (-1.995602, 3.404937) x (0,0)
+#>   55 interior edges (1 group: 1)
+#>   Bounding box = (-3.345586, 2.076840) x (-1.997743, 3.402550) x (0,0)
 (segm_sfc <- fm_as_sfc(segm))
 #> Geometry set for 1 feature 
 #> Geometry type: LINESTRING
 #> Dimension:     XYZ
-#> Bounding box:  xmin: -3.344418 ymin: -1.995602 xmax: 2.076846 ymax: 3.404937
+#> Bounding box:  xmin: -3.345586 ymin: -1.997743 xmax: 2.07684 ymax: 3.40255
 #> z_range:       zmin: 0 zmax: 0
 #> CRS:           NA
-#> LINESTRING Z (-2.817059 0.9463137 0, -2.998821 ...
+#> LINESTRING Z (-3.202599 -0.4432085 0, -3.012083...
 (fm_as_segm(segm_sfc))
 #> fm_segm object:
-#>   54 interior edges (1 group: 1)
-#>   Bounding box = (-3.344418, 2.076846) x (-1.995602, 3.404937) x (0,0)
+#>   55 interior edges (1 group: 1)
+#>   Bounding box = (-3.345586, 2.076840) x (-1.997743, 3.402550) x (0,0)
 ```

@@ -29,6 +29,16 @@
   [`fm_sizes()`](https://inlabru-org.github.io/fmesher/reference/fm_sizes.md)
   that caused calculated areas to be 1/3 of the actual areas (version
   `0.6.1.9003`)
+- Use `expect_setequal()` in package tests for checking that integration
+  output objects contain the correct columns. Some tests were not using
+  [`sort()`](https://rspatial.github.io/terra/reference/sort.html) on
+  the names, causing them to fail when external object merges and
+  constructors changed behaviour. Thanks to Edzer Pebesma for the
+  initial PR, [\#30](https://github.com/inlabru-org/fmesher/issues/30)
+  (version `0.6.1.9007`)
+- Regenerated the `fmexample` objects with the latest version of the
+  package, to ensure they have up-to-date structure, and use the current
+  boundary construction methods. (version `0.6.1.9008`)
 
 ## fmesher 0.6.1
 

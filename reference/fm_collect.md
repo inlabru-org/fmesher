@@ -64,13 +64,13 @@ m <- fm_collect(list(
 m2 <- fm_as_collect(m)
 m3 <- fm_as_collect_list(list(m, m))
 c(fm_dof(m$fun_spaces[[1]]) + fm_dof(m$fun_spaces[[2]]), fm_dof(m))
-#> [1] 558 558
+#> [1] 584 584
 fm_basis(m, loc = tibble::tibble(
   loc = fmexample$loc_sf,
   index = c(1, 1, 2, 2, 1, 2, 2, 1, 1, 2)
 ), full = TRUE)
 #> fm_basis object
-#>   Projection matrix (A): 10-by-558
+#>   Projection matrix (A): 10-by-584
 #>   Valid evaluations (ok): 10 out of 10
 #>   Additional information: 
 fm_basis(m, loc = tibble::tibble(
@@ -78,14 +78,14 @@ fm_basis(m, loc = tibble::tibble(
   index = c("B", "A")
 ), full = TRUE)
 #> fm_basis object
-#>   Projection matrix (A): 2-by-558
+#>   Projection matrix (A): 2-by-584
 #>   Valid evaluations (ok): 2 out of 2
 #>   Additional information: 
 fm_evaluator(m, loc = tibble::tibble(loc = cbind(0, 0), index = 2))
 #> fm_evaluator object
 #>   proj:
 #>     fm_basis object
-#>       Projection matrix (A): 1-by-558
+#>       Projection matrix (A): 1-by-584
 #>       Valid evaluations (ok): 1 out of 1
 #>       Additional information: 
 #>   Additional evaluator information: 
@@ -93,5 +93,5 @@ names(fm_fem(m))
 #> [1] "cc" "c0" "c1" "va" "ta" "g1" "g2"
 fm_diameter(m)
 #>        A        B 
-#> 10.54218 10.54218 
+#> 10.51699 10.51699 
 ```

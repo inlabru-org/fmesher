@@ -47,5 +47,5 @@ An integer
 
 ``` r
 fm_dof(fmexample$mesh)
-#> [1] 279
+#> [1] 292
 ```
