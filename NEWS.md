@@ -1,4 +1,4 @@
-# fmesher (development version)
+# fmesher 0.7.0
 
 ## Improved features
 
