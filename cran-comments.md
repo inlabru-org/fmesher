@@ -4,6 +4,7 @@ This is a minor bug fix and feature update release.
 
 * Bug fixes
 * Minor feature updates
+* Fixes in tests for a false failure with upcoming 'sf' release
 
 ## R CMD check results for 0.7.0
 
