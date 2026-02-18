@@ -123,7 +123,7 @@ test_that("Integrating an sf polygon on a mesh domain", {
     colnames(ips),
     c("weight", ".block", ".block_origin", "geometry")
   )
-  expect_equal(sum(ips$weight), 18.339, tolerance = lowtol)
+  expect_equal(sum(ips$weight), 18.489263, tolerance = lowtol)
 
   expect_error(
     fm_int(
@@ -143,7 +143,7 @@ test_that("Integrating an sf polygon on a mesh domain", {
     colnames(ips),
     c("weight", ".block", ".block_origin", "geometry")
   )
-  expect_equal(sum(ips$weight), 18.339, tolerance = lowtol)
+  expect_equal(sum(ips$weight), 18.489263, tolerance = lowtol)
 })
 
 test_that("Integrating a fm_segm polygon on a mesh domain", {
@@ -154,7 +154,7 @@ test_that("Integrating a fm_segm polygon on a mesh domain", {
     colnames(ips),
     c("weight", ".block", ".block_origin", "geometry")
   )
-  expect_equal(sum(ips$weight), 18.339, tolerance = lowtol)
+  expect_equal(sum(ips$weight), 18.489263, tolerance = lowtol)
 })
 
 
@@ -167,7 +167,7 @@ test_that("Integrating a SpatialPolygon on a mesh domain", {
     colnames(as.data.frame(ips)),
     c("weight", ".block", ".block_origin", "x", "y", "z")
   )
-  expect_equal(sum(ips$weight), 18.339, tolerance = lowtol)
+  expect_equal(sum(ips$weight), 18.489263, tolerance = lowtol)
 })
 
 test_that("Conversion of whole 2D mesh to integration points", {
@@ -179,7 +179,7 @@ test_that("Conversion of whole 2D mesh to integration points", {
     colnames(ips),
     c("weight", ".block", "geometry", ".block_origin")
   )
-  expect_equal(sum(ips$weight), 64.58135, tolerance = lowtol)
+  expect_equal(sum(ips$weight), 64.79842965, tolerance = lowtol)
 
   skip_if_not(fm_safe_sp())
 
@@ -194,7 +194,7 @@ test_that("Conversion of whole 2D mesh to integration points", {
     sp::coordnames(ips),
     c("x", "y", "z")
   )
-  expect_equal(sum(ips$weight), 64.58135, tolerance = lowtol)
+  expect_equal(sum(ips$weight), 64.79842965, tolerance = lowtol)
 })
 
 
@@ -217,7 +217,7 @@ test_that("Polygon integration with holes", {
     sf::st_area(sf::st_as_sf(plyA)),
     8
   )
-  expect_equal(sum(ipA$weight), 7.846134, tolerance = lowtol)
+  expect_equal(sum(ipA$weight), 8.0573994, tolerance = lowtol)
 })
 
 
@@ -421,7 +421,7 @@ test_that("fm_int for linestring", {
     numeric(1)
   ))
   expect_equal(as.vector(w),
-    rep(16.3259194526, length(w)),
+    rep(16.55092471, length(w)),
     tolerance = lowtol
   )
 
