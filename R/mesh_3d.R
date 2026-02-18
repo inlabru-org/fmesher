@@ -45,7 +45,14 @@ fm_mesh_3d <- function(loc = NULL,
       loc = result[["loc"]],
       graph = list(
         tv = idx_C2R(result[["tv"]]),
-        vt = lapply(result[["vt"]], idx_C2R),
+        vt = lapply(
+          result[["vt"]],
+          function(xx) {
+            yy <- idx_C2R(xx)
+            colnames(yy) <- c("t", "vi")
+            yy
+          }
+        ),
         tt = idx_C2R(result[["tt"]]),
         tti = idx_C2R(result[["tti"]]),
         vv = fm_as_dgCMatrix(result[["vv"]]),
@@ -77,6 +84,7 @@ fm_mesh_3d <- function(loc = NULL,
       mesh$graph$vt <- list()
       for (vv in seq_len(nrow(mesh$loc))) {
         mesh$graph$vt[[vv]] <- matrix(NA_integer_, 0, 2)
+        colnames(mesh$graph$vt[[vv]]) <- c("t", "vi")
       }
       for (tt in seq_len(nrow(mesh$graph$tv))) {
         for (vvi in seq_len(4)) {

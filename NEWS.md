@@ -22,6 +22,9 @@
   names, causing them to fail when external object merges and constructors
   changed behaviour. Thanks to Edzer Pebesma for the initial PR, #30
   (version `0.6.1.9007`)
+* Regenerated the `fmexample` objects with the latest version of the package,
+  to ensure they have up-to-date structure, and use the current boundary
+  construction methods. (version `0.6.1.9008`)
 
 # fmesher 0.6.1
 
