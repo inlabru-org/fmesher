@@ -74,8 +74,265 @@ in <code>sp</code> related code examples and tests.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="fm_safe_sp.html">fm_safe_sp</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="fu">fmexample_sp</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in StopZ(zm):</span> sp supports Z dimension only for POINT and MULTIPOINT.</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> use `st_zm(...)` to coerce to XY dimensions</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $loc</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             [,1]        [,2]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1,] -1.2070657 -0.47719270</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [2,]  0.2774292 -0.99838644</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3,]  1.0844412 -0.77625389</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4,] -2.3456977  0.06445882</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5,]  0.4291247  0.95949406</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6,]  0.5060559 -0.11028549</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7,] -0.5747400 -0.51100951</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8,] -0.5466319 -0.91119542</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9,] -0.5644520 -0.83717168</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10,] -0.8900378  2.41583518</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $loc_sf</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Geometry set for 10 features </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: POINT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Dimension:     XY</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: -2.345698 ymin: -0.9983864 xmax: 1.084441 ymax: 2.415835</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> CRS:           NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> First 5 geometries:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> POINT (-1.207066 -0.4771927)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> POINT (0.2774292 -0.9983864)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> POINT (1.084441 -0.7762539)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> POINT (-2.345698 0.06445882)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> POINT (0.4291247 0.9594941)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $boundary_fm</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 43 boundary edges (1 group: 1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 34 boundary edges (1 group: 1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $boundary_sf</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $boundary_sf[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Geometry set for 1 feature </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: POLYGON</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Dimension:     XYZ</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: -3.345586 ymin: -1.997743 xmax: 2.07684 ymax: 3.40255</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> z_range:       zmin: 0 zmax: 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> CRS:           NA</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> POLYGON Z ((-3.202599 -0.4432085 0, -3.012083 -...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $boundary_sf[[2]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Geometry set for 1 feature </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: POLYGON</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Dimension:     XYZ</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: -5.345477 ymin: -3.997839 xmax: 4.08358 ymax: 5.415519</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> z_range:       zmin: 0 zmax: 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> CRS:           NA</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> POLYGON Z ((-5.180541 -0.8956538 0, -4.924679 -...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $mesh</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fm_mesh_2d object:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Manifold:	R2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   V / E / T:	292 / 838 / 547</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Euler char.:	1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Constraints:	Boundary: 35 boundary edges (1 group: 1), Interior: 55 interior edges (1 group: 1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Bounding box: (-5.345477, 4.083580) x (-3.997839, 5.415519)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Basis d.o.f.:	292</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $loc_sp</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> SpatialPoints:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        coords.x1   coords.x2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1,] -1.2070657 -0.47719270</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [2,]  0.2774292 -0.99838644</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3,]  1.0844412 -0.77625389</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4,] -2.3456977  0.06445882</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5,]  0.4291247  0.95949406</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6,]  0.5060559 -0.11028549</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7,] -0.5747400 -0.51100951</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8,] -0.5466319 -0.91119542</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9,] -0.5644520 -0.83717168</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10,] -0.8900378  2.41583518</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Coordinate Reference System (CRS) arguments: NA </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $boundary_sp</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $boundary_sp[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> An object of class "SpatialPolygons"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Slot "polygons":</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> An object of class "Polygons"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Slot "Polygons":</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> An object of class "Polygon"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Slot "labpt":</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.5471743  0.3808746</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Slot "area":</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 18.48926</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Slot "hole":</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Slot "ringDir":</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Slot "coords":</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              [,1]       [,2]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1,] -3.20259941 -0.4432085</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [2,] -3.32333698 -0.1467627</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3,] -3.34558626  0.0433455</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4,] -3.27933738  0.4235620</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5,] -3.18074616  0.6136702</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6,] -3.01208303  0.8084371</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7,] -2.37469219  1.1839950</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8,] -2.04903206  1.5642115</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9,] -1.88843285  1.9444280</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10,] -1.88698209  2.5147527</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11,] -1.76607200  2.8949692</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [12,] -1.63063925  3.0850775</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13,] -1.29743560  3.3276712</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [14,] -1.10691922  3.3923014</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15,] -0.72588645  3.4025498</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [16,] -0.38259928  3.2751857</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [17,] -0.15433731  3.0912113</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [18,] -0.01276793  2.8949692</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19,]  0.25334789  2.3246445</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [20,]  0.41721184  2.1411072</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [21,]  0.60772822  1.9940843</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [22,]  0.98876098  1.7865826</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [23,]  1.22388325  1.5642115</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [24,]  1.40394094  1.1839950</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [25,]  1.44144252  0.6136702</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [26,]  1.49873091  0.4235620</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [27,]  1.70182084  0.0433455</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [28,]  1.98245497 -0.3368710</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [29,]  2.05301018 -0.5269792</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [30,]  2.07683967 -0.9071957</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [31,]  1.94134289 -1.2921694</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [32,]  1.75082651 -1.5190524</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [33,]  1.56031012 -1.6576058</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [34,]  1.36979374 -1.7348566</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [35,]  0.98876098 -1.8030499</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [36,]  0.41721184 -1.9893401</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [37,]  0.22669545 -1.9977428</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [38,] -0.15433731 -1.9206084</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [39,] -0.72588645 -1.8950806</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [40,] -0.91640284 -1.8400314</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [41,] -2.25001751 -0.9949053</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [42,] -2.82156665 -0.8132865</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [43,] -3.01208303 -0.6785684</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [44,] -3.20259941 -0.4432085</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Slot "plotOrder":</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Slot "labpt":</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.5471743  0.3808746</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Slot "ID":</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ID1"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Slot "area":</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 18.48926</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Slot "plotOrder":</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Slot "bbox":</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         min     max</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> x -3.345586 2.07684</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> y -1.997743 3.40255</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Slot "proj4string":</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Coordinate Reference System:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Deprecated Proj.4 representation: NA </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $boundary_sp[[2]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> An object of class "SpatialPolygons"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Slot "polygons":</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> An object of class "Polygons"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Slot "Polygons":</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> An object of class "Polygon"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Slot "labpt":</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.5729693  0.4391398</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Slot "area":</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 64.79843</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Slot "hole":</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Slot "ringDir":</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Slot "coords":</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              [,1]       [,2]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1,] -5.18054101 -0.8956538</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [2,] -5.34547744  0.1158697</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3,] -5.18054101  1.0310343</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4,] -4.86165968  1.6968155</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5,] -3.98006289  2.8825249</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6,] -3.39223207  4.0682342</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7,] -2.80667349  4.7205789</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8,] -2.41102890  4.9999852</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9,] -1.61973973  5.3261485</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10,] -0.82845056  5.4155191</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11,] -0.03716138  5.2923424</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [12,]  0.84902797  4.8587071</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13,]  1.30404651  4.4634707</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [14,]  1.94106155  3.6682249</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15,]  2.73235072  2.8804611</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [16,]  3.20643136  2.0920519</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [17,]  3.59901221  0.9063426</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [18,]  3.94959543  0.1158697</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19,]  4.08358003 -0.6746032</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [20,]  4.00481210 -1.4650761</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [21,]  3.87910146 -1.8603126</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [22,]  3.52363990 -2.5146962</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [23,]  3.04025776 -3.0460219</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [24,]  2.45015789 -3.4412584</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [25,]  1.94106155 -3.6520862</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [26,]  0.75412779 -3.9609006</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [27,]  0.35848320 -3.9978389</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [28,] -0.82845056 -3.8990598</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [29,] -1.61973973 -3.7135116</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [30,] -3.20231808 -2.8266798</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [31,] -3.62002773 -2.6507855</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [32,] -4.24202446 -2.2555490</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [33,] -4.64407379 -1.8603126</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [34,] -4.92467895 -1.4650761</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [35,] -5.18054101 -0.8956538</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Slot "plotOrder":</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Slot "labpt":</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.5729693  0.4391398</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Slot "ID":</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ID1"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Slot "area":</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 64.79843</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Slot "plotOrder":</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Slot "bbox":</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         min      max</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> x -5.345477 4.083580</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> y -3.997839 5.415519</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Slot "proj4string":</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Coordinate Reference System:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Deprecated Proj.4 representation: NA </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
