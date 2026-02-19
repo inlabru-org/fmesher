@@ -1,6 +1,10 @@
 # Changelog
 
+## fmesher (development version)
+
 ## fmesher 0.7.0
+
+CRAN release: 2026-02-19
 
 ### Improved features
 

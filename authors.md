@@ -23,13 +23,13 @@ Source:
 [`DESCRIPTION`](https://github.com/inlabru-org/fmesher/blob/devel/DESCRIPTION)
 
 Lindgren F (2026). *fmesher: Triangle Meshes and Related Geometry
-Tools*. R package version 0.7.0,
+Tools*. R package version 0.7.0.9000,
 <https://inlabru-org.github.io/fmesher/>.
 
     @Manual{,
       title = {fmesher: Triangle Meshes and Related Geometry Tools},
       author = {Finn Lindgren},
       year = {2026},
-      note = {R package version 0.7.0},
+      note = {R package version 0.7.0.9000},
       url = {https://inlabru-org.github.io/fmesher/},
     }
