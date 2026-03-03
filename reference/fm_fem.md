@@ -49,28 +49,31 @@ fm_fem(mesh, order = 2, ...)
 
 ## Value
 
-`fm_fem.fm_mesh_1d`: A list with elements `c0`, `c1`, `g1`, `g2`, etc.
-When `mesh$degree == 2`, also `g01`, `g02`, and `g12`.
+`fm_fem.fm_mesh_1d`: A list with elements `c0`, `c1`, `cc`, `g1`, `g2`,
+etc. When `mesh$degree == 2`, also `g01`, `g02`, and `g12`, and `cc` is
+the same as `c1`, usually the natural choice for precision matrix
+construction. When `mesh$degree < 2`, `cc` is the same as `c0`.
 
-`fm_fem.fm_mesh_2d`: A list with elements `c0`, `c1`, `g1`, `va`, `ta`,
-and more if `order > 1`. When `aniso` is non-NULL, also `g1aniso`
-matrices, etc.
+`fm_fem.fm_mesh_2d`: A list with elements `c0`, `c1`, `cc`, `g1`, `va`,
+`ta`, and more if `order > 1`. When `aniso` is non-NULL, also `g1aniso`
+matrices, etc. The `cc` matrix is meant to be used for precision materix
+constructions, and is currently equal to `c0`.
 
 `fm_fem.fm_tensor`: A list with elements `cc`, `g1`, `g2`.
 
 `fm_fem.fm_collect`: A list with elements `c0`, `c1`, `g1`, `g2`, etc,
-and `cc` (`c0` for every model except `fm_mesh_1d` with `degree=2`, for
-which it is `c1`). If the base type for the collection provides `va` and
-`ta` values, those are also returned.
+and `cc` (`cc` for every model returning `cc` from `fm_fem()`, and `c0`
+when `cc` is not available). If the base type for the collection
+provides `va` and `ta` values, those are also returned.
 
-`fm_fem.fm_mesh_3d`: A list with elements `c0`, `c1`, `g1`, `g2`, `va`,
-`ta`, and more if `order > 2`.
+`fm_fem.fm_mesh_3d`: A list with elements `c0`, `c1`, `cc`, `g1`, `g2`,
+`va`, `ta`, and more if `order > 2`.
 
 ## Examples
 
 ``` r
 names(fm_fem(fm_mesh_1d(1:4), order = 3))
-#> [1] "c0" "c1" "g1" "g2" "g3"
+#> [1] "c0" "c1" "cc" "g1" "g2" "g3"
 names(fm_fem(fmexample$mesh, order = 3))
-#>  [1] "b1" "c0" "c1" "g1" "g2" "g3" "k1" "k2" "k3" "ta" "va"
+#>  [1] "b1" "c0" "c1" "g1" "g2" "g3" "k1" "k2" "k3" "ta" "va" "cc"
 ```

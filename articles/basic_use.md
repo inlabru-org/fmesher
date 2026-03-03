@@ -170,10 +170,10 @@ ggplot() +
 ``` r
 fem1 <- fm_fem(mesh1, order = 2)
 names(fem1)
-#> [1] "c0"  "c1"  "g1"  "g2"  "g01" "g02" "g12"
+#> [1] "c0"  "c1"  "cc"  "g1"  "g2"  "g01" "g02" "g12"
 fem2 <- fm_fem(mesh2, order = 2)
 names(fem2)
-#> [1] "b1" "c0" "c1" "g1" "g2" "k1" "k2" "ta" "va"
+#>  [1] "b1" "c0" "c1" "g1" "g2" "k1" "k2" "ta" "va" "cc"
 ```
 
 ## Stochastic process simulation
