@@ -582,7 +582,8 @@ fm_rcdt_2d_inla <- function(loc = NULL,
         # Need to do the C->R index conversion for the triangle indices here!
         mesh$graph$vt[[vv]] <-
           matrix(c(as.integer(names(vt)) + 1L, vt), length(vt), 2,
-                 dimnames = list(NULL, c("t", "vi")))
+            dimnames = list(NULL, c("t", "vi"))
+          )
       }
     } else {
       # warning("VT information missing from mesh, rebuilding")
@@ -590,7 +591,8 @@ fm_rcdt_2d_inla <- function(loc = NULL,
       mesh$graph$vt <- list()
       for (vv in seq_len(nrow(mesh$loc))) {
         mesh$graph$vt[[vv]] <- matrix(NA_integer_, 0, 2,
-                                      dimnames = list(NULL, c("t", "vi")))
+          dimnames = list(NULL, c("t", "vi"))
+        )
       }
       for (tt in seq_len(nrow(mesh$graph$tv))) {
         for (vvi in seq_len(3)) {

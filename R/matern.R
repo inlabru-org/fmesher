@@ -47,13 +47,7 @@ fm_matern_precision <- function(x, alpha, rho, sigma) {
 
   fem <- fm_fem(mesh, order = ceiling(alpha))
 
-  if (inherits(mesh, "fm_mesh_1d") && (mesh$degree == 2)) {
-    C <- fem$c1
-  } else if (inherits(mesh, c("fm_tensor", "fm_collect"))) {
-    C <- fem$cc
-  } else {
-    C <- fem$c0
-  }
+  C <- fem$cc
   if (alpha == 2) {
     g2 <- make_symmetric(fem$g2)
     Q <- (C * kappa^4 +
