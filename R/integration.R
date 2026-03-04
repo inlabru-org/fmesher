@@ -1171,6 +1171,19 @@ fm_graph <- function(mesh) {
       colnames(mesh$graph$vt[[i]]) <- c("t", "vi")
     }
   }
+
+  if (is.null(mesh$graph[["vt_matrix"]]) || is.null(mesh$graph[["vt_index"]])) {
+    vt_matrix <- do.call(rbind, mesh$graph$vt)
+    vt_index <- list(n = vapply(mesh$graph$vt, NROW, 1L))
+    vt_index$first <- 1L + c(0L, cumsum(vt_index$n)[-length(vt_index$n)])
+    ok <- vt_index$n > 0L
+    vt_index$first[!ok] <- NA_integer_
+    vt_index <- cbind(n = vt_index$n, first = vt_index$first)
+
+    mesh$graph$vt_matrix <- vt_matrix
+    mesh$graph$vt_index <- vt_index
+  }
+
   mesh$graph
 }
 
@@ -1179,28 +1192,17 @@ fm_graph <- function(mesh) {
 #   fmexample$mesh$loc)^2) # should be zero
 fm_bary_vertex <- function(mesh) {
   graph <- fm_graph(mesh)
-  bary_vtx_index <- vapply(
-    seq_len(nrow(mesh$loc)),
-    function(i) {
-      graph$vt[[i]][1, "t"]
-    },
-    1L
-  )
-  bary_vtx_vi <- vapply(
-    seq_len(nrow(mesh$loc)),
-    function(i) {
-      graph$vt[[i]][1, "vi"]
-    },
-    1L
-  )
+
+  ok <- !is.na(graph$vt_index[, "first"])
+  idx <- graph$vt_index[ok, "first"]
   bary_vtx <- fm_bary(
     list(
-      index = bary_vtx_index,
+      index = graph$vt_matrix[idx, "t"],
       where = as.matrix(
         Matrix::sparseMatrix(
-          i = seq_along(bary_vtx_vi),
-          j = bary_vtx_vi,
-          x = rep(1, length(bary_vtx_vi)),
+          i = which(ok),
+          j = graph$vt_matrix[idx, "vi"],
+          x = rep(1, length(idx)),
           dims = c(nrow(mesh$loc), 3)
         )
       )

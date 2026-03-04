@@ -636,6 +636,9 @@ fm_rcdt_2d_inla <- function(loc = NULL,
   # Note: this also handles the C->R conversion for triangle indexing in vt.
   m <- remap_unused(m)
 
+  # Make sure all graph properties are included:
+  m$graph <- fm_graph(m)
+
   m
 }
 
