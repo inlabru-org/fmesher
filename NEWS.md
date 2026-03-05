@@ -6,6 +6,8 @@
   (`0.7.0.9001`)
 * Speed up polygon integration by precomputing and storing `vt`
   vertex-to-triangle information in multiple formats (`0.7.0.9002`)
+* Speed up multi-polygon integration by moving work out of the blockwise
+  loop. (`0.7.0.9003`)
 
 # fmesher 0.7.0
 
