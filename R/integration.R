@@ -1799,92 +1799,50 @@ fm_int_mesh_2d_polygon <- function(samplers,
       }
     }
 
-    integ_ <- do.call(rbind, integ_)
-
-    if (method %in% c("stable")) {
-      # Project integration points and weights to mesh nodes
-      integ_ <- fm_vertex_projection(integ_, domain)
-    }
-
-    if (ncol(integ_$loc) > 2) {
-      ipsl <- list(new_fm_int(
-        sf::st_as_sf(
-          tibble::tibble(
-            x = integ_$loc[, 1],
-            y = integ_$loc[, 2],
-            z = integ_$loc[, 3],
-            weight = integ_$weight,
-            .block = integ_$.block
-          ),
-          coords = c("x", "y", "z"),
-          crs = domain_crs
-        ),
-        name = name,
-        override = TRUE
-      ))
-    } else {
-      ipsl <- list(new_fm_int(
-        sf::st_as_sf(
-          tibble::tibble(
-            x = integ_$loc[, 1],
-            y = integ_$loc[, 2],
-            weight = integ_$weight,
-            .block = integ_$.block
-          ),
-          coords = c("x", "y"),
-          crs = domain_crs
-        ),
-        name = name,
-        override = TRUE
-      ))
-    }
+    integ <- do.call(rbind, integ_)
   } else {
-    if (method %in% c("stable")) {
-      # Project integration points and weights to mesh nodes
-      integ <- fm_vertex_projection(integ, domain)
-    }
-
-    if (ncol(integ$loc) > 2) {
-      ipsl <- list(new_fm_int(
-        sf::st_as_sf(
-          tibble::tibble(
-            x = integ$loc[, 1],
-            y = integ$loc[, 2],
-            z = integ$loc[, 3],
-            weight = integ$weight,
-            .block = 1L,
-            bary = integ$bary
-          ),
-          coords = c("x", "y", "z"),
-          crs = domain_crs
-        ),
-        name = name,
-        override = TRUE
-      ))
-    } else {
-      ipsl <- list(new_fm_int(
-        sf::st_as_sf(
-          tibble::tibble(
-            x = integ$loc[, 1],
-            y = integ$loc[, 2],
-            weight = integ$weight,
-            .block = 1L,
-            bary = integ$bary
-          ),
-          coords = c("x", "y"),
-          crs = domain_crs
-        ),
-        name = name,
-        override = TRUE
-      ))
-    }
+    integ$.block <- 1L
   }
 
-  ips <- new_fm_int(
-    do.call(dplyr::bind_rows, ipsl),
-    name = name,
-    override = TRUE
-  )
+  if (method %in% c("stable")) {
+    # Project integration points and weights to mesh nodes
+    integ <- fm_vertex_projection(integ, domain)
+  }
+
+  if (ncol(integ$loc) > 2) {
+    ips <- new_fm_int(
+      sf::st_as_sf(
+        tibble::tibble(
+          x = integ$loc[, 1],
+          y = integ$loc[, 2],
+          z = integ$loc[, 3],
+          weight = integ$weight,
+          .block = integ$.block,
+          bary = integ$bary
+        ),
+        coords = c("x", "y", "z"),
+        crs = domain_crs
+      ),
+      name = name,
+      override = TRUE
+    )
+  } else {
+    ips <- new_fm_int(
+      sf::st_as_sf(
+        tibble::tibble(
+          x = integ$loc[, 1],
+          y = integ$loc[, 2],
+          weight = integ$weight,
+          .block = integ$.block,
+          bary = integ$bary
+        ),
+        coords = c("x", "y"),
+        crs = domain_crs
+      ),
+      name = name,
+      override = TRUE
+    )
+  }
 
   ips
 }
