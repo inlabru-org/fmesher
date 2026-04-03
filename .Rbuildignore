@@ -30,3 +30,4 @@ _config.yml
 ^revdep$
 ^air\.toml$
 ^jarl\.toml$
+^\.pre-commit-config\.yaml$
