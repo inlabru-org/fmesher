@@ -62,7 +62,8 @@ object.
 
 ``` r
 library(Matrix)
-str(A <- fm_as_dgCMatrix(matrix(c(1, 2, 0, 0, 0, 3, 4, 0, 5), 3, 3)))
+A <- fm_as_dgCMatrix(matrix(c(1, 2, 0, 0, 0, 3, 4, 0, 5), 3, 3))
+str(A)
 #> Formal class 'dgCMatrix' [package "Matrix"] with 6 slots
 #>   ..@ i       : int [1:5] 0 1 2 0 2
 #>   ..@ p       : int [1:4] 0 2 3 5

@@ -44,19 +44,20 @@ plot(mesh_sub)
 
 
 if (requireNamespace("geometry", quietly = TRUE)) {
-  print(m <- fm_delaunay_3d(matrix(rnorm(30), 10, 3)))
+  m <- fm_delaunay_3d(matrix(rnorm(30), 10, 3))
+  print(m)
   print(fm_subset(m, seq_len(min(5, nrow(m$graph$tv)))))
 }
 #> fm_mesh_3d object:
 #>   Manifold:  R3
-#>   V / E / T / Tet:   10 / 38 / 54 / 25
+#>   V / E / T / Tet:   10 / 36 / 50 / 23
 #>   Euler char.:   1
-#>   Bounding box: (-2.586141, 1.095199) x (-2.178999, 2.512680) x (-1.243433, 1.748147)
+#>   Bounding box: (-1.307042, 2.325888) x (-1.064937, 2.113168) x (-1.2234204, 0.9558412)
 #>   Basis d.o.f.:  10
 #> fm_mesh_3d object:
 #>   Manifold:  R3
 #>   V / E / T / Tet:   8 / 19 / 17 / 5
 #>   Euler char.:   1
-#>   Bounding box: (-2.586141, 1.095199) x (-2.178999, 2.512680) x (-1.243433, 1.748147)
+#>   Bounding box: (-1.307042, 2.325888) x (-1.064937, 2.113168) x (-1.2234204, 0.9558412)
 #>   Basis d.o.f.:  8
 ```

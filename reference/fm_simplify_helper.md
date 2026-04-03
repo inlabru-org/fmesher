@@ -57,7 +57,7 @@ Finn Lindgren <Finn.Lindgren@gmail.com>
 ``` r
 theta <- seq(0, 2 * pi, length.out = 1000)
 loc <- cbind(cos(theta), sin(theta))
-idx <- fm_simplify_helper(loc = loc, idx = 1:nrow(loc), eps = 0.01)
+idx <- fm_simplify_helper(loc = loc, idx = seq_len(nrow(loc)), eps = 0.01)
 print(c(nrow(loc), length(idx)))
 #> [1] 1000   33
 plot(loc, type = "l")
