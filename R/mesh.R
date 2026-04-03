@@ -271,7 +271,8 @@ fm_subdivide <- function(mesh, n = 1, delaunay = FALSE) {
 #' plot(mesh_sub)
 #'
 #' if (requireNamespace("geometry", quietly = TRUE)) {
-#'   print(m <- fm_delaunay_3d(matrix(rnorm(30), 10, 3)))
+#'   m <- fm_delaunay_3d(matrix(rnorm(30), 10, 3))
+#'   print(m)
 #'   print(fm_subset(m, seq_len(min(5, nrow(m$graph$tv)))))
 #' }
 fm_subset <- function(mesh, t_sub) {
@@ -317,7 +318,7 @@ join_segm <- function(...) {
   new_idx <- seq_len(nrow(loc))
   prev_idx <- 0
   for (k in seq_len(nrow(loc))) {
-    if (any(is.na(new_loc[k, ]))) {
+    if (anyNA(new_loc[k, ])) {
       new_idx[k] <- NA
     } else {
       if (prev_idx == 0) {

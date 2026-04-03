@@ -13,15 +13,15 @@ test_that("Flat CDT works", {
   expect_equal(fm_manifold(mesh), "R2")
   expect_equal(fm_manifold_type(mesh), "R")
   expect_equal(fm_manifold_dim(mesh), 2)
-  expect_equal(fm_manifold(mesh, "R"), TRUE)
-  expect_equal(fm_manifold(mesh, "2"), TRUE)
-  expect_equal(fm_manifold(mesh, "R2"), TRUE)
-  expect_equal(fm_manifold(mesh, "S"), FALSE)
-  expect_equal(fm_manifold(mesh, "1"), FALSE)
-  expect_equal(fm_manifold(mesh, "S1"), FALSE)
+  expect_true(fm_manifold(mesh, "R"))
+  expect_true(fm_manifold(mesh, "2"))
+  expect_true(fm_manifold(mesh, "R2"))
+  expect_false(fm_manifold(mesh, "S"))
+  expect_false(fm_manifold(mesh, "1"))
+  expect_false(fm_manifold(mesh, "S1"))
   # Check issue #16, where it ignored all but the first type option:
-  expect_equal(fm_manifold(mesh, c("R", "S")), TRUE)
-  expect_equal(fm_manifold(mesh, c("S", "R")), TRUE)
+  expect_true(fm_manifold(mesh, c("R", "S")))
+  expect_true(fm_manifold(mesh, c("S", "R")))
 
   edges <- list(
     mesh$loc[mesh$graph$tv[, 2], ] - mesh$loc[mesh$graph$tv[, 1], ],
@@ -55,12 +55,12 @@ test_that("Spherical CDT works", {
   expect_equal(fm_manifold(mesh), "S2")
   expect_equal(fm_manifold_type(mesh), "S")
   expect_equal(fm_manifold_dim(mesh), 2)
-  expect_equal(fm_manifold(mesh, "S"), TRUE)
-  expect_equal(fm_manifold(mesh, "2"), TRUE)
-  expect_equal(fm_manifold(mesh, "S2"), TRUE)
-  expect_equal(fm_manifold(mesh, "R"), FALSE)
-  expect_equal(fm_manifold(mesh, "1"), FALSE)
-  expect_equal(fm_manifold(mesh, "R1"), FALSE)
+  expect_true(fm_manifold(mesh, "S"))
+  expect_true(fm_manifold(mesh, "2"))
+  expect_true(fm_manifold(mesh, "S2"))
+  expect_false(fm_manifold(mesh, "R"))
+  expect_false(fm_manifold(mesh, "1"))
+  expect_false(fm_manifold(mesh, "R1"))
 
   edges <- list(
     mesh$loc[mesh$graph$tv[, 2], ] - mesh$loc[mesh$graph$tv[, 1], ],

@@ -184,7 +184,7 @@ fm_cprod <- function(..., na.rm = NULL, .blockwise = FALSE) {
   nms2 <- intersect(nms, setdiff(nms2, nms_joint))
   ips <- ips[, c(nms1, nms2, nms_joint), drop = FALSE]
 
-  if (any(is.na(ips$weight)) && !isFALSE(na.rm)) {
+  if (anyNA(ips$weight) && !isFALSE(na.rm)) {
     if (is.null(na.rm)) {
       warning(
         paste0(
@@ -527,10 +527,8 @@ fm_int.list <- function(domain, samplers = NULL, ..., extra = NULL) {
               "  or use other supported multi-sampler class instead."
             )
           )
-          NULL
-        } else {
-          names(x)
         }
+        names(x)
       }
     )
   # coordinate and geometry are not required here
@@ -1267,7 +1265,7 @@ fm_vertex_projection <- function(points, mesh) {
 
   ok <- !is.na(tri)
   ok[ok] <- (tri[ok] > 0)
-  if (any(!ok)) {
+  if (!all(ok)) {
     warning(
       paste0(
         "Some integration points were outside the mesh;",

@@ -55,7 +55,7 @@ fm_lattice_Nd.matrix <- function(
   if (is.null(dims)) {
     stop("The 'dims' argument must be specified.")
   }
-  if (!(nrow(x) == prod(dims))) {
+  if (nrow(x) != prod(dims)) {
     stop("The number of rows in 'x' must match the product of 'dims'.")
   }
   if (is.null(values)) {
@@ -113,7 +113,7 @@ fm_lattice_Nd.list <- function(
     values <- lapply(seq_len(ncol(loc)), function(k) sort(unique(loc[, k])))
     names(values) <- names(x)
   } else {
-    if (!all(!mat)) {
+    if (any(mat)) {
       stop("The x elements must all be arrays or all be vectors.")
     }
     if (is.null(dims)) {

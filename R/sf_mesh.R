@@ -108,7 +108,7 @@ fm_as_sfc.fm_segm <- function(x, ..., multi = FALSE) {
   segm_int <- vapply(
     seq_along(segm_comp),
     function(k) {
-      all(!fm_is_bnd(segm_comp[[k]]))
+      !any(fm_is_bnd(segm_comp[[k]]))
     },
     logical(1L)
   )

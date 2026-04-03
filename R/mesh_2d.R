@@ -1097,16 +1097,16 @@ fm_hexagon_lattice_orig <- function(bnd,
   y_bin <- as.integer(y_diff / (sqrt(3) / 2 * edge_len))
   # TODO rep n, n-1, length
   h <- (sqrt(3) / 2 * edge_len) # height
-  x_adj <- .5 * (x_diff - x_bin * edge_len)
-  y_adj <- .5 * (y_diff - y_bin * h)
+  x_adj <- 0.5 * (x_diff - x_bin * edge_len)
+  y_adj <- 0.5 * (y_diff - y_bin * h)
   # x
   x_1_ <- seq(
     fm_bbox(bnd_inner)[[1]][1] + x_adj,
     fm_bbox(bnd_inner)[[1]][2] - x_adj, edge_len
   )
   x_2_ <- seq(
-    (fm_bbox(bnd_inner)[[1]][1] + x_adj + .5 * edge_len),
-    (fm_bbox(bnd_inner)[[1]][2] - x_adj - .5 * edge_len),
+    (fm_bbox(bnd_inner)[[1]][1] + x_adj + 0.5 * edge_len),
+    (fm_bbox(bnd_inner)[[1]][2] - x_adj - 0.5 * edge_len),
     edge_len
   )
   y_1_ <- seq(

@@ -1431,27 +1431,16 @@ fm_block_eval <- function(block = NULL,
       rescale = rescale
     )
 
-  if (FALSE) {
-    val <-
-      Matrix::sparseMatrix(
-        i = info$block,
-        j = rep(1L, length(info$block)),
-        x = as.numeric(values * weights),
-        dims = c(info$n_block, 1)
-      )
-    as.vector(val)
-  } else {
-    agg <- stats::aggregate(
-      data.frame(x = values * weights),
-      by = list(block = info[["block"]]),
-      FUN = sum,
-      simplify = TRUE,
-      drop = TRUE
-    )
-    val <- numeric(info$n_block)
-    val[agg[["block"]]] <- agg[["x"]]
-    val
-  }
+  agg <- stats::aggregate(
+    data.frame(x = values * weights),
+    by = list(block = info[["block"]]),
+    FUN = sum,
+    simplify = TRUE,
+    drop = TRUE
+  )
+  val <- numeric(info$n_block)
+  val[agg[["block"]]] <- agg[["x"]]
+  val
 }
 
 

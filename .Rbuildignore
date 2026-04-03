@@ -28,3 +28,5 @@ _config.yml
 ^LICENSE$
 ^src/.vscode$
 ^revdep$
+^air\.toml$
+^jarl\.toml$

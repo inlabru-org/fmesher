@@ -125,7 +125,7 @@ fm_segm.default <- function(loc = NULL, idx = NULL, grp = NULL, is.bnd = TRUE,
   if (length(is.bnd) == 1L) {
     is.bnd <- rep(is.bnd, nrow(idx))
   } else {
-    if (any(is.bnd) && any(!is.bnd)) {
+    if (any(is.bnd) && !all(is.bnd)) {
       warning(
         "Mixed is.bnd status within a single fm_segm is",
         " not yet supported, replacing with FALSE."
@@ -229,10 +229,10 @@ fm_segm_join <- function(x, grp = NULL, grp.default = 0L, is.bnd = NULL) {
       is.bnd <- TRUE
     } else {
       is.bnd <- vapply(segm_, function(x) all(fm_is_bnd(x)), TRUE)
-      not.is.bnd <- vapply(segm_, function(x) all(!fm_is_bnd(x)), TRUE)
-      if ((all(is.bnd) && all(!not.is.bnd)) ||
-        (all(!is.bnd) && all(not.is.bnd))) {
-        is.bnd <- all(is.bnd) && all(!not.is.bnd)
+      not.is.bnd <- vapply(segm_, function(x) !any(fm_is_bnd(x)), TRUE)
+      if ((all(is.bnd) && !any(not.is.bnd)) ||
+        (!any(is.bnd) && all(not.is.bnd))) {
+        is.bnd <- all(is.bnd) && !any(not.is.bnd)
       } else {
         warning("Inconsistent 'is.bnd' attributes.  Setting 'is.bnd=FALSE'.")
         is.bnd <- FALSE
@@ -491,7 +491,7 @@ fm_area <- function(x, ...) {
 #' @export
 #' @rdname fm_area
 fm_area.fm_segm <- function(x, ...) {
-  if ((NROW(x[["idx"]]) == 0) || all(!fm_is_bnd(x))) {
+  if ((NROW(x[["idx"]]) == 0) || !any(fm_is_bnd(x))) {
     return(0)
   }
 

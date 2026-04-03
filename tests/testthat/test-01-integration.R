@@ -474,7 +474,7 @@ test_that("Block integration has correct result order", {
     values = rep(1, nrow(ips))
   )
 
-  expect_equal(length(vals), nrow(samplers))
+  expect_length(vals, nrow(samplers))
   expect_equal(vals, (1:10) * sum(ips0$weight))
 
   # Multi-domain, at least one with >= 10 blocks
@@ -505,6 +505,6 @@ test_that("Block integration has correct result order", {
     values = rep(1, nrow(ips))
   )
 
-  expect_equal(length(vals), nrow(samplers) * 2)
+  expect_length(vals, nrow(samplers) * 2)
   expect_equal(vals, c((1:10), (1:10) * 100) * sum(ips0$weight))
 })

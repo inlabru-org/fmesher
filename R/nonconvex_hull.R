@@ -230,7 +230,7 @@ fm_nonconvex_hull <- function(x, ..., format = "sf", method = "fm") {
 #' @returns `fm_extensions()` returns a list of `sfc` objects.
 #' @export
 #' @examples
-#' if (TRUE) {
+#' if (requireNamespace("sf")) {
 #'   inp <- sf::st_as_sf(as.data.frame(matrix(1:6, 3, 2)), coords = 1:2)
 #'   bnd <- fm_extensions(inp, convex = c(0.75, 2))
 #'   plot(fm_mesh_2d(boundary = bnd, max.edge = c(0.25, 1)), asp = 1)
