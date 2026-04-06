@@ -103,16 +103,16 @@ protected:
 
 public:
   MCQtri(MeshC *MC, bool only_quality, double quality_limit,
-         const double *quality_limits = NULL, size_t nQL = 0);
+         const double *quality_limits = nullptr, size_t nQL = 0);
   MCQtri(MCQtri const& rhs) = delete;
   MCQtri& operator=(MCQtri const& rhs) = delete;
 
-  void setQ(double quality_limit, const double *quality_limits = NULL,
+  void setQ(double quality_limit, const double *quality_limits = nullptr,
             size_t nQL = 0);
   void setQv(int v, double quality_limit);
-  bool usingQv() const { return (quality_limits_ != NULL); };
+  bool usingQv() const { return (quality_limits_ != nullptr); };
   double getQv(int v) const {
-    if (quality_limits_ == NULL)
+    if (quality_limits_ == nullptr)
       return quality_limit_;
     else {
       return quality_limits_[v];
@@ -299,7 +299,7 @@ private:
     \brief Initialise the RCDT data structures.
   */
   bool prepareRCDT(double skinny_limit, double big_limit,
-                   const double *big_limits = NULL, size_t nQL = 0,
+                   const double *big_limits = nullptr, size_t nQL = 0,
                    int max_n0 = -1, int max_n1 = -1);
   /*!
     \brief Build a RCDT.
@@ -308,13 +308,13 @@ private:
 
 public:
   MeshC()
-      : M_(NULL), boundary_(this), interior_(this), skinny_(this),
-        big_(this), // big_limits_(NULL),
+      : M_(nullptr), boundary_(this), interior_(this), skinny_(this),
+        big_(this), // big_limits_(nullptr),
         max_n0_(-1), max_n1_(-1), state_(State_noT), is_pruned_(false),
         options_(Option_null){};
   MeshC(Mesh *M)
       : M_(M), boundary_(this), interior_(this), skinny_(this),
-        big_(this), // big_limits_(NULL),
+        big_(this), // big_limits_(nullptr),
         max_n0_(-1), max_n1_(-1), state_(State_noT), is_pruned_(false),
         options_(Option_null) {
     if (M_->nT() > 0) {
@@ -365,16 +365,16 @@ public:
     \param boundary indicates if boundary or interior segments
     should be appended. Call once with true and once with false
     to extract all segments.
-    \param segm Where to append the segments.  Set to NULL if only the
+    \param segm Where to append the segments.  Set to nullptr if only the
     number of segments is to be returned.
     \param segmgrp Where to append the group metadata for each segment.
-    If NULL, the group metadata is discarded.
+    If nullptr, the group metadata is discarded.
 
-    \return The number of appended segments (if segm!=NULL) or
-            the number of segments in seg (if segm==NULL)
+    \return The number of appended segments (if segm!=nullptr) or
+            the number of segments in seg (if segm==nullptr)
    */
-  int segments(bool boundary, Matrix<int> *segm = NULL,
-               Matrix<int> *segmgrp = NULL) const;
+  int segments(bool boundary, Matrix<int> *segm = nullptr,
+               Matrix<int> *segmgrp = nullptr) const;
 
   void make_boundary_segments();
 
@@ -457,7 +457,7 @@ public:
     \brief Refine a CDT
   */
   bool RCDT(double angle_limit, double big_limit,
-            const double *big_limits = NULL, size_t nQL = 0, int max_n0 = -1,
+            const double *big_limits = nullptr, size_t nQL = 0, int max_n0 = -1,
             int max_n1 = -1);
 
   friend std::ostream &operator<<(std::ostream &output, const MeshC &MC);

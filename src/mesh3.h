@@ -199,11 +199,11 @@ public:
   Dart3Pair trace_path(const Dart3 &d0,
                        const Point &s,
                        const int v = -1,
-                       Dart3List *trace = NULL) const;
+                       Dart3List *trace = nullptr) const;
   Dart3Pair trace_path(const Point &s0,
                        const Point &s1,
                        const Dart3 &d0,
-                       Dart3List *trace = NULL) const;
+                       Dart3List *trace = nullptr) const;
   Dart3 locate_point(const Dart3 &d0,
                      const Point &s,
                      const int v = -1) const;
@@ -334,7 +334,7 @@ private:
   int tet_;
 
 public:
-  Dart3(void) : M_(NULL), tri_(), tet_(0){};
+  Dart3(void) : M_(nullptr), tri_(), tet_(0){};
   Dart3(const Mesh3 &M, int t = 0)
     : M_(&M), tri_(), tet_(t){
     tri_ = Dart(M_->M_local_);

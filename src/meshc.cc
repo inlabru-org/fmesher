@@ -71,7 +71,7 @@ void MCQ::erase(const Dart &d) {
 MCQtri::MCQtri(MeshC *MC, bool only_quality, double quality_limit,
                const double *quality_limits, size_t nQL)
     : MCQ(MC, only_quality), quality_limit_(quality_limit),
-      quality_limits_(NULL), quality_limits_cap_(0) {
+      quality_limits_(nullptr), quality_limits_cap_(0) {
   setQ(quality_limit, quality_limits, nQL);
 }
 
@@ -92,7 +92,7 @@ void MCQtri::setQ(double quality_limit, const double *quality_limits,
     }
   } else {
     if (quality_limits_) {
-      quality_limits_ = NULL;
+      quality_limits_ = nullptr;
     }
   }
 }
@@ -111,7 +111,7 @@ void MCQtri::setQv(int v, double quality_limit) {
 }
 
 double MCQtri::getQ(int t) const {
-  if (quality_limits_ == NULL)
+  if (quality_limits_ == nullptr)
     return quality_limit_;
   else {
     double lim = quality_limits_[MC_->M_->TV(t)[0]];
@@ -344,7 +344,7 @@ intDartMapT::iterator find_next_dart_in_set(Dart d, intDartMapT &map_v0_d) {
 int extract_segments(const MCQsegm &seg, Matrix<int> *segm,
                      Matrix<int> *segmgrp) {
   FMLOG("seg.count = " << seg.count() << std::endl);
-  if (segm == NULL) {
+  if (segm == nullptr) {
     return seg.count();
   }
 
@@ -956,8 +956,8 @@ bool MeshC::CETsphere(int sides, double margin) {
     int v1 = -1;
     int v2 = -1;
     int v3 = -1;
-    Point const *s1 = NULL;
-    Point const *s2 = NULL;
+    Point const *s1 = nullptr;
+    Point const *s2 = nullptr;
 
     FMLOG("First point,"
           << " v0=" << v0 << " s0=" << *s0 << endl);

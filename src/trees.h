@@ -104,7 +104,7 @@ public:
     }
 
   public:
-    explicit Iterator() : tree_(NULL), current_(-1){};
+    explicit Iterator() : tree_(nullptr), current_(-1){};
     Iterator(ContainerRefType *tree, int idx = 0) : tree_(tree), current_(idx) {
       if (current_ >= tree_->size())
         current_ = -1;
@@ -185,7 +185,7 @@ protected:
 
 public:
   explicit Search_iterator()
-      : C_(NULL), loc_(), loc_next_i_(), is_null_(true){};
+      : C_(nullptr), loc_(), loc_next_i_(), is_null_(true){};
   Search_iterator(const ContainerType *C,
                   const typename std::vector<T>::const_iterator &loc_i)
       : C_(C), loc_(*loc_i), loc_i_(loc_i), loc_next_i_(loc_i), is_null_(true) {
@@ -643,7 +643,7 @@ public:
 
   void build_tree(void) {
     if (tree_) {
-      tree_ = NULL;
+      tree_ = nullptr;
     }
     if (breakpoints_.size() == 0)
       return;

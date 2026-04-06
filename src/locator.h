@@ -71,8 +71,9 @@ public:
 
   public:
     Search_tree_type(int ndim, bool use_interval_tree = true)
-        : ndim_(ndim), use_interval_tree_(use_interval_tree), I_(NULL),
-          S_(NULL), SI_(NULL), SS_(NULL), SSI_(NULL), SSS_(NULL){};
+        : ndim_(ndim), use_interval_tree_(use_interval_tree), I_(nullptr),
+          S_(nullptr), SI_(nullptr), SS_(nullptr),
+          SSI_(nullptr), SSS_(nullptr){};
 
     ~Search_tree_type();
 

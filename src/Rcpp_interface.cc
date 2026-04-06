@@ -343,7 +343,7 @@ Rcpp::List fmesher_rcdt(Rcpp::List options,
   FMLOG("'loc' points imported." << std::endl);
 
   Matrix<double>& iS0 = matrices.DD("loc");
-  Matrix<int>* TV0 = NULL;
+  Matrix<int>* TV0 = nullptr;
   if (!tv.isNull()) {
     matrices.attach("tv0",
                     std::make_unique<Matrix<int>>(Rcpp::as<Rcpp::IntegerMatrix>(tv)));

@@ -345,7 +345,7 @@ int main(int argc, char *argv[]) {
 
   FMLOG("TV0" << std::endl);
 
-  Matrix<int> *TV0 = NULL;
+  Matrix<int> *TV0 = nullptr;
   if (input_tv0_name != "-") {
     if (!matrices.load(input_tv0_name).active) {
       FMLOG_("Matrix " + input_tv0_name + " not found." << endl);
