@@ -126,16 +126,30 @@ fm_diameter.fm_mesh_3d <- function(x, ...) {
   fm_diameter.matrix(x$loc, manifold = fm_manifold(x), ...)
 }
 
-#' @rdname fm_diameter
+#' @describeIn fm_diameter Returns either a single diameter bound (default), or
+#'   a vector of sub-domain bounds; see the `multi` argument.
+#' @param multi logical; For multi-domain spaces (e.g. [fm_tensor] and
+#'   [fm_collect]), if `TRUE`, return a vector of diameter bounds for each
+#'   domain. If `FALSE` (the default), return a single diameter bound, by taking
+#'   the maximum of the individual bounds.
 #' @export
-fm_diameter.fm_tensor <- function(x, ...) {
-  vapply(x[["fun_spaces"]], fm_diameter, ..., 1.0)
+fm_diameter.fm_tensor <- function(x, ..., multi = FALSE) {
+  dia <- vapply(x[["fun_spaces"]], fm_diameter, ..., 1.0)
+  if (!multi) {
+    dia <- max(dia)
+  }
+  dia
 }
 
-#' @rdname fm_diameter
+#' @describeIn fm_diameter Returns either a single diameter bound (default), or
+#'   a vector of sub-domain bounds; see the `multi` argument.
 #' @export
-fm_diameter.fm_collect <- function(x, ...) {
-  vapply(x[["fun_spaces"]], fm_diameter, ..., 1.0)
+fm_diameter.fm_collect <- function(x, ..., multi = FALSE) {
+  dia <- vapply(x[["fun_spaces"]], fm_diameter, ..., 1.0)
+  if (!multi) {
+    dia <- max(dia)
+  }
+  dia
 }
 
 #' @rdname fm_diameter

@@ -36,9 +36,9 @@ fm_diameter(x, ...)
 
 \method{fm_diameter}{fm_mesh_3d}(x, ...)
 
-\method{fm_diameter}{fm_tensor}(x, ...)
+\method{fm_diameter}{fm_tensor}(x, ..., multi = FALSE)
 
-\method{fm_diameter}{fm_collect}(x, ...)
+\method{fm_diameter}{fm_collect}(x, ..., multi = FALSE)
 
 \method{fm_diameter}{fm_list}(x, ...)
 }
@@ -53,6 +53,11 @@ fm_diameter(x, ...)
 \eqn{\mathbb{R}^d}{R^d} metrics.
 Use \code{manifold="S2"} for great circle distances on a sphere centred at the
 origin.}
+
+\item{multi}{logical; For multi-domain spaces (e.g. \link{fm_tensor} and
+\link{fm_collect}), if \code{TRUE}, return a vector of diameter bounds for each
+domain. If \code{FALSE} (the default), return a single diameter bound, by taking
+the maximum of the individual bounds.}
 }
 \value{
 A scalar, upper bound for the diameter of the convex hull of the
@@ -62,6 +67,15 @@ point set. For multi-domain spaces (e.g. \code{\link[=fm_tensor]{fm_tensor()}} a
 \description{
 Find an upper bound to the convex hull of a point set or function space
 }
+\section{Methods (by class)}{
+\itemize{
+\item \code{fm_diameter(fm_tensor)}: Returns either a single diameter bound (default), or
+a vector of sub-domain bounds; see the \code{multi} argument.
+
+\item \code{fm_diameter(fm_collect)}: Returns either a single diameter bound (default), or
+a vector of sub-domain bounds; see the \code{multi} argument.
+
+}}
 \examples{
 
 fm_diameter(matrix(c(0, 1, 1, 0, 0, 0, 1, 1), 4, 2))

@@ -1135,7 +1135,9 @@ fm_int.fm_mesh_2d <- function(domain,
   ips
 }
 
-# Extract graph information, ensuring unified storage modes
+
+
+# Extract graph information, ensuring unified storage modes ####
 fm_graph <- function(mesh) {
   if (is.null(mesh$graph$vt) || !is.list(mesh$graph$vt)) {
     # Old storage mode: mesh$graph$vt <- rep(NA_integer_, nrow(mesh$loc))
@@ -1405,6 +1407,32 @@ fm_int_mesh_2d.sf <- function(samplers,
                               ...) {
   if (is.null(name)) {
     name <- attr(samplers, "sf_column")
+  }
+  if (!("weight" %in% names(samplers))) {
+    weight <- rep(1, NROW(samplers))
+  } else {
+    weight <- samplers$weight
+  }
+
+  fm_int_mesh_2d(
+    sf::st_geometry(samplers),
+    domain,
+    name = name,
+    int.args = int.args,
+    .weight = weight,
+    ...
+  )
+}
+
+#' @export
+#' @describeIn fm_int_mesh_2d `sfg` integration
+fm_int_mesh_2d.sfg <- function(samplers,
+                               domain,
+                               name = NULL,
+                               int.args = NULL,
+                               ...) {
+  if (is.null(name)) {
+    name <- "geometry"
   }
   if (!("weight" %in% names(samplers))) {
     weight <- rep(1, NROW(samplers))
@@ -1977,6 +2005,60 @@ fm_int_mesh_2d.fm_segm <- function(samplers,
       int.args = int.args,
       ...
     )
+
+  ips
+}
+
+
+# fm_collect integration ####
+
+#' @export
+#' @describeIn fm_int [fm_collect] integration. Any domain type collection
+#' class with an associated [fm_int()] method is supported. The output format
+#' for the integration points is a tibble with columns `loc` and `index`,
+#' suitable for the `loc` input of the [fm_basis.fm_collect] method.
+#' If non-NULL, the `samplers` input should either be a tibble with columns
+#' `loc` (per-space samplers) and `index` (space index), or a sampler column to
+#' be applied to the entire domain.
+fm_int.fm_collect <- function(domain,
+                              samplers = NULL,
+                              name = NULL,
+                              ...) {
+  if (is.null(name)) {
+    stop("Argument 'name' must be provided for fm_collect integration.")
+  }
+
+  if (is.null(samplers)) {
+    samplers <- tibble::tibble(
+      loc = rep(list(NULL), length(domain$fun_spaces)),
+      index = seq_along(domain$fun_spaces)
+    )
+  } else if (is.data.frame(samplers) &&
+             all(c("loc", "index") %in% names(samplers))) {
+    # Already in the correct format
+  } else {
+    samplers <- tibble::tibble(
+      loc = rep(samplers, length(domain$fun_spaces)),
+      index = seq_along(domain$fun_spaces)
+    )
+  }
+
+  int <- list(nrow(samplers))
+  for (row in seq_len(nrow(samplers))) {
+    int[[row]] <- fm_int(domain$fun_spaces[[samplers$index[row]]],
+                         samplers$loc[[row]],
+                         name = name,
+                         ...)
+    if (inherits(int[[row]], "sf")) {
+      int[[row]] <- tibble::as_tibble(int[[row]])
+    }
+    int[[row]][[name]] <- tibble::tibble(loc = int[[row]][[name]],
+                                         index = samplers$index[row])
+  }
+  ips <- new_fm_int(
+    do.call(dplyr::bind_rows, int),
+    name = name
+  )
 
   ips
 }

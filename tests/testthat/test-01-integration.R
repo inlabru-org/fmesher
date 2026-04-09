@@ -508,3 +508,11 @@ test_that("Block integration has correct result order", {
   expect_length(vals, nrow(samplers) * 2)
   expect_equal(vals, c((1:10), (1:10) * 100) * sum(ips0$weight))
 })
+
+
+
+
+test_that("mesh collection integration", {
+  space <- fm_collect(list(fmexample$mesh, fmexample$mesh))
+  expect_no_error(fm_int(space, name = "space"))
+})
