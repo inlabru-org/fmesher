@@ -3,3 +3,5 @@ repos:
     rev: 0.5.0
     hooks:
       - id: jarl-check
+        pass_filenames: false
+        args: ["."]
