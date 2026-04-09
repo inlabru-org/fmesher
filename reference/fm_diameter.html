@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0.9003</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0.9005</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -87,10 +87,10 @@
 <span><span class="fu">fm_diameter</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'fm_tensor'</span></span>
-<span><span class="fu">fm_diameter</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">fm_diameter</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, multi <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'fm_collect'</span></span>
-<span><span class="fu">fm_diameter</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">fm_diameter</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, multi <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'fm_list'</span></span>
 <span><span class="fu">fm_diameter</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
@@ -116,6 +116,13 @@
 Use <code>manifold="S2"</code> for great circle distances on a sphere centred at the
 origin.</p></dd>
 
+
+<dt id="arg-multi">multi<a class="anchor" aria-label="anchor" href="#arg-multi"></a></dt>
+<dd><p>logical; For multi-domain spaces (e.g. <a href="fm_tensor.html">fm_tensor</a> and
+<a href="fm_collect.html">fm_collect</a>), if <code>TRUE</code>, return a vector of diameter bounds for each
+domain. If <code>FALSE</code> (the default), return a single diameter bound, by taking
+the maximum of the individual bounds.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -123,6 +130,14 @@ origin.</p></dd>
 point set. For multi-domain spaces (e.g. <code><a href="fm_tensor.html">fm_tensor()</a></code> and
 <code><a href="fm_collect.html">fm_collect()</a></code>), a vector of upper bounds for each domain is returned.</p>
     </div>
+    <div class="section level2">
+    <h2 id="methods-by-class-">Methods (by class)<a class="anchor" aria-label="anchor" href="#methods-by-class-"></a></h2>
+
+<ul><li><p><code>fm_diameter(fm_tensor)</code>: Returns either a single diameter bound (default), or
+a vector of sub-domain bounds; see the <code>multi</code> argument.</p></li>
+<li><p><code>fm_diameter(fm_collect)</code>: Returns either a single diameter bound (default), or
+a vector of sub-domain bounds; see the <code>multi</code> argument.</p></li>
+</ul></div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
     <p>Finn Lindgren <a href="mailto:Finn.Lindgren@gmail.com">Finn.Lindgren@gmail.com</a></p>

@@ -12,6 +12,13 @@
   vertex-to-triangle information in multiple formats (`0.7.0.9002`)
 - Speed up multi-polygon integration by moving work out of the blockwise
   loop. (`0.7.0.9003`)
+- Add `multi` argument with default `FALSE` to
+  [`fm_diameter()`](https://inlabru-org.github.io/fmesher/reference/fm_diameter.md)
+  for multi-domain spaces (`fm_tensor` and `fm_collect`) so that only
+  user code that needs to be aware of per-domain diameters need to
+  handle the multi-domain case. (`0.7.0.9004`)
+- Add `fm_int<fm_collect>` method of integration on `fm_collect` spaces
+  (`0.7.0.9005`)
 
 ## fmesher 0.7.0
 

@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0.9003</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0.9005</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -95,7 +95,10 @@
 <span>  int.args <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  format <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'fm_collect'</span></span>
+<span><span class="fu">fm_int</span><span class="op">(</span><span class="va">domain</span>, samplers <span class="op">=</span> <span class="cn">NULL</span>, name <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -176,6 +179,13 @@ and optionally a <code>weight</code> column.</p></li>
 </ul></li>
 <li><p><code>fm_int(fm_mesh_2d)</code>: <code>fm_mesh_2d</code> integration. Any sampler class with an
 associated <code><a href="fm_int_mesh_2d.html">fm_int_mesh_2d()</a></code> method is supported.</p></li>
+<li><p><code>fm_int(fm_collect)</code>: <a href="fm_collect.html">fm_collect</a> integration. Any domain type collection
+class with an associated <code>fm_int()</code> method is supported. The output format
+for the integration points is a tibble with columns <code>loc</code> and <code>index</code>,
+suitable for the <code>loc</code> input of the <a href="fm_basis.html">fm_basis.fm_collect</a> method.
+If non-NULL, the <code>samplers</code> input should either be a tibble with columns
+<code>loc</code> (per-space samplers) and <code>index</code> (space index), or a sampler column to
+be applied to the entire domain.</p></li>
 </ul></div>
 
     <div class="section level2">

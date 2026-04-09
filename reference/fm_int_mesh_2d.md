@@ -12,6 +12,9 @@ fm_int_mesh_2d_NULL(samplers, domain, name = NULL, int.args = NULL, ...)
 # S3 method for class 'sf'
 fm_int_mesh_2d(samplers, domain, name = NULL, int.args = NULL, ...)
 
+# S3 method for class 'sfg'
+fm_int_mesh_2d(samplers, domain, name = NULL, int.args = NULL, ...)
+
 # S3 method for class 'sfc_POINT'
 fm_int_mesh_2d(
   samplers,
@@ -154,6 +157,8 @@ and additional columns `weight` and `.block`
 ## Methods (by class)
 
 - `fm_int_mesh_2d(sf)`: `sf` integration
+
+- `fm_int_mesh_2d(sfg)`: `sfg` integration
 
 - `fm_int_mesh_2d(sfc_POINT)`: `sfc_POINT` integration
 
