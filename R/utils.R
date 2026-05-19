@@ -36,11 +36,11 @@ fm_caller_name <- function(which = 0L, override = NULL) {
   name
 }
 
-#' @describeIn call-stack
+#' @describeIn call-stack Character vector describing the call stack.
 #'
 #' @param start The stack starting point
 #' @param end The stack end point
-#' @param with_numbers INclude call stack location numbers
+#' @param with_numbers Include call stack location numbers
 #' @param \dots Currently unused
 #' @returns `fm_call_stack` returns a character vector
 #' @export

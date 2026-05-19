@@ -33,7 +33,7 @@ of the \code{sf} object. Use \code{unlist(fm_contains(...))} if the combined uni
 needed.
 }
 \description{
-Wrapper for the \code{\link[sf:geos_binary_pred]{sf::st_contains()}} (previously \code{sp::over()}) method to find
+Wrapper for the \code{\link[sf:st_contains]{sf::st_contains()}} (previously \code{sp::over()}) method to find
 triangle centroids or vertices inside \code{sf} or \code{sp} polygon objects
 }
 \examples{

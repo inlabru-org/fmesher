@@ -86,9 +86,9 @@ suppressWarnings(
 \seealso{
 \code{\link[=fm_nonconvex_hull]{fm_nonconvex_hull()}}
 
-Other nonconvex inla legacy support: 
-\code{\link{fm_segm_contour_helper}()},
-\code{\link{fm_simplify_helper}()}
+Other nonconvex inla legacy support:
+\code{\link[=fm_segm_contour_helper]{fm_segm_contour_helper()}},
+\code{\link[=fm_simplify_helper]{fm_simplify_helper()}}
 }
 \concept{nonconvex inla legacy support}
 \keyword{internal}

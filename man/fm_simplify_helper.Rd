@@ -44,9 +44,9 @@ plot(loc, type = "l")
 lines(loc[idx, ], col = "red")
 }
 \seealso{
-Other nonconvex inla legacy support: 
-\code{\link{fm_nonconvex_hull_inla}()},
-\code{\link{fm_segm_contour_helper}()}
+Other nonconvex inla legacy support:
+\code{\link[=fm_nonconvex_hull_inla]{fm_nonconvex_hull_inla()}},
+\code{\link[=fm_segm_contour_helper]{fm_segm_contour_helper()}}
 }
 \author{
 Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}

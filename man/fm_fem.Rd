@@ -32,7 +32,7 @@ object}
 \item{aniso}{If non-NULL, a \code{list(gamma, v)}. Calculates anisotropic
 structure matrices (in addition to the regular) for \eqn{\gamma}{gamma} and
 \eqn{v}{v} for an anisotropic operator \eqn{\nabla\cdot H \nabla}{div H
-  grad}, where \eqn{H=\gamma I + v v^\top}{H = gamma I + v v'}. Currently
+grad}, where \eqn{H=\gamma I + v v^\top}{H = gamma I + v v'}. Currently
 (2023-08-05) the fields need to be given per vertex.}
 }
 \value{

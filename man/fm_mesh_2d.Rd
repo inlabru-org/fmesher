@@ -106,24 +106,24 @@ fm_mesh_2d_inla(boundary = fm_extensions(cbind(2, 1), convex = 1, 2))
 \code{\link[=fm_rcdt_2d]{fm_rcdt_2d()}}, \code{\link[=fm_mesh_2d]{fm_mesh_2d()}}, \code{\link[=fm_delaunay_2d]{fm_delaunay_2d()}},
 \code{\link[=fm_nonconvex_hull]{fm_nonconvex_hull()}}, \code{\link[=fm_extensions]{fm_extensions()}}, \code{\link[=fm_refine]{fm_refine()}}
 
-Other object creation and conversion: 
-\code{\link{fm_as_collect}()},
-\code{\link{fm_as_fm}()},
-\code{\link{fm_as_lattice_2d}()},
-\code{\link{fm_as_lattice_Nd}()},
-\code{\link{fm_as_mesh_1d}()},
-\code{\link{fm_as_mesh_2d}()},
-\code{\link{fm_as_mesh_3d}()},
-\code{\link{fm_as_segm}()},
-\code{\link{fm_as_sfc}()},
-\code{\link{fm_as_tensor}()},
-\code{\link{fm_collect}()},
-\code{\link{fm_lattice_2d}()},
-\code{\link{fm_lattice_Nd}()},
-\code{\link{fm_mesh_1d}()},
-\code{\link{fm_segm}()},
-\code{\link{fm_simplify}()},
-\code{\link{fm_tensor}()}
+Other object creation and conversion:
+\code{\link[=fm_as_collect]{fm_as_collect()}},
+\code{\link[=fm_as_fm]{fm_as_fm()}},
+\code{\link[=fm_as_lattice_2d]{fm_as_lattice_2d()}},
+\code{\link[=fm_as_lattice_Nd]{fm_as_lattice_Nd()}},
+\code{\link[=fm_as_mesh_1d]{fm_as_mesh_1d()}},
+\code{\link[=fm_as_mesh_2d]{fm_as_mesh_2d()}},
+\code{\link[=fm_as_mesh_3d]{fm_as_mesh_3d()}},
+\code{\link[=fm_as_segm]{fm_as_segm()}},
+\code{\link[=fm_as_sfc]{fm_as_sfc()}},
+\code{\link[=fm_as_tensor]{fm_as_tensor()}},
+\code{\link[=fm_collect]{fm_collect()}},
+\code{\link[=fm_lattice_2d]{fm_lattice_2d()}},
+\code{\link[=fm_lattice_Nd]{fm_lattice_Nd()}},
+\code{\link[=fm_mesh_1d]{fm_mesh_1d()}},
+\code{\link[=fm_segm]{fm_segm()}},
+\code{\link[=fm_simplify]{fm_simplify()}},
+\code{\link[=fm_tensor]{fm_tensor()}}
 }
 \author{
 Finn Lindgren \href{mailto:Finn.Lindgren@gmail.com}{Finn.Lindgren@gmail.com}
