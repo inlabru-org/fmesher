@@ -11,10 +11,10 @@ several features that aren’t widely known. The code started as an
 implementation of the triangulation method detailed in [Hjelle and
 Dæhlen, “Triangulations and Applications”
 (2006)](https://link.springer.com/book/10.1007/3-540-33261-8), which
-includes methods for spatially varying mesh quality.[¹](#fn1) Over time,
-the interface and feature improvements focused on robustness and
-calculating useful mesh properties, but the more advanced mesh quality
-features are still there!
+includes methods for spatially varying mesh quality.[^1] Over time, the
+interface and feature improvements focused on robustness and calculating
+useful mesh properties, but the more advanced mesh quality features are
+still there!
 
 The algorithm first builds a basic mesh, including any points the user
 specifies, as well as any boundary curves (if no boundary curve is
@@ -38,6 +38,7 @@ positive.
 A basic mesh with regular interior triangles can be created as follows:
 
 ``` r
+
 library(ggplot2)
 library(fmesher)
 
@@ -66,6 +67,7 @@ default minimum angle criterion (21 degrees) but ignore the edge length
 criterion. To get smaller triangles, we change the `max.edge` value:
 
 ``` r
+
 mesh2 <- fm_rcdt_2d_inla(
   loc = loc,
   boundary = bnd,
@@ -92,6 +94,7 @@ as a function of location, and feed the output of that to
 `max.edge`:
 
 ``` r
+
 qual_loc <- function(loc) {
   if (inherits(loc, c("sf", "sfc", "sfg"))) {
     loc <- sf::st_coordinates(loc)
@@ -120,6 +123,7 @@ We can also use different settings on the boundary, e.g. `NA_real_` or
 `Inf` to make it not care about edge lengths near the boundary:
 
 ``` r
+
 qual_bnd <- function(loc) {
   rep(Inf, nrow(loc))
 }
@@ -145,6 +149,7 @@ setting the `max.n.strict` and `max.n` values in the `refine` parameter
 list, that prohibits adding infinitely many triangles!
 
 ``` r
+
 qual_bnd <- function(loc) {
   if (inherits(loc, c("sf", "sfc", "sfg"))) {
     loc <- sf::st_coordinates(loc)
@@ -176,6 +181,7 @@ The `fm_assess` function may provide some insights into the effect of
 variable mesh quality settings:
 
 ``` r
+
 out <- fm_assess(mesh5,
   spatial.range = 5,
   alpha = 2,
@@ -186,6 +192,7 @@ print(names(out))
 ```
 
 ``` r
+
 ggplot() +
   geom_tile(
     data = out,
@@ -208,6 +215,7 @@ nominal variance specified by the continuous domain model and the
 variance of the discretise model are similar.
 
 ``` r
+
 sd.dev.limits <- 1 + c(-1, 1) * max(abs(range(out$sd.dev, na.rm = TRUE) - 1))
 col.values <- 2 * seq(0, 1, length.out = 100) - 1
 col.values <- (sign(col.values) * abs(col.values)^1.5 + 1) / 2
@@ -238,6 +246,7 @@ triangles. We can improve things by increasing the minimum angle
 criterion:
 
 ``` r
+
 mesh6 <- fm_rcdt_2d_inla(
   loc = loc,
   boundary = bnd,
@@ -259,6 +268,7 @@ out6 <- fm_assess(mesh6,
 ```
 
 ``` r
+
 ggplot() +
   geom_tile(
     data = out6,
@@ -285,6 +295,7 @@ The number of additional vertices needed to accomplish this is small, as
 seen from the mesh object summaries:
 
 ``` r
+
 mesh5
 #> fm_mesh_2d object:
 #>   Manifold:  R2
@@ -303,9 +314,7 @@ mesh6
 #>   Basis d.o.f.:  2009
 ```
 
-------------------------------------------------------------------------
-
-1.  The algorithm is very similar to the one used by `triangle`,
+[^1]: The algorithm is very similar to the one used by `triangle`,
     available in R via
     [Rtriangle](https://CRAN.R-project.org/package=RTriangle). That only
     handles planar meshes, and had a potentially problematic

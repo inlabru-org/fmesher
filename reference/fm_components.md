@@ -78,6 +78,7 @@ Finn Lindgren <Finn.Lindgren@gmail.com>
 ## Examples
 
 ``` r
+
 # Construct two simple meshes:
 loc <- matrix(c(0, 1, 0, 1), 2, 2)
 mesh1 <- fm_mesh_2d(loc = loc, max.edge = 0.1)

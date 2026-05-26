@@ -5,7 +5,7 @@
       fontURL: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2"
     }
   };
-</script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet"><link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet"><script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Compute finite element matrices — fm_fem"><meta name="description" content="Compute finite element mass and structure matrices"><meta property="og:description" content="Compute finite element mass and structure matrices"></head><body>
+</script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet"><link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet"><script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Compute finite element matrices — fm_fem"><meta name="description" content="Compute finite element mass and structure matrices"><meta property="og:description" content="Compute finite element mass and structure matrices"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0.9005</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.7.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,7 +47,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Compute finite element matrices</h1>
-      <small class="dont-index">Source: <a href="https://github.com/inlabru-org/fmesher/blob/devel/R/fem.R" class="external-link"><code>R/fem.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/inlabru-org/fmesher/blob/stable/R/fem.R" class="external-link"><code>R/fem.R</code></a></small>
       <div class="d-none name"><code>fm_fem.Rd</code></div>
     </div>
 
@@ -101,30 +101,27 @@ structure matrices (in addition to the regular) for \(\gamma\) and
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p><code>fm_fem.fm_mesh_1d</code>: A list with elements <code>c0</code>, <code>c1</code>, <code>cc</code>, <code>g1</code>,
-<code>g2</code>, etc.
-When <code>mesh$degree == 2</code>, also <code>g01</code>, <code>g02</code>, and <code>g12</code>, and <code>cc</code> is the same
-as <code>c1</code>, usually the natural choice for precision matrix construction.
-When <code>mesh$degree &lt; 2</code>, <code>cc</code> is the same as <code>c0</code>.</p>
-<p><code>fm_fem.fm_mesh_2d</code>: A list with elements <code>c0</code>, <code>c1</code>, <code>cc</code>, <code>g1</code>,
-<code>va</code>, <code>ta</code>, and more if <code>order &gt; 1</code>. When <code>aniso</code> is non-NULL, also
-<code>g1aniso</code> matrices, etc. The <code>cc</code> matrix is meant to be used for precision
-materix constructions, and is currently equal to <code>c0</code>.</p>
+    <p><code>fm_fem.fm_mesh_1d</code>: A list with elements <code>c0</code>, <code>c1</code>, <code>g1</code>, <code>g2</code>,
+etc.
+When <code>mesh$degree == 2</code>, also <code>g01</code>, <code>g02</code>, and <code>g12</code>.</p>
+<p><code>fm_fem.fm_mesh_2d</code>: A list with elements <code>c0</code>, <code>c1</code>, <code>g1</code>, <code>va</code>,
+<code>ta</code>, and more if <code>order &gt; 1</code>. When <code>aniso</code> is non-NULL, also <code>g1aniso</code>
+matrices, etc.</p>
 <p><code>fm_fem.fm_tensor</code>: A list with elements <code>cc</code>, <code>g1</code>, <code>g2</code>.</p>
-<p><code>fm_fem.fm_collect</code>: A list with elements <code>c0</code>, <code>c1</code>, <code>g1</code>, <code>g2</code>,
-etc, and <code>cc</code> (<code>cc</code> for every model returning <code>cc</code> from <code>fm_fem()</code>, and
-<code>c0</code> when <code>cc</code> is not available). If the base type for the collection
+<p><code>fm_fem.fm_collect</code>: A list with elements <code>c0</code>, <code>c1</code>,
+<code>g1</code>, <code>g2</code>, etc, and <code>cc</code> (<code>c0</code> for every model except <code>fm_mesh_1d</code> with
+<code>degree=2</code>, for which it is <code>c1</code>). If the base type for the collection
 provides <code>va</code> and <code>ta</code> values, those are also returned.</p>
-<p><code>fm_fem.fm_mesh_3d</code>: A list with elements <code>c0</code>, <code>c1</code>, <code>cc</code>, <code>g1</code>,
-<code>g2</code>, <code>va</code>, <code>ta</code>, and more if <code>order &gt; 2</code>.</p>
+<p><code>fm_fem.fm_mesh_3d</code>: A list with elements <code>c0</code>, <code>c1</code>, <code>g1</code>, <code>g2</code>,
+<code>va</code>, <code>ta</code>, and more if <code>order &gt; 2</code>.</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu">fm_fem</span><span class="op">(</span><span class="fu"><a href="fm_mesh_1d.html">fm_mesh_1d</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span>, order <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "c0" "c1" "cc" "g1" "g2" "g3"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "c0" "c1" "g1" "g2" "g3"</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu">fm_fem</span><span class="op">(</span><span class="va">fmexample</span><span class="op">$</span><span class="va">mesh</span>, order <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "b1" "c0" "c1" "g1" "g2" "g3" "k1" "k2" "k3" "ta" "va" "cc"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "b1" "c0" "c1" "g1" "g2" "g3" "k1" "k2" "k3" "ta" "va"</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

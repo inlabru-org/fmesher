@@ -96,6 +96,7 @@ Finn Lindgren <Finn.Lindgren@gmail.com>
 ## Examples
 
 ``` r
+
 loc <- rbind(c(0, 0), c(1, 0), c(1, 1), c(0, 1))
 mesh <- fm_mesh_2d(loc, max.edge = 0.15)
 basis <- fm_raw_basis(mesh, n = c(4, 5))

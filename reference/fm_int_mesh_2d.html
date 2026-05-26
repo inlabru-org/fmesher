@@ -5,7 +5,7 @@
       fontURL: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2"
     }
   };
-</script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet"><link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet"><script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Subset integration on a mesh — fm_int_mesh_2d"><meta name="description" content="Integration methods for spatial samplers on fm_mesh_2d meshes."><meta property="og:description" content="Integration methods for spatial samplers on fm_mesh_2d meshes."></head><body>
+</script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet"><link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet"><script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Subset integration on a mesh — fm_int_mesh_2d"><meta name="description" content="Integration methods for spatial samplers on fm_mesh_2d meshes."><meta property="og:description" content="Integration methods for spatial samplers on fm_mesh_2d meshes."></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0.9005</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.7.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,7 +47,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Subset integration on a mesh</h1>
-      <small class="dont-index">Source: <a href="https://github.com/inlabru-org/fmesher/blob/devel/R/integration.R" class="external-link"><code>R/integration.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/inlabru-org/fmesher/blob/stable/R/integration.R" class="external-link"><code>R/integration.R</code></a></small>
       <div class="d-none name"><code>fm_int_mesh_2d.Rd</code></div>
     </div>
 
@@ -62,9 +62,6 @@
 <span><span class="fu">fm_int_mesh_2d_NULL</span><span class="op">(</span><span class="va">samplers</span>, <span class="va">domain</span>, name <span class="op">=</span> <span class="cn">NULL</span>, int.args <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'sf'</span></span>
-<span><span class="fu">fm_int_mesh_2d</span><span class="op">(</span><span class="va">samplers</span>, <span class="va">domain</span>, name <span class="op">=</span> <span class="cn">NULL</span>, int.args <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S3 method for class 'sfg'</span></span>
 <span><span class="fu">fm_int_mesh_2d</span><span class="op">(</span><span class="va">samplers</span>, <span class="va">domain</span>, name <span class="op">=</span> <span class="cn">NULL</span>, int.args <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'sfc_POINT'</span></span>
@@ -210,7 +207,6 @@ point coordinate information and additional columns <code>weight</code> and <cod
     <h2 id="methods-by-class-">Methods (by class)<a class="anchor" aria-label="anchor" href="#methods-by-class-"></a></h2>
 
 <ul><li><p><code>fm_int_mesh_2d(sf)</code>: <code>sf</code> integration</p></li>
-<li><p><code>fm_int_mesh_2d(sfg)</code>: <code>sfg</code> integration</p></li>
 <li><p><code>fm_int_mesh_2d(sfc_POINT)</code>: <code>sfc_POINT</code> integration</p></li>
 <li><p><code>fm_int_mesh_2d(sfc_MULTIPOINT)</code>: <code>sfc_MULTIPOINT</code> integration</p></li>
 <li><p><code>fm_int_mesh_2d(sfc_LINESTRING)</code>: <code>sfc_LINESTRING</code> integration</p></li>

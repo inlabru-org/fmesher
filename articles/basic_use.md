@@ -1,6 +1,7 @@
 # Basic fmesher use
 
 ``` r
+
 suppressPackageStartupMessages(library(fmesher))
 set.seed(1234L)
 ```
@@ -8,6 +9,7 @@ set.seed(1234L)
 ## Mesh construction
 
 ``` r
+
 domain <- cbind(rnorm(4, sd = 3), rnorm(4))
 (mesh2 <- fm_mesh_2d(
   boundary = fm_extensions(domain, c(2.5, 5)),
@@ -23,6 +25,7 @@ domain <- cbind(rnorm(4, sd = 3), rnorm(4))
 ```
 
 ``` r
+
 (mesh1 <- fm_mesh_1d(
   c(0, 2, 4, 7, 10),
   boundary = "free", # c("neumann", "dirichlet"),
@@ -40,6 +43,7 @@ domain <- cbind(rnorm(4, sd = 3), rnorm(4))
 ## Point lookup and evaluation
 
 ``` r
+
 pts <- cbind(rnorm(400, sd = 3), rnorm(400))
 
 # Find what triangle each point is in, and its triangular Barycentric
@@ -84,6 +88,7 @@ sum(abs(pts[, 1] - value), na.rm = TRUE)
 ```
 
 ``` r
+
 pts1 <- seq(-2, 12, length.out = 1000)
 
 # Find what segment, and its interval Barycentric coordinates
@@ -132,6 +137,7 @@ Evaluated 1D function
 ### Base graphics
 
 ``` r
+
 plot(mesh2)
 ```
 
@@ -143,6 +149,7 @@ version)](basic_use_files/figure-html/unnamed-chunk-2-1.png)
 ### `ggplot` graphics
 
 ``` r
+
 suppressPackageStartupMessages(library(ggplot2))
 ggplot() +
   geom_fm(data = mesh2)
@@ -154,6 +161,7 @@ version)](basic_use_files/figure-html/unnamed-chunk-3-1.png)
 2D triangulation mesh (ggplot version)
 
 ``` r
+
 ggplot() +
   geom_fm(data = mesh1, weights = field1 + 2, xlim = c(-2, 12)) +
   geom_fm(data = mesh1, linetype = 2, alpha = 0.5, xlim = c(-2, 12))
@@ -168,17 +176,19 @@ ggplot() +
 ## Finite element calculations
 
 ``` r
+
 fem1 <- fm_fem(mesh1, order = 2)
 names(fem1)
-#> [1] "c0"  "c1"  "cc"  "g1"  "g2"  "g01" "g02" "g12"
+#> [1] "c0"  "c1"  "g1"  "g2"  "g01" "g02" "g12"
 fem2 <- fm_fem(mesh2, order = 2)
 names(fem2)
-#>  [1] "b1" "c0" "c1" "g1" "g2" "k1" "k2" "ta" "va" "cc"
+#> [1] "b1" "c0" "c1" "g1" "g2" "k1" "k2" "ta" "va"
 ```
 
 ## Stochastic process simulation
 
 ``` r
+
 samp <- fm_matern_sample(mesh2, alpha = 2, rho = 4, sigma = 1)[, 1]
 evaluator <- fm_evaluator(
   mesh2,

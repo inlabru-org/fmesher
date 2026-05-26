@@ -5,7 +5,7 @@
       fontURL: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2"
     }
   };
-</script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet"><link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet"><script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Multi-domain integration — fm_int"><meta name="description" content="Construct integration points on tensor product spaces"><meta property="og:description" content="Construct integration points on tensor product spaces"></head><body>
+</script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet"><link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet"><script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Multi-domain integration — fm_int"><meta name="description" content="Construct integration points on tensor product spaces"><meta property="og:description" content="Construct integration points on tensor product spaces"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0.9005</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.7.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,7 +47,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Multi-domain integration</h1>
-      <small class="dont-index">Source: <a href="https://github.com/inlabru-org/fmesher/blob/devel/R/integration.R" class="external-link"><code>R/integration.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/inlabru-org/fmesher/blob/stable/R/integration.R" class="external-link"><code>R/integration.R</code></a></small>
       <div class="d-none name"><code>fm_int.Rd</code></div>
     </div>
 
@@ -95,10 +95,7 @@
 <span>  int.args <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  format <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S3 method for class 'fm_collect'</span></span>
-<span><span class="fu">fm_int</span><span class="op">(</span><span class="va">domain</span>, samplers <span class="op">=</span> <span class="cn">NULL</span>, name <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -179,13 +176,6 @@ and optionally a <code>weight</code> column.</p></li>
 </ul></li>
 <li><p><code>fm_int(fm_mesh_2d)</code>: <code>fm_mesh_2d</code> integration. Any sampler class with an
 associated <code><a href="fm_int_mesh_2d.html">fm_int_mesh_2d()</a></code> method is supported.</p></li>
-<li><p><code>fm_int(fm_collect)</code>: <a href="fm_collect.html">fm_collect</a> integration. Any domain type collection
-class with an associated <code>fm_int()</code> method is supported. The output format
-for the integration points is a tibble with columns <code>loc</code> and <code>index</code>,
-suitable for the <code>loc</code> input of the <a href="fm_basis.html">fm_basis.fm_collect</a> method.
-If non-NULL, the <code>samplers</code> input should either be a tibble with columns
-<code>loc</code> (per-space samplers) and <code>index</code> (space index), or a sampler column to
-be applied to the entire domain.</p></li>
 </ul></div>
 
     <div class="section level2">

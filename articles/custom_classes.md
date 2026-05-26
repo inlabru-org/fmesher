@@ -1,6 +1,7 @@
 # Custom mesh classes
 
 ``` r
+
 library(fmesher)
 ```
 
@@ -49,6 +50,7 @@ named `fm_dof.custom()` and `fm_basis.custom()`.
 ### Example: Harmonic function space of order n
 
 ``` r
+
 # Custom class for harmonic functions up to order `n`
 create_custom <- function(n) {
   stopifnot(n >= 0)
@@ -90,6 +92,7 @@ construct the `fm_basis` object, by creating the object and optionally
 extracting `A` in a single call:
 
 ``` r
+
 # 'matrix' and 'Matrix' methods:
 fm_basis(
   A = A,
@@ -115,6 +118,7 @@ scripts, and with special NAMESPACE tags in packages. In a script, one
 should use
 
 ``` r
+
 .S3method("fm_dof", "custom", "fm_dof.custom")
 .S3method("fm_basis", "custom", "fm_basis.custom")
 ```
@@ -122,6 +126,7 @@ should use
 In a package, if R is version 3.6 or newer, one can use roxygen2 tags
 
 ``` r
+
 #' @rawNamespace S3method(fmesher::fm_dof, custom)
 #' @rawNamespace S3method(fmesher::fm_basis, custom)
 ```
@@ -129,6 +134,7 @@ In a package, if R is version 3.6 or newer, one can use roxygen2 tags
 or before each method, use `@exportS3Method`, like this:
 
 ``` r
+
 #' @title Degrees of freedom for custom mesh
 #' @description the number of degrees of freedom
 #' # The rest of the documentation goes here
@@ -143,6 +149,7 @@ which semi-automates it.
 We can the use the new methods with
 
 ``` r
+
 m <- create_custom(2)
 
 # How many latent variables are needed?
@@ -226,6 +233,7 @@ integration weights, and a `.block` column.
     #> 13 1.0   0.05      3
 
 ``` r
+
 values <- fm_evaluate(
   m,
   field = c(1, 1, 0, 0, 0),

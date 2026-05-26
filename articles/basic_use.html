@@ -13,8 +13,8 @@
     }
   };
 </script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Basic fmesher use">
 </head>
@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0.9005</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.7.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,7 +75,7 @@
 Lindgren</h4>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/inlabru-org/fmesher/blob/devel/vignettes/basic_use.Rmd" class="external-link"><code>vignettes/basic_use.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/inlabru-org/fmesher/blob/stable/vignettes/basic_use.Rmd" class="external-link"><code>vignettes/basic_use.Rmd</code></a></small>
       <div class="d-none name"><code>basic_use.Rmd</code></div>
     </div>
 
@@ -248,10 +248,10 @@ Evaluated 1D function
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fem1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_fem.html">fm_fem</a></span><span class="op">(</span><span class="va">mesh1</span>, order <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">fem1</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "c0"  "c1"  "cc"  "g1"  "g2"  "g01" "g02" "g12"</span></span>
+<span><span class="co">#&gt; [1] "c0"  "c1"  "g1"  "g2"  "g01" "g02" "g12"</span></span>
 <span><span class="va">fem2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fm_fem.html">fm_fem</a></span><span class="op">(</span><span class="va">mesh2</span>, order <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">fem2</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [1] "b1" "c0" "c1" "g1" "g2" "k1" "k2" "ta" "va" "cc"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "b1" "c0" "c1" "g1" "g2" "k1" "k2" "ta" "va"</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="stochastic-process-simulation">Stochastic process simulation<a class="anchor" aria-label="anchor" href="#stochastic-process-simulation"></a>

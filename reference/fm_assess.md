@@ -47,6 +47,7 @@ Finn Lindgren <Finn.Lindgren@gmail.com>
 ## Examples
 
 ``` r
+
 bnd <- fm_segm(cbind(
   c(0, 10, 10, 0, 0),
   c(0, 0, 10, 10, 0)

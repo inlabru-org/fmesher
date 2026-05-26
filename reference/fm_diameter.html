@@ -5,7 +5,7 @@
       fontURL: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2"
     }
   };
-</script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet"><link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet"><script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Diameter bound for a geometric object — fm_diameter"><meta name="description" content="Find an upper bound to the convex hull of a point set or function space"><meta property="og:description" content="Find an upper bound to the convex hull of a point set or function space"></head><body>
+</script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet"><link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet"><script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Diameter bound for a geometric object — fm_diameter"><meta name="description" content="Find an upper bound to the convex hull of a point set or function space"><meta property="og:description" content="Find an upper bound to the convex hull of a point set or function space"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0.9005</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.7.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,7 +47,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Diameter bound for a geometric object</h1>
-      <small class="dont-index">Source: <a href="https://github.com/inlabru-org/fmesher/blob/devel/R/diameter.R" class="external-link"><code>R/diameter.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/inlabru-org/fmesher/blob/stable/R/diameter.R" class="external-link"><code>R/diameter.R</code></a></small>
       <div class="d-none name"><code>fm_diameter.Rd</code></div>
     </div>
 
@@ -87,10 +87,10 @@
 <span><span class="fu">fm_diameter</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'fm_tensor'</span></span>
-<span><span class="fu">fm_diameter</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, multi <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu">fm_diameter</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'fm_collect'</span></span>
-<span><span class="fu">fm_diameter</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, multi <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu">fm_diameter</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'fm_list'</span></span>
 <span><span class="fu">fm_diameter</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
@@ -116,13 +116,6 @@
 Use <code>manifold="S2"</code> for great circle distances on a sphere centred at the
 origin.</p></dd>
 
-
-<dt id="arg-multi">multi<a class="anchor" aria-label="anchor" href="#arg-multi"></a></dt>
-<dd><p>logical; For multi-domain spaces (e.g. <a href="fm_tensor.html">fm_tensor</a> and
-<a href="fm_collect.html">fm_collect</a>), if <code>TRUE</code>, return a vector of diameter bounds for each
-domain. If <code>FALSE</code> (the default), return a single diameter bound, by taking
-the maximum of the individual bounds.</p></dd>
-
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -130,14 +123,6 @@ the maximum of the individual bounds.</p></dd>
 point set. For multi-domain spaces (e.g. <code><a href="fm_tensor.html">fm_tensor()</a></code> and
 <code><a href="fm_collect.html">fm_collect()</a></code>), a vector of upper bounds for each domain is returned.</p>
     </div>
-    <div class="section level2">
-    <h2 id="methods-by-class-">Methods (by class)<a class="anchor" aria-label="anchor" href="#methods-by-class-"></a></h2>
-
-<ul><li><p><code>fm_diameter(fm_tensor)</code>: Returns either a single diameter bound (default), or
-a vector of sub-domain bounds; see the <code>multi</code> argument.</p></li>
-<li><p><code>fm_diameter(fm_collect)</code>: Returns either a single diameter bound (default), or
-a vector of sub-domain bounds; see the <code>multi</code> argument.</p></li>
-</ul></div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
     <p>Finn Lindgren <a href="mailto:Finn.Lindgren@gmail.com">Finn.Lindgren@gmail.com</a></p>

@@ -1,25 +1,5 @@
 # Changelog
 
-## fmesher (development version)
-
-- Make `cc` the canonical name for the most suitable 0th order mass
-  matrix for all
-  [`fm_fem()`](https://inlabru-org.github.io/fmesher/reference/fm_fem.md)
-  implementations, so that higher order basis functions can be used
-  without “mass lumping”, and the callers don’t need to know about it
-  (`0.7.0.9001`)
-- Speed up polygon integration by precomputing and storing `vt`
-  vertex-to-triangle information in multiple formats (`0.7.0.9002`)
-- Speed up multi-polygon integration by moving work out of the blockwise
-  loop. (`0.7.0.9003`)
-- Add `multi` argument with default `FALSE` to
-  [`fm_diameter()`](https://inlabru-org.github.io/fmesher/reference/fm_diameter.md)
-  for multi-domain spaces (`fm_tensor` and `fm_collect`) so that only
-  user code that needs to be aware of per-domain diameters need to
-  handle the multi-domain case. (`0.7.0.9004`)
-- Add `fm_int<fm_collect>` method of integration on `fm_collect` spaces
-  (`0.7.0.9005`)
-
 ## fmesher 0.7.0
 
 CRAN release: 2026-02-19
@@ -29,37 +9,38 @@ CRAN release: 2026-02-19
 - Speed up of
   [`fm_int()`](https://inlabru-org.github.io/fmesher/reference/fm_int.md)
   for 2D meshes by internally storing the barycentric coordinate
-  information during the integration scheme construction (`0.6.1.9002`)
+  information during the integration scheme construction (version
+  `0.6.1.9002`)
 - Add `face_edge` (for 2D meshes), `cell_face`, and `cell_edge` (for 3D
   meshes) information to
   [`fm_sizes()`](https://inlabru-org.github.io/fmesher/reference/fm_sizes.md)
-  output (`0.6.1.9004`)
+  output (version `0.6.1.9004`)
 - Eliminate explicit zero entries from
   [`fm_basis()`](https://inlabru-org.github.io/fmesher/reference/fm_basis.md)
-  matrices (`0.6.1.9005`)
+  matrices (version `0.6.1.9005`)
 - Add spherical mesh support to
   [`fm_sizes()`](https://inlabru-org.github.io/fmesher/reference/fm_sizes.md)
-  (`0.6.1.9006`)
+  (version `0.6.1.9006`)
 
 ### Bug fixes
 
 - Fix
   [`fm_subdivide()`](https://inlabru-org.github.io/fmesher/reference/fm_subdivide.md)
-  to handle 2-column coordinate storage inputs. (`0.6.1.9001`)
+  to handle 2-column coordinate storage inputs. (version `0.6.1.9001`)
 - Fix triangle area calculations in
   [`fm_sizes()`](https://inlabru-org.github.io/fmesher/reference/fm_sizes.md)
-  that caused calculated areas to be 1/3 of the actual areas
-  (`0.6.1.9003`)
+  that caused calculated areas to be 1/3 of the actual areas (version
+  `0.6.1.9003`)
 - Use `expect_setequal()` in package tests for checking that integration
   output objects contain the correct columns. Some tests were not using
   [`sort()`](https://rspatial.github.io/terra/reference/sort.html) on
   the names, causing them to fail when external object merges and
   constructors changed behaviour. Thanks to Edzer Pebesma for the
   initial PR, [\#30](https://github.com/inlabru-org/fmesher/issues/30)
-  (`0.6.1.9007`)
+  (version `0.6.1.9007`)
 - Regenerated the `fmexample` objects with the latest version of the
   package, to ensure they have up-to-date structure, and use the current
-  boundary construction methods. (`0.6.1.9008`)
+  boundary construction methods. (version `0.6.1.9008`)
 
 ## fmesher 0.6.1
 
@@ -70,17 +51,17 @@ CRAN release: 2025-12-12
 - Add
   [`fm_subset()`](https://inlabru-org.github.io/fmesher/reference/fm_subset.md)
   method for constructing a subset of a mesh based on a set of triangle
-  (for `fm_mesh_2d`) or tetrahedron (for `fm_mesh_3d`) indices.
-  (`0.5.0.9003`)
+  (for `fm_mesh_2d`) or tetrahedron (for `fm_mesh_3d`) indices. (version
+  `0.5.0.9003`)
 - Add
   [`fm_zm()`](https://inlabru-org.github.io/fmesher/reference/fm_zm.md)/[`fm_zm_input()`](https://inlabru-org.github.io/fmesher/reference/fm_zm.md)/[`fm_zm_target()`](https://inlabru-org.github.io/fmesher/reference/fm_zm.md)
   methods for adding/removing/unifying the Z/M dimensions of coordinate
-  matrices and `sf` objects (`0.5.0.9012`)
+  matrices and `sf` objects (version `0.5.0.9012`)
 - New method
   [`new_fm_int()`](https://inlabru-org.github.io/fmesher/reference/new_fm_int.md)
   to construct tibbles with the same output format as the
   [`fm_int()`](https://inlabru-org.github.io/fmesher/reference/fm_int.md)
-  method, for user-defined integration schemes (`0.5.0.9013`)
+  method, for user-defined integration schemes (version `0.5.0.9013`)
 
 ### Improved features
 
@@ -88,14 +69,14 @@ CRAN release: 2025-12-12
   [`fm_subdivide()`](https://inlabru-org.github.io/fmesher/reference/fm_subdivide.md)
   output, mapping the new mesh locations to the original mesh locations,
   e.g. for interpolating functions from the original mesh to the new
-  mesh (`0.5.0.9002`)
+  mesh (version `0.5.0.9002`)
 - Speed up
   [`fm_int()`](https://inlabru-org.github.io/fmesher/reference/fm_int.md)
   for polygons by bulk pre-computing
   [`fm_bary()`](https://inlabru-org.github.io/fmesher/reference/fm_bary.md)
   information instead of separate calls in
   [`fm_vertex_projection()`](https://inlabru-org.github.io/fmesher/reference/fm_vertex_projection.md)
-  (`0.5.0.9004`)
+  (version `0.5.0.9004`)
 - Handle heterogeneous `sf` geometry XY/XYZ dimensions in
   [`fm_bary()`](https://inlabru-org.github.io/fmesher/reference/fm_bary.md)/[`fm_basis()`](https://inlabru-org.github.io/fmesher/reference/fm_basis.md)
   via
@@ -106,37 +87,37 @@ CRAN release: 2025-12-12
   [`sf::st_coordinates()`](https://r-spatial.github.io/sf/reference/st_coordinates.html),
   as
   [`sf::st_coordinates()`](https://r-spatial.github.io/sf/reference/st_coordinates.html)
-  otherwise fails. (`0.5.0.9005`)
+  otherwise fails. (version `0.5.0.9005`)
 - Allow
   [`fm_int.fm_mesh_1d()`](https://inlabru-org.github.io/fmesher/reference/fm_int.md)
   to handle lists of matrices (for interval integration) and vectors
   (sums over point sets), for more flexible blockwise integration and
-  summation schemes. (`0.5.0.9007`)
+  summation schemes. (version `0.5.0.9007`)
 - Allow
   [`fm_int.list()`](https://inlabru-org.github.io/fmesher/reference/fm_int.md)
   to include non-domain variables in the output object, e.g. for
-  including per-transect covariates in the integration scheme.
-  (`0.5.0.9008`)
+  including per-transect covariates in the integration scheme. (version
+  `0.5.0.9008`)
 - Allow
   [`fm_int()`](https://inlabru-org.github.io/fmesher/reference/fm_int.md)
   for numeric/character/factor/`fm_mesh_1d` to handle nested list
-  samplers (`0.5.0.9009`)
+  samplers (version `0.5.0.9009`)
 - Drop `gsl` package dependency by using a native C++ implementation of
   the associated Legendre polynomials and spherical harmonics via
   [`fm_raw_basis()`](https://inlabru-org.github.io/fmesher/reference/fm_raw_basis.md)
-  (`0.5.0.9014`)
+  (version `0.5.0.9014`)
 
 ### Bug fixes
 
 - Make
   [`fm_subdivide()`](https://inlabru-org.github.io/fmesher/reference/fm_subdivide.md)
   store the indexing information for the original mesh locations in
-  `$idx$loc` (`0.5.0.9001`)
+  `$idx$loc` (version `0.5.0.9001`)
 - Correct off-by-one indexing error in `$graph$vt` triangle indices
-  (`0.5.0.9002`)
+  (version `0.5.0.9002`)
 - Propagate correct `crs` information in
   [`fm_bary_loc()`](https://inlabru-org.github.io/fmesher/reference/fm_bary_loc.md)
-  for 2D spaces (`0.5.0.9005`)
+  for 2D spaces (version `0.5.0.9005`)
 - Fix bugs in
   [`fm_mesh_intersection()`](https://inlabru-org.github.io/fmesher/reference/fm_mesh_intersection.md)
   and
@@ -145,18 +126,18 @@ CRAN release: 2025-12-12
   on subsets of the sphere. Also allow
   [`fm_mesh_intersection()`](https://inlabru-org.github.io/fmesher/reference/fm_mesh_intersection.md)
   to generate non-Delaunay triangles, allowing the generated meshes to
-  be used for stable integration schemes (`0.5.0.9006`)
+  be used for stable integration schemes (version `0.5.0.9006`)
 - Handle the `weights` argument in
   [`fm_basis.matrix()`](https://inlabru-org.github.io/fmesher/reference/fm_basis.md)
   and
   [`fm_basis.Matrix()`](https://inlabru-org.github.io/fmesher/reference/fm_basis.md)
-  when `full = FALSE` (`0.5.0.9013`)
+  when `full = FALSE` (version `0.5.0.9013`)
 
 ### Deprecation updates
 
 - Increased deprecation warning and error messages for old unsupported
-  methods (`0.5.0.9015`)
-- Removed exports of deprecated `CRSargs` methods (`0.5.0.9015`)
+  methods (version `0.5.0.9015`)
+- Removed exports of deprecated `CRSargs` methods (version `0.5.0.9015`)
 
 ## fmesher 0.5.0
 

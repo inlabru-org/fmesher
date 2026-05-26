@@ -200,7 +200,7 @@ points(inp, pch = 20)
 out <- fm_nonconvex_hull(inp, convex = 1, method = "fm", format = "fm")
 lines(out, col = 2, add = TRUE)
 
-if (requireNamespace("sf")) {
+if (TRUE) {
   inp <- sf::st_as_sf(as.data.frame(matrix(1:6, 3, 2)), coords = 1:2)
   bnd <- fm_extensions(inp, convex = c(0.75, 2))
   plot(fm_mesh_2d(boundary = bnd, max.edge = c(0.25, 1)), asp = 1)

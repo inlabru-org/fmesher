@@ -140,6 +140,7 @@ Finn Lindgren <Finn.Lindgren@gmail.com>
 ## Examples
 
 ``` r
+
 mesh <- fm_rcdt_2d(globe = 10)
 plot(mesh)
 

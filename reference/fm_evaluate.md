@@ -178,19 +178,20 @@ Finn Lindgren <Finn.Lindgren@gmail.com>
 ## Examples
 
 ``` r
-n <- 20
-loc <- matrix(runif(n * 2), n, 2)
-mesh <- fm_rcdt_2d_inla(loc, refine = list(max.edge = 0.05))
-proj <- fm_evaluator(mesh)
-field <- cos(mesh$loc[, 1] * 2 * pi * 3) * sin(mesh$loc[, 2] * 2 * pi * 7)
-image(proj$x, proj$y, fm_evaluate(proj, field))
-
+if (TRUE) {
+  n <- 20
+  loc <- matrix(runif(n * 2), n, 2)
+  mesh <- fm_rcdt_2d_inla(loc, refine = list(max.edge = 0.05))
+  proj <- fm_evaluator(mesh)
+  field <- cos(mesh$loc[, 1] * 2 * pi * 3) * sin(mesh$loc[, 2] * 2 * pi * 7)
+  image(proj$x, proj$y, fm_evaluate(proj, field))
+}
 
 # \donttest{
-# ## Plotting with inlabru; this feature is not yet in fmesher::geom_fm()
-# if (require("inlabru")) {
+# if (require("ggplot2") &&
+#  require("ggpolypath")) {
 #  ggplot() +
-#    gg(data = mesh, col = field)
+#    gg(data = fm_as_sfc(mesh), col = field)
 # }
 # }
 ```
