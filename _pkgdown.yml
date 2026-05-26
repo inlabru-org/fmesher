@@ -5,6 +5,9 @@ template:
   bootstrap: 5
   math-rendering: "mathjax"
 
+development:
+  mode: auto
+
 navbar:
   components:
     articles:
