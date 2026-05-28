@@ -137,6 +137,12 @@ jobs:
         run: pkgdown::build_site_github_pages(new_process = FALSE, install = TRUE)
         shell: Rscript {0}
 
+      - name: Build multi-version menus
+        run: |
+          source("misc/pkgdown_menu_builder.R")
+          update_menus("docs")
+        shell: Rscript {0}
+
       - name: Upload full website for deployment 🚀
         if: ${{ github.ref_name == 'devel' && github.event_name != 'pull_request' }}
         uses: actions/upload-pages-artifact@v5
