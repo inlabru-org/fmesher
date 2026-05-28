@@ -160,9 +160,9 @@ get_version_name <- function(version, versions) {
     return(NULL)
   }
   if (identical(version, versions$current)) {
-    glue("Current version ({version})")
+    glue("{version} (Latest release)")
   } else if (identical(version, versions$devel)) {
-    glue("Development version ({version})")
+    glue("{version} (Development version)")
   } else if (version %in% versions$old) {
     glue("{version}")
   } else {
@@ -182,20 +182,21 @@ as_menu_line <- function(x, this_version, this_subpath, versions) {
   this_basename <- basename(this_subpath)
 
   if (identical(this_dirname, ".")) {
-    path_to_root <- ""
+    this_dirname <- ""
+    levels <- 0L
   } else {
-    path_to_root <- glue_collapse(
-      rep("../",
-          length(strsplit(this_dirname, split = "/")[[1]]) +
-            !identical(this_version, versions$current)),
-      sep = ""
-    )
+    this_dirname <- paste0(this_dirname, "/")
+    levels <- length(strsplit(this_dirname, split = "/")[[1]])
   }
+  path_to_root <- glue_collapse(
+    rep("../", levels + !identical(this_version, versions$current)),
+    sep = ""
+  )
   if (x == this_version) {
     path <- this_basename
   } else {
     version_path <- get_version_path(x, versions)
-    path <- glue("{path_to_root}{version_path}{this_dirname}/{this_basename}")
+    path <- glue("{path_to_root}{version_path}{this_dirname}{this_basename}")
   }
   version_name <- get_version_name(x, versions)
   glue("<li><a class=\"dropdown-item\" href=\"{path}\" title=\"{version_name}\">{version_name}</a></li>")
@@ -220,7 +221,7 @@ get_menu <- function(this_version, this_subpath, versions) {
   } else {
     menu_old_versions <- glue(
       '    <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>Previous versions</h6></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Older releases</h6></li>
     {glue_collapse(menu_lines$old, sep="\n    ")}
 '
       )
