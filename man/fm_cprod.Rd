@@ -43,7 +43,7 @@ if (require("ggplot2")) {
 
   # Plot the integration points
   ggplot(ips) +
-    geom_point(aes(myDim, myDiscreteDim, size = weight)) +
+    geom_point(aes(myDim, myDiscreteDim, size = weight), stroke = 0) +
     scale_size_area()
 }
 

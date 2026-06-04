@@ -39,7 +39,7 @@
 #'
 #'   # Plot the integration points
 #'   ggplot(ips) +
-#'     geom_point(aes(myDim, myDiscreteDim, size = weight)) +
+#'     geom_point(aes(myDim, myDiscreteDim, size = weight), stroke = 0) +
 #'     scale_size_area()
 #' }
 #'
@@ -385,7 +385,7 @@ fm_Spatial_as_int_object <- function(ips) {
 #'   ggplot() +
 #'     geom_sf(data = fm_as_sfc(fmexample$mesh, multi = TRUE), alpha = 0.5) +
 #'     geom_sf(data = fmexample$boundary_sf[[1]], fill = "red", alpha = 0.5) +
-#'     geom_sf(data = ips, aes(size = weight)) +
+#'     geom_sf(data = ips, aes(size = weight), stroke = 0) +
 #'     scale_size_area()
 #' }
 #'

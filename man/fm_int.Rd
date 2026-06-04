@@ -153,7 +153,7 @@ if (require("ggplot2", quietly = TRUE)) {
   ggplot() +
     geom_sf(data = fm_as_sfc(fmexample$mesh, multi = TRUE), alpha = 0.5) +
     geom_sf(data = fmexample$boundary_sf[[1]], fill = "red", alpha = 0.5) +
-    geom_sf(data = ips, aes(size = weight)) +
+    geom_sf(data = ips, aes(size = weight), stroke = 0) +
     scale_size_area()
 }
 
