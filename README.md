@@ -39,71 +39,36 @@ version](https://cran.r-project.org/package=fmesher) version of
 install.packages("fmesher")
 ```
 
-### Installation using [pak](https://pak.r-lib.org/)
-
-You can install the latest bugfix release of fmesher from
-[GitHub](https://github.com/inlabru-org/fmesher) with:
+or
 
 ``` r
 # install.packages("pak")
-pak::pkg_install("inlabru-org/fmesher@stable")
+pak::pak("inlabru")
 ```
 
-You can install the development version of inlabru from
-[GitHub](https://github.com/inlabru-org/fmesher) with
+### Development version on r-universe
 
-``` r
-pak::pkg_install("inlabru-org/fmesher")
-```
-
-or track the development version builds via
+Track the development version builds via
 [inlabru-org.r-universe.dev](https://inlabru-org.r-universe.dev/builds):
 
 ``` r
-# Enable universe(s) by inlabru-org
-pak::repo_add(inlabruorg = "https://inlabru-org.r-universe.dev")
-pak::pkg_install("fmesher")
+options(repos = c(
+  inlabruorg = "https://inlabru-org.r-universe.dev",
+  getOption("repos")
+))
+pak::pak("fmesher")
 ```
 
 This will pick the r-universe version if it is more recent than the CRAN
 version.
 
-To install and run `fmesher` in full debug mode (this is quite an
-experience!), use
+### Development version on github
+
+Install the development version
+[GitHub](https://github.com/inlabru-org/inlabru) with
 
 ``` r
-# install.packages("pkgbuild")
-source("https://raw.githubusercontent.com/inlabru-org/fmesher/devel/misc/build.R")
-fmesher_install(repo = "inlabru-org/fmesher", debug = TRUE)
-```
-
-### Installation using `remotes`
-
-You can install the latest bugfix release of fmesher from
-[GitHub](https://github.com/inlabru-org/fmesher) with:
-
-``` r
-# install.packages("remotes")
-remotes::install_github("inlabru-org/fmesher", ref = "stable")
-```
-
-You can install the development version of fmesher from
-[GitHub](https://github.com/inlabru-org/fmesher) with
-
-``` r
-remotes::install_github("inlabru-org/fmesher")
-```
-
-or track the development version builds via
-[inlabru-org.r-universe.dev](https://inlabru-org.r-universe.dev/builds):
-
-``` r
-# Enable universe(s) by inlabru-org
-options(repos = c(
-  inlabruorg = "https://inlabru-org.r-universe.dev",
-  getOption("repos")
-))
-install.packages("fmesher")
+pak::pak("inlabru-org/inlabru")
 ```
 
 ## Online documentation
