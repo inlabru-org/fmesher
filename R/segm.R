@@ -92,34 +92,36 @@ fm_segm.default <- function(loc = NULL, idx = NULL, grp = NULL, is.bnd = TRUE,
   }
 
   ## Filter away NAs in loc and idx
-  if (!is.null(loc)) {
-    idx[is.na(idx)] <- 0L ## Avoid R annoyances with logical+NA indexing
-    while (sum(is.na(loc)) > 0) {
-      i <- min(which(rowSums(is.na(loc)) > 0))
-      loc <- loc[-i, , drop = FALSE]
-      idx[idx == i] <- 0L
-      idx[idx > i] <- idx[idx > i] - 1L
-    }
-    idx[idx == 0L] <- NA
-  }
-  while (sum(is.na(idx)) > 0) {
-    i <- min(which(rowSums(is.na(idx)) > 0))
-    idx <- idx[-i, , drop = FALSE]
+  if (anyNA(idx)) {
+    i <- (rowSums(is.na(idx)) == 0)
+    idx <- idx[i, , drop = FALSE]
     if (!is.null(grp)) {
-      grp <- grp[-i]
+      grp <- grp[i]
     }
   }
-
   if (!is.null(loc)) {
+    if (anyNA(loc)) {
+      i <- (rowSums(is.na(loc)) == 0)
+      idx.new <- cumsum(i)
+      idx.new[!i] <- 0L
+      loc <- loc[i, , drop = FALSE]
+      idx <- matrix(idx.new[as.vector(idx)], NROW(idx), ncol(idx))
+      idx[idx == 0L] <- NA
+      if (anyNA(idx)) {
+        i <- (rowSums(is.na(idx)) == 0)
+        idx <- idx[i, , drop = FALSE]
+        if (!is.null(grp)) {
+          grp <- grp[i]
+        }
+      }
+    }
+
     ## Identify unused locations and remap indices accordingly.
     idx.new <- rep(0L, NROW(loc))
     idx.new[as.vector(idx)] <- 1L
     loc <- loc[idx.new == 1L, , drop = FALSE]
     idx.new[idx.new == 1L] <- seq_len(sum(idx.new))
-    idx <- matrix(idx.new[as.vector(idx)],
-      nrow = nrow(idx),
-      ncol = ncol(idx)
-    )
+    idx <- matrix(idx.new[as.vector(idx)], NROW(idx), ncol(idx))
   }
 
   if (length(is.bnd) == 1L) {
