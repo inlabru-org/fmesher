@@ -22,7 +22,7 @@ fm_try_callstack(expr)
 
 \item{end}{The stack end point}
 
-\item{with_numbers}{INclude call stack location numbers}
+\item{with_numbers}{Include call stack location numbers}
 
 \item{\dots}{Currently unused}
 
@@ -43,7 +43,7 @@ Helper functions for displaying call stack information
 }
 \section{Functions}{
 \itemize{
-\item \code{fm_call_stack()}: 
+\item \code{fm_call_stack()}: Character vector describing the call stack.
 
 \item \code{fm_try_callstack()}: Inspired by \code{berryFunctions::tryStack}
 

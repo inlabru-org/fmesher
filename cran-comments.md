@@ -1,29 +1,20 @@
-This is a minor bug fix and feature update release.
+This is a feature update release.
 
-## Changes from 0.6.1 to 0.7.0
+## Changes from 0.7.0 to 0.8.0
 
-* Bug fixes
 * Minor feature updates
-* Fixes in tests for a false failure with upcoming 'sf' release
 
-## R CMD check results for 0.7.0
+## R CMD check results for 0.8.0
 
 No new notes, warnings, or errors
 
-## CRAN results for 0.6.1
+## CRAN results for 0.7.0
 
-Version: 0.6.1
-Check: installed package size
-Result: NOTE 
-    installed size is 10.9Mb
-    sub-directories of 1Mb or more:
-      doc    1.2Mb
-      libs   8.2Mb
-Flavors: r-oldrel-macos-arm64, r-oldrel-macos-x86_64
+No notes, warnings, or errors
 
-# revdepcheck results
+# Reverse dependency checks
 
-We checked all 18 reverse dependencies from CRAN, comparing R CMD check results across CRAN and dev versions of this package.
+We checked all 22 reverse dependencies from CRAN, comparing R CMD check results across CRAN and dev versions of this package.
 
  * We saw 0 new problems
  * We failed to check 0 packages

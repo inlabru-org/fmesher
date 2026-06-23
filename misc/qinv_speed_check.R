@@ -1,8 +1,10 @@
 library(fmesher)
 Qinv <- function(Q){
+  # jarl-ignore internal_function: Internal test
   fmesher:::C_qinv(as(as(as(Q, "Matrix"), "generalMatrix"), "CsparseMatrix"))
 }
 Qinv_ <- function(Q){
+  # jarl-ignore internal_function: Internal test
   fmesher:::C_qinv(Q)
 }
 data <- NULL

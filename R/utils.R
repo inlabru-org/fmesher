@@ -36,11 +36,11 @@ fm_caller_name <- function(which = 0L, override = NULL) {
   name
 }
 
-#' @describeIn call-stack
+#' @describeIn call-stack Character vector describing the call stack.
 #'
 #' @param start The stack starting point
 #' @param end The stack end point
-#' @param with_numbers INclude call stack location numbers
+#' @param with_numbers Include call stack location numbers
 #' @param \dots Currently unused
 #' @returns `fm_call_stack` returns a character vector
 #' @export
@@ -191,7 +191,8 @@ fm_require_stop <- function(pkg, msg = NULL, override = NULL) {
 #' @export
 #' @examples
 #' library(Matrix)
-#' str(A <- fm_as_dgCMatrix(matrix(c(1, 2, 0, 0, 0, 3, 4, 0, 5), 3, 3)))
+#' A <- fm_as_dgCMatrix(matrix(c(1, 2, 0, 0, 0, 3, 4, 0, 5), 3, 3))
+#' str(A)
 #' str(fm_as_dgTMatrix(A))
 #' str(fm_as_unpackedMatrix(A))
 #' str(fm_as_fmesher_sparse(A))

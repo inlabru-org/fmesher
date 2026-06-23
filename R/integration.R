@@ -39,7 +39,7 @@
 #'
 #'   # Plot the integration points
 #'   ggplot(ips) +
-#'     geom_point(aes(myDim, myDiscreteDim, size = weight)) +
+#'     geom_point(aes(myDim, myDiscreteDim, size = weight), stroke = 0) +
 #'     scale_size_area()
 #' }
 #'
@@ -184,7 +184,7 @@ fm_cprod <- function(..., na.rm = NULL, .blockwise = FALSE) {
   nms2 <- intersect(nms, setdiff(nms2, nms_joint))
   ips <- ips[, c(nms1, nms2, nms_joint), drop = FALSE]
 
-  if (any(is.na(ips$weight)) && !isFALSE(na.rm)) {
+  if (anyNA(ips$weight) && !isFALSE(na.rm)) {
     if (is.null(na.rm)) {
       warning(
         paste0(
@@ -313,13 +313,11 @@ new_fm_int <- function(object, blocks = FALSE, weight = NULL,
 #' @describeIn fmesher-deprecated Deprecated function since `0.5.0.9013`;
 #'   use [new_fm_int()] instead.
 fm_int_object <- function(...) {
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     when = "0.5.0.9013",
     what = "fm_int_object()",
-    with = "new_fm_int()",
-    always = TRUE
+    with = "new_fm_int()"
   )
-  new_fm_int(...)
 }
 
 fm_int_object_as_Spatial <- function(ips) {
@@ -385,7 +383,7 @@ fm_Spatial_as_int_object <- function(ips) {
 #'   ggplot() +
 #'     geom_sf(data = fm_as_sfc(fmexample$mesh, multi = TRUE), alpha = 0.5) +
 #'     geom_sf(data = fmexample$boundary_sf[[1]], fill = "red", alpha = 0.5) +
-#'     geom_sf(data = ips, aes(size = weight)) +
+#'     geom_sf(data = ips, aes(size = weight), stroke = 0) +
 #'     scale_size_area()
 #' }
 #'
@@ -527,10 +525,8 @@ fm_int.list <- function(domain, samplers = NULL, ..., extra = NULL) {
               "  or use other supported multi-sampler class instead."
             )
           )
-          NULL
-        } else {
-          names(x)
         }
+        names(x)
       }
     )
   # coordinate and geometry are not required here
@@ -1137,7 +1133,9 @@ fm_int.fm_mesh_2d <- function(domain,
   ips
 }
 
-# Extract graph information, ensuring unified storage modes
+
+
+# Extract graph information, ensuring unified storage modes ####
 fm_graph <- function(mesh) {
   if (is.null(mesh$graph$vt) || !is.list(mesh$graph$vt)) {
     # Old storage mode: mesh$graph$vt <- rep(NA_integer_, nrow(mesh$loc))
@@ -1171,6 +1169,19 @@ fm_graph <- function(mesh) {
       colnames(mesh$graph$vt[[i]]) <- c("t", "vi")
     }
   }
+
+  if (is.null(mesh$graph[["vt_matrix"]]) || is.null(mesh$graph[["vt_index"]])) {
+    vt_matrix <- do.call(rbind, mesh$graph$vt)
+    vt_index <- list(n = vapply(mesh$graph$vt, NROW, 1L))
+    vt_index$first <- 1L + c(0L, cumsum(vt_index$n)[-length(vt_index$n)])
+    ok <- vt_index$n > 0L
+    vt_index$first[!ok] <- NA_integer_
+    vt_index <- cbind(n = vt_index$n, first = vt_index$first)
+
+    mesh$graph$vt_matrix <- vt_matrix
+    mesh$graph$vt_index <- vt_index
+  }
+
   mesh$graph
 }
 
@@ -1179,28 +1190,17 @@ fm_graph <- function(mesh) {
 #   fmexample$mesh$loc)^2) # should be zero
 fm_bary_vertex <- function(mesh) {
   graph <- fm_graph(mesh)
-  bary_vtx_index <- vapply(
-    seq_len(nrow(mesh$loc)),
-    function(i) {
-      graph$vt[[i]][1, "t"]
-    },
-    1L
-  )
-  bary_vtx_vi <- vapply(
-    seq_len(nrow(mesh$loc)),
-    function(i) {
-      graph$vt[[i]][1, "vi"]
-    },
-    1L
-  )
+
+  ok <- !is.na(graph$vt_index[, "first"])
+  idx <- graph$vt_index[ok, "first"]
   bary_vtx <- fm_bary(
     list(
-      index = bary_vtx_index,
+      index = graph$vt_matrix[idx, "t"],
       where = as.matrix(
         Matrix::sparseMatrix(
-          i = seq_along(bary_vtx_vi),
-          j = bary_vtx_vi,
-          x = rep(1, length(bary_vtx_vi)),
+          i = which(ok),
+          j = graph$vt_matrix[idx, "vi"],
+          x = rep(1, length(idx)),
           dims = c(nrow(mesh$loc), 3)
         )
       )
@@ -1265,7 +1265,7 @@ fm_vertex_projection <- function(points, mesh) {
 
   ok <- !is.na(tri)
   ok[ok] <- (tri[ok] > 0)
-  if (any(!ok)) {
+  if (!all(ok)) {
     warning(
       paste0(
         "Some integration points were outside the mesh;",
@@ -1288,7 +1288,7 @@ fm_vertex_projection <- function(points, mesh) {
 
   data <-
     dplyr::summarise(
-      dplyr::group_by(data, .data$.vertex, .data$.block, .data$.block_origin),
+      dplyr::group_by(data, .data$.block, .data$.vertex, .data$.block_origin),
       weight = sum(.data$weight),
       .groups = "drop"
     )
@@ -1405,6 +1405,32 @@ fm_int_mesh_2d.sf <- function(samplers,
                               ...) {
   if (is.null(name)) {
     name <- attr(samplers, "sf_column")
+  }
+  if (!("weight" %in% names(samplers))) {
+    weight <- rep(1, NROW(samplers))
+  } else {
+    weight <- samplers$weight
+  }
+
+  fm_int_mesh_2d(
+    sf::st_geometry(samplers),
+    domain,
+    name = name,
+    int.args = int.args,
+    .weight = weight,
+    ...
+  )
+}
+
+#' @export
+#' @describeIn fm_int_mesh_2d `sfg` integration
+fm_int_mesh_2d.sfg <- function(samplers,
+                               domain,
+                               name = NULL,
+                               int.args = NULL,
+                               ...) {
+  if (is.null(name)) {
+    name <- "geometry"
   }
   if (!("weight" %in% names(samplers))) {
     weight <- rep(1, NROW(samplers))
@@ -1750,11 +1776,19 @@ fm_int_mesh_2d_polygon <- function(samplers,
 
   if (!is.null(samplers)) {
     samplers_crs <- fm_crs(samplers)
-    integ_sf <- sf::st_as_sf(
-      as.data.frame(integ$loc),
-      coords = seq_len(ncol(integ$loc)),
-      crs = domain_crs
-    )
+    if (fm_manifold(domain, "R2")) {
+      integ_sf <- sf::st_as_sf(
+        data.frame(x = integ$loc[, 1], y = integ$loc[, 2]),
+        coords = seq_len(2),
+        crs = domain_crs
+      )
+    } else {
+      integ_sf <- sf::st_as_sf(
+        as.data.frame(integ$loc),
+        coords = seq_len(ncol(integ$loc)),
+        crs = domain_crs
+      )
+    }
     if (!identical(domain_crs, samplers_crs) &&
       !fm_crs_is_null(domain_crs) &&
       !fm_crs_is_null(samplers_crs)) {
@@ -1776,99 +1810,63 @@ fm_int_mesh_2d_polygon <- function(samplers,
       }
     }
 
+    integ_ <- vector("list", length(idx))
     for (g in seq_along(idx)) {
       if (length(idx[[g]]) > 0) {
-        integ_ <- integ[idx[[g]], , drop = FALSE]
-
         if (method %in% c("stable")) {
-          integ_ <- integ_bary_[idx[[g]], , drop = FALSE]
-          # Project integration points and weights to mesh nodes
-          integ_ <- fm_vertex_projection(integ_, domain)
-        }
-
-        if (ncol(integ_$loc) > 2) {
-          ips <- new_fm_int(
-            sf::st_as_sf(
-              tibble::tibble(
-                x = integ_$loc[, 1],
-                y = integ_$loc[, 2],
-                z = integ_$loc[, 3],
-                weight = integ_$weight,
-                .block = g
-              ),
-              coords = c("x", "y", "z"),
-              crs = domain_crs
-            ),
-            name = name,
-            override = TRUE
-          )
+          integ_[[g]] <- integ_bary_[idx[[g]], , drop = FALSE]
         } else {
-          ips <- new_fm_int(
-            sf::st_as_sf(
-              tibble::tibble(
-                x = integ_$loc[, 1],
-                y = integ_$loc[, 2],
-                weight = integ_$weight,
-                .block = g
-              ),
-              coords = c("x", "y"),
-              crs = domain_crs
-            ),
-            name = name,
-            override = TRUE
-          )
+          integ_[[g]] <- integ[idx[[g]], , drop = FALSE]
         }
 
-        ipsl <- c(ipsl, list(ips))
+        integ_[[g]]$.block <- g
       }
     }
-  } else {
-    if (method %in% c("stable")) {
-      # Project integration points and weights to mesh nodes
-      integ <- fm_vertex_projection(integ, domain)
-    }
 
-    if (ncol(integ$loc) > 2) {
-      ipsl <- list(new_fm_int(
-        sf::st_as_sf(
-          tibble::tibble(
-            x = integ$loc[, 1],
-            y = integ$loc[, 2],
-            z = integ$loc[, 3],
-            weight = integ$weight,
-            .block = 1L,
-            bary = integ$bary
-          ),
-          coords = c("x", "y", "z"),
-          crs = domain_crs
-        ),
-        name = name,
-        override = TRUE
-      ))
-    } else {
-      ipsl <- list(new_fm_int(
-        sf::st_as_sf(
-          tibble::tibble(
-            x = integ$loc[, 1],
-            y = integ$loc[, 2],
-            weight = integ$weight,
-            .block = 1L,
-            bary = integ$bary
-          ),
-          coords = c("x", "y"),
-          crs = domain_crs
-        ),
-        name = name,
-        override = TRUE
-      ))
-    }
+    integ <- do.call(rbind, integ_)
+  } else {
+    integ$.block <- 1L
   }
 
-  ips <- new_fm_int(
-    do.call(dplyr::bind_rows, ipsl),
-    name = name,
-    override = TRUE
-  )
+  if (method %in% c("stable")) {
+    # Project integration points and weights to mesh nodes
+    integ <- fm_vertex_projection(integ, domain)
+  }
+
+  if (ncol(integ$loc) > 2) {
+    ips <- new_fm_int(
+      sf::st_as_sf(
+        tibble::tibble(
+          x = integ$loc[, 1],
+          y = integ$loc[, 2],
+          z = integ$loc[, 3],
+          weight = integ$weight,
+          .block = integ$.block,
+          bary = integ$bary
+        ),
+        coords = c("x", "y", "z"),
+        crs = domain_crs
+      ),
+      name = name,
+      override = TRUE
+    )
+  } else {
+    ips <- new_fm_int(
+      sf::st_as_sf(
+        tibble::tibble(
+          x = integ$loc[, 1],
+          y = integ$loc[, 2],
+          weight = integ$weight,
+          .block = integ$.block,
+          bary = integ$bary
+        ),
+        coords = c("x", "y"),
+        crs = domain_crs
+      ),
+      name = name,
+      override = TRUE
+    )
+  }
 
   ips
 }
@@ -2005,6 +2003,60 @@ fm_int_mesh_2d.fm_segm <- function(samplers,
       int.args = int.args,
       ...
     )
+
+  ips
+}
+
+
+# fm_collect integration ####
+
+#' @export
+#' @describeIn fm_int [fm_collect] integration. Any domain type collection
+#' class with an associated [fm_int()] method is supported. The output format
+#' for the integration points is a tibble with columns `loc` and `index`,
+#' suitable for the `loc` input of the [fm_basis.fm_collect] method.
+#' If non-NULL, the `samplers` input should either be a tibble with columns
+#' `loc` (per-space samplers) and `index` (space index), or a sampler column to
+#' be applied to the entire domain.
+fm_int.fm_collect <- function(domain,
+                              samplers = NULL,
+                              name = NULL,
+                              ...) {
+  if (is.null(name)) {
+    stop("Argument 'name' must be provided for fm_collect integration.")
+  }
+
+  if (is.null(samplers)) {
+    samplers <- tibble::tibble(
+      loc = rep(list(NULL), length(domain$fun_spaces)),
+      index = seq_along(domain$fun_spaces)
+    )
+  } else if (is.data.frame(samplers) &&
+             all(c("loc", "index") %in% names(samplers))) {
+    # Already in the correct format
+  } else {
+    samplers <- tibble::tibble(
+      loc = rep(samplers, length(domain$fun_spaces)),
+      index = seq_along(domain$fun_spaces)
+    )
+  }
+
+  int <- list(nrow(samplers))
+  for (row in seq_len(nrow(samplers))) {
+    int[[row]] <- fm_int(domain$fun_spaces[[samplers$index[row]]],
+                         samplers$loc[[row]],
+                         name = name,
+                         ...)
+    if (inherits(int[[row]], "sf")) {
+      int[[row]] <- tibble::as_tibble(int[[row]])
+    }
+    int[[row]][[name]] <- tibble::tibble(loc = int[[row]][[name]],
+                                         index = samplers$index[row])
+  }
+  ips <- new_fm_int(
+    do.call(dplyr::bind_rows, int),
+    name = name
+  )
 
   ips
 }

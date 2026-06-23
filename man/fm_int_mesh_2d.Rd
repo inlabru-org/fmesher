@@ -4,6 +4,7 @@
 \alias{fm_int_mesh_2d}
 \alias{fm_int_mesh_2d_NULL}
 \alias{fm_int_mesh_2d.sf}
+\alias{fm_int_mesh_2d.sfg}
 \alias{fm_int_mesh_2d.sfc_POINT}
 \alias{fm_int_mesh_2d.sfc_MULTIPOINT}
 \alias{fm_int_mesh_2d.sfc_LINESTRING}
@@ -20,6 +21,8 @@ fm_int_mesh_2d(samplers, domain, name = NULL, int.args = NULL, ...)
 fm_int_mesh_2d_NULL(samplers, domain, name = NULL, int.args = NULL, ...)
 
 \method{fm_int_mesh_2d}{sf}(samplers, domain, name = NULL, int.args = NULL, ...)
+
+\method{fm_int_mesh_2d}{sfg}(samplers, domain, name = NULL, int.args = NULL, ...)
 
 \method{fm_int_mesh_2d}{sfc_POINT}(
   samplers,
@@ -142,6 +145,8 @@ Integration methods for spatial samplers on \code{fm_mesh_2d} meshes.
 \section{Methods (by class)}{
 \itemize{
 \item \code{fm_int_mesh_2d(sf)}: \code{sf} integration
+
+\item \code{fm_int_mesh_2d(sfg)}: \code{sfg} integration
 
 \item \code{fm_int_mesh_2d(sfc_POINT)}: \code{sfc_POINT} integration
 

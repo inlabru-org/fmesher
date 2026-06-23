@@ -18,7 +18,7 @@ namespace fmesh {
 
 template <class T>
 Matrix<T>::Matrix(size_t set_rows, size_t set_cols, const T *vals)
-    : data_(NULL), rows_(0), cols_(0), cap_(0) {
+    : data_(nullptr), rows_(0), cols_(0), cap_(0) {
   cols(set_cols);
   capacity(set_rows);
   rows_ = set_rows;
@@ -29,7 +29,7 @@ Matrix<T>::Matrix(size_t set_rows, size_t set_cols, const T *vals)
 
 template <class T>
 Matrix<T>::Matrix(const Matrix<T> &from)
-    : data_(NULL), rows_(0), cols_(0), cap_(0) {
+    : data_(nullptr), rows_(0), cols_(0), cap_(0) {
   clear();
   cols(from.cols_);
   capacity(from.cap_);
@@ -41,7 +41,7 @@ Matrix<T>::Matrix(const Matrix<T> &from)
 #ifdef FMESHER_WITH_R
 template <class T>
 Matrix<T>::Matrix(const typename Matrix<T>::RcppMatrix &from)
-  : data_(NULL), rows_(0), cols_(0), cap_(0) {
+  : data_(nullptr), rows_(0), cols_(0), cap_(0) {
   clear();
   cols(from.ncol());
   capacity(from.nrow());
@@ -61,7 +61,7 @@ Matrix<T>::Matrix(const typename Matrix<T>::RcppMatrix &from)
 /*
 template <class T>
 Matrix<T>::Matrix(const Rcpp::IntegerMatrix &from)
-  : data_(NULL), rows_(0), cols_(0), cap_(0) {
+  : data_(nullptr), rows_(0), cols_(0), cap_(0) {
   clear();
   cols(from.ncol());
   capacity(from.nrow());
@@ -80,7 +80,7 @@ Matrix<T>::Matrix(const Rcpp::IntegerMatrix &from)
 */
 template <class T>
 Matrix<T>::Matrix(const typename Matrix<T>::RcppVector &from)
-  : data_(NULL), rows_(0), cols_(0), cap_(0) {
+  : data_(nullptr), rows_(0), cols_(0), cap_(0) {
   clear();
   cols(1);
   capacity(from.length());
@@ -97,7 +97,7 @@ Matrix<T>::Matrix(const typename Matrix<T>::RcppVector &from)
 /*
 template <class T>
 Matrix<T>::Matrix(const Rcpp::IntegerVector &from)
-  : data_(NULL), rows_(0), cols_(0), cap_(0) {
+  : data_(nullptr), rows_(0), cols_(0), cap_(0) {
   clear();
   cols(1);
   capacity(from.length());

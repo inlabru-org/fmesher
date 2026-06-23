@@ -202,12 +202,13 @@ fm_segm_contour_helper <- function(x = seq(0, 1, length.out = nrow(z)),
 #' @inheritSection fm_mesh_2d INLA compatibility
 #' @examples
 #' inp <- matrix(rnorm(20), 10, 2)
-#' out <- fm_nonconvex_hull(inp, convex = 1, method = "sf")
+#' out <- fm_nonconvex_hull(inp, convex = 1) # method = "fm", format = "sf"
 #' plot(out)
 #' points(inp, pch = 20)
 #'
-#' out <- fm_nonconvex_hull(inp, convex = 1, method = "fm", format = "fm")
+#' out <- fm_nonconvex_hull(inp, convex = 1, method = "sf", format = "fm")
 #' lines(out, col = 2, add = TRUE)
+#'
 fm_nonconvex_hull <- function(x, ..., format = "sf", method = "fm") {
   if (match.arg(method, c("fm", "sf")) == "fm") {
     if (!requireNamespace("splancs", quietly = TRUE)) {
@@ -230,11 +231,12 @@ fm_nonconvex_hull <- function(x, ..., format = "sf", method = "fm") {
 #' @returns `fm_extensions()` returns a list of `sfc` objects.
 #' @export
 #' @examples
-#' if (TRUE) {
+#' if (requireNamespace("sf")) {
 #'   inp <- sf::st_as_sf(as.data.frame(matrix(1:6, 3, 2)), coords = 1:2)
 #'   bnd <- fm_extensions(inp, convex = c(0.75, 2))
 #'   plot(fm_mesh_2d(boundary = bnd, max.edge = c(0.25, 1)), asp = 1)
 #' }
+#'
 fm_extensions <- function(x,
                           convex = -0.15,
                           concave = convex,
@@ -710,7 +712,7 @@ fm_nonconvex_hull.fm_segm_list <- function(x,
 # Legacy methods ####
 
 #' @title Non-convex hull computation
-#' @description `r lifecycle::badge("deprecated")`
+#' @describeIn fmesher-deprecated `r lifecycle::badge("deprecated")`
 #'   Legacy method for `INLA::inla.nonconvex.hull()`.
 #'   Use [fm_nonconvex_hull()] with `method = "fm"` instead, with
 #'   either `format = "fm"` (for compatibility with code
@@ -803,7 +805,7 @@ fm_nonconvex_hull_inla <- function(x,
 }
 
 #' @export
-#' @describeIn fm_nonconvex_hull_inla Special method [fm_nonconvex_hull_fm()]
+#' @describeIn fmesher-deprecated Special method [fm_nonconvex_hull_fm()]
 #'   method for `concave = 0`. Requires `splancs::nndistF()`.
 ## Based on an idea from Elias Teixeira Krainski
 #' @inheritParams fm_nonconvex_hull

@@ -79,11 +79,11 @@ protected:
   size_t cap_;
 
 public:
-  Matrix() : data_(NULL), rows_(0), cols_(0), cap_(0){};
-  Matrix(size_t set_cols) : data_(NULL), rows_(0), cols_(0), cap_(0) {
+  Matrix() : data_(nullptr), rows_(0), cols_(0), cap_(0){};
+  Matrix(size_t set_cols) : data_(nullptr), rows_(0), cols_(0), cap_(0) {
     cols(set_cols);
   };
-  Matrix(size_t set_rows, size_t set_cols, const T *vals = NULL);
+  Matrix(size_t set_rows, size_t set_cols, const T *vals = nullptr);
   Matrix(const Matrix<T> &from);
   Matrix<T> &operator=(const Matrix<T> &from);
 #ifdef FMESHER_WITH_R
@@ -94,7 +94,7 @@ public:
 #endif
   Matrix<T> &clear(void) {
     if (data_) {
-      data_ = NULL;
+      data_ = nullptr;
     }
     cap_ = 0;
     rows_ = 0;
@@ -120,7 +120,7 @@ public:
 
   const T *operator[](const size_t r) const {
     if (r >= rows_) {
-      return NULL;
+      return nullptr;
     }
     return &data_[r * cols_];
   };
@@ -328,7 +328,7 @@ public:
   Matrix1(const typename Matrix<T>::RcppMatrix &from);
   Matrix1(const typename Matrix<T>::RcppVector &from);
 #endif
-  Matrix1(size_t set_rows, const ValueRaw *vals = NULL)
+  Matrix1(size_t set_rows, const ValueRaw *vals = nullptr)
       : Matrix<T>(set_rows, 1, (T *)vals){};
   Matrix1<T> &clear(void) {
     Matrix<T>::clear();
@@ -364,7 +364,7 @@ public:
 #endif
   Matrix3(size_t set_rows, const ValueRow *vals)
     : Matrix<T>(set_rows, 3, (T *)vals){};
-  Matrix3(size_t set_rows, const ValueRaw *vals = NULL)
+  Matrix3(size_t set_rows, const ValueRaw *vals = nullptr)
     : Matrix<T>(set_rows, 3, (T *)vals){};
   Matrix3<T> &clear(void) {
     Matrix<T>::clear();
@@ -415,7 +415,7 @@ public:
 #endif
   Matrix4(size_t set_rows, const ValueRow *vals)
     : Matrix<T>(set_rows, 4, (T *)vals){};
-  Matrix4(size_t set_rows, const ValueRaw *vals = NULL)
+  Matrix4(size_t set_rows, const ValueRaw *vals = nullptr)
     : Matrix<T>(set_rows, 4, (T *)vals){};
   Matrix4<T> &clear(void) {
     Matrix<T>::clear();
@@ -474,7 +474,7 @@ protected:
 
 public:
 //  SparseMatrixRow() :
-//  M_(NULL),
+//  M_(nullptr),
 //    data_(){};
 //  SparseMatrixRow(const SparseMatrixRow<T> &from)
 //      :

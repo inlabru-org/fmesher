@@ -325,7 +325,7 @@ handle_rcdt_options_inla <- function(
 #' [fmesher_rcdt()] options.
 #' @returns An `fm_mesh_2d` object
 #' @examples
-#' (m <- fm_rcdt_2d_inla(
+#' (m <- fm_rcdt_2d(
 #'   boundary = fm_nonconvex_hull(cbind(0, 0), convex = 5)
 #' ))
 #'
@@ -582,7 +582,8 @@ fm_rcdt_2d_inla <- function(loc = NULL,
         # Need to do the C->R index conversion for the triangle indices here!
         mesh$graph$vt[[vv]] <-
           matrix(c(as.integer(names(vt)) + 1L, vt), length(vt), 2,
-                 dimnames = list(NULL, c("t", "vi")))
+            dimnames = list(NULL, c("t", "vi"))
+          )
       }
     } else {
       # warning("VT information missing from mesh, rebuilding")
@@ -590,7 +591,8 @@ fm_rcdt_2d_inla <- function(loc = NULL,
       mesh$graph$vt <- list()
       for (vv in seq_len(nrow(mesh$loc))) {
         mesh$graph$vt[[vv]] <- matrix(NA_integer_, 0, 2,
-                                      dimnames = list(NULL, c("t", "vi")))
+          dimnames = list(NULL, c("t", "vi"))
+        )
       }
       for (tt in seq_len(nrow(mesh$graph$tv))) {
         for (vvi in seq_len(3)) {
@@ -634,6 +636,9 @@ fm_rcdt_2d_inla <- function(loc = NULL,
   # Note: this also handles the C->R conversion for triangle indexing in vt.
   m <- remap_unused(m)
 
+  # Make sure all graph properties are included:
+  m$graph <- fm_graph(m)
+
   m
 }
 
@@ -670,15 +675,16 @@ fm_delaunay_2d <- function(loc, crs = NULL, ...) {
 #' @param ... Currently passed on to `fm_mesh_2d_inla`
 #' @family object creation and conversion
 #' @section INLA compatibility:
-#' For mesh and curve creation, the [fm_rcdt_2d_inla()], [fm_mesh_2d_inla()],
-#' and [fm_nonconvex_hull_inla()] methods will keep the interface syntax used by
-#' `INLA::inla.mesh.create()`, `INLA::inla.mesh.2d()`, and
-#' `INLA::inla.nonconvex.hull()` functions, respectively, whereas the
+#' For mesh and curve creation, the [fm_rcdt_2d_inla()] and [fm_mesh_2d_inla()]
+#' methods will keep the interface syntax used by the `INLA::inla.mesh.create()`
+#' and `INLA::inla.mesh.2d()` functions, respectively, whereas the
 #' [fm_rcdt_2d()], [fm_mesh_2d()], and [fm_nonconvex_hull()] interfaces may be
-#' different, and potentially change in the future.
+#' different, and potentially change in the future. From version `0.4.0.9002`,
+#' the [fm_nonconvex_hull_inla()] function is deprecated, in favour of the more
+#' configurable update version of [fm_nonconvex_hull()].
 #'
 #' @examples
-#' fm_mesh_2d_inla(boundary = fm_extensions(cbind(2, 1), convex = 1, 2))
+#' fm_mesh_2d(boundary = fm_extensions(cbind(2, 1), convex = 1, 2))
 #'
 fm_mesh_2d <- function(...) {
   fm_mesh_2d_inla(...)
@@ -1092,16 +1098,16 @@ fm_hexagon_lattice_orig <- function(bnd,
   y_bin <- as.integer(y_diff / (sqrt(3) / 2 * edge_len))
   # TODO rep n, n-1, length
   h <- (sqrt(3) / 2 * edge_len) # height
-  x_adj <- .5 * (x_diff - x_bin * edge_len)
-  y_adj <- .5 * (y_diff - y_bin * h)
+  x_adj <- 0.5 * (x_diff - x_bin * edge_len)
+  y_adj <- 0.5 * (y_diff - y_bin * h)
   # x
   x_1_ <- seq(
     fm_bbox(bnd_inner)[[1]][1] + x_adj,
     fm_bbox(bnd_inner)[[1]][2] - x_adj, edge_len
   )
   x_2_ <- seq(
-    (fm_bbox(bnd_inner)[[1]][1] + x_adj + .5 * edge_len),
-    (fm_bbox(bnd_inner)[[1]][2] - x_adj - .5 * edge_len),
+    (fm_bbox(bnd_inner)[[1]][1] + x_adj + 0.5 * edge_len),
+    (fm_bbox(bnd_inner)[[1]][2] - x_adj - 0.5 * edge_len),
     edge_len
   )
   y_1_ <- seq(

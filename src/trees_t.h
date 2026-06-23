@@ -174,7 +174,7 @@ void IntervalTree<T>::add_segment(int start_idx, int end_idx) {
 }
 template <class T> void IntervalTree<T>::build_tree() {
   if (tree_) {
-    tree_ = NULL;
+    tree_ = nullptr;
   }
   if (breakpoints_.size() == 0) {
     return;

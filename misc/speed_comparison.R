@@ -113,19 +113,17 @@ system.time({
   }
 })
 
-if (FALSE) {
-  profvis::profvis({
-    for (k in seq_len(100)) {
-      INLA <- inla.mesh.projector(fmesher_INLA, loc = lf)$proj
-      Rcpp <- fm_evaluator(fmesher_Rcpp, loc = lf)$proj
-    }
-  })
-
-  devtools::load_all() # For source
-  lf <- loc_find[[3]]
-  profvis::profvis({
-    for (k in seq_len(100)) {
-      Rcpp <- fm_evaluator(fmesher_Rcpp, loc = lf)$proj
-    }
-  })
-}
+# profvis::profvis({
+#   for (k in seq_len(100)) {
+#     INLA <- inla.mesh.projector(fmesher_INLA, loc = lf)$proj
+#     Rcpp <- fm_evaluator(fmesher_Rcpp, loc = lf)$proj
+#   }
+# })
+#
+# devtools::load_all() # For source
+# lf <- loc_find[[3]]
+# profvis::profvis({
+#   for (k in seq_len(100)) {
+#     Rcpp <- fm_evaluator(fmesher_Rcpp, loc = lf)$proj
+#   }
+# })

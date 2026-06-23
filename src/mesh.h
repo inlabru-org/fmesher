@@ -250,18 +250,18 @@ public:
   Dart find_path_direction(const Point &s0, const Point &s1,
                            const Dart &d0) const;
   DartPair trace_path(const Dart &d0, const Point &s1, const int v1 = -1,
-                      DartList *trace = NULL) const;
+                      DartList *trace = nullptr) const;
   DartPair trace_path(const Point &s0, const Point &s1, const Dart &d0,
-                      DartList *trace = NULL) const;
+                      DartList *trace = nullptr) const;
 
   Dart find_path_direction_new(const Dart &d0, const Point &s1,
                            const int v1 = -1) const;
   Dart find_path_direction_new(const Point &s0, const Point &s1,
                            const Dart &d0) const;
   DartPair trace_path_new(const Dart &d0, const Point &s1, const int v1 = -1,
-                      DartList *trace = NULL) const;
+                      DartList *trace = nullptr) const;
   DartPair trace_path_new(const Point &s0, const Point &s1, const Dart &d0,
-                      DartList *trace = NULL) const;
+                      DartList *trace = nullptr) const;
 
   Dart locate_point(const Dart &d0, const Point &s, const int v = -1) const;
   Dart locate_vertex(const Dart &d0, const int v) const;
@@ -413,7 +413,7 @@ private:
   int t_;
 
 public:
-  Dart(void) : M_(NULL), vi_(0), edir_(1), t_(0){};
+  Dart(void) : M_(nullptr), vi_(0), edir_(1), t_(0){};
   Dart(const Mesh &M, int t = 0, int edir = 1, size_t vi = 0)
     : M_(&M), vi_(vi), edir_(edir), t_(t){};
   Dart(const Dart &d) : M_(d.M_), vi_(d.vi_), edir_(d.edir_), t_(d.t_){};

@@ -10,6 +10,7 @@
 \alias{fm_int.fm_lattice_2d}
 \alias{fm_int.fm_mesh_1d}
 \alias{fm_int.fm_mesh_2d}
+\alias{fm_int.fm_collect}
 \title{Multi-domain integration}
 \usage{
 fm_int(domain, samplers = NULL, ...)
@@ -43,6 +44,8 @@ fm_int(domain, samplers = NULL, ...)
   format = NULL,
   ...
 )
+
+\method{fm_int}{fm_collect}(domain, samplers = NULL, name = NULL, ...)
 }
 \arguments{
 \item{domain}{Functional space specification; single domain or a named list
@@ -118,6 +121,14 @@ and optionally a \code{weight} column.
 \item \code{fm_int(fm_mesh_2d)}: \code{fm_mesh_2d} integration. Any sampler class with an
 associated \code{\link[=fm_int_mesh_2d]{fm_int_mesh_2d()}} method is supported.
 
+\item \code{fm_int(fm_collect)}: \link{fm_collect} integration. Any domain type collection
+class with an associated \code{\link[=fm_int]{fm_int()}} method is supported. The output format
+for the integration points is a tibble with columns \code{loc} and \code{index},
+suitable for the \code{loc} input of the \link{fm_basis.fm_collect} method.
+If non-NULL, the \code{samplers} input should either be a tibble with columns
+\code{loc} (per-space samplers) and \code{index} (space index), or a sampler column to
+be applied to the entire domain.
+
 }}
 \examples{
 # Integration on the interval (2, 3.5) with Simpson's rule
@@ -142,7 +153,7 @@ if (require("ggplot2", quietly = TRUE)) {
   ggplot() +
     geom_sf(data = fm_as_sfc(fmexample$mesh, multi = TRUE), alpha = 0.5) +
     geom_sf(data = fmexample$boundary_sf[[1]], fill = "red", alpha = 0.5) +
-    geom_sf(data = ips, aes(size = weight)) +
+    geom_sf(data = ips, aes(size = weight), stroke = 0) +
     scale_size_area()
 }
 

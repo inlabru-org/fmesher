@@ -61,7 +61,6 @@ fm_CRS(x, ..., units = NULL, oblique = NULL)
   x,
   oblique = NULL,
   projargs = NULL,
-  doCheckCRSArgs = NULL,
   args = NULL,
   SRS_string = NULL,
   ...,
@@ -91,8 +90,6 @@ Details section for \code{\link[=fm_crs]{fm_crs()}}.}
 reference string to a predefined projection; run
 \code{names(fm_wkt_predef())} for valid predefined projections. (projargs is a
 compatibility parameter that can be used for the default \code{fm_CRS()} method)}
-
-\item{doCheckCRSArgs}{ignored.}
 
 \item{args}{An optional list of name/value pairs to add to and/or override
 the PROJ4 arguments in \code{projargs}.  \code{name=value} is converted to
@@ -159,7 +156,7 @@ if (fm_safe_sp()) {
 }
 }
 \seealso{
-\code{\link[=fm_crs]{fm_crs()}}, \code{\link[sp:CRS-class]{sp::CRS()}}, \code{\link{fm_crs_wkt}},
+\code{\link[=fm_crs]{fm_crs()}}, \code{\link[sp:CRS]{sp::CRS()}}, \code{\link{fm_crs_wkt}},
 \code{\link[=fm_crs_is_identical]{fm_crs_is_identical()}}
 }
 \author{

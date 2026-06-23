@@ -2,7 +2,7 @@ test_that("Basic 2d FEM works", {
   mesh <- fm_rcdt_2d_inla(globe = 1)
 
   fem1 <- fm_fem(mesh, order = 2)
-  names_fem <- c("b1", "c0", "c1", "g1", "g2", "k1", "k2", "ta", "va")
+  names_fem <- c("b1", "c0", "c1", "cc", "g1", "g2", "k1", "k2", "ta", "va")
   expect_setequal(names(fem1), names_fem)
 
   expect_error(
@@ -20,7 +20,7 @@ test_that("Basic 2d FEM works", {
 
 
 test_that("Basic 1d FEM works", {
-  names_fem0 <- c("c0", "c1", "g1", "g2")
+  names_fem0 <- c("c0", "c1", "cc", "g1", "g2")
   names_fem2 <- union(names_fem0, c("g01", "g02", "g12"))
   names_fem <- list(names_fem0, names_fem0, names_fem2)
 

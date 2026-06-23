@@ -20,6 +20,11 @@ Useful links:
 \author{
 \strong{Maintainer}: Finn Lindgren \email{finn.lindgren@gmail.com} (\href{https://orcid.org/0000-0002-5833-2011}{ORCID}) (Finn Lindgren wrote the main code) [copyright holder]
 
+Authors:
+\itemize{
+  \item Finn Lindgren \email{finn.lindgren@gmail.com} (\href{https://orcid.org/0000-0002-5833-2011}{ORCID}) (Finn Lindgren wrote the main code) [copyright holder]
+}
+
 Other contributors:
 \itemize{
   \item Seaton Andy \email{andy.e.seaton@gmail.com} (Andy Seaton constributed features to the sf support) [contributor]

@@ -8,6 +8,7 @@ test_that("fmesher_subdivide works", {
   # 2
   # 0, 1
   sub0.tv <- rbind(c(0, 1, 2))
+  # jarl-ignore internal_function: Internal test
   sub0 <- fmesher:::fmesher_subdivide(
     mesh$loc,
     mesh$graph$tv - 1L,
@@ -32,6 +33,7 @@ test_that("fmesher_subdivide works", {
     mesh$loc,
     cbind(rbind(c(0.5, 0), c(0.5 - 0.1 * 0.5, 0.5), c(0 - 0.1 * 0.5, 0.5)), 0)
   )
+  # jarl-ignore internal_function: Internal test
   sub1 <- fmesher:::fmesher_subdivide(
     mesh$loc,
     mesh$graph$tv - 1L,
@@ -67,6 +69,7 @@ test_that("fmesher_subdivide works", {
       c(1 / 3 - 0.1 * 1 / 3, 1 / 3)
     ), 0)
   )
+  # jarl-ignore internal_function: Internal test
   sub2 <- fmesher:::fmesher_subdivide(
     mesh$loc,
     mesh$graph$tv - 1L,

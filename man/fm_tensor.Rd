@@ -40,23 +40,23 @@ str(fm_basis(m, loc = list(space = cbind(0, 0), time = 2.5)))
 str(fm_fem(m))
 }
 \seealso{
-Other object creation and conversion: 
-\code{\link{fm_as_collect}()},
-\code{\link{fm_as_fm}()},
-\code{\link{fm_as_lattice_2d}()},
-\code{\link{fm_as_lattice_Nd}()},
-\code{\link{fm_as_mesh_1d}()},
-\code{\link{fm_as_mesh_2d}()},
-\code{\link{fm_as_mesh_3d}()},
-\code{\link{fm_as_segm}()},
-\code{\link{fm_as_sfc}()},
-\code{\link{fm_as_tensor}()},
-\code{\link{fm_collect}()},
-\code{\link{fm_lattice_2d}()},
-\code{\link{fm_lattice_Nd}()},
-\code{\link{fm_mesh_1d}()},
-\code{\link{fm_mesh_2d}()},
-\code{\link{fm_segm}()},
-\code{\link{fm_simplify}()}
+Other object creation and conversion:
+\code{\link[=fm_as_collect]{fm_as_collect()}},
+\code{\link[=fm_as_fm]{fm_as_fm()}},
+\code{\link[=fm_as_lattice_2d]{fm_as_lattice_2d()}},
+\code{\link[=fm_as_lattice_Nd]{fm_as_lattice_Nd()}},
+\code{\link[=fm_as_mesh_1d]{fm_as_mesh_1d()}},
+\code{\link[=fm_as_mesh_2d]{fm_as_mesh_2d()}},
+\code{\link[=fm_as_mesh_3d]{fm_as_mesh_3d()}},
+\code{\link[=fm_as_segm]{fm_as_segm()}},
+\code{\link[=fm_as_sfc]{fm_as_sfc()}},
+\code{\link[=fm_as_tensor]{fm_as_tensor()}},
+\code{\link[=fm_collect]{fm_collect()}},
+\code{\link[=fm_lattice_2d]{fm_lattice_2d()}},
+\code{\link[=fm_lattice_Nd]{fm_lattice_Nd()}},
+\code{\link[=fm_mesh_1d]{fm_mesh_1d()}},
+\code{\link[=fm_mesh_2d]{fm_mesh_2d()}},
+\code{\link[=fm_segm]{fm_segm()}},
+\code{\link[=fm_simplify]{fm_simplify()}}
 }
 \concept{object creation and conversion}

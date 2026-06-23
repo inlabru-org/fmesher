@@ -9,6 +9,20 @@ on:
   pull_request:
     branches:
       - devel
+    paths:
+      - "**"
+      - "!README.Rmd"
+      - "!misc/**"
+      - "!cran-comments.md"
+      - "!.github/**"
+      - ".github/workflows/pkgdown.yaml"
+      - "!*.json "
+      - "!*.yaml"
+      - "!*.yml"
+      - "!.gitignore"
+      - "!*.toml"
+      - "!*.Rproj"
+      - "!.lintr"
   workflow_dispatch:
     inputs:
       debug_enabled:
@@ -33,7 +47,7 @@ jobs:
       contents: write
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -93,10 +107,10 @@ jobs:
       id-token: write
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Checkout gh-pages branch
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           ref: gh-pages
           path: docs
@@ -135,6 +149,12 @@ jobs:
 
       - name: Build site
         run: pkgdown::build_site_github_pages(new_process = FALSE, install = TRUE)
+        shell: Rscript {0}
+
+      - name: Build multi-version menus
+        run: |
+          source("misc/pkgdown_menu_builder.R")
+          update_menus("docs")
         shell: Rscript {0}
 
       - name: Upload full website for deployment 🚀

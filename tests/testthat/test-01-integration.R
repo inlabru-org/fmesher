@@ -395,7 +395,7 @@ test_that("fm_int for linestring coinciding with mesh edges", {
   #           lapply(c(0, 1, 2, 3, 5, 7, 9, 15),
   #                  function(n) cbind(ips[[paste0("mesh", n)]], n = n)))) +
   #   geom_fm(data = meshes[["mesh3"]]) +
-  #   geom_sf(aes(size = weight)) +
+  #   geom_sf(aes(size = weight), stroke = 0) +
   #   scale_size_area() +
   #   geom_sf(data = x, alpha = 0.2, col = "red") +
   #   facet_wrap(~n, nrow = 2)
@@ -439,7 +439,7 @@ test_that("fm_int for linestring", {
   #           lapply(c(0, 1, 2, 3, 5, 7, 9, 15),
   #                  function(n) cbind(ips[[paste0("mesh", n)]], n = n)))) +
   #   geom_fm(data = meshes[["mesh3"]]) +
-  #   geom_sf(aes(size = weight)) +
+  #   geom_sf(aes(size = weight), stroke = 0) +
   #   geom_sf(data = fmexample$boundary_sf[[1]], alpha = 0.2) +
   #   scale_size_area() +
   #   facet_wrap(~n, nrow = 2) +
@@ -474,7 +474,7 @@ test_that("Block integration has correct result order", {
     values = rep(1, nrow(ips))
   )
 
-  expect_equal(length(vals), nrow(samplers))
+  expect_length(vals, nrow(samplers))
   expect_equal(vals, (1:10) * sum(ips0$weight))
 
   # Multi-domain, at least one with >= 10 blocks
@@ -505,6 +505,14 @@ test_that("Block integration has correct result order", {
     values = rep(1, nrow(ips))
   )
 
-  expect_equal(length(vals), nrow(samplers) * 2)
+  expect_length(vals, nrow(samplers) * 2)
   expect_equal(vals, c((1:10), (1:10) * 100) * sum(ips0$weight))
+})
+
+
+
+
+test_that("mesh collection integration", {
+  space <- fm_collect(list(fmexample$mesh, fmexample$mesh))
+  expect_no_error(fm_int(space, name = "space"))
 })

@@ -3,6 +3,7 @@ fmesher_install <- function(repo = ".", debug = FALSE) {
   pkgbuild_with_debug <- function(code, flags, debug = TRUE) {
     defaults <- pkgbuild::compiler_flags(debug = debug)
     flags <- unlist(utils::modifyList(as.list(defaults), as.list(flags)))
+    # jarl-ignore internal_function: Need to set internal flags for pkgbuild
     pkgbuild:::withr_with_makevars(flags, code)
   }
 

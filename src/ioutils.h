@@ -145,8 +145,8 @@ public:
 /*! Helper for Matrix input and output. */
 template <class T> class IOHelperM : public IOHelper<T> {
 public:
-  const Matrix<T> *cM_{NULL};
-  Matrix<T> *M_{NULL};
+  const Matrix<T> *cM_{nullptr};
+  Matrix<T> *M_{nullptr};
 
 public:
   /* Constructors: */
@@ -154,7 +154,7 @@ public:
   IOHelperM(const IOHeader &h) : IOHelper<T>(h) {};
   IOHelperM<T> &cD(const Matrix<T> *M) {
     cM_ = M;
-    M_ = NULL;
+    M_ = nullptr;
     IOHelper<T>::header().dense(*M);
     return *this;
   };
@@ -224,11 +224,11 @@ public:
 
 public:
   /* Constructors: */
-  IOHelperSM() : IOHelper<T>(), cM_(NULL), M_(NULL){};
-  IOHelperSM(const IOHeader &h) : IOHelper<T>(h), cM_(NULL), M_(NULL){};
+  IOHelperSM() : IOHelper<T>(), cM_(nullptr), M_(nullptr){};
+  IOHelperSM(const IOHeader &h) : IOHelper<T>(h), cM_(nullptr), M_(nullptr){};
   IOHelperSM<T> &cD(const SparseMatrix<T> *M) {
     cM_ = M;
-    M_ = NULL;
+    M_ = nullptr;
     IOHelper<T>::header().sparse(*M);
     IOHelper<T>::colmajor();
     return *this;
@@ -305,11 +305,11 @@ public:
 
 public:
   /* Constructors: */
-  IOHelperC() : IOHelper<int>(IOHeader()), cM_(NULL), M_(NULL){};
-  IOHelperC(const IOHeader &h) : IOHelper<int>(h), cM_(NULL), M_(NULL){};
+  IOHelperC() : IOHelper<int>(IOHeader()), cM_(nullptr), M_(nullptr){};
+  IOHelperC(const IOHeader &h) : IOHelper<int>(h), cM_(nullptr), M_(nullptr){};
   IOHelperC &cD(const MatrixC *M) {
     cM_ = M;
-    M_ = NULL;
+    M_ = nullptr;
     IOHelper<int>::header().collection(*M);
     return *this;
   };
@@ -517,7 +517,7 @@ public:
         return *ret;
       }
     }
-    return NULL;
+    return nullptr;
   }
 
   Matrix<int> &DI() {

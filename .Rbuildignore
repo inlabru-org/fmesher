@@ -1,3 +1,4 @@
+^\.git$
 ^.*\.Rproj$
 ^\.Rproj\.user$
 _config.yml
@@ -28,3 +29,8 @@ _config.yml
 ^LICENSE$
 ^src/.vscode$
 ^revdep$
+^air\.toml$
+^jarl\.toml$
+^\.pre-commit-config\.yaml$
+^\.positai$
+^\.claude$

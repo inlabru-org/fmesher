@@ -28,7 +28,7 @@
 #'
 #' theta <- seq(0, 2 * pi, length.out = 1000)
 #' loc <- cbind(cos(theta), sin(theta))
-#' idx <- fm_simplify_helper(loc = loc, idx = 1:nrow(loc), eps = 0.01)
+#' idx <- fm_simplify_helper(loc = loc, idx = seq_len(nrow(loc)), eps = 0.01)
 #' print(c(nrow(loc), length(idx)))
 #' plot(loc, type = "l")
 #' lines(loc[idx, ], col = "red")
@@ -150,7 +150,7 @@ fm_simplify <- function(x, eps = NULL, eps_rel = NULL, ...) {
     seq_seg <- integer(0)
     seq_vtx <- x$idx[next_seg, 1]
     next_vtx <- x$idx[next_seg, 2]
-    while (TRUE) {
+    repeat {
       final <- next_vtx %in% seq_vtx
       seq_vtx <- c(seq_vtx, next_vtx)
       seq_seg <- c(seq_seg, next_seg)

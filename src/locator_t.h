@@ -15,7 +15,7 @@ namespace fmesh {
 
 template <class T>
 BBoxLocator<T>::Search_tree_type::Iterator::Iterator()
-    : is_null_(true), search_tree_(NULL), loc_() {
+    : is_null_(true), search_tree_(nullptr), loc_() {
   /* Nothing to do. */
 }
 

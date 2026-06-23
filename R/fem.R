@@ -25,9 +25,11 @@ make_symmetric <- function(x) {
 }
 
 #' @rdname fm_fem
-#' @returns `fm_fem.fm_mesh_1d`: A list with elements `c0`, `c1`, `g1`, `g2`,
-#' etc.
-#' When `mesh$degree == 2`, also `g01`, `g02`, and `g12`.
+#' @returns `fm_fem.fm_mesh_1d`: A list with elements `c0`, `c1`, `cc`, `g1`,
+#' `g2`, etc.
+#' When `mesh$degree == 2`, also `g01`, `g02`, and `g12`, and `cc` is the same
+#' as `c1`, usually the natural choice for precision matrix construction.
+#' When `mesh$degree < 2`, `cc` is the same as `c0`.
 #' @export
 fm_fem.fm_mesh_1d <- function(mesh, order = 2, ...) {
   ## Use the same matrices for degree 0 as for degree 1
@@ -198,7 +200,18 @@ fm_fem.fm_mesh_1d <- function(mesh, order = 2, ...) {
     }
   }
 
-  c(list(c0 = c0, c1 = c1), g_list)
+  c(
+    list(
+      c0 = c0,
+      c1 = c1,
+      cc = if (mesh$degree == 2) {
+        c1
+      } else {
+        c0
+      }
+    ),
+    g_list
+  )
 }
 
 #' @rdname fm_fem
@@ -207,9 +220,10 @@ fm_fem.fm_mesh_1d <- function(mesh, order = 2, ...) {
 #'   \eqn{v}{v} for an anisotropic operator \eqn{\nabla\cdot H \nabla}{div H
 #'   grad}, where \eqn{H=\gamma I + v v^\top}{H = gamma I + v v'}. Currently
 #'   (2023-08-05) the fields need to be given per vertex.
-#' @returns `fm_fem.fm_mesh_2d`: A list with elements `c0`, `c1`, `g1`, `va`,
-#'   `ta`, and more if `order > 1`. When `aniso` is non-NULL, also `g1aniso`
-#'   matrices, etc.
+#' @returns `fm_fem.fm_mesh_2d`: A list with elements `c0`, `c1`, `cc`, `g1`,
+#'   `va`, `ta`, and more if `order > 1`. When `aniso` is non-NULL, also
+#'   `g1aniso` matrices, etc. The `cc` matrix is meant to be used for precision
+#'   materix constructions, and is currently equal to `c0`.
 #'
 #' @export
 fm_fem.fm_mesh_2d <- function(mesh, order = 2,
@@ -230,7 +244,7 @@ fm_fem.fm_mesh_2d <- function(mesh, order = 2,
     aniso = aniso,
     options = list()
   )
-  result
+  c(result, list(cc = result$c0))
 }
 
 #' @rdname fm_fem
@@ -244,11 +258,10 @@ fm_fem.fm_tensor <- function(mesh, order = 2, ...) {
 
   fem_list <- lapply(mesh$fun_spaces, fm_fem, order = order)
   cc_list <- lapply(seq_along(mesh$fun_spaces), function(i) {
-    if (inherits(mesh$fun_spaces[[i]], "fm_mesh_1d") &&
-      mesh$fun_spaces[[i]]$degree == 2) {
-      return(fem_list[[i]]$c1)
+    if (is.null(fem_list[[i]][["cc"]])) {
+      return(fem_list[[i]]$c0)
     }
-    fem_list[[i]]$c0
+    fem_list[[i]]$cc
   })
 
   kron_multi <- function(x) {
@@ -284,19 +297,18 @@ fm_fem.fm_tensor <- function(mesh, order = 2, ...) {
 
 
 #' @rdname fm_fem
-#' @returns `fm_fem.fm_collect`: A list with elements `c0`, `c1`,
-#' `g1`, `g2`, etc, and `cc` (`c0` for every model except `fm_mesh_1d` with
-#' `degree=2`, for which it is `c1`). If the base type for the collection
-#' provides `va` and `ta` values, those are also returned.
+#' @returns `fm_fem.fm_collect`: A list with elements `c0`, `c1`, `g1`, `g2`,
+#'   etc, and `cc` (`cc` for every model returning `cc` from `fm_fem()`, and
+#'   `c0` when `cc` is not available). If the base type for the collection
+#'   provides `va` and `ta` values, those are also returned.
 #' @export
 fm_fem.fm_collect <- function(mesh, order = 2, ...) {
   fem_list <- lapply(mesh$fun_spaces, fm_fem, order = order)
   cc_list <- lapply(seq_along(mesh$fun_spaces), function(i) {
-    if (inherits(mesh$fun_spaces[[i]], "fm_mesh_1d") &&
-      mesh$fun_spaces[[i]]$degree == 2) {
-      return(fem_list[[i]]$c1)
+    if (is.null(fem_list[[i]][["cc"]])) {
+      return(fem_list[[i]]$c0)
     }
-    fem_list[[i]]$c0
+    fem_list[[i]]$cc
   })
 
   result <- list(
@@ -332,8 +344,8 @@ row_volume_product <- function(e1, e2, e3) {
 }
 
 #' @rdname fm_fem
-#' @returns `fm_fem.fm_mesh_3d`: A list with elements `c0`, `c1`, `g1`, `g2`,
-#'   `va`, `ta`, and more if `order > 2`.
+#' @returns `fm_fem.fm_mesh_3d`: A list with elements `c0`, `c1`, `cc`, `g1`,
+#'   `g2`, `va`, `ta`, and more if `order > 2`.
 #'
 #' @export
 fm_fem.fm_mesh_3d <- function(mesh, order = 2, ...) {
@@ -386,6 +398,7 @@ fm_fem.fm_mesh_3d <- function(mesh, order = 2, ...) {
 
   list(
     c0 = c0,
+    cc = c0,
     g1 = g1,
     g2 = g1 %*% Matrix::Diagonal(mesh$n, 1 / vols_v) %*% g1,
     va = vols_v,
