@@ -1,8 +1,11 @@
 # fmesher (development version)
 
+## Improved features
+
 * Make `cc` the canonical name for the most suitable 0th order mass matrix
   for all `fm_fem()` implementations, so that higher order basis functions can
-  be used without "mass lumping", and the callers don't need to know about it
+  be used without "mass lumping", and the callers, such as
+  `INLA::inla.spde2.pcmatern()` don't need to handle the logic themselves.
   (`0.7.0.9001`)
 * Speed up polygon integration by precomputing and storing `vt`
   vertex-to-triangle information in multiple formats (`0.7.0.9002`)
