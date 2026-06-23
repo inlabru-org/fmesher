@@ -89,7 +89,7 @@ suppressPackageStartupMessages(library(fmesher))
 suppressPackageStartupMessages(library(ggplot2))
 
 bnd <- fm_extensions(cbind(0, 0), convex = c(1, 1.5))
-(mesh <- fm_mesh_2d_inla(
+(mesh <- fm_mesh_2d(
   boundary = bnd,
   max.edge = c(0.2, 0.5)
 ))
@@ -117,7 +117,7 @@ contained in a given `sf` polygon.
 
 ``` r
 hex_points <- fm_hexagon_lattice(bnd = bnd[[1]], edge_len = 0.2)
-(mesh_hex <- fm_mesh_2d_inla(
+(mesh_hex <- fm_mesh_2d(
   loc = hex_points,
   boundary = bnd,
   max.edge = c(0.3, 0.5)
