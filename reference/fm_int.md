@@ -44,6 +44,9 @@ fm_int(
   format = NULL,
   ...
 )
+
+# S3 method for class 'fm_collect'
+fm_int(domain, samplers = NULL, name = NULL, ...)
 ```
 
 ## Arguments
@@ -138,6 +141,17 @@ the original subdomain block information for tensor product blocks.
   [`fm_int_mesh_2d()`](https://inlabru-org.github.io/fmesher/reference/fm_int_mesh_2d.md)
   method is supported.
 
+- `fm_int(fm_collect)`:
+  [fm_collect](https://inlabru-org.github.io/fmesher/reference/fm_collect.md)
+  integration. Any domain type collection class with an associated
+  `fm_int()` method is supported. The output format for the integration
+  points is a tibble with columns `loc` and `index`, suitable for the
+  `loc` input of the
+  [fm_basis.fm_collect](https://inlabru-org.github.io/fmesher/reference/fm_basis.md)
+  method. If non-NULL, the `samplers` input should either be a tibble
+  with columns `loc` (per-space samplers) and `index` (space index), or
+  a sampler column to be applied to the entire domain.
+
 ## Examples
 
 ``` r
@@ -166,7 +180,7 @@ if (require("ggplot2", quietly = TRUE)) {
   ggplot() +
     geom_sf(data = fm_as_sfc(fmexample$mesh, multi = TRUE), alpha = 0.5) +
     geom_sf(data = fmexample$boundary_sf[[1]], fill = "red", alpha = 0.5) +
-    geom_sf(data = ips, aes(size = weight)) +
+    geom_sf(data = ips, aes(size = weight), stroke = 0) +
     scale_size_area()
 }
 

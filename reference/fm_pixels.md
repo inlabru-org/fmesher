@@ -98,17 +98,17 @@ if (require("ggplot2", quietly = TRUE) &&
     geom_spatraster(data = pxl, aes(fill = val)) +
     geom_sf(data = fm_as_sfc(fmexample$mesh), alpha = 0.2)
 }
-#> terra 1.9.27
+#> terra 1.9.34
 #> 
 #> Attaching package: ‘terra’
-#> The following objects are masked from ‘package:splancs’:
-#> 
-#>     as.points, is.points, thin, zoom
 #> The following object is masked from ‘package:patchwork’:
 #> 
 #>     area
 #> 
 #> Attaching package: ‘tidyterra’
+#> The following object is masked from ‘package:Matrix’:
+#> 
+#>     expand
 #> The following object is masked from ‘package:stats’:
 #> 
 #>     filter

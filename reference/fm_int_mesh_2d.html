@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.7.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.8.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,6 +62,9 @@
 <span><span class="fu">fm_int_mesh_2d_NULL</span><span class="op">(</span><span class="va">samplers</span>, <span class="va">domain</span>, name <span class="op">=</span> <span class="cn">NULL</span>, int.args <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'sf'</span></span>
+<span><span class="fu">fm_int_mesh_2d</span><span class="op">(</span><span class="va">samplers</span>, <span class="va">domain</span>, name <span class="op">=</span> <span class="cn">NULL</span>, int.args <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'sfg'</span></span>
 <span><span class="fu">fm_int_mesh_2d</span><span class="op">(</span><span class="va">samplers</span>, <span class="va">domain</span>, name <span class="op">=</span> <span class="cn">NULL</span>, int.args <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'sfc_POINT'</span></span>
@@ -207,6 +210,7 @@ point coordinate information and additional columns <code>weight</code> and <cod
     <h2 id="methods-by-class-">Methods (by class)<a class="anchor" aria-label="anchor" href="#methods-by-class-"></a></h2>
 
 <ul><li><p><code>fm_int_mesh_2d(sf)</code>: <code>sf</code> integration</p></li>
+<li><p><code>fm_int_mesh_2d(sfg)</code>: <code>sfg</code> integration</p></li>
 <li><p><code>fm_int_mesh_2d(sfc_POINT)</code>: <code>sfc_POINT</code> integration</p></li>
 <li><p><code>fm_int_mesh_2d(sfc_MULTIPOINT)</code>: <code>sfc_MULTIPOINT</code> integration</p></li>
 <li><p><code>fm_int_mesh_2d(sfc_LINESTRING)</code>: <code>sfc_LINESTRING</code> integration</p></li>

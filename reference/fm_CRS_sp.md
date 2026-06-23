@@ -61,7 +61,6 @@ fm_CRS(
   x,
   oblique = NULL,
   projargs = NULL,
-  doCheckCRSArgs = NULL,
   args = NULL,
   SRS_string = NULL,
   ...,
@@ -107,10 +106,6 @@ fm_CRS(x, ..., units = NULL, oblique = NULL)
   predefined projection; run `names(fm_wkt_predef())` for valid
   predefined projections. (projargs is a compatibility parameter that
   can be used for the default `fm_CRS()` method)
-
-- doCheckCRSArgs:
-
-  ignored.
 
 - args:
 

@@ -32,7 +32,7 @@ fm_try_callstack(expr)
 
 - with_numbers:
 
-  INclude call stack location numbers
+  Include call stack location numbers
 
 - ...:
 
@@ -55,7 +55,7 @@ information attached to the error message.
 
 ## Functions
 
-- `fm_call_stack()`:
+- `fm_call_stack()`: Character vector describing the call stack.
 
 - `fm_try_callstack()`: Inspired by `berryFunctions::tryStack`
 

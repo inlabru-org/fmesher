@@ -169,17 +169,19 @@ When `convex`, `concave`, or `dTolerance` are negative,
 ## INLA compatibility
 
 For mesh and curve creation, the
-[`fm_rcdt_2d_inla()`](https://inlabru-org.github.io/fmesher/reference/fm_rcdt_2d.md),
-[`fm_mesh_2d_inla()`](https://inlabru-org.github.io/fmesher/reference/fm_mesh_2d.md),
+[`fm_rcdt_2d_inla()`](https://inlabru-org.github.io/fmesher/reference/fm_rcdt_2d.md)
 and
-[`fm_nonconvex_hull_inla()`](https://inlabru-org.github.io/fmesher/reference/fm_nonconvex_hull_inla.md)
-methods will keep the interface syntax used by
-`INLA::inla.mesh.create()`, `INLA::inla.mesh.2d()`, and
-`INLA::inla.nonconvex.hull()` functions, respectively, whereas the
+[`fm_mesh_2d_inla()`](https://inlabru-org.github.io/fmesher/reference/fm_mesh_2d.md)
+methods will keep the interface syntax used by the
+`INLA::inla.mesh.create()` and `INLA::inla.mesh.2d()` functions,
+respectively, whereas the
 [`fm_rcdt_2d()`](https://inlabru-org.github.io/fmesher/reference/fm_rcdt_2d.md),
 [`fm_mesh_2d()`](https://inlabru-org.github.io/fmesher/reference/fm_mesh_2d.md),
 and `fm_nonconvex_hull()` interfaces may be different, and potentially
-change in the future.
+change in the future. From version `0.4.0.9002`, the
+[`fm_nonconvex_hull_inla()`](https://inlabru-org.github.io/fmesher/reference/fmesher-deprecated.md)
+function is deprecated, in favour of the more configurable update
+version of `fm_nonconvex_hull()`.
 
 ## References
 
@@ -187,22 +189,24 @@ Gonzalez and Woods (1992), Digital Image Processing
 
 ## See also
 
-[`fm_nonconvex_hull_inla()`](https://inlabru-org.github.io/fmesher/reference/fm_nonconvex_hull_inla.md)
+[`fm_nonconvex_hull_inla()`](https://inlabru-org.github.io/fmesher/reference/fmesher-deprecated.md)
 
 ## Examples
 
 ``` r
 inp <- matrix(rnorm(20), 10, 2)
-out <- fm_nonconvex_hull(inp, convex = 1, method = "sf")
+out <- fm_nonconvex_hull(inp, convex = 1) # method = "fm", format = "sf"
 plot(out)
 points(inp, pch = 20)
 
-out <- fm_nonconvex_hull(inp, convex = 1, method = "fm", format = "fm")
+out <- fm_nonconvex_hull(inp, convex = 1, method = "sf", format = "fm")
 lines(out, col = 2, add = TRUE)
 
-if (TRUE) {
+
+if (requireNamespace("sf")) {
   inp <- sf::st_as_sf(as.data.frame(matrix(1:6, 3, 2)), coords = 1:2)
   bnd <- fm_extensions(inp, convex = c(0.75, 2))
   plot(fm_mesh_2d(boundary = bnd, max.edge = c(0.25, 1)), asp = 1)
 }
+
 ```

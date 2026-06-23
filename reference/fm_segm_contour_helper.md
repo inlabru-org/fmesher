@@ -59,8 +59,8 @@ An `fm_segm` object
 ## See also
 
 Other nonconvex inla legacy support:
-[`fm_nonconvex_hull_inla()`](https://inlabru-org.github.io/fmesher/reference/fm_nonconvex_hull_inla.md),
-[`fm_simplify_helper()`](https://inlabru-org.github.io/fmesher/reference/fm_simplify_helper.md)
+[`fm_simplify_helper()`](https://inlabru-org.github.io/fmesher/reference/fm_simplify_helper.md),
+[`fmesher-deprecated`](https://inlabru-org.github.io/fmesher/reference/fmesher-deprecated.md)
 
 ## Examples
 

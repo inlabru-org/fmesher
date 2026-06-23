@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">fmesher</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.7.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.8.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -174,12 +174,13 @@ automatic boundaries, and mesh quality parameters.</p></li>
     <h2 id="inla-compatibility">INLA compatibility<a class="anchor" aria-label="anchor" href="#inla-compatibility"></a></h2>
 
 
-<p>For mesh and curve creation, the <code><a href="fm_rcdt_2d.html">fm_rcdt_2d_inla()</a></code>, <code>fm_mesh_2d_inla()</code>,
-and <code><a href="fm_nonconvex_hull_inla.html">fm_nonconvex_hull_inla()</a></code> methods will keep the interface syntax used by
-<code>INLA::inla.mesh.create()</code>, <code>INLA::inla.mesh.2d()</code>, and
-<code>INLA::inla.nonconvex.hull()</code> functions, respectively, whereas the
+<p>For mesh and curve creation, the <code><a href="fm_rcdt_2d.html">fm_rcdt_2d_inla()</a></code> and <code>fm_mesh_2d_inla()</code>
+methods will keep the interface syntax used by the <code>INLA::inla.mesh.create()</code>
+and <code>INLA::inla.mesh.2d()</code> functions, respectively, whereas the
 <code><a href="fm_rcdt_2d.html">fm_rcdt_2d()</a></code>, <code>fm_mesh_2d()</code>, and <code><a href="fm_nonconvex_hull.html">fm_nonconvex_hull()</a></code> interfaces may be
-different, and potentially change in the future.</p>
+different, and potentially change in the future. From version <code>0.4.0.9002</code>,
+the <code><a href="fmesher-deprecated.html">fm_nonconvex_hull_inla()</a></code> function is deprecated, in favour of the more
+configurable update version of <code><a href="fm_nonconvex_hull.html">fm_nonconvex_hull()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -211,7 +212,7 @@ different, and potentially change in the future.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">fm_mesh_2d_inla</span><span class="op">(</span>boundary <span class="op">=</span> <span class="fu"><a href="fm_nonconvex_hull.html">fm_extensions</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span>, convex <span class="op">=</span> <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">fm_mesh_2d</span><span class="op">(</span>boundary <span class="op">=</span> <span class="fu"><a href="fm_nonconvex_hull.html">fm_extensions</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span>, convex <span class="op">=</span> <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> fm_mesh_2d object:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Manifold:	R2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   V / E / T:	32 / 69 / 38</span>

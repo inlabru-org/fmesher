@@ -92,6 +92,5 @@ fm_evaluator(m, loc = tibble::tibble(loc = cbind(0, 0), index = 2))
 names(fm_fem(m))
 #> [1] "cc" "c0" "c1" "va" "ta" "g1" "g2"
 fm_diameter(m)
-#>        A        B 
-#> 10.51699 10.51699 
+#> [1] 10.51699
 ```

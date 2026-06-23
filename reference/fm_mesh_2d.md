@@ -121,16 +121,19 @@ An `fm_mesh_2d` object.
 ## INLA compatibility
 
 For mesh and curve creation, the
-[`fm_rcdt_2d_inla()`](https://inlabru-org.github.io/fmesher/reference/fm_rcdt_2d.md),
-`fm_mesh_2d_inla()`, and
-[`fm_nonconvex_hull_inla()`](https://inlabru-org.github.io/fmesher/reference/fm_nonconvex_hull_inla.md)
-methods will keep the interface syntax used by
-`INLA::inla.mesh.create()`, `INLA::inla.mesh.2d()`, and
-`INLA::inla.nonconvex.hull()` functions, respectively, whereas the
+[`fm_rcdt_2d_inla()`](https://inlabru-org.github.io/fmesher/reference/fm_rcdt_2d.md)
+and `fm_mesh_2d_inla()` methods will keep the interface syntax used by
+the `INLA::inla.mesh.create()` and `INLA::inla.mesh.2d()` functions,
+respectively, whereas the
 [`fm_rcdt_2d()`](https://inlabru-org.github.io/fmesher/reference/fm_rcdt_2d.md),
 `fm_mesh_2d()`, and
 [`fm_nonconvex_hull()`](https://inlabru-org.github.io/fmesher/reference/fm_nonconvex_hull.md)
-interfaces may be different, and potentially change in the future.
+interfaces may be different, and potentially change in the future. From
+version `0.4.0.9002`, the
+[`fm_nonconvex_hull_inla()`](https://inlabru-org.github.io/fmesher/reference/fmesher-deprecated.md)
+function is deprecated, in favour of the more configurable update
+version of
+[`fm_nonconvex_hull()`](https://inlabru-org.github.io/fmesher/reference/fm_nonconvex_hull.md).
 
 ## See also
 
@@ -167,7 +170,7 @@ Finn Lindgren <Finn.Lindgren@gmail.com>
 ## Examples
 
 ``` r
-fm_mesh_2d_inla(boundary = fm_extensions(cbind(2, 1), convex = 1, 2))
+fm_mesh_2d(boundary = fm_extensions(cbind(2, 1), convex = 1, 2))
 #> fm_mesh_2d object:
 #>   Manifold:  R2
 #>   V / E / T: 32 / 69 / 38

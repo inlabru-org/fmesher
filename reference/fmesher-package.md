@@ -25,6 +25,12 @@ Useful links:
 ([ORCID](https://orcid.org/0000-0002-5833-2011)) (Finn Lindgren wrote
 the main code) \[copyright holder\]
 
+Authors:
+
+- Finn Lindgren <finn.lindgren@gmail.com>
+  ([ORCID](https://orcid.org/0000-0002-5833-2011)) (Finn Lindgren wrote
+  the main code) \[copyright holder\]
+
 Other contributors:
 
 - Seaton Andy <andy.e.seaton@gmail.com> (Andy Seaton constributed

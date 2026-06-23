@@ -45,8 +45,8 @@ of rectangle, motivated by prediction ellipse for Brownian bridge.
 ## See also
 
 Other nonconvex inla legacy support:
-[`fm_nonconvex_hull_inla()`](https://inlabru-org.github.io/fmesher/reference/fm_nonconvex_hull_inla.md),
-[`fm_segm_contour_helper()`](https://inlabru-org.github.io/fmesher/reference/fm_segm_contour_helper.md)
+[`fm_segm_contour_helper()`](https://inlabru-org.github.io/fmesher/reference/fm_segm_contour_helper.md),
+[`fmesher-deprecated`](https://inlabru-org.github.io/fmesher/reference/fmesher-deprecated.md)
 
 ## Author
 
@@ -58,7 +58,7 @@ Finn Lindgren <Finn.Lindgren@gmail.com>
 
 theta <- seq(0, 2 * pi, length.out = 1000)
 loc <- cbind(cos(theta), sin(theta))
-idx <- fm_simplify_helper(loc = loc, idx = 1:nrow(loc), eps = 0.01)
+idx <- fm_simplify_helper(loc = loc, idx = seq_len(nrow(loc)), eps = 0.01)
 print(c(nrow(loc), length(idx)))
 #> [1] 1000   33
 plot(loc, type = "l")

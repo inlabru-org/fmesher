@@ -77,7 +77,7 @@ For mesh and curve creation, the
 [`fm_rcdt_2d_inla()`](https://inlabru-org.github.io/fmesher/reference/fm_rcdt_2d.md),
 [`fm_mesh_2d_inla()`](https://inlabru-org.github.io/fmesher/reference/fm_mesh_2d.md),
 and
-[`fm_nonconvex_hull_inla()`](https://inlabru-org.github.io/fmesher/reference/fm_nonconvex_hull_inla.md)
+[`fm_nonconvex_hull_inla()`](https://inlabru-org.github.io/fmesher/reference/fmesher-deprecated.md)
 methods will keep the interface syntax used by `inla.mesh.create()`,
 `inla.mesh.2d()`, and `inla.nonconvex.hull()` functions, respectively,
 whereas the

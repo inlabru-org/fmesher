@@ -44,7 +44,8 @@ plot(mesh_sub)
 
 
 if (requireNamespace("geometry", quietly = TRUE)) {
-  print(m <- fm_delaunay_3d(matrix(rnorm(30), 10, 3)))
+  m <- fm_delaunay_3d(matrix(rnorm(30), 10, 3))
+  print(m)
   print(fm_subset(m, seq_len(min(5, nrow(m$graph$tv)))))
 }
 #> fm_mesh_3d object:
