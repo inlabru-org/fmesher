@@ -51,18 +51,10 @@ lines.fm_segm <- function(x, loc = NULL, col = NULL,
                           rgl = deprecated(),
                           ...) {
   if (lifecycle::is_present(rgl)) {
-    lifecycle::deprecate_warn(
+    lifecycle::deprecate_stop(
       "0.5.0.9000", "lines.fm_segm(rgl = )",
       "lines_rgl()"
     )
-    return(lines_rgl(
-      x,
-      loc = loc,
-      col = col,
-      colors = colors,
-      add = add,
-      ...
-    ))
   }
   segm <- x
   if (!is.null(segm$loc)) {

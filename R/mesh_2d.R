@@ -325,7 +325,7 @@ handle_rcdt_options_inla <- function(
 #' [fmesher_rcdt()] options.
 #' @returns An `fm_mesh_2d` object
 #' @examples
-#' (m <- fm_rcdt_2d_inla(
+#' (m <- fm_rcdt_2d(
 #'   boundary = fm_nonconvex_hull(cbind(0, 0), convex = 5)
 #' ))
 #'
@@ -675,15 +675,16 @@ fm_delaunay_2d <- function(loc, crs = NULL, ...) {
 #' @param ... Currently passed on to `fm_mesh_2d_inla`
 #' @family object creation and conversion
 #' @section INLA compatibility:
-#' For mesh and curve creation, the [fm_rcdt_2d_inla()], [fm_mesh_2d_inla()],
-#' and [fm_nonconvex_hull_inla()] methods will keep the interface syntax used by
-#' `INLA::inla.mesh.create()`, `INLA::inla.mesh.2d()`, and
-#' `INLA::inla.nonconvex.hull()` functions, respectively, whereas the
+#' For mesh and curve creation, the [fm_rcdt_2d_inla()] and [fm_mesh_2d_inla()]
+#' methods will keep the interface syntax used by the `INLA::inla.mesh.create()`
+#' and `INLA::inla.mesh.2d()` functions, respectively, whereas the
 #' [fm_rcdt_2d()], [fm_mesh_2d()], and [fm_nonconvex_hull()] interfaces may be
-#' different, and potentially change in the future.
+#' different, and potentially change in the future. From version `0.4.0.9002`,
+#' the [fm_nonconvex_hull_inla()] function is deprecated, in favour of the more
+#' configurable update version of [fm_nonconvex_hull()].
 #'
 #' @examples
-#' fm_mesh_2d_inla(boundary = fm_extensions(cbind(2, 1), convex = 1, 2))
+#' fm_mesh_2d(boundary = fm_extensions(cbind(2, 1), convex = 1, 2))
 #'
 fm_mesh_2d <- function(...) {
   fm_mesh_2d_inla(...)

@@ -313,13 +313,11 @@ new_fm_int <- function(object, blocks = FALSE, weight = NULL,
 #' @describeIn fmesher-deprecated Deprecated function since `0.5.0.9013`;
 #'   use [new_fm_int()] instead.
 fm_int_object <- function(...) {
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     when = "0.5.0.9013",
     what = "fm_int_object()",
-    with = "new_fm_int()",
-    always = TRUE
+    with = "new_fm_int()"
   )
-  new_fm_int(...)
 }
 
 fm_int_object_as_Spatial <- function(ips) {

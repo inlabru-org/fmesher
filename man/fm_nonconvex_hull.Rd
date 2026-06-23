@@ -144,27 +144,30 @@ in how the amount of allowed concavity is controlled.
 }}
 \section{INLA compatibility}{
 
-For mesh and curve creation, the \code{\link[=fm_rcdt_2d_inla]{fm_rcdt_2d_inla()}}, \code{\link[=fm_mesh_2d_inla]{fm_mesh_2d_inla()}},
-and \code{\link[=fm_nonconvex_hull_inla]{fm_nonconvex_hull_inla()}} methods will keep the interface syntax used by
-\code{INLA::inla.mesh.create()}, \code{INLA::inla.mesh.2d()}, and
-\code{INLA::inla.nonconvex.hull()} functions, respectively, whereas the
+For mesh and curve creation, the \code{\link[=fm_rcdt_2d_inla]{fm_rcdt_2d_inla()}} and \code{\link[=fm_mesh_2d_inla]{fm_mesh_2d_inla()}}
+methods will keep the interface syntax used by the \code{INLA::inla.mesh.create()}
+and \code{INLA::inla.mesh.2d()} functions, respectively, whereas the
 \code{\link[=fm_rcdt_2d]{fm_rcdt_2d()}}, \code{\link[=fm_mesh_2d]{fm_mesh_2d()}}, and \code{\link[=fm_nonconvex_hull]{fm_nonconvex_hull()}} interfaces may be
-different, and potentially change in the future.
+different, and potentially change in the future. From version \verb{0.4.0.9002},
+the \code{\link[=fm_nonconvex_hull_inla]{fm_nonconvex_hull_inla()}} function is deprecated, in favour of the more
+configurable update version of \code{\link[=fm_nonconvex_hull]{fm_nonconvex_hull()}}.
 }
 
 \examples{
 inp <- matrix(rnorm(20), 10, 2)
-out <- fm_nonconvex_hull(inp, convex = 1, method = "sf")
+out <- fm_nonconvex_hull(inp, convex = 1) # method = "fm", format = "sf"
 plot(out)
 points(inp, pch = 20)
 
-out <- fm_nonconvex_hull(inp, convex = 1, method = "fm", format = "fm")
+out <- fm_nonconvex_hull(inp, convex = 1, method = "sf", format = "fm")
 lines(out, col = 2, add = TRUE)
+
 if (requireNamespace("sf")) {
   inp <- sf::st_as_sf(as.data.frame(matrix(1:6, 3, 2)), coords = 1:2)
   bnd <- fm_extensions(inp, convex = c(0.75, 2))
   plot(fm_mesh_2d(boundary = bnd, max.edge = c(0.25, 1)), asp = 1)
 }
+
 }
 \references{
 Gonzalez and Woods (1992), Digital Image Processing
