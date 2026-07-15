@@ -63,13 +63,15 @@
 #'     geom_sf(data = fm_as_sfc(fmexample$mesh), alpha = 0.2)
 #' }
 #' }
-fm_pixels <- function(mesh,
-                      dims = c(150, 150),
-                      xlim = NULL,
-                      ylim = NULL,
-                      mask = TRUE,
-                      format = "sf",
-                      minimal = TRUE) {
+fm_pixels <- function(
+  mesh,
+  dims = c(150, 150),
+  xlim = NULL,
+  ylim = NULL,
+  mask = TRUE,
+  format = "sf",
+  minimal = TRUE
+) {
   format <- match.arg(format, c("sf", "terra", "sp"))
   if (!fm_manifold(mesh, "R2")) {
     stop("fmesher::fm_pixels() currently works for R2 meshes only.")
@@ -341,8 +343,8 @@ join_segm <- function(...) {
   # Remove NA and atomic lines
   ok <-
     !is.na(idx[, 1]) &
-      !is.na(idx[, 2]) &
-      idx[, 1] != idx[, 2]
+    !is.na(idx[, 2]) &
+    idx[, 1] != idx[, 2]
   idx <- idx[ok, , drop = FALSE]
   # Set locations
   loc <- new_loc[seq_len(prev_idx), , drop = FALSE]
@@ -480,7 +482,7 @@ fm_mesh_intersection <- function(mesh, poly) {
   loc_tri <- fm_centroids(mesh_joint_cover)
   ok_tri <-
     fm_is_within(loc_tri, mesh) &
-      fm_is_within(loc_tri, mesh_poly)
+    fm_is_within(loc_tri, mesh_poly)
   if (any(ok_tri)) {
     mesh_subset <- fm_subset(mesh_joint_cover, which(ok_tri))
   } else {
@@ -747,7 +749,8 @@ fm_centroids <- function(x, format = NULL) {
   ## Extract triangle centroids
   loc <- (x$loc[x$graph$tv[, 1], , drop = FALSE] +
     x$loc[x$graph$tv[, 2], , drop = FALSE] +
-    x$loc[x$graph$tv[, 3], , drop = FALSE]) / 3
+    x$loc[x$graph$tv[, 3], , drop = FALSE]) /
+    3
 
   if (fm_manifold(x, "S2")) {
     loc <- loc / rowSums(loc^2)^0.5 * sum(x$loc[1, ]^2)^0.5
@@ -835,12 +838,14 @@ fm_zm.sfg <- function(x, ..., add = NULL, remove = NULL, target = NULL) {
 
 #' @export
 #' @rdname fm_zm
-fm_zm.numeric <- function(x,
-                          ...,
-                          add = NULL,
-                          remove = NULL,
-                          target = NULL,
-                          input = NULL) {
+fm_zm.numeric <- function(
+  x,
+  ...,
+  add = NULL,
+  remove = NULL,
+  target = NULL,
+  input = NULL
+) {
   input <- fm_zm_input(x, ..., input = input)
 
   fm_zm(
@@ -854,12 +859,14 @@ fm_zm.numeric <- function(x,
 
 #' @export
 #' @rdname fm_zm
-fm_zm.matrix <- function(x,
-                         ...,
-                         add = NULL,
-                         remove = NULL,
-                         target = NULL,
-                         input = NULL) {
+fm_zm.matrix <- function(
+  x,
+  ...,
+  add = NULL,
+  remove = NULL,
+  target = NULL,
+  input = NULL
+) {
   input <- fm_zm_input(x, ..., input = input)
 
   target <- fm_zm_target(
@@ -1074,11 +1081,7 @@ fm_onto_mesh <- function(mesh, loc, crs = NULL) {
   loc_needs_normalisation <- FALSE
   if (!fm_crs_is_null(crs) && !fm_crs_is_null(mesh_crs)) {
     if (!fm_crs_is_identical(crs, mesh_crs)) {
-      loc <- fm_transform(loc,
-        crs = mesh_crs,
-        crs0 = crs,
-        passthrough = FALSE
-      )
+      loc <- fm_transform(loc, crs = mesh_crs, crs0 = crs, passthrough = FALSE)
     }
   } else if (fm_manifold(mesh, "S2")) {
     loc_needs_normalisation <- TRUE

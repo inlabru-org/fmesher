@@ -49,8 +49,11 @@ fmesher_install <- function(repo = ".", debug = FALSE) {
 }
 
 
-
-fmesher_clang_tidy <- function(files = NULL, standalone_files = NULL, standalone = FALSE) {
+fmesher_clang_tidy <- function(
+  files = NULL,
+  standalone_files = NULL,
+  standalone = FALSE
+) {
   if (is.null(files)) {
     files <-
       c(
@@ -75,22 +78,29 @@ fmesher_clang_tidy <- function(files = NULL, standalone_files = NULL, standalone
   if (standalone) {
     CPPFLAGS <- paste0(
       "-std=c++17",
-      " -I", R.home("include"),
-      " -I", file.path(system.file(package = "Rcpp"), "include"),
+      " -I",
+      R.home("include"),
+      " -I",
+      file.path(system.file(package = "Rcpp"), "include"),
       " -I/usr/local/include",
       " -Imisc/src_standalone",
       " -DNDEBUG"
     )
     SOURCE <-
-      paste0(c(
-        file.path("src", files),
-        file.path("misc", "src_standalone", standalone_files)
-      ), collapse = " ")
+      paste0(
+        c(
+          file.path("src", files),
+          file.path("misc", "src_standalone", standalone_files)
+        ),
+        collapse = " "
+      )
   } else {
     CPPFLAGS <- paste0(
       "-std=c++17",
-      " -I", R.home("include"),
-      " -I", file.path(system.file(package = "Rcpp"), "include"),
+      " -I",
+      R.home("include"),
+      " -I",
+      file.path(system.file(package = "Rcpp"), "include"),
       " -I/usr/local/include",
       " -DNDEBUG -DFMESHER_WITH_R"
     )

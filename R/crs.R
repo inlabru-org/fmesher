@@ -14,8 +14,10 @@ fm_wkt_is_geocent <- function(wkt) {
   # See https://proceedings.esri.com/library/userconf/proc17/
   #   tech-workshops/tw_2588-212.pdf
   geo_crs_items <- c(
-    "GEODCRS", "GEOGCRS",
-    "BASEGEODCRS", "BASEGEOGCRS"
+    "GEODCRS",
+    "GEOGCRS",
+    "BASEGEODCRS",
+    "BASEGEOGCRS"
   )
   wt <- fm_wkt_as_wkt_tree(wkt)
   if (identical(wt[["label"]], "BOUNDCRS")) {
@@ -41,8 +43,10 @@ fm_wkt_is_geocent <- function(wkt) {
   axis_types <- c("geocentricX", "geocentricY", "geocentricZ")
   for (k in seq_len(3)) {
     axis <- fm_wkt_tree_get_item(wt, "AXIS", k)
-    if (!((axis[["params"]][[1]] == axis_names[k]) &&
-      (axis[["params"]][[2]] == axis_types[k]))) {
+    if (
+      !((axis[["params"]][[1]] == axis_names[k]) &&
+        (axis[["params"]][[2]] == axis_types[k]))
+    ) {
       return(FALSE)
     }
   }
@@ -66,8 +70,10 @@ fm_crs_is_geocent <- function(crs) {
 
 fm_wkt_get_ellipsoid_radius <- function(wkt) {
   geo_crs_items <- c(
-    "GEODCRS", "GEOGCRS",
-    "BASEGEODCRS", "BASEGEOGCRS"
+    "GEODCRS",
+    "GEOGCRS",
+    "BASEGEODCRS",
+    "BASEGEOGCRS"
   )
   wt <- fm_wkt_as_wkt_tree(wkt)
 
@@ -129,8 +135,10 @@ fm_ellipsoid_radius.character <- function(x) {
 
 fm_wkt_set_ellipsoid_radius <- function(wkt, radius) {
   geo_crs_items <- c(
-    "GEODCRS", "GEOGCRS",
-    "BASEGEODCRS", "BASEGEOGCRS"
+    "GEODCRS",
+    "GEOGCRS",
+    "BASEGEODCRS",
+    "BASEGEOGCRS"
   )
 
   set_radius <- function(wt) {
@@ -153,7 +161,9 @@ fm_wkt_set_ellipsoid_radius <- function(wkt, radius) {
       wt_sub <- fm_wkt_tree_get_item(
         wt,
         c(
-          "BOUNDCRS", "SOURCECRS", "PROJCRS",
+          "BOUNDCRS",
+          "SOURCECRS",
+          "PROJCRS",
           geo_crs_items
         )
       )
@@ -237,7 +247,6 @@ fm_crs_set_ellipsoid_radius <- function(crs, radius) {
 
 # Length unit ----
 
-
 #' @param crs An `sf::crs`, `sp::CRS`, `fm_crs` or `inla.CRS` object
 #' @param wkt A WKT2 character string
 #' @param unit character, name of a unit. Supported names are
@@ -262,24 +271,22 @@ fm_crs_set_ellipsoid_radius <- function(crs, radius) {
 
 fm_wkt_unit_params <- function() {
   params <- list(
-    "metre" =
+    "metre" = list(
+      '"metre"',
+      "1",
       list(
-        '"metre"',
-        "1",
-        list(
-          label = "ID",
-          params = list('"EPSG"', "9001")
-        )
-      ),
-    "kilometre" =
-      list(
-        '"kilometre"',
-        "1000",
-        list(
-          label = "ID",
-          params = list('"EPSG"', "9036")
-        )
+        label = "ID",
+        params = list('"EPSG"', "9001")
       )
+    ),
+    "kilometre" = list(
+      '"kilometre"',
+      "1000",
+      list(
+        label = "ID",
+        params = list('"EPSG"', "9036")
+      )
+    )
   )
   params[["meter"]] <- params[["metre"]]
   params[["m"]] <- params[["metre"]]
@@ -345,8 +352,10 @@ fm_wkt_set_lengthunit <- function(wkt, unit, params = NULL) {
     if (wt[["label"]] == "LENGTHUNIT") {
       wt[["params"]] <- unit
     } else if (wt[["label"]] != "ELLIPSOID") {
-      if ((wt[["label"]] == "PARAMETER") &&
-        (wt[["params"]][[1]] %in% c('"False easting"', '"False northing"'))) {
+      if (
+        (wt[["label"]] == "PARAMETER") &&
+          (wt[["params"]][[1]] %in% c('"False easting"', '"False northing"'))
+      ) {
         orig_unit <- (wt[["params"]][[3]][["params"]][[1]])
         new_unit <- (unit[[1]])
         if (orig_unit != new_unit) {
@@ -554,10 +563,7 @@ fm_length_unit.character <- function(x) {
 #' @seealso fm_crs_is_null
 #' @rdname fm_crs
 #' @seealso [fm_crs<-()], [fm_crs_oblique<-()]
-fm_crs <- function(x,
-                   ...,
-                   units = NULL,
-                   oblique = NULL) {
+fm_crs <- function(x, ..., units = NULL, oblique = NULL) {
   UseMethod("fm_crs")
 }
 
@@ -823,11 +829,13 @@ fm_crs.fm_mesh_3d <- function(x, ..., units = NULL, oblique = NULL) {
 #' @param .multi logical; If `TRUE`, return a list of `fm_crs` objects
 #'   for classes that support multiple spaces. Default `FALSE`
 #' @export
-fm_crs.fm_tensor <- function(x,
-                             ...,
-                             units = NULL,
-                             oblique = NULL,
-                             .multi = FALSE) {
+fm_crs.fm_tensor <- function(
+  x,
+  ...,
+  units = NULL,
+  oblique = NULL,
+  .multi = FALSE
+) {
   if (isTRUE(.multi)) {
     lapply(
       x[["fun_spaces"]],
@@ -845,11 +853,13 @@ fm_crs.fm_tensor <- function(x,
 #' @describeIn fm_crs By default returns the crs of the first space in the
 #'   collection.
 #' @export
-fm_crs.fm_collect <- function(x,
-                              ...,
-                              units = NULL,
-                              oblique = NULL,
-                              .multi = FALSE) {
+fm_crs.fm_collect <- function(
+  x,
+  ...,
+  units = NULL,
+  oblique = NULL,
+  .multi = FALSE
+) {
   if (isTRUE(.multi)) {
     lapply(
       x[["fun_spaces"]],
@@ -1030,34 +1040,26 @@ fm_crs.matrix <- function(x, ..., units = NULL, oblique = NULL) {
 #' @export
 #' @rdname fm_crs-set
 `fm_crs_oblique<-.CRS` <- function(x, value) {
-  fm_CRS(x,
-    oblique = if (is.null(value)) NA else value
-  )
+  fm_CRS(x, oblique = if (is.null(value)) NA else value)
 }
 
 #' @export
 #' @rdname fm_crs-set
 `fm_crs_oblique<-.fm_CRS` <- function(x, value) {
-  fm_CRS(x[["crs"]],
-    oblique = if (is.null(value)) NA else value
-  )
+  fm_CRS(x[["crs"]], oblique = if (is.null(value)) NA else value)
 }
 
 #' @export
 #' @rdname fm_crs-set
 `fm_crs_oblique<-.fm_crs` <- function(x, value) {
-  fm_crs(x[["crs"]],
-    oblique = if (is.null(value)) NA else value
-  )
+  fm_crs(x[["crs"]], oblique = if (is.null(value)) NA else value)
 }
 
 #' @export
 #' @rdname fm_crs-set
 `fm_crs_oblique<-.fm_segm` <- function(x, value) {
   fm_crs(x) <-
-    fm_crs(x,
-      oblique = if (is.null(value)) NA else value
-    )
+    fm_crs(x, oblique = if (is.null(value)) NA else value)
   x
 }
 
@@ -1065,9 +1067,7 @@ fm_crs.matrix <- function(x, ..., units = NULL, oblique = NULL) {
 #' @rdname fm_crs-set
 `fm_crs_oblique<-.fm_mesh_2d` <- function(x, value) {
   fm_crs(x) <-
-    fm_crs(x,
-      oblique = if (is.null(value)) NA else value
-    )
+    fm_crs(x, oblique = if (is.null(value)) NA else value)
   x
 }
 
@@ -1086,9 +1086,7 @@ fm_crs.matrix <- function(x, ..., units = NULL, oblique = NULL) {
 #' @rdname fm_crs-set
 `fm_crs_oblique<-.fm_lattice_2d` <- function(x, value) {
   fm_crs(x) <-
-    fm_crs(x,
-      oblique = if (is.null(value)) NA else value
-    )
+    fm_crs(x, oblique = if (is.null(value)) NA else value)
   x
 }
 
@@ -1315,12 +1313,15 @@ fm_CRS.CRS <- function(x, ..., units = NULL, oblique = NULL) {
 
 #' @export
 #' @rdname fm_CRS_sp
-fm_CRS.default <- function(x, oblique = NULL,
-                           projargs = NULL,
-                           args = NULL,
-                           SRS_string = NULL,
-                           ...,
-                           units = NULL) {
+fm_CRS.default <- function(
+  x,
+  oblique = NULL,
+  projargs = NULL,
+  args = NULL,
+  SRS_string = NULL,
+  ...,
+  units = NULL
+) {
   # Handle renaming of projargs to match fm_CRS generic arguments
   if (missing(x)) {
     x <- projargs
@@ -1330,10 +1331,12 @@ fm_CRS.default <- function(x, oblique = NULL,
   if (identical(projargs, "")) {
     projargs <- NULL
   }
-  if (is.null(SRS_string) &&
-    !is.null(projargs) &&
-    !is.na(projargs) &&
-    is.character(projargs)) {
+  if (
+    is.null(SRS_string) &&
+      !is.null(projargs) &&
+      !is.na(projargs) &&
+      is.character(projargs)
+  ) {
     if (projargs %in% c("hammer", "lambert", "longlat", "mollweide")) {
       warning(paste0(
         "Use of old predefined projection '",
@@ -1639,9 +1642,7 @@ fm_wkt_tree_as_wkt <- function(x, pretty = FALSE, ...) {
                 } else {
                   ""
                 },
-                construct_item(param,
-                  level = level + 1
-                )
+                construct_item(param, level = level + 1)
               )
             }
           },
@@ -1666,9 +1667,11 @@ fm_wkt_tree_as_wkt <- function(x, pretty = FALSE, ...) {
 
 fm_wkt_tree_get_item <- function(x, item, duplicate = 1) {
   for (k in seq_along(x[["params"]])) {
-    if (is.list(x[["params"]][[k]]) &&
-      (!is.null(x[["params"]][[k]][["label"]])) &&
-      (x[["params"]][[k]][["label"]] %in% item)) {
+    if (
+      is.list(x[["params"]][[k]]) &&
+        (!is.null(x[["params"]][[k]][["label"]])) &&
+        (x[["params"]][[k]][["label"]] %in% item)
+    ) {
       if (duplicate == 1) {
         return(x[["params"]][[k]])
       }
@@ -1686,8 +1689,10 @@ fm_wkt_tree_get_item <- function(x, item, duplicate = 1) {
 fm_wkt_tree_set_item <- function(x, item_tree, duplicate = 1) {
   success <- FALSE
   for (k in seq_along(x[["params"]])) {
-    if (is.list(x[["params"]][[k]]) &&
-      (x[["params"]][[k]][["label"]] == item_tree[["label"]])) {
+    if (
+      is.list(x[["params"]][[k]]) &&
+        (x[["params"]][[k]][["label"]] == item_tree[["label"]])
+    ) {
       if (duplicate == 1) {
         x[["params"]][[k]] <- item_tree
       }
@@ -1787,20 +1792,23 @@ fm_proj4string_as_list <- function(x, ...) {
   if (!is.character(x)) {
     stop("proj4string must be of class character")
   }
-  do.call(c, lapply(
-    strsplit(
-      x = strsplit(
-        x = paste(" ", x, sep = ""),
-        split = " \\+"
-      )[[1]][-1],
-      split = "="
-    ),
-    function(x) {
-      xx <- list(x[2])
-      names(xx) <- x[1]
-      xx
-    }
-  ))
+  do.call(
+    c,
+    lapply(
+      strsplit(
+        x = strsplit(
+          x = paste(" ", x, sep = ""),
+          split = " \\+"
+        )[[1]][-1],
+        split = "="
+      ),
+      function(x) {
+        xx <- list(x[2])
+        names(xx) <- x[1]
+        xx
+      }
+    )
+  )
 }
 
 
@@ -1834,64 +1842,110 @@ fm_proj4string <- function(crs) {
 fm_rotmat3213 <- function(rot) {
   cs <- cos(rot[1])
   sn <- sin(rot[1])
-  R <- matrix(c(
-    cs, -sn, 0,
-    sn, cs, 0,
-    0, 0, 1
-  ), 3, 3)
+  R <- matrix(
+    c(
+      c(cs, sn, 0),
+      c(-sn, cs, 0),
+      c(0, 0, 1)
+    ),
+    3,
+    3,
+    byrow = TRUE
+  )
   cs <- cos(rot[2])
   sn <- sin(rot[2])
-  R <- R %*% matrix(c(
-    cs, 0, sn,
-    0, 1, 0,
-    -sn, 0, cs
-  ), 3, 3)
+  R <- R %*%
+    matrix(
+      c(
+        c(cs, 0, -sn),
+        c(0, 1, 0),
+        c(sn, 0, cs)
+      ),
+      3,
+      3,
+      byrow = TRUE
+    )
   cs <- cos(rot[3])
   sn <- sin(rot[3])
-  R <- R %*% matrix(c(
-    1, 0, 0,
-    0, cs, -sn,
-    0, sn, cs
-  ), 3, 3)
+  R <- R %*%
+    matrix(
+      c(
+        c(1, 0, 0),
+        c(0, cs, sn),
+        c(0, -sn, cs)
+      ),
+      3,
+      3,
+      byrow = TRUE
+    )
   cs <- cos(rot[4])
   sn <- sin(rot[4])
-  R <- R %*% matrix(c(
-    cs, -sn, 0,
-    sn, cs, 0,
-    0, 0, 1
-  ), 3, 3)
+  R <- R %*%
+    matrix(
+      c(
+        c(cs, sn, 0),
+        c(-sn, cs, 0),
+        c(0, 0, 1)
+      ),
+      3,
+      3,
+      byrow = TRUE
+    )
   R
 }
 
 fm_rotmat3123 <- function(rot) {
   cs <- cos(rot[4])
   sn <- sin(rot[4])
-  R <- matrix(c(
-    cs, -sn, 0,
-    sn, cs, 0,
-    0, 0, 1
-  ), 3, 3)
+  R <- matrix(
+    c(
+      c(cs, sn, 0),
+      c(-sn, cs, 0),
+      c(0, 0, 1)
+    ),
+    3,
+    3,
+    byrow = TRUE
+  )
   cs <- cos(rot[3])
   sn <- sin(rot[3])
-  R <- R %*% matrix(c(
-    1, 0, 0,
-    0, cs, -sn,
-    0, sn, cs
-  ), 3, 3)
+  R <- R %*%
+    matrix(
+      c(
+        c(1, 0, 0),
+        c(0, cs, sn),
+        c(0, -sn, cs)
+      ),
+      3,
+      3,
+      byrow = TRUE
+    )
   cs <- cos(rot[2])
   sn <- sin(rot[2])
-  R <- R %*% matrix(c(
-    cs, 0, sn,
-    0, 1, 0,
-    -sn, 0, cs
-  ), 3, 3)
+  R <- R %*%
+    matrix(
+      c(
+        c(cs, 0, -sn),
+        c(0, 1, 0),
+        c(sn, 0, cs)
+      ),
+      3,
+      3,
+      byrow = TRUE
+    )
   cs <- cos(rot[1])
   sn <- sin(rot[1])
-  R <- R %*% matrix(c(
-    cs, -sn, 0,
-    sn, cs, 0,
-    0, 0, 1
-  ), 3, 3)
+  R <- R %*%
+    matrix(
+      c(
+        c(cs, sn, 0),
+        c(-sn, cs, 0),
+        c(0, 0, 1)
+      ),
+      3,
+      3,
+      byrow = TRUE
+    )
   R
 }
 
@@ -1922,17 +1976,21 @@ fm_crs_transform_oblique <- function(x, oblique, to.oblique = TRUE) {
 fm_wkt_tree_projection_type <- function(wt) {
   axis1 <- fm_wkt_tree_get_item(wt, "AXIS", 1)
   axis2 <- fm_wkt_tree_get_item(wt, "AXIS", 2)
-  if (identical(axis1[["params"]][[1]], '"longitude"') &&
-    identical(axis2[["params"]][[1]], '"latitude"')) {
+  if (
+    identical(axis1[["params"]][[1]], '"longitude"') &&
+      identical(axis2[["params"]][[1]], '"latitude"')
+  ) {
     return("longlat")
   }
   conversion <- fm_wkt_tree_get_item(wt, "CONVERSION")
   if (!is.null(conversion)) {
     method <- fm_wkt_tree_get_item(conversion, "METHOD")
-    if (identical(
-      method[["params"]][[1]],
-      '"Lambert Cylindrical Equal Area (Spherical)"'
-    )) {
+    if (
+      identical(
+        method[["params"]][[1]],
+        '"Lambert Cylindrical Equal Area (Spherical)"'
+      )
+    ) {
       return("lambert")
     }
     if (identical(method[["params"]][[1]], '"Mollweide"')) {
@@ -2036,7 +2094,9 @@ fm_crs_bounds <- function(crs, warn.unknown = FALSE) {
     }
 
     bounds <- list(
-      type = "ellipse", axis = axis, center = center,
+      type = "ellipse",
+      axis = axis,
+      center = center,
       xlim = center[1] + c(-1, 1) * axis[1],
       ylim = center[2] + c(-1, 1) * axis[2]
     )
@@ -2080,7 +2140,8 @@ fm_crs_bounds_check <- function(x, bounds) {
     sf::st_covered_by(
       sf::st_cast(x = sf::st_sfc(sf::st_multipoint(x)), to = "POINT"),
       sf::st_polygon(list(bounds$polygon[
-        c(seq_len(nrow(bounds$polygon)), 1L), ,
+        c(seq_len(nrow(bounds$polygon)), 1L),
+        ,
         drop = FALSE
       ])),
       sparse = FALSE
@@ -2293,8 +2354,10 @@ fm_transform.NULL <- function(x, crs, ...) {
 
 fm_transform_raw <- function(x, from, to) {
   adjust_input <- function(x, crs) {
-    if (fm_crs_is_geocent(crs) &&
-      ncol(x) == 2) {
+    if (
+      fm_crs_is_geocent(crs) &&
+        ncol(x) == 2
+    ) {
       if (nrow(x) > 0) {
         x <- cbind(x, 0)
       } else {
@@ -2305,8 +2368,10 @@ fm_transform_raw <- function(x, from, to) {
   }
 
   adjust_output <- function(x, crs) {
-    if (!fm_crs_is_geocent(crs) &&
-      ncol(x) == 3) {
+    if (
+      !fm_crs_is_geocent(crs) &&
+        ncol(x) == 3
+    ) {
       if (nrow(x) > 0) {
         x <- x[, 1:2, drop = FALSE]
       } else {
@@ -2380,8 +2445,8 @@ fm_transform.matrix <- function(x, crs, ..., passthrough = FALSE, crs0 = NULL) {
   }
   do_work_on_sphere <-
     inherits(crs0, "fm_crs") ||
-      inherits(crs1, "fm_crs") ||
-      different_radii
+    inherits(crs1, "fm_crs") ||
+    different_radii
   x <- x[ok, , drop = FALSE]
   current_crs <- fm_crs(crs0, oblique = NA)
   if (do_work_on_sphere) {
@@ -2464,9 +2529,11 @@ fm_transform_sf <- function(x, crs, ..., passthrough) {
 
   if (inherits(x, "sfc_POINT")) {
     adjust_input <- function(x, crs) {
-      if (fm_crs_is_geocent(crs) &&
-        length(x) &&
-        inherits(x[[1]], "XY")) {
+      if (
+        fm_crs_is_geocent(crs) &&
+          length(x) &&
+          inherits(x[[1]], "XY")
+      ) {
         x <- sf::st_zm(x = x, drop = FALSE, what = "Z")
       }
       x
@@ -2476,7 +2543,8 @@ fm_transform_sf <- function(x, crs, ..., passthrough) {
     coord <- sf::st_coordinates(x)
     M <- if ("M" %in% colnames(coord)) coord[, "M"] else NULL
     coord <- coord[, intersect(colnames(coord), c("X", "Y", "Z")), drop = FALSE]
-    coord <- fm_transform(coord,
+    coord <- fm_transform(
+      coord,
       crs = crs1,
       crs0 = crs0,
       passthrough = passthrough
@@ -2488,13 +2556,16 @@ fm_transform_sf <- function(x, crs, ..., passthrough) {
       coord <- cbind(coord, M)
     }
     x <-
-      do.call(sf::st_sfc, c(
-        lapply(
-          seq_len(nrow(coord)),
-          function(k) sf::st_point(coord[k, , drop = FALSE], dim = the_dim)
-        ),
-        list(crs = sf::st_crs(crs1))
-      ))
+      do.call(
+        sf::st_sfc,
+        c(
+          lapply(
+            seq_len(nrow(coord)),
+            function(k) sf::st_point(coord[k, , drop = FALSE], dim = the_dim)
+          ),
+          list(crs = sf::st_crs(crs1))
+        )
+      )
   } else {
     x <- sf::st_transform(x, sf::st_crs(crs1))
   }
@@ -2504,7 +2575,8 @@ fm_transform_sf <- function(x, crs, ..., passthrough) {
 #' @export
 #' @rdname fm_transform
 fm_transform.sf <- function(x, crs, ..., passthrough = FALSE) {
-  geo <- fm_transform(sf::st_geometry(x),
+  geo <- fm_transform(
+    sf::st_geometry(x),
     crs = crs,
     ...,
     passthrough = passthrough
@@ -2544,12 +2616,15 @@ fm_transform.Spatial <- function(x, crs, ..., passthrough = FALSE) {
 
 #' @export
 #' @rdname fm_transform
-fm_transform.fm_mesh_2d <- function(x,
-                                    crs = fm_crs(x),
-                                    ...,
-                                    passthrough = FALSE,
-                                    crs0 = fm_crs(x)) {
-  x$loc <- fm_transform(x$loc,
+fm_transform.fm_mesh_2d <- function(
+  x,
+  crs = fm_crs(x),
+  ...,
+  passthrough = FALSE,
+  crs0 = fm_crs(x)
+) {
+  x$loc <- fm_transform(
+    x$loc,
     crs = crs,
     ...,
     crs0 = crs0,
@@ -2562,11 +2637,13 @@ fm_transform.fm_mesh_2d <- function(x,
 
 #' @export
 #' @rdname fm_transform
-fm_transform.fm_collect <- function(x,
-                                    crs = fm_crs(x),
-                                    ...,
-                                    passthrough = FALSE,
-                                    crs0 = NULL) {
+fm_transform.fm_collect <- function(
+  x,
+  crs = fm_crs(x),
+  ...,
+  passthrough = FALSE,
+  crs0 = NULL
+) {
   for (k in seq_along(x[["fun_spaces"]])) {
     x[["fun_spaces"]][[k]] <-
       fm_transform(
@@ -2586,18 +2663,22 @@ fm_transform.fm_collect <- function(x,
 
 #' @export
 #' @rdname fm_transform
-fm_transform.fm_lattice_2d <- function(x,
-                                       crs = fm_crs(x),
-                                       ...,
-                                       passthrough = FALSE,
-                                       crs0 = fm_crs(x)) {
-  x$segm <- fm_transform(x$segm,
+fm_transform.fm_lattice_2d <- function(
+  x,
+  crs = fm_crs(x),
+  ...,
+  passthrough = FALSE,
+  crs0 = fm_crs(x)
+) {
+  x$segm <- fm_transform(
+    x$segm,
     crs = crs,
     crs0 = crs0,
     ...,
     passthrough = passthrough
   )
-  x$loc <- fm_transform(x$loc,
+  x$loc <- fm_transform(
+    x$loc,
     crs = crs,
     crs0 = crs0,
     ...,
@@ -2611,14 +2692,17 @@ fm_transform.fm_lattice_2d <- function(x,
 
 #' @export
 #' @rdname fm_transform
-fm_transform.fm_segm <- function(x,
-                                 crs = fm_crs(x),
-                                 ...,
-                                 passthrough = FALSE,
-                                 crs0 = fm_crs(x)) {
+fm_transform.fm_segm <- function(
+  x,
+  crs = fm_crs(x),
+  ...,
+  passthrough = FALSE,
+  crs0 = fm_crs(x)
+) {
   if (!is.null(x$loc)) {
     x$loc <-
-      fm_transform(x$loc,
+      fm_transform(
+        x$loc,
         crs = crs,
         crs0 = crs0,
         ...,
@@ -2681,9 +2765,7 @@ fm_crs.inla.CRS <- function(x, ..., units = NULL, oblique = NULL) {
 #' @export
 #' @rdname fm_crs-set
 `fm_crs_oblique<-.inla.CRS` <- function(x, value) {
-  fm_CRS(x[["crs"]],
-    oblique = if (is.null(value)) NA else value
-  )
+  fm_CRS(x[["crs"]], oblique = if (is.null(value)) NA else value)
 }
 
 #' @describeIn fm_CRS_sp Check if a `inla.CRS` has `NA` crs information and `NA`

@@ -1,9 +1,9 @@
 library(fmesher)
-Qinv <- function(Q){
+Qinv <- function(Q) {
   # jarl-ignore internal_function: Internal test
   fmesher:::C_qinv(as(as(as(Q, "Matrix"), "generalMatrix"), "CsparseMatrix"))
 }
-Qinv_ <- function(Q){
+Qinv_ <- function(Q) {
   # jarl-ignore internal_function: Internal test
   fmesher:::C_qinv(Q)
 }
@@ -27,17 +27,22 @@ progressr::with_progress({
       }
       Q_ <- as(as(Q, "generalMatrix"), "CsparseMatrix")
       timing <-
-        bench::mark(S_fm = Qinv(Q),
-                    S_fm1 = Qinv_(Q_),
-                    S_inla = INLA::inla.qinv(Q),
-                    S_inla1 = INLA::inla.qinv(Q, reordering = "amd"),
-                    check = FALSE)
-      data <- rbind(data,
-                    data.frame(n = m$n,
-                               N = N,
-                               time = as.numeric(timing$median),
-                               method = c("fm", "fm1", "inla", "inla1"),
-                               car = car_order)
+        bench::mark(
+          S_fm = Qinv(Q),
+          S_fm1 = Qinv_(Q_),
+          S_inla = INLA::inla.qinv(Q),
+          S_inla1 = INLA::inla.qinv(Q, reordering = "amd"),
+          check = FALSE
+        )
+      data <- rbind(
+        data,
+        data.frame(
+          n = m$n,
+          N = N,
+          time = as.numeric(timing$median),
+          method = c("fm", "fm1", "inla", "inla1"),
+          car = car_order
+        )
       )
       pr()
     }
@@ -49,11 +54,12 @@ library(tidyverse)
 fit <- list(list(), list())
 for (car_order in 1:2) {
   for (method_ in unique(data$method)) {
-    fit[[car_order]][[method_]] <- lm(time~I(n/1e3)+I(n^2/1e6)+I(n^3/1e9)+I(n^4/1e12),
-                                      data = data |> filter(method == method_, car==car_order))
+    fit[[car_order]][[method_]] <- lm(
+      time ~ I(n / 1e3) + I(n^2 / 1e6) + I(n^3 / 1e9) + I(n^4 / 1e12),
+      data = data |> filter(method == method_, car == car_order)
+    )
     data[data$method == method_ & data$car == car_order, "fit"] <-
-      predict(fit[[car_order]][[method_]],
-              newdata = data.frame(n = n, N = N_))
+      predict(fit[[car_order]][[method_]], newdata = data.frame(n = n, N = N_))
   }
 }
 
@@ -72,4 +78,3 @@ pl <-
   scale_x_log10() +
   scale_y_log10()
 pl
-

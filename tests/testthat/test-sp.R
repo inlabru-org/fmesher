@@ -14,12 +14,21 @@ test_that("Conversion from matrix to fm_segm", {
   # to fm_as_segm with sf point input
 
   # matrix version
-  loc.bnd <- matrix(c(
-    0, 0,
-    1, 0,
-    1, 1,
-    0, 1
-  ), 4, 2, byrow = TRUE)
+  loc.bnd <- matrix(
+    c(
+      0,
+      0,
+      1,
+      0,
+      1,
+      1,
+      0,
+      1
+    ),
+    4,
+    2,
+    byrow = TRUE
+  )
   segm.bnd <- fm_segm(
     loc.bnd,
     is.bnd = TRUE,
@@ -51,9 +60,7 @@ test_that("Conversion from Lines to fm_segm", {
     crs = fm_crs()
   )
 
-  seg <- fm_segm_join(list(seg1, seg2),
-    grp = seq_len(2)
-  )
+  seg <- fm_segm_join(list(seg1, seg2), grp = seq_len(2))
   expect_identical(seg$grp, rep(1:2, each = 3))
 
   skip_if_not(fm_safe_sp())
@@ -144,15 +151,16 @@ test_that("Conversion from Polygons to fm_segm", {
       crs = fm_CRS()
     )
 
-    seg <- fm_segm_join(list(seg1, seg2),
-      grp = seq_len(2)
-    )
+    seg <- fm_segm_join(list(seg1, seg2), grp = seq_len(2))
     expect_identical(seg$grp, rep(1:2, each = 4))
 
-    poly_sp <- sp::Polygons(list(
-      sp::Polygon(pts1, hole = TRUE),
-      sp::Polygon(pts2, hole = FALSE)
-    ), ID = "A")
+    poly_sp <- sp::Polygons(
+      list(
+        sp::Polygon(pts1, hole = TRUE),
+        sp::Polygon(pts2, hole = FALSE)
+      ),
+      ID = "A"
+    )
     seg_sp <- fm_as_segm(
       poly_sp,
       grp = 1:2

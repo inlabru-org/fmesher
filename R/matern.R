@@ -50,16 +50,17 @@ fm_matern_precision <- function(x, alpha, rho, sigma) {
   C <- fem$cc
   if (alpha == 2) {
     g2 <- make_symmetric(fem$g2)
-    Q <- (C * kappa^4 +
-      (2 * kappa^2) * make_symmetric(fem$g1) +
-      g2) / sigma^2 * scaling
+    Q <- (C * kappa^4 + (2 * kappa^2) * make_symmetric(fem$g1) + g2) /
+      sigma^2 *
+      scaling
   } else if (alpha == 1) {
     Q <- (C * kappa^2 + make_symmetric(fem$g1)) / sigma^2 * scaling
   } else if (alpha == ceiling(alpha)) {
     Q <- C * kappa^(2 * alpha)
     for (k in seq_len(alpha)) {
-      Q <- Q + (choose(alpha, k) * kappa^(2 * (alpha - k))) *
-        make_symmetric(fem[[paste0("g", k)]])
+      Q <- Q +
+        (choose(alpha, k) * kappa^(2 * (alpha - k))) *
+          make_symmetric(fem[[paste0("g", k)]])
     }
     Q <- Q / sigma^2 * scaling
   } else {
@@ -128,8 +129,12 @@ fm_covariance <- function(Q, A1 = NULL, A2 = NULL, partial = FALSE) {
         dims = c(nrow(Q), i_len)
       )
       Q_idx_block <-
-        Q_idx[(Q_idx$j + 1L > i_offset) &
-          (Q_idx$j + 1L <= i_offset + block_size), , drop = FALSE]
+        Q_idx[
+          (Q_idx$j + 1L > i_offset) &
+            (Q_idx$j + 1L <= i_offset + block_size),
+          ,
+          drop = FALSE
+        ]
       result <- fm_as_dgTMatrix(Matrix::solve(fact, e))
       ok <- (result@i %in% Q_idx_block$i)
       ok[ok] <- ((result@j[ok] + i_offset) %in% Q_idx_block$j)
@@ -203,7 +208,8 @@ fm_sample <- function(n, Q, mu = 0, constr = NULL) {
     # See gmrf.pdf section 4.2
     A_tilde_T <- L_solve(fact, Matrix::t(constr$A))
     result <-
-      result - Lt_solve(
+      result -
+      Lt_solve(
         fact,
         qr.solve(
           Matrix::t(A_tilde_T),

@@ -100,15 +100,27 @@ fm_try_callstack <- function(expr) {
     # calls for nested use, which should theoretically (almost) never happen,
     # since the inner call shouldn't fail!)
     self <- which(
-      vapply(stack, function(x) {
-        grepl("^fm_try_callstack\\(", x)
-      }, TRUE) |
-        vapply(stack, function(x) {
-          grepl("^fmesher::fm_try_callstack\\(", x)
-        }, TRUE) |
-        vapply(stack, function(x) {
-          grepl("^fmesher:::fm_try_callstack\\(", x)
-        }, TRUE)
+      vapply(
+        stack,
+        function(x) {
+          grepl("^fm_try_callstack\\(", x)
+        },
+        TRUE
+      ) |
+        vapply(
+          stack,
+          function(x) {
+            grepl("^fmesher::fm_try_callstack\\(", x)
+          },
+          TRUE
+        ) |
+        vapply(
+          stack,
+          function(x) {
+            grepl("^fmesher:::fm_try_callstack\\(", x)
+          },
+          TRUE
+        )
     )
     for (idx in rev(self)) {
       stack <- stack[-(idx + seq_len(6))]
@@ -326,8 +338,13 @@ fm_as_dgTMatrix.fmesher_sparse <- function(x, unique = TRUE, ...) {
 #' @examples
 #' fm_row_kron(rbind(c(1, 1, 0), c(0, 1, 1)), rbind(c(1, 2), c(3, 4)))
 #'
-fm_row_kron <- function(M1, M2, repl = NULL, n.repl = NULL, weights = NULL # ,
-                        # method. = 1
+fm_row_kron <- function(
+  M1,
+  M2,
+  repl = NULL,
+  n.repl = NULL,
+  weights = NULL # ,
+  # method. = 1
 ) {
   if (!inherits(M1, "Matrix")) {
     M1 <- as(M1, "Matrix")
@@ -367,12 +384,16 @@ fm_row_kron <- function(M1, M2, repl = NULL, n.repl = NULL, weights = NULL # ,
   M1 <- fm_as_dgTMatrix(M1, unique = TRUE)
   M2 <- fm_as_dgTMatrix(M2, unique = TRUE)
   n1 <- (as.vector(Matrix::sparseMatrix(
-    i = 1L + M1@i, j = rep(1L, length(M1@i)),
-    x = 1L, dims = c(n, 1)
+    i = 1L + M1@i,
+    j = rep(1L, length(M1@i)),
+    x = 1L,
+    dims = c(n, 1)
   )))
   n2 <- (as.vector(Matrix::sparseMatrix(
-    i = 1L + M2@i, j = rep(1L, length(M2@i)),
-    x = 1L, dims = c(n, 1)
+    i = 1L + M2@i,
+    j = rep(1L, length(M2@i)),
+    x = 1L,
+    dims = c(n, 1)
   )))
 
   # if (identical(method., 1)) {
@@ -430,7 +451,8 @@ fm_row_kron <- function(M1, M2, repl = NULL, n.repl = NULL, weights = NULL # ,
       iii <- c(iii, ii)
       jjj <- c(
         jjj,
-        (1L + rep(M2@j[sub2], times = k) +
+        (1L +
+          rep(M2@j[sub2], times = k) +
           ncol(M2) * (as.vector(j.sub[i, ]) - 1L) +
           ncol(M2) * ncol(M1) * (repl.i - 1L))
       )
@@ -445,7 +467,9 @@ fm_row_kron <- function(M1, M2, repl = NULL, n.repl = NULL, weights = NULL # ,
 
   #  if (!identical(method., 1)) {
   M <- Matrix::sparseMatrix(
-    i = iii, j = jjj, x = xxx,
+    i = iii,
+    j = jjj,
+    x = xxx,
     dims = c(n, ncol(M2) * ncol(M1) * n.repl)
   )
   #  }
@@ -492,8 +516,7 @@ package_methods <- function() {
 }
 
 
-fm_capabilities <- function(class = NULL,
-                            method = NULL) {
+fm_capabilities <- function(class = NULL, method = NULL) {
   if (!is.null(class)) {
     class_methods(class)
   } else if (!is.null(method)) {

@@ -42,8 +42,10 @@ local_fm_testthat_assign <- function(x, values, envir = parent.frame()) {
 #' Assign local tolerance variables. Useful for easy cleanup
 #' of global workspace with `withr::deferred_run()` when running tests
 #' interactively.
-local_fm_testthat_tolerances <- function(tolerances = c(1e-4, 1e-2, 1e-1),
-                                         envir = parent.frame()) {
+local_fm_testthat_tolerances <- function(
+  tolerances = c(1e-4, 1e-2, 1e-1),
+  envir = parent.frame()
+) {
   local_fm_testthat_assign("lowtol", tolerances[1], envir = envir)
   local_fm_testthat_assign("midtol", tolerances[2], envir = envir)
   local_fm_testthat_assign("hitol", tolerances[3], envir = envir)
@@ -62,8 +64,10 @@ local_fm_testthat_setup <- function(envir = parent.frame()) {
       NULL
     }
   )
-  if (!is.null(sp_version) &&
-    utils::compareVersion(sp_version, "1.6-0") >= 0) {
+  if (
+    !is.null(sp_version) &&
+      utils::compareVersion(sp_version, "1.6-0") >= 0
+  ) {
     if (utils::compareVersion(sp_version, "2.1-3") < 0) {
       old_sp_evolution_status <- sp::get_evolution_status()
       withr::defer(
@@ -80,9 +84,9 @@ local_fm_testthat_setup <- function(envir = parent.frame()) {
 
 check_package_version_and_load <-
   function(pkg, minimum_version, quietly = FALSE) {
-    version <- tryCatch(utils::packageVersion(pkg),
-      error = function(e) NA_character_
-    )
+    version <- tryCatch(utils::packageVersion(pkg), error = function(e) {
+      NA_character_
+    })
     if (is.na(version)) {
       if (!quietly) {
         message(paste0("Package '", pkg, "' is not installed."))
@@ -92,8 +96,14 @@ check_package_version_and_load <-
     if (version < minimum_version) {
       if (!quietly) {
         message(paste0(
-          "Installed '", pkg, "' version is ", version, " but ",
-          "version >= ", minimum_version, " is required."
+          "Installed '",
+          pkg,
+          "' version is ",
+          version,
+          " but ",
+          "version >= ",
+          minimum_version,
+          " is required."
         ))
       }
       return(NA_character_)
@@ -134,9 +144,11 @@ check_package_version_and_load <-
 #'   # Run sp dependent calculations
 #' }
 #' @keywords internal
-fm_safe_sp <- function(quietly = FALSE,
-                       force = FALSE,
-                       minimum_version = "1.4-5") {
+fm_safe_sp <- function(
+  quietly = FALSE,
+  force = FALSE,
+  minimum_version = "1.4-5"
+) {
   sp_version <-
     check_package_version_and_load(
       pkg = "sp",
@@ -165,7 +177,8 @@ fm_safe_sp <- function(quietly = FALSE,
     } else {
       evolution_status <- 2L
     }
-    rgdal_version <- tryCatch(utils::packageVersion("rgdal"),
+    rgdal_version <- tryCatch(
+      utils::packageVersion("rgdal"),
       error = function(e) NA_character_
     )
     if ((evolution_status < 2L) && is.na(rgdal_version)) {

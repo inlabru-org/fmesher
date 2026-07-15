@@ -111,11 +111,16 @@ fm_components.fm_mesh_2d <- function(x, ...) {
       warning(paste0(
         "Corner-only connected triangles detected.\n",
         "  Vertices = ",
-        paste0(vtx[vertex[vtx] > 0], collapse = ", "), "\n",
+        paste0(vtx[vertex[vtx] > 0], collapse = ", "),
+        "\n",
         "  Components = ",
-        paste0(vertex[vtx[vertex[vtx] > 0]], collapse = ", "), "\n",
-        "  New component = ", component, "\n",
-        "  Vertex component information will be inconsistent.", "\n",
+        paste0(vertex[vtx[vertex[vtx] > 0]], collapse = ", "),
+        "\n",
+        "  New component = ",
+        component,
+        "\n",
+        "  Vertex component information will be inconsistent.",
+        "\n",
         "  Triangle component information will ignore corner-only connections."
       ))
     }
@@ -202,11 +207,16 @@ fm_components.fm_mesh_3d <- function(x, ...) {
       warning(paste0(
         "Corner- or edge-only connected tetrahedrons detected.\n",
         "  Vertices = ",
-        paste0(vtx[vertex[vtx] > 0], collapse = ", "), "\n",
+        paste0(vtx[vertex[vtx] > 0], collapse = ", "),
+        "\n",
         "  Components = ",
-        paste0(vertex[vtx[vertex[vtx] > 0]], collapse = ", "), "\n",
-        "  New component = ", component, "\n",
-        "  Vertex component information will be inconsistent.", "\n",
+        paste0(vertex[vtx[vertex[vtx] > 0]], collapse = ", "),
+        "\n",
+        "  New component = ",
+        component,
+        "\n",
+        "  Vertex component information will be inconsistent.",
+        "\n",
         "  Tetrahedron component information will ignore corner-only ",
         "connections."
       ))
@@ -377,7 +387,8 @@ fm_components.fm_segm <- function(x, ...) {
       paste0(
         which(comp_is_bnd & !comp_is_closed_loop),
         collapse = ", "
-      ), "\n",
+      ),
+      "\n",
       "  These components will be treated as interior segments."
     ))
     comp_is_bnd[comp_is_bnd & !comp_is_closed_loop] <- FALSE

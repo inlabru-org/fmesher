@@ -21,15 +21,18 @@
 #' @examples
 #' fm_segm_contour_helper(z = matrix(1:16, 4, 4))
 #'
-fm_segm_contour_helper <- function(x = seq(0, 1, length.out = nrow(z)),
-                                   y = seq(0, 1, length.out = ncol(z)),
-                                   z, nlevels = 10,
-                                   levels = NULL,
-                                   groups = NULL,
-                                   positive = TRUE,
-                                   eps = NULL,
-                                   eps_rel = NULL,
-                                   crs = NULL) {
+fm_segm_contour_helper <- function(
+  x = seq(0, 1, length.out = nrow(z)),
+  y = seq(0, 1, length.out = ncol(z)),
+  z,
+  nlevels = 10,
+  levels = NULL,
+  groups = NULL,
+  positive = TRUE,
+  eps = NULL,
+  eps_rel = NULL,
+  crs = NULL
+) {
   ## Input checking from contourLines:
   if (missing(z)) {
     if (!missing(x)) {
@@ -76,7 +79,8 @@ fm_segm_contour_helper <- function(x = seq(0, 1, length.out = nrow(z)),
         offset = (max(
           diff(range(x)),
           diff(range(y))
-        ) * 0.1)
+        ) *
+          0.1)
       ))
     )
   ## Map function values to mesh indexing:
@@ -110,7 +114,8 @@ fm_segm_contour_helper <- function(x = seq(0, 1, length.out = nrow(z)),
 
     ## Extract the rotated gradients along the curve
     curve.mid <- (curve.loc[1:(curve.n - 1), , drop = FALSE] +
-      curve.loc[2:curve.n, , drop = FALSE]) / 2
+      curve.loc[2:curve.n, , drop = FALSE]) /
+      2
     A <- fm_basis(mesh, loc = curve.mid, derivatives = TRUE, full = TRUE)
     ## Gradients rotated 90 degrees CW, i.e. to the direction
     ## of CCW curves around positive excursions:
@@ -127,11 +132,7 @@ fm_segm_contour_helper <- function(x = seq(0, 1, length.out = nrow(z)),
 
     ## Filter short line segments:
     curve.idx <-
-      fm_simplify_helper(curve.loc,
-        curve.idx,
-        eps = eps,
-        eps_rel = eps_rel
-      )
+      fm_simplify_helper(curve.loc, curve.idx, eps = eps, eps_rel = eps_rel)
 
     ## Reorder, making sure any unused points are removed:
     curve.loc <- curve.loc[curve.idx, , drop = FALSE]
@@ -139,8 +140,13 @@ fm_segm_contour_helper <- function(x = seq(0, 1, length.out = nrow(z)),
     curve.idx <- cbind(seq_len(curve.n - 1L), seq_len(curve.n - 1L) + 1L)
 
     ## Check if the curve is closed, and adjust if it is:
-    if (max(abs(curve.loc[1, , drop = FALSE] -
-      curve.loc[curve.n, , drop = FALSE])) < 1e-12) {
+    if (
+      max(abs(
+        curve.loc[1, , drop = FALSE] -
+          curve.loc[curve.n, , drop = FALSE]
+      )) <
+        1e-12
+    ) {
       curve.loc <- curve.loc[-curve.n, , drop = FALSE]
       curve.n <- nrow(curve.loc)
       curve.idx <-
@@ -237,12 +243,14 @@ fm_nonconvex_hull <- function(x, ..., format = "sf", method = "fm") {
 #'   plot(fm_mesh_2d(boundary = bnd, max.edge = c(0.25, 1)), asp = 1)
 #' }
 #'
-fm_extensions <- function(x,
-                          convex = -0.15,
-                          concave = convex,
-                          ...,
-                          format = "sf",
-                          method = "fm") {
+fm_extensions <- function(
+  x,
+  convex = -0.15,
+  concave = convex,
+  ...,
+  format = "sf",
+  method = "fm"
+) {
   if (any(convex < 0) || any(concave < 0)) {
     diameter_bound <- max(fm_diameter(x))
   }
@@ -311,14 +319,16 @@ fm_extensions <- function(x,
 #'   simplifying the resulting boundary curve.  See [fm_simplify_helper()] for
 #'   details. For `method="fm"` only.
 #' @export
-fm_nonconvex_hull_fm <- function(x,
-                                 convex = -0.15,
-                                 concave = convex,
-                                 resolution = 40,
-                                 eps = NULL,
-                                 eps_rel = NULL,
-                                 crs = fm_crs(x),
-                                 ...) {
+fm_nonconvex_hull_fm <- function(
+  x,
+  convex = -0.15,
+  concave = convex,
+  resolution = 40,
+  eps = NULL,
+  eps_rel = NULL,
+  crs = fm_crs(x),
+  ...
+) {
   stopifnot(!is.null(x))
   diameter_bound <- fm_diameter(x)
   scale_fun <- function(val) {
@@ -363,10 +373,17 @@ fm_nonconvex_hull_fm <- function(x,
       }
     }
 
-    if (inherits(x, c(
-      "sfc_POLYGON", "sfc_MULTIPOLYGON",
-      "sfc_LINESTRING", "sfc_MULTILINESTRING"
-    ))) {
+    if (
+      inherits(
+        x,
+        c(
+          "sfc_POLYGON",
+          "sfc_MULTIPOLYGON",
+          "sfc_LINESTRING",
+          "sfc_MULTILINESTRING"
+        )
+      )
+    ) {
       # Subdivide the polygon edges
       xx <- fm_as_segm(x)
       z_sub <- do.call(
@@ -374,15 +391,20 @@ fm_nonconvex_hull_fm <- function(x,
         lapply(
           seq_len(NROW(xx$idx)),
           function(k) {
-            N <- max(1, ceiling(sum((xx$loc[xx$idx[k, 1], ] -
-              xx$loc[xx$idx[k, 2], ])^2)^0.5
-              / (convex / 2)))
+            N <- max(
+              1,
+              ceiling(
+                sum(
+                  (xx$loc[xx$idx[k, 1], ] -
+                    xx$loc[xx$idx[k, 2], ])^2
+                )^0.5 /
+                  (convex / 2)
+              )
+            )
             v <- seq_len(N) / (N + 1)
             cbind(
-              xx$loc[xx$idx[k, 1], 1] * (1 - v) +
-                xx$loc[xx$idx[k, 2], 1] * v,
-              xx$loc[xx$idx[k, 1], 2] * (1 - v) +
-                xx$loc[xx$idx[k, 2], 2] * v
+              xx$loc[xx$idx[k, 1], 1] * (1 - v) + xx$loc[xx$idx[k, 2], 1] * v,
+              xx$loc[xx$idx[k, 1], 2] * (1 - v) + xx$loc[xx$idx[k, 2], 2] * v
             )
           }
         )
@@ -414,10 +436,13 @@ fm_nonconvex_hull_fm <- function(x,
   dif <- domain / (resolution - 1)
   if (max(dif) > min(convex, concave)) {
     req.res <- ceiling(domain / min(convex, concave) + 1)
-    warning(paste("Resolution (",
+    warning(paste(
+      "Resolution (",
       paste(resolution, collapse = ","),
       ") too small for convex/concave radius (",
-      convex, ",", concave,
+      convex,
+      ",",
+      concave,
       ").\n",
       "Resolution >=(",
       paste(req.res, collapse = ","),
@@ -435,11 +460,14 @@ fm_nonconvex_hull_fm <- function(x,
   fm_require_stop("splancs")
   z <- (matrix(
     splancs::nndistF(x, xy),
-    resolution[1], resolution[2]
+    resolution[1],
+    resolution[2]
   ))
   segm.dilation <-
     fm_segm_contour_helper(
-      ax[[1]], ax[[2]], z,
+      ax[[1]],
+      ax[[2]],
+      z,
       levels = c(convex + concave),
       positive = TRUE,
       eps = 0
@@ -453,17 +481,21 @@ fm_nonconvex_hull_fm <- function(x,
         offset = (max(
           diff(ax[[1]]),
           diff(ax[[2]])
-        ) * 0.1)
+        ) *
+          0.1)
       ))
     )
 
   z <- (matrix(
     splancs::nndistF(mesh.dilation$loc, xy),
-    resolution[1], resolution[2]
+    resolution[1],
+    resolution[2]
   ))
   segm.closing <-
     fm_segm_contour_helper(
-      ax[[1]], ax[[2]], z,
+      ax[[1]],
+      ax[[2]],
+      z,
       levels = c(concave),
       positive = TRUE,
       eps = eps,
@@ -481,8 +513,13 @@ fm_nonconvex_hull_fm <- function(x,
 # Special [fm_nonconvex_hull_fm()] method for `concave = 0`.
 # Called automatically by fm_nonconvex_hull_fm()
 ## Based on an idea from Elias Teixeira Krainski
-fm_nonconvex_hull_fm_basic <- function(x, convex = -0.15, resolution = 40,
-                                       eps = NULL, crs = fm_crs(x)) {
+fm_nonconvex_hull_fm_basic <- function(
+  x,
+  convex = -0.15,
+  resolution = 40,
+  eps = NULL,
+  crs = fm_crs(x)
+) {
   stopifnot(!is.null(x))
   if (inherits(x, c("SpatialPoints", "SpatialPointsDataFrame"))) {
     fm_safe_sp(force = TRUE)
@@ -524,7 +561,8 @@ fm_nonconvex_hull_fm_basic <- function(x, convex = -0.15, resolution = 40,
   dif <- domain / (resolution - 1)
   if (any(dif > min(convex))) {
     req.res <- ceiling(domain / convex + 1)
-    warning(paste("Resolution (",
+    warning(paste(
+      "Resolution (",
       paste(resolution, collapse = ","),
       ") too small for convex (",
       paste(convex, collapse = ","),
@@ -546,7 +584,8 @@ fm_nonconvex_hull_fm_basic <- function(x, convex = -0.15, resolution = 40,
   fm_require_stop("splancs")
   z <- matrix(
     splancs::nndistF(x %*% tr, xy %*% tr),
-    resolution[1], resolution[2]
+    resolution[1],
+    resolution[2]
   )
   segm <- fm_segm_contour_helper(
     ax[[1]],
@@ -571,13 +610,15 @@ fm_nonconvex_hull_fm_basic <- function(x, convex = -0.15, resolution = 40,
 #'   `sf::st_simplify()`. The default is `pmin(convex, concave) / 40`, chosen to
 #'   give approximately 4 or more subsegments per circular quadrant.
 #'   (for `method="sf"` only)
-fm_nonconvex_hull_sf <- function(x,
-                                 convex = -0.15,
-                                 concave = convex,
-                                 preserveTopology = TRUE,
-                                 dTolerance = NULL,
-                                 crs = fm_crs(x),
-                                 ...) {
+fm_nonconvex_hull_sf <- function(
+  x,
+  convex = -0.15,
+  concave = convex,
+  preserveTopology = TRUE,
+  dTolerance = NULL,
+  crs = fm_crs(x),
+  ...
+) {
   diameter_bound <- fm_diameter(x)
   scale_fun <- function(val) {
     if (val < 0) {
@@ -625,7 +666,8 @@ fm_nonconvex_hull_sf <- function(x,
   }
 
   if (dTolerance > 0) {
-    y <- sf::st_simplify(y,
+    y <- sf::st_simplify(
+      y,
       preserveTopology = preserveTopology,
       dTolerance = dTolerance
     )
@@ -641,13 +683,9 @@ fm_nonconvex_hull_sf <- function(x,
 
 # Methods ####
 
-
 #' @rdname fm_nonconvex_hull
 #' @export
-fm_nonconvex_hull.sfc <- function(x,
-                                  ...,
-                                  format = "sf",
-                                  method = "fm") {
+fm_nonconvex_hull.sfc <- function(x, ..., format = "sf", method = "fm") {
   format <- match.arg(format, c("sf", "fm"))
   method <- match.arg(method, c("sf", "fm"))
   if (method == "sf") {
@@ -668,8 +706,11 @@ fm_nonconvex_hull.sfc <- function(x,
 #' @rdname fm_nonconvex_hull
 #' @export
 fm_nonconvex_hull.matrix <- function(x, ..., format = "sf", method = "fm") {
-  fm_nonconvex_hull.sfc(sf::st_multipoint(x), ...,
-    format = format, method = method
+  fm_nonconvex_hull.sfc(
+    sf::st_multipoint(x),
+    ...,
+    format = format,
+    method = method
   )
 }
 
@@ -677,8 +718,10 @@ fm_nonconvex_hull.matrix <- function(x, ..., format = "sf", method = "fm") {
 #' @export
 fm_nonconvex_hull.sf <- function(x, ..., format = "sf", method = "fm") {
   fm_nonconvex_hull.sfc(
-    sf::st_geometry(x), ...,
-    format = format, method = method
+    sf::st_geometry(x),
+    ...,
+    format = format,
+    method = method
   )
 }
 
@@ -702,10 +745,12 @@ fm_nonconvex_hull.fm_segm <- function(x, ..., format = "sf", method = "fm") {
 
 #' @rdname fm_nonconvex_hull
 #' @export
-fm_nonconvex_hull.fm_segm_list <- function(x,
-                                           ...,
-                                           format = "sf",
-                                           method = "fm") {
+fm_nonconvex_hull.fm_segm_list <- function(
+  x,
+  ...,
+  format = "sf",
+  method = "fm"
+) {
   fm_nonconvex_hull.sfc(fm_as_sfc(x), ..., format = format, method = method)
 }
 
@@ -735,14 +780,16 @@ fm_nonconvex_hull.fm_segm_list <- function(x,
 #'   fm_nonconvex_hull_inla(cbind(0, 0), convex = 1)
 #' )
 #'
-fm_nonconvex_hull_inla <- function(x,
-                                   convex = -0.15,
-                                   concave = convex,
-                                   resolution = 40,
-                                   eps = NULL,
-                                   eps_rel = NULL,
-                                   crs = NULL,
-                                   ...) {
+fm_nonconvex_hull_inla <- function(
+  x,
+  convex = -0.15,
+  concave = convex,
+  resolution = 40,
+  eps = NULL,
+  eps_rel = NULL,
+  crs = NULL,
+  ...
+) {
   lifecycle::deprecate_warn(
     "0.4.0.9002",
     "fm_nonconvex_hull_inla()",
@@ -810,8 +857,13 @@ fm_nonconvex_hull_inla <- function(x,
 ## Based on an idea from Elias Teixeira Krainski
 #' @inheritParams fm_nonconvex_hull
 #' @keywords internal
-fm_nonconvex_hull_inla_basic <- function(x, convex = -0.15, resolution = 40,
-                                         eps = NULL, crs = fm_crs(x)) {
+fm_nonconvex_hull_inla_basic <- function(
+  x,
+  convex = -0.15,
+  resolution = 40,
+  eps = NULL,
+  crs = fm_crs(x)
+) {
   lifecycle::deprecate_warn(
     "0.4.0.9003",
     "fm_nonconvex_hull_inla_basic()",

@@ -9,13 +9,15 @@
 #' @param closed logical; whether to treat a point sequence as a closed polygon.
 #' Default: `FALSE`
 fm_as_segm.matrix <-
-  function(x,
-           reverse = FALSE,
-           grp = NULL,
-           is.bnd = FALSE,
-           crs = NULL,
-           closed = FALSE,
-           ...) {
+  function(
+    x,
+    reverse = FALSE,
+    grp = NULL,
+    is.bnd = FALSE,
+    crs = NULL,
+    closed = FALSE,
+    ...
+  ) {
     loc <- x
     n <- dim(loc)[1L]
     if (closed) {
@@ -30,7 +32,11 @@ fm_as_segm.matrix <-
       }
     }
     fm_segm(
-      loc = loc, idx = idx, grp = grp, is.bnd = is.bnd, crs = fm_crs(crs)
+      loc = loc,
+      idx = idx,
+      grp = grp,
+      is.bnd = is.bnd,
+      crs = fm_crs(crs)
     )
   }
 
@@ -56,7 +62,11 @@ fm_as_segm.SpatialPoints <-
       }
     }
     fm_segm(
-      loc = loc, idx = idx, grp = grp, is.bnd = is.bnd, crs = crs
+      loc = loc,
+      idx = idx,
+      grp = grp,
+      is.bnd = is.bnd,
+      crs = crs
     )
   }
 
@@ -83,7 +93,11 @@ fm_as_segm.Line <-
       idx <- seq_len(n)
     }
     fm_segm(
-      loc = loc, idx = idx, grp = grp, is.bnd = FALSE, crs = fm_crs(crs)
+      loc = loc,
+      idx = idx,
+      grp = grp,
+      is.bnd = FALSE,
+      crs = fm_crs(crs)
     )
   }
 
@@ -116,10 +130,7 @@ fm_as_segm.SpatialLines <-
     crs <- fm_CRS(x)
     segm <- list()
     for (k in seq_along(x@lines)) {
-      segm[[k]] <- fm_as_segm(x@lines[[k]],
-        join = TRUE,
-        crs = crs, ...
-      )
+      segm[[k]] <- fm_as_segm(x@lines[[k]], join = TRUE, crs = crs, ...)
     }
     if (join) {
       if (missing(grp)) {

@@ -1,6 +1,6 @@
 library(ggplot2)
 
-z <- sin(seq(-pi/2, pi/2, length.out = 1000))
+z <- sin(seq(-pi / 2, pi / 2, length.out = 1000))
 Z <- cbind(sqrt(1 - z^2), 0, z)
 n <- 6
 deg <- 3
@@ -12,15 +12,28 @@ B3_gsl <- fmesher_spherical_harmonics_gsl(Z, max_order = 5, rot_inv = TRUE)
 B4_gsl <- fmesher_spherical_harmonics_gsl(Z, max_order = 5, rot_inv = FALSE)
 bench::mark(
   sph_harm_new0 = fmesher_spherical_harmonics(Z, max_order = 5, rot_inv = TRUE),
-  sph_harm_gsl0 = fmesher_spherical_harmonics_gsl(Z, max_order = 5, rot_inv = TRUE),
+  sph_harm_gsl0 = fmesher_spherical_harmonics_gsl(
+    Z,
+    max_order = 5,
+    rot_inv = TRUE
+  ),
   sph_harm_new = fmesher_spherical_harmonics(Z, max_order = 5, rot_inv = FALSE),
-  sph_harm_gsl = fmesher_spherical_harmonics_gsl(Z, max_order = 5, rot_inv = FALSE),
+  sph_harm_gsl = fmesher_spherical_harmonics_gsl(
+    Z,
+    max_order = 5,
+    rot_inv = FALSE
+  ),
   check = FALSE
 )
 df <- data.frame(
   z = rep(
     z,
-    times = ncol(B1) + ncol(B2) + ncol(B3) + ncol(B4) + ncol(B3_gsl) + ncol(B4_gsl)
+    times = ncol(B1) +
+      ncol(B2) +
+      ncol(B3) +
+      ncol(B4) +
+      ncol(B3_gsl) +
+      ncol(B4_gsl)
   ),
   B = c(
     as.vector(B1),
@@ -32,11 +45,12 @@ df <- data.frame(
   ),
   basis = rep(
     c("B-spline", "Spherical", "Spherical (GSL)"),
-    length(z) * c(
-      ncol(B1) + ncol(B2),
-      ncol(B3) + ncol(B4),
-      ncol(B3_gsl) + ncol(B4_gsl)
-    )
+    length(z) *
+      c(
+        ncol(B1) + ncol(B2),
+        ncol(B3) + ncol(B4),
+        ncol(B3_gsl) + ncol(B4_gsl)
+      )
   ),
   type = rep(
     c(
@@ -47,7 +61,8 @@ df <- data.frame(
       "Simple",
       "General"
     ),
-    length(z) * c(ncol(B1), ncol(B2), ncol(B3), ncol(B4), ncol(B3_gsl), ncol(B4_gsl))
+    length(z) *
+      c(ncol(B1), ncol(B2), ncol(B3), ncol(B4), ncol(B3_gsl), ncol(B4_gsl))
   ),
   index = c(
     rep(seq_len(ncol(B1)), each = nrow(B1)),
@@ -61,4 +76,3 @@ df <- data.frame(
 ggplot(df) +
   geom_line(aes((z), B, color = factor(index))) +
   facet_grid(vars(type), vars(basis))
-

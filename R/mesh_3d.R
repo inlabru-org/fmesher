@@ -15,9 +15,7 @@
 #'   matrix(c(1, 2, 3, 4), 1, 4, byrow = TRUE)
 #' ))
 #' @export
-fm_mesh_3d <- function(loc = NULL,
-                       tv = NULL,
-                       ...) {
+fm_mesh_3d <- function(loc = NULL, tv = NULL, ...) {
   loc <- fm_unify_coords(loc)
 
   loc.n <- max(0L, nrow(loc))

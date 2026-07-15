@@ -1,7 +1,6 @@
 #' @include mesh.R
 #' @include deprecated.R
 
-
 # fm_as_sfc ####
 
 #' @title Conversion methods from mesh related objects to sfc
@@ -34,10 +33,7 @@ fm_as_sfc <- function(x, ...) {
 #' `sfc_MULTIPOLYGON/LINESTRING/POINT/GEOMETRYCOLLECTION` or
 #' `sfc_POLYGON/LINESTRING/POINT` object
 #' @export
-fm_as_sfc.fm_mesh_2d <- function(x,
-                                 ...,
-                                 format = NULL,
-                                 multi = FALSE) {
+fm_as_sfc.fm_mesh_2d <- function(x, ..., format = NULL, multi = FALSE) {
   stopifnot(inherits(x, "fm_mesh_2d"))
   format <- match.arg(format, c("mesh", "int", "bnd", "loc"))
   if (identical(format, "mesh")) {
@@ -130,7 +126,8 @@ fm_as_sfc.fm_segm <- function(x, ..., multi = FALSE) {
                 c(
                   segm_bnd[[k]]$idx[, 1],
                   segm_bnd[[k]]$idx[nrow(segm_bnd[[k]]$idx), 2]
-                ), ,
+                ),
+                ,
                 drop = FALSE
               ]
             ),
@@ -175,7 +172,8 @@ fm_as_sfc.fm_segm <- function(x, ..., multi = FALSE) {
               c(
                 segm_int[[k]]$idx[, 1],
                 segm_int[[k]]$idx[nrow(segm_int[[k]]$idx), 2]
-              ), ,
+              ),
+              ,
               drop = FALSE
             ],
             dim = "XYZ"
@@ -256,8 +254,10 @@ fm_as_mesh_2d.sfc_MULTIPOLYGON <- function(x, ...) {
     lapply(
       x[[1]],
       function(xx) {
-        if ((length(xx) > 1) ||
-          (nrow(xx[[1]]) > 4)) {
+        if (
+          (length(xx) > 1) ||
+            (nrow(xx[[1]]) > 4)
+        ) {
           stop("Invalid geometry; non-triangle detected.")
         }
         xx[[1]][1:3, , drop = FALSE]
@@ -287,8 +287,10 @@ fm_as_mesh_2d.sfc_POLYGON <- function(x, ...) {
     lapply(
       x,
       function(xx) {
-        if ((length(xx) > 1) ||
-          (nrow(xx[[1]]) > 4)) {
+        if (
+          (length(xx) > 1) ||
+            (nrow(xx[[1]]) > 4)
+        ) {
           stop("Invalid geometry; non-triangle detected.")
         }
         xx[[1]][1:3, , drop = FALSE]
@@ -353,7 +355,10 @@ fm_as_segm.sfc_POINT <-
       }
     }
     fm_segm(
-      loc = loc, idx = idx, grp = grp, is.bnd = all(is.bnd),
+      loc = loc,
+      idx = idx,
+      grp = grp,
+      is.bnd = all(is.bnd),
       crs = crs
     )
   }
@@ -453,8 +458,10 @@ fm_as_segm.sfc_MULTILINESTRING <-
         lapply(
           seq_len(nrow(uniqueLinfo)),
           function(i) {
-            subset <- which((Linfo[, 1] == uniqueLinfo[i, 1]) &
-              (Linfo[, 2] == uniqueLinfo[i, 2]))
+            subset <- which(
+              (Linfo[, 1] == uniqueLinfo[i, 1]) &
+                (Linfo[, 2] == uniqueLinfo[i, 2])
+            )
             idx <- seq_along(subset)
             if (reverse) {
               idx <- rev(idx)
@@ -576,8 +583,10 @@ fm_as_segm.sfc_MULTIPOLYGON <-
         lapply(
           seq_len(nrow(uniqueLinfo)),
           function(i) {
-            subset <- which((Linfo[, 1] == uniqueLinfo[i, 1]) &
-              (Linfo[, 2] == uniqueLinfo[i, 2]))
+            subset <- which(
+              (Linfo[, 1] == uniqueLinfo[i, 1]) &
+                (Linfo[, 2] == uniqueLinfo[i, 2])
+            )
             # sfc_POLYGON repeats the initial point
             n <- length(subset) - 1
             subset <- subset[-(n + 1)]

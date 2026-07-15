@@ -32,8 +32,14 @@ fm_segm <- function(...) {
 #' `FALSE`.
 #' @param crs An optional `fm_crs()`, `sf::st_crs()` or `sp::CRS()` object
 #' @export
-fm_segm.default <- function(loc = NULL, idx = NULL, grp = NULL, is.bnd = TRUE,
-                            crs = NULL, ...) {
+fm_segm.default <- function(
+  loc = NULL,
+  idx = NULL,
+  grp = NULL,
+  is.bnd = TRUE,
+  crs = NULL,
+  ...
+) {
   if (is.null(loc) && is.null(idx)) {
     idx <- matrix(0L, 0, 2)
   }
@@ -66,13 +72,17 @@ fm_segm.default <- function(loc = NULL, idx = NULL, grp = NULL, is.bnd = TRUE,
       }
     }
     storage.mode(idx) <- "integer"
-    if (!is.null(loc) &&
-      (nrow(idx) > 0) &&
-      (max(idx, na.rm = TRUE) > NROW(loc))) {
+    if (
+      !is.null(loc) &&
+        (nrow(idx) > 0) &&
+        (max(idx, na.rm = TRUE) > NROW(loc))
+    ) {
       warning(
-        "Segment indices (max=", max(idx, na.rm = TRUE),
+        "Segment indices (max=",
+        max(idx, na.rm = TRUE),
         ") exceed specified location list length (",
-        NROW(loc), ")."
+        NROW(loc),
+        ")."
       )
     }
   }
@@ -196,11 +206,13 @@ fm_segm_join <- function(x, grp = NULL, grp.default = 0L, is.bnd = NULL) {
 
   keep <- vapply(segm, function(x) !is.null(x), TRUE)
   segm <- segm[keep]
-  if (!all(vapply(
-    segm,
-    function(x) inherits(x, "fm_segm"),
-    TRUE
-  ))) {
+  if (
+    !all(vapply(
+      segm,
+      function(x) inherits(x, "fm_segm"),
+      TRUE
+    ))
+  ) {
     stop("All objects must be of class 'fm_segm'.")
   }
 
@@ -209,10 +221,13 @@ fm_segm_join <- function(x, grp = NULL, grp.default = 0L, is.bnd = NULL) {
   Nidx <- vapply(segm, function(x) NROW(x$idx), 0L)
 
   loc <- do.call(rbind, lapply(segm, function(x) x$loc))
-  idx <- do.call(rbind, lapply(
-    seq_along(segm),
-    function(k) segm[[k]]$idx + cumNloc[k]
-  ))
+  idx <- do.call(
+    rbind,
+    lapply(
+      seq_along(segm),
+      function(k) segm[[k]]$idx + cumNloc[k]
+    )
+  )
   grp <- unlist(lapply(
     seq_along(segm),
     function(k) {
@@ -232,8 +247,10 @@ fm_segm_join <- function(x, grp = NULL, grp.default = 0L, is.bnd = NULL) {
     } else {
       is.bnd <- vapply(segm_, function(x) all(fm_is_bnd(x)), TRUE)
       not.is.bnd <- vapply(segm_, function(x) !any(fm_is_bnd(x)), TRUE)
-      if ((all(is.bnd) && !any(not.is.bnd)) ||
-        (!any(is.bnd) && all(not.is.bnd))) {
+      if (
+        (all(is.bnd) && !any(not.is.bnd)) ||
+          (!any(is.bnd) && all(not.is.bnd))
+      ) {
         is.bnd <- all(is.bnd) && !any(not.is.bnd)
       } else {
         warning("Inconsistent 'is.bnd' attributes.  Setting 'is.bnd=FALSE'.")
@@ -250,11 +267,13 @@ fm_segm_join <- function(x, grp = NULL, grp.default = 0L, is.bnd = NULL) {
       TRUE
     )]
     if (length(crs) > 0) {
-      if (!all(vapply(
-        crs,
-        function(x) fm_crs_is_identical(crs[[1]], x),
-        TRUE
-      ))) {
+      if (
+        !all(vapply(
+          crs,
+          function(x) fm_crs_is_identical(crs[[1]], x),
+          TRUE
+        ))
+      ) {
         lapply(crs, function(x) show(x))
         stop("Inconsistent 'crs' attributes.")
       } else {
@@ -323,11 +342,7 @@ fm_segm.inla.mesh.segment <- function(..., grp.default = 0) {
 #' fm_segm(fmexample$mesh, boundary = FALSE)
 #'
 fm_segm.fm_mesh_2d <- function(x, boundary = TRUE, grp = NULL, ...) {
-  extract_segments <- function(mesh.loc,
-                               segm,
-                               grp = NULL,
-                               is.bnd,
-                               crs = NULL) {
+  extract_segments <- function(mesh.loc, segm, grp = NULL, is.bnd, crs = NULL) {
     segments <- NULL
     if (NROW(segm[["idx"]]) == 0) {
       return(fm_segm(is.bnd = is.bnd, crs = crs))
@@ -456,11 +471,13 @@ NULL
 #' @describeIn fm_segm_list The `...` arguments should be coercible to
 #'   `fm_segm_list` objects.
 `c.fm_segm_list` <- function(...) {
-  if (!all(vapply(
-    list(...),
-    function(xx) is.null(xx) || inherits(xx, "fm_segm_list"),
-    TRUE
-  ))) {
+  if (
+    !all(vapply(
+      list(...),
+      function(xx) is.null(xx) || inherits(xx, "fm_segm_list"),
+      TRUE
+    ))
+  ) {
     y <- lapply(list(...), fm_as_segm_list)
     return(do.call("c", y))
   }
@@ -514,7 +531,8 @@ fm_area.fm_segm <- function(x, ...) {
   area <- sum(row_cross_product(
     loc[x[["idx"]][, 1], , drop = FALSE],
     loc[x[["idx"]][, 2], , drop = FALSE]
-  )[, 3]) / 2.0
+  )[, 3]) /
+    2.0
 
   area
 }

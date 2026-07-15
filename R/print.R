@@ -24,11 +24,13 @@ NULL
 
 #' @export
 #' @rdname fmesher-print
-print.fm_segm <- function(x,
-                          ...,
-                          digits = NULL,
-                          verbose = TRUE,
-                          newline = TRUE) {
+print.fm_segm <- function(
+  x,
+  ...,
+  digits = NULL,
+  verbose = TRUE,
+  newline = TRUE
+) {
   my.segm <- function(x) {
     if (is.null(x)) {
       return(list(n = 0, grps = NULL))
@@ -69,7 +71,8 @@ print.fm_segm <- function(x,
   if (ret$n > 0) {
     extra <- ""
     if (sum(x$is.bnd) > 0) {
-      cat(sum(x$is.bnd),
+      cat(
+        sum(x$is.bnd),
         " boundary edge",
         if (sum(x$is.bnd) != 1) {
           "s"
@@ -79,7 +82,9 @@ print.fm_segm <- function(x,
       extra <- ", "
     }
     if (sum(!x$is.bnd) > 0) {
-      cat(extra, sum(!x$is.bnd),
+      cat(
+        extra,
+        sum(!x$is.bnd),
         " interior edge",
         if (sum(!x$is.bnd) != 1) {
           "s"
@@ -119,11 +124,13 @@ print.fm_segm <- function(x,
 
 #' @export
 #' @rdname fmesher-print
-print.fm_segm_list <- function(x,
-                               ...,
-                               digits = NULL,
-                               verbose = FALSE,
-                               newline = TRUE) {
+print.fm_segm_list <- function(
+  x,
+  ...,
+  digits = NULL,
+  verbose = FALSE,
+  newline = TRUE
+) {
   if (verbose) {
     cat("list of ", length(x), " fm_segm objects:\n", sep = "")
     if (!is.null(names(x)[k])) {
@@ -159,11 +166,13 @@ print.fm_segm_list <- function(x,
 
 #' @export
 #' @rdname fmesher-print
-print.fm_list <- function(x,
-                          ...,
-                          digits = NULL,
-                          verbose = FALSE,
-                          newline = TRUE) {
+print.fm_list <- function(
+  x,
+  ...,
+  digits = NULL,
+  verbose = FALSE,
+  newline = TRUE
+) {
   if (verbose) {
     cat("list of ", length(x), " fmesher objects:\n", sep = "")
     lapply(x, function(xx) {
@@ -246,7 +255,8 @@ print.fm_mesh_2d <- function(x, ..., digits = NULL, verbose = FALSE) {
     }
     y <- y[, 1L:3L, drop = FALSE]
     colnames(y) <- c(
-      gettext("user"), gettext("system"),
+      gettext("user"),
+      gettext("system"),
       gettext("elapsed")
     )
     print(y, ..., digits = digits)
@@ -337,12 +347,16 @@ print.fm_mesh_1d <- function(x, ..., digits = NULL, verbose = FALSE) {
 
   cat("  Manifold:\t", x$manifold, "\n", sep = "")
   cat("  #{knots}:\t", length(x$loc), "\n", sep = "")
-  cat("  Interval:\t(", paste0(format(x$interval, digits = digits),
-    collapse = ", "
-  ), ")\n", sep = "")
+  cat(
+    "  Interval:\t(",
+    paste0(format(x$interval, digits = digits), collapse = ", "),
+    ")\n",
+    sep = ""
+  )
   clamped <- x$free.clamped & (x$boundary == "free")
   clamped <- c("", " and clamped")[clamped + 1]
-  cat("  Boundary:\t(",
+  cat(
+    "  Boundary:\t(",
     paste0(x$boundary, clamped, collapse = ", "),
     ")\n",
     sep = ""
@@ -356,11 +370,13 @@ print.fm_mesh_1d <- function(x, ..., digits = NULL, verbose = FALSE) {
 
 #' @export
 #' @rdname fmesher-print
-print.fm_bbox <- function(x,
-                          ...,
-                          digits = NULL,
-                          verbose = TRUE,
-                          newline = TRUE) {
+print.fm_bbox <- function(
+  x,
+  ...,
+  digits = NULL,
+  verbose = TRUE,
+  newline = TRUE
+) {
   if (verbose) {
     cat("Bounding box: ", sep = "")
   }
@@ -371,10 +387,9 @@ print.fm_bbox <- function(x,
       if (k > 1) {
         cat(" x ", sep = "")
       }
-      cat("(",
-        paste0(format(x[[k]], digits = digits),
-          collapse = ","
-        ),
+      cat(
+        "(",
+        paste0(format(x[[k]], digits = digits), collapse = ","),
         ")",
         sep = ""
       )
@@ -401,16 +416,21 @@ print.fm_tensor <- function(x, ..., digits = NULL, verbose = FALSE) {
       )
     )
 
-
   cat("fm_tensor object:\n", sep = "")
-  cat("  Manifold:\t", ret$manifold, " = ",
+  cat(
+    "  Manifold:\t",
+    ret$manifold,
+    " = ",
     paste0(ret$sub_manifolds, collapse = " x "),
     "\n",
     sep = ""
   )
   cat("  ", sep = "")
   print(fm_bbox(x), digits = digits)
-  cat("  Basis d.o.f.:\t", fm_dof(x), " = ",
+  cat(
+    "  Basis d.o.f.:\t",
+    fm_dof(x),
+    " = ",
     paste0(ret$sub_dof, collapse = " x "),
     "\n",
     sep = ""
@@ -433,12 +453,14 @@ print.fm_collect <- function(x, ..., digits = NULL, verbose = FALSE) {
       )
     )
 
-
   cat("fm_collect object:\n", sep = "")
   cat("  Manifold:\t", ret$manifold, " x ", ret$size, "\n", sep = "")
   cat("  Bounding boxes:\n", sep = "")
   print(fm_bbox(x), digits = digits, verbose = FALSE)
-  cat("  Basis d.o.f.:\t", fm_dof(x), " = ",
+  cat(
+    "  Basis d.o.f.:\t",
+    fm_dof(x),
+    " = ",
     paste0(ret$sub_dof, collapse = " + "),
     "\n",
     sep = ""
@@ -508,13 +530,15 @@ print.fm_lattice_Nd <- function(x, ..., digits = NULL, verbose = FALSE) {
 #' print(fm_basis(fmexample$mesh, fmexample$loc, full = TRUE))
 print.fm_basis <- function(x, ..., prefix = "") {
   cat(prefix, "fm_basis object\n", sep = "")
-  cat(prefix,
+  cat(
+    prefix,
     "  Projection matrix (A): ",
     paste0(dim(x$A), collapse = "-by-"),
     "\n",
     sep = ""
   )
-  cat(prefix,
+  cat(
+    prefix,
     "  Valid evaluations (ok): ",
     sum(x$ok),
     " out of ",
@@ -523,7 +547,8 @@ print.fm_basis <- function(x, ..., prefix = "") {
     sep = ""
   )
   cat(
-    prefix, "  Additional information: ",
+    prefix,
+    "  Additional information: ",
     paste(names(x)[!names(x) %in% c("A", "ok")], collapse = ", "),
     "\n",
     sep = ""

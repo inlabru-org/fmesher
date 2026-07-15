@@ -37,9 +37,11 @@
 #' @family nonconvex inla legacy support
 fm_simplify_helper <- function(loc, idx, eps = NULL, eps_rel = NULL) {
   n <- length(idx)
-  if ((n <= 2) ||
-    (is.null(eps) && is.null(eps_rel)) ||
-    (min(eps, eps_rel) == 0)) {
+  if (
+    (n <= 2) ||
+      (is.null(eps) && is.null(eps_rel)) ||
+      (min(eps, eps_rel) == 0)
+  ) {
     return(idx)
   }
   segm <- loc[idx[n], ] - loc[idx[1], ]
@@ -60,7 +62,8 @@ fm_simplify_helper <- function(loc, idx, eps = NULL, eps_rel = NULL) {
     ## Always split if any point is outside the circle
     epsi <- min(c(eps, eps_rel * segm.len / 2, segm.len / 2))
     dist1 <- abs(vec[, 1] * segm[1] + vec[, 2] * segm[2]) /
-      (segm.len / 2) * epsi
+      (segm.len / 2) *
+      epsi
     dist2 <- abs(vec[, 1] * segm.perp[1] + vec[, 2] * segm.perp[2])
     dist <- (dist1^2 + dist2^2)^0.5
 
@@ -135,9 +138,11 @@ fm_simplify_helper <- function(loc, idx, eps = NULL, eps_rel = NULL) {
 #' @export
 #' @family object creation and conversion
 fm_simplify <- function(x, eps = NULL, eps_rel = NULL, ...) {
-  if ((nrow(x$idx) <= 1) ||
-    (is.null(eps) && is.null(eps_rel)) ||
-    (min(eps, eps_rel) == 0)) {
+  if (
+    (nrow(x$idx) <= 1) ||
+      (is.null(eps) && is.null(eps_rel)) ||
+      (min(eps, eps_rel) == 0)
+  ) {
     return(x)
   }
 

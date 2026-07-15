@@ -51,7 +51,8 @@ fm_collect <- function(x, ...) {
     stop(
       "All function spaces in a collection need to be of ",
       "the same manifold type, ",
-      "but found: ", paste(type, collapse = ", ")
+      "but found: ",
+      paste(type, collapse = ", ")
     )
   }
   m$manifold <- type

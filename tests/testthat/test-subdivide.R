@@ -62,12 +62,18 @@ test_that("fmesher_subdivide works", {
   )
   sub2.loc <- rbind(
     mesh$loc,
-    cbind(rbind(
-      c(1 / 3, 0), c(2 / 3, 0),
-      c(2 / 3 - 0.1 * 1 / 3, 1 / 3), c(1 / 3 - 0.1 * 2 / 3, 2 / 3),
-      c(0 - 0.1 * 2 / 3, 2 / 3), c(0 - 0.1 * 1 / 3, 1 / 3),
-      c(1 / 3 - 0.1 * 1 / 3, 1 / 3)
-    ), 0)
+    cbind(
+      rbind(
+        c(1 / 3, 0),
+        c(2 / 3, 0),
+        c(2 / 3 - 0.1 * 1 / 3, 1 / 3),
+        c(1 / 3 - 0.1 * 2 / 3, 2 / 3),
+        c(0 - 0.1 * 2 / 3, 2 / 3),
+        c(0 - 0.1 * 1 / 3, 1 / 3),
+        c(1 / 3 - 0.1 * 1 / 3, 1 / 3)
+      ),
+      0
+    )
   )
   # jarl-ignore internal_function: Internal test
   sub2 <- fmesher:::fmesher_subdivide(

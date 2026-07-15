@@ -51,12 +51,15 @@ fm_tensor <- function(x, ...) {
   d <- vapply(m$fun_spaces, fm_manifold_dim, integer(1))
   type <- unique(type)
   if ((length(type) == 1L) && (type %in% c("R", "S", "T", "M"))) {
-    m$manifold <- paste0(list(
-      R = "R",
-      S = "T",
-      T = "T",
-      M = "M"
-    )[[type]], sum(d))
+    m$manifold <- paste0(
+      list(
+        R = "R",
+        S = "T",
+        T = "T",
+        M = "M"
+      )[[type]],
+      sum(d)
+    )
   } else {
     m$manifold <- paste0("M", sum(d))
   }

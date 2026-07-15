@@ -1,7 +1,8 @@
 test_that("Flat CDT works", {
   max.edge0 <- 0.25
   min.angle0 <- 21
-  mesh <- fm_rcdt_2d_inla(cbind(0, 0),
+  mesh <- fm_rcdt_2d_inla(
+    cbind(0, 0),
     extend = list(offset = 1, n = 16),
     refine = list(max.edge = max.edge0, min.angle = min.angle0)
   )
@@ -29,16 +30,22 @@ test_that("Flat CDT works", {
     mesh$loc[mesh$graph$tv[, 1], ] - mesh$loc[mesh$graph$tv[, 3], ]
   )
   min.angle <-
-    180 / pi * min(acos(pmin(1, pmax(
-      -1, c(
-        -rowSums(edges[[1]] * edges[[2]]) /
-          (rowSums(edges[[1]]^2)^0.5 * rowSums(edges[[2]]^2)^0.5),
-        -rowSums(edges[[2]] * edges[[3]]) /
-          (rowSums(edges[[2]]^2)^0.5 * rowSums(edges[[3]]^2)^0.5),
-        -rowSums(edges[[3]] * edges[[1]]) /
-          (rowSums(edges[[3]]^2)^0.5 * rowSums(edges[[1]]^2)^0.5)
+    180 /
+    pi *
+    min(acos(pmin(
+      1,
+      pmax(
+        -1,
+        c(
+          -rowSums(edges[[1]] * edges[[2]]) /
+            (rowSums(edges[[1]]^2)^0.5 * rowSums(edges[[2]]^2)^0.5),
+          -rowSums(edges[[2]] * edges[[3]]) /
+            (rowSums(edges[[2]]^2)^0.5 * rowSums(edges[[3]]^2)^0.5),
+          -rowSums(edges[[3]] * edges[[1]]) /
+            (rowSums(edges[[3]]^2)^0.5 * rowSums(edges[[1]]^2)^0.5)
+        )
       )
-    ))))
+    )))
   max.edge <- max(rowSums(do.call(rbind, edges)^2)^0.5)
 
   expect_lte(max.edge, max.edge0 + lowtol)
@@ -115,10 +122,13 @@ test_that("interior should be single object", {
   # extended boundary
   expect_error(fm_mesh_2d_inla(boundary = bnd, max.edge = c(1, 2)), NA)
   # or extended by running non-convex for the boundary
-  expect_error(fm_mesh_2d_inla(
-    boundary = list(bnd, fm_nonconvex_hull(bnd)),
-    max.edge = 1
-  ), NA)
+  expect_error(
+    fm_mesh_2d_inla(
+      boundary = list(bnd, fm_nonconvex_hull(bnd)),
+      max.edge = 1
+    ),
+    NA
+  )
 
   # combining extended and interior segment should not fail
   expect_error(
@@ -128,7 +138,8 @@ test_that("interior should be single object", {
   expect_error(
     fm_mesh_2d_inla(
       boundary = list(bnd, fm_nonconvex_hull(bnd)),
-      interior = interior, max.edge = 1
+      interior = interior,
+      max.edge = 1
     ),
     NA
   )
@@ -145,7 +156,8 @@ test_that("interior should be single object", {
   expect_error(
     fm_mesh_2d_inla(
       boundary = list(bnd, fm_nonconvex_hull(bnd)),
-      interior = list(interior), max.edge = 1
+      interior = list(interior),
+      max.edge = 1
     ),
     NA
   )

@@ -28,9 +28,7 @@
 #' (loc <- fm_mesh_2d_map(cbind(20, 10), "longlat"))
 #' fm_mesh_2d_map(loc, "longlat", inverse = FALSE)
 #'
-fm_mesh_2d_map <- function(loc,
-                           projection = NULL,
-                           inverse = TRUE) {
+fm_mesh_2d_map <- function(loc, projection = NULL, inverse = TRUE) {
   projection <- match.arg(
     projection,
     c("default", "longlat", "longsinlat", "mollweide")
@@ -92,8 +90,9 @@ fm_mesh_2d_map <- function(loc,
         if (any(nook)) {
           delta <-
             (atan2(sin.theta[nook], cos.theta[nook]) +
-              sin.theta[nook] * cos.theta[nook] - pi / 2 * z[nook]) /
-              (2 * cos.theta[nook])
+              sin.theta[nook] * cos.theta[nook] -
+              pi / 2 * z[nook]) /
+            (2 * cos.theta[nook])
           sin.theta[nook] <- sin.theta[nook] - delta
           cos.theta[nook] <- sqrt(1 - sin.theta[nook]^2)
           nook[nook] <- (abs(delta) > 1e-14)
@@ -110,8 +109,7 @@ fm_mesh_2d_map <- function(loc,
 
 #' @export
 #' @describeIn fm_mesh_2d_map Projection extent limit calculations
-fm_mesh_2d_map_lim <- function(loc = NULL,
-                               projection = NULL) {
+fm_mesh_2d_map_lim <- function(loc = NULL, projection = NULL) {
   projection <- match.arg(
     projection,
     c("default", "longlat", "longsinlat", "mollweide")
@@ -215,12 +213,11 @@ fm_lattice_2d.default <- function(
   x = seq(0, 1, length.out = 2),
   y = seq(0, 1, length.out = 2),
   z = NULL,
-  dims =
-    if (is.matrix(x)) {
-      dim(x)
-    } else {
-      c(length(x), length(y))
-    },
+  dims = if (is.matrix(x)) {
+    dim(x)
+  } else {
+    c(length(x), length(y))
+  },
   units = NULL,
   crs = NULL,
   ...
@@ -234,7 +231,8 @@ fm_lattice_2d.default <- function(
     lim <- fm_mesh_2d_map_lim(projection = units)
     xlim <- lim$xlim
     ylim <- lim$ylim
-  } else { ## !is.null(crs)
+  } else {
+    ## !is.null(crs)
     if (!is.null(units)) {
       stop("Only one of 'units' and 'crs' can be non-null.")
     }
@@ -252,20 +250,31 @@ fm_lattice_2d.default <- function(
   dims <- as.integer(dims)
 
   if (is.matrix(x)) {
-    if (!identical(dims, dim(x)) ||
-      !identical(dims, dim(y)) ||
-      (is.matrix(z) && !identical(dims, dim(z)))) {
+    if (
+      !identical(dims, dim(x)) ||
+        !identical(dims, dim(y)) ||
+        (is.matrix(z) && !identical(dims, dim(z)))
+    ) {
       stop("The size of matrices 'x', 'y', and 'z' must match 'dims'.")
     }
     loc <- cbind(as.vector(x), as.vector(y), as.vector(z))
     x <- NULL
     y <- NULL
   } else {
-    if (!identical(dims[1], length(x)) ||
-      !identical(dims[2], length(y))) {
-      stop(paste("The lengths of vectors 'x' and 'y' (",
-        length(x), ",", length(y),
-        ") must match 'dims' (", dims[1], ",", dims[2], ").",
+    if (
+      !identical(dims[1], length(x)) ||
+        !identical(dims[2], length(y))
+    ) {
+      stop(paste(
+        "The lengths of vectors 'x' and 'y' (",
+        length(x),
+        ",",
+        length(y),
+        ") must match 'dims' (",
+        dims[1],
+        ",",
+        dims[2],
+        ").",
         sep = ""
       ))
     }

@@ -245,14 +245,18 @@ handle_rcdt_options_inla <- function(
       refine$max.edge.extra
     )
 
-    if (!is.null(refine[["max.n.strict"]]) &&
-      !is.na(refine$max.n.strict)) {
+    if (
+      !is.null(refine[["max.n.strict"]]) &&
+        !is.na(refine$max.n.strict)
+    ) {
       rcdt_max_n0 <- as.integer(refine$max.n.strict)
     } else {
       rcdt_max_n0 <- -1L
     }
-    if (!is.null(refine[["max.n"]]) &&
-      !is.na(refine$max.n)) {
+    if (
+      !is.null(refine[["max.n"]]) &&
+        !is.na(refine$max.n)
+    ) {
       rcdt_max_n1 <- as.integer(refine$max.n)
     } else {
       rcdt_max_n1 <- -1L
@@ -339,22 +343,26 @@ fm_rcdt_2d <-
 #' interface
 #' @inheritSection fm_mesh_2d INLA compatibility
 #' @export
-fm_rcdt_2d_inla <- function(loc = NULL,
-                            tv = NULL,
-                            boundary = NULL,
-                            interior = NULL,
-                            extend = (missing(tv) || is.null(tv)),
-                            refine = FALSE,
-                            lattice = NULL,
-                            globe = NULL,
-                            cutoff = 1e-12,
-                            quality.spec = NULL,
-                            crs = NULL,
-                            delaunay = TRUE,
-                            ...) {
+fm_rcdt_2d_inla <- function(
+  loc = NULL,
+  tv = NULL,
+  boundary = NULL,
+  interior = NULL,
+  extend = (missing(tv) || is.null(tv)),
+  refine = FALSE,
+  lattice = NULL,
+  globe = NULL,
+  cutoff = 1e-12,
+  quality.spec = NULL,
+  crs = NULL,
+  delaunay = TRUE,
+  ...
+) {
   crs.target <- crs
-  if (!fm_crs_is_null(crs) &&
-    fm_crs_is_geocent(crs)) {
+  if (
+    !fm_crs_is_null(crs) &&
+      fm_crs_is_geocent(crs)
+  ) {
     ## Build all geocentric meshes on a sphere, and transform afterwards,
     ## to allow general geoids.
     crs <- fm_crs("sphere")
@@ -375,7 +383,8 @@ fm_rcdt_2d_inla <- function(loc = NULL,
     loc.globe <- fmesher_globe_points(globe = globe)
     crs.globe <- fm_crs("sphere")
     if (!fm_crs_is_null(crs.globe) && !fm_crs_is_null(crs)) {
-      loc.globe <- fm_transform(loc.globe,
+      loc.globe <- fm_transform(
+        loc.globe,
         crs = crs,
         passthrough = TRUE,
         crs0 = crs.globe
@@ -504,9 +513,12 @@ fm_rcdt_2d_inla <- function(loc = NULL,
   }
   result <- fmesher_rcdt(
     options = options,
-    loc = loc, tv = tv,
-    boundary = bnd, interior = int,
-    boundary_grp = bnd_grp, interior_grp = int_grp
+    loc = loc,
+    tv = tv,
+    boundary = bnd,
+    interior = int,
+    boundary_grp = bnd_grp,
+    interior_grp = int_grp
   )
 
   idx_C2R <- function(x) {
@@ -515,8 +527,10 @@ fm_rcdt_2d_inla <- function(loc = NULL,
     x
   }
 
-  if (!fm_crs_is_null(crs) &&
-    !fm_crs_is_identical(crs, crs.target)) {
+  if (
+    !fm_crs_is_null(crs) &&
+      !fm_crs_is_identical(crs, crs.target)
+  ) {
     ## Target is a non-spherical geoid
     result[["s"]] <- fm_transform(result[["s"]], crs0 = crs, crs = crs.target)
     crs <- crs.target
@@ -581,7 +595,10 @@ fm_rcdt_2d_inla <- function(loc = NULL,
         vt <- mesh$graph$vt[[vv]]
         # Need to do the C->R index conversion for the triangle indices here!
         mesh$graph$vt[[vv]] <-
-          matrix(c(as.integer(names(vt)) + 1L, vt), length(vt), 2,
+          matrix(
+            c(as.integer(names(vt)) + 1L, vt),
+            length(vt),
+            2,
             dimnames = list(NULL, c("t", "vi"))
           )
       }
@@ -590,7 +607,10 @@ fm_rcdt_2d_inla <- function(loc = NULL,
       # Old storage mode: mesh$graph$vt <- rep(NA_integer_, nrow(mesh$loc))
       mesh$graph$vt <- list()
       for (vv in seq_len(nrow(mesh$loc))) {
-        mesh$graph$vt[[vv]] <- matrix(NA_integer_, 0, 2,
+        mesh$graph$vt[[vv]] <- matrix(
+          NA_integer_,
+          0,
+          2,
           dimnames = list(NULL, c("t", "vi"))
         )
       }
@@ -647,20 +667,22 @@ fm_rcdt_2d_inla <- function(loc = NULL,
 #' @examples
 #' fm_delaunay_2d(matrix(rnorm(30), 15, 2))
 #'
-fm_delaunay_2d <- function(loc, crs = NULL, ...) {
+fm_delaunay_2d <- function(loc, crs = NULL, boundary = NULL, ...) {
   if (is.null(crs) && !is.matrix(loc)) {
     crs <- fm_crs(loc)
   }
   loc <- fm_unify_coords(loc, crs = crs)
 
-  hull <- grDevices::chull(loc[, 1], loc[, 2])
-  bnd <- fm_segm(
-    loc = loc[hull[rev(seq_along(hull))], , drop = FALSE],
-    is.bnd = TRUE
-  )
+  if (is.null(boundary)) {
+    hull <- grDevices::chull(loc[, 1], loc[, 2])
+    boundary <- fm_segm(
+      loc = loc[hull[rev(seq_along(hull))], , drop = FALSE],
+      is.bnd = TRUE
+    )
+  }
   mesh <- fm_rcdt_2d_inla(
     loc = loc,
-    boundary = bnd,
+    boundary = boundary,
     extend = list(n = 3),
     refine = FALSE,
     crs = crs,
@@ -739,20 +761,22 @@ fm_mesh_2d <- function(...) {
 #' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @seealso [fm_rcdt_2d()], [fm_mesh_2d()], [fm_delaunay_2d()],
 #' [fm_nonconvex_hull()], [fm_extensions()], [fm_refine()]
-fm_mesh_2d_inla <- function(loc = NULL,
-                            loc.domain = NULL,
-                            offset = NULL,
-                            n = NULL,
-                            boundary = NULL,
-                            interior = NULL,
-                            max.edge = NULL,
-                            min.angle = NULL,
-                            cutoff = 1e-12,
-                            max.n.strict = NULL,
-                            max.n = NULL,
-                            plot.delay = NULL,
-                            crs = NULL,
-                            ...) {
+fm_mesh_2d_inla <- function(
+  loc = NULL,
+  loc.domain = NULL,
+  offset = NULL,
+  n = NULL,
+  boundary = NULL,
+  interior = NULL,
+  max.edge = NULL,
+  min.angle = NULL,
+  cutoff = 1e-12,
+  max.n.strict = NULL,
+  max.n = NULL,
+  plot.delay = NULL,
+  crs = NULL,
+  ...
+) {
   ## plot.delay: Do plotting.
   ## NULL --> No plotting
   ## <0  --> Intermediate meshes displayed at the end
@@ -766,9 +790,11 @@ fm_mesh_2d_inla <- function(loc = NULL,
     plot.intermediate <- plot.delay < 0
   }
 
-  if ((missing(max.edge) || is.null(max.edge)) &&
-    (missing(max.n.strict) || is.null(max.n.strict)) &&
-    (missing(max.n) || is.null(max.n))) {
+  if (
+    (missing(max.edge) || is.null(max.edge)) &&
+      (missing(max.n.strict) || is.null(max.n.strict)) &&
+      (missing(max.n) || is.null(max.n))
+  ) {
     max.edge <- NA
   }
 
@@ -823,12 +849,19 @@ fm_mesh_2d_inla <- function(loc = NULL,
 
   num.layers <-
     max(c(
-      length(boundary), length(offset), length(n),
-      length(min.angle), length(max.edge),
-      length(max.n.strict), length(max.n)
+      length(boundary),
+      length(offset),
+      length(n),
+      length(min.angle),
+      length(max.edge),
+      length(max.n.strict),
+      length(max.n)
     ))
   if (num.layers > 2) {
-    warning(paste("num.layers=", num.layers, " > 2 detected.  ",
+    warning(paste(
+      "num.layers=",
+      num.layers,
+      " > 2 detected.  ",
       "Excess information ignored.",
       sep = ""
     ))
@@ -860,9 +893,12 @@ fm_mesh_2d_inla <- function(loc = NULL,
     n <- c(n, 16)
   }
 
-  if (fm_diameter(loc) +
-    fm_diameter(loc.domain) +
-    fm_diameter(interior) == 0.0) {
+  if (
+    fm_diameter(loc) +
+      fm_diameter(loc.domain) +
+      fm_diameter(interior) ==
+      0.0
+  ) {
     bnd_diam <- 0.0
     for (k in seq_len(num.layers)) {
       if ((length(boundary) >= k) && !is.null(boundary[[k]])) {
@@ -919,14 +955,13 @@ fm_mesh_2d_inla <- function(loc = NULL,
         } else {
           FALSE ## Should have no effect
         },
-        refine =
-          list(
-            min.angle = min.angle[1],
-            max.edge = max.edge[1],
-            max.edge.extra = max.edge[1],
-            max.n.strict = max.n.strict[1],
-            max.n = max.n[1]
-          ),
+        refine = list(
+          min.angle = min.angle[1],
+          max.edge = max.edge[1],
+          max.edge.extra = max.edge[1],
+          max.n.strict = max.n.strict[1],
+          max.n = max.n[1]
+        ),
         crs = crs
       )
   } else {
@@ -937,14 +972,13 @@ fm_mesh_2d_inla <- function(loc = NULL,
         interior = interior,
         cutoff = cutoff,
         extend = FALSE, # Should have no effect
-        refine =
-          list(
-            min.angle = min.angle[1],
-            max.edge = max.edge[1],
-            max.edge.extra = max.edge[1],
-            max.n.strict = max.n.strict[1],
-            max.n = max.n[1]
-          ),
+        refine = list(
+          min.angle = min.angle[1],
+          max.edge = max.edge[1],
+          max.edge.extra = max.edge[1],
+          max.n.strict = max.n.strict[1],
+          max.n = max.n[1]
+        ),
         crs = crs
       )
   }
@@ -972,14 +1006,13 @@ fm_mesh_2d_inla <- function(loc = NULL,
       interior = fm_segm(boundary2, interior2, is.bnd = FALSE),
       cutoff = cutoff,
       extend = list(n = n[2], offset = offset[2]),
-      refine =
-        list(
-          min.angle = min.angle[2],
-          max.edge = max.edge[2],
-          max.edge.extra = max.edge[2],
-          max.n.strict = mesh2$n + max.n.strict[2],
-          max.n = mesh2$n + max.n[2]
-        ),
+      refine = list(
+        min.angle = min.angle[2],
+        max.edge = max.edge[2],
+        max.edge.extra = max.edge[2],
+        max.n.strict = mesh2$n + max.n.strict[2],
+        max.n = mesh2$n + max.n[2]
+      ),
       crs = crs
     )
 
@@ -1001,7 +1034,8 @@ fm_mesh_2d_inla <- function(loc = NULL,
     mesh3$idx$segm <- rep(NA, nrow(segm.loc))
     if (any(proj$ok)) {
       t.idx <- proj$bary$index[proj$ok]
-      tv.idx <- max.col(proj$bary$where[proj$ok, , drop = FALSE],
+      tv.idx <- max.col(
+        proj$bary$where[proj$ok, , drop = FALSE],
         ties.method = "first"
       )
       mesh3$idx$segm[proj$ok] <-
@@ -1079,9 +1113,11 @@ fm_as_mesh_2d.inla.mesh <- function(x, ...) {
 #' @return A list with lattice points, edge length, and inner boundary
 #' @author Man Ho Suen <M.H.Suen@@sms.ed.ac.uk>
 #' @keywords internal
-fm_hexagon_lattice_orig <- function(bnd,
-                                    x_bin = 250, # 300 then running forever
-                                    edge_len_n = 1) {
+fm_hexagon_lattice_orig <- function(
+  bnd,
+  x_bin = 250, # 300 then running forever
+  edge_len_n = 1
+) {
   stopifnot(x_bin / 2 > edge_len_n)
   crs <- fm_crs(bnd)
   fm_crs(bnd) <- NA
@@ -1103,7 +1139,8 @@ fm_hexagon_lattice_orig <- function(bnd,
   # x
   x_1_ <- seq(
     fm_bbox(bnd_inner)[[1]][1] + x_adj,
-    fm_bbox(bnd_inner)[[1]][2] - x_adj, edge_len
+    fm_bbox(bnd_inner)[[1]][2] - x_adj,
+    edge_len
   )
   x_2_ <- seq(
     (fm_bbox(bnd_inner)[[1]][1] + x_adj + 0.5 * edge_len),
@@ -1117,7 +1154,8 @@ fm_hexagon_lattice_orig <- function(bnd,
   )
   y_2_ <- seq(
     fm_bbox(bnd_inner)[[2]][1] + y_adj + h,
-    fm_bbox(bnd_inner)[[2]][2] - y_adj + h, 2 * h
+    fm_bbox(bnd_inner)[[2]][2] - y_adj + h,
+    2 * h
   )
 
   x_1 <- rep(x_1_, times = length(y_1_))
@@ -1127,7 +1165,8 @@ fm_hexagon_lattice_orig <- function(bnd,
 
   mesh_df <- data.frame(x = c(x_1, x_2), y = c(y_1, y_2))
   # turn the mesh nodes into lattice sf
-  lattice_sf <- sf::st_as_sf(mesh_df,
+  lattice_sf <- sf::st_as_sf(
+    mesh_df,
     coords = c("x", "y"),
     crs = sf::st_crs(bnd)
   )
@@ -1212,11 +1251,13 @@ fm_hexagon_lattice_orig <- function(bnd,
 #'     )
 #'   )
 #' }
-fm_hexagon_lattice <- function(bnd,
-                               edge_len = NULL,
-                               buffer_n = 0.49,
-                               align = "origin",
-                               meta = FALSE) {
+fm_hexagon_lattice <- function(
+  bnd,
+  edge_len = NULL,
+  buffer_n = 0.49,
+  align = "origin",
+  meta = FALSE
+) {
   #  stopifnot(x_bin / 2 > edge_len_n)
   if (inherits(bnd, "fm_segm")) {
     bnd <- fm_as_sfc(bnd)
@@ -1274,26 +1315,30 @@ fm_hexagon_lattice <- function(bnd,
   }
 
   # x
-  x_1_ <- origin[1] + seq(
-    grid_start[1] * edge_len,
-    grid_end[1] * edge_len,
-    length.out = grid_n[1]
-  )
-  x_2_ <- origin[1] + seq(
-    (grid_start[1] + 0.5) * edge_len,
-    (grid_end[1] - 0.5) * edge_len,
-    length.out = grid_n[1] - 1L
-  )
-  y_1_ <- origin[2] + seq(
-    grid_start[2] * h,
-    grid_end[2] * h,
-    length.out = (grid_n[2] + 1L) / 2L
-  )
-  y_2_ <- origin[2] + seq(
-    (grid_start[2] + 1) * h,
-    (grid_end[2] - 1) * h,
-    length.out = (grid_n[2] + 1L) / 2L - 1L
-  )
+  x_1_ <- origin[1] +
+    seq(
+      grid_start[1] * edge_len,
+      grid_end[1] * edge_len,
+      length.out = grid_n[1]
+    )
+  x_2_ <- origin[1] +
+    seq(
+      (grid_start[1] + 0.5) * edge_len,
+      (grid_end[1] - 0.5) * edge_len,
+      length.out = grid_n[1] - 1L
+    )
+  y_1_ <- origin[2] +
+    seq(
+      grid_start[2] * h,
+      grid_end[2] * h,
+      length.out = (grid_n[2] + 1L) / 2L
+    )
+  y_2_ <- origin[2] +
+    seq(
+      (grid_start[2] + 1) * h,
+      (grid_end[2] - 1) * h,
+      length.out = (grid_n[2] + 1L) / 2L - 1L
+    )
 
   x_1 <- rep(x_1_, times = length(y_1_))
   x_2 <- rep(x_2_, times = length(y_2_))
@@ -1375,7 +1420,9 @@ circle_mesh <- function(
     crs = fm_crs(crs),
     ...
   )
-  mesh$radius <- sqrt((mesh$loc[, 1] - centre[1])^2 +
-    (mesh$loc[, 2] - centre[2])^2)
+  mesh$radius <- sqrt(
+    (mesh$loc[, 1] - centre[1])^2 +
+      (mesh$loc[, 2] - centre[2])^2
+  )
   mesh
 }

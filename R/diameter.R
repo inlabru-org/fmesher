@@ -44,10 +44,11 @@ fm_diameter.matrix <- function(x, manifold = NULL, ...) {
     radius <- mean(rowSums(x^2)^0.5)
     x <- x / radius
     distance <- function(u, v) {
-      2 * asin(pmin(
-        1,
-        ((u[1] - v[, 1])^2 + (u[2] - v[, 2])^2 + (u[3] - v[, 3])^2)^0.5 / 2
-      ))
+      2 *
+        asin(pmin(
+          1,
+          ((u[1] - v[, 1])^2 + (u[2] - v[, 2])^2 + (u[3] - v[, 3])^2)^0.5 / 2
+        ))
     }
     center <- colMeans(x)
     tmp <- sqrt(sum(center^2))

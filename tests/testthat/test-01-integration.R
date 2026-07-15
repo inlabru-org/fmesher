@@ -105,11 +105,15 @@ test_that("Tensor space integration", {
   expect_equal(
     dplyr::arrange(
       dplyr::select(ips1, time, space, weight, .block),
-      .block, time, space
+      .block,
+      time,
+      space
     ),
     dplyr::arrange(
       dplyr::select(ips2, time, space, weight, .block),
-      .block, time, space
+      .block,
+      time,
+      space
     )
   )
 })
@@ -208,10 +212,7 @@ test_that("Polygon integration with holes", {
 
   bndA <- fm_as_segm(plyA)
   m <- fmexample$mesh
-  ipA <- fm_int(m,
-    plyA,
-    int.args = list(method = "direct", nsub2 = 1)
-  )
+  ipA <- fm_int(m, plyA, int.args = list(method = "direct", nsub2 = 1))
 
   expect_equal(
     sf::st_area(sf::st_as_sf(plyA)),
@@ -316,7 +317,11 @@ test_that("Globe polygon integration", {
   poly <- sf::st_sfc(
     sf::st_polygon(
       list(rbind(
-        c(-45, -45), c(-45, 45), c(45, 45), c(45, -45), c(-45, -45)
+        c(-45, -45),
+        c(-45, 45),
+        c(45, 45),
+        c(45, -45),
+        c(-45, -45)
       ))
     ),
     crs = fm_crs("longlat_globe")
@@ -376,7 +381,8 @@ test_that("fm_int for linestring coinciding with mesh edges", {
     function(x) sum(x$weight),
     numeric(1)
   ))
-  expect_equal(as.vector(w),
+  expect_equal(
+    as.vector(w),
     rep((0.95 - 0.1) * sqrt(1 + sc^2), length(w)),
     tolerance = lowtol
   )
@@ -420,10 +426,7 @@ test_that("fm_int for linestring", {
     function(x) sum(x$weight),
     numeric(1)
   ))
-  expect_equal(as.vector(w),
-    rep(16.55092471, length(w)),
-    tolerance = lowtol
-  )
+  expect_equal(as.vector(w), rep(16.55092471, length(w)), tolerance = lowtol)
 
   # ips <- lapply(ips, function(x) x[x$weight > 1e-14, ])
   # (w <- vapply(
@@ -455,14 +458,12 @@ test_that("Block integration has correct result order", {
     weight = 1:10
   )
 
-  ips0 <- fm_int(fmexample$mesh,
+  ips0 <- fm_int(
+    fmexample$mesh,
     samplers = fmexample$boundary_sf[[1]],
     int.args = list(nsub2 = 1)
   )
-  ips <- fm_int(fmexample$mesh,
-    samplers = samplers,
-    int.args = list(nsub2 = 1)
-  )
+  ips <- fm_int(fmexample$mesh, samplers = samplers, int.args = list(nsub2 = 1))
 
   expect_s3_class(ips, "sf")
 
@@ -508,8 +509,6 @@ test_that("Block integration has correct result order", {
   expect_length(vals, nrow(samplers) * 2)
   expect_equal(vals, c((1:10), (1:10) * 100) * sum(ips0$weight))
 })
-
-
 
 
 test_that("mesh collection integration", {

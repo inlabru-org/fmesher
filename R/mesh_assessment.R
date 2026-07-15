@@ -25,8 +25,7 @@
 #' out <- fm_assess(mesh, spatial.range = 3, alpha = 2)
 #'
 #' @export
-fm_assess <- function(mesh, spatial.range, alpha = 2,
-                      dims = NULL) {
+fm_assess <- function(mesh, spatial.range, alpha = 2, dims = NULL) {
   mesh.edgelengths <- function(mesh, proj) {
     i <- c()
     val <- c()
@@ -35,15 +34,17 @@ fm_assess <- function(mesh, spatial.range, alpha = 2,
     for (k in 1:3) {
       ti1 <- tri_idx[k, 1]
       ti2 <- tri_idx[k, 2]
-      len <- Matrix::rowSums((mesh$loc[mesh$graph$tv[, ti2], ] -
-        mesh$loc[mesh$graph$tv[, ti1], ])^2)^0.5
+      len <- Matrix::rowSums(
+        (mesh$loc[mesh$graph$tv[, ti2], ] -
+          mesh$loc[mesh$graph$tv[, ti1], ])^2
+      )^0.5
       i <- c(i, mesh$graph$tv[, ti1], mesh$graph$tv[, ti2])
       val <- c(val, rep(as.vector(len), times = 2))
       num <- c(num, rep(1, 2 * length(as.vector(len))))
     }
     avg_len <-
       as.vector(Matrix::sparseMatrix(i = i, j = rep(1, length(i)), x = val)) /
-        as.vector(Matrix::sparseMatrix(i = i, j = rep(1, length(i)), x = num))
+      as.vector(Matrix::sparseMatrix(i = i, j = rep(1, length(i)), x = num))
 
     b <- fm_basis(proj, full = TRUE)
     proj_len <- as.vector(b$A %*% avg_len)
@@ -62,7 +63,8 @@ fm_assess <- function(mesh, spatial.range, alpha = 2,
     )
   }
   mesh.Q <- function(spde, spatial.range) {
-    fm_matern_precision(spde$mesh,
+    fm_matern_precision(
+      spde$mesh,
       alpha = spde$alpha,
       rho = spatial.range,
       sigma = 1
@@ -79,9 +81,11 @@ fm_assess <- function(mesh, spatial.range, alpha = 2,
   }
   mesh.sd.deviation.approx <- function(proj, S, sd0) {
     b <- fm_basis(proj, full = TRUE)
-    val <- b$A %*% (
-      as.vector(Matrix::t(b$A[b$ok, , drop = FALSE]) %*%
-        as.vector(sd0)[b$ok]) /
+    val <- b$A %*%
+      (as.vector(
+        Matrix::t(b$A[b$ok, , drop = FALSE]) %*%
+          as.vector(sd0)[b$ok]
+      ) /
         Matrix::colSums(b$A[b$ok, , drop = FALSE]))
     val[!b$ok] <- NA
     array(

@@ -85,8 +85,10 @@ fm_evaluate.fm_evaluator <-
 
     data <- fm_evaluate(fm_basis(projector, full = TRUE), field = field)
 
-    if (is.null(dim(field)) &&
-      !is.null(projector$lattice)) {
+    if (
+      is.null(dim(field)) &&
+        !is.null(projector$lattice)
+    ) {
       return(array(
         data,
         dim = projector$lattice$dims
@@ -149,17 +151,16 @@ fm_evaluator.default <- function(...) {
 #' @export
 #' @describeIn fm_evaluate The `...` arguments are passed on to
 #'   `fm_evaluator_lattice()` if no `loc` or `lattice` is provided.
-fm_evaluator.fm_mesh_3d <- function(mesh,
-                                    loc = NULL,
-                                    lattice = NULL,
-                                    dims = NULL,
-                                    ...) {
+fm_evaluator.fm_mesh_3d <- function(
+  mesh,
+  loc = NULL,
+  lattice = NULL,
+  dims = NULL,
+  ...
+) {
   if (missing(loc) || is.null(loc)) {
     if (missing(lattice) || is.null(lattice)) {
-      lattice <- fm_evaluator_lattice(mesh,
-        dims = dims,
-        ...
-      )
+      lattice <- fm_evaluator_lattice(mesh, dims = dims, ...)
     }
     proj <- fm_basis(mesh, lattice$loc, full = TRUE)
     projector <-
@@ -191,17 +192,16 @@ fm_evaluator.fm_mesh_3d <- function(mesh,
 #' @export
 #' @describeIn fm_evaluate The `...` arguments are passed on to
 #'   `fm_evaluator_lattice()` if no `loc` or `lattice` is provided.
-fm_evaluator.fm_mesh_2d <- function(mesh,
-                                    loc = NULL,
-                                    lattice = NULL,
-                                    crs = NULL,
-                                    ...) {
+fm_evaluator.fm_mesh_2d <- function(
+  mesh,
+  loc = NULL,
+  lattice = NULL,
+  crs = NULL,
+  ...
+) {
   if (missing(loc) || is.null(loc)) {
     if (missing(lattice) || is.null(lattice)) {
-      lattice <- fm_evaluator_lattice(mesh,
-        crs = crs,
-        ...
-      )
+      lattice <- fm_evaluator_lattice(mesh, crs = crs, ...)
     }
     dims <- lattice$dims
     x <- lattice$x
@@ -211,10 +211,7 @@ fm_evaluator.fm_mesh_2d <- function(mesh,
     if (is.null(mesh$crs) || is.null(lattice$crs)) {
       proj <- fm_basis_mesh_2d(mesh, lattice$loc)
     } else {
-      proj <- fm_basis_mesh_2d(mesh,
-        loc = lattice$loc,
-        crs = lattice$crs
-      )
+      proj <- fm_basis_mesh_2d(mesh, loc = lattice$loc, crs = lattice$crs)
     }
     projector <-
       structure(
@@ -250,11 +247,13 @@ fm_evaluator.fm_mesh_2d <- function(mesh,
 
 #' @export
 #' @rdname fm_evaluate
-fm_evaluator.fm_mesh_1d <- function(mesh,
-                                    loc = NULL,
-                                    xlim = mesh$interval,
-                                    dims = 100,
-                                    ...) {
+fm_evaluator.fm_mesh_1d <- function(
+  mesh,
+  loc = NULL,
+  xlim = mesh$interval,
+  dims = 100,
+  ...
+) {
   if (missing(loc) || is.null(loc)) {
     loc <- seq(xlim[1], xlim[2], length.out = dims[1])
   }
@@ -278,17 +277,14 @@ fm_evaluator.fm_mesh_1d <- function(mesh,
 #' @describeIn fm_evaluate
 #' Create a lattice object by default covering the input mesh.
 #' @export
-fm_evaluator_lattice <- function(mesh,
-                                 ...) {
+fm_evaluator_lattice <- function(mesh, ...) {
   UseMethod("fm_evaluator_lattice")
 }
 
 #' @describeIn fm_evaluate
 #' Creates an [fm_lattice_2d()] object, by default covering the input mesh.
 #' @export
-fm_evaluator_lattice.default <- function(mesh,
-                                         dims = 100,
-                                         ...) {
+fm_evaluator_lattice.default <- function(mesh, dims = 100, ...) {
   bbox <- fm_bbox(mesh)
   if (length(dims) == 1L) {
     dims <- rep(dims, length(bbox))
@@ -302,9 +298,7 @@ fm_evaluator_lattice.default <- function(mesh,
 #' @describeIn fm_evaluate
 #' Creates an [fm_lattice_Nd()] object, by default covering the input mesh.
 #' @export
-fm_evaluator_lattice.fm_bbox <- function(mesh,
-                                         dims = 100,
-                                         ...) {
+fm_evaluator_lattice.fm_bbox <- function(mesh, dims = 100, ...) {
   bbox <- mesh
   if (length(dims) == 1L) {
     dims <- rep(dims, length(bbox))
@@ -318,27 +312,37 @@ fm_evaluator_lattice.fm_bbox <- function(mesh,
 #' @describeIn fm_evaluate
 #' Creates an [fm_lattice_2d()] object, by default covering the input mesh.
 #' @export
-fm_evaluator_lattice.fm_mesh_2d <- function(mesh,
-                                            xlim = NULL,
-                                            ylim = NULL,
-                                            dims = c(100, 100),
-                                            projection = NULL,
-                                            crs = NULL,
-                                            ...) {
-  if (fm_manifold(mesh, "R2") &&
-    (is.null(mesh$crs) || is.null(crs))) {
+fm_evaluator_lattice.fm_mesh_2d <- function(
+  mesh,
+  xlim = NULL,
+  ylim = NULL,
+  dims = c(100, 100),
+  projection = NULL,
+  crs = NULL,
+  ...
+) {
+  if (
+    fm_manifold(mesh, "R2") &&
+      (is.null(mesh$crs) || is.null(crs))
+  ) {
     units <- "default"
     lim <- list(
       xlim = if (is.null(xlim)) range(mesh$loc[, 1]) else xlim,
       ylim = if (is.null(ylim)) range(mesh$loc[, 2]) else ylim
     )
-  } else if (fm_manifold(mesh, "S2") &&
-    (is.null(mesh$crs) || is.null(crs))) {
+  } else if (
+    fm_manifold(mesh, "S2") &&
+      (is.null(mesh$crs) || is.null(crs))
+  ) {
     projection <-
-      match.arg(projection, c(
-        "longlat", "longsinlat",
-        "mollweide"
-      ))
+      match.arg(
+        projection,
+        c(
+          "longlat",
+          "longsinlat",
+          "mollweide"
+        )
+      )
     units <- projection
     lim <- fm_mesh_2d_map_lim(loc = mesh$loc, projection = projection)
   } else {
@@ -456,7 +460,8 @@ fm_contains.sfc <- function(x, y, ..., type = c("centroid", "vertex")) {
     ## Extract triangle centroids
     points <- (y$loc[y$graph$tv[, 1], , drop = FALSE] +
       y$loc[y$graph$tv[, 2], , drop = FALSE] +
-      y$loc[y$graph$tv[, 3], , drop = FALSE]) / 3
+      y$loc[y$graph$tv[, 3], , drop = FALSE]) /
+      3
   } else if (identical(type, "vertex")) {
     ## Extract vertices
     points <- y$loc
@@ -473,12 +478,15 @@ fm_contains.sfc <- function(x, y, ..., type = c("centroid", "vertex")) {
   }
   crs_x <- fm_crs(x)
   ## Create sfc_POINT object and transform the coordinates.
-  points <- sf::st_as_sf(as.data.frame(points),
+  points <- sf::st_as_sf(
+    as.data.frame(points),
     coords = seq_len(ncol(points)),
     crs = crs
   )
-  if (!fm_crs_is_null(crs) &&
-    !fm_crs_is_null(crs_x)) {
+  if (
+    !fm_crs_is_null(crs) &&
+      !fm_crs_is_null(crs_x)
+  ) {
     ## Convert to the target object CRS
     points <- fm_transform(points, crs = crs_x)
   }

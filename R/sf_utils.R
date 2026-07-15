@@ -12,7 +12,8 @@
 # @keywords internal
 
 st_signed_area <- function(sfg) {
-  warning("st_signed_area is not fully implemented,",
+  warning(
+    "st_signed_area is not fully implemented,",
     " and should be avoided until it is.",
     immediate. = TRUE
   )
@@ -67,11 +68,13 @@ st_check_polygon <- function(sfg) {
       FUN = function(x) sf::st_geometry(sf::st_polygon(list(x)))
     )
     holes <- do.call(
-      c, holes
+      c,
+      holes
     )
 
     check_within <- sf::st_within(
-      holes, main,
+      holes,
+      main,
       sparse = FALSE
     )
     if (!all(check_within)) {
@@ -84,7 +87,8 @@ st_check_polygon <- function(sfg) {
         seq_along(holes),
         function(k) {
           !any(sf::st_intersects(
-            holes[-k], holes[k],
+            holes[-k],
+            holes[k],
             sparse = FALSE
           ))
         },

@@ -2,7 +2,6 @@
 
 # fm_bbox ####
 
-
 #' @title Bounding box class
 #'
 #' @description
@@ -21,9 +20,15 @@ fm_bbox <- function(...) {
 #' `list(xlim, ylim, ...)`.
 #' @export
 fm_bbox.list <- function(x, ...) {
-  if (!all(vapply(x, function(xx) {
-    length(xx) == 2
-  }, TRUE))) {
+  if (
+    !all(vapply(
+      x,
+      function(xx) {
+        length(xx) == 2
+      },
+      TRUE
+    ))
+  ) {
     stop("List not coercible to fm_bbox; some list element has length != 2.")
   }
   structure(

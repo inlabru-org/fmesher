@@ -2,7 +2,6 @@
 ##
 ##   Copyright (C) 2015-2025, Finn Lindgren
 
-
 fm_internal_clip <- function(bounds, coords, eps = 0.05) {
   stopifnot(requireNamespace("sp"))
   ## Clip 2D coordinate matrix of polylines and generate a list of Line objects
@@ -13,9 +12,9 @@ fm_internal_clip <- function(bounds, coords, eps = 0.05) {
   toolong <-
     which(c(
       TRUE,
-      (diff(coords[, 1]) / diff(bounds$xlim))^2
-        + (diff(coords[, 2]) / diff(bounds$ylim))^2
-      > eps^2,
+      (diff(coords[, 1]) / diff(bounds$xlim))^2 +
+        (diff(coords[, 2]) / diff(bounds$ylim))^2 >
+        eps^2,
       TRUE
     ))
   start <- toolong[-length(toolong)]
@@ -90,19 +89,27 @@ fm_internal_clip <- function(bounds, coords, eps = 0.05) {
 #' }
 #' }
 #' @export
-fm_crs_plot <- function(x, xlim = NULL, ylim = NULL,
-                        outline = TRUE,
-                        graticule = c(15, 15, 45),
-                        tissot = c(30, 30, 30),
-                        asp = 1,
-                        add = FALSE,
-                        eps = 0.05,
-                        ...) {
+fm_crs_plot <- function(
+  x,
+  xlim = NULL,
+  ylim = NULL,
+  outline = TRUE,
+  graticule = c(15, 15, 45),
+  tissot = c(30, 30, 30),
+  asp = 1,
+  add = FALSE,
+  eps = 0.05,
+  ...
+) {
   stopifnot(requireNamespace("sp"))
 
   bounds <- fm_crs_bounds(x)
-  if (is.null(xlim)) xlim <- bounds$xlim
-  if (is.null(ylim)) ylim <- bounds$ylim
+  if (is.null(xlim)) {
+    xlim <- bounds$xlim
+  }
+  if (is.null(ylim)) {
+    ylim <- bounds$ylim
+  }
   if (!add) {
     args <- list(x = NA, type = "n", xlim = xlim, ylim = ylim, asp = asp, ...)
     args <- args[intersect(names(args), names(formals(graphics::plot.default)))]
@@ -111,10 +118,13 @@ fm_crs_plot <- function(x, xlim = NULL, ylim = NULL,
   ## Outline
   if (outline) {
     args <- list(x = bounds$polygon, ...)
-    args <- args[intersect(names(args), union(
-      names(formals(graphics::lines.default)),
-      names(formals(graphics::plot.xy))
-    ))]
+    args <- args[intersect(
+      names(args),
+      union(
+        names(formals(graphics::lines.default)),
+        names(formals(graphics::plot.xy))
+      )
+    )]
     do.call(lines, args)
   }
   ## Graticule
@@ -149,8 +159,14 @@ fm_crs_plot <- function(x, xlim = NULL, ylim = NULL,
 #'   graticules/indicatrices, see the `graticule` and `tissot` arguments.
 #' @param do.plot logical; If TRUE, do plotting
 #' @export
-fm_crs_graticule <- function(x, by = c(15, 15, 45), add = FALSE, do.plot = TRUE,
-                             eps = 0.05, ...) {
+fm_crs_graticule <- function(
+  x,
+  by = c(15, 15, 45),
+  add = FALSE,
+  do.plot = TRUE,
+  eps = 0.05,
+  ...
+) {
   stopifnot(requireNamespace("sp"))
 
   ## Graticule
@@ -173,16 +189,19 @@ fm_crs_graticule <- function(x, by = c(15, 15, 45), add = FALSE, do.plot = TRUE,
       lat <- seq(-90 + 1e-6, 90 - 1e-6, length.out = 91)
     }
     meridians <- as.matrix(expand.grid(lat, lon)[, 2:1])
-    proj.mer.coords <- fm_transform(meridians,
+    proj.mer.coords <- fm_transform(
+      meridians,
       crs0 = fmesher::fm_CRS("longlat_norm"),
       crs = x
     )
     proj.mer.coords1 <- matrix(
-      proj.mer.coords[, 1], length(lat),
+      proj.mer.coords[, 1],
+      length(lat),
       length(lon)
     )
     proj.mer.coords2 <- matrix(
-      proj.mer.coords[, 2], length(lat),
+      proj.mer.coords[, 2],
+      length(lat),
       length(lon)
     )
 
@@ -191,11 +210,13 @@ fm_crs_graticule <- function(x, by = c(15, 15, 45), add = FALSE, do.plot = TRUE,
         lapply(
           seq_along(lon),
           function(k) {
-            fm_internal_clip(bounds, cbind(
-              proj.mer.coords1[, k, drop = FALSE],
-              proj.mer.coords2[, k, drop = FALSE]
-            ),
-            eps = eps
+            fm_internal_clip(
+              bounds,
+              cbind(
+                proj.mer.coords1[, k, drop = FALSE],
+                proj.mer.coords2[, k, drop = FALSE]
+              ),
+              eps = eps
             )
           }
         ),
@@ -205,20 +226,25 @@ fm_crs_graticule <- function(x, by = c(15, 15, 45), add = FALSE, do.plot = TRUE,
     if (special.poles) {
       if (by[3] > 0) {
         lon <- ((1 - n[3]):n[3]) * by[3]
-        lat <- seq(-90 + 1e-6, -n[2] * by[2],
+        lat <- seq(
+          -90 + 1e-6,
+          -n[2] * by[2],
           length.out = ceiling((90 - n[2] * by[2]) / 2) + 1
         )
         meridians <- as.matrix(expand.grid(lat, lon)[, 2:1])
-        proj.mer.coords <- fm_transform(meridians,
+        proj.mer.coords <- fm_transform(
+          meridians,
           crs0 = fmesher::fm_CRS("longlat_norm"),
           crs = x
         )
         proj.mer.coords1 <- matrix(
-          proj.mer.coords[, 1], length(lat),
+          proj.mer.coords[, 1],
+          length(lat),
           length(lon)
         )
         proj.mer.coords2 <- matrix(
-          proj.mer.coords[, 2], length(lat),
+          proj.mer.coords[, 2],
+          length(lat),
           length(lon)
         )
         mer.coords <-
@@ -228,11 +254,13 @@ fm_crs_graticule <- function(x, by = c(15, 15, 45), add = FALSE, do.plot = TRUE,
               lapply(
                 seq_along(lon),
                 function(k) {
-                  fm_internal_clip(bounds, cbind(
-                    proj.mer.coords1[, k, drop = FALSE],
-                    proj.mer.coords2[, k, drop = FALSE]
-                  ),
-                  eps = eps
+                  fm_internal_clip(
+                    bounds,
+                    cbind(
+                      proj.mer.coords1[, k, drop = FALSE],
+                      proj.mer.coords2[, k, drop = FALSE]
+                    ),
+                    eps = eps
                   )
                 }
               ),
@@ -240,21 +268,25 @@ fm_crs_graticule <- function(x, by = c(15, 15, 45), add = FALSE, do.plot = TRUE,
             )
           )
 
-        lat <- seq(n[2] * by[2],
+        lat <- seq(
+          n[2] * by[2],
           90 - 1e-6,
           length.out = ceiling((90 - n[2] * by[2]) / 2) + 1
         )
         meridians <- as.matrix(expand.grid(lat, lon)[, 2:1])
-        proj.mer.coords <- fm_transform(meridians,
+        proj.mer.coords <- fm_transform(
+          meridians,
           crs0 = fmesher::fm_CRS("longlat_norm"),
           crs = x
         )
         proj.mer.coords1 <- matrix(
-          proj.mer.coords[, 1], length(lat),
+          proj.mer.coords[, 1],
+          length(lat),
           length(lon)
         )
         proj.mer.coords2 <- matrix(
-          proj.mer.coords[, 2], length(lat),
+          proj.mer.coords[, 2],
+          length(lat),
           length(lon)
         )
         mer.coords <-
@@ -264,11 +296,13 @@ fm_crs_graticule <- function(x, by = c(15, 15, 45), add = FALSE, do.plot = TRUE,
               lapply(
                 seq_along(lon),
                 function(k) {
-                  fm_internal_clip(bounds, cbind(
-                    proj.mer.coords1[, k, drop = FALSE],
-                    proj.mer.coords2[, k, drop = FALSE]
-                  ),
-                  eps = eps
+                  fm_internal_clip(
+                    bounds,
+                    cbind(
+                      proj.mer.coords1[, k, drop = FALSE],
+                      proj.mer.coords2[, k, drop = FALSE]
+                    ),
+                    eps = eps
                   )
                 }
               ),
@@ -298,16 +332,19 @@ fm_crs_graticule <- function(x, by = c(15, 15, 45), add = FALSE, do.plot = TRUE,
     lon <- seq(-180 + 1e-6, 180 - 1e-6, length.out = 181)
     lat <- ((-n[2]):n[2]) * by[2]
     parallels <- as.matrix(expand.grid(lon, lat))
-    proj.par.coords <- fm_transform(parallels,
+    proj.par.coords <- fm_transform(
+      parallels,
       crs0 = fmesher::fm_CRS("longlat_norm"),
       crs = x
     )
     proj.par.coords1 <- matrix(
-      proj.par.coords[, 1], length(lon),
+      proj.par.coords[, 1],
+      length(lon),
       length(lat)
     )
     proj.par.coords2 <- matrix(
-      proj.par.coords[, 2], length(lon),
+      proj.par.coords[, 2],
+      length(lon),
       length(lat)
     )
     proj.par <-
@@ -317,10 +354,14 @@ fm_crs_graticule <- function(x, by = c(15, 15, 45), add = FALSE, do.plot = TRUE,
             lapply(
               seq_along(lat),
               function(k) {
-                fm_internal_clip(bounds, cbind(
-                  proj.par.coords1[, k],
-                  proj.par.coords2[, k]
-                ), eps = eps)
+                fm_internal_clip(
+                  bounds,
+                  cbind(
+                    proj.par.coords1[, k],
+                    proj.par.coords2[, k]
+                  ),
+                  eps = eps
+                )
               }
             ),
             recursive = FALSE
@@ -348,8 +389,15 @@ fm_crs_graticule <- function(x, by = c(15, 15, 45), add = FALSE, do.plot = TRUE,
 #' Returns a list with one element, `tissot`, which is a `SpatialLines` object.
 #' @param diff.eps Pre-scaling
 #' @export
-fm_crs_tissot <- function(x, by = c(30, 30, 30), add = FALSE, do.plot = TRUE,
-                          eps = 0.05, diff.eps = 1e-2, ...) {
+fm_crs_tissot <- function(
+  x,
+  by = c(30, 30, 30),
+  add = FALSE,
+  do.plot = TRUE,
+  eps = 0.05,
+  diff.eps = 1e-2,
+  ...
+) {
   stopifnot(requireNamespace("sp"))
 
   if (is.null(by)) {
@@ -375,7 +423,8 @@ fm_crs_tissot <- function(x, by = c(30, 30, 30), add = FALSE, do.plot = TRUE,
   loc1.lat <- fm_transform(loc0.lat, crs0 = crs.longlat, crs = x)
   ok <- (rowSums(is.na(loc1)) +
     rowSums(is.na(loc1.lon)) +
-    rowSums(is.na(loc1.lat)) == 0)
+    rowSums(is.na(loc1.lat)) ==
+    0)
   loc1 <- loc1[ok, , drop = FALSE]
   loc1.lon <- loc1.lon[ok, , drop = FALSE]
   loc1.lat <- loc1.lat[ok, , drop = FALSE]

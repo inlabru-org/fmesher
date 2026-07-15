@@ -71,12 +71,14 @@ fm_basis.default <- function(x, ..., full = FALSE) {
 #'   additional derivative weight matrices, `d1A` and `d2A`, `du/dx(loc_i)=sum_j
 #'   dx_ij w_i`.
 #' @export
-fm_basis.fm_mesh_1d <- function(x,
-                                loc,
-                                weights = NULL,
-                                derivatives = NULL,
-                                ...,
-                                full = FALSE) {
+fm_basis.fm_mesh_1d <- function(
+  x,
+  loc,
+  weights = NULL,
+  derivatives = NULL,
+  ...,
+  full = FALSE
+) {
   result <- fm_basis_mesh_1d(
     x,
     loc = loc,
@@ -94,8 +96,14 @@ fm_basis.fm_mesh_1d <- function(x,
 #'   matrices are included in the `full=TRUE` output: Derivative weight matrices
 #' `dx`, `dy`, `dz`; `du/dx(loc_i)=sum_j dx_ij w_i`, etc.
 #' @export
-fm_basis.fm_mesh_2d <- function(x, loc, weights = NULL, derivatives = NULL, ...,
-                                full = FALSE) {
+fm_basis.fm_mesh_2d <- function(
+  x,
+  loc,
+  weights = NULL,
+  derivatives = NULL,
+  ...,
+  full = FALSE
+) {
   result <- fm_basis_mesh_2d(
     x,
     loc = loc,
@@ -111,8 +119,7 @@ fm_basis.fm_mesh_2d <- function(x, loc, weights = NULL, derivatives = NULL, ...,
 
 #' @describeIn fm_basis `fm_mesh_3d` basis functions.
 #' @export
-fm_basis.fm_mesh_3d <- function(x, loc, weights = NULL, ...,
-                                full = FALSE) {
+fm_basis.fm_mesh_3d <- function(x, loc, weights = NULL, ..., full = FALSE) {
   bary <- fm_bary(x, loc, ...)
   n_loc <- NROW(bary)
   ok <- !is.na(bary$index)
@@ -134,8 +141,7 @@ fm_basis.fm_mesh_3d <- function(x, loc, weights = NULL, ...,
 
 #' @describeIn fm_basis `fm_lattice_2d` bilinear basis functions.
 #' @export
-fm_basis.fm_lattice_2d <- function(x, loc, weights = NULL, ...,
-                                   full = FALSE) {
+fm_basis.fm_lattice_2d <- function(x, loc, weights = NULL, ..., full = FALSE) {
   bary <- fm_bary(x, loc, ...)
   n_loc <- NROW(bary)
   ok <- !is.na(bary$index)
@@ -157,8 +163,7 @@ fm_basis.fm_lattice_2d <- function(x, loc, weights = NULL, ...,
 
 #' @describeIn fm_basis `fm_lattice_Nd` multilinear basis functions.
 #' @export
-fm_basis.fm_lattice_Nd <- function(x, loc, weights = NULL, ...,
-                                   full = FALSE) {
+fm_basis.fm_lattice_Nd <- function(x, loc, weights = NULL, ..., full = FALSE) {
   bary <- fm_bary(x, loc, ...)
   n_loc <- NROW(bary)
   ok <- !is.na(bary$index)
@@ -171,8 +176,10 @@ fm_basis.fm_lattice_Nd <- function(x, loc, weights = NULL, ...,
   A <- sparseMatrix_nonzero(
     i = rep(which(ok), ncol(bary$where)),
     j = as.vector(simplex),
-    x = as.numeric(as.vector(bary$where[ok, ]) *
-      weights[rep(which(ok), ncol(bary$where))]),
+    x = as.numeric(
+      as.vector(bary$where[ok, ]) *
+        weights[rep(which(ok), ncol(bary$where))]
+    ),
     dims = c(n_loc, fm_dof(x))
   )
 
@@ -182,16 +189,13 @@ fm_basis.fm_lattice_Nd <- function(x, loc, weights = NULL, ...,
 #' @export
 #' @describeIn fm_basis Evaluates a basis matrix for a `fm_tensor` function
 #'   space.
-fm_basis.fm_tensor <- function(x,
-                               loc,
-                               weights = NULL,
-                               ...,
-                               full = FALSE) {
+fm_basis.fm_tensor <- function(x, loc, weights = NULL, ..., full = FALSE) {
   if (length(loc) != length(x[["fun_spaces"]])) {
     stop(
       paste0(
         "Length of location list (",
-        length(loc), ") doesn't match the number of function spaces (",
+        length(loc),
+        ") doesn't match the number of function spaces (",
         length(x[["fun_spaces"]]),
         ")"
       )
@@ -239,19 +243,18 @@ fm_basis.fm_tensor <- function(x,
 #'   `loc` (the locations) and `index` (the indices into the function space
 #'   collection).
 #' @importFrom rlang .env
-fm_basis.fm_collect <- function(x,
-                                loc,
-                                weights = NULL,
-                                ...,
-                                full = FALSE) {
+fm_basis.fm_collect <- function(x, loc, weights = NULL, ..., full = FALSE) {
   loc_names <- names(loc)
-  if (!is.null(loc_names) &&
-    (!("loc" %in% loc_names) || !("index" %in% loc_names))) {
+  if (
+    !is.null(loc_names) &&
+      (!("loc" %in% loc_names) || !("index" %in% loc_names))
+  ) {
     stop(
       paste0(
         "Location data for fm_collect must have elements `loc` and ",
         "`index`.\n",
-        "Found: ", paste0(names(loc), collapse = ", ")
+        "Found: ",
+        paste0(names(loc), collapse = ", ")
       )
     )
   }
@@ -377,8 +380,10 @@ fm_basis.list <- function(x, weights = NULL, ..., full = FALSE) {
   }
   if (is.null(x[["ok"]])) {
     x[["ok"]] <- rep(TRUE, NROW(x[["A"]]))
-  } else if (!is.logical(x[["ok"]]) ||
-    (length(x[["ok"]]) != NROW(x[["A"]]))) {
+  } else if (
+    !is.logical(x[["ok"]]) ||
+      (length(x[["ok"]]) != NROW(x[["A"]]))
+  ) {
     stop(
       "Invalid 'ok' element in 'x'; should be a logical vector of length ",
       NROW(x[["A"]])
@@ -407,18 +412,21 @@ fm_basis.fm_evaluator <- function(x, ..., full = FALSE) {
 }
 
 
-internal_spline_mesh_1d <- function(interval,
-                                    m,
-                                    degree,
-                                    boundary,
-                                    free.clamped) {
+internal_spline_mesh_1d <- function(
+  interval,
+  m,
+  degree,
+  boundary,
+  free.clamped
+) {
   boundary <-
     match.arg(
       boundary,
       c("neumann", "dirichlet", "free", "cyclic")
     )
   if (degree <= 1) {
-    n <- (switch(boundary,
+    n <- (switch(
+      boundary,
       neumann = m,
       dirichlet = m + 2,
       free = m,
@@ -431,7 +439,8 @@ internal_spline_mesh_1d <- function(interval,
     }
   } else {
     stopifnot(degree == 2)
-    n <- (switch(boundary,
+    n <- (switch(
+      boundary,
       neumann = m + 1,
       dirichlet = m + 1,
       free = m - 1,
@@ -453,7 +462,8 @@ internal_spline_mesh_1d <- function(interval,
       }
     }
   }
-  fm_mesh_1d(seq(interval[1], interval[2], length.out = n),
+  fm_mesh_1d(
+    seq(interval[1], interval[2], length.out = n),
     degree = degree,
     boundary = boundary,
     free.clamped = free.clamped
@@ -492,7 +502,6 @@ internal_spline_mesh_1d <- function(interval,
 #   }
 #   basis
 # }
-
 
 #' Basis functions for mesh manifolds
 #'
@@ -540,15 +549,17 @@ internal_spline_mesh_1d <- function(interval,
 #' }
 #'
 #' @export
-fm_raw_basis <- function(mesh,
-                         type = "b.spline",
-                         n = 3,
-                         degree = 2,
-                         knot.placement = "uniform.area",
-                         rot.inv = TRUE,
-                         boundary = "free",
-                         free.clamped = TRUE,
-                         ...) {
+fm_raw_basis <- function(
+  mesh,
+  type = "b.spline",
+  n = 3,
+  degree = 2,
+  knot.placement = "uniform.area",
+  rot.inv = TRUE,
+  boundary = "free",
+  free.clamped = TRUE,
+  ...
+) {
   type <- match.arg(type, c("b.spline", "sph.harm"))
   knot.placement <- (match.arg(
     knot.placement,
@@ -562,8 +573,11 @@ fm_raw_basis <- function(mesh,
     if (fm_manifold(mesh, c("R1", "S1"))) {
       mesh1 <-
         internal_spline_mesh_1d(
-          mesh$interval, n, degree,
-          boundary, free.clamped
+          mesh$interval,
+          n,
+          degree,
+          boundary,
+          free.clamped
         )
       basis <- fm_basis(mesh1, mesh$loc)
     } else if (identical(mesh$manifold, "R2")) {
@@ -582,14 +596,18 @@ fm_raw_basis <- function(mesh,
       mesh1x <-
         internal_spline_mesh_1d(
           range(mesh$loc[, 1]),
-          n[1], degree[1],
-          boundary[1], free.clamped[1]
+          n[1],
+          degree[1],
+          boundary[1],
+          free.clamped[1]
         )
       mesh1y <-
         internal_spline_mesh_1d(
           range(mesh$loc[, 2]),
-          n[2], degree[2],
-          boundary[2], free.clamped[2]
+          n[2],
+          degree[2],
+          boundary[2],
+          free.clamped[2]
         )
       basis <-
         fm_row_kron(
@@ -653,12 +671,14 @@ sparseMatrix_nonzero <- function(i, j, x, dims) {
 #' @examples
 #' str(fm_basis_mesh_2d(fmexample$mesh, loc = fmexample$loc))
 #'
-fm_basis_mesh_2d <- function(mesh,
-                             loc = NULL,
-                             weights = NULL,
-                             derivatives = NULL,
-                             crs = NULL,
-                             ...) {
+fm_basis_mesh_2d <- function(
+  mesh,
+  loc = NULL,
+  weights = NULL,
+  derivatives = NULL,
+  crs = NULL,
+  ...
+) {
   if (!inherits(loc, "fm_bary")) {
     loc <- fm_bary(mesh, loc = loc, crs = crs, ...)
   }
@@ -741,11 +761,13 @@ fm_basis_mesh_2d <- function(mesh,
 
 #' @export
 #' @rdname fm_basis_helpers
-fm_basis_mesh_1d <- function(mesh,
-                             loc,
-                             weights = NULL,
-                             derivatives = NULL,
-                             ...) {
+fm_basis_mesh_1d <- function(
+  mesh,
+  loc,
+  weights = NULL,
+  derivatives = NULL,
+  ...
+) {
   if (is.null(weights)) {
     weights <- rep(1.0, NROW(loc))
   } else if (length(weights) == 1L) {
@@ -905,7 +927,8 @@ fm_basis_mesh_1d <- function(mesh,
         (knots[c(seq_len(length(knots) - 1L) + 1L, 1)] - knots) %%
         diff(mesh$interval)
       d2 <- (knots[c(seq_len(length(knots) - 2L) + 2L, seq_len(2))] -
-        knots) %% diff(mesh$interval)
+        knots) %%
+        diff(mesh$interval)
       d2[d2 == 0] <- diff(mesh$interval)
       d <- d[c(length(d), seq_len(length(d) - 1L))]
       d2 <- d2[c(length(d2), seq_len(length(d2) - 1L))]
@@ -919,7 +942,9 @@ fm_basis_mesh_1d <- function(mesh,
       simplex <- fm_bary_simplex(mesh, info)
       i.l <- which(bary_ok)
       j.l <- simplex[, 1] + 2L
-      x.l <- (info$where[, 2] * d[simplex[, 2]] / d2[simplex[, 2]] *
+      x.l <- (info$where[, 2] *
+        d[simplex[, 2]] /
+        d2[simplex[, 2]] *
         info$where[, 2])
       if (derivatives) {
         x.d1.l <- (2 / d2[simplex[, 2]] * info$where[, 2])
@@ -928,7 +953,9 @@ fm_basis_mesh_1d <- function(mesh,
       ## Right intervals for each basis function:
       i.r <- seq_along(simplex[, 1])
       j.r <- simplex[, 1]
-      x.r <- (info$where[, 1] * d[simplex[, 2]] / d2[simplex[, 1]] *
+      x.r <- (info$where[, 1] *
+        d[simplex[, 2]] /
+        d2[simplex[, 1]] *
         info$where[, 1])
       if (derivatives) {
         x.d1.r <- -(2 / d2[simplex[, 2]] * info$where[, 1])
@@ -937,10 +964,15 @@ fm_basis_mesh_1d <- function(mesh,
       ## Middle intervals for each basis function:
       i.m <- seq_along(simplex[, 1])
       j.m <- simplex[, 1] + 1L
-      x.m <- (1 - (info$where[, 1] * d[simplex[, 2]] / d2[simplex[, 1]] *
-        info$where[, 1] +
-        info$where[, 2] * d[simplex[, 2]] / d2[simplex[, 2]] *
-          info$where[, 2]))
+      x.m <- (1 -
+        (info$where[, 1] *
+          d[simplex[, 2]] /
+          d2[simplex[, 1]] *
+          info$where[, 1] +
+          info$where[, 2] *
+            d[simplex[, 2]] /
+            d2[simplex[, 2]] *
+            info$where[, 2]))
       if (derivatives) {
         x.d1.m <- (2 / d2[simplex[, 1]] * info$where[, 1]) -
           (2 / d2[simplex[, 2]] * info$where[, 2])
@@ -973,9 +1005,12 @@ fm_basis_mesh_1d <- function(mesh,
       ## Middle intervals for each basis function:
       i.m <- which(bary_ok)[ok]
       j.m <- index[, 1]
-      x.m <- (1 - (bary[, 1] * d[index[, 2]] / d2[index[, 1]] * bary[, 1] +
-        bary[, 2] * d[index[, 2]] / d2[index[, 2]] * bary[, 2]
-      ))
+      x.m <- (1 -
+        (bary[, 1] *
+          d[index[, 2]] /
+          d2[index[, 1]] *
+          bary[, 1] +
+          bary[, 2] * d[index[, 2]] / d2[index[, 2]] * bary[, 2]))
       if (derivatives) {
         x.d1.m <- (2 / d2[index[, 1]] * bary[, 1]) -
           (2 / d2[index[, 2]] * bary[, 2])
@@ -1064,8 +1099,10 @@ fm_basis_mesh_1d <- function(mesh,
       } else if (mesh$boundary[1] == "neumann") {
         ok <- j_ > 1L
         j_[ok] <- j_[ok] - 1L
-      } else if ((mesh$boundary[1] == "free") &&
-        (mesh$free.clamped[1])) {
+      } else if (
+        (mesh$boundary[1] == "free") &&
+          (mesh$free.clamped[1])
+      ) {
         # new1 <- 2 * basis1
         # new2 <- basis2 - basis1
         ok1 <- j_ == 1L
@@ -1098,8 +1135,10 @@ fm_basis_mesh_1d <- function(mesh,
       } else if (mesh$boundary[2] == "neumann") {
         ok <- j_ > mesh$m
         j_[ok] <- mesh$m
-      } else if ((mesh$boundary[2] == "free") &&
-        (mesh$free.clamped[2])) {
+      } else if (
+        (mesh$boundary[2] == "free") &&
+          (mesh$free.clamped[2])
+      ) {
         # new_m <- m + {m-1};     m = 1, m - 1 = 2
         # new_{m-1} <- {m-1} - m; m = 1, m - 1 = 2
         # new1 <- 2 * basis1
@@ -1141,7 +1180,9 @@ fm_basis_mesh_1d <- function(mesh,
   if (derivatives) {
     if (mesh$degree <= 1) {
       info_$dA <- sparseMatrix_nonzero(
-        i = i_d, j = j_d, x = weights[i_d] * x_d,
+        i = i_d,
+        j = j_d,
+        x = weights[i_d] * x_d,
         dims = c(NROW(loc), mesh$m)
       )
     } else {
@@ -1362,11 +1403,13 @@ internal_bspline2 <- function(x, knots, degree = 1, deriv = 0) {
 #'   values = log(11:15),
 #'   log = FALSE
 #' )
-fm_block <- function(block = NULL,
-                     weights = NULL,
-                     log_weights = NULL,
-                     rescale = FALSE,
-                     n_block = NULL) {
+fm_block <- function(
+  block = NULL,
+  weights = NULL,
+  log_weights = NULL,
+  rescale = FALSE,
+  n_block = NULL
+) {
   info <-
     fm_block_prep(
       block = block,
@@ -1405,12 +1448,14 @@ fm_block <- function(block = NULL,
 #' @describeIn fm_block Evaluate aggregation. More efficient alternative to to
 #' `as.vector(fm_block(...) %*% values)`.
 #' @export
-fm_block_eval <- function(block = NULL,
-                          weights = NULL,
-                          log_weights = NULL,
-                          rescale = FALSE,
-                          n_block = NULL,
-                          values = NULL) {
+fm_block_eval <- function(
+  block = NULL,
+  weights = NULL,
+  log_weights = NULL,
+  rescale = FALSE,
+  n_block = NULL,
+  values = NULL
+) {
   info <-
     fm_block_prep(
       block = block,
@@ -1450,13 +1495,15 @@ fm_block_eval <- function(block = NULL,
 #' More efficient and numerically stable alternative to to
 #' `log(as.vector(fm_block(...) %*% exp(values)))`.
 #' @export
-fm_block_logsumexp_eval <- function(block = NULL,
-                                    weights = NULL,
-                                    log_weights = NULL,
-                                    rescale = FALSE,
-                                    n_block = NULL,
-                                    values = NULL,
-                                    log = TRUE) {
+fm_block_logsumexp_eval <- function(
+  block = NULL,
+  weights = NULL,
+  log_weights = NULL,
+  rescale = FALSE,
+  n_block = NULL,
+  values = NULL,
+  log = TRUE
+) {
   info <-
     fm_block_prep(
       block = block,
@@ -1506,11 +1553,13 @@ fm_block_logsumexp_eval <- function(block = NULL,
 #' @describeIn fm_block Computes (optionally) blockwise renormalised weights
 #' @export
 fm_block_weights <-
-  function(block = NULL,
-           weights = NULL,
-           log_weights = NULL,
-           rescale = FALSE,
-           n_block = NULL) {
+  function(
+    block = NULL,
+    weights = NULL,
+    log_weights = NULL,
+    rescale = FALSE,
+    n_block = NULL
+  ) {
     info <-
       fm_block_prep(
         block = block,
@@ -1553,11 +1602,13 @@ fm_block_weights <-
 
 #' @describeIn fm_block Computes (optionally) blockwise renormalised log-weights
 #' @export
-fm_block_log_weights <- function(block = NULL,
-                                 weights = NULL,
-                                 log_weights = NULL,
-                                 rescale = FALSE,
-                                 n_block = NULL) {
+fm_block_log_weights <- function(
+  block = NULL,
+  weights = NULL,
+  log_weights = NULL,
+  rescale = FALSE,
+  n_block = NULL
+) {
   info <-
     fm_block_prep(
       block = block,
@@ -1578,7 +1629,8 @@ fm_block_log_weights <- function(block = NULL,
   }
   if (rescale) {
     shift <- fm_block_log_shift(
-      block = info$block, log_weights = info$log_weights,
+      block = info$block,
+      log_weights = info$log_weights,
       n_block = info$n_block
     )
     log_rescale <- as.vector(
@@ -1624,9 +1676,11 @@ fm_block_log_weights <- function(block = NULL,
 #' ) + shift
 #' ```
 #' @export
-fm_block_log_shift <- function(block = NULL,
-                               log_weights = NULL,
-                               n_block = NULL) {
+fm_block_log_shift <- function(
+  block = NULL,
+  log_weights = NULL,
+  n_block = NULL
+) {
   info <-
     fm_block_prep(
       block = block,
@@ -1675,13 +1729,15 @@ fm_block_log_shift <- function(block = NULL,
 #' passes either `weights` and `log_weights` on, if provided, with `log_weights`
 #' taking precedence. If `TRUE`, forces the computation of `log_weights`,
 #' whether given in the input or not.
-fm_block_prep <- function(block = NULL,
-                          log_weights = NULL,
-                          weights = NULL,
-                          n_block = NULL,
-                          values = NULL,
-                          n_values = NULL,
-                          force_log = FALSE) {
+fm_block_prep <- function(
+  block = NULL,
+  log_weights = NULL,
+  weights = NULL,
+  n_block = NULL,
+  values = NULL,
+  n_values = NULL,
+  force_log = FALSE
+) {
   if (is.null(n_values)) {
     if (is.null(values)) {
       n_values <- max(length(block), length(weights), length(log_weights))
@@ -1698,17 +1754,17 @@ fm_block_prep <- function(block = NULL,
     lifecycle::deprecate_stop(
       "0.4.0.9006",
       "fm_block_prep(block = 'as `character` is no longer supported')",
-      details =
-        c(
-          "Converting character block information to integer",
-          "with `as.integer(factor(block))` is no longer supported,",
-          "as it may lead to incorrect ordering of the results."
-        )
+      details = c(
+        "Converting character block information to integer",
+        "with `as.integer(factor(block))` is no longer supported,",
+        "as it may lead to incorrect ordering of the results."
+      )
     )
   }
   if (min(block) < 1L) {
     warning(paste0(
-      "min(block) = ", min(block),
+      "min(block) = ",
+      min(block),
       " < 1L. Setting too small values to 1L."
     ))
     block <- pmax(1L, block)
@@ -1717,7 +1773,8 @@ fm_block_prep <- function(block = NULL,
     n_block <- max(block)
   } else if (max(block) > n_block) {
     warning(paste0(
-      max(block), " = max(block) > n_block = ",
+      max(block),
+      " = max(block) > n_block = ",
       n_block,
       ". Setting too large values to n_block."
     ))
@@ -1733,7 +1790,8 @@ fm_block_prep <- function(block = NULL,
         weights <- NULL
       }
     } else if (!is.null(weights)) {
-      warning("Both weights and log_weights supplied. Using log_weights.",
+      warning(
+        "Both weights and log_weights supplied. Using log_weights.",
         immediate. = TRUE
       )
       weights <- NULL
@@ -1744,7 +1802,8 @@ fm_block_prep <- function(block = NULL,
     } else if (!is.null(weights)) {
       # log_weights is non-NULL
       if (!is.null(log_weights)) {
-        warning("Both weights and log_weights supplied. Using log_weights.",
+        warning(
+          "Both weights and log_weights supplied. Using log_weights.",
           immediate. = TRUE
         )
         weights <- NULL
@@ -1759,7 +1818,9 @@ fm_block_prep <- function(block = NULL,
   }
 
   list(
-    block = block, weights = weights, log_weights = log_weights,
+    block = block,
+    weights = weights,
+    log_weights = log_weights,
     n_block = n_block
   )
 }

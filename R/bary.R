@@ -98,10 +98,13 @@ fm_bary.tbl_df <- function(bary, ..., extra_class = NULL) {
 #' @examples
 #' bary <- fm_bary(fm_mesh_1d(1:4), seq(0, 5, by = 0.5))
 #' bary
-fm_bary.fm_mesh_1d <- function(mesh,
-                               loc,
-                               method = c("linear", "nearest"),
-                               restricted = FALSE, ...) {
+fm_bary.fm_mesh_1d <- function(
+  mesh,
+  loc,
+  method = c("linear", "nearest"),
+  restricted = FALSE,
+  ...
+) {
   method <- match.arg(method)
 
   if (inherits(loc, "fm_bary")) {
@@ -145,7 +148,8 @@ fm_bary.fm_mesh_1d <- function(mesh,
     }
     bary <- matrix(1.0, length(loc), 1)
     bary[!ok, 1L] <- NA_real_
-  } else { ## (method=="linear") {
+  } else {
+    ## (method=="linear") {
     if (!mesh$cyclic && restricted) {
       u[ok][u[ok] < 0.0] <- 0.0
       u[ok][u[ok] > 1.0] <- 1.0
@@ -176,11 +180,13 @@ fm_bary.fm_mesh_1d <- function(mesh,
 #' @export
 #' @examples
 #' str(fm_bary(fmexample$mesh, fmexample$loc_sf))
-fm_bary.fm_mesh_2d <- function(mesh,
-                               loc,
-                               crs = NULL,
-                               ...,
-                               max_batch_size = NULL) {
+fm_bary.fm_mesh_2d <- function(
+  mesh,
+  loc,
+  crs = NULL,
+  ...,
+  max_batch_size = NULL
+) {
   if (inherits(loc, "fm_bary")) {
     return(loc)
   }
@@ -199,11 +205,14 @@ fm_bary.fm_mesh_2d <- function(mesh,
   }
 
   pre_ok_idx <-
-    which(rowSums(matrix(
-      is.na(as.vector(loc)),
-      nrow = nrow(loc),
-      ncol = ncol(loc)
-    )) == 0)
+    which(
+      rowSums(matrix(
+        is.na(as.vector(loc)),
+        nrow = nrow(loc),
+        ncol = ncol(loc)
+      )) ==
+        0
+    )
   if (length(pre_ok_idx) <= max_batch_size) {
     result <- fmesher_bary(
       mesh_loc = mesh$loc * scale,
@@ -274,10 +283,7 @@ fm_bary.fm_mesh_2d <- function(mesh,
 #'   matrix(c(1, 2, 3, 4), 1, 4)
 #' )
 #' b <- fm_bary(m, matrix(c(1, 1, 1) / 4, 1, 3))
-fm_bary.fm_mesh_3d <- function(mesh,
-                               loc,
-                               ...,
-                               max_batch_size = NULL) {
+fm_bary.fm_mesh_3d <- function(mesh, loc, ..., max_batch_size = NULL) {
   if (inherits(loc, "fm_bary")) {
     return(loc)
   }
@@ -287,11 +293,14 @@ fm_bary.fm_mesh_3d <- function(mesh,
   }
 
   pre_ok_idx <-
-    which(rowSums(matrix(
-      is.na(as.vector(loc)),
-      nrow = nrow(loc),
-      ncol = ncol(loc)
-    )) == 0)
+    which(
+      rowSums(matrix(
+        is.na(as.vector(loc)),
+        nrow = nrow(loc),
+        ncol = ncol(loc)
+      )) ==
+        0
+    )
   if (length(pre_ok_idx) <= max_batch_size) {
     result <- fmesher_bary3d(
       mesh_loc = mesh$loc,
@@ -341,14 +350,13 @@ fm_bary.fm_mesh_3d <- function(mesh,
 #' @export
 #' @examples
 #' str(fm_bary(fmexample$mesh, fmexample$loc_sf))
-fm_bary.fm_lattice_2d <- function(mesh,
-                                  loc,
-                                  crs = NULL,
-                                  ...) {
+fm_bary.fm_lattice_2d <- function(mesh, loc, crs = NULL, ...) {
   if (inherits(loc, "fm_bary")) {
-    if ((nrow(loc) > 0) && (
-      min(loc[["index"]]) < 1L ||
-        max(loc[["index"]]) > (length(mesh$x) - 1L) * (length(mesh$y) - 1L))) {
+    if (
+      (nrow(loc) > 0) &&
+        (min(loc[["index"]]) < 1L ||
+          max(loc[["index"]]) > (length(mesh$x) - 1L) * (length(mesh$y) - 1L))
+    ) {
       warning("Some 'index' information is outside the lattice.")
     }
     if (ncol(loc[["where"]]) != 4L) {
@@ -373,19 +381,24 @@ fm_bary.fm_lattice_2d <- function(mesh,
   # }
 
   pre_ok <-
-    which(rowSums(matrix(
-      is.na(as.vector(loc)),
-      nrow = nrow(loc),
-      ncol = ncol(loc)
-    )) == 0)
+    which(
+      rowSums(matrix(
+        is.na(as.vector(loc)),
+        nrow = nrow(loc),
+        ncol = ncol(loc)
+      )) ==
+        0
+    )
 
   loc <- loc[pre_ok, , drop = FALSE]
   x_idx <- findInterval(loc[, 1L], mesh$x, rightmost.closed = TRUE)
   y_idx <- findInterval(loc[, 2L], mesh$y, rightmost.closed = TRUE)
-  ok <- which(x_idx > 0 &
-    y_idx > 0 &
-    x_idx < length(mesh$x) &
-    y_idx < length(mesh$y))
+  ok <- which(
+    x_idx > 0 &
+      y_idx > 0 &
+      x_idx < length(mesh$x) &
+      y_idx < length(mesh$y)
+  )
   x_loc <- (loc[ok, 1] - mesh$x[x_idx[ok]]) / diff(mesh$x)[x_idx[ok]]
   y_loc <- (loc[ok, 2] - mesh$y[y_idx[ok]]) / diff(mesh$y)[y_idx[ok]]
   simplex_idx <- x_idx + (y_idx - 1L) * (length(mesh$x) - 1L)
@@ -411,15 +424,15 @@ fm_bary.fm_lattice_2d <- function(mesh,
 #'   `index` and `where`.
 #'
 #' @export
-fm_bary.fm_lattice_Nd <- function(mesh,
-                                  loc,
-                                  ...) {
+fm_bary.fm_lattice_Nd <- function(mesh, loc, ...) {
   d <- length(mesh$dims)
   d_bary <- 2^d
   if (inherits(loc, "fm_bary")) {
-    if ((nrow(loc) > 0) && (
-      min(loc[["index"]]) < 1L ||
-        max(loc[["index"]]) > prod(mesh$dims - 1L))) {
+    if (
+      (nrow(loc) > 0) &&
+        (min(loc[["index"]]) < 1L ||
+          max(loc[["index"]]) > prod(mesh$dims - 1L))
+    ) {
       warning("Some 'index' information is outside the lattice.")
     }
     if (ncol(loc[["where"]]) != d_bary) {
@@ -429,11 +442,14 @@ fm_bary.fm_lattice_Nd <- function(mesh,
   }
 
   pre_ok <-
-    which(rowSums(matrix(
-      is.na(as.vector(loc)),
-      nrow = nrow(loc),
-      ncol = ncol(loc)
-    )) == 0)
+    which(
+      rowSums(matrix(
+        is.na(as.vector(loc)),
+        nrow = nrow(loc),
+        ncol = ncol(loc)
+      )) ==
+        0
+    )
 
   loc <- loc[pre_ok, , drop = FALSE]
   x_idx <- do.call(
@@ -441,10 +457,7 @@ fm_bary.fm_lattice_Nd <- function(mesh,
     lapply(
       seq_len(d),
       function(k) {
-        findInterval(loc[, k],
-          mesh$values[[k]],
-          rightmost.closed = TRUE
-        )
+        findInterval(loc[, k], mesh$values[[k]], rightmost.closed = TRUE)
       }
     )
   )
@@ -457,7 +470,8 @@ fm_bary.fm_lattice_Nd <- function(mesh,
           x_idx[, k] < mesh$dims[k]
       }
     )
-  )) == d
+  )) ==
+    d
   x_loc <- do.call(
     cbind,
     lapply(
@@ -470,8 +484,9 @@ fm_bary.fm_lattice_Nd <- function(mesh,
   )
   simplex_idx <- x_idx[ok, 1]
   for (k in seq_len(d - 1) + 1) {
-    simplex_idx <- simplex_idx + (x_idx[ok, k] - 1L) *
-      prod(mesh$dims[seq_len(k - 1)] - 1L)
+    simplex_idx <- simplex_idx +
+      (x_idx[ok, k] - 1L) *
+        prod(mesh$dims[seq_len(k - 1)] - 1L)
   }
 
   # Vertex order
@@ -589,7 +604,8 @@ fm_bary_simplex.fm_mesh_1d <- function(mesh, bary = NULL, ...) {
   }
   if (mesh$cyclic) {
     idx_next <- bary$index %% mesh$n + 1L
-  } else { # !cyclic
+  } else {
+    # !cyclic
     idx_next <- bary$index + 1L
   }
   cbind(bary$index, idx_next, deparse.level = 0)
@@ -603,36 +619,33 @@ fm_bary_simplex.fm_mesh_1d <- function(mesh, bary = NULL, ...) {
 #' bary <- fm_bary(m, cbind(1.5, 3.2))
 #' fm_bary_simplex(m, bary)
 fm_bary_simplex.fm_lattice_2d <- function(mesh, bary = NULL, ...) {
-  simplex <- matrix(0L,
+  simplex <- matrix(
+    0L,
     nrow = (length(mesh$x) - 1L) * (length(mesh$y) - 1L),
     ncol = 4L
   )
   simplex[, 1L] <-
-    rep(seq_len(length(mesh$x) - 1L),
-      times = length(mesh$y) - 1L
-    ) +
-    rep((seq_len(length(mesh$y) - 1L) - 1L) * length(mesh$x),
+    rep(seq_len(length(mesh$x) - 1L), times = length(mesh$y) - 1L) +
+    rep(
+      (seq_len(length(mesh$y) - 1L) - 1L) * length(mesh$x),
       each = length(mesh$x) - 1L
     )
   simplex[, 2L] <-
-    rep(seq_len(length(mesh$x) - 1L) + 1L,
-      times = length(mesh$y) - 1L
-    ) +
-    rep((seq_len(length(mesh$y) - 1L) - 1L) * length(mesh$x),
+    rep(seq_len(length(mesh$x) - 1L) + 1L, times = length(mesh$y) - 1L) +
+    rep(
+      (seq_len(length(mesh$y) - 1L) - 1L) * length(mesh$x),
       each = length(mesh$x) - 1L
     )
   simplex[, 3L] <-
-    rep(seq_len(length(mesh$x) - 1L) + 1L,
-      times = length(mesh$y) - 1L
-    ) +
-    rep((seq_len(length(mesh$y) - 1L) - 1L + 1L) * length(mesh$x),
+    rep(seq_len(length(mesh$x) - 1L) + 1L, times = length(mesh$y) - 1L) +
+    rep(
+      (seq_len(length(mesh$y) - 1L) - 1L + 1L) * length(mesh$x),
       each = length(mesh$x) - 1L
     )
   simplex[, 4L] <-
-    rep(seq_len(length(mesh$x) - 1L),
-      times = length(mesh$y) - 1L
-    ) +
-    rep((seq_len(length(mesh$y) - 1L) - 1L + 1L) * length(mesh$x),
+    rep(seq_len(length(mesh$x) - 1L), times = length(mesh$y) - 1L) +
+    rep(
+      (seq_len(length(mesh$y) - 1L) - 1L + 1L) * length(mesh$x),
       each = length(mesh$x) - 1L
     )
   if (is.null(bary)) {
@@ -656,10 +669,7 @@ fm_bary_simplex.fm_lattice_2d <- function(mesh, bary = NULL, ...) {
 fm_bary_simplex.fm_lattice_Nd <- function(mesh, bary = NULL, ...) {
   d <- length(mesh$dims)
   d_bary <- 2^d
-  simplex <- matrix(0L,
-    nrow = prod(mesh$dims - 1L),
-    ncol = d_bary
-  )
+  simplex <- matrix(0L, nrow = prod(mesh$dims - 1L), ncol = d_bary)
 
   simplex <- matrix(0L, prod(mesh$dims - 1L), d_bary)
 
@@ -675,12 +685,14 @@ fm_bary_simplex.fm_lattice_Nd <- function(mesh, bary = NULL, ...) {
   simplex_root <- matrix(0L, prod(mesh$dims - 1L), ncol = d)
   for (k in seq_len(d)) {
     if (k == 1) {
-      simplex_root[, 1] <- rep(seq_len(mesh$dims[1] - 1L),
+      simplex_root[, 1] <- rep(
+        seq_len(mesh$dims[1] - 1L),
         times = prod(mesh$dims[-1] - 1L)
       )
     } else {
       simplex_root[, k] <- rep(
-        rep(seq_len(mesh$dims[k] - 1L),
+        rep(
+          seq_len(mesh$dims[k] - 1L),
           each = prod(mesh$dims[seq_len(k - 1)] - 1L)
         ),
         times = prod(mesh$dims[-seq_len(k)] - 1L)
@@ -691,7 +703,8 @@ fm_bary_simplex.fm_lattice_Nd <- function(mesh, bary = NULL, ...) {
     simplex[, k] <- simplex_root[, 1] + local_simplex[k, 1]
     for (j in seq_len(d - 1) + 1) {
       simplex[, k] <-
-        simplex[, k] + (simplex_root[, j] + local_simplex[k, j] - 1L) *
+        simplex[, k] +
+        (simplex_root[, j] + local_simplex[k, j] - 1L) *
           prod(mesh$dims[seq_len(j - 1)])
     }
   }
@@ -746,13 +759,13 @@ fm_bary_loc.fm_mesh_2d <- function(mesh, bary = NULL, ..., format = NULL) {
     loc <- matrix(NA_real_, NROW(bary), ncol(mesh$loc))
     ok <- !is.na(bary$index)
     simplex <- fm_bary_simplex(mesh, bary = bary[ok, ])
-    loc[ok, ] <- (
-      mesh$loc[simplex[, 1L], , drop = FALSE] * bary$where[ok, 1] +
-        mesh$loc[simplex[, 2L], , drop = FALSE] * bary$where[ok, 2] +
-        mesh$loc[simplex[, 3L], , drop = FALSE] * bary$where[ok, 3]
-    )
+    loc[ok, ] <- (mesh$loc[simplex[, 1L], , drop = FALSE] *
+      bary$where[ok, 1] +
+      mesh$loc[simplex[, 2L], , drop = FALSE] * bary$where[ok, 2] +
+      mesh$loc[simplex[, 3L], , drop = FALSE] * bary$where[ok, 3])
     if (fm_manifold(mesh, "S2")) {
-      loc[ok, ] <- loc[ok, ] / rowSums(loc[ok, ]^2)^0.5 *
+      loc[ok, ] <- loc[ok, ] /
+        rowSums(loc[ok, ]^2)^0.5 *
         mean(rowSums(mesh$loc^2)^0.5)
     }
   }
@@ -790,12 +803,11 @@ fm_bary_loc.fm_mesh_3d <- function(mesh, bary = NULL, ..., format = NULL) {
     loc <- matrix(NA_real_, NROW(bary), ncol(mesh$loc))
     ok <- !is.na(bary$index)
     simplex <- fm_bary_simplex(mesh, bary = bary[ok, ])
-    loc[ok, ] <- (
-      mesh$loc[simplex[, 1L], , drop = FALSE] * bary$where[ok, 1] +
-        mesh$loc[simplex[, 2L], , drop = FALSE] * bary$where[ok, 2] +
-        mesh$loc[simplex[, 3L], , drop = FALSE] * bary$where[ok, 3] +
-        mesh$loc[simplex[, 4L], , drop = FALSE] * bary$where[ok, 4]
-    )
+    loc[ok, ] <- (mesh$loc[simplex[, 1L], , drop = FALSE] *
+      bary$where[ok, 1] +
+      mesh$loc[simplex[, 2L], , drop = FALSE] * bary$where[ok, 2] +
+      mesh$loc[simplex[, 3L], , drop = FALSE] * bary$where[ok, 3] +
+      mesh$loc[simplex[, 4L], , drop = FALSE] * bary$where[ok, 4])
   }
   loc
 }
@@ -831,10 +843,9 @@ fm_bary_loc.fm_mesh_1d <- function(mesh, bary = NULL, ..., format = NULL) {
       loc[ok] <- mesh$loc[bary$index[ok]]
     } else {
       simplex <- fm_bary_simplex(mesh, bary = bary[ok, ])
-      loc[ok] <- (
-        mesh$loc[simplex[, 1L]] * bary$where[ok, 1] +
-          mesh$loc[simplex[, 2L]] * bary$where[ok, 2]
-      )
+      loc[ok] <- (mesh$loc[simplex[, 1L]] *
+        bary$where[ok, 1] +
+        mesh$loc[simplex[, 2L]] * bary$where[ok, 2])
     }
   }
   loc
@@ -860,12 +871,11 @@ fm_bary_loc.fm_lattice_2d <- function(mesh, bary = NULL, ..., format = NULL) {
     loc <- matrix(NA_real_, NROW(bary), ncol(mesh$loc))
     ok <- !is.na(bary$index)
     simplex <- fm_bary_simplex(mesh, bary = bary[ok, ])
-    loc[ok, ] <- (
-      mesh$loc[simplex[, 1L], , drop = FALSE] * bary$where[ok, 1] +
-        mesh$loc[simplex[, 2L], , drop = FALSE] * bary$where[ok, 2] +
-        mesh$loc[simplex[, 3L], , drop = FALSE] * bary$where[ok, 3] +
-        mesh$loc[simplex[, 4L], , drop = FALSE] * bary$where[ok, 4]
-    )
+    loc[ok, ] <- (mesh$loc[simplex[, 1L], , drop = FALSE] *
+      bary$where[ok, 1] +
+      mesh$loc[simplex[, 2L], , drop = FALSE] * bary$where[ok, 2] +
+      mesh$loc[simplex[, 3L], , drop = FALSE] * bary$where[ok, 3] +
+      mesh$loc[simplex[, 4L], , drop = FALSE] * bary$where[ok, 4])
     # if (fm_manifold(mesh, "S2")) {
     #   loc[ok, ] <- loc[ok, ] / rowSums(loc[ok, ]^2)^0.5 *
     #     mean(rowSums(mesh$loc^2)^0.5)
@@ -905,10 +915,8 @@ fm_bary_loc.fm_lattice_Nd <- function(mesh, bary = NULL, ..., format = NULL) {
     d_bary <- 2^d
     loc[ok, ] <- mesh$loc[simplex[, 1L], , drop = FALSE] * bary$where[ok, 1]
     for (k in seq_len(d_bary - 1) + 1) {
-      loc[ok, ] <- (
-        loc[ok, ] +
-          mesh$loc[simplex[, k], , drop = FALSE] * bary$where[ok, k]
-      )
+      loc[ok, ] <- (loc[ok, ] +
+        mesh$loc[simplex[, k], , drop = FALSE] * bary$where[ok, k])
     }
   }
   loc

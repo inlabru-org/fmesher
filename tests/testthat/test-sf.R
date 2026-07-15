@@ -91,7 +91,6 @@ test_that("sf standards compliance: basic polygons", {
 #   sfc <- sf::st_sfc(x, check_ring_dir = TRUE)
 # See https://github.com/r-spatial/sf/issues/2096
 
-
 test_that("Conversion from sfc_POINT to fm_segm", {
   ## sfc_POINT ##
 
@@ -100,15 +99,10 @@ test_that("Conversion from sfc_POINT to fm_segm", {
 
   # matrix version
   loc.bnd <- matrix(c(0, 0, 1, 0, 1, 1, 0, 1), 4, 2, byrow = TRUE)
-  segm.bnd <- fm_segm(loc.bnd,
-    is.bnd = TRUE,
-    crs = fm_crs()
-  )
+  segm.bnd <- fm_segm(loc.bnd, is.bnd = TRUE, crs = fm_crs())
 
   # sf version
-  loc.sf <- sf::st_as_sf(as.data.frame(loc.bnd),
-    coords = c(1, 2)
-  )
+  loc.sf <- sf::st_as_sf(as.data.frame(loc.bnd), coords = c(1, 2))
 
   segm.bnd.sf <- fm_as_segm(loc.sf, is.bnd = TRUE)
 
@@ -119,7 +113,8 @@ test_that("Conversion from sfc_POINT to fm_segm", {
   crs <- sf::st_crs(sf::st_geometry(loc.sf))
 
   # check warning message for xyz (there shouldn't be one)
-  loc.sf.xyz <- sf::st_as_sf(as.data.frame(cbind(loc.bnd, 1)),
+  loc.sf.xyz <- sf::st_as_sf(
+    as.data.frame(cbind(loc.bnd, 1)),
     coords = c(1, 2, 3)
   )
   class(loc.sf.xyz)
@@ -221,9 +216,7 @@ test_that("Conversion from sfc_POLYGON to fm_segm", {
     crs = fm_crs()
   )
 
-  seg <- fm_segm_join(list(seg0, seg1, seg2, seg0b),
-    grp = c(1, 1, 1, 2)
-  )
+  seg <- fm_segm_join(list(seg0, seg1, seg2, seg0b), grp = c(1, 1, 1, 2))
   expect_identical(seg$grp, rep(c(1L, 1L, 1L, 2L), each = 4))
 
   line_str1 <- sf::st_polygon(list(pts0, pts1, pts2))
@@ -273,14 +266,18 @@ test_that("Conversion from sfc_MULTIPOLYGON to fm_segm", {
     crs = fm_crs()
   )
 
-  seg_1 <- fm_segm_join(list(seg0, seg1, seg2, seg0b),
-    grp = 1
-  )
+  seg_1 <- fm_segm_join(list(seg0, seg1, seg2, seg0b), grp = 1)
   expect_identical(seg_1$grp, rep(c(1L), each = 16))
   seg_2 <- fm_segm_join(
     list(
-      seg0, seg1, seg2, seg0b,
-      seg0, seg1, seg2, seg0b
+      seg0,
+      seg1,
+      seg2,
+      seg0b,
+      seg0,
+      seg1,
+      seg2,
+      seg0b
     ),
     grp = c(1, 1, 1, 1, 2, 2, 2, 2)
   )
@@ -368,7 +365,8 @@ test_that("Conversion from sfc_GEOMETRY to fm_segm", {
   line_str1 <- sf::st_polygon(list(pts0, pts1, pts2))
   line_str2 <- sf::st_polygon(list(pts0b))
 
-  line_sfc1 <- sf::st_combine(sf::st_sfc(list(line_str1, line_str2),
+  line_sfc1 <- sf::st_combine(sf::st_sfc(
+    list(line_str1, line_str2),
     check_ring_dir = TRUE
   ))
   line_sfc2 <- sf::st_sfc(list(line_str2), check_ring_dir = TRUE)

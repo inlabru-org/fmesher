@@ -2,9 +2,7 @@
 
 # fm_mesh_1d ####
 
-`match.arg.vector` <- function(arg = NULL,
-                               choices,
-                               length = NULL) {
+`match.arg.vector` <- function(arg = NULL, choices, length = NULL) {
   ## Like match.arg, but for a vector of options 'arg'
   if (is.null(length)) {
     length <- ifelse(is.null(arg), 1L, length(arg))
@@ -73,12 +71,14 @@
 #'     geom_fm(data = m1b, xlim = c(0.5, 11), weights = weights)
 #' }
 #'
-fm_mesh_1d <- function(loc,
-                       interval = range(loc),
-                       boundary = NULL,
-                       degree = 1,
-                       free.clamped = FALSE,
-                       ...) {
+fm_mesh_1d <- function(
+  loc,
+  interval = range(loc),
+  boundary = NULL,
+  degree = 1,
+  free.clamped = FALSE,
+  ...
+) {
   ## Note: do not change the order of these options without also
   ## changing 'basis.reduction' below.
   boundary.options <- c("neumann", "dirichlet", "free", "cyclic")
@@ -86,8 +86,10 @@ fm_mesh_1d <- function(loc,
   boundary <- match.arg.vector(boundary, boundary.options, length = 2)
   cyclic <- !is.na(pmatch(boundary[1], "cyclic"))
   if (cyclic && is.na(pmatch(boundary[2], "cyclic"))) {
-    stop("Inconsistent boundary specification 'boundary=c(",
-      paste(boundary, collapse = ","), ")'.",
+    stop(
+      "Inconsistent boundary specification 'boundary=c(",
+      paste(boundary, collapse = ","),
+      ")'.",
       sep = ""
     )
   }
@@ -102,7 +104,9 @@ fm_mesh_1d <- function(loc,
     loc_1 <- min(loc)
     if (loc_1 < interval[1]) {
       # Keep the point to the left of the interval, but adjacent
-      loc_1 <- (loc_1 - interval[1]) %% diff(interval) - diff(interval) +
+      loc_1 <- (loc_1 - interval[1]) %%
+        diff(interval) -
+        diff(interval) +
         interval[1]
     }
     if (loc_1 > interval[2]) {
@@ -139,7 +143,8 @@ fm_mesh_1d <- function(loc,
       sort(unique(c(
         interval,
         pmax(
-          interval[1], pmin(interval[2], loc)
+          interval[1],
+          pmin(interval[2], loc)
         )
       )))
   }
@@ -147,7 +152,8 @@ fm_mesh_1d <- function(loc,
   n <- length(loc)
 
   if ((degree < 0) || (degree > 3)) {
-    stop(paste("'degree' must be 0, 1, 2, 3.  'degree=",
+    stop(paste(
+      "'degree' must be 0, 1, 2, 3.  'degree=",
       degree,
       "' is not supported.",
       sep = ""
@@ -157,7 +163,6 @@ fm_mesh_1d <- function(loc,
   if (length(free.clamped) == 1L) {
     free.clamped <- rep(free.clamped, 2)
   }
-
 
   ## Number of basis functions
   stopifnot(degree >= 0)
@@ -181,9 +186,14 @@ fm_mesh_1d <- function(loc,
       m_adjust[[degree + 1]][i2]
   }
   if (m < 1L) {
-    stop("Degree ", degree,
-      " meshes must have at least ", 1L,
-      " basis functions, not 'm=", m, "'.",
+    stop(
+      "Degree ",
+      degree,
+      " meshes must have at least ",
+      1L,
+      " basis functions, not 'm=",
+      m,
+      "'.",
       sep = ""
     )
   }
@@ -205,13 +215,15 @@ fm_mesh_1d <- function(loc,
     if (boundary[2] == "dirichlet") {
       mid <- mid[-length(mid)]
     }
-  } else { ## degree==2
+  } else {
+    ## degree==2
     if (cyclic) {
       mid <- (loc + c(loc[-1], interval[2])) / 2
     } else {
       mid <- (loc[-n] + loc[-1]) / 2
       mid <-
-        switch(boundary[1],
+        switch(
+          boundary[1],
           neumann = mid,
           dirichlet = mid,
           free = if (free.clamped[1]) {
@@ -221,7 +233,8 @@ fm_mesh_1d <- function(loc,
           }
         )
       mid <-
-        switch(boundary[2],
+        switch(
+          boundary[2],
           neumann = mid,
           dirichlet = mid,
           free = if (free.clamped[2]) {
@@ -257,10 +270,7 @@ fm_mesh_1d <- function(loc,
   } else {
     if (length(mid) >= 2) {
       mesh$idx$loc <-
-        fm_bary(fm_mesh_1d(mid, degree = 0),
-          loc.orig,
-          method = "nearest"
-        )$index
+        fm_bary(fm_mesh_1d(mid, degree = 0), loc.orig, method = "nearest")$index
     } else {
       mesh$idx$loc <- rep(1, length(loc.orig))
     }

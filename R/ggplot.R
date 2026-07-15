@@ -83,12 +83,14 @@ geom_fm <- function(mapping = NULL, data = NULL, ...) {
 #'     crs = fm_crs("mollweide_globe")
 #'   )
 #' }
-geom_fm.fm_mesh_2d <- function(mapping = NULL,
-                               data = NULL,
-                               ...,
-                               mappings = NULL,
-                               defs = NULL,
-                               crs = NULL) {
+geom_fm.fm_mesh_2d <- function(
+  mapping = NULL,
+  data = NULL,
+  ...,
+  mappings = NULL,
+  defs = NULL,
+  crs = NULL
+) {
   if (is.null(mappings)) {
     mappings <- list()
   }
@@ -161,22 +163,38 @@ geom_fm.fm_mesh_2d <- function(mapping = NULL,
 
   geoms <-
     c(
-      do.call(ggplot2::geom_sf, c(
-        list(mapping = maps$mesh, data = mesh_sf), def$mesh
-      )),
-      do.call(geom_fm, c(
-        list(mapping = maps$int, data = int), def$int
-      )),
-      do.call(geom_fm, c(
-        list(mapping = maps$bnd, data = bnd), def$bnd
-      ))
+      do.call(
+        ggplot2::geom_sf,
+        c(
+          list(mapping = maps$mesh, data = mesh_sf),
+          def$mesh
+        )
+      ),
+      do.call(
+        geom_fm,
+        c(
+          list(mapping = maps$int, data = int),
+          def$int
+        )
+      ),
+      do.call(
+        geom_fm,
+        c(
+          list(mapping = maps$bnd, data = bnd),
+          def$bnd
+        )
+      )
     )
   if (!is.null(defs$loc) || !is.null(mappings$loc)) {
     geoms <- c(
       geoms,
-      do.call(ggplot2::geom_sf, c(
-        list(mapping = maps$loc, data = loc), def$loc
-      ))
+      do.call(
+        ggplot2::geom_sf,
+        c(
+          list(mapping = maps$loc, data = loc),
+          def$loc
+        )
+      )
     )
   }
   geoms
@@ -194,10 +212,7 @@ geom_fm.fm_mesh_2d <- function(mapping = NULL,
 #'   geom_fm(data = m1) +
 #'   geom_fm(data = m2)
 #'
-geom_fm.fm_segm <- function(mapping = NULL,
-                            data = NULL,
-                            ...,
-                            crs = NULL) {
+geom_fm.fm_segm <- function(mapping = NULL, data = NULL, ..., crs = NULL) {
   if (!is.null(crs)) {
     data <- fm_transform(data, crs = crs)
   }
@@ -242,9 +257,13 @@ geom_fm.fm_segm <- function(mapping = NULL,
   )
   names(defs) <- names(defs_def)
 
-  do.call(ggplot2::geom_sf, c(
-    list(mapping = maps$segm, data = segm_sf), defs$segm
-  ))
+  do.call(
+    ggplot2::geom_sf,
+    c(
+      list(mapping = maps$segm, data = segm_sf),
+      defs$segm
+    )
+  )
 }
 
 
@@ -270,16 +289,18 @@ geom_fm.fm_segm <- function(mapping = NULL,
 #' ggplot() +
 #'   geom_fm(data = m)
 #'
-geom_fm.fm_mesh_1d <- function(mapping = NULL,
-                               data = NULL,
-                               ...,
-                               mappings = NULL,
-                               defs = NULL,
-                               xlim = NULL,
-                               basis = TRUE,
-                               knots = TRUE,
-                               derivatives = FALSE,
-                               weights = NULL) {
+geom_fm.fm_mesh_1d <- function(
+  mapping = NULL,
+  data = NULL,
+  ...,
+  mappings = NULL,
+  defs = NULL,
+  xlim = NULL,
+  basis = TRUE,
+  knots = TRUE,
+  derivatives = FALSE,
+  weights = NULL
+) {
   if (is.null(mappings)) {
     mappings <- list()
   }
@@ -296,10 +317,12 @@ geom_fm.fm_mesh_1d <- function(mapping = NULL,
     (A[seq_len(nrow(A) - 2) + 2, , drop = FALSE] -
       A[seq_len(nrow(A) - 2), , drop = FALSE]),
     A[nrow(A), ] - A[nrow(A) - 1, , drop = FALSE]
-  ) / c(
-    x[2] - x[1], x[seq_len(nrow(A) - 2) + 2] - x[seq_len(nrow(A) - 2)],
-    x[length(x)] - x[length(x) - 1]
-  )
+  ) /
+    c(
+      x[2] - x[1],
+      x[seq_len(nrow(A) - 2) + 2] - x[seq_len(nrow(A) - 2)],
+      x[length(x)] - x[length(x) - 1]
+    )
 
   df <- data.frame(
     x = rep(x, times = data$m),
@@ -329,7 +352,8 @@ geom_fm.fm_mesh_1d <- function(mapping = NULL,
       knots_[length(knots_)] - diff(data$interval),
       knots_,
       knots_[1] + diff(data$interval)
-    ) + data$interval[1]
+    ) +
+      data$interval[1]
   } else {
     data$loc
   }
@@ -344,17 +368,21 @@ geom_fm.fm_mesh_1d <- function(mapping = NULL,
       fun = mappings$fun
     )
   if (derivatives) {
-    maps_def <- list(basis = ggplot2::aes(
-      x = .data[["x"]],
-      y = .data[["derivative"]],
-      color = .data[["basis"]]
-    ))
+    maps_def <- list(
+      basis = ggplot2::aes(
+        x = .data[["x"]],
+        y = .data[["derivative"]],
+        color = .data[["basis"]]
+      )
+    )
   } else {
-    maps_def <- list(basis = ggplot2::aes(
-      x = .data[["x"]],
-      y = .data[["value"]],
-      color = .data[["basis"]]
-    ))
+    maps_def <- list(
+      basis = ggplot2::aes(
+        x = .data[["x"]],
+        y = .data[["value"]],
+        color = .data[["basis"]]
+      )
+    )
   }
   maps_def$knots <- ggplot2::aes(xintercept = .data[["knots"]])
   maps_def$fun <- ggplot2::aes(x = .data[["x"]], y = .data[["value"]])
@@ -399,25 +427,37 @@ geom_fm.fm_mesh_1d <- function(mapping = NULL,
   if (basis) {
     result <- c(
       result,
-      do.call(ggplot2::geom_line, c(
-        list(mapping = maps$basis, data = df), defs$basis
-      ))
+      do.call(
+        ggplot2::geom_line,
+        c(
+          list(mapping = maps$basis, data = df),
+          defs$basis
+        )
+      )
     )
   }
   if (knots) {
     result <- c(
       result,
-      do.call(ggplot2::geom_vline, c(
-        list(mapping = maps$knots, data = df_knots), defs$knots
-      ))
+      do.call(
+        ggplot2::geom_vline,
+        c(
+          list(mapping = maps$knots, data = df_knots),
+          defs$knots
+        )
+      )
     )
   }
   if (!is.null(weights)) {
     result <- c(
       result,
-      do.call(ggplot2::geom_line, c(
-        list(mapping = maps$fun, data = df_fun), defs$fun
-      ))
+      do.call(
+        ggplot2::geom_line,
+        c(
+          list(mapping = maps$fun, data = df_fun),
+          defs$fun
+        )
+      )
     )
   }
 

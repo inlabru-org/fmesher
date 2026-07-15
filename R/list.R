@@ -72,9 +72,7 @@ fm_as_list <- function(x, ..., .class_stub = NULL) {
     }
   }
   if (missing(x) || is.null(x) || (length(x) == 0)) {
-    return(structure(list(),
-      class = c(.class_list_name, "fm_list", "list")
-    ))
+    return(structure(list(), class = c(.class_list_name, "fm_list", "list")))
   }
 
   if (inherits(x, paste0("fm_", fm_class_stubs(), "_list"))) {
@@ -86,8 +84,10 @@ fm_as_list <- function(x, ..., .class_stub = NULL) {
 
   if (!inherits(x, "fm_list")) {
     m_c <- setdiff(method_classes(.method), "list")
-    if (inherits(x, paste0("fm_", fm_class_stubs())) ||
-      (!is.null(m_c) && inherits(x, m_c))) {
+    if (
+      inherits(x, paste0("fm_", fm_class_stubs())) ||
+        (!is.null(m_c) && inherits(x, m_c))
+    ) {
       # Single element of known or coercible non-list type
       #      y <- do.call(.method, list(x, ...))
       return(fm_as_list(list(x), ..., .class_stub = .class_stub))
@@ -107,10 +107,15 @@ fm_as_list <- function(x, ..., .class_stub = NULL) {
   if ((length(y) > 0) && is.null(.class_stub)) {
     stubs <- fm_class_stubs()
     is_stub <- vapply(
-      stubs, function(stub) {
-        all(vapply(y, function(yy) {
-          is.null(yy) || inherits(yy, paste0("fm_", stub))
-        }, TRUE))
+      stubs,
+      function(stub) {
+        all(vapply(
+          y,
+          function(yy) {
+            is.null(yy) || inherits(yy, paste0("fm_", stub))
+          },
+          TRUE
+        ))
       },
       TRUE
     )
@@ -132,7 +137,8 @@ fm_as_list <- function(x, ..., .class_stub = NULL) {
       if (!is_stub) {
         stop(
           "Inconsistent element classes for 'fm_list' for class '",
-          .class_name, "'"
+          .class_name,
+          "'"
         )
       }
     }
@@ -150,11 +156,13 @@ fm_as_list <- function(x, ..., .class_stub = NULL) {
 #' @describeIn fm_list The `...` arguments should be coercible to `fm_list`
 #' objects.
 `c.fm_list` <- function(...) {
-  if (!all(vapply(
-    list(...),
-    function(xx) is.null(xx) || inherits(xx, "fm_list"),
-    TRUE
-  ))) {
+  if (
+    !all(vapply(
+      list(...),
+      function(xx) is.null(xx) || inherits(xx, "fm_list"),
+      TRUE
+    ))
+  ) {
     y <- lapply(list(...), fm_as_list)
     return(do.call("c", y))
   }

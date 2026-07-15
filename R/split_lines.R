@@ -100,8 +100,11 @@ fm_split_lines.fm_mesh_2d <- function(mesh, segm, ...) {
   #  points(segm$loc[, 1:2], col="blue", pch = 20)
 
   # Filter out zero length segments
-  keep <- rowSums((segm.split$loc[segm.split$idx[, 2], , drop = FALSE] -
-    segm.split$loc[segm.split$idx[, 1], , drop = FALSE])^2) > 0
+  keep <- rowSums(
+    (segm.split$loc[segm.split$idx[, 2], , drop = FALSE] -
+      segm.split$loc[segm.split$idx[, 1], , drop = FALSE])^2
+  ) >
+    0
   segm.split <- fm_segm(
     loc = segm.split$loc,
     idx = segm.split$idx[keep, , drop = FALSE],

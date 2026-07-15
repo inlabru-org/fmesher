@@ -162,14 +162,14 @@ fm_fem.fm_mesh_1d <- function(mesh, order = 2, ...) {
     knots.d <- (knots2 - knots1) / 2
     ## 3-point Gaussian quadrature
     info <-
-      fm_basis(mesh,
+      fm_basis(
+        mesh,
         loc = (c(
           knots.m,
           knots.m - knots.d * sqrt(3 / 5),
           knots.m + knots.d * sqrt(3 / 5)
         )),
-        weights =
-          c(knots.d * 8 / 9, knots.d * 5 / 9, knots.d * 5 / 9)^0.5,
+        weights = c(knots.d * 8 / 9, knots.d * 5 / 9, knots.d * 5 / 9)^0.5,
         derivatives = TRUE,
         full = TRUE
       )
@@ -186,7 +186,9 @@ fm_fem.fm_mesh_1d <- function(mesh, order = 2, ...) {
 
     g_list <- list(g1 = g1, g2 = g2, g01 = g01, g02 = g02, g12 = g12)
   } else {
-    stop(paste("Mesh basis degree=", mesh$degree,
+    stop(paste(
+      "Mesh basis degree=",
+      mesh$degree,
       " is not supported by fm_fem.fm_mesh_1d.",
       sep = ""
     ))
@@ -226,9 +228,7 @@ fm_fem.fm_mesh_1d <- function(mesh, order = 2, ...) {
 #'   materix constructions, and is currently equal to `c0`.
 #'
 #' @export
-fm_fem.fm_mesh_2d <- function(mesh, order = 2,
-                              aniso = NULL,
-                              ...) {
+fm_fem.fm_mesh_2d <- function(mesh, order = 2, aniso = NULL, ...) {
   if (length(order) != 1) {
     stop("'order' must have length 1.")
   }
@@ -465,7 +465,8 @@ fm_sizes.fm_mesh_2d <- function(mesh, ..., method = "R") {
     (row_cross_product(e1, e2) +
       row_cross_product(e2, e3) +
       row_cross_product(e3, e1))^2
-  )^0.5 / 6
+  )^0.5 /
+    6
   lengths_t <- cbind(
     rowSums(e1 * e1)^0.5,
     rowSums(e2 * e2)^0.5,
@@ -500,7 +501,8 @@ fm_sizes.fm_mesh_3d <- function(mesh, ...) {
     rowSums(row_cross_product(e3, e4)^2)^0.5,
     rowSums(row_cross_product(e4, e1)^2)^0.5,
     rowSums(row_cross_product(e1, e2)^2)^0.5
-  ) / 2
+  ) /
+    2
   cell_edge_t <- cbind(
     rowSums(e1^2)^0.5,
     rowSums(e2^2)^0.5,

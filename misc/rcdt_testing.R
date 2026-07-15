@@ -6,8 +6,7 @@ rcdt_testing <- function(path) {
   on.exit(if (sink.number() > initial_sink) sink(NULL))
 
   sink(file.path(path, "test_rcdt_R2_plain.txt"))
-  meshR2 <- fm_rcdt_2d_inla(cbind(0, 0),
-                            extend = list(offset = 1, n = 16))
+  meshR2 <- fm_rcdt_2d_inla(cbind(0, 0), extend = list(offset = 1, n = 16))
   sink(NULL)
 
   sink(file.path(path, "test_rcdt_S2_plain.txt"))
@@ -15,9 +14,11 @@ rcdt_testing <- function(path) {
   sink(NULL)
 
   sink(file.path(path, "test_rcdt_R2_refine.txt"))
-  meshR2_ref <- fm_rcdt_2d_inla(cbind(0, 0),
-                                extend = list(offset = 1, n = 16),
-                                refine = list(max.edge = 0.25))
+  meshR2_ref <- fm_rcdt_2d_inla(
+    cbind(0, 0),
+    extend = list(offset = 1, n = 16),
+    refine = list(max.edge = 0.25)
+  )
   sink(NULL)
 
   sink(file.path(path, "test_rcdt_S2_refine.txt"))
@@ -27,5 +28,5 @@ rcdt_testing <- function(path) {
   invisible()
 }
 
-  #  expect_equal(fm_dof(meshR2_ref), 135) # 138 on M1?
-  #  expect_equal(fm_dof(meshS2_ref), 108) # 106 or 107 on M1?
+#  expect_equal(fm_dof(meshR2_ref), 135) # 138 on M1?
+#  expect_equal(fm_dof(meshS2_ref), 108) # 106 or 107 on M1?

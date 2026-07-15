@@ -24,7 +24,7 @@ fm_rcdt_2d_inla(
   ...
 )
 
-fm_delaunay_2d(loc, crs = NULL, ...)
+fm_delaunay_2d(loc, crs = NULL, boundary = NULL, ...)
 }
 \arguments{
 \item{...}{Currently passed on to \code{fm_mesh_2d_inla} or converted to
