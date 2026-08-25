@@ -9,13 +9,13 @@
   }
   if (is.null(arg)) {
     arg <- match.arg(arg, choices)
+  } else if (length(arg) == 0L) {
+    arg <- rep(match.arg(NULL, choices), length)
   } else {
-    for (k in seq_along(arg)) {
-      arg[k] <- match.arg(arg[k], choices)
-    }
+    arg <- vapply(arg, match.arg, choices, FUN.VALUE = character(1))
   }
   if (length(arg) < length) {
-    arg <- c(arg, rep(arg, length - length(arg)))
+    arg <- c(arg, rep(arg[length(arg)], length - length(arg)))
   } else if (length(arg) > length) {
     stop("Option list too long.")
   }
