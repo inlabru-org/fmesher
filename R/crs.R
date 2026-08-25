@@ -1191,7 +1191,7 @@ fm_CRS.fm_crs <- function(x, ..., units = NULL, oblique = NULL) {
     x[["crs"]],
     ...,
     units = units,
-    oblique = if (is.null(oblique)) x[["oblique"]] else oblique,
+    oblique = if (is.null(oblique)) x[["oblique"]] else oblique
   )
 }
 
