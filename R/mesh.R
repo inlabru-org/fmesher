@@ -691,13 +691,14 @@ fm_store_points <- function(loc, crs = NULL, info = NULL, format = NULL) {
 }
 
 
-#' @title Extract vertex locations from an `fm_mesh_2d`
+#' @title Extract vertex locations from a mesh
 #'
-#' @description Extracts the vertices of an `fm_mesh_2d` object.
+#' @description Extracts the vertices of a mesh object.
 #'
 #' @export
-#' @param x An `fm_mesh_2d` object.
+#' @param x A supported fmesher mesh object.
 #' @param format character; `"sf"`, `"df"`, `"sp"`
+#' @param \dots Further arguments passed to methods
 #' @return
 #' An `sf`, `data.frame`, or `SpatialPointsDataFrame` object, with the vertex
 #' coordinates, and a `.vertex` column with the vertex indices.
@@ -705,6 +706,11 @@ fm_store_points <- function(loc, crs = NULL, info = NULL, format = NULL) {
 #' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @seealso [fm_centroids()]
 #'
+fm_vertices <- function(x, format = NULL, ...) {
+  UseMethod("fm_vertices")
+}
+#' @export
+#' @rdname fm_vertices
 #' @examples
 #' if (require("ggplot2", quietly = TRUE)) {
 #'   vrt <- fm_vertices(fmexample$mesh, format = "sf")
@@ -713,7 +719,7 @@ fm_store_points <- function(loc, crs = NULL, info = NULL, format = NULL) {
 #'     geom_sf(data = vrt, color = "red")
 #' }
 #'
-fm_vertices <- function(x, format = NULL) {
+fm_vertices.fm_mesh_2d <- function(x, format = NULL, ...) {
   fm_store_points(
     loc = x$loc,
     info = data.frame(.vertex = seq_len(nrow(x$loc))),
@@ -722,21 +728,73 @@ fm_vertices <- function(x, format = NULL) {
   )
 }
 
-#' @title Extract triangle centroids from an `fm_mesh_2d`
+#' @export
+#' @rdname fm_vertices
+fm_vertices.fm_mesh_3d <- function(x, format = NULL, ...) {
+  fm_store_points(
+    loc = x$loc,
+    info = data.frame(.vertex = seq_len(nrow(x$loc))),
+    crs = fm_crs(x),
+    format = format
+  )
+}
+
+#' @export
+#' @rdname fm_vertices
+#' @param name The name to use for the augmented location tibble column in the
+#'   output. Must be provided for `fm_collect` objects.
+#' @examples
+#' vrt <- fm_vertices(
+#'   fm_collect(list(fmexample$mesh, fmexample$mesh)),
+#'   format = "sf",
+#'   name = "xyzzy"
+#' )
+#' vrt
+#'
+fm_vertices.fm_collect <- function(x, format = NULL, name = NULL, ...) {
+  format <- match.arg(format, "sf")
+  if (is.null(name)) {
+    stop("Argument 'name' must be provided for fm_collect vertices.")
+  }
+  do.call(
+    dplyr::bind_rows,
+    lapply(seq_along(x$fun_spaces), function(i) {
+      result <- fm_vertices(x$fun_spaces[[i]], format = format)
+      result <- tibble::as_tibble(result)
+      result <- dplyr::bind_cols(
+        tibble::tibble(
+          "{name}" := tibble::tibble(
+            loc = result$geometry,
+            index = i
+          )
+        ),
+        result[, setdiff(names(result), "geometry"), drop = FALSE]
+      )
+      result
+    })
+  )
+}
+
+#' @title Extract triangle centroids
 #'
 #' @description Computes the centroids of the triangles of an [fm_mesh_2d()]
-#' object.
+#' or [fm_collect()] object.
 #'
 #' @export
 #' @param x An `fm_mesh_2d` object.
 #' @param format character; `"sf"`, `"df"`, `"sp"`
+#' @param \dots Further arguments passed to methods
 #' @return
 #' An `sf`, `data.frame`, or `SpatialPointsDataFrame` object, with the vertex
 #' coordinates, and a `.triangle` column with the triangle indices.
 #'
 #' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @seealso [fm_vertices()]
-#'
+fm_centroids <- function(x, format = NULL, ...) {
+  UseMethod("fm_centroids")
+}
+#' @export
+#' @rdname fm_centroids
 #' @examples
 #' if (require("ggplot2", quietly = TRUE)) {
 #'   vrt <- fm_centroids(fmexample$mesh, format = "sf")
@@ -745,7 +803,7 @@ fm_vertices <- function(x, format = NULL) {
 #'     geom_sf(data = vrt, color = "red")
 #' }
 #'
-fm_centroids <- function(x, format = NULL) {
+fm_centroids.fm_mesh_2d <- function(x, format = NULL, ...) {
   ## Extract triangle centroids
   loc <- (x$loc[x$graph$tv[, 1], , drop = FALSE] +
     x$loc[x$graph$tv[, 2], , drop = FALSE] +
@@ -761,6 +819,57 @@ fm_centroids <- function(x, format = NULL) {
     info = data.frame(.triangle = seq_len(nrow(loc))),
     crs = fm_crs(x),
     format = format
+  )
+}
+#' @export
+#' @rdname fm_centroids
+fm_centroids.fm_mesh_3d <- function(x, format = NULL, ...) {
+  ## Extract triangle centroids
+  loc <- (x$loc[x$graph$tv[, 1], , drop = FALSE] +
+    x$loc[x$graph$tv[, 2], , drop = FALSE] +
+    x$loc[x$graph$tv[, 3], , drop = FALSE] +
+    x$loc[x$graph$tv[, 4], , drop = FALSE]) /
+    4
+
+  fm_store_points(
+    loc = loc,
+    info = data.frame(.tetrahedron = seq_len(nrow(loc))),
+    crs = fm_crs(x),
+    format = format
+  )
+}
+#' @export
+#' @rdname fm_centroids
+#' @inheritParams fm_vertices name
+#' @examples
+#' cen <- fm_centroids(
+#'   fm_collect(list(fmexample$mesh, fmexample$mesh)),
+#'   format = "sf",
+#'   name = "xyzzy"
+#' )
+#' cen
+#'
+fm_centroids.fm_collect <- function(x, format = NULL, name = NULL, ...) {
+  format <- match.arg(format, "sf")
+  if (is.null(name)) {
+    stop("Argument 'name' must be provided for fm_collect centroids.")
+  }
+  do.call(
+    dplyr::bind_rows,
+    lapply(seq_along(x$fun_spaces), function(i) {
+      result <- fm_centroids(x$fun_spaces[[i]], format = format)
+      result <- tibble::as_tibble(result)
+      result <- dplyr::bind_cols(
+        tibble::tibble(
+          "{name}" := tibble::tibble(
+            loc = result$geometry,
+            index = i
+          )
+        ),
+        result[, setdiff(names(result), "geometry"), drop = FALSE]
+      )
+      result
+    })
   )
 }
 

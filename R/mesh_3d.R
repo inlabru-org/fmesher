@@ -167,7 +167,8 @@ fm_as_mesh_3d.fm_mesh_3d <- function(x, ...) {
 
 
 #' @title Convert a 3D mesh to a 3D rgl triangulation
-#' @rawNamespace S3method(rgl::as.triangles3d, fm_mesh_3d)
+# @rawNamespace S3method(rgl::as.triangles3d, fm_mesh_3d)
+#' @exportS3Method rgl::as.triangles3d
 #' @description Extracts a matrix of coordinates of triangles, suitable for
 #'   passing to `rgl::triangles3d()`.
 #' @param obj An `fm_mesh_3d` object

@@ -2,21 +2,35 @@
 % Please edit documentation in R/mesh.R
 \name{fm_vertices}
 \alias{fm_vertices}
-\title{Extract vertex locations from an \code{fm_mesh_2d}}
+\alias{fm_vertices.fm_mesh_2d}
+\alias{fm_vertices.fm_mesh_3d}
+\alias{fm_vertices.fm_collect}
+\title{Extract vertex locations from a mesh}
 \usage{
-fm_vertices(x, format = NULL)
+fm_vertices(x, format = NULL, ...)
+
+\method{fm_vertices}{fm_mesh_2d}(x, format = NULL, ...)
+
+\method{fm_vertices}{fm_mesh_3d}(x, format = NULL, ...)
+
+\method{fm_vertices}{fm_collect}(x, format = NULL, name = NULL, ...)
 }
 \arguments{
-\item{x}{An \code{fm_mesh_2d} object.}
+\item{x}{A supported fmesher mesh object.}
 
 \item{format}{character; \code{"sf"}, \code{"df"}, \code{"sp"}}
+
+\item{\dots}{Further arguments passed to methods}
+
+\item{name}{The name to use for the augmented location tibble column in the
+output. Must be provided for \code{fm_collect} objects.}
 }
 \value{
 An \code{sf}, \code{data.frame}, or \code{SpatialPointsDataFrame} object, with the vertex
 coordinates, and a \code{.vertex} column with the vertex indices.
 }
 \description{
-Extracts the vertices of an \code{fm_mesh_2d} object.
+Extracts the vertices of a mesh object.
 }
 \examples{
 if (require("ggplot2", quietly = TRUE)) {
@@ -25,6 +39,13 @@ if (require("ggplot2", quietly = TRUE)) {
     geom_sf(data = fm_as_sfc(fmexample$mesh)) +
     geom_sf(data = vrt, color = "red")
 }
+
+vrt <- fm_vertices(
+  fm_collect(list(fmexample$mesh, fmexample$mesh)),
+  format = "sf",
+  name = "xyzzy"
+)
+vrt
 
 }
 \seealso{

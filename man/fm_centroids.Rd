@@ -2,14 +2,28 @@
 % Please edit documentation in R/mesh.R
 \name{fm_centroids}
 \alias{fm_centroids}
-\title{Extract triangle centroids from an \code{fm_mesh_2d}}
+\alias{fm_centroids.fm_mesh_2d}
+\alias{fm_centroids.fm_mesh_3d}
+\alias{fm_centroids.fm_collect}
+\title{Extract triangle centroids}
 \usage{
-fm_centroids(x, format = NULL)
+fm_centroids(x, format = NULL, ...)
+
+\method{fm_centroids}{fm_mesh_2d}(x, format = NULL, ...)
+
+\method{fm_centroids}{fm_mesh_3d}(x, format = NULL, ...)
+
+\method{fm_centroids}{fm_collect}(x, format = NULL, name = NULL, ...)
 }
 \arguments{
 \item{x}{An \code{fm_mesh_2d} object.}
 
 \item{format}{character; \code{"sf"}, \code{"df"}, \code{"sp"}}
+
+\item{\dots}{Further arguments passed to methods}
+
+\item{name}{The name to use for the augmented location tibble column in the
+output. Must be provided for \code{fm_collect} objects.}
 }
 \value{
 An \code{sf}, \code{data.frame}, or \code{SpatialPointsDataFrame} object, with the vertex
@@ -17,7 +31,7 @@ coordinates, and a \code{.triangle} column with the triangle indices.
 }
 \description{
 Computes the centroids of the triangles of an \code{\link[=fm_mesh_2d]{fm_mesh_2d()}}
-object.
+or \code{\link[=fm_collect]{fm_collect()}} object.
 }
 \examples{
 if (require("ggplot2", quietly = TRUE)) {
@@ -26,6 +40,13 @@ if (require("ggplot2", quietly = TRUE)) {
     geom_sf(data = fm_as_sfc(fmexample$mesh)) +
     geom_sf(data = vrt, color = "red")
 }
+
+cen <- fm_centroids(
+  fm_collect(list(fmexample$mesh, fmexample$mesh)),
+  format = "sf",
+  name = "xyzzy"
+)
+cen
 
 }
 \seealso{

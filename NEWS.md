@@ -1,5 +1,10 @@
 # fmesher (development version)
 
+## Improved features
+
+* Added support for `fm_collect` and `fm_mesh_3d` objects in `fm_vertices()`
+  and `fm_centroids()` (`0.8.0.9001`)
+
 # fmesher 0.8.0
 
 ## Improved features
