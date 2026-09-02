@@ -4,7 +4,7 @@
 \alias{fm_store_points}
 \title{Store points in different formats}
 \usage{
-fm_store_points(loc, crs = NULL, info = NULL, format = NULL)
+fm_store_points(loc, crs = NULL, info = NULL, format = NULL, name = NULL)
 }
 \arguments{
 \item{loc}{a coordinate matrix}
@@ -14,6 +14,9 @@ fm_store_points(loc, crs = NULL, info = NULL, format = NULL)
 \item{info}{An optional data.frame of additional data}
 
 \item{format}{character; \code{"sf"}, \code{"df"}, \code{"sp"}}
+
+\item{name}{character; If non-NULL, the name to use for the sf geometry
+column.}
 }
 \value{
 An \code{sf}, \code{data.frame}, or \code{SpatialPointsDataFrame} object, with

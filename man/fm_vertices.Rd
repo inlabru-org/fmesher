@@ -7,11 +7,11 @@
 \alias{fm_vertices.fm_collect}
 \title{Extract vertex locations from a mesh}
 \usage{
-fm_vertices(x, format = NULL, ...)
+fm_vertices(x, format = NULL, name = NULL, ...)
 
-\method{fm_vertices}{fm_mesh_2d}(x, format = NULL, ...)
+\method{fm_vertices}{fm_mesh_2d}(x, format = NULL, name = NULL, ...)
 
-\method{fm_vertices}{fm_mesh_3d}(x, format = NULL, ...)
+\method{fm_vertices}{fm_mesh_3d}(x, format = NULL, name = NULL, ...)
 
 \method{fm_vertices}{fm_collect}(x, format = NULL, name = NULL, ...)
 }
@@ -20,10 +20,11 @@ fm_vertices(x, format = NULL, ...)
 
 \item{format}{character; \code{"sf"}, \code{"df"}, \code{"sp"}}
 
-\item{\dots}{Further arguments passed to methods}
+\item{name}{character; If non-NULL, this overrides the default sf geometry
+column name.  When specified, it is also used as a prefix for the
+names of augmentation variables.}
 
-\item{name}{The name to use for the augmented location tibble column in the
-output. Must be provided for \code{fm_collect} objects.}
+\item{\dots}{Further arguments passed to methods}
 }
 \value{
 An \code{sf}, \code{data.frame}, or \code{SpatialPointsDataFrame} object, with the vertex
@@ -32,6 +33,12 @@ coordinates, and a \code{.vertex} column with the vertex indices.
 \description{
 Extracts the vertices of a mesh object.
 }
+\section{Methods (by class)}{
+\itemize{
+\item \code{fm_vertices(fm_collect)}: The result is augmented with a column "\if{html}{\out{<name>}}.index"
+with the index of the mesh in the \code{fm_collect} object.
+
+}}
 \examples{
 if (require("ggplot2", quietly = TRUE)) {
   vrt <- fm_vertices(fmexample$mesh, format = "sf")

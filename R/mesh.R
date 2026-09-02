@@ -639,15 +639,22 @@ fm_intersect <- function(mesh, poly) {
 #' @param crs CRS information to associate with the coordinates
 #' @param info An optional data.frame of additional data
 #' @param format character; `"sf"`, `"df"`, `"sp"`
-#' @return
-#' An `sf`, `data.frame`, or `SpatialPointsDataFrame` object, with
+#' @param name character; If non-NULL, the name to use for the sf geometry
+#'   column.
+#' @return An `sf`, `data.frame`, or `SpatialPointsDataFrame` object, with
 #' optional added information.
 #' @export
 #' @keywords internal
 #' @examples
 #' fm_store_points(fmexample$loc, format = "sf")
 #'
-fm_store_points <- function(loc, crs = NULL, info = NULL, format = NULL) {
+fm_store_points <- function(
+  loc,
+  crs = NULL,
+  info = NULL,
+  format = NULL,
+  name = NULL
+) {
   format <- match.arg(
     format,
     c("sf", "df", "sp")
@@ -672,19 +679,20 @@ fm_store_points <- function(loc, crs = NULL, info = NULL, format = NULL) {
       proj4string = fm_CRS(crs)
     )
   } else if (identical(format, "sf")) {
-    if (is.null(info)) {
-      points <- sf::st_as_sf(
-        points,
-        coords = seq_len(ncol(points)),
-        crs = crs
-      )
-    } else {
-      points <- sf::st_as_sf(
-        cbind(points, info),
-        coords = seq_len(ncol(points)),
-        crs = crs
-      )
+    name <- name %||% "geometry"
+    colnames(points) <-
+      paste0(name, c("x", "y", "z"))[seq_len(ncol(points))]
+    points <- tibble::as_tibble(points)
+    n_points <- ncol(points)
+    if (!is.null(info)) {
+      points <- dplyr::bind_cols(points, dplyr::as_tibble(info))
     }
+    points <- sf::st_as_sf(
+      points,
+      coords = seq_len(n_points),
+      crs = crs,
+      sf_column_name = name
+    )
   }
 
   points # return
@@ -698,6 +706,9 @@ fm_store_points <- function(loc, crs = NULL, info = NULL, format = NULL) {
 #' @export
 #' @param x A supported fmesher mesh object.
 #' @param format character; `"sf"`, `"df"`, `"sp"`
+#' @param name character; If non-NULL, this overrides the default sf geometry
+#'   column name.  When specified, it is also used as a prefix for the
+#'   names of augmentation variables.
 #' @param \dots Further arguments passed to methods
 #' @return
 #' An `sf`, `data.frame`, or `SpatialPointsDataFrame` object, with the vertex
@@ -706,7 +717,7 @@ fm_store_points <- function(loc, crs = NULL, info = NULL, format = NULL) {
 #' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @seealso [fm_centroids()]
 #'
-fm_vertices <- function(x, format = NULL, ...) {
+fm_vertices <- function(x, format = NULL, name = NULL, ...) {
   UseMethod("fm_vertices")
 }
 #' @export
@@ -719,30 +730,37 @@ fm_vertices <- function(x, format = NULL, ...) {
 #'     geom_sf(data = vrt, color = "red")
 #' }
 #'
-fm_vertices.fm_mesh_2d <- function(x, format = NULL, ...) {
+fm_vertices.fm_mesh_2d <- function(x, format = NULL, name = NULL, ...) {
+  name2 <- name %||% ""
   fm_store_points(
     loc = x$loc,
-    info = data.frame(.vertex = seq_len(nrow(x$loc))),
+    info = tibble::tibble(
+      "{name2}.vertex" := seq_len(nrow(x$loc))
+    ),
     crs = fm_crs(x),
-    format = format
+    format = format,
+    name = name
   )
 }
 
 #' @export
 #' @rdname fm_vertices
-fm_vertices.fm_mesh_3d <- function(x, format = NULL, ...) {
+fm_vertices.fm_mesh_3d <- function(x, format = NULL, name = NULL, ...) {
+  name2 <- name %||% ""
   fm_store_points(
     loc = x$loc,
-    info = data.frame(.vertex = seq_len(nrow(x$loc))),
+    info = tibble::tibble(
+      "{name2}.vertex" := seq_len(nrow(x$loc))
+    ),
     crs = fm_crs(x),
-    format = format
+    format = format,
+    name = name
   )
 }
 
 #' @export
-#' @rdname fm_vertices
-#' @param name The name to use for the augmented location tibble column in the
-#'   output. Must be provided for `fm_collect` objects.
+#' @describeIn fm_vertices The result is augmented with a column "<name>.index"
+#'   with the index of the mesh in the `fm_collect` object.
 #' @examples
 #' vrt <- fm_vertices(
 #'   fm_collect(list(fmexample$mesh, fmexample$mesh)),
@@ -753,25 +771,22 @@ fm_vertices.fm_mesh_3d <- function(x, format = NULL, ...) {
 #'
 fm_vertices.fm_collect <- function(x, format = NULL, name = NULL, ...) {
   format <- match.arg(format, "sf")
-  if (is.null(name)) {
-    stop("Argument 'name' must be provided for fm_collect vertices.")
-  }
+  name2 <- name %||% ""
   do.call(
     dplyr::bind_rows,
-    lapply(seq_along(x$fun_spaces), function(i) {
-      result <- fm_vertices(x$fun_spaces[[i]], format = format)
-      result <- tibble::as_tibble(result)
-      result <- dplyr::bind_cols(
-        tibble::tibble(
-          "{name}" := tibble::tibble(
-            loc = result$geometry,
-            index = i
+    lapply(
+      seq_along(x$fun_spaces),
+      function(i) {
+        result <- fm_vertices(x$fun_spaces[[i]], format = format, name = name)
+        result <- dplyr::bind_cols(
+          result,
+          tibble::tibble(
+            "{name2}.index" := i
           )
-        ),
-        result[, setdiff(names(result), "geometry"), drop = FALSE]
-      )
-      result
-    })
+        )
+        result
+      }
+    )
   )
 }
 
@@ -783,6 +798,7 @@ fm_vertices.fm_collect <- function(x, format = NULL, name = NULL, ...) {
 #' @export
 #' @param x An `fm_mesh_2d` object.
 #' @param format character; `"sf"`, `"df"`, `"sp"`
+#' @inheritParams fm_vertices name
 #' @param \dots Further arguments passed to methods
 #' @return
 #' An `sf`, `data.frame`, or `SpatialPointsDataFrame` object, with the vertex
@@ -790,11 +806,12 @@ fm_vertices.fm_collect <- function(x, format = NULL, name = NULL, ...) {
 #'
 #' @author Finn Lindgren <Finn.Lindgren@@gmail.com>
 #' @seealso [fm_vertices()]
-fm_centroids <- function(x, format = NULL, ...) {
+fm_centroids <- function(x, format = NULL, name = NULL, ...) {
   UseMethod("fm_centroids")
 }
 #' @export
-#' @rdname fm_centroids
+#' @describeIn fm_centroids The result is augmented with a column
+#'   "<name>.triangle"
 #' @examples
 #' if (require("ggplot2", quietly = TRUE)) {
 #'   vrt <- fm_centroids(fmexample$mesh, format = "sf")
@@ -803,7 +820,7 @@ fm_centroids <- function(x, format = NULL, ...) {
 #'     geom_sf(data = vrt, color = "red")
 #' }
 #'
-fm_centroids.fm_mesh_2d <- function(x, format = NULL, ...) {
+fm_centroids.fm_mesh_2d <- function(x, format = NULL, name = NULL, ...) {
   ## Extract triangle centroids
   loc <- (x$loc[x$graph$tv[, 1], , drop = FALSE] +
     x$loc[x$graph$tv[, 2], , drop = FALSE] +
@@ -814,16 +831,21 @@ fm_centroids.fm_mesh_2d <- function(x, format = NULL, ...) {
     loc <- loc / rowSums(loc^2)^0.5 * sum(x$loc[1, ]^2)^0.5
   }
 
+  name2 <- name %||% ""
   fm_store_points(
     loc = loc,
-    info = data.frame(.triangle = seq_len(nrow(loc))),
+    info = tibble::tibble(
+      "{name2}.triangle" := seq_len(nrow(loc))
+    ),
     crs = fm_crs(x),
-    format = format
+    format = format,
+    name = name
   )
 }
 #' @export
-#' @rdname fm_centroids
-fm_centroids.fm_mesh_3d <- function(x, format = NULL, ...) {
+#' @describeIn fm_centroids The result is augmented with a column
+#'   "<name>.tetra"
+fm_centroids.fm_mesh_3d <- function(x, format = NULL, name = NULL, ...) {
   ## Extract triangle centroids
   loc <- (x$loc[x$graph$tv[, 1], , drop = FALSE] +
     x$loc[x$graph$tv[, 2], , drop = FALSE] +
@@ -831,16 +853,19 @@ fm_centroids.fm_mesh_3d <- function(x, format = NULL, ...) {
     x$loc[x$graph$tv[, 4], , drop = FALSE]) /
     4
 
+  name2 <- name %||% ""
   fm_store_points(
     loc = loc,
-    info = data.frame(.tetrahedron = seq_len(nrow(loc))),
+    info = tibble::tibble(
+      "{name2}.tetra" := seq_len(nrow(loc))
+    ),
     crs = fm_crs(x),
     format = format
   )
 }
 #' @export
-#' @rdname fm_centroids
-#' @inheritParams fm_vertices name
+#' @describeIn fm_centroids The result is augmented with a column "<name>.index"
+#'   with the index of the mesh in the `fm_collect` object.
 #' @examples
 #' cen <- fm_centroids(
 #'   fm_collect(list(fmexample$mesh, fmexample$mesh)),
@@ -851,22 +876,16 @@ fm_centroids.fm_mesh_3d <- function(x, format = NULL, ...) {
 #'
 fm_centroids.fm_collect <- function(x, format = NULL, name = NULL, ...) {
   format <- match.arg(format, "sf")
-  if (is.null(name)) {
-    stop("Argument 'name' must be provided for fm_collect centroids.")
-  }
+  name2 <- name %||% ""
   do.call(
     dplyr::bind_rows,
     lapply(seq_along(x$fun_spaces), function(i) {
-      result <- fm_centroids(x$fun_spaces[[i]], format = format)
-      result <- tibble::as_tibble(result)
+      result <- fm_centroids(x$fun_spaces[[i]], format = format, name = name)
       result <- dplyr::bind_cols(
+        result,
         tibble::tibble(
-          "{name}" := tibble::tibble(
-            loc = result$geometry,
-            index = i
-          )
-        ),
-        result[, setdiff(names(result), "geometry"), drop = FALSE]
+          "{name2}.index" := i
+        )
       )
       result
     })

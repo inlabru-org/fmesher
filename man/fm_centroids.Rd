@@ -7,11 +7,11 @@
 \alias{fm_centroids.fm_collect}
 \title{Extract triangle centroids}
 \usage{
-fm_centroids(x, format = NULL, ...)
+fm_centroids(x, format = NULL, name = NULL, ...)
 
-\method{fm_centroids}{fm_mesh_2d}(x, format = NULL, ...)
+\method{fm_centroids}{fm_mesh_2d}(x, format = NULL, name = NULL, ...)
 
-\method{fm_centroids}{fm_mesh_3d}(x, format = NULL, ...)
+\method{fm_centroids}{fm_mesh_3d}(x, format = NULL, name = NULL, ...)
 
 \method{fm_centroids}{fm_collect}(x, format = NULL, name = NULL, ...)
 }
@@ -20,10 +20,11 @@ fm_centroids(x, format = NULL, ...)
 
 \item{format}{character; \code{"sf"}, \code{"df"}, \code{"sp"}}
 
-\item{\dots}{Further arguments passed to methods}
+\item{name}{character; If non-NULL, this overrides the default sf geometry
+column name.  When specified, it is also used as a prefix for the
+names of augmentation variables.}
 
-\item{name}{The name to use for the augmented location tibble column in the
-output. Must be provided for \code{fm_collect} objects.}
+\item{\dots}{Further arguments passed to methods}
 }
 \value{
 An \code{sf}, \code{data.frame}, or \code{SpatialPointsDataFrame} object, with the vertex
@@ -33,6 +34,18 @@ coordinates, and a \code{.triangle} column with the triangle indices.
 Computes the centroids of the triangles of an \code{\link[=fm_mesh_2d]{fm_mesh_2d()}}
 or \code{\link[=fm_collect]{fm_collect()}} object.
 }
+\section{Methods (by class)}{
+\itemize{
+\item \code{fm_centroids(fm_mesh_2d)}: The result is augmented with a column
+"\if{html}{\out{<name>}}.triangle"
+
+\item \code{fm_centroids(fm_mesh_3d)}: The result is augmented with a column
+"\if{html}{\out{<name>}}.tetra"
+
+\item \code{fm_centroids(fm_collect)}: The result is augmented with a column "\if{html}{\out{<name>}}.index"
+with the index of the mesh in the \code{fm_collect} object.
+
+}}
 \examples{
 if (require("ggplot2", quietly = TRUE)) {
   vrt <- fm_centroids(fmexample$mesh, format = "sf")
