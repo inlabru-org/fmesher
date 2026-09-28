@@ -123,8 +123,9 @@ associated \code{\link[=fm_int_mesh_2d]{fm_int_mesh_2d()}} method is supported.
 
 \item \code{fm_int(fm_collect)}: \link{fm_collect} integration. Any domain type collection
 class with an associated \code{\link[=fm_int]{fm_int()}} method is supported. The output format
-for the integration points is a tibble with columns \code{loc} and \code{index},
-suitable for the \code{loc} input of the \link{fm_basis.fm_collect} method.
+for the integration points is a tibble with columns \verb{<name>} and
+\verb{<name>.index}, suitable for the \code{loc} and \code{index} columns of \code{tibble} input
+to the \link{fm_basis.fm_collect} method.
 If non-NULL, the \code{samplers} input should either be a tibble with columns
 \code{loc} (per-space samplers) and \code{index} (space index), or a sampler column to
 be applied to the entire domain.

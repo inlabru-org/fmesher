@@ -2091,8 +2091,9 @@ fm_int_mesh_2d.fm_segm <- function(
 #' @export
 #' @describeIn fm_int [fm_collect] integration. Any domain type collection
 #' class with an associated [fm_int()] method is supported. The output format
-#' for the integration points is a tibble with columns `loc` and `index`,
-#' suitable for the `loc` input of the [fm_basis.fm_collect] method.
+#' for the integration points is a tibble with columns `<name>` and
+#' `<name>.index`, suitable for the `loc` and `index` columns of `tibble` input
+#' to the [fm_basis.fm_collect] method.
 #' If non-NULL, the `samplers` input should either be a tibble with columns
 #' `loc` (per-space samplers) and `index` (space index), or a sampler column to
 #' be applied to the entire domain.
@@ -2121,6 +2122,8 @@ fm_int.fm_collect <- function(domain, samplers = NULL, name = NULL, ...) {
     )
   }
 
+  name2 <- name %||% ""
+  name2 <- glue::glue("{name2}.index")
   int <- list(nrow(samplers))
   for (row in seq_len(nrow(samplers))) {
     int[[row]] <- fm_int(
@@ -2132,10 +2135,7 @@ fm_int.fm_collect <- function(domain, samplers = NULL, name = NULL, ...) {
     if (inherits(int[[row]], "sf")) {
       int[[row]] <- tibble::as_tibble(int[[row]])
     }
-    int[[row]][[name]] <- tibble::tibble(
-      loc = int[[row]][[name]],
-      index = samplers$index[row]
-    )
+    int[[row]][[name2]] <- samplers$index[row]
   }
   ips <- new_fm_int(
     do.call(dplyr::bind_rows, int),
