@@ -73,6 +73,9 @@ m_nested <- fm_collect(list(
 fm_evaluator(m_nested, loc = tibble::tibble(loc = cbind(0, 0), index = cbind(3,2)))
 names(fm_fem(m))
 fm_diameter(m)
+fm_bbox(m)
+fm_diameter(m, multi = TRUE)
+fm_bbox(m, multi = TRUE)
 
 }
 \seealso{

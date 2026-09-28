@@ -59,7 +59,7 @@ fm_bbox(...)
 
 \method{fm_bbox}{fm_tensor}(x, ...)
 
-\method{fm_bbox}{fm_collect}(x, ..., .depth = 0L)
+\method{fm_bbox}{fm_collect}(x, ..., multi = FALSE, .depth = if (multi) 1L else 0L)
 
 \method{fm_bbox}{sf}(x, ...)
 
@@ -82,12 +82,17 @@ fm_as_bbox_list(x, ...)
 
 \item{x}{\code{fm_bbox} object from which to extract element(s)}
 
+\item{multi}{logical. controlling the default \code{.depth}value for \link{fm_collect}.
+If \code{TRUE}, set default \code{.depth} to, otherwise \code{0L}. Default \code{FALSE}.}
+
 \item{.depth}{For nested \code{fm_collect} collections, the bounding boxes are
 combined for depths greater that \code{.depth} into a single bounding box for
-each outer collection, and otherwise return an \link{fm_bbox_list}. Default \code{0L},
-to collapse all the levels into a single bounding box. Use \code{.depth = 1L}
+each outer collection, and otherwise return an \link{fm_bbox_list}.
+Default depends on the \code{multi} argument.
+For \code{0L} (for the default, \code{multi = FALSE}), collapses all the levels into a
+single bounding box. Use \code{multi = TRUE} or \code{.depth = 1L}
 to return a bounding box for each outer level collection. Values greater
-than \code{.depth > 1L} are unlikely to be useful, as it will yield a single
+than \code{1L} are unlikely to be useful, as it will yield a single
 \code{fm_bbox_list} with the deeper level bounding boxes concatenated.
 For \code{fm_bbox_list} output, use \code{fm_bbox} on the result to collapse the
 bounding boxes into a single bounding box.}

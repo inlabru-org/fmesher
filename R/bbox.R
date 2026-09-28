@@ -182,15 +182,24 @@ fm_bbox.fm_tensor <- function(x, ...) {
 #' @rdname fm_bbox
 #' @param .depth For nested `fm_collect` collections, the bounding boxes are
 #'  combined for depths greater that `.depth` into a single bounding box for
-#'  each outer collection, and otherwise return an [fm_bbox_list]. Default `0L`,
-#'  to collapse all the levels into a single bounding box. Use `.depth = 1L`
+#'  each outer collection, and otherwise return an [fm_bbox_list].
+#'  Default depends on the `multi` argument.
+#'  For `0L` (for the default, `multi = FALSE`), collapses all the levels into a
+#'  single bounding box. Use `multi = TRUE` or `.depth = 1L`
 #'  to return a bounding box for each outer level collection. Values greater
-#'  than `.depth > 1L` are unlikely to be useful, as it will yield a single
+#'  than `1L` are unlikely to be useful, as it will yield a single
 #' `fm_bbox_list` with the deeper level bounding boxes concatenated.
 #'  For `fm_bbox_list` output, use `fm_bbox` on the result to collapse the
 #'  bounding boxes into a single bounding box.
+#' @param multi logical. controlling the default `.depth`value for [fm_collect].
+#'   If `TRUE`, set default `.depth` to, otherwise `0L`. Default `FALSE`.
 #' @export
-fm_bbox.fm_collect <- function(x, ..., .depth = 0L) {
+fm_bbox.fm_collect <- function(
+  x,
+  ...,
+  multi = FALSE,
+  .depth = if (multi) 1L else 0L
+) {
   box <-
     do.call(
       c,
