@@ -49,16 +49,16 @@
 #' fm_diameter(m)
 #'
 #' m_nested <- fm_collect(list(
-#'  A = fm_collect(list(
-#'   A1 = fmexample$mesh,
-#'   A2 = fmexample$mesh
+#'   A = fm_collect(list(
+#'     A1 = fmexample$mesh,
+#'     A2 = fmexample$mesh
 #'   )),
 #'   B = fm_collect(list(
-#'   B1 = fmexample$mesh,
-#'   B2 = fmexample$mesh,
-#'   B3 = fmexample$mesh
+#'     B1 = fmexample$mesh,
+#'     B2 = fmexample$mesh,
+#'     B3 = fmexample$mesh
 #'   ))
-#'   ))
+#' ))
 #'
 #' fm_evaluator(
 #'   m_nested,
