@@ -40,7 +40,7 @@ Methods for constructing and manipulating \code{fm_list} objects.
 \item \code{c(fm_list)}: The \code{...} arguments should be coercible to \code{fm_list}
 objects.
 
-\item \code{[}: Extract sub-list
+\item \code{fm_list[]}: Extract sub-list
 
 }}
 \section{Functions}{

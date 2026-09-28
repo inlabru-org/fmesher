@@ -8,6 +8,7 @@
 \alias{fm_bbox.matrix}
 \alias{fm_bbox.Matrix}
 \alias{fm_bbox.fm_bbox}
+\alias{fm_bbox.fm_bbox_list}
 \alias{fm_bbox.fm_mesh_1d}
 \alias{fm_bbox.fm_mesh_2d}
 \alias{fm_bbox.fm_mesh_3d}
@@ -24,6 +25,7 @@
 \alias{[.fm_bbox}
 \alias{c.fm_bbox}
 \alias{fm_as_bbox_list}
+\alias{fm_bbox_list}
 \title{Bounding box class}
 \usage{
 fm_bbox(...)
@@ -41,6 +43,8 @@ fm_bbox(...)
 
 \method{fm_bbox}{fm_bbox}(x, ...)
 
+\method{fm_bbox}{fm_bbox_list}(x, ...)
+
 \method{fm_bbox}{fm_mesh_1d}(x, ...)
 
 \method{fm_bbox}{fm_mesh_2d}(x, ...)
@@ -55,7 +59,7 @@ fm_bbox(...)
 
 \method{fm_bbox}{fm_tensor}(x, ...)
 
-\method{fm_bbox}{fm_collect}(x, ...)
+\method{fm_bbox}{fm_collect}(x, ..., .depth = 0L)
 
 \method{fm_bbox}{sf}(x, ...)
 
@@ -78,6 +82,16 @@ fm_as_bbox_list(x, ...)
 
 \item{x}{\code{fm_bbox} object from which to extract element(s)}
 
+\item{.depth}{For nested \code{fm_collect} collections, the bounding boxes are
+combined for depths greater that \code{.depth} into a single bounding box for
+each outer collection, and otherwise return an \link{fm_bbox_list}. Default \code{0L},
+to collapse all the levels into a single bounding box. Use \code{.depth = 1L}
+to return a bounding box for each outer level collection. Values greater
+than \code{.depth > 1L} are unlikely to be useful, as it will yield a single
+\code{fm_bbox_list} with the deeper level bounding boxes concatenated.
+For \code{fm_bbox_list} output, use \code{fm_bbox} on the result to collapse the
+bounding boxes into a single bounding box.}
+
 \item{i}{indices specifying elements to extract}
 
 \item{.join}{logical; if \code{TRUE}, concatenate the bounding boxes into a single
@@ -99,7 +113,7 @@ precomputed interval information, stored as a list of 2-vector ranges,
 }}
 \section{Methods (by generic)}{
 \itemize{
-\item \code{[}: Extract sub-list
+\item \code{fm_bbox[]}: Extract sub-list
 
 \item \code{c(fm_bbox)}: The \code{...} arguments should be \code{fm_bbox} objects, or
 coercible with \code{fm_as_bbox(list(...))}.

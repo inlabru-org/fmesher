@@ -246,12 +246,13 @@ fm_basis.fm_tensor <- function(x, loc, weights = NULL, ..., full = FALSE) {
 fm_basis.fm_collect <- function(x, loc, weights = NULL, ..., full = FALSE) {
   loc_names <- names(loc)
   if (
-    !is.null(loc_names) &&
-      (!("loc" %in% loc_names) || !("index" %in% loc_names))
+    (!tibble::is_tibble(loc) && !is.list(loc)) ||
+      (!is.null(loc_names) &&
+        (!("loc" %in% loc_names) || !("index" %in% loc_names)))
   ) {
     stop(
       paste0(
-        "Location data for fm_collect must have elements `loc` and ",
+        "Location data for fm_basis<fm_collect> must have elements `loc` and ",
         "`index`.\n",
         "Found: ",
         paste0(names(loc), collapse = ", ")
@@ -274,28 +275,61 @@ fm_basis.fm_collect <- function(x, loc, weights = NULL, ..., full = FALSE) {
     }
   }
 
-  if (is.numeric(loc[["index"]]) && !is.integer(loc[["index"]])) {
-    loc[["index"]] <- as.integer(loc[["index"]])
+  if (is.null(loc[["loc"]])) {
+    stop(
+      "Location data for fm_basis<fm_collect> must have a ",
+      "non-NULL `loc` element."
+    )
   }
-  if (!is.null(names(x[["fun_spaces"]]))) {
-    if (is.factor(loc[["index"]])) {
-      loc[["index"]] <- as.character(loc[["index"]])
-    }
-    if (is.character(loc[["index"]])) {
-      # Convert character indices to integer
-      loc[["index"]] <- match(loc[["index"]], names(x[["fun_spaces"]]))
-    }
+  if (is.null(loc[["index"]])) {
+    stop(
+      "Location data for fm_basis<fm_collect> must have a ",
+      "non-NULL `index` element."
+    )
+  }
+
+  if (is.matrix(loc[["index"]])) {
+    loc_index <- loc[["index"]][, 1]
+  } else {
+    loc_index <- loc[["index"]]
+  }
+
+  if (is.numeric(loc_index) && !is.integer(loc_index)) {
+    storage.mode(loc_index) <- "integer"
+  }
+  if (
+    is.null(names(x[["fun_spaces"]])) &&
+      (is.factor(loc_index) || is.character(loc_index))
+  ) {
+    stop(
+      "Function space collection has no names, but location index is ",
+      "factor or character. Please provide integer indices instead."
+    )
+  }
+  if (is.factor(loc_index)) {
+    loc_index <- as.character(loc_index)
+  }
+  if (is.character(loc_index)) {
+    # Convert character indices to integer
+    loc_index <- match(loc_index, names(x[["fun_spaces"]]))
   }
 
   idx <- seq_along(x[["fun_spaces"]])
-  valid <- loc[["index"]] %in% idx
+  valid <- loc_index %in% idx
 
   proj <- lapply(
     idx,
     function(k) {
+      sub_rows <- loc_index == k
+      if (inherits(x[["fun_spaces"]][[k]], "fm_collect")) {
+        loc_subset <- loc[sub_rows, , drop = FALSE]
+        loc_subset$index <- loc_subset$index[, -1, drop = FALSE]
+      } else {
+        loc_subset <- loc[sub_rows, , drop = FALSE][["loc"]]
+      }
       fm_basis(
         x[["fun_spaces"]][[k]],
-        loc = loc[loc[["index"]] == k, , drop = FALSE][["loc"]],
+        loc = loc_subset,
         full = TRUE
       )
     }
@@ -306,7 +340,7 @@ fm_basis.fm_collect <- function(x, loc, weights = NULL, ..., full = FALSE) {
   ok <- do.call(c, lapply(proj, function(xx) xx[["ok"]]))
 
   # Reorder to original order and fill in invalid rows
-  block_order <- order(loc[["index"]][valid])
+  block_order <- order(loc_index[valid])
   reorder <- order(block_order)
   A_ <- A[reorder, , drop = FALSE]
   ok_ <- ok[reorder]

@@ -103,6 +103,22 @@ fm_bbox.fm_bbox <- function(x, ...) {
 
 #' @rdname fm_bbox
 #' @export
+fm_bbox.fm_bbox_list <- function(x, ...) {
+  if (length(unique(lengths(x))) > 1L) {
+    stop("All bounding boxes in the list must have the same length.")
+  }
+  bb <- unclass(x[[1]])
+  for (k in seq_along(x)[-1]) {
+    for (j in seq_along(bb)) {
+      vals <- unlist(x[[k]][[j]])
+      bb[[j]] <- c(min(c(bb[[j]], vals)), max(c(bb[[j]], vals)))
+    }
+  }
+  fm_bbox(bb, .join = TRUE)
+}
+
+#' @rdname fm_bbox
+#' @export
 fm_bbox.fm_mesh_1d <- function(x, ...) {
   fm_bbox(x[["interval"]])
 }
@@ -164,9 +180,32 @@ fm_bbox.fm_tensor <- function(x, ...) {
 }
 
 #' @rdname fm_bbox
+#' @param .depth For nested `fm_collect` collections, the bounding boxes are
+#'  combined for depths greater that `.depth` into a single bounding box for
+#'  each outer collection, and otherwise return an [fm_bbox_list]. Default `0L`,
+#'  to collapse all the levels into a single bounding box. Use `.depth = 1L`
+#'  to return a bounding box for each outer level collection. Values greater
+#'  than `.depth > 1L` are unlikely to be useful, as it will yield a single
+#' `fm_bbox_list` with the deeper level bounding boxes concatenated.
+#'  For `fm_bbox_list` output, use `fm_bbox` on the result to collapse the
+#'  bounding boxes into a single bounding box.
 #' @export
-fm_bbox.fm_collect <- function(x, ...) {
-  do.call(c, c(lapply(x[["fun_spaces"]], fm_bbox), list(.join = FALSE)))
+fm_bbox.fm_collect <- function(x, ..., .depth = 0L) {
+  box <-
+    do.call(
+      c,
+      c(
+        lapply(
+          x[["fun_spaces"]],
+          function(xx) fm_bbox(xx, .depth = .depth - 1L)
+        ),
+        list(.join = FALSE)
+      )
+    )
+  if (.depth <= 0L) {
+    box <- fm_bbox(box)
+  }
+  box
 }
 
 #' @rdname fm_bbox
@@ -238,6 +277,7 @@ fm_as_bbox <- function(x, ...) {
 
 #' @describeIn fm_bbox Convert a list to a `fm_bbox_list` object, with
 #' each element converted to an `fm_bbox` object.
+#' @aliases fm_bbox_list
 #' @export
 #' @examples
 #' m <- fm_as_bbox_list(list(

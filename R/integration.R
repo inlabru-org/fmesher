@@ -2101,6 +2101,9 @@ fm_int.fm_collect <- function(domain, samplers = NULL, name = NULL, ...) {
     stop("Argument 'name' must be provided for fm_collect integration.")
   }
 
+  # Check for nested collections
+  sizes <- domain$fun_spaces_sizes %||% length(domain$fun_spaces)
+
   if (is.null(samplers)) {
     samplers <- tibble::tibble(
       loc = rep(list(NULL), length(domain$fun_spaces)),

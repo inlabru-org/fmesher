@@ -17,14 +17,26 @@ A \code{fm_collect} or \code{fm_collect_list} object.
 Elements of \code{fm_collect}:
 \describe{
 \item{fun_spaces}{\code{fm_list} of function space objects}
+\item{fun_spaces_lengths}{\code{integer} with the length of the \code{fun_spaces} list.
+For nested collections, a list with elements of the same type, including
+potentially nested lists for multiple nesting layers.}
 \item{manifold}{character; manifold type summary, obtained from the
 function spaces.}
 }
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-Collection function spaces. The interface and object storage model
-is experimental and may change.
+Collection function spaces. Nested collections are allowed.
+The interface and object storage model is experimental and may change.
+}
+\details{
+Coordinate input is of the form of a \code{list} or \code{tibble} with columns
+\code{loc} and \code{index}. The \code{loc} column contains the coordinates of the
+evaluation points in the format of the contained spaces, and the \code{index}
+column is a vector or matrix (for nested collections) that contains the
+index of the function space in the collection to which each point belongs.
+For nested collections, the \code{index} column is a matrix with one column per
+nesting level.
 }
 \examples{
 m <- fm_collect(list(
@@ -45,6 +57,23 @@ fm_basis(m, loc = tibble::tibble(
 fm_evaluator(m, loc = tibble::tibble(loc = cbind(0, 0), index = 2))
 names(fm_fem(m))
 fm_diameter(m)
+
+m_nested <- fm_collect(list(
+ A = fm_collect(list(
+  A1 = fmexample$mesh,
+  A2 = fmexample$mesh
+  )),
+  B = fm_collect(list(
+  B1 = fmexample$mesh,
+  B2 = fmexample$mesh,
+  B3 = fmexample$mesh
+  ))
+  ))
+
+fm_evaluator(m_nested, loc = tibble::tibble(loc = cbind(0, 0), index = cbind(3,2)))
+names(fm_fem(m))
+fm_diameter(m)
+
 }
 \seealso{
 Other object creation and conversion:

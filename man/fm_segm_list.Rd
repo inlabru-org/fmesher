@@ -31,7 +31,7 @@ A \code{fm_segm_list} object
 \item \code{c(fm_segm_list)}: The \code{...} arguments should be coercible to
 \code{fm_segm_list} objects.
 
-\item \code{[}: Extract sub-list
+\item \code{fm_segm_list[]}: Extract sub-list
 
 }}
 \section{Functions}{

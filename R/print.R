@@ -456,7 +456,7 @@ print.fm_collect <- function(x, ..., digits = NULL, verbose = FALSE) {
   cat("fm_collect object:\n", sep = "")
   cat("  Manifold:\t", ret$manifold, " x ", ret$size, "\n", sep = "")
   cat("  Bounding boxes:\n", sep = "")
-  print(fm_bbox(x), digits = digits, verbose = FALSE)
+  print(fm_bbox(x, .depth = 1L), digits = digits, verbose = FALSE)
   cat(
     "  Basis d.o.f.:\t",
     fm_dof(x),
