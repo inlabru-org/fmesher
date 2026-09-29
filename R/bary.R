@@ -524,11 +524,11 @@ fm_bary.fm_lattice_Nd <- function(mesh, loc, ...) {
 
 #' @export
 #' @describeIn fm_bary Constructs `fm_bary` information for a `fm_collect`
-#'   function space. The `loc` argument must be a `list` or `tibble` with elements
-#'   `loc` (the locations) and `index` (the indices into the function space
-#'   collection). The result has class `c("fm_bary_collect", "fm_bary")` where
-#'   the standard `fm_bary`result is augmented with an element `collect.index`
-#'   which is a copy of the `index`variable from the input data.
+#'   function space. The `loc` argument must be a `list` or `tibble` with
+#'   elements `loc` (the locations) and `index` (the indices into the function
+#'   space collection). The result has class `c("fm_bary_collect", "fm_bary")`
+#'   where the standard `fm_bary`result is augmented with an element
+#'   `collect.index` which is a copy of the `index`variable from the input data.
 #' @importFrom rlang .env
 fm_bary.fm_collect <- function(mesh, loc, ...) {
   loc_names <- names(loc)

@@ -116,11 +116,11 @@ coordinates). Points that are outside the lattice are given \code{NA} entries in
 \code{index} and \code{where}.
 
 \item \code{fm_bary(fm_collect)}: Constructs \code{fm_bary} information for a \code{fm_collect}
-function space. The \code{loc} argument must be a \code{list} or \code{tibble} with elements
-\code{loc} (the locations) and \code{index} (the indices into the function space
-collection). The result has class \code{c("fm_bary_collect", "fm_bary")} where
-the standard \code{fm_bary}result is augmented with an element \code{collect.index}
-which is a copy of the \code{index}variable from the input data.
+function space. The \code{loc} argument must be a \code{list} or \code{tibble} with
+elements \code{loc} (the locations) and \code{index} (the indices into the function
+space collection). The result has class \code{c("fm_bary_collect", "fm_bary")}
+where the standard \code{fm_bary}result is augmented with an element
+\code{collect.index} which is a copy of the \code{index}variable from the input data.
 
 }}
 \examples{
