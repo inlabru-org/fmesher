@@ -71,6 +71,7 @@
 #' fm_diameter(m, multi = TRUE)
 #' fm_bbox(m, multi = TRUE)
 #'
+#' fm_int(m_nested, name = "geometry")
 fm_collect <- function(x, ...) {
   m <- structure(
     list(
@@ -97,8 +98,7 @@ fm_collect <- function(x, ...) {
     }
     1L + max(vapply(mm$fun_spaces, nesting_depth, 1L))
   }
-  nd <- nesting_depth(m$fun_spaces)
-  m$fun_spaces_nesting_depth <- nd
+  m$fun_spaces_nesting_depth <- nesting_depth(m)
   fs_lengths <- function(mm) {
     if (!inherits(mm, "fm_collect")) {
       return(1L)

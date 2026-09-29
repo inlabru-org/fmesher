@@ -81,6 +81,7 @@ fm_bbox(m)
 fm_diameter(m, multi = TRUE)
 fm_bbox(m, multi = TRUE)
 
+fm_int(m_nested, name = "geometry")
 }
 \seealso{
 Other object creation and conversion:

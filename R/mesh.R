@@ -772,17 +772,18 @@ fm_vertices.fm_mesh_3d <- function(x, format = NULL, name = NULL, ...) {
 fm_vertices.fm_collect <- function(x, format = NULL, name = NULL, ...) {
   format <- match.arg(format, "sf")
   name2 <- name %||% ""
+  name2 <- paste0(name2, ".index")
   do.call(
     dplyr::bind_rows,
     lapply(
       seq_along(x$fun_spaces),
       function(i) {
         result <- fm_vertices(x$fun_spaces[[i]], format = format, name = name)
-        result <- dplyr::bind_cols(
+        result <- fm_collect_augment_nested_index(
+          x,
           result,
-          tibble::tibble(
-            "{name2}.index" := i
-          )
+          name2,
+          values = rep(i, nrow(result))
         )
         result
       }
@@ -863,6 +864,37 @@ fm_centroids.fm_mesh_3d <- function(x, format = NULL, name = NULL, ...) {
     format = format
   )
 }
+
+fm_collect_augment_nested_index <- function(x, data, name_index, values) {
+  if (x$fun_spaces_nesting_depth %||% 1L > 1L) {
+    if (name_index %in% names(data)) {
+      idx <- data[[name_index]]
+      if (!is.matrix(idx)) {
+        idx <- as.matrix(idx)
+      }
+      if (ncol(idx) < (x$fun_spaces_nesting_depth %||% 0L)) {
+        idx <- cbind(
+          idx,
+          matrix(
+            NA_integer_,
+            nrow(data),
+            (x$fun_spaces_nesting_depth %||% 0L) - ncol(idx)
+          )
+        )
+      }
+    } else {
+      idx <- matrix(
+        NA_integer_,
+        nrow(data),
+        x$fun_spaces_nesting_depth %||% 0L
+      )
+    }
+  } else {
+    idx <- matrix(NA_integer_, nrow(data), 0L)
+  }
+  data[[name_index]] <- cbind(values, idx)
+  data
+}
 #' @export
 #' @describeIn fm_centroids The result is augmented with a column "<name>.index"
 #'   with the index of the mesh in the `fm_collect` object.
@@ -877,15 +909,16 @@ fm_centroids.fm_mesh_3d <- function(x, format = NULL, name = NULL, ...) {
 fm_centroids.fm_collect <- function(x, format = NULL, name = NULL, ...) {
   format <- match.arg(format, "sf")
   name2 <- name %||% ""
+  name2 <- paste0(name2, ".index")
   do.call(
     dplyr::bind_rows,
     lapply(seq_along(x$fun_spaces), function(i) {
       result <- fm_centroids(x$fun_spaces[[i]], format = format, name = name)
-      result <- dplyr::bind_cols(
+      result <- fm_collect_augment_nested_index(
+        x,
         result,
-        tibble::tibble(
-          "{name2}.index" := i
-        )
+        name2,
+        values = rep(i, nrow(result))
       )
       result
     })

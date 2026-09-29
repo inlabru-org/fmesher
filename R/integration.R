@@ -2105,37 +2105,74 @@ fm_int.fm_collect <- function(domain, samplers = NULL, name = NULL, ...) {
   # Check for nested collections
   sizes <- domain$fun_spaces_sizes %||% length(domain$fun_spaces)
 
+  depth <- domain$fun_spaces_nesting_depth %||% 1L
   if (is.null(samplers)) {
     samplers <- tibble::tibble(
-      loc = rep(list(NULL), length(domain$fun_spaces)),
-      index = seq_along(domain$fun_spaces)
+      loc = list(NULL),
+      index = matrix(NA_integer_, 1L, depth)
     )
-  } else if (
-    is.data.frame(samplers) &&
-      all(c("loc", "index") %in% names(samplers))
-  ) {
-    # Already in the correct format
-  } else {
+  }
+  if (inherits(samplers, "sfc")) {
     samplers <- tibble::tibble(
-      loc = rep(samplers, length(domain$fun_spaces)),
-      index = seq_along(domain$fun_spaces)
+      loc = samplers,
+      index = matrix(NA_integer_, 1L, depth)
     )
+  }
+  if (!tibble::is_tibble(samplers) && !inherits(samplers, "sf")) {
+    if (!("loc" %in% names(samplers))) {
+      stop("Missing 'loc' element in fm_collect 'samplers' input.")
+    }
+    samplers <- tibble::as_tibble(samplers)
+  }
+  # From here, have tibble or sf
+  if (!("index" %in% names(samplers))) {
+    samplers$index <- matrix(NA_integer_, nrow(samplers), depth)
   }
 
   name2 <- name %||% ""
-  name2 <- glue::glue("{name2}.index")
-  int <- list(nrow(samplers))
+  name2 <- paste0(name2, ".index")
+  int <- vector("list", nrow(samplers))
   for (row in seq_len(nrow(samplers))) {
-    int[[row]] <- fm_int(
-      domain$fun_spaces[[samplers$index[row]]],
-      samplers$loc[[row]],
-      name = name,
-      ...
-    )
-    if (inherits(int[[row]], "sf")) {
-      int[[row]] <- tibble::as_tibble(int[[row]])
+    if (is.na(samplers$index[row, 1])) {
+      row_idx_ <- seq_along(domain$fun_spaces)
+    } else {
+      row_idx_ <- samplers$index[row, 1]
     }
-    int[[row]][[name2]] <- samplers$index[row]
+    int_row <- vector("list", length(row_idx_))
+    sub_sampler <- samplers[row, , drop = FALSE]
+    sub_sampler$index <- sub_sampler$index[, -1, drop = FALSE]
+    for (row_idx in seq_along(row_idx_)) {
+      if (inherits(domain$fun_spaces[[row_idx_[row_idx]]], "fm_collect")) {
+        int_row[[row_idx]] <- fm_int(
+          domain$fun_spaces[[row_idx_[row_idx]]],
+          sub_sampler,
+          name = name,
+          ...
+        )
+      } else {
+        int_row[[row_idx]] <- fm_int(
+          domain$fun_spaces[[row_idx_[row_idx]]],
+          sub_sampler$loc[[1L]],
+          name = name,
+          ...
+        )
+      }
+      if (inherits(int_row[[row_idx]], "sf")) {
+        int_row[[row_idx]] <- tibble::as_tibble(int_row[[row_idx]])
+      }
+      int_row[[row_idx]] <- fm_collect_augment_nested_index(
+        domain,
+        int_row[[row_idx]],
+        name2,
+        row_idx_[row_idx]
+      )
+      int_row[[row_idx]]$.block <- row
+      int_row[[row_idx]]$.block_origin <- NULL
+    }
+    int[[row]] <- new_fm_int(
+      do.call(dplyr::bind_rows, int_row),
+      name = name
+    )
   }
   ips <- new_fm_int(
     do.call(dplyr::bind_rows, int),
