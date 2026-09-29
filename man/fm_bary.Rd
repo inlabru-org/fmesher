@@ -10,6 +10,7 @@
 \alias{fm_bary.fm_mesh_3d}
 \alias{fm_bary.fm_lattice_2d}
 \alias{fm_bary.fm_lattice_Nd}
+\alias{fm_bary.fm_collect}
 \title{Compute barycentric coordinates}
 \usage{
 fm_bary(...)
@@ -29,6 +30,8 @@ fm_bary(...)
 \method{fm_bary}{fm_lattice_2d}(mesh, loc, crs = NULL, ...)
 
 \method{fm_bary}{fm_lattice_Nd}(mesh, loc, ...)
+
+\method{fm_bary}{fm_collect}(mesh, loc, ...)
 }
 \arguments{
 \item{\dots}{Arguments forwarded to sub-methods.}
@@ -111,6 +114,13 @@ coordinates). Points that are outside the lattice are given \code{NA} entries in
 lattice cell indices) and \code{where} \code{2^d}-column matrix of barycentric
 coordinates). Points that are outside the lattice are given \code{NA} entries in
 \code{index} and \code{where}.
+
+\item \code{fm_bary(fm_collect)}: Constructs \code{fm_bary} information for a \code{fm_collect}
+function space. The \code{loc} argument must be a \code{list} or \code{tibble} with elements
+\code{loc} (the locations) and \code{index} (the indices into the function space
+collection). The result has class \code{c("fm_bary_collect", "fm_bary")} where
+the standard \code{fm_bary}result is augmented with an element \code{collect.index}
+which is a copy of the \code{index}variable from the input data.
 
 }}
 \examples{

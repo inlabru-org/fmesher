@@ -7,6 +7,7 @@
 * Updated output formats for `fm_collect`methods, including `fm_centroids`,
   `fm_vertices`, and `fm_int` (`0.8.0.9003`)
 * Moved `methods` from Depends to Imports (`0.8.0.9003`)
+* Add experimental `fm_bary` support for `fm_collect` (`0.8.0.9004`)
 
 # fmesher 0.8.0
 

@@ -522,6 +522,121 @@ fm_bary.fm_lattice_Nd <- function(mesh, loc, ...) {
   bary
 }
 
+#' @export
+#' @describeIn fm_bary Constructs `fm_bary` information for a `fm_collect`
+#'   function space. The `loc` argument must be a `list` or `tibble` with elements
+#'   `loc` (the locations) and `index` (the indices into the function space
+#'   collection). The result has class `c("fm_bary_collect", "fm_bary")` where
+#'   the standard `fm_bary`result is augmented with an element `collect.index`
+#'   which is a copy of the `index`variable from the input data.
+#' @importFrom rlang .env
+fm_bary.fm_collect <- function(mesh, loc, ...) {
+  loc_names <- names(loc)
+  if (
+    (!tibble::is_tibble(loc) && !is.list(loc)) ||
+      (!is.null(loc_names) &&
+        (!("loc" %in% loc_names) || !("index" %in% loc_names)))
+  ) {
+    stop(
+      paste0(
+        "Location data for fm_basis<fm_collect> must have elements `loc` and ",
+        "`index`.\n",
+        "Found: ",
+        paste0(names(loc), collapse = ", ")
+      )
+    )
+  }
+
+  if (!tibble::is_tibble(loc)) {
+    if (is.null(loc_names)) {
+      # The .env construction is needed to avoid `loc` name clash effects
+      loc <- tibble::tibble(
+        loc = .env$loc[[1]],
+        index = .env$loc[[2]]
+      )
+    } else {
+      loc <- tibble::tibble(
+        loc = .env$loc[["loc"]],
+        index = .env$loc[["index"]]
+      )
+    }
+  }
+
+  if (is.null(loc[["loc"]])) {
+    stop(
+      "Location data for fm_bary<fm_collect> must have a ",
+      "non-NULL `loc` element."
+    )
+  }
+  if (is.null(loc[["index"]])) {
+    stop(
+      "Location data for fm_bary<fm_collect> must have a ",
+      "non-NULL `index` element."
+    )
+  }
+
+  if (is.matrix(loc[["index"]])) {
+    loc_index <- loc[["index"]][, 1]
+  } else {
+    loc_index <- loc[["index"]]
+  }
+
+  if (is.numeric(loc_index) && !is.integer(loc_index)) {
+    storage.mode(loc_index) <- "integer"
+  }
+  if (
+    is.null(names(mesh[["fun_spaces"]])) &&
+      (is.factor(loc_index) || is.character(loc_index))
+  ) {
+    stop(
+      "Function space collection has no names, but location index is ",
+      "factor or character. Please provide integer indices instead."
+    )
+  }
+  if (is.factor(loc_index)) {
+    loc_index <- as.character(loc_index)
+  }
+  if (is.character(loc_index)) {
+    # Convert character indices to integer
+    loc_index <- match(loc_index, names(mesh[["fun_spaces"]]))
+  }
+
+  idx <- seq_along(mesh[["fun_spaces"]])
+  valid <- loc_index %in% idx
+
+  proj <- lapply(
+    idx,
+    function(k) {
+      sub_rows <- loc_index == k
+      loc_subset <- loc[sub_rows, , drop = FALSE]
+      if (inherits(mesh[["fun_spaces"]][[k]], "fm_collect")) {
+        loc_subset$index <- loc_subset$index[, -1, drop = FALSE]
+      } else {
+        loc_subset <- loc_subset[["loc"]]
+      }
+      bary <- fm_bary(
+        mesh[["fun_spaces"]][[k]],
+        loc = loc_subset,
+        ...
+      )
+      bary[["collect.index"]] <- NULL
+      bary
+    }
+  )
+
+  bary <- do.call(dplyr::bind_rows, proj)
+
+  # Reorder to original order and fill in invalid rows
+  block_order <- order(loc_index[valid])
+  reorder <- order(block_order)
+  bary_ <- bary[reorder, , drop = FALSE]
+
+  bary_$collect.index <- loc[["index"]]
+  bary_ <- fm_bary(bary_, extra_class = "fm_bary_collect")
+
+  bary_
+}
+
 # Simplex extraction ####
 
 #' @title Extract Simplex information for Barycentric coordinates
@@ -811,6 +926,7 @@ fm_bary_loc.fm_mesh_3d <- function(mesh, bary = NULL, ..., format = NULL) {
   }
   loc
 }
+
 
 #' @describeIn fm_bary_loc Extract points on a 1D mesh. Implemented
 #' formats are `"numeric"` (default).

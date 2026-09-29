@@ -321,11 +321,11 @@ fm_basis.fm_collect <- function(x, loc, weights = NULL, ..., full = FALSE) {
     idx,
     function(k) {
       sub_rows <- loc_index == k
+      loc_subset <- loc[sub_rows, , drop = FALSE]
       if (inherits(x[["fun_spaces"]][[k]], "fm_collect")) {
-        loc_subset <- loc[sub_rows, , drop = FALSE]
         loc_subset$index <- loc_subset$index[, -1, drop = FALSE]
       } else {
-        loc_subset <- loc[sub_rows, , drop = FALSE][["loc"]]
+        loc_subset <- loc_subset[["loc"]]
       }
       fm_basis(
         x[["fun_spaces"]][[k]],
