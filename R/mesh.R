@@ -872,13 +872,13 @@ fm_collect_augment_nested_index <- function(x, data, name_index, values) {
       if (!is.matrix(idx)) {
         idx <- as.matrix(idx)
       }
-      if (ncol(idx) < (x$fun_spaces_nesting_depth %||% 0L)) {
+      if (ncol(idx) + 1L < (x$fun_spaces_nesting_depth %||% 0L)) {
         idx <- cbind(
           idx,
           matrix(
             NA_integer_,
             nrow(data),
-            (x$fun_spaces_nesting_depth %||% 0L) - ncol(idx)
+            (x$fun_spaces_nesting_depth %||% 0L) - ncol(idx) - 1L
           )
         )
       }
@@ -886,13 +886,13 @@ fm_collect_augment_nested_index <- function(x, data, name_index, values) {
       idx <- matrix(
         NA_integer_,
         nrow(data),
-        x$fun_spaces_nesting_depth %||% 0L
+        (x$fun_spaces_nesting_depth %||% 1L) - 1L
       )
     }
   } else {
     idx <- matrix(NA_integer_, nrow(data), 0L)
   }
-  data[[name_index]] <- cbind(values, idx)
+  data[[name_index]] <- cbind(values, idx, deparse.level = 0)
   data
 }
 #' @export

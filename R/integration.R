@@ -2127,6 +2127,15 @@ fm_int.fm_collect <- function(domain, samplers = NULL, name = NULL, ...) {
   # From here, have tibble or sf
   if (!("index" %in% names(samplers))) {
     samplers$index <- matrix(NA_integer_, nrow(samplers), depth)
+  } else if (!is.matrix(samplers$index)) {
+    samplers$index <- as.matrix(samplers$index)
+  }
+  if (ncol(samplers$index) < depth) {
+    samplers$index <- matrix(
+      NA_integer_,
+      nrow(samplers),
+      depth - ncol(samplers$index)
+    )
   }
 
   name2 <- name %||% ""
