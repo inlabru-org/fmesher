@@ -4,7 +4,7 @@
 
 * Added support for `fm_collect` and `fm_mesh_3d` objects in `fm_vertices()`
   and `fm_centroids()` (`0.8.0.9002`)
-* Updated output formats for `fm_collect`methods, including `fm_centroids`,
+* Updated output formats for `fm_collect` methods, including `fm_centroids`,
   `fm_vertices`, and `fm_int` (`0.8.0.9003`)
 * Moved `methods` from Depends to Imports (`0.8.0.9003`)
 * Add experimental `fm_bary` support for `fm_collect` (`0.8.0.9004`)
