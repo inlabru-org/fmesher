@@ -8,6 +8,7 @@
   `fm_vertices`, and `fm_int` (`0.8.0.9003`)
 * Moved `methods` from Depends to Imports (`0.8.0.9003`)
 * Add experimental `fm_bary` support for `fm_collect` (`0.8.0.9004`)
+* Add hex logo, thanks to Jafet Belmont Osuna (`0.8.0.9005`)
 
 # fmesher 0.8.0
 

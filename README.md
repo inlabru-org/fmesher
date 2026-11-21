@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# fmesher: Triangle Meshes and Other Geometry Tools
+# fmesher: Triangle Meshes and Other Geometry Tools <a href="https://inlabru-org.github.io/fmesher/"><img src="man/figures/logo.png" align="right" height="138" alt="fmesher website" /></a>
 
 <!-- badges: start -->
 
